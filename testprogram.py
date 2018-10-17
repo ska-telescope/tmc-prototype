@@ -1,0 +1,3 @@
+import PyTango
+
+print "hello"
