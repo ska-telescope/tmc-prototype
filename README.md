@@ -28,3 +28,6 @@ TMC prototype (Stage I) includes the developement of Control Nodes and Dish Mast
 ## Testing
 Unit test cases are needed to be developed for testing of the Control Nodes and Dish Master Simulator.
 
+## Docs
+* [TMC Prototype (Stage I) Design Document](https://docs.google.com/document/d/1JFGXb8NGXPfi9ZwOQMPU6_Dwc1UxCHelRc-tjVVuoD0/edit?usp=sharing)
+
