@@ -14,6 +14,7 @@ The design for the  TMC prototype (Stage I) is targeting the following functiona
 * [ ] Hierarchy of control nodes - Central node, Subarray node, Leaf Node
 * [x] Interface between the TMC and Element LMC
 * [ ] Use of Element Alarm Handler and Central Alarm Handler
+* [ ] Use of Element Logger and Central Logger
 * [x] Use of base classes for development of control nodes and LMC simulators
 ### Other (Tools/Technology/Framework)
 * Linux/Ubuntu (16.04 LTS)
