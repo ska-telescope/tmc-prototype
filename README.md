@@ -4,24 +4,26 @@ This is the repository for TMC evolutionary prototype. The prototype aims to rea
 ## Prototype Scope
 The design for the  TMC prototype (Stage I) is targeting the following architectural aspects and functionality:
 ### Architecture
-* [ ] Hierarchy of control nodes - Central node, Subarray node, Leaf Node
-* [x] Interface between the TMC and Element LMC
-* [ ] Use of Element Alarm Handler and Central Alarm Handler
-* [ ] Use of Element Logger and Central Logger
-* [x] Use of base classes for development of control nodes and LMC simulators
+* [x] Use of base classes for development of control nodes and Dish Master Simulator
+* [x] Hierarchy of control nodes - Central node, Subarray node, Leaf Node
+* [x] Interface between the TMC and Element LMC (Dish Master)
+* [x] Use of Alarm Handler
+* [x] Use of Central Logger
 
 ### Functionality
-* [ ] Monitoring and control functionality with hierarchy of nodes
+* [x] Monitoring and control functionality with hierarchy of nodes
 * [ ] Alarm detection and handling 
+* [x] Automatic control actions on Alerts
 * [x] LMC simulator for Dish
-* [ ] Subarray creation using static configuration 
-* [x] Command and response mechanism
-* [x] Group command 
+* [x] Allocation and Deallocation of receptors in Subarray
+* [x] Basic configuration (setting target pointing coordiantes) of a Subarray
+* [x] Commands and Events propogation
+* [x] TANGO group commands
 
 ### Other (Tools/Technology/Framework)
 * Linux/Ubuntu (16.04 LTS)
-* Tango
-* PyTango 
+* Tango (9.2.5a)
+* PyTango (9.2.4)
 * Elettra, PANIC
 * Pytest
 
