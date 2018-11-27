@@ -16,8 +16,8 @@ The design for the  TMC prototype (Stage I) is targeting the following architect
 * [x] Automatic control actions on Alerts
 * [x] LMC simulator for Dish
 * [x] Allocation and Deallocation of receptors in Subarray
-* [x] Basic configuration (setting target pointing coordiantes) of a Subarray
-* [x] Commands and Events propogation
+* [x] Basic configuration (setting target pointing coordinates) of a Subarray
+* [x] Commands and Events propagation
 * [x] TANGO group commands
 
 ### Other (Tools/Technology/Framework)
