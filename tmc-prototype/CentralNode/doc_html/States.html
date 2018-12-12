@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> CentralNode Tango Class States </title>
+</head>
+<body text="Black" bgcolor="White" link="Blue" vlink="Purple" alink="Red">
+<br><br><br><br>
+<Table Border=2 Cellpadding=3 CELLSPACING=0>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+	<td colspan=2> <font size=+1> <center><b> CentralNode Class States </b></font></center></td>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+		<td> <center><b> Name </b></center> </td>
+		<td> <center><b> Description </b></center> </td>
+	</tr>
+	<tr>
+		<td> ON </td>
+		<td> This state could have been called OK or OPERATIONAL. It means that the device is in its operational state. (E.g. the power supply is giving its nominal current, th motor is ON and ready to move, the instrument is operating). This state is modified by the Attribute alarm checking of the DeviceImpl:dev_state method. i.e. if the State is ON and one attribute has its quality factor to ATTR_WARNING or ATTR_ALARM, then the State is modified to ALARM. </td>
+	</tr>
+	<tr>
+		<td> FAULT </td>
+		<td> The device has a major failure that prevents it to work. For instance, A power supply has stopped due to over temperature A motor cannot move because it has fault conditions. Usually we cannot get out from this state without an intervention on the hardware or a reset command. </td>
+	</tr>
+	<tr>
+		<td> INIT </td>
+		<td> This state is reserved to the starting phase of the device server. It means that the software is not fully operational and that the user must wait </td>
+	</tr>
+	<tr>
+		<td> ALARM </td>
+		<td> ALARM - The device is operating but<Br>
+			at least one of the attributes is out of range. It can be linked to alarm conditions set by attribute properties or a specific case. (E.g. temperature alarm on a stepper motor, end switch pressed on a stepper motor, up water level in a tank, etc....). In alarm, usually the device does its job, but the operator has to perform an action to avoid a bigger problem that may switch the state to FAULT. </td>
+	</tr>
+	<tr>
+		<td> UNKNOWN </td>
+		<td> The device cannot retrieve its state. It is the case when there is a communication problem to the hardware (network cut, broken cable etc...) It could also represent an incoherent situation </td>
+	</tr>
+	<tr>
+		<td> OFF </td>
+		<td> The device is in normal condition but is not active. E.g. the power supply main circuit breaker is open; the RF transmitter has no power etc... </td>
+	</tr>
+	<tr>
+		<td> STANDBY </td>
+		<td> Equates to LOW-POWER mode. This is the initial transition from INIT if the device supports a low-power mode. The device is not fully active but is ready to operate. </td>
+	</tr>
+	<tr>
+		<td> DISABLE </td>
+		<td> The device cannot be switched ON for an external reason. E.g. the power supply has its door open, the safety conditions are not satisfactory to allow the device to operate. </td>
+	</tr>
+</table>
+</body>
+</html>

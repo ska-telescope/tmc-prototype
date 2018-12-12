@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> SubarrayNode Tango Class Commands </title>
+</head>
+<body text="Black" bgcolor="White" link="Blue" vlink="Purple" alink="Red">
+<br><br><br><br>
+<Table Border=2 Cellpadding=3 CELLSPACING=0>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+	<td colspan=5> <font size=+1> <center><b> SubarrayNode Class Commands </b></font></center></td>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+		<td> <center><b> Name </b></center> </td>
+		<td> <center><b> Input type </b></center> </td>
+		<td> <center><b> Output type </b></center> </td>
+		<td> <center><b> Level </b></center> </td>
+		<td> <center><b> Description </b></center> </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdAbort.html"> Abort </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Change obsState to ABORTED. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdConfigureCapability.html"> ConfigureCapability </a> </td>
+		<td> DEVVAR_LONGSTRINGARRAY </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Configures number of instances for each capability. If the capability exists, <Br>
+			it increments the configured instances by the number of instances requested, <Br>
+			otherwise an exception will be raised.<Br>
+			Note: The two lists arguments must be of equal length or an exception will be raised. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdDeconfigureAllCapabilities.html"> DeconfigureAllCapabilities </a> </td>
+		<td> DEV_STRING </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Deconfigure all instances of the given Capability type. If the capability type does not exist an exception will be raised, <Br>
+			otherwise it sets the configured instances for that capability type to zero. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdDeconfigureCapability.html"> DeconfigureCapability </a> </td>
+		<td> DEVVAR_LONGSTRINGARRAY </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Deconfigures a given number of instances for each capability. If the capability exists, <Br>
+			it decrements the configured instances by the number of instances requested,<Br>
+			otherwise an exceptioin will be raised.<Br>
+			Note: The two lists arguments must be of equal length or an exception will be raised </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdGetMetrics.html"> GetMetrics </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Gets list of attributes marked as metrics, with their values, <Br>
+			for device </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdGetVersionInfo.html"> GetVersionInfo </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> OPERATOR </td>
+		<td> Array of version strings of all entities modelled by this device. <Br>
+			(One level down only)<Br>
+			Each string in the array lists the version info for one entity<Br>
+			managed by this device. <Br>
+			The first entry is version info for this TANGO Device itself.<Br>
+			The entities may be TANGO devices, or hardware LRUs or <Br>
+			anything else this devices manages/models.<Br>
+			The intention with this command is that it can provide more <Br>
+			detailed information than can be captured in the versionId <Br>
+			and buildState attributes, if necessary.<Br>
+			In the minimal case the GetVersionInfo will contain only the <Br>
+			versionId and buildState attributes of the next lower level<Br>
+			entities. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdStatus.html"> Status </a> </td>
+		<td> DEV_VOID </td>
+		<td> CONST_DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> This command gets the device status (stored in its device_status data member) and returns it to the caller. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdState.html"> State </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_STATE </td>
+		<td> OPERATOR </td>
+		<td> This command gets the device state (stored in its device_state data member) and returns it to the caller. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdAssignResources.html"> AssignResources </a> </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> OPERATOR </td>
+		<td> None. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdEndSB.html"> EndSB </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Change obsState to IDLE. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdEndScan.html"> EndScan </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Terminate scan. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdObsState.html"> ObsState </a> </td>
+		<td> DEV_VOID </td>
+		<td> CONST_DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Set the observation state </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdPause.html"> Pause </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Pause scan. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdReleaseAllResources.html"> ReleaseAllResources </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> OPERATOR </td>
+		<td> Remove all resources to tear down to an empty subarray. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdReleaseResources.html"> ReleaseResources </a> </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> OPERATOR </td>
+		<td> Delta removal of assigned resources. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdReset.html"> Reset </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Reset device to its default state </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdResume.html"> Resume </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Resume scan. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdScan.html"> Scan </a> </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Starts the scan. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdToJson.html"> ToJson </a> </td>
+		<td> DEV_STRING </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Returns a JSON translation of this device.<Br>
+			Defaults for empty string argin gives commands and metris:<Br>
+			with_value:false, <Br>
+			with_commands:true, <Br>
+			with_metrics:true, <Br>
+			with_attributes:false </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdConfigure.html"> Configure </a> </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Command to configure resources (for e.g. Dish) via Leaf Node. E.g. Configuration includes setting pointing coordinates of Dish for a given observation. </td>
+	</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> DishMaster Tango Class Attributes </title>
+</head>
+<body text="Black" bgcolor="White" link="Blue" vlink="Purple" alink="Red">
+<br><br><br><br>
+<Table Border=2 Cellpadding=3 CELLSPACING=0>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+	<td colspan=8> <font size=+1> <center><b> DishMaster Class Attributes </b></font></center></td>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+		<td> <center><b> Name </b></center> </td>
+		<td> <center><b> Inherited </b></center> </td>
+		<td> <center><b> Abstract </b></center> </td>
+		<td> <center><b> Attr. type </b></center> </td>
+		<td> <center><b> R/W type </b></center> </td>
+		<td> <center><b> Data type </b></center> </td>
+		<td> <center><b> Level </b></center> </td>
+		<td> <center><b> Description </b></center> </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrelementLoggerAddress.html"> elementLoggerAddress </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> FQDN of Element Logger </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrelementAlarmAddress.html"> elementAlarmAddress </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> FQDN of Element Alarm Handlers </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrelementTelStateAddress.html"> elementTelStateAddress </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> FQDN of Element TelState device </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrelementDatabaseAddress.html"> elementDatabaseAddress </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> FQDN of Element Database device </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrbuildState.html"> buildState </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Build state of this device </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrversionId.html"> versionId </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Build state of this device </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrcentralLoggingLevel.html"> centralLoggingLevel </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ_WRITE </td>
+		<td> Tango::DEV_USHORT </td>
+		<td> OPERATOR </td>
+		<td> Current logging level to Central logging target for this device - <Br>
+			initialises to CentralLoggingLevelDefault on startup </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrelementLoggingLevel.html"> elementLoggingLevel </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ_WRITE </td>
+		<td> Tango::DEV_USHORT </td>
+		<td> OPERATOR </td>
+		<td> Current logging level to Element logging target for this device - <Br>
+			initialises to ElementLoggingLevelDefault on startup </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrstorageLoggingLevel.html"> storageLoggingLevel </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ_WRITE </td>
+		<td> Tango::DEV_USHORT </td>
+		<td> OPERATOR </td>
+		<td> Current logging level to Syslog for this device - <Br>
+			initialises from  StorageLoggingLevelDefault on first execution of device.<Br>
+			Needs to be READ_WRITE To make it memorized - but writing this attribute should <Br>
+			do the same as command SetStorageLoggingLevel to ensure the targets and adjustments<Br>
+			are made correctly </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrhealthState.html"> healthState </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_ENUM </td>
+		<td> OPERATOR </td>
+		<td> The health state reported for this device. It interprets the current device condition <Br>
+			and condition of all managed devices to set this. Most possibly an aggregate attribute. </td>
+	</tr>
+	<tr>
+		<td> <a href="AttradminMode.html"> adminMode </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ_WRITE </td>
+		<td> Tango::DEV_ENUM </td>
+		<td> OPERATOR </td>
+		<td> The admin mode reported for this device. It may interpret the current device condition <Br>
+			and condition of all managed devices to set this. Most possibly an aggregate attribute. </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrcontrolMode.html"> controlMode </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ_WRITE </td>
+		<td> Tango::DEV_ENUM </td>
+		<td> OPERATOR </td>
+		<td> The control mode of the device. REMOTE, LOCAL<Br>
+			TANGO Device accepts only from a ?local? client and ignores commands and queries received from TM<Br>
+			or any other ?remote? clients. The Local clients has to release LOCAL control before REMOTE clients<Br>
+			can take control again. </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrsimulationMode.html"> simulationMode </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ_WRITE </td>
+		<td> Tango::DEV_BOOLEAN </td>
+		<td> OPERATOR </td>
+		<td> Reports the simulation mode of the device. Some devices may implement both modes,<Br>
+			while others will have simulators that set simulationMode to True while the real<Br>
+			devices always set simulationMode to False. </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrtestMode.html"> testMode </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Scalar </td>
+		<td> READ_WRITE </td>
+		<td> Tango::DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> The test mode of the device. <Br>
+			Either no test mode (empty string) or an indication of the test mode. </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrdishMode.html"> dishMode </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_ENUM </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrpointingState.html"> pointingState </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_ENUM </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="Attrband1SamplerFrequency.html"> band1SamplerFrequency </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> WRITE </td>
+		<td> Tango::DEV_DOUBLE </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="Attrband2SamplerFrequency.html"> band2SamplerFrequency </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> WRITE </td>
+		<td> Tango::DEV_DOUBLE </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="Attrband3SamplerFrequency.html"> band3SamplerFrequency </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> WRITE </td>
+		<td> Tango::DEV_DOUBLE </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="Attrband4SamplerFrequency.html"> band4SamplerFrequency </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> WRITE </td>
+		<td> Tango::DEV_DOUBLE </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="Attrband5aSamplerFrequency.html"> band5aSamplerFrequency </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> WRITE </td>
+		<td> Tango::DEV_DOUBLE </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="Attrband5bSamplerFrequency.html"> band5bSamplerFrequency </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> WRITE </td>
+		<td> Tango::DEV_DOUBLE </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="Attrcapturing.html"> capturing </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_BOOLEAN </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrConfiguredBand.html"> ConfiguredBand </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> READ </td>
+		<td> Tango::DEV_ENUM </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrWindSpeed.html"> WindSpeed </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Scalar </td>
+		<td> READ_WRITE </td>
+		<td> Tango::DEV_DOUBLE </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrmaxCapabilities.html"> maxCapabilities </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Spectrum </td>
+		<td> READ </td>
+		<td> Tango::DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Maximum number of instances of each capability type, e.g. `CORRELATOR:512`, `PSS-BEAMS:4`. </td>
+	</tr>
+	<tr>
+		<td> <a href="AttravailableCapabilities.html"> availableCapabilities </a> </td>
+		<td> true </td>
+		<td> true </td>
+		<td> Spectrum </td>
+		<td> READ </td>
+		<td> Tango::DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> A list of available number of instances of each capability type, e.g. `CORRELATOR:512`, `PSS-BEAMS:4`. </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrdesiredPointing.html"> desiredPointing </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Spectrum </td>
+		<td> READ_WRITE </td>
+		<td> Tango::DEV_DOUBLE </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> <a href="AttrachievedPointing.html"> achievedPointing </a> </td>
+		<td> false </td>
+		<td> false </td>
+		<td> Spectrum </td>
+		<td> READ </td>
+		<td> Tango::DEV_DOUBLE </td>
+		<td> OPERATOR </td>
+		<td>  </td>
+	</tr>
+</table>
+<br><br>
+<hr>
+<br><br>
+<font size="+1"><u><b> There is no dynamic attribute defined. </b></u></font>
+</body>
+</html>

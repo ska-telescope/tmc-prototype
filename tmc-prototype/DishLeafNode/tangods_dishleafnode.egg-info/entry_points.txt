@@ -1,0 +1,3 @@
+[console_scripts]
+DishLeafNode = DishLeafNode:main
+

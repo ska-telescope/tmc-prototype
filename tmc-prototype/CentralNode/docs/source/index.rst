@@ -1,0 +1,2 @@
+.. automodule:: CentralNode
+    :members: CentralNode

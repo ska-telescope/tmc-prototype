@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> DishLeafNode Tango Class Command GetVersionInfo </title>
+</head>
+<body text="Black" bgcolor="White" link="Blue" vlink="Purple" alink="Red">
+<br><br><br>
+<font size="+1"><u><b> Command GetVersionInfo : </b></u></font>
+<ul>
+	Array of version strings of all entities modelled by this device. <Br>
+	(One level down only)<Br>
+	Each string in the array lists the version info for one entity<Br>
+	managed by this device. <Br>
+	The first entry is version info for this TANGO Device itself.<Br>
+	The entities may be TANGO devices, or hardware LRUs or <Br>
+	anything else this devices manages/models.<Br>
+	The intention with this command is that it can provide more <Br>
+	detailed information than can be captured in the versionId <Br>
+	and buildState attributes, if necessary.<Br>
+	In the minimal case the GetVersionInfo will contain only the <Br>
+	versionId and buildState attributes of the next lower level<Br>
+	entities.
+</ul>
+<br><br><br>
+<Table Border=2 Cellpadding=3 CELLSPACING=0>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+	<td colspan=0> <font size=+1> <center><b> GetVersionInfo Definition </b></font></center></td>
+	</tr>
+	<tr>
+		<td> Input Argument </td>
+		<td> Tango::DEV_VOID </td>
+		<td>  </td>
+	</tr>
+	<tr>
+		<td> Output Argument </td>
+		<td> Tango::DEVVAR_STRINGARRAY </td>
+		<td> [ name: EltTelState ] </td>
+	</tr>
+	<tr>
+		<td> DisplayLevel </td>
+		<td> OPERATOR </td>
+		<td> .. </td>
+	</tr>
+	<tr>
+		<td> Inherited </td>
+		<td> true </td>
+		<td> .. </td>
+	</tr>
+	<tr>
+		<td> Abstract </td>
+		<td> true </td>
+		<td> .. </td>
+	</tr>
+	<tr>
+		<td> Polling Period </td>
+		<td> Not polled </td>
+		<td> .. </td>
+	</tr>
+<Tr BGCOLOR="#CCCCFF"><Td><Hr></Td><Td><Hr></Td><Td><Hr></Td></Tr>
+	<tr>
+		<td> Command allowed for </td>
+		<td> All states </td>
+		<td> .. </td>
+	</tr>
+</table>
+</body>
+</html>

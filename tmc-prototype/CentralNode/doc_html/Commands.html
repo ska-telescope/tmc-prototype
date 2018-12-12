@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> CentralNode Tango Class Commands </title>
+</head>
+<body text="Black" bgcolor="White" link="Blue" vlink="Purple" alink="Red">
+<br><br><br><br>
+<Table Border=2 Cellpadding=3 CELLSPACING=0>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+	<td colspan=5> <font size=+1> <center><b> CentralNode Class Commands </b></font></center></td>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+		<td> <center><b> Name </b></center> </td>
+		<td> <center><b> Input type </b></center> </td>
+		<td> <center><b> Output type </b></center> </td>
+		<td> <center><b> Level </b></center> </td>
+		<td> <center><b> Description </b></center> </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdState.html"> State </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_STATE </td>
+		<td> OPERATOR </td>
+		<td> This command gets the device state (stored in its device_state data member) and returns it to the caller. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdStatus.html"> Status </a> </td>
+		<td> DEV_VOID </td>
+		<td> CONST_DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> This command gets the device status (stored in its device_status data member) and returns it to the caller. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdGetMetrics.html"> GetMetrics </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Gets list of attributes marked as metrics, with their values, <Br>
+			for device </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdToJson.html"> ToJson </a> </td>
+		<td> DEV_STRING </td>
+		<td> DEV_STRING </td>
+		<td> OPERATOR </td>
+		<td> Returns a JSON translation of this device.<Br>
+			Defaults for empty string argin gives commands and metris:<Br>
+			with_value:false, <Br>
+			with_commands:true, <Br>
+			with_metrics:true, <Br>
+			with_attributes:false </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdGetVersionInfo.html"> GetVersionInfo </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> OPERATOR </td>
+		<td> Array of version strings of all entities modelled by this device. <Br>
+			(One level down only)<Br>
+			Each string in the array lists the version info for one entity<Br>
+			managed by this device. <Br>
+			The first entry is version info for this TANGO Device itself.<Br>
+			The entities may be TANGO devices, or hardware LRUs or <Br>
+			anything else this devices manages/models.<Br>
+			The intention with this command is that it can provide more <Br>
+			detailed information than can be captured in the versionId <Br>
+			and buildState attributes, if necessary.<Br>
+			In the minimal case the GetVersionInfo will contain only the <Br>
+			versionId and buildState attributes of the next lower level<Br>
+			entities. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdReset.html"> Reset </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> Reset device to its default state </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdStowAntennas.html"> StowAntennas </a> </td>
+		<td> DEVVAR_STRINGARRAY </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> This command is to stow the specified receptors. </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdStandByTelescope.html"> StandByTelescope </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> This command is to bring the Telescope into a STANDBY state (i.e. Low Power State). </td>
+	</tr>
+	<tr>
+		<td> <a href="CmdStartUpTelescope.html"> StartUpTelescope </a> </td>
+		<td> DEV_VOID </td>
+		<td> DEV_VOID </td>
+		<td> OPERATOR </td>
+		<td> This command is to bring the Telescope into ON state from the STANDBY state. </td>
+	</tr>
+</table>
+</body>
+</html>

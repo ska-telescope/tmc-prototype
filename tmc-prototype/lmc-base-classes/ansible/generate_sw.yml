@@ -1,0 +1,7 @@
+
+- name: generate_sw
+  hosts: operational
+  roles:
+    - {role: 'generate_sw', tags: ['generate-sw']}
+
+

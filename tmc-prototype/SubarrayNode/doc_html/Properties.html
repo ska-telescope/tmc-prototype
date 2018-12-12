@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<title> SubarrayNode Tango Class Properties </title>
+</head>
+<body text="Black" bgcolor="White" link="Blue" vlink="Purple" alink="Red">
+<br><br><br>
+<font size="+1"><u><b> SubarrayNode  Properties : </b></u></font>
+<br><br><br>
+<font size="+1"><u><b> There is no class properties </b></u></font>
+<br><br><br>
+<Table Border=2 Cellpadding=3 CELLSPACING=0>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+	<td colspan=4> <font size=+1> <center><b> Device Properties </b></font></center></td>
+	<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+		<td> <center><b> Name </b></center> </td>
+		<td> <center><b> Description </b></center> </td>
+		<td> <center><b> Type </b></center> </td>
+		<td> <center><b> Default Value </b></center> </td>
+	</tr>
+	<tr>
+		<td> CapabilityTypes </td>
+		<td> List of Capability types e.g. capCorr, capPss,<Br>
+			capPstBf, capVlbi, this will be used to dynamically<Br>
+			define groups for subarray. </td>
+		<td> String[] </td>
+		<td> none </td>
+	</tr>
+	<tr>
+		<td> CentralLoggingTarget </td>
+		<td> Pre-configured logging target CentralLogger DS </td>
+		<td> String </td>
+		<td> none </td>
+	</tr>
+	<tr>
+		<td> ElementLoggingTarget </td>
+		<td> Pre-configured logging target ElementLogger DS </td>
+		<td> String </td>
+		<td> none </td>
+	</tr>
+	<tr>
+		<td> GroupDefinitions </td>
+		<td> Each string in the list is a JSON serialised dict defining the ``group_name``,<Br>
+			``devices`` and ``subgroups`` in the group.  A TANGO Group object is created<Br>
+			for each item in the list, according to the hierarchy defined.  This provides<Br>
+			easy access to the managed devices in bulk, or individually.<Br>
+			<Br>
+			The general format of the list is as follows, with optional ``devices`` and<Br>
+			``subgroups`` keys:<Br>
+			    [ {``group_name``: ``<name>``,<Br>
+			       ``devices``: [``<dev name>``, ...]},<Br>
+			      {``group_name``: ``<name>``,<Br>
+			       ``devices``: [``<dev name>``, ``<dev name>``, ...],<Br>
+			       ``subgroups`` : [{<nested group>},<Br>
+			                              {<nested group>}, ...]},<Br>
+			      ...<Br>
+			      ]<Br>
+			<Br>
+			For example, a hierarchy of racks, servers and switches:<Br>
+			    [ {``group_name``: ``servers``,<Br>
+			       ``devices``: [``elt/server/1``, ``elt/server/2``,<Br>
+			                       ``elt/server/3``, ``elt/server/4``]},<Br>
+			      {``group_name``: ``switches``,<Br>
+			       ``devices``: [``elt/switch/A``, ``elt/switch/B``]},<Br>
+			      {``group_name``: ``pdus``,<Br>
+			       ``devices``: [``elt/pdu/rackA``, ``elt/pdu/rackB``]},<Br>
+			      {``group_name``: ``racks``,<Br>
+			      ``subgroups``: [<Br>
+			            {``group_name``: ``rackA``,<Br>
+			             ``devices``: [``elt/server/1``, ``elt/server/2``,<Br>
+			                               ``elt/switch/A``, ``elt/pdu/rackA``]},<Br>
+			            {``group_name``: ``rackB``,<Br>
+			             ``devices``: [``elt/server/3``, ``elt/server/4``,<Br>
+			                              ``elt/switch/B``, ``elt/pdu/rackB``],<Br>
+			             ``subgroups``: []}<Br>
+			       ]} ] </td>
+		<td> String[] </td>
+		<td> none </td>
+	</tr>
+	<tr>
+		<td> MetricList </td>
+		<td> A subset of attributes we want to expose as metrics for this device. </td>
+		<td> String[] </td>
+		<td> healthState <br>
+			adminMode <br>
+			controlMode <br> </td>
+	</tr>
+	<tr>
+		<td> SkaLevel </td>
+		<td> Indication of importance of the device in the SKA hierarchy <Br>
+			to support drill-down navigation: 1..6, with 1 highest.<Br>
+			Default is 4, making provision for <Br>
+			EltMaster, EltAlarms, EltTelState = 1<Br>
+			SubEltMaster = 2<Br>
+			Subarray, Capability = 2/3<Br>
+			Others = 4 (or 5 or 6) </td>
+		<td> short </td>
+		<td> 4 <br> </td>
+	</tr>
+	<tr>
+		<td> StorageLoggingTarget </td>
+		<td> Pre-configured logging target for syslog </td>
+		<td> String </td>
+		<td> localhost <br> </td>
+	</tr>
+	<tr>
+		<td> SubID </td>
+		<td> Unique identifier of the subarray device. </td>
+		<td> String </td>
+		<td> none </td>
+	</tr>
+	<tr>
+		<td> DishLeafNodePrefix </td>
+		<td> Prefix used to obtain list of dish leaf node devices deployed from the TANGO database. Value of this property ? ska_mid/tm_leaf_node/d </td>
+		<td> String </td>
+		<td> ska_mid/tm_leaf_node/d <br> </td>
+	</tr>
+</table>
+</body>
+</html>
