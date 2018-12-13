@@ -18,7 +18,6 @@ run python setup.py build_sphinx
 If you want to pass the tests, 
 run python setup.py test
 
-
 ## Usage
 
 Now you can start your device server in any
