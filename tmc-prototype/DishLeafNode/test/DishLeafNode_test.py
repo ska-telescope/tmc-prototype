@@ -13,13 +13,14 @@
 import sys
 import os
 
+from PyTango._PyTango import DeviceProxy
 from tango.test_context import DeviceTestContext
 
 path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-from time import sleep
+import time
 from mock import MagicMock
 from PyTango import DevFailed, DevState
 #from devicetest import DeviceTestCase, main
@@ -39,14 +40,14 @@ from tango.server import command, attribute, device_property
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device")
+@pytest.mark.usefixtures("tango_context", "initialize_device", "create_dish_proxy")
 
 class TestDishLeafNode(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(DishLeafNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  DishLeafNode.test_additionnal_import
     device = DishLeafNode
-    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost', 'DishMasterFQDN': 'tango://theta:10000/mid_d0001/elt/master',
+    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost', 'DishMasterFQDN': 'tango://apurva-pc:10000/mid_d0001/elt/master',
                   }
     empty = None  # Should be []
 
@@ -61,7 +62,7 @@ class TestDishLeafNode(object):
     def test_properties(self, tango_context):
         # test the properties
         # PROTECTED REGION ID(DishLeafNode.test_properties) ENABLED START #
-        #assert tango_context.device.SkaLevel == 4
+        #assert tango_context.device.DishMasterFQDN == "tango://apurva-pc:10000/mid_d0001/elt/master"
         # PROTECTED REGION END #    //  DishLeafNode.test_properties
         pass
 
@@ -69,13 +70,15 @@ class TestDishLeafNode(object):
         """Test for State"""
         # PROTECTED REGION ID(DishLeafNode.test_State) ENABLED START #
         #self.device.State()
-        assert tango_context.device.State() == DevState.ON
+        #print TestDishLeafNode.properties['DishMasterFQDN']
+        assert tango_context.device.State() == DevState.ALARM
         # PROTECTED REGION END #    //  DishLeafNode.test_State
 
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(DishLeafNode.test_Status) ENABLED START #
         #self.device.Status()
+        #assert tango_context.device.Status() == "Dish Leaf Node initialized successfully. Ready to accept commands!"
         # PROTECTED REGION END #    //  DishLeafNode.test_Status
 
     def test_GetMetrics(self, tango_context):
@@ -102,126 +105,181 @@ class TestDishLeafNode(object):
         #self.device.Reset()
         # PROTECTED REGION END #    //  DishLeafNode.test_Reset
 
+
+    def test_SetStandByLPMode(self, tango_context, create_dish_proxy):
+        """Test for SetStandByLPMode"""
+        # PROTECTED REGION ID(DishLeafNode.test_SetStandByLPMode) ENABLED START #
+        #self.device.SetStandByLPMode()
+
+        #dish_proxy = DeviceProxy("tango://apurva-pc:10000/mid_d0001/elt/master")
+        # time.sleep(3)
+        # tango_context.device.SetStandByLPMode()
+        # time.sleep(3)
+        # assert create_dish_proxy.dishMode == 3
+
+        # PROTECTED REGION END #    //  DishLeafNode.test_SetStandByLPMode
+
     def test_SetStowMode(self, tango_context):
         """Test for SetStowMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetStowMode) ENABLED START #
         #self.device.SetStowMode()
-        tango_context.device.SetStowMode()
-        #assert tango_context.device.dishMode == 6
+        # tango_context.device.SetStandByLPMode()
+        # dish_proxy = DeviceProxy("tango://apurva-pc:10000/mid_d0001/elt/master")
+        # tango_context.device.SetStowMode()
+        # sleep(0.5)
+        #assert all([a == b for a, b in zip(dish_proxy.desiredPointing, [0, 0, 0])])
+
+        #assert dish_proxy.State() == DevState.DISABLE
+
+
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStowMode
 
-    def test_SetStandByLPMode(self, tango_context):
-        """Test for SetStandByLPMode"""
-        # PROTECTED REGION ID(DishLeafNode.test_SetStandByLPMode) ENABLED START #
-        #self.device.SetStandByLPMode()
-        # PROTECTED REGION END #    //  DishLeafNode.test_SetStandByLPMode
-
-    def test_SetOperateMode(self, tango_context):
+    def test_SetOperateMode(self, tango_context, create_dish_proxy):
         """Test for SetOperateMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetOperateMode) ENABLED START #
         #self.device.SetOperateMode()
+
+        #dish_proxy = DeviceProxy("tango://apurva-pc:10000/mid_d0001/elt/master")
+        # time.sleep(3)
+        # tango_context.device.SetOperateMode()
+        # time.sleep(3)
+        # assert create_dish_proxy.dishMode == 8
+        #tango_context.device.SetStandByLPMode()
+
         # PROTECTED REGION END #    //  DishLeafNode.test_SetOperateMode
 
     def test_Scan(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(DishLeafNode.test_Scan) ENABLED START #
         #self.device.Scan("")
+        '''
+        dish_proxy = DeviceProxy("tango://apurva-pc:10000/mid_d0001/elt/master")
+        tango_context.device.Scan()
+        '''
         # PROTECTED REGION END #    //  DishLeafNode.test_Scan
 
     def test_EndScan(self, tango_context):
         """Test for EndScan"""
         # PROTECTED REGION ID(DishLeafNode.test_EndScan) ENABLED START #
         #self.device.EndScan()
+
         # PROTECTED REGION END #    //  DishLeafNode.test_EndScan
 
     def test_Configure(self, tango_context):
         """Test for Configure"""
         # PROTECTED REGION ID(DishLeafNode.test_Configure) ENABLED START #
         #self.device.Configure([""])
+
         # PROTECTED REGION END #    //  DishLeafNode.test_Configure
 
     def test_StartCapture(self, tango_context):
         """Test for StartCapture"""
         # PROTECTED REGION ID(DishLeafNode.test_StartCapture) ENABLED START #
         #self.device.StartCapture("")
+
         # PROTECTED REGION END #    //  DishLeafNode.test_StartCapture
 
     def test_StopCapture(self, tango_context):
         """Test for StopCapture"""
         # PROTECTED REGION ID(DishLeafNode.test_StopCapture) ENABLED START #
         #self.device.StopCapture("")
+
         # PROTECTED REGION END #    //  DishLeafNode.test_StopCapture
 
     def test_SetStandbyFPMode(self, tango_context):
         """Test for SetStandbyFPMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetStandbyFPMode) ENABLED START #
         #self.device.SetStandbyFPMode()
+
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStandbyFPMode
 
     def test_Slew(self, tango_context):
         """Test for Slew"""
         # PROTECTED REGION ID(DishLeafNode.test_Slew) ENABLED START #
         #self.device.Slew("")
+
         # PROTECTED REGION END #    //  DishLeafNode.test_Slew
 
     def test_buildState(self, tango_context):
         """Test for buildState"""
         # PROTECTED REGION ID(DishLeafNode.test_buildState) ENABLED START #
         #self.device.buildState
+        assert tango_context.device.buildState == "tangods-skabasedevice, 1.0.0, A generic base device for SKA."
         # PROTECTED REGION END #    //  DishLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(DishLeafNode.test_versionId) ENABLED START #
         #self.device.versionId
+        assert tango_context.device.versionId == "1.0.0"
         # PROTECTED REGION END #    //  DishLeafNode.test_versionId
 
     def test_centralLoggingLevel(self, tango_context):
         """Test for centralLoggingLevel"""
         # PROTECTED REGION ID(DishLeafNode.test_centralLoggingLevel) ENABLED START #
         #self.device.centralLoggingLevel
+        level = 5
+        tango_context.device.centralLoggingLevel = level
+        assert tango_context.device.centralLoggingLevel == level
         # PROTECTED REGION END #    //  DishLeafNode.test_centralLoggingLevel
 
     def test_elementLoggingLevel(self, tango_context):
         """Test for elementLoggingLevel"""
         # PROTECTED REGION ID(DishLeafNode.test_elementLoggingLevel) ENABLED START #
         #self.device.elementLoggingLevel
+        level = 5
+        tango_context.device.elementLoggingLevel = level
+        assert tango_context.device.elementLoggingLevel == level
         # PROTECTED REGION END #    //  DishLeafNode.test_elementLoggingLevel
 
     def test_storageLoggingLevel(self, tango_context):
         """Test for storageLoggingLevel"""
         # PROTECTED REGION ID(DishLeafNode.test_storageLoggingLevel) ENABLED START #
         #self.device.storageLoggingLevel
+        level = 5
+        tango_context.device.storageLoggingLevel = level
+        assert tango_context.device.storageLoggingLevel == level
         # PROTECTED REGION END #    //  DishLeafNode.test_storageLoggingLevel
 
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(DishLeafNode.test_healthState) ENABLED START #
         #self.device.healthState
+        assert tango_context.device.healthState==0
         # PROTECTED REGION END #    //  DishLeafNode.test_healthState
 
     def test_adminMode(self, tango_context):
         """Test for adminMode"""
         # PROTECTED REGION ID(DishLeafNode.test_adminMode) ENABLED START #
         #self.device.adminMode
+        assert tango_context.device.adminMode == 0
         # PROTECTED REGION END #    //  DishLeafNode.test_adminMode
 
     def test_controlMode(self, tango_context):
         """Test for controlMode"""
         # PROTECTED REGION ID(DishLeafNode.test_controlMode) ENABLED START #
         #self.device.controlMode
+        control_mode = 0
+        tango_context.device.controlMode = control_mode
+        assert tango_context.device.controlMode == control_mode
         # PROTECTED REGION END #    //  DishLeafNode.test_controlMode
 
     def test_simulationMode(self, tango_context):
         """Test for simulationMode"""
         # PROTECTED REGION ID(DishLeafNode.test_simulationMode) ENABLED START #
         #self.device.simulationMode
+        simulation_mode = 0
+        tango_context.device.simulationMode = simulation_mode
+        assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  DishLeafNode.test_simulationMode
 
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(DishLeafNode.test_testMode) ENABLED START #
         #self.device.testMode
+        test_mode = "False"
+        tango_context.device.testMode = test_mode
+        assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  DishLeafNode.test_testMode
 
     def test_activityMessage(self, tango_context):
