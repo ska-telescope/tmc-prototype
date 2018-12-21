@@ -6,7 +6,7 @@ import mock
 import pytest
 import importlib
 
-
+from PyTango._PyTango import DeviceProxy
 from tango.test_context import DeviceTestContext
 
 
@@ -33,7 +33,12 @@ def tango_context(request):
     klass = getattr(module, class_name)
     print "klass is:", klass
 
-    tango_context = DeviceTestContext(klass)
+    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
+                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+                  'DishMasterFQDN': 'tango://apurva-pc:10000/mid_d0001/elt/master',
+                  }
+
+    tango_context = DeviceTestContext(klass, properties=properties)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
 
@@ -48,4 +53,10 @@ def initialize_device(tango_context):
     tango_context: tango.test_context.DeviceTestContext
         Context to run a device without a database.
     """
+    print "In init device function"
     yield tango_context.device.Init()
+
+@pytest.fixture(scope="class")
+def create_dish_proxy():
+    dish_proxy = DeviceProxy("tango://apurva-pc:10000/mid_d0001/elt/master")
+    return dish_proxy
