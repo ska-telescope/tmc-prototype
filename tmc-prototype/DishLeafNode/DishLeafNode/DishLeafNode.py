@@ -237,7 +237,7 @@ class DishLeafNode(SKABaseDevice):
 
 
     DishMasterFQDN = device_property(
-        dtype='str',
+        dtype='str', default_value="tango://apurva-pc:10000/mid_d0001/elt/master"
     )
 
     # ----------
