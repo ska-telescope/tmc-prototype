@@ -86,8 +86,11 @@ class SubarrayNode(SKASubarray):
             cmdData.insert(PyTango.DevString, "0")
             self._dish_leaf_node_group.command_inout("EndScan", cmdData)
             self._obs_state = 0                                                                                         # set obsState to IDLE when the scan is ended
+            self._scan_id = ""
+            self._sb_id = ""
             self.set_status("Scan is completed")
             self.devlogmsg("Scan is completed", 4)
+
         except Exception as e:
             print "Exception in EndScan command:"
             print e
