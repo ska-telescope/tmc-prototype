@@ -7,25 +7,20 @@
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
 
-""" CentralNode
-
-Central Node is a coordinator of the complete M&C system.
+"""
+Central Node is a coordinator of the complete M&C system. Central Node implements the standard set
+of state and mode attributes defined by the SKA Control Model.
 """
 
-# PyTango imports
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
+# tango imports
+import tango
+from tango import DebugIt, AttrWriteType, DeviceProxy, EventType
+from tango.server import run, DeviceMeta, attribute, command, device_property
 from SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-from tango import DeviceProxy, DevState, EventType, utils, DeviceData
-# PROTECTED REGION END #    //  CentralNode.additionnal_import
+import CONST
+# PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
 
@@ -36,163 +31,90 @@ class CentralNode(SKABaseDevice):
     """
     __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
-
     def subarrayHealthStateCallback(self, evt):
-
-        if (evt.err==False):
+        """
+        :param evt: A TANGO_CHANGE event of Subarray's healthState attribute
+        :return:
+        This method retrieves individual subarray health state, aggregates them to calculate the
+        telescope health state.
+        """
+        if evt.err is False:
             try:
                 self._subarray_health_state = evt.attr_value.value
-                if "tm_subarray_node/1" in evt.attr_name:
+                if CONST.EVT_SA1_NODE in evt.attr_name:
                     self._subarray1_health_state = self._subarray_health_state
-                elif "tm_subarray_node/2" in evt.attr_name:
+                elif CONST.EVT_SA2_NODE in evt.attr_name:
                     self._subarray2_health_state = self._subarray_health_state
                 else:
-                    print "Event from the Unknown Subarray device!"
-                    self._read_activity_message = "Event from the Unknown Subarray device!"
+                    print CONST.EVT_UNKNOWN_SA
+                    self._read_activity_message = CONST.EVT_UNKNOWN_SA
 
-                self.subarrayHealthStateMap[evt.device] = self._subarray_health_state
-                if (self._subarray_health_state == 0):
-                    print "Health state of " + str(evt.device) + " :-> OK"
-                    self._read_activity_message = "Health state of " + str(evt.device) + " :-> OK"
-                elif (self._subarray_health_state == 1):
-                    print "Health state of " + str(evt.device) + " :-> DEGRADED"
-                    self._read_activity_message = "Health state of " + str(evt.device) + " :-> DEGRADED"
-                elif (self._subarray_health_state == 2):
-                    print "Health state of " + str(evt.device) + " :-> FAILED"
-                    self._read_activity_message = "Health state of " + str(evt.device) + " :-> FAILED"
-                elif (self._subarray_health_state == 3):
-                    print "Health state of " + str(evt.device) + " :-> UNKNOWN"
-                    self._read_activity_message = "Health state of " + str(evt.device) + " :-> UNKNOWN"
+                self.subarrayHealthStateMap = self._subarray_health_state
+                if self._subarray_health_state == CONST.ENUM_OK:
+                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)\
+                                                  + CONST.STR_OK
+                elif self._subarray_health_state == CONST.STR_DEGRADED:
+                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)\
+                                                  + CONST.STR_DEGRADED
+                elif self._subarray_health_state == CONST.STR_FAILED:
+                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)\
+                     + CONST.STR_FAILED
+                elif self._subarray_health_state == CONST.ENUM_UNKNOWN:
+                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)\
+                     + CONST.STR_UNKNOWN
                 else:
-                    print "Subarray Health state event returned unknown value! \n", evt
-                    self._read_activity_message = "Subarray Health state event returned unknown value! \n" + str(evt)
+                    print CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt
+                    self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 # Aggregated Health State
                 failed = 0
                 degraded = 0
                 unknown = 0
-                ok = 0
-                for value in (self.subarrayHealthStateMap.values()):
-                    if value == 2:
+                _ok = 0
+                for value in self.subarrayHealthStateMap.values():
+                    if value == CONST.ENUM_FAILED:
                         failed = failed + 1
                         break
-                    elif value == 1:
+                    elif value == CONST.ENUM_DEGRADED:
                         self._telescope_health_state = 1
                         degraded = degraded + 1
-                    elif value == 3:
-                        self._telescope_health_state = 3
+                    elif value == CONST.ENUM_UNKNOWN:
+                        self._telescope_health_state = CONST.ENUM_UNKNOWN
                         unknown = unknown + 1
 
                     else:
-                        self._telescope_health_state = 0
-                        ok = ok + 1
+                        self._telescope_health_state = CONST.ENUM_OK
+                        _ok = _ok + 1
 
-                if ok == len(self.subarrayHealthStateMap.values()):
-                    self._telescope_health_state = 0
+                if _ok == len(self.subarrayHealthStateMap.values()):
+                    self._telescope_health_state = CONST.ENUM_OK
 
                 elif failed != 0:
-                    self._telescope_health_state = 2
+                    self._telescope_health_state = CONST.ENUM_FAILED
 
                 elif degraded != 0:
-                    self._telescope_health_state = 1
+                    self._telescope_health_state = CONST.ENUM_DEGRADED
 
                 else:
-                    self._telescope_health_state = 3
+                    self._telescope_health_state = CONST.ENUM_UNKNOWN
 
-            except Exception as e:
-                print "Unexpected error while aggregating Health state!\n", e
-                self._read_activity_message = "Unexpected error while aggregating Health state!\n" + str(e)
-                self.devlogmsg("Unexpected error while aggregating Health state!", 2)
+            except Exception as except_occured:
+                print CONST.ERR_AGGR_HEALTH_STATE, except_occured
+                self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
+                self.devlogmsg(CONST.ERR_AGGR_HEALTH_STATE, 1)
         else:
-            print "Error event on subscribing Subarray HealthState!\n", evt
-            self._read_activity_message = "Error event on subscribing Subarray HealthState!\n" + str(evt)
-            self.devlogmsg("Error event on subscribing Subarray HealthState!", 2)
-    '''
-    class subarrayStateCallback (utils.EventCallback):
-        def push_event(self, evt):
+            print CONST.ERR_SUBSR_SA_HEALTH_STATE, evt
+            self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
+            self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, 1)
 
-            if (evt.err==False):
-                try:
-                    self._dish_mode = evt.attr_value.value
-                    if(self._dish_mode == 0):
-                        print "Dish Mode :-> OFF"
-                    elif (self._dish_mode == 1):
-                        print "Dish Mode :-> STARTUP"
-                    elif (self._dish_mode == 2):
-                        print "Dish Mode :->  SHUTDOWN"
-                    elif (self._dish_mode == 3):
-                        print "Dish Mode :->  STANDBY-LP"
-                    elif (self._dish_mode == 4):
-                        print "Dish Mode :-> STANDBY-FP"
-                    elif (self._dish_mode == 5):
-                        print "Dish Mode :-> MAINTENANCE"
-                    elif (self._dish_mode == 6):
-                        print "Dish Mode :-> STOW"
-                    elif (self._dish_mode == 7):
-                        print "Dish Mode :-> CONFIG"
-                    elif (self._dish_mode == 8):
-                        print "Dish Mode :-> OPERATE"
-                    else:
-                        print "Dish Mode :-> UNKNOWN!\n", evt
-                except Exception as e:
-                    print "Unexpected error in DishModeCallback!\n", e.message
-            else:
-                print "Error event on subscribing DishMode attribute!\n", evt.errors
-
-    class subarrayObsStateCallback (utils.EventCallback):
-        def push_event(self, evt):
-
-            if (evt.err==False):
-                try:
-                    self._dish_mode = evt.attr_value.value
-                    if(self._dish_mode == 0):
-                        print "Dish Mode :-> OFF"
-                    elif (self._dish_mode == 1):
-                        print "Dish Mode :-> STARTUP"
-                    elif (self._dish_mode == 2):
-                        print "Dish Mode :->  SHUTDOWN"
-                    elif (self._dish_mode == 3):
-                        print "Dish Mode :->  STANDBY-LP"
-                    elif (self._dish_mode == 4):
-                        print "Dish Mode :-> STANDBY-FP"
-                    elif (self._dish_mode == 5):
-                        print "Dish Mode :-> MAINTENANCE"
-                    elif (self._dish_mode == 6):
-                        print "Dish Mode :-> STOW"
-                    elif (self._dish_mode == 7):
-                        print "Dish Mode :-> CONFIG"
-                    elif (self._dish_mode == 8):
-                        print "Dish Mode :-> OPERATE"
-                    else:
-                        print "Dish Mode :-> UNKNOWN!\n", evt
-                except Exception as e:
-                    print "Unexpected error in DishModeCallback!\n", e.message
-            else:
-                print "Error event on subscribing DishMode attribute!\n", evt.errors
-
-
-    class subarrayReceptorIDListCallback (utils.EventCallback):
-        def push_event(self, evt):
-
-            if (evt.err==False):
-                try:
-                    print "Event attribute value is: " , evt.attr_value.value
-
-                except Exception as e:
-                    print "Unexpected error in receptorIDListCallback!\n", e.message
-            else:
-                print "Error event on subscribing receptorIDList attribute!\n", evt.errors
-    '''
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
     # -----------------
     # Device Properties
     # -----------------
-
-
-
-
-
-
 
     CentralAlarmHandler = device_property(
         dtype='str',
@@ -203,7 +125,7 @@ class CentralNode(SKABaseDevice):
     )
 
     TMMidSubarrayNodes = device_property(
-        dtype=('str',), default_value=["ska_mid/tm_subarray_node/1", "ska_mid/tm_subarray_node/2"]
+        dtype=('str',), default_value=[CONST.PROP_DEF_VAL_TM_MID_SA1, CONST.PROP_DEF_VAL_TM_MID_SA2]
     )
 
     NumDishes = device_property(
@@ -211,8 +133,9 @@ class CentralNode(SKABaseDevice):
     )
 
     DishLeafNodePrefix = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/d"
+        dtype='str', default_value=CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX
     )
+
 
     # ----------
     # Attributes
@@ -251,99 +174,98 @@ class CentralNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
-
     def init_device(self):
-        SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(CentralNode.init_device) ENABLED START #
+        """ This method initializes the attributes and properties"""
+        SKABaseDevice.init_device(self)
         try:
             # To read forwarded attributes
-            #print "Subarray 1 Health:", self.subarray1HealthState
-            #print "Subarray 2 Health:",self.subarray2HealthState.get_x()
+            # print "Subarray 1 Health:", self.subarray1HealthState
+            # print "Subarray 2 Health:",self.subarray2HealthState.get_x()
 
-            self._subarray1_health_state = 0
-            self._subarray2_health_state = 0
+            self._subarray1_health_state = CONST.ENUM_OK
+            self._subarray2_health_state = CONST.ENUM_OK
 
-            self.set_state(PyTango.DevState.ON)
+            self.set_state(tango.DevState.ON)
             # Initialise Properties
-            self.SkaLevel = 1
+            self.SkaLevel = CONST.INT_SKA_LEVEL
 
             # Initialise Attributes
-            self._health_state = 0
+            self._health_state = CONST.ENUM_OK
             self._admin_mode = 0
-            self._telescope_health_state = 0
+            self._telescope_health_state = CONST.ENUM_OK
             self.subarrayHealthStateMap = {}
             self._dish_leaf_node_devices = []
             self._leaf_device_proxy = []
 
-        except Exception as e:
-            print "Unexpected error on initialising properties and attributes on Central Node device."
-            self._read_activity_message = "Unexpected error on initialising properties and attributes on Central Node device."
-            self.devlogmsg("Unexpected error in initialising properties and attributes on Central Node device.", 2)
-            self._read_activity_message = "Error message is: \n" + str(e)
-            print "Error message is: \n", e
+
+        except Exception as except_occured:
+            print CONST.ERR_INIT_PROP_ATTR_CN
+            self._read_activity_message = CONST.ERR_INIT_PROP_ATTR_CN
+            self.devlogmsg(CONST.ERR_INIT_PROP_ATTR_CN, 2)
+            self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+            print CONST.STR_ERR_MSG, except_occured
 
         #  Get Dish Leaf Node devices List
-        self.db = PyTango.Database()
+        self.tango_db = tango.Database()
         try:
-            self.dev_DbDatum = self.db.get_device_exported("ska_mid/tm_leaf_node/d000*")
-            self._dish_leaf_node_devices.extend(self.dev_DbDatum.value_string)
+            self.dev_dbdatum = self.tango_db.get_device_exported(CONST.GET_DEVICE_LIST_TANGO_DB)
+            self._dish_leaf_node_devices.extend(self.dev_dbdatum.value_string)
             print self._dish_leaf_node_devices
 
-        except Exception as e:
-            print "Unexpected error in reading exported Dish Leaf Node device names from database \n", e
-            self._read_activity_message = "Unexpected error in reading exported Dish Leaf Node device names from database \n" + str(e)
-            self.devlogmsg(
-                "Unexpected error in reading exported Dish Leaf Node device names from database \n", 2)
+        except Exception as except_occured:
+            print CONST.ERR_IN_READ_DISH_LN_DEVS, except_occured
+            self._read_activity_message = CONST.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
+            self.devlogmsg(CONST.ERR_IN_READ_DISH_LN_DEVS, 2)
 
         # Create proxies of Dish Leaf Node devices
 
-        for name in range (0,len(self._dish_leaf_node_devices)):
+        for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
 
-            except Exception as e:
-                print "Unexpected error in creating proxy of the device ", self._dish_leaf_node_devices[name]
-                self._read_activity_message = "Unexpected error in creating proxy of the device " +  str(self._dish_leaf_node_devices[name])
-                print "Error message is: \n", e
-                self._read_activity_message = "Error message is: \n" + str(e)
-                self.devlogmsg(
-                    "Unexpected error in creating proxy of the device ", 2)
+            except Exception as except_occured:
+                print CONST.ERR_IN_CREATE_PROXY, self._dish_leaf_node_devices[name]
+                self._read_activity_message = CONST.ERR_IN_CREATE_PROXY \
+                                              + str(self._dish_leaf_node_devices[name])
+                print CONST.STR_ERR_MSG, except_occured
+                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                self.devlogmsg(CONST.ERR_IN_CREATE_PROXY, 2)
         print self._leaf_device_proxy
 
-        '''
-        # Subscribing Subarray Nodes Attributes
-        
-        #subarrayStateCallback = self.subarrayStateCallback()
-        #subarrayObsStateCallback = self.subarrayObsStateCallback()
-        #subarrayReceptorIDListCallback = self.subarrayReceptorIDListCallback()
-        '''
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
                 self.subarrayHealthStateMap[subarray_proxy] = -1
-                subarray_proxy.subscribe_event("healthState", EventType.CHANGE_EVENT, self.subarrayHealthStateCallback, stateless=True)
-                #subarray_proxy.subscribe_event("state", EventType.CHANGE_EVENT, subarrayStateCallback, stateless=True)
-                #subarray_proxy.subscribe_event("obsState", EventType.CHANGE_EVENT, subarrayObsStateCallback, stateless=True)
-                #subarray_proxy.subscribe_event("receptorIDList", EventType.CHANGE_EVENT, subarrayReceptorIDListCallback, stateless=True)
+                subarray_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE,
+                                               EventType.CHANGE_EVENT,
+                                               self.subarrayHealthStateCallback, stateless=True)
+                # subarray_proxy.subscribe_event("state", EventType.CHANGE_EVENT,
+                # subarrayStateCallback, stateless=True)
+                # subarray_proxy.subscribe_event("obsState", EventType.CHANGE_EVENT,
+                # subarrayObsStateCallback, stateless=True)
+                # subarray_proxy.subscribe_event("receptorIDList", EventType.CHANGE_EVENT,
+                # subarrayReceptorIDListCallback, stateless=True)
 
-            except Exception as e:
-                print "Exception occurred while subscribing to attributes of", self.TMMidSubarrayNodes[subarray]
-                self._read_activity_message = "Exception occurred while subscribing to attributes of" + str(self.TMMidSubarrayNodes[subarray])
-                self.devlogmsg(
-                    "Exception occurred while subscribing to attributes of Subarray", 2)
-                print "error message is: " , e
-                self._read_activity_message = "Error message is: " + str(e)
-
+            except Exception as except_occured:
+                print CONST.ERR_SUBSR_SA_HEALTH_STATE, self.TMMidSubarrayNodes[subarray]
+                self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE\
+                                              + str(self.TMMidSubarrayNodes[subarray])
+                self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, 2)
+                print CONST.STR_ERR_MSG, except_occured
+                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
 
         # PROTECTED REGION END #    //  CentralNode.init_device
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CentralNode.always_executed_hook) ENABLED START #
+        """ This method is an internal construct of TANGO"""
         pass
         # PROTECTED REGION END #    //  CentralNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(CentralNode.delete_device) ENABLED START #
+        """ This method is an internal construct of TANGO"""
         pass
         # PROTECTED REGION END #    //  CentralNode.delete_device
 
@@ -352,40 +274,34 @@ class CentralNode(SKABaseDevice):
     # ------------------
 
     def read_telescopeHealthState(self):
-        # PROTECTED REGION ID(CentralNode.telescopeHealthState_read) ENABLED START #
-        '''
-        if ((self._subarray1_health_state == 0) & (self._subarray2_health_state == 0)):
-            self._telescope_health = 0
-        elif ((self._subarray1_health_state == 2) & (self._subarray2_health_state == 2)):
-            self._telescope_health = 2
-        elif ((self._subarray1_health_state == 1) | (self._subarray2_health_state == 1)):
-            self._telescope_health = 1
-        else:
-            self._telescope_health = 3
-
-        '''
+        # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
+        """ This method reads the Telescope health state."""
         return self._telescope_health_state
-        # PROTECTED REGION END #    //  CentralNode.telescopeHealthState_read
+        # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
     def read_subarray1HealthState(self):
-        # PROTECTED REGION ID(CentralNode.subarray1HealthState_read) ENABLED START #
+        # PROTECTED REGION ID(CentralNode.subarray1_healthstate_read) ENABLED START #
+        """ This method reads the subarray 1 health state"""
         return self._subarray1_health_state
-        # PROTECTED REGION END #    //  CentralNode.subarray1HealthState_read
+        # PROTECTED REGION END #    //  CentralNode.subarray1_healthstate_read
 
     def read_subarray2HealthState(self):
-        # PROTECTED REGION ID(CentralNode.subarray2HealthState_read) ENABLED START #
+        # PROTECTED REGION ID(CentralNode.subarray2_healthstate_read) ENABLED START #
+        """ This method reads the subarray 2 health state"""
         return self._subarray2_health_state
-        # PROTECTED REGION END #    //  CentralNode.subarray2HealthState_read
+        # PROTECTED REGION END #    //  CentralNode.subarray2_healthstate_read
 
     def read_activityMessage(self):
-        # PROTECTED REGION ID(CentralNode.activityMessage_read) ENABLED START #
+        # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
+        """ This method reads activity message """
         return self._read_activity_message
-        # PROTECTED REGION END #    //  CentralNode.activityMessage_read
+        # PROTECTED REGION END #    //  CentralNode.activity_message_read
 
     def write_activityMessage(self, value):
-        # PROTECTED REGION ID(CentralNode.activityMessage_write) ENABLED START #
+        # PROTECTED REGION ID(CentralNode.activity_message_write) ENABLED START #
+        """ This method reads activity message intended to write on the GUI"""
         self._read_activity_message = value
-        # PROTECTED REGION END #    //  CentralNode.activityMessage_write
+        # PROTECTED REGION END #    //  CentralNode.activity_message_write
 
 
     # --------
@@ -393,69 +309,77 @@ class CentralNode(SKABaseDevice):
     # --------
 
     @command(
-    dtype_in=('str',), 
-    doc_in="List of Receptors to be stowed", 
+        dtype_in=('str',),
+        doc_in="List of Receptors to be stowed",
     )
     @DebugIt()
     def StowAntennas(self, argin):
         # PROTECTED REGION ID(CentralNode.StowAntennas) ENABLED START #
-        self.devlogmsg("STOW command invoked from Central node on the requested dishes", 4)
-        self._read_activity_message = "STOW command invoked from Central node on the requested dishes"
+        """
+        :param argin: List of Receptors to be stowed.
+        :return:
+        This method is to stow the specified receptors.
+        This method is useful when an operator wants to stow a group of dishes.
+        """
+        self.devlogmsg(CONST.STR_STOW_CMD_ISSUED_CN, 4)
+        self._read_activity_message = CONST.STR_STOW_CMD_ISSUED_CN
 
-        for i in range(0,len(argin)):
+        for i in range(0, len(argin)):
             device_name = self.DishLeafNodePrefix + argin[i]
 
             try:
-                device_proxy = PyTango.DeviceProxy(device_name)
-                device_proxy.command_inout("SetStowMode")
-            except Exception as e:
-                print "Unexpected error in executing STOW command on ", device_name
-                self._read_activity_message = "Unexpected error in executing STOW command on " + str(device_name)
-                print "Error message is: \n", e
-                self._read_activity_message = "Error message is: \n" + str(e)
-                self.devlogmsg("Unexpected error in executing STOW command!", 2)
-
-        # PROTECTED REGION END #    //  CentralNode.StowAntennas
+                device_proxy = tango.DeviceProxy(device_name)
+                device_proxy.command_inout(CONST.CMD_SET_STOW_MODE)
+            except Exception as except_occured:
+                print CONST.ERR_EXE_STOW_CMD, device_name
+                self._read_activity_message = CONST.ERR_EXE_STOW_CMD + str(device_name)
+                print CONST.STR_ERR_MSG, except_occured
+                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                self.devlogmsg(CONST.STR_ERR_MSG, 2)
+        # PROTECTED REGION END #    //  CentralNode.stow_antennas
 
     @command(
     )
     @DebugIt()
     def StandByTelescope(self):
         # PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
-        self.devlogmsg("StandByTelescope command invoked from Central node", 4)
-        self._read_activity_message = "StandByTelescope command invoked from Central node"
+        """ This command is to bring the Telescope into a STANDBY state (i.e. Low Power State) """
+        self.devlogmsg(CONST.STR_STANDBY_CMD_ISSUED, 4)
+        self._read_activity_message = CONST.STR_STANDBY_CMD_ISSUED
 
-        for name in range (0,len(self._dish_leaf_node_devices)):
+        for name in range(0, len(self._dish_leaf_node_devices)):
             try:
-                self._leaf_device_proxy[name].command_inout("SetStandbyLPMode")
-            except Exception as e:
-                print "Unexpected error in setting Standby mode on ", self._dish_leaf_node_devices[name]
-                self._read_activity_message = "Unexpected error in setting Standby mode on " + str(self._dish_leaf_node_devices[name])
-                print "Error message is: \n", e
-                self._read_activity_message = "Error message is: \n" + str(e)
-                self.devlogmsg("Unexpected error in executing StandByTelescope command!", 2)
-
-        # PROTECTED REGION END #    //  CentralNode.StandByTelescope
+                self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_STANDBY_MODE)
+            except Exception as except_occured:
+                print CONST.ERR_EXE_STANDBY_CMD, self._dish_leaf_node_devices[name]
+                self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD \
+                                              + str(self._dish_leaf_node_devices[name])
+                print CONST.STR_ERR_MSG, except_occured
+                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                self.devlogmsg(CONST.ERR_EXE_STANDBY_CMD, 2)
+        # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
     @command(
     )
     @DebugIt()
     def StartUpTelescope(self):
         # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
-        self.devlogmsg("StartUpTelescope command invoked from Central node", 4)
-        self._read_activity_message = "StartUpTelescope command invoked from Central node"
+        """ This command is to bring the Telescope into ON state from the STANDBY state."""
+        self.devlogmsg(CONST.STR_STARTUP_CMD_ISSUED, 4)
+        self._read_activity_message = CONST.STR_STARTUP_CMD_ISSUED
 
-        for name in range (0,len(self._dish_leaf_node_devices)):
+        for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 print self._leaf_device_proxy
-                self._leaf_device_proxy[name].command_inout("SetOperateMode")
-            except Exception as e:
-                print "Unexpected error in StartUp of ", self._dish_leaf_node_devices[name]
-                self._read_activity_message = "Unexpected error in StartUp of " + str(self._dish_leaf_node_devices[name])
-                print "Error message is: \n", e
-                self._read_activity_message = "Error message is: \n" + str(e)
-                self.devlogmsg("Unexpected error in executing StartUpTelescope command!", 2)
-        # PROTECTED REGION END #    //  CentralNode.StartUpTelescope
+                self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_OPERATE_MODE)
+            except Exception as except_occured:
+                print CONST.ERR_EXE_STARTUP_CMD, self._dish_leaf_node_devices[name]
+                self._read_activity_message = CONST.ERR_EXE_STARTUP_CMD \
+                                              + str(self._dish_leaf_node_devices[name])
+                print CONST.STR_ERR_MSG, except_occured
+                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                self.devlogmsg(CONST.ERR_EXE_STARTUP_CMD, 2)
+        # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
 # ----------
 # Run server
@@ -464,6 +388,12 @@ class CentralNode(SKABaseDevice):
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CentralNode.main) ENABLED START #
+    """
+    :param args:
+    :param kwargs:
+    :return:
+    This method runs the CentralNode class.
+    """
     return run((CentralNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CentralNode.main
 
