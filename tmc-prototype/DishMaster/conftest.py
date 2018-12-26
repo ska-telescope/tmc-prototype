@@ -34,7 +34,7 @@ def tango_context(request):
     klass = getattr(module, class_name)
     print "klass is:", klass
 
-    tango_context = DeviceTestContext(klass)
+    tango_context = DeviceTestContext(klass, process=True)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
 
