@@ -45,7 +45,7 @@ def tango_context(request):
     yield tango_context
     tango_context.stop()
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def initialize_device(tango_context):
     """Re-initializes the device.
     Parameters
