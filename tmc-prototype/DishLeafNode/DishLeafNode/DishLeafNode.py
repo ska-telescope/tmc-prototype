@@ -237,7 +237,7 @@ class DishLeafNode(SKABaseDevice):
 
 
     DishMasterFQDN = device_property(
-        dtype='str', default_value="tango://apurva-pc:10000/mid_d0001/elt/master"
+        dtype='str',
     )
 
     # ----------
@@ -299,7 +299,7 @@ class DishLeafNode(SKABaseDevice):
             self._dish_proxy.subscribe_event("achievedPointing", EventType.CHANGE_EVENT, self.dishAchievedPointingCallback, stateless=True)
             self._dish_proxy.subscribe_event("desiredPointing", EventType.CHANGE_EVENT, self.dishDesiredPointingCallback, stateless=True)
             self.set_state(DevState.ON)
-            self.set_status("Dish Leaf Node initialized successfully. Ready to accept commands!")
+            self.set_status("Dish Leaf Node initialized successfully.")
             self.devlogmsg("Dish Leaf Node initialized successfully.", 4)
 
         except Exception as e:
@@ -349,7 +349,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(DishLeafNode.SetStowMode) ENABLED START #
         try:
             self._dish_proxy.command_inout_asynch("SetStowMode", self.commandCallback)
-
+            self._read_activity_message = "SetStowMode command is invoked on DishMaster"
         except Exception as e:
             print "Exception in SetStowMode command: \n" , e
             self._read_activity_message = "Exception in SetStowMode command: \n" + str(e)
@@ -363,6 +363,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(DishLeafNode.SetStandByLPMode) ENABLED START #
         try:
             self._dish_proxy.command_inout_asynch("SetStandByLPMode", self.commandCallback)
+            self._read_activity_message = "SetStandByLPMode command is invoked on DishMaster"
         except Exception as e:
             print "Exception in SetStandByLPMode command:\n", e
             self._read_activity_message = "Exception in SetStandByLPMode command:\n", str(e)
@@ -376,6 +377,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(DishLeafNode.SetOperateMode) ENABLED START #
         try:
             self._dish_proxy.command_inout_asynch("SetOperateMode", self.commandCallback)
+            self._read_activity_message = "SetOperateMode command is invoked on DishMaster"
         except Exception as e:
             print "Exception in SetOperateMode command:\n", e
             self._read_activity_message = "Exception in SetOperateMode command:\n", e
@@ -392,6 +394,7 @@ class DishLeafNode(SKABaseDevice):
         try:
             print "in scan"
             self._dish_proxy.command_inout_asynch("Scan", argin, self.commandCallback)
+            self._read_activity_message = "Scan command is invoked on DishMaster"
             print "out scan"
         except Exception as e:
             print "Exception in Scan command:", e
@@ -409,6 +412,7 @@ class DishLeafNode(SKABaseDevice):
 
         try:
             self._dish_proxy.command_inout_asynch("StopCapture", argin, self.commandCallback)
+            self._read_activity_message = "EndScan command is invoked on DishMaster"
         except Exception as e:
             print "Exception in EndScan command:\n", e
             self._read_activity_message = "Exception in EndScan command:\n"+ str(e)
@@ -429,6 +433,7 @@ class DishLeafNode(SKABaseDevice):
             spectrum.extend((argin1))
             self._dish_proxy.desiredPointing = spectrum
             self._dish_proxy.command_inout_asynch("Slew", "0",  self.commandCallback)
+            self._read_activity_message = "Configure command is invoked on DishMaster"
         except Exception as e:
             print "Exception in Configure command:", e
             self._read_activity_message = "Exception in Configure command:" +  str(e)
@@ -450,6 +455,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(DishLeafNode.StartCapture) ENABLED START #
         try:
             self._dish_proxy.command_inout_asynch("StartCapture", argin, self.commandCallback)
+            self._read_activity_message = "StartCapture command is invoked on DishMaster"
         except Exception as e:
             print "Exception in StartCapture command:", e
             self._read_activity_message = "Exception in StartCapture command:" + str(e)
@@ -465,6 +471,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(DishLeafNode.StopCapture) ENABLED START #
         try:
             self._dish_proxy.command_inout_asynch("StopCapture", argin, self.commandCallback)
+            self._read_activity_message = "StopCapture command is invoked on DishMaster"
         except Exception as e:
             print "Exception in StopCapture command:", e
             self._read_activity_message = "Exception in StopCapture command:"+ str(e)
@@ -478,6 +485,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(DishLeafNode.SetStandbyFPMode) ENABLED START #
         try:
             self._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.commandCallback)
+            self._read_activity_message = "SetStandbyFPMode command is invoked on DishMaster"
         except Exception as e:
             print "Exception in SetStandbyFPMode command:\n", e
             self._read_activity_message = "Exception in SetStandbyFPMode command:\n" + str(e)
@@ -493,6 +501,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(DishLeafNode.Slew) ENABLED START #
         try:
             self._dish_proxy.command_inout_asynch("Slew", argin, self.commandCallback)
+            self._read_activity_message = "Slew command is invoked on DishMaster"
         except Exception as e:
             print "Exception in Slew command:", e
             self._read_activity_message = "Exception in Slew command:"+ str(e)
