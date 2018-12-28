@@ -203,15 +203,15 @@ class CentralNode(SKABaseDevice):
     )
 
     TMMidSubarrayNodes = device_property(
-        dtype=('str',), default_value=["ska_mid/tm_subarray_node/1", "ska_mid/tm_subarray_node/2"]
+        dtype=('str',), default_value=["tango://apurva-pc:10000/ska_mid/tm_subarray_node/1", "tango://apurva-pc:10000/ska_mid/tm_subarray_node/2"]
     )
 
     NumDishes = device_property(
-        dtype='uint', default_value=4
+        dtype='uint', default_value=1
     )
 
     DishLeafNodePrefix = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/d"
+        dtype='str', default_value="tango://apurva-pc:10000/ska_mid/tm_leaf_node/d"
     )
 
     # ----------
@@ -274,7 +274,7 @@ class CentralNode(SKABaseDevice):
             self.subarrayHealthStateMap = {}
             self._dish_leaf_node_devices = []
             self._leaf_device_proxy = []
-
+            self.set_status("CentralNode is initialized successfully.")
         except Exception as e:
             print "Unexpected error on initialising properties and attributes on Central Node device."
             self._read_activity_message = "Unexpected error on initialising properties and attributes on Central Node device."
@@ -283,6 +283,7 @@ class CentralNode(SKABaseDevice):
             print "Error message is: \n", e
 
         #  Get Dish Leaf Node devices List
+        '''
         self.db = PyTango.Database()
         try:
             self.dev_DbDatum = self.db.get_device_exported("ska_mid/tm_leaf_node/d000*")
@@ -294,13 +295,15 @@ class CentralNode(SKABaseDevice):
             self._read_activity_message = "Unexpected error in reading exported Dish Leaf Node device names from database \n" + str(e)
             self.devlogmsg(
                 "Unexpected error in reading exported Dish Leaf Node device names from database \n", 2)
-
+        '''
+        for dish in range(1, (self.NumDishes+1)):
+            self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
+            print "leaf node devices are:", self._dish_leaf_node_devices
         # Create proxies of Dish Leaf Node devices
 
         for name in range (0,len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
-
             except Exception as e:
                 print "Unexpected error in creating proxy of the device ", self._dish_leaf_node_devices[name]
                 self._read_activity_message = "Unexpected error in creating proxy of the device " +  str(self._dish_leaf_node_devices[name])
@@ -335,6 +338,7 @@ class CentralNode(SKABaseDevice):
                 self._read_activity_message = "Error message is: " + str(e)
 
 
+
         # PROTECTED REGION END #    //  CentralNode.init_device
 
     def always_executed_hook(self):
@@ -353,7 +357,7 @@ class CentralNode(SKABaseDevice):
 
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescopeHealthState_read) ENABLED START #
-        '''
+
         if ((self._subarray1_health_state == 0) & (self._subarray2_health_state == 0)):
             self._telescope_health = 0
         elif ((self._subarray1_health_state == 2) & (self._subarray2_health_state == 2)):
@@ -363,7 +367,7 @@ class CentralNode(SKABaseDevice):
         else:
             self._telescope_health = 3
 
-        '''
+
         return self._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescopeHealthState_read
 
@@ -406,7 +410,8 @@ class CentralNode(SKABaseDevice):
             device_name = self.DishLeafNodePrefix + argin[i]
 
             try:
-                device_proxy = PyTango.DeviceProxy(device_name)
+                device_proxy = DeviceProxy(device_name)
+                print "STOW proxy is:", device_proxy
                 device_proxy.command_inout("SetStowMode")
             except Exception as e:
                 print "Unexpected error in executing STOW command on ", device_name
