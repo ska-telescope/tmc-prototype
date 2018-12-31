@@ -34,14 +34,14 @@ def tango_context(request):
     klass = getattr(module, class_name)
     print "klass is:", klass
 
-    tango_context = DeviceTestContext(klass, process=True)
+    tango_context = DeviceTestContext(klass, process=False)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
 
     yield tango_context
     tango_context.stop()
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def initialize_device(tango_context):
     """Re-initializes the device.
 
