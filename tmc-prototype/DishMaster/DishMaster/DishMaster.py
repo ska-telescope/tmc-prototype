@@ -154,15 +154,6 @@ class DishMaster(SKAMaster):
     # Device Properties
     # -----------------
 
-
-
-
-
-
-
-
-
-
     ReceptorNumber = device_property(
         dtype='uint',
     )
@@ -170,20 +161,6 @@ class DishMaster(SKAMaster):
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     dishMode = attribute(
         dtype='DevEnum',
@@ -239,8 +216,6 @@ class DishMaster(SKAMaster):
         access=AttrWriteType.READ_WRITE,
         unit="km/h",
     )
-
-
 
     desiredPointing = attribute(
         dtype=('double',),
@@ -443,7 +418,7 @@ class DishMaster(SKAMaster):
         #         self._health_state = 0                      # Set healthState to OK
         #         self.set_status("Dish is stowed successfully.")
         #         break
-        pass
+
         # PROTECTED REGION END #    //  DishMaster.SetStowMode
 
     def is_SetStowMode_allowed(self):
@@ -457,18 +432,22 @@ class DishMaster(SKAMaster):
     def SetStandbyLPMode(self):
         # PROTECTED REGION ID(DishMaster.SetStandbyLPMode) ENABLED START #
         try:
-            # Command to set Dish to STANDBY-LP Mode
-            self.set_state(PyTango.DevState.STANDBY)     # Set STATE to STANDBY
-            self._dish_mode = 3                          # set dishMode to STANDBYLP
-            self.set_status("Dish is in STANDBY-LP mode.")
-            self.devlogmsg("Dish is in STANDBY-LP mode.", 4)
+            if (self._pointing_state == 0):
+                # Command to set Dish to STANDBY-LP Mode
+                self.set_state(PyTango.DevState.STANDBY)     # Set STATE to STANDBY
+                self._dish_mode = 3                          # set dishMode to STANDBYLP
+                self.set_status("Dish is in STANDBY-LP mode.")
+                self.devlogmsg("Dish is in STANDBY-LP mode.", 4)
+
+            else:
+                self.set_status("Dish can not be in STANDBY-LP mode as the pointing state is not READY.")
+                self.devlogmsg("Dish can not be in STANDBY-LP mode as the pointing state is not READY",4)
 
         except Exception as e:
             print "Unexpected error in executing SetStandbyLPMode Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing SetStandbyLPMode Command on Dish", 2)
             print "Error message is: \n", e
 
-        pass
         # PROTECTED REGION END #    //  DishMaster.SetStandbyLPMode
 
     @command(
@@ -477,6 +456,7 @@ class DishMaster(SKAMaster):
     def SetMaintenanceMode(self):
         # PROTECTED REGION ID(DishMaster.SetMaintenanceMode) ENABLED START #
         try:
+
             # Command to set Dish to MAINTENANCE Mode
             self._admin_mode = 2                        # Set adminMode to MAINTENANCE
             self.set_state(PyTango.DevState.DISABLE)    # Set STATE to DISABLE
@@ -489,7 +469,6 @@ class DishMaster(SKAMaster):
             self.devlogmsg("Unexpected error in executing SetMaintenanceMode Command on Dish", 2)
             print "Error message is: \n", e
 
-        pass
         # PROTECTED REGION END #    //  DishMaster.SetMaintenanceMode
 
     def is_SetMaintenanceMode_allowed(self):
@@ -513,7 +492,6 @@ class DishMaster(SKAMaster):
             print "Unexpected error in executing SetOperateMode Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing SetOperateMode Command on Dish", 2)
             print "Error message is: \n", e
-        pass
         # PROTECTED REGION END #    //  DishMaster.SetOperateMode
 
     def is_SetOperateMode_allowed(self):
@@ -538,14 +516,12 @@ class DishMaster(SKAMaster):
                 t1.start()
                 self.devlogmsg("Scan in progress", 4)
             else:
-                self.set_status("Dish Pointing State is not READY")
+                self.set_status("Dish Pointing State is not READY.")
                 self.devlogmsg("Dish Pointing State is not READY hence scan could not be started", 4)
         except Exception as e:
             print "Unexpected error in executing Scan Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing Scan Command on Dish", 2)
             print "Error message is: \n", e
-
-        pass
         # PROTECTED REGION END #    //  DishMaster.Scan
 
     def is_Scan_allowed(self):
@@ -561,16 +537,19 @@ class DishMaster(SKAMaster):
     def StartCapture(self, argin):
         # PROTECTED REGION ID(DishMaster.StartCapture) ENABLED START #
         try:
-            # Command to start Data Capturing
-            self._capturing = True                      # set Capturing to True
-            self._pointing_state = 3                    # set pointingState to SCAN
-            self.set_status("Data Capturing started.")
-            self.devlogmsg("Data Capturing started", 4)
+            if (self._capturing == False):
+                # Command to start Data Capturing
+                self._capturing = True                      # set Capturing to True
+                self._pointing_state = 3                    # set pointingState to SCAN
+                self.set_status("Data Capturing started.")
+                self.devlogmsg("Data Capturing started", 4)
+            else:
+                self.set_status("Data Capuring is already in progress.")
+                self.devlogmsg("Data Capuring is already in progress", 4)
         except Exception as e:
             print "Unexpected error in executing StartCapture Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing StartCapture Command on Dish", 2)
             print "Error message is: \n", e
-        pass
         # PROTECTED REGION END #    //  DishMaster.StartCapture
 
     def is_StartCapture_allowed(self):
@@ -586,16 +565,19 @@ class DishMaster(SKAMaster):
     def StopCapture(self, argin):
         # PROTECTED REGION ID(DishMaster.StopCapture) ENABLED START #
         try:
-            # Command to stop Data Capturing
-            self._capturing = False                     # set Capturing to FALSE
-            self._pointing_state = 0                    # set pointingState to READY
-            self.set_status("Data Capturing stopped.")
-            self.devlogmsg("Data Capturing stopped.", 4)
+            if (self._capturing == True):
+                # Command to stop Data Capturing
+                self._capturing = False                     # set Capturing to FALSE
+                self._pointing_state = 0                    # set pointingState to READY
+                self.set_status("Data Capturing stopped.")
+                self.devlogmsg("Data Capturing stopped.", 4)
+            else:
+                self.set_status("Data Capuring is already stopped.")
+                self.devlogmsg("Data Capuring is already stopped", 4)
         except Exception as e:
             print "Unexpected error in executing StopCapture Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing StopCapture Command on Dish", 2)
             print "Error message is: \n", e
-        pass
         # PROTECTED REGION END #    //  DishMaster.StopCapture
 
     def is_StopCapture_allowed(self):
@@ -618,7 +600,6 @@ class DishMaster(SKAMaster):
             print "Unexpected error in executing SetStandbyFPMode Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing SetStandbyFPMode Command on Dish", 2)
             print "Error message is: \n", e
-        pass
         # PROTECTED REGION END #    //  DishMaster.SetStandbyFPMode
 
     def is_SetStandbyFPMode_allowed(self):
@@ -645,7 +626,6 @@ class DishMaster(SKAMaster):
             print "Unexpected error in executing Slew Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing Slew Command on Dish", 2)
             print "Error message is: \n", e
-        pass
         # PROTECTED REGION END #    //  DishMaster.Slew
 
 # ----------
