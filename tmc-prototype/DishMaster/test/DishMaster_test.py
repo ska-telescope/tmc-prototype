@@ -10,6 +10,7 @@
 """Contain the tests for the DishMaster Simulator."""
 
 # Path
+import PyTango
 import sys
 import os
 path = os.path.join(os.path.dirname(__file__), os.pardir)
@@ -21,6 +22,7 @@ from PyTango import DevFailed, DevState
 #from devicetest import DeviceTestCase, main
 import pytest
 from DishMaster import DishMaster
+import time
 
 # Note:
 #
@@ -124,15 +126,23 @@ class TestDishMaster(object):
         """Test for SetStandbyLPMode"""
         # PROTECTED REGION ID(DishMaster.test_SetStandbyLPMode) ENABLED START #
         #self.device.SetStandbyLPMode()
+
         tango_context.device.SetStandbyLPMode()
         assert tango_context.device.dishMode == 3
         assert tango_context.device.State() == DevState.STANDBY
+
+        tango_context.device.SetOperateMode()
+        tango_context.device.Scan("0")
+        tango_context.device.SetStandbyLPMode()
+        assert tango_context.device.Status() == "Dish can not be in STANDBY-LP mode as the pointing state is not READY."
+
         # PROTECTED REGION END #    //  DishMaster.test_SetStandbyLPMode
 
     def test_SetMaintenanceMode(self, tango_context):
         """Test for SetMaintenanceMode"""
         # PROTECTED REGION ID(DishMaster.test_SetMaintenanceMode) ENABLED START #
-
+        tango_context.device.StopCapture("0")
+        tango_context.device.SetStandbyLPMode()
         tango_context.device.SetMaintenanceMode()
         assert tango_context.device.adminMode == 2
         assert tango_context.device.dishMode == 5
@@ -143,6 +153,7 @@ class TestDishMaster(object):
         """Test for SetOperateMode"""
         # PROTECTED REGION ID(DishMaster.test_SetOperateMode) ENABLED START #
         #self.device.SetOperateMode()
+        tango_context.device.SetStandbyLPMode()
         tango_context.device.SetOperateMode()
         assert tango_context.device.adminMode == 0
         assert tango_context.device.dishMode == 8
@@ -154,49 +165,67 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_Scan) ENABLED START #
         #self.device.Scan("")
 
-        tango_context.device.SetOperateMode()
+        #tango_context.device.SetOperateMode()
         tango_context.device.Scan("0")
         assert tango_context.device.pointingState == 3
         assert tango_context.device.capturing == True
 
+        tango_context.device.Scan("0")
+        assert tango_context.device.Status() == "Dish Pointing State is not READY."
+
         # PROTECTED REGION END #    //  DishMaster.test_Scan
+
+    def test_StopCapture(self, tango_context):
+        """Test for StopCapture"""
+        # PROTECTED REGION ID(DishMaster.test_StopCapture) ENABLED START #
+        # self.device.StopCapture("")
+
+        #tango_context.device.SetOperateMode()
+        tango_context.device.StopCapture("0")
+        assert tango_context.device.capturing == False
+        assert tango_context.device.pointingState == 0
+
+        tango_context.device.StopCapture("0")
+        assert tango_context.device.Status() == "Data Capuring is already stopped."
+        # PROTECTED REGION END #    //  DishMaster.test_StopCapture
 
     def test_StartCapture(self, tango_context):
         """Test for StartCapture"""
         # PROTECTED REGION ID(DishMaster.test_StartCapture) ENABLED START #
         #self.device.StartCapture("")
 
-        tango_context.device.SetOperateMode()
+        #tango_context.device.SetOperateMode()
         tango_context.device.StartCapture("0")
         assert tango_context.device.pointingState == 3
         assert tango_context.device.capturing == True
 
+        tango_context.device.StartCapture("0")
+        assert tango_context.device.Status() == "Data Capuring is already in progress."
         # PROTECTED REGION END #    //  DishMaster.test_StartCapture
 
-    def test_StopCapture(self, tango_context):
-        """Test for StopCapture"""
-        # PROTECTED REGION ID(DishMaster.test_StopCapture) ENABLED START #
-        #self.device.StopCapture("")
-
-        tango_context.device.SetOperateMode()
-        tango_context.device.StopCapture("0")
-        assert tango_context.device.capturing == False
-        assert tango_context.device.pointingState == 0
-
-        # PROTECTED REGION END #    //  DishMaster.test_StopCapture
 
     def test_Slew(self, tango_context):
         """Test for Slew"""
         # PROTECTED REGION ID(DishMaster.test_Slew) ENABLED START #
         #self.device.Slew("")
-
+        tango_context.device.StopCapture("0")
+        tango_context.device.desiredPointing = [0,1,1]
         tango_context.device.Slew("0")
-        assert tango_context.device.pointingState == 1
+        time.sleep(8)
+        #assert tango_context.device.achievedPointing == [0,1,1]
+        result = []
+        for i in range(1,len(tango_context.device.achievedPointing)):
+            if (tango_context.device.achievedPointing[i] == 1):
+                result.append(True)
+            else:
+                result.append(False)
+        assert all(result)
 
     def test_SetStandbyFPMode(self, tango_context):
         """Test for SetStandbyFPMode"""
         # PROTECTED REGION ID(DishMaster.test_SetStandbyFPMode) ENABLED START #
         #self.device.SetStandbyFPMode()
+        tango_context.device.SetStandbyLPMode()
         tango_context.device.SetStandbyFPMode()
         assert tango_context.device.dishMode == 4
         assert tango_context.device.State() == DevState.STANDBY
@@ -320,7 +349,7 @@ class TestDishMaster(object):
         """Test for dishMode"""
         # PROTECTED REGION ID(DishMaster.test_dishMode) ENABLED START #
         #self.device.dishMode
-        assert tango_context.device.dishMode == 3
+        assert tango_context.device.dishMode == 4
         # PROTECTED REGION END #    //  DishMaster.test_dishMode
 
     def test_pointingState(self, tango_context):
@@ -415,9 +444,9 @@ class TestDishMaster(object):
         #self.device.desiredPointing
         desired_pointing = [0,0,0]
         result = []
-        tango_context.device.desiredPointing = desired_pointing
+        tango_context.device.desiredPointing = [0,0,0]
         for i in range(0,len(desired_pointing)):
-            if (tango_context.device.desiredPointing[i] == desired_pointing[i]):
+            if (tango_context.device.desiredPointing[i] == 0):
                 result.append(True)
             else:
                 result.append(False)
@@ -429,13 +458,18 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_achievedPointing) ENABLED START #
         #self.device.achievedPointing
         result = []
-        for i in range(0,len(tango_context.device.achievedPointing)):
-            if (tango_context.device.achievedPointing[i] == 0):
+        for i in range(1,len(tango_context.device.achievedPointing)):
+            if (tango_context.device.achievedPointing[i] == 1):
                 result.append(True)
             else:
                 result.append(False)
         assert all(result)
         # PROTECTED REGION END #    //  DishMaster.test_achievedPointing
+
+    # def test_is_SetStowMode_allowed(self, tango_context):
+    #     # tango_context.device.State(DevState.STANDBY)
+    #     # assert tango_context.device.State == DevState.STANDBY
+    #     #assert tango_context.device.is_SetStowMode_allowed() == True #PyTango.DevState.STANDBY
 
 
 # Main execution
