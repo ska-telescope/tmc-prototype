@@ -166,12 +166,16 @@ class TestDishMaster(object):
         #self.device.Scan("")
 
         #tango_context.device.SetOperateMode()
+        tango_context.device.Scan("a")
+        assert tango_context.device.pointingState != 3
+        assert tango_context.device.capturing != True
+
         tango_context.device.Scan("0")
         assert tango_context.device.pointingState == 3
         assert tango_context.device.capturing == True
 
         tango_context.device.Scan("0")
-        assert tango_context.device.Status() == "Dish Pointing State is not READY."
+        assert tango_context.device.Status() == "Dish is already in SCAN."
 
         # PROTECTED REGION END #    //  DishMaster.test_Scan
 
@@ -181,6 +185,10 @@ class TestDishMaster(object):
         # self.device.StopCapture("")
 
         #tango_context.device.SetOperateMode()
+        tango_context.device.StopCapture("a")
+        assert tango_context.device.capturing != False
+        assert tango_context.device.pointingState != 0
+
         tango_context.device.StopCapture("0")
         assert tango_context.device.capturing == False
         assert tango_context.device.pointingState == 0
@@ -195,6 +203,10 @@ class TestDishMaster(object):
         #self.device.StartCapture("")
 
         #tango_context.device.SetOperateMode()
+        tango_context.device.StartCapture("a")
+        assert tango_context.device.pointingState != 3
+        assert tango_context.device.capturing != True
+
         tango_context.device.StartCapture("0")
         assert tango_context.device.pointingState == 3
         assert tango_context.device.capturing == True
@@ -209,7 +221,20 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_Slew) ENABLED START #
         #self.device.Slew("")
         tango_context.device.StopCapture("0")
-        tango_context.device.desiredPointing = [0,1,1]
+        tango_context.device.desiredPointing = [0, 1, 1]
+
+        tango_context.device.Slew("a")
+        time.sleep(8)
+        # assert tango_context.device.achievedPointing == [0,1,1]
+        result = []
+        for i in range(1, len(tango_context.device.achievedPointing)):
+            if (tango_context.device.achievedPointing[i] != 1):
+                result.append(True)
+            else:
+                result.append(False)
+        assert all(result)
+
+
         tango_context.device.Slew("0")
         time.sleep(8)
         #assert tango_context.device.achievedPointing == [0,1,1]
@@ -220,6 +245,9 @@ class TestDishMaster(object):
             else:
                 result.append(False)
         assert all(result)
+
+
+
 
     def test_SetStandbyFPMode(self, tango_context):
         """Test for SetStandbyFPMode"""
