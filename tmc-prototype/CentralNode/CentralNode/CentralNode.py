@@ -49,7 +49,7 @@ class CentralNode(SKABaseDevice):
                     print CONST.EVT_UNKNOWN_SA
                     self._read_activity_message = CONST.EVT_UNKNOWN_SA
 
-                self.subarrayHealthStateMap = self._subarray_health_state
+                self.subarrayHealthStateMap[evt.device] = self._subarray_health_state
                 if self._subarray_health_state == CONST.ENUM_OK:
                     print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)\
@@ -73,7 +73,8 @@ class CentralNode(SKABaseDevice):
                 failed = 0
                 degraded = 0
                 unknown = 0
-                _ok = 0
+                ok = 0
+
                 for value in self.subarrayHealthStateMap.values():
                     if value == CONST.ENUM_FAILED:
                         failed = failed + 1
@@ -87,9 +88,9 @@ class CentralNode(SKABaseDevice):
 
                     else:
                         self._telescope_health_state = CONST.ENUM_OK
-                        _ok = _ok + 1
+                        ok = ok + 1
 
-                if _ok == len(self.subarrayHealthStateMap.values()):
+                if ok == len(self.subarrayHealthStateMap.values()):
                     self._telescope_health_state = CONST.ENUM_OK
 
                 elif failed != 0:
@@ -136,20 +137,9 @@ class CentralNode(SKABaseDevice):
         dtype='str', default_value=CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX
     )
 
-
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
 
     telescopeHealthState = attribute(
         dtype='DevEnum',
@@ -235,7 +225,9 @@ class CentralNode(SKABaseDevice):
 
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
+
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
+                #subarray_proxy = DeviceProxy('ska_mid/tm_subarray_node/2')
                 self.subarrayHealthStateMap[subarray_proxy] = -1
                 subarray_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE,
                                                EventType.CHANGE_EVENT,

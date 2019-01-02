@@ -54,4 +54,5 @@ ERR_AGGR_HEALTH_STATE = "Unexpected error while aggregating Health state!\n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error event on subscribing Subarray HealthState!\n"
 ERR_CONFIGURE_CMD = "Exception in Configure command: \n "
 
+#ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = range(0, 4)

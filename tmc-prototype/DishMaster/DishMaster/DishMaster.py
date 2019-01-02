@@ -99,8 +99,8 @@ class DishMaster(SKAMaster):
             if (self._achieved_pointing[1] == self._desired_pointing[1])\
                 and (self._achieved_pointing[2] == self._desired_pointing[2]):
                 self._pointing_state = 0
-                self.set_status(CONST.STR_DISH_POINT_INPROG)
-                self.devlogmsg(CONST.STR_DISH_POINT_INPROG, 4)
+                self.set_status(CONST.STR_DISH_POINT_SUCCESS)
+                self.devlogmsg(CONST.STR_DISH_POINT_SUCCESS, 4)
             else:
                 self._achieved_pointing[argin[0]] = self._achieved_pointing[argin[0]] + 1
 
@@ -348,7 +348,7 @@ class DishMaster(SKAMaster):
         self._band3_sampler_frequency = value
         # PROTECTED REGION END #    //  DishMaster.band3SamplerFrequency_write
 
-    def write_band4_samplerfrequency(self, value):
+    def write_band4SamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band4SamplerFrequency_write) ENABLED START #
         """
         This is a setter method for the band4SamplerFrequency attribute
@@ -449,7 +449,7 @@ class DishMaster(SKAMaster):
             self._desired_pointing = [0, 0, 0]
             self.Slew("0")
             time.sleep(1)
-            self.stow_thread = threading.Thread(None, self.checkSlew, 'DishMaster')
+            self.stow_thread = threading.Thread(None, self.check_slew, 'DishMaster')
             self.stow_thread.start()
 
         except Exception as except_occured:

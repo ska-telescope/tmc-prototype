@@ -249,22 +249,22 @@ class SubarrayNode(SKASubarray):
             try:
                 self._dish_health_state = evt.attr_value.value
                 self.dishHealthStateMap[evt.device] = self._dish_health_state
-                if self._dish_health_state == ENUM_OK:
+                if self._dish_health_state == CONST.ENUM_OK:
                     print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)\
                                                   + CONST.STR_OK
 
-                elif self._dish_health_state == ENUM_DEGRADED:
+                elif self._dish_health_state == CONST.ENUM_DEGRADED:
                     print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)
                     + CONST.STR_DEGRADED
 
-                elif self._dish_health_state == ENUM_FAILED:
+                elif self._dish_health_state == CONST.ENUM_FAILED:
                     print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)
                     + CONST.STR_FAILED
 
-                elif self._dish_health_state == ENUM_UNKNOWN:
+                elif self._dish_health_state == CONST.ENUM_UNKNOWN:
                     print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)
                     + CONST.STR_UNKNOWN
