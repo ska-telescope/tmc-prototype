@@ -516,8 +516,8 @@ class DishMaster(SKAMaster):
                 t1.start()
                 self.devlogmsg("Scan in progress", 4)
             else:
-                self.set_status("Dish Pointing State is not READY.")
-                self.devlogmsg("Dish Pointing State is not READY hence scan could not be started", 4)
+                self.set_status("Dish is already in SCAN.")
+                self.devlogmsg("Dish is already in SCAN.", 4)
         except Exception as e:
             print "Unexpected error in executing Scan Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing Scan Command on Dish", 2)
@@ -537,15 +537,16 @@ class DishMaster(SKAMaster):
     def StartCapture(self, argin):
         # PROTECTED REGION ID(DishMaster.StartCapture) ENABLED START #
         try:
-            if (self._capturing == False):
-                # Command to start Data Capturing
-                self._capturing = True                      # set Capturing to True
-                self._pointing_state = 3                    # set pointingState to SCAN
-                self.set_status("Data Capturing started.")
-                self.devlogmsg("Data Capturing started", 4)
-            else:
-                self.set_status("Data Capuring is already in progress.")
-                self.devlogmsg("Data Capuring is already in progress", 4)
+            if type(float(argin)) == float:
+                if (self._capturing == False):
+                    # Command to start Data Capturing
+                    self._capturing = True                      # set Capturing to True
+                    self._pointing_state = 3                    # set pointingState to SCAN
+                    self.set_status("Data Capturing started.")
+                    self.devlogmsg("Data Capturing started", 4)
+                else:
+                    self.set_status("Data Capuring is already in progress.")
+                    self.devlogmsg("Data Capuring is already in progress", 4)
         except Exception as e:
             print "Unexpected error in executing StartCapture Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing StartCapture Command on Dish", 2)
@@ -565,15 +566,16 @@ class DishMaster(SKAMaster):
     def StopCapture(self, argin):
         # PROTECTED REGION ID(DishMaster.StopCapture) ENABLED START #
         try:
-            if (self._capturing == True):
-                # Command to stop Data Capturing
-                self._capturing = False                     # set Capturing to FALSE
-                self._pointing_state = 0                    # set pointingState to READY
-                self.set_status("Data Capturing stopped.")
-                self.devlogmsg("Data Capturing stopped.", 4)
-            else:
-                self.set_status("Data Capuring is already stopped.")
-                self.devlogmsg("Data Capuring is already stopped", 4)
+            if type(float(argin)) == float:
+                if (self._capturing == True):
+                    # Command to stop Data Capturing
+                    self._capturing = False                     # set Capturing to FALSE
+                    self._pointing_state = 0                    # set pointingState to READY
+                    self.set_status("Data Capturing stopped.")
+                    self.devlogmsg("Data Capturing stopped.", 4)
+                else:
+                    self.set_status("Data Capuring is already stopped.")
+                    self.devlogmsg("Data Capuring is already stopped", 4)
         except Exception as e:
             print "Unexpected error in executing StopCapture Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing StopCapture Command on Dish", 2)
@@ -615,13 +617,14 @@ class DishMaster(SKAMaster):
     def Slew(self, argin=0):
         # PROTECTED REGION ID(DishMaster.Slew) ENABLED START #
         try:
-            # Execute POINT command at given timestamp
-            self._current_time = time.time()
-            self._point_execution_time = self._desired_pointing[0]
-            self._point_delta_t = self._point_execution_time - self._current_time
-            t = Timer(self._point_delta_t, self.point)
-            t.start()
-            self.devlogmsg("Dish is slewing ", 4)
+            if type(float(argin)) == float:
+                # Execute POINT command at given timestamp
+                self._current_time = time.time()
+                self._point_execution_time = self._desired_pointing[0]
+                self._point_delta_t = self._point_execution_time - self._current_time
+                t = Timer(self._point_delta_t, self.point)
+                t.start()
+                self.devlogmsg("Dish is slewing ", 4)
         except Exception as e:
             print "Unexpected error in executing Slew Command on Dish", self.ReceptorNumber
             self.devlogmsg("Unexpected error in executing Slew Command on Dish", 2)
