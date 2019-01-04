@@ -251,7 +251,7 @@ class DishMaster(SKAMaster):
             self._band5a_sampler_frequency = 0          # Set Band 5a Sampler Frequency to 0
             self._band5b_sampler_frequency = 0          # Set Band 5b Sampler Frequency to 0
             self._capturing = False
-            self._desired_pointing = [0,20,40]
+            self._desired_pointing = [0,2,4]
             self._achieved_pointing = [0,0,0]
             self._elevation_difference = 0
             self._azimuth_difference = 0
@@ -432,6 +432,14 @@ class DishMaster(SKAMaster):
     def SetStandbyLPMode(self):
         # PROTECTED REGION ID(DishMaster.SetStandbyLPMode) ENABLED START #
         try:
+            #assert self._pointing_state == 0, "Dish is in a Scan so can not be set to STANDBY-LP mode."
+            # Command to set Dish to STANDBY-LP Mode
+            #if (self._pointing_state == 0):
+            self.set_state(PyTango.DevState.STANDBY)  # Set STATE to STANDBY
+            self._dish_mode = 3  # set dishMode to STANDBYLP
+            self.set_status("Dish is in STANDBY-LP mode.")
+            self.devlogmsg("Dish is in STANDBY-LP mode.", 4)
+            '''
             if (self._pointing_state == 0):
                 # Command to set Dish to STANDBY-LP Mode
                 self.set_state(PyTango.DevState.STANDBY)     # Set STATE to STANDBY
@@ -442,13 +450,19 @@ class DishMaster(SKAMaster):
             else:
                 self.set_status("Dish can not be in STANDBY-LP mode as the pointing state is not READY.")
                 self.devlogmsg("Dish can not be in STANDBY-LP mode as the pointing state is not READY",4)
-
+            '''
         except Exception as e:
             print "Unexpected error in executing SetStandbyLPMode Command on Dish", self.ReceptorNumber
+            self.set_status(str(e))
             self.devlogmsg("Unexpected error in executing SetStandbyLPMode Command on Dish", 2)
             print "Error message is: \n", e
 
         # PROTECTED REGION END #    //  DishMaster.SetStandbyLPMode
+
+    def is_SetStandbyLPMode_allowed(self):
+        # PROTECTED REGION ID(DishMaster.is_SetMaintenanceMode_allowed) ENABLED START #
+        return self._pointing_state not in [1, 2, 3]
+        # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
 
     @command(
     )
