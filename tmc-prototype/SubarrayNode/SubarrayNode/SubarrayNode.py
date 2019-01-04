@@ -50,19 +50,22 @@ class SubarrayNode(SKASubarray):
     def Scan(self, argin):
 
         try:
-            
-            print "Scan inputs Arguments :-> ", argin
-            print "Group Definitions in scan function :-> ", self._dish_leaf_node_group.get_device_list()
+            print "argin in Scan:", argin
+            if type(float(argin[0])) == float:
+                assert self._obs_state == 0, "Scan is already in progress"
 
-            self._read_activity_message = "Scan inputs Arguments :-> " + str(argin)
-            self._read_activity_message = "Group Definitions in scan function :-> " + str(self._dish_leaf_node_group.get_device_list())
+                print "Scan inputs Arguments :-> ", argin
+                print "Group Definitions in scan function :-> ", self._dish_leaf_node_group.get_device_list()
 
-            cmdData = PyTango.DeviceData()
-            cmdData.insert(PyTango.DevString, argin[0])
-            self._dish_leaf_node_group.command_inout("Scan", cmdData)
-            self._obs_state = 3                                                                                         # set obsState to SCANNING when the scan is started
-            self.set_status("Subarray is scanning at the desired pointing coordinates.")
-            self.devlogmsg("Subarray is scanning at the desired pointing coordinates.", 4)
+                self._read_activity_message = "Scan inputs Arguments :-> " + str(argin)
+                self._read_activity_message = "Group Definitions in scan function :-> " + str(self._dish_leaf_node_group.get_device_list())
+
+                cmdData = PyTango.DeviceData()
+                cmdData.insert(PyTango.DevString, argin[0])
+                self._dish_leaf_node_group.command_inout("Scan", cmdData)
+                self._obs_state = 3                                                                                         # set obsState to SCANNING when the scan is started
+                self.set_status("Subarray is scanning at the desired pointing coordinates.")
+                self.devlogmsg("Subarray is scanning at the desired pointing coordinates.", 4)
 
         except Exception as e:
             print "Exception in Scan command:"
@@ -81,15 +84,17 @@ class SubarrayNode(SKASubarray):
     def EndScan(self):
 
         try:
-            print "Group Definitions in EndScan function :-> ", self._dish_leaf_node_group.get_device_list()
-            cmdData = PyTango.DeviceData()
-            cmdData.insert(PyTango.DevString, "0")
-            self._dish_leaf_node_group.command_inout("EndScan", cmdData)
-            self._obs_state = 0                                                                                         # set obsState to IDLE when the scan is ended
-            self._scan_id = ""
-            self._sb_id = ""
-            self.set_status("Scan is completed")
-            self.devlogmsg("Scan is completed", 4)
+            assert self._obs_state == 3, "Scan is already completed"
+            if self._obs_state == 3:
+                print "Group Definitions in EndScan function :-> ", self._dish_leaf_node_group.get_device_list()
+                cmdData = PyTango.DeviceData()
+                cmdData.insert(PyTango.DevString, "0")
+                self._dish_leaf_node_group.command_inout("EndScan", cmdData)
+                self._obs_state = 0                                                                                         # set obsState to IDLE when the scan is ended
+                self._scan_id = ""
+                self._sb_id = ""
+                self.set_status("Scan is completed")
+                self.devlogmsg("Scan is completed", 4)
 
         except Exception as e:
             print "Exception in EndScan command:"
@@ -113,6 +118,9 @@ class SubarrayNode(SKASubarray):
     def AssignResources(self, argin):
 
         try:
+            for leafId in range(0, len(argin)):
+                if type(float(argin[leafId])) == float:
+                    pass
 
             for leafId in range(0, len(argin)):
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  argin[leafId])
@@ -199,42 +207,44 @@ class SubarrayNode(SKASubarray):
 
         argout = []
         try:
-            print "Group definition in release function:-> " + str(self._dish_leaf_node_group.get_device_list(True))
-            self._dish_leaf_node_group.remove_all()
-            print "Group definition in release function after removal:-> "+ str(self._dish_leaf_node_group.get_device_list(True))
+            assert self.testDeviceVsEventID != {}, "Resources are already released from Subarray"
+            if self.testDeviceVsEventID != {}:
+                print "Group definition in release function:-> " + str(self._dish_leaf_node_group.get_device_list(True))
+                self._dish_leaf_node_group.remove_all()
+                print "Group definition in release function after removal:-> "+ str(self._dish_leaf_node_group.get_device_list(True))
 
-            self._read_activity_message = "Group definition in release function:-> " + str(self._dish_leaf_node_group.get_device_list(True))
+                self._read_activity_message = "Group definition in release function:-> " + str(self._dish_leaf_node_group.get_device_list(True))
 
-            argout.extend(self._dish_leaf_node_group.get_device_list(True))
+                argout.extend(self._dish_leaf_node_group.get_device_list(True))
 
-            print "Dishproxy list", self._dish_leaf_node_proxy
-            print "health id in Release fun ", self._health_event_id
-            #self._dish_leaf_node_proxy[0].unsubscribe_event(self._health_event_id[0])
-            #self._dish_leaf_node_proxy[1].unsubscribe_event(self._health_event_id[1])
+                print "Dishproxy list", self._dish_leaf_node_proxy
+                print "health id in Release fun ", self._health_event_id
+                #self._dish_leaf_node_proxy[0].unsubscribe_event(self._health_event_id[0])
+                #self._dish_leaf_node_proxy[1].unsubscribe_event(self._health_event_id[1])
 
-            '''for leaf in range(0, len(self._health_event_id)):
-                print "DishLeafNode proxy :-> ", self._dish_leaf_node_proxy[leaf]
-                print "Health Event ID :-> ", self._health_event_id[leaf]
-                self._dish_leaf_node_proxy[leaf].unsubscribe_event(self._health_event_id[leaf])'''
-            print 'self.testDeviceVsEventID ', self.testDeviceVsEventID
+                '''for leaf in range(0, len(self._health_event_id)):
+                    print "DishLeafNode proxy :-> ", self._dish_leaf_node_proxy[leaf]
+                    print "Health Event ID :-> ", self._health_event_id[leaf]
+                    self._dish_leaf_node_proxy[leaf].unsubscribe_event(self._health_event_id[leaf])'''
+                print 'self.testDeviceVsEventID ', self.testDeviceVsEventID
 
-            for dev in self.testDeviceVsEventID:
-                dev.unsubscribe_event(self.testDeviceVsEventID[dev])
-            self.testDeviceVsEventID = {}
-            #
-            #     self._dish_leaf_node_proxy[leaf].unsubscribe_event(self._health_event_id[leaf])
-            #     print "after unsubscribing"
-            self._health_event_id = []
-            self._dish_leaf_node_proxy = []
-            del self._receptor_id_list[:]
+                for dev in self.testDeviceVsEventID:
+                    dev.unsubscribe_event(self.testDeviceVsEventID[dev])
+                self.testDeviceVsEventID = {}
+                #
+                #     self._dish_leaf_node_proxy[leaf].unsubscribe_event(self._health_event_id[leaf])
+                #     print "after unsubscribing"
+                self._health_event_id = []
+                self._dish_leaf_node_proxy = []
+                del self._receptor_id_list[:]
 
-            self._scan_id = ""
-            self._sb_id = ""
+                self._scan_id = ""
+                self._sb_id = ""
 
-            self.set_state(DevState.OFF)                                                                                # Set state = OFF
-            self._obs_state = 0                                                                                         # set obsState to "IDLE"
-            self.set_status("All the receptors are removed from the Subarray node.")
-            self.devlogmsg("All the receptors are removed from the Subarray node.", 4)
+                self.set_state(DevState.OFF)                                                                                # Set state = OFF
+                self._obs_state = 0                                                                                         # set obsState to "IDLE"
+                self.set_status("All the receptors are removed from the Subarray node.")
+                self.devlogmsg("All the receptors are removed from the Subarray node.", 4)
         except Exception as e:
             print "Exception in ReleaseAllResources command:"
             print e
@@ -461,8 +471,11 @@ class SubarrayNode(SKASubarray):
         # PROTECTED REGION ID(SubarrayNode.Configure) ENABLED START #
 
         try:
-            print "Input Arguments for Configure command :-> " , argin
-            print "Group Definitions during Configure command :-> " ,  self._dish_leaf_node_group.get_device_list()
+            for i in range(0, len(argin)):
+                if type(float(argin[i])) == float:
+                    pass
+            #print "Input Arguments for Configure command :-> " , argin
+            #print "Group Definitions during Configure command :-> " ,  self._dish_leaf_node_group.get_device_list()
 
             self._read_activity_message = "Input Arguments for Configure command :-> " + str(argin)
             self._read_activity_message =  "Group Definitions during Configure command :-> " + str(self._dish_leaf_node_group.get_device_list())
