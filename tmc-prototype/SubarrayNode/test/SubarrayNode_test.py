@@ -114,6 +114,12 @@ class TestSubarrayNode(object):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         #self.device.AssignResources([""])
+        list = ["a"]
+        tango_context.device.AssignResources(list)
+        assert tango_context.device.State() == DevState.OFF
+        assert tango_context.device.receptorIDList == None
+        #print "receptor id list is:", tango_context.device.receptorIDList
+
         list = ["0001"]
         tango_context.device.AssignResources(list)
         assert tango_context.device.State() == DevState.ON
@@ -128,8 +134,14 @@ class TestSubarrayNode(object):
         """Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
         #self.device.Scan([""])
+        tango_context.device.Scan("a")
+        assert tango_context.device.obsState == 0
+
         tango_context.device.Scan("0")
         assert tango_context.device.obsState == 3
+
+        tango_context.device.Scan("0")
+        assert "Scan is already in progress" in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
     def test_EndSB(self, tango_context):
@@ -144,6 +156,9 @@ class TestSubarrayNode(object):
         #self.device.EndScan()
         tango_context.device.EndScan()
         assert tango_context.device.obsState == 0
+
+        tango_context.device.EndScan()
+        assert "Scan is already completed" in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
     def test_ObsState(self, tango_context):
@@ -165,6 +180,9 @@ class TestSubarrayNode(object):
         tango_context.device.ReleaseAllResources()
         assert tango_context.device.obsState == 0
         assert tango_context.device.State() == DevState.OFF
+
+        tango_context.device.ReleaseAllResources()
+        assert "Resources are already released from Subarray" in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
 
     def test_ReleaseResources(self, tango_context):
@@ -177,6 +195,7 @@ class TestSubarrayNode(object):
         """Test for Reset"""
         # PROTECTED REGION ID(SubarrayNode.test_Reset) ENABLED START #
         #self.device.Reset()
+        assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  SubarrayNode.test_Reset
 
     def test_Resume(self, tango_context):
@@ -197,7 +216,11 @@ class TestSubarrayNode(object):
         """Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
         #self.device.Configure()
-        #tango_context.device.Configure("1,1")
+        tango_context.device.Configure(["a", "1"])
+        assert tango_context.device.obsState == 0
+
+        tango_context.device.Configure(["1","1"])
+        assert tango_context.device.obsState == 2
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
     def test_activationTime(self, tango_context):
@@ -280,7 +303,7 @@ class TestSubarrayNode(object):
         """Test for obsState"""
         # PROTECTED REGION ID(SubarrayNode.test_obsState) ENABLED START #
         #self.device.obsState
-        assert tango_context.device.obsState == 0
+        assert tango_context.device.obsState == 2
         # PROTECTED REGION END #    //  SubarrayNode.test_obsState
 
     def test_simulationMode(self, tango_context):
@@ -321,14 +344,14 @@ class TestSubarrayNode(object):
         """Test for scanID"""
         # PROTECTED REGION ID(SubarrayNode.test_scanID) ENABLED START #
         #self.device.scanID
-        assert tango_context.device.scanID == ""
+        assert tango_context.device.scanID != ""
         # PROTECTED REGION END #    //  SubarrayNode.test_scanID
 
     def test_sbID(self, tango_context):
         """Test for sbID"""
         # PROTECTED REGION ID(SubarrayNode.test_sbID) ENABLED START #
         #self.device.sbID
-        assert tango_context.device.sbID == ""
+        assert tango_context.device.sbID != ""
         # PROTECTED REGION END #    //  SubarrayNode.test_sbID
 
     def test_activityMessage(self, tango_context):
