@@ -131,18 +131,19 @@ class TestDishMaster(object):
         assert tango_context.device.dishMode == 3
         assert tango_context.device.State() == DevState.STANDBY
 
-        tango_context.device.SetOperateMode()
-        tango_context.device.Scan("0")
-        tango_context.device.SetStandbyLPMode()
-        assert tango_context.device.Status() == "Dish can not be in STANDBY-LP mode as the pointing state is not READY."
+        # tango_context.device.SetOperateMode()
+        # tango_context.device.Scan("0")
+        # tango_context.device.SetStandbyLPMode()
+        # assert tango_context.device.dishMode != 3
+        # assert tango_context.device.State() != DevState.STANDBY
 
         # PROTECTED REGION END #    //  DishMaster.test_SetStandbyLPMode
 
     def test_SetMaintenanceMode(self, tango_context):
         """Test for SetMaintenanceMode"""
         # PROTECTED REGION ID(DishMaster.test_SetMaintenanceMode) ENABLED START #
-        tango_context.device.StopCapture("0")
-        tango_context.device.SetStandbyLPMode()
+        #tango_context.device.StopCapture("0")
+        #tango_context.device.SetStandbyLPMode()
         tango_context.device.SetMaintenanceMode()
         assert tango_context.device.adminMode == 2
         assert tango_context.device.dishMode == 5
