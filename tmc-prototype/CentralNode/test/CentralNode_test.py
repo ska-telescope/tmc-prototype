@@ -59,6 +59,10 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_mocking) ENABLED START #
         # PROTECTED REGION END #    //  CentralNode.test_mocking
 
+    # def test_init_device(self,tango_context):
+    #     CentralNode.init_device()
+    #     assert tango_context.device.healthState == 0
+
     def test_properties(self, tango_context):
         # test the properties
         # PROTECTED REGION ID(CentralNode.test_properties) ENABLED START #
@@ -104,19 +108,35 @@ class TestCentralNode(object):
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  CentralNode.test_Reset
 
-    def test_StowAntennas(self, tango_context):
+    def test_StowAntennas_Negative_Argument(self, tango_context):
         """Test for StowAntennas"""
         # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
-        #self.device.StowAntennas([""])
-        argin = ["0001",]
-        tango_context.device.StowAntennas(argin)
-        assert tango_context.device.activityMessage == "STOW command invoked from Central node on the requested dishes"
-
         argin = ["a", ]
+        tango_context.device.StowAntennas(argin)
+        assert "Exception in StowAntennas command:" in tango_context.device.activityMessage
+
+        # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
+
+    def test_StowAntennas_Negative_Functionality(self, tango_context, create_leafNode1_proxy):
+        """Test for StowAntennas"""
+        # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
+        argin = ["0001",]
+        tango_context.device.StartUpTelescope()
+        # create_leafNode1_proxy.SetOperateMode()
         tango_context.device.StowAntennas(argin)
         assert "Error message is:" in tango_context.device.activityMessage
 
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
+
+    def test_StowAntennas(self, tango_context, create_leafNode1_proxy):
+        """Test for StowAntennas"""
+        # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
+        argin = ["0001",]
+        create_leafNode1_proxy.SetStandByLPMode()
+        tango_context.device.StowAntennas(argin)
+        assert tango_context.device.activityMessage == "STOW command invoked from Central node on the requested dishes"
+        # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
+
 
     def test_StandByTelescope(self, tango_context):
         """Test for StandByTelescope"""
@@ -127,10 +147,29 @@ class TestCentralNode(object):
         assert tango_context.device.activityMessage == "StandByTelescope command invoked from Central node"
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
-    def test_StartUpTelescope(self, tango_context):
+    def test_StandByTelescope_Negative(self, tango_context, create_leafNode1_proxy):
+        """Test for StandByTelescope"""
+        # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
+        #self.device.StandByTelescope()
+        create_leafNode1_proxy.SetOperateMode()
+        #time.sleep(2)
+        create_leafNode1_proxy.Scan("0")
+        time.sleep(1)
+        tango_context.device.StandByTelescope()
+        # print "Test file output: ", tango_context.device.activityMessage
+        #assert tango_context.device.activityMessage == "StandByTelescope command invoked from Central node"
+        assert "Error message is:" in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
+
+
+    def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         #self.device.StartUpTelescope()
+        create_leafNode1_proxy.EndScan("0")
+        time.sleep(1)
+        create_leafNode1_proxy.SetStandByLPMode()
+
         tango_context.device.StartUpTelescope()
         assert tango_context.device.activityMessage == "StartUpTelescope command invoked from Central node"
 
@@ -138,6 +177,15 @@ class TestCentralNode(object):
         # tango_context.device.StowAntennas(argin)
         # tango_context.device.StartUpTelescope()
         # assert "Error message is:" in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
+
+
+    def test_StartUpTelescope_Negative(self, tango_context):
+        """Test for StartUpTelescope"""
+        # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
+        #self.device.StartUpTelescope()
+        tango_context.device.StartUpTelescope()
+        assert "Error message is:" in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
     def test_buildState(self, tango_context):

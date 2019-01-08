@@ -59,5 +59,10 @@ def create_subarray1_proxy():
 
 @pytest.fixture(scope="class")
 def create_subarray2_proxy():
-    subarray2_proxy = DeviceProxy("tango://apurva-pc:10000/ska_mid/tm_subarray_node/1")
+    subarray2_proxy = DeviceProxy("tango://apurva-pc:10000/ska_mid/tm_subarray_node/2")
     return subarray2_proxy
+
+@pytest.fixture(scope="class")
+def create_leafNode1_proxy():
+    leafNode1_proxy = DeviceProxy("tango://apurva-pc:10000/ska_mid/tm_leaf_node/d0001")
+    return leafNode1_proxy

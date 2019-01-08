@@ -187,13 +187,6 @@ class CentralNode(SKABaseDevice):
     # -----------------
     # Device Properties
     # -----------------
-
-
-
-
-
-
-
     CentralAlarmHandler = device_property(
         dtype='str',
     )
@@ -217,16 +210,6 @@ class CentralNode(SKABaseDevice):
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
 
     telescopeHealthState = attribute(
         dtype='DevEnum',
@@ -358,16 +341,23 @@ class CentralNode(SKABaseDevice):
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescopeHealthState_read) ENABLED START #
 
-        if ((self._subarray1_health_state == 0) & (self._subarray2_health_state == 0)):
-            self._telescope_health = 0
+        # if ((self._subarray1_health_state == 0) & (self._subarray2_health_state == 0)):
+        #     self._telescope_health = 0
+        # elif ((self._subarray1_health_state == 2) & (self._subarray2_health_state == 2)):
+        #     self._telescope_health = 2
+        # elif ((self._subarray1_health_state == 1) | (self._subarray2_health_state == 1)):
+        #     self._telescope_health = 1
+        # else:
+        #     self._telescope_health = 3
+
+        if ((self._subarray1_health_state == 1) | (self._subarray2_health_state == 1)):
+            self._telescope_health = 1
         elif ((self._subarray1_health_state == 2) & (self._subarray2_health_state == 2)):
             self._telescope_health = 2
-        elif ((self._subarray1_health_state == 1) | (self._subarray2_health_state == 1)):
-            self._telescope_health = 1
+        elif ((self._subarray1_health_state == 0) & (self._subarray2_health_state == 0)):
+            self._telescope_health = 0
         else:
             self._telescope_health = 3
-
-
         return self._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescopeHealthState_read
 
@@ -403,22 +393,35 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def StowAntennas(self, argin):
         # PROTECTED REGION ID(CentralNode.StowAntennas) ENABLED START #
-        self.devlogmsg("STOW command invoked from Central node on the requested dishes", 4)
-        self._read_activity_message = "STOW command invoked from Central node on the requested dishes"
+        try:
+            for leafId in range(0, len(argin)):
+                if type(float(argin[leafId])) == float:
+                    pass
 
-        for i in range(0,len(argin)):
-            device_name = self.DishLeafNodePrefix + argin[i]
+            self.devlogmsg("STOW command invoked from Central node on the requested dishes", 4)
+            self._read_activity_message = "STOW command invoked from Central node on the requested dishes"
 
-            try:
-                device_proxy = DeviceProxy(device_name)
-                print "STOW proxy is:", device_proxy
-                device_proxy.command_inout("SetStowMode")
-            except Exception as e:
-                print "Unexpected error in executing STOW command on ", device_name
-                self._read_activity_message = "Unexpected error in executing STOW command on " + str(device_name)
-                print "Error message is: \n", e
-                self._read_activity_message = "Error message is: \n" + str(e)
-                self.devlogmsg("Unexpected error in executing STOW command!", 2)
+            for i in range(0,len(argin)):
+                device_name = self.DishLeafNodePrefix + argin[i]
+
+                try:
+                    device_proxy = DeviceProxy(device_name)
+                    print "STOW proxy is:", device_proxy
+
+                    #assert device_proxy.read_attribute("dishMode") == 3, "STOW not allowed in dishMode STANDBY-LP"
+
+                    device_proxy.command_inout("SetStowMode")
+                except Exception as e:
+                    print "Unexpected error in executing STOW command on ", device_name
+                    self._read_activity_message = "Unexpected error in executing STOW command on " + str(device_name)
+                    print "Error message is: \n", e
+                    self._read_activity_message = "Error message is: \n" + str(e)
+                    self.devlogmsg("Unexpected error in executing STOW command!", 2)
+
+        except Exception as e:
+            print "Exception in StowAntennas command:"
+            print e
+            self._read_activity_message = "Exception in StowAntennas command:" + str(e)
 
         # PROTECTED REGION END #    //  CentralNode.StowAntennas
 
