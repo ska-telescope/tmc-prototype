@@ -1,0 +1,20 @@
+#!/bin/sh
+python -c "import tango; print(tango.__version__)"
+
+echo "========================= Starting Dish Master 1 ========================="
+python ./DishMaster/DishMaster/DishMaster.py 01 &
+sleep 1
+
+echo "========================= Starting Dish Leaf Node 1 ========================="
+python ./DishLeafNode/DishLeafNode/DishLeafNode.py 01 &
+sleep 1
+
+echo "========================= Starting Subarray Node 1 ========================="
+python ./SubarrayNode/SubarrayNode/SubarrayNode.py sub1 &
+echo "========================= Starting Subarray Node 2 ========================="
+python ./SubarrayNode/SubarrayNode/SubarrayNode.py sub2 &
+sleep 1
+
+echo "========================= Starting Central Node ========================="
+python ./CentralNode/CentralNode/CentralNode.py 01 &
+sleep 1

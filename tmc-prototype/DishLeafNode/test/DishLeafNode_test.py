@@ -41,7 +41,7 @@ from tango.server import command, attribute, device_property
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device", "create_dish_proxy")
+@pytest.mark.usefixtures("tango_context", "initialize_device", "create_dish_proxy") #, "dishmaster_context")
 
 class TestDishLeafNode(object):
     """Test case for packet generation."""
@@ -76,7 +76,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION END #    //  DishLeafNode.test_properties
         pass
 
-    def test_State(self, tango_context):
+    def test_State(self, tango_context): #, dishmaster_context):
         """Test for State"""
         # PROTECTED REGION ID(DishLeafNode.test_State) ENABLED START #
         #self.device.State()
@@ -84,7 +84,7 @@ class TestDishLeafNode(object):
         assert tango_context.device.State() == DevState.ALARM
         # PROTECTED REGION END #    //  DishLeafNode.test_State
 
-    def test_Status(self, tango_context):
+    def test_Status(self, tango_context): #, dishmaster_context):
         """Test for Status"""
         # PROTECTED REGION ID(DishLeafNode.test_Status) ENABLED START #
         #self.device.Status()
@@ -110,15 +110,14 @@ class TestDishLeafNode(object):
         #self.device.GetVersionInfo()
         # PROTECTED REGION END #    //  DishLeafNode.test_GetVersionInfo
 
-    def test_Reset(self, tango_context):
+    def test_Reset(self, tango_context): #, dishmaster_context):
         """Test for Reset"""
         # PROTECTED REGION ID(DishLeafNode.test_Reset) ENABLED START #
         #self.device.Reset()
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  DishLeafNode.test_Reset
 
-
-    def test_SetStandByLPMode(self, tango_context, create_dish_proxy):
+    def test_SetStandByLPMode(self, tango_context):
         """Test for SetStandByLPMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetStandByLPMode) ENABLED START #
         #self.device.SetStandByLPMode()
@@ -140,6 +139,7 @@ class TestDishLeafNode(object):
     #     print tango_context.device.activityMessage
     #     assert "Error in invoking command:" in tango_context.device.activityMessage
 
+
     def test_SetOperateMode(self, tango_context, create_dish_proxy):
         """Test for SetOperateMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetOperateMode) ENABLED START #
@@ -152,7 +152,8 @@ class TestDishLeafNode(object):
         # tango_context.device.SetStandByLPMode()
         tango_context.device.SetOperateMode()
         print tango_context.device.activityMessage
-        assert tango_context.device.activityMessage == "Command :-> SetOperateMode invoked successfully."
+        time.sleep(2)
+        assert tango_context.device.activityMessage == "Command :-> SetOperateMode invoked successfully." or "Dish Mode :-> OPERATE"
 
         # assert create_dish_proxy.dishMode == 8
         #tango_context.device.SetStandByLPMode()
@@ -238,7 +239,7 @@ class TestDishLeafNode(object):
         tango_context.device.EndScan("0")
         #assert tango_context.device.activityMessage == "EndScan command is invoked on DishMaster"
         time.sleep(2)
-        assert tango_context.device.activityMessage == "Command :->EndScaninvoked successfully." or "Dish Pointing State :-> READY"
+        assert tango_context.device.activityMessage == "Command :-> EndScaninvoked successfully." or "Dish Pointing State :-> READY"
         # PROTECTED REGION END #    //  DishLeafNode.test_EndScan
 
     def test_EndScan1(self, tango_context):
@@ -274,7 +275,6 @@ class TestDishLeafNode(object):
         time.sleep(10)
         print "stow value:", tango_context.device.activityMessage
         assert tango_context.device.activityMessage == "Dish Pointing State :-> READY" or "Dish Mode :-> STOW" or "Desired Pointing :->  [0. 0. 0.]" or "Achieved Pointing :-> [0. 0. 0.]"
-
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStowMode
 
 
@@ -392,12 +392,14 @@ class TestDishLeafNode(object):
         assert tango_context.device.activityMessage == "OK"
         # PROTECTED REGION END #    //  DishLeafNode.test_activityMessage
 
-    def test_dishMode_change_event(self, tango_context, create_dish_proxy):
+
+    def test_dishMode_change_event(self, tango_context, create_dish_proxy): #, dishmaster_context):
         tango_context.device.SetOperateMode()
         eid = create_dish_proxy.subscribe_event("dishMode", EventType.CHANGE_EVENT, DishLeafNode.dishModeCallback)
         time.sleep(2)
         assert tango_context.device.activityMessage == "Dish Mode :-> OPERATE"
         assert create_dish_proxy.dishMode == "OPERATE" or 8
+
         # tango_context.device.SetStandByLPMode()
         # time.sleep(2)
         # assert tango_context.device.activityMessage == "Dish Mode :->  STANDBY-LP"
@@ -407,9 +409,9 @@ class TestDishLeafNode(object):
         #tango_context.device.SetOperateMode()
         tango_context.device.Scan("0")
         eid = create_dish_proxy.subscribe_event("pointingState", EventType.CHANGE_EVENT, DishLeafNode.dishPointingStateCallback)
-        time.sleep(2)
+        time.sleep(6)
         assert tango_context.device.activityMessage == "Dish Pointing State :-> SCANNING"
-        #assert create_dish_proxy.pointingState == "SCANNING" or 3
+        assert create_dish_proxy.pointingState == "SCANNING" or 3
         # tango_context.device.SetStandByLPMode()
         # time.sleep(2)
         # assert tango_context.device.activityMessage == "Dish Mode :->  STANDBY-LP"
@@ -419,8 +421,8 @@ class TestDishLeafNode(object):
         tango_context.device.StopCapture("0")
         eid = create_dish_proxy.subscribe_event("capturing", EventType.CHANGE_EVENT, DishLeafNode.dishCapturingCallback)
         time.sleep(2)
-        #assert tango_context.device.activityMessage == "Dish data capturing :-> FALSE" or "Dish Pointing State :-> READY" \
-               #or "StopCapture command is invoked on DishMaster"
+        assert tango_context.device.activityMessage == "Dish data capturing :-> FALSE" or "Dish Pointing State :-> READY" \
+               or "StopCapture command is invoked on DishMaster"
         assert create_dish_proxy.capturing == False
         # tango_context.device.SetStandByLPMode()
         # time.sleep(2)

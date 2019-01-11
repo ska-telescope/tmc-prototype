@@ -255,6 +255,7 @@ class DishLeafNode(SKABaseDevice):
             print "DishMasterFQDN :-> ", self.DishMasterFQDN
             self._read_activity_message = "DishMasterFQDN :-> " + str(self.DishMasterFQDN)
             self._dish_proxy = DeviceProxy(self.DishMasterFQDN)     #Creating proxy to the DishMaster
+            print " Device proxy in Leaf Init", self._dish_proxy
         except Exception as e:
             print "Exception occurred while creating proxy to Dish Master!\n", e
             self._read_activity_message = "Exception occurred while creating proxy to Dish Master!\n" + str(e)
