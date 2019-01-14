@@ -96,8 +96,8 @@ class DishMaster(SKAMaster):
             self.devlogmsg(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             self._pointing_state = 1
             time.sleep(2)
-            if (self._achieved_pointing[1] == self._desired_pointing[1])\
-                and (self._achieved_pointing[2] == self._desired_pointing[2]):
+            if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
+                    self._achieved_pointing[2] == self._desired_pointing[2]):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.devlogmsg(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
@@ -127,8 +127,8 @@ class DishMaster(SKAMaster):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self._pointing_state = 1
             time.sleep(2)
-            if (self._achieved_pointing[1] == self._desired_pointing[1])\
-                and (self._achieved_pointing[2] == self._desired_pointing[2]):
+            if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
+                    self._achieved_pointing[2] == self._desired_pointing[2]):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.devlogmsg(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
@@ -287,7 +287,8 @@ class DishMaster(SKAMaster):
 
         except Exception as except_occured:
             print CONST.ERR_INIT_PROP_ATTR_DISH, self.ReceptorNumber
-            self.devlogmsg("Unexpected error in initialising properties and attributes on Dish", int(tango.LogLevel.LOG_ERROR))
+            self.devlogmsg("Unexpected error in initialising properties and attributes on Dish",
+                           int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
 
         # PROTECTED REGION END #    //  DishMaster.always_executed_hook

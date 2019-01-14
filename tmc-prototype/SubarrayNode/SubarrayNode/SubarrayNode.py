@@ -55,8 +55,8 @@ class SubarrayNode(SKASubarray):
             print CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list()
 
             self._read_activity_message = CONST.STR_SCAN_IP_ARG + str(argin)
-            self._read_activity_message = CONST.STR_GRP_DEF\
-                                          + str(self._dish_leaf_node_group.get_device_list())
+            self._read_activity_message = CONST.STR_GRP_DEF + str(
+                self._dish_leaf_node_group.get_device_list())
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, argin[0])
             self._dish_leaf_node_group.command_inout(CONST.CMD_SCAN, cmdData)
@@ -143,8 +143,8 @@ class SubarrayNode(SKASubarray):
             print CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list(True)
             print CONST.STR_LN_PROXIES, self._dish_leaf_node_proxy
 
-            self._read_activity_message = CONST.STR_GRP_DEF\
-                                      + str(self._dish_leaf_node_group.get_device_list(True))
+            self._read_activity_message = CONST.STR_GRP_DEF + str(
+                self._dish_leaf_node_group.get_device_list(True))
             self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
 
             print CONST.STR_SUBS_HEALTH_ST_LN
@@ -194,8 +194,8 @@ class SubarrayNode(SKASubarray):
             self._dish_leaf_node_group.remove_all()
             print CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
 
-            self._read_activity_message = CONST.STR_GRP_DEF \
-                                          + str(self._dish_leaf_node_group.get_device_list(True))
+            self._read_activity_message = CONST.STR_GRP_DEF + str(
+                self._dish_leaf_node_group.get_device_list(True))
 
             argout.extend(self._dish_leaf_node_group.get_device_list(True))
 
@@ -251,23 +251,23 @@ class SubarrayNode(SKASubarray):
                 self.dishHealthStateMap[evt.device] = self._dish_health_state
                 if self._dish_health_state == CONST.ENUM_OK:
                     print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)\
-                                                  + CONST.STR_OK
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_OK
 
                 elif self._dish_health_state == CONST.ENUM_DEGRADED:
                     print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)
-                    + CONST.STR_DEGRADED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_DEGRADED
 
                 elif self._dish_health_state == CONST.ENUM_FAILED:
                     print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)
-                    + CONST.STR_FAILED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_FAILED
 
                 elif self._dish_health_state == CONST.ENUM_UNKNOWN:
                     print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)
-                    + CONST.STR_UNKNOWN
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_UNKNOWN
 
                 else:
                     print CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt
@@ -479,8 +479,8 @@ class SubarrayNode(SKASubarray):
             self._dish_leaf_node_group.get_device_list()
 
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
-            self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN\
-            + str(self._dish_leaf_node_group.get_device_list())
+            self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN + str(
+                self._dish_leaf_node_group.get_device_list())
 
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevVarStringArray, argin)
@@ -488,10 +488,8 @@ class SubarrayNode(SKASubarray):
             self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
             self._obs_state = 2
             # set obsState to READY when the configuration is completed
-            self._scan_id = ''.join(random.choice(string.ascii_uppercase\
-            + string.digits) for _ in range(4))
-            self._sb_id = ''.join(random.choice(string.ascii_uppercase\
-            + string.digits) for _ in range(4))
+            self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self.devlogmsg(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
         except Exception as e:
             print CONST.ERR_CONFIGURE_CMD

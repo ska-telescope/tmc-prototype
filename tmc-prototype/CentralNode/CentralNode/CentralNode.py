@@ -51,18 +51,23 @@ class CentralNode(SKABaseDevice):
 
                 self.subarrayHealthStateMap[evt.device] = self._subarray_health_state
                 if self._subarray_health_state == CONST.ENUM_OK:
-                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)\
-                                                  + CONST.STR_OK
+                    print CONST.STR_HEALTH_STATE + str(evt.device
+                                                       ) + CONST.STR_OK
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_OK
                 elif self._subarray_health_state == CONST.STR_DEGRADED:
-                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device)\
-                                                  + CONST.STR_DEGRADED
+                    print CONST.STR_HEALTH_STATE + str(evt.device
+                                                       ) + CONST.STR_DEGRADED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_DEGRADED
                 elif self._subarray_health_state == CONST.STR_FAILED:
-                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                    print CONST.STR_HEALTH_STATE + str(evt.device
+                                                       ) + CONST.STR_FAILED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_FAILED
                 elif self._subarray_health_state == CONST.ENUM_UNKNOWN:
-                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
+                    print CONST.STR_HEALTH_STATE + str(evt.device
+                                                       ) + CONST.STR_UNKNOWN
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(
                         evt.device) + CONST.STR_UNKNOWN
                 else:
@@ -211,8 +216,8 @@ class CentralNode(SKABaseDevice):
 
             except Exception as except_occured:
                 print CONST.ERR_IN_CREATE_PROXY, self._dish_leaf_node_devices[name]
-                self._read_activity_message = CONST.ERR_IN_CREATE_PROXY \
-                                              + str(self._dish_leaf_node_devices[name])
+                self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self._dish_leaf_node_devices[
+                                                                                  name])
                 print CONST.STR_ERR_MSG, except_occured
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
                 self.devlogmsg(CONST.ERR_IN_CREATE_PROXY, int(tango.LogLevel.LOG_ERROR))
@@ -228,8 +233,8 @@ class CentralNode(SKABaseDevice):
 
             except Exception as except_occured:
                 print CONST.ERR_SUBSR_SA_HEALTH_STATE, self.TMMidSubarrayNodes[subarray]
-                self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE\
-                                              + str(self.TMMidSubarrayNodes[subarray])
+                self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(self.TMMidSubarrayNodes[
+                                                                                        subarray])
                 self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
                 print CONST.STR_ERR_MSG, except_occured
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
@@ -331,8 +336,8 @@ class CentralNode(SKABaseDevice):
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_STANDBY_MODE)
             except Exception as except_occured:
                 print CONST.ERR_EXE_STANDBY_CMD, self._dish_leaf_node_devices[name]
-                self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD \
-                                              + str(self._dish_leaf_node_devices[name])
+                self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self._dish_leaf_node_devices[
+                                                                                  name])
                 print CONST.STR_ERR_MSG, except_occured
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
                 self.devlogmsg(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -352,8 +357,8 @@ class CentralNode(SKABaseDevice):
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_OPERATE_MODE)
             except Exception as except_occured:
                 print CONST.ERR_EXE_STARTUP_CMD, self._dish_leaf_node_devices[name]
-                self._read_activity_message = CONST.ERR_EXE_STARTUP_CMD \
-                                              + str(self._dish_leaf_node_devices[name])
+                self._read_activity_message = CONST.ERR_EXE_STARTUP_CMD + str(self._dish_leaf_node_devices[
+                                                                                  name])
                 print CONST.STR_ERR_MSG, except_occured
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
                 self.devlogmsg(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
