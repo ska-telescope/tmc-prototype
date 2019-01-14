@@ -75,11 +75,11 @@ class DishLeafNode(SKABaseDevice):
                 print CONST.ERR_DISH_MODE_CB, except_occurred.message
                 self._read_activity_message = CONST.ERR_DISH_MODE_CB\
                                               + str(except_occurred.message)
-                self.devlogmsg(CONST.ERR_DISH_MODE_CB, 2)
+                self.devlogmsg(CONST.ERR_DISH_MODE_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print CONST.ERR_ON_SUBS_DISH_MODE_ATTR, evt.errors
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
-            self.devlogmsg(CONST.ERR_ON_SUBS_DISH_MODE_ATTR, 2)
+            self.devlogmsg(CONST.ERR_ON_SUBS_DISH_MODE_ATTR, int(tango.LogLevel.LOG_ERROR))
 
     def dishPointingStateCallback(self, evt):
         """
@@ -109,11 +109,11 @@ class DishLeafNode(SKABaseDevice):
                 print CONST.ERR_DISH_POINT_STATE_CB, except_occurred.message
                 self._read_activity_message = CONST.ERR_DISH_POINT_STATE_CB\
                                               + str(except_occurred.message)
-                self.devlogmsg(CONST.ERR_DISH_POINT_STATE_CB, 2)
+                self.devlogmsg(CONST.ERR_DISH_POINT_STATE_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print CONST.ERR_ON_SUBS_DISH_POINT_ATTR, evt.errors
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_POINT_ATTR + str(evt.errors)
-            self.devlogmsg(CONST.ERR_ON_SUBS_DISH_POINT_ATTR, 2)
+            self.devlogmsg(CONST.ERR_ON_SUBS_DISH_POINT_ATTR, int(tango.LogLevel.LOG_ERROR))
 
     def dishHealthStateCallback(self, evt):
         """
@@ -145,12 +145,12 @@ class DishLeafNode(SKABaseDevice):
                 print CONST.ERR_DISH_HEALTH_STATE_CB, except_occurred.message
                 self._read_activity_message = CONST.ERR_DISH_HEALTH_STATE_CB\
                                               + str(except_occurred.message)
-                self.devlogmsg(CONST.ERR_DISH_HEALTH_STATE_CB, 2)
+                self.devlogmsg(CONST.ERR_DISH_HEALTH_STATE_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print CONST.ERR_SUBSR_DISH_HEALTH_STATE, evt.errors
             self._read_activity_message = CONST.ERR_SUBSR_DISH_HEALTH_STATE\
                                           + str(evt.errors)
-            self.devlogmsg(CONST.ERR_SUBSR_DISH_HEALTH_STATE, 2)
+            self.devlogmsg(CONST.ERR_SUBSR_DISH_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
 
     def dishCapturingCallback(self, evt):
         """
@@ -174,11 +174,11 @@ class DishLeafNode(SKABaseDevice):
                 print CONST.ERR_DISH_CAPTURING_CB, except_occurred.message
                 self._read_activity_message = CONST.ERR_DISH_CAPTURING_CB\
                                               + str(except_occurred.message)
-                self.devlogmsg(CONST.ERR_DISH_CAPTURING_CB, 2)
+                self.devlogmsg(CONST.ERR_DISH_CAPTURING_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print CONST.ERR_SUBSR_CAPTURING_ATTR, evt.errors
             self._read_activity_message = CONST.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
-            self.devlogmsg(CONST.ERR_SUBSR_CAPTURING_ATTR, 2)
+            self.devlogmsg(CONST.ERR_SUBSR_CAPTURING_ATTR, int(tango.LogLevel.LOG_ERROR))
 
     def dishAchievedPointingCallback(self, evt):
         """
@@ -197,11 +197,11 @@ class DishLeafNode(SKABaseDevice):
                 print CONST.ERR_DISH_ACHVD_POINT, except_occurred.message
                 self._read_activity_message = CONST.ERR_DISH_ACHVD_POINT\
                                               + str(except_occurred.message)
-                self.devlogmsg(CONST.ERR_DISH_ACHVD_POINT, 2)
+                self.devlogmsg(CONST.ERR_DISH_ACHVD_POINT, int(tango.LogLevel.LOG_ERROR))
         else:
             print CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR, evt.errors
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
-            self.devlogmsg(CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR, 2)
+            self.devlogmsg(CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR, int(tango.LogLevel.LOG_ERROR))
 
     def dishDesiredPointingCallback(self, evt):
         """
@@ -220,12 +220,12 @@ class DishLeafNode(SKABaseDevice):
                 print CONST.ERR_DISH_DESIRED_POINT, except_occurred.message
                 self._read_activity_message = CONST.ERR_DISH_DESIRED_POINT\
                                               + str(except_occurred.message)
-                self.devlogmsg(CONST.ERR_DISH_DESIRED_POINT, 2)
+                self.devlogmsg(CONST.ERR_DISH_DESIRED_POINT, int(tango.LogLevel.LOG_ERROR))
         else:
             print CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR, evt.errors
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR\
                                           + str(evt.errors)
-            self.devlogmsg(CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR, 2)
+            self.devlogmsg(CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR, int(tango.LogLevel.LOG_ERROR))
 
     def commandCallback(self, event):
         """
@@ -244,14 +244,14 @@ class DishLeafNode(SKABaseDevice):
                                               + "\n" + str(event.errors)
 
 
-                self.devlogmsg(log, 2)
+                self.devlogmsg(log, int(tango.LogLevel.LOG_ERROR))
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
-                self.devlogmsg(log, 4)
+                self.devlogmsg(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
             print CONST.ERR_EXCEPT_CMD_CB, except_occurred
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
-            self.devlogmsg(CONST.ERR_EXCEPT_CMD_CB, 2)
+            self.devlogmsg(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
 
 
 
@@ -340,14 +340,14 @@ class DishLeafNode(SKABaseDevice):
                                              self.dishDesiredPointingCallback, stateless=True)
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_DISH_INIT_SUCCESS)
-            self.devlogmsg(CONST.STR_DISH_INIT_SUCCESS, 4)
+            self.devlogmsg(CONST.STR_DISH_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except Exception as except_occurred:
             print CONST.ERR_SUBS_DISH_ATTR, except_occurred
             self._read_activity_message = CONST.ERR_SUBS_DISH_ATTR + str(except_occurred)
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_DISH_INIT)
-            self.devlogmsg(CONST.ERR_DISH_INIT, 2)
+            self.devlogmsg(CONST.ERR_DISH_INIT, int(tango.LogLevel.LOG_ERROR))
 
 
 
@@ -408,7 +408,7 @@ class DishLeafNode(SKABaseDevice):
         except Exception as except_occurred:
             print CONST.ERR_EXE_STOW_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_STOW_CMD + str(except_occurred)
-            self.devlogmsg(CONST.ERR_EXE_STOW_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_STOW_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.SetStowMode
 
     @command(
@@ -426,7 +426,7 @@ class DishLeafNode(SKABaseDevice):
         except Exception as except_occurred:
             print CONST.ERR_EXE_STANDBYLP_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_STANDBYLP_CMD, str(except_occurred)
-            self.devlogmsg(CONST.ERR_EXE_STANDBYLP_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_STANDBYLP_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.SetStandByLPMode
 
     @command(
@@ -443,7 +443,7 @@ class DishLeafNode(SKABaseDevice):
         except Exception as except_occurred:
             print CONST.ERR_EXE_SET_OPER_MODE_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_SET_OPER_MODE_CMD, except_occurred
-            self.devlogmsg(CONST.ERR_EXE_SET_OPER_MODE_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_SET_OPER_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.SetOperateMode
 
     @command(
@@ -465,7 +465,7 @@ class DishLeafNode(SKABaseDevice):
         except Exception as except_occurred:
             print CONST.ERR_EXE_SCAN_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_SCAN_CMD, except_occurred
-            self.devlogmsg(CONST.ERR_EXE_SCAN_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.Scan
 
     @command(
@@ -486,7 +486,7 @@ class DishLeafNode(SKABaseDevice):
         except Exception as except_occurred:
             print CONST.ERR_EXE_END_SCAN_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_END_SCAN_CMD+ str(except_occurred)
-            self.devlogmsg(CONST.ERR_EXE_END_SCAN_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_END_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.EndScan
 
     @command(
@@ -511,7 +511,7 @@ class DishLeafNode(SKABaseDevice):
         except Exception as except_occurred:
             print CONST.ERR_EXE_CONFIGURE_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD +  str(except_occurred)
-            self.devlogmsg(CONST.ERR_EXE_CONFIGURE_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
 
         # PROTECTED REGION END #    //  DishLeafNode.Configure
 
@@ -542,7 +542,7 @@ class DishLeafNode(SKABaseDevice):
             print CONST.ERR_EXE_START_CAPTURE_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_START_CAPTURE_CMD\
                                           + str(except_occurred)
-            self.devlogmsg(CONST.ERR_EXE_START_CAPTURE_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_START_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.StartCapture
 
     @command(
@@ -563,7 +563,7 @@ class DishLeafNode(SKABaseDevice):
         except Exception as except_occurred:
             print CONST.ERR_EXE_STOP_CAPTURE_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_STOP_CAPTURE_CMD + str(except_occurred)
-            self.devlogmsg(CONST.ERR_EXE_STOP_CAPTURE_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_STOP_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.StopCapture
 
     @command(
@@ -581,7 +581,7 @@ class DishLeafNode(SKABaseDevice):
         except Exception as except_occurred:
             print CONST.ERR_EXE_STANDBYFP_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_STANDBYFP_CMD + str(except_occurred)
-            self.devlogmsg(CONST.ERR_EXE_STANDBYFP_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_STANDBYFP_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.SetStandbyFPMode
 
     @command(
@@ -602,7 +602,7 @@ class DishLeafNode(SKABaseDevice):
         except Exception as except_occurred:
             print CONST.ERR_EXE_SLEW_CMD, except_occurred
             self._read_activity_message = CONST.ERR_EXE_SLEW_CMD + str(except_occurred)
-            self.devlogmsg(CONST.ERR_EXE_SLEW_CMD, 2)
+            self.devlogmsg(CONST.ERR_EXE_SLEW_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.Slew
 
 # ----------

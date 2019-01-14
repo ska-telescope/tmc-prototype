@@ -63,7 +63,7 @@ class SubarrayNode(SKASubarray):
             self._obs_state = 3
             # set obsState to SCANNING when the scan is started
             self.set_status(CONST.STR_SA_SCANNING)
-            self.devlogmsg(CONST.STR_SA_SCANNING, 4)
+            self.devlogmsg(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
 
         except Exception as e:
             print CONST.ERR_SCAN_CMD
@@ -71,7 +71,7 @@ class SubarrayNode(SKASubarray):
 
             self._read_activity_message = CONST.ERR_SCAN_CMD + str(e)
 
-            self.devlogmsg(CONST.ERR_SCAN_CMD, 2)
+            self.devlogmsg(CONST.ERR_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -96,7 +96,7 @@ class SubarrayNode(SKASubarray):
             self._scan_id = ""
             self._sb_id = ""
             self.set_status(CONST.STR_SCAN_COMPLETE)
-            self.devlogmsg(CONST.STR_SCAN_COMPLETE, 4)
+            self.devlogmsg(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
 
         except Exception as e:
             print CONST.ERR_END_SCAN_CMD
@@ -104,7 +104,7 @@ class SubarrayNode(SKASubarray):
 
             self._read_activity_message = CONST.ERR_END_SCAN_CMD + str(e)
 
-            self.devlogmsg(CONST.ERR_END_SCAN_CMD, 2)
+            self.devlogmsg(CONST.ERR_END_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
 
     def is_EndScan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -160,7 +160,7 @@ class SubarrayNode(SKASubarray):
             self._obs_state = 0
             # set obsState to "IDLE"
             self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
-            self.devlogmsg(CONST.STR_ASSIGN_RES_SUCCESS, 4)
+            self.devlogmsg(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except Exception as e:
             print CONST.ERR_ASSIGN_RES_CMD
@@ -168,7 +168,7 @@ class SubarrayNode(SKASubarray):
 
             self._read_activity_message = CONST.ERR_ASSIGN_RES_CMD + str(e)
 
-            self.devlogmsg(CONST.ERR_ASSIGN_RES_CMD, 2)
+            self.devlogmsg(CONST.ERR_ASSIGN_RES_CMD, int(tango.LogLevel.LOG_ERROR))
             argin = str(e)
 
         return argin
@@ -221,7 +221,7 @@ class SubarrayNode(SKASubarray):
             self.set_state(DevState.OFF)    # Set state = OFF
             self._obs_state = 0             # set obsState to "IDLE"
             self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
-            self.devlogmsg(CONST.STR_RECEPTORS_REMOVE_SUCCESS, 4)
+            self.devlogmsg(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except Exception as e:
             print CONST.ERR_RELEASE_RES_CMD
             print e
@@ -231,7 +231,7 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(e)
 
             argout = []
-            self.devlogmsg(CONST.ERR_RELEASE_RES_CMD, 2)
+            self.devlogmsg(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
         return argout
 
     def is_ReleaseAllResources_allowed(self):
@@ -309,11 +309,11 @@ class SubarrayNode(SKASubarray):
                 print CONST.ERR_AGGR_HEALTH_STATE, e.message
                 self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(e.message)
 
-                self.devlogmsg(CONST.ERR_AGGR_HEALTH_STATE, 2)
+                self.devlogmsg(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
         else:
             print CONST.ERR_SUBSR_SA_HEALTH_STATE, evt.errors
             self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors)
-            self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, 2)
+            self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
 
 
 
@@ -406,7 +406,7 @@ class SubarrayNode(SKASubarray):
         self.set_state(DevState.OFF)            # Set state = OFF
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
-        self.devlogmsg(CONST.STR_SA_INIT_SUCCESS, 4)
+        self.devlogmsg(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
@@ -492,14 +492,14 @@ class SubarrayNode(SKASubarray):
             + string.digits) for _ in range(4))
             self._sb_id = ''.join(random.choice(string.ascii_uppercase\
             + string.digits) for _ in range(4))
-            self.devlogmsg(CONST.STR_CONFIGURE_CMD_INVOKED_SA, 4)
+            self.devlogmsg(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
         except Exception as e:
             print CONST.ERR_CONFIGURE_CMD
             print e
 
             self._read_activity_message = CONST.ERR_CONFIGURE_CMD + str(e)
 
-            self.devlogmsg(CONST.ERR_CONFIGURE_CMD, 2)
+            self.devlogmsg(CONST.ERR_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
 
         # PROTECTED REGION END #    //  SubarrayNode.Configure
 
