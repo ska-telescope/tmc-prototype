@@ -6,8 +6,6 @@ CMD_SET_OPERATE_MODE = "SetOperateMode"
 
 
 #Event messages
-EVT_SA1_NODE = "tm_subarray_node/1"
-EVT_SA2_NODE = "tm_subarray_node/2"
 EVT_UNKNOWN_SA = "Event from the Unknown Subarray device!"
 EVT_SUBSR_SA_HEALTH_STATE = "healthState"
 #

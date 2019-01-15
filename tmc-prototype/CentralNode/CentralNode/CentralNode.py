@@ -41,9 +41,9 @@ class CentralNode(SKABaseDevice):
         if evt.err is False:
             try:
                 self._subarray_health_state = evt.attr_value.value
-                if CONST.EVT_SA1_NODE in evt.attr_name:
+                if CONST.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     self._subarray1_health_state = self._subarray_health_state
-                elif CONST.EVT_SA2_NODE in evt.attr_name:
+                elif CONST.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
                     self._subarray2_health_state = self._subarray_health_state
                 else:
                     print CONST.EVT_UNKNOWN_SA
