@@ -89,7 +89,6 @@ class CentralNode(SKABaseDevice):
                     elif value == CONST.ENUM_UNKNOWN:
                         self._telescope_health_state = CONST.ENUM_UNKNOWN
                         unknown = unknown + 1
-
                     else:
                         self._telescope_health_state = CONST.ENUM_OK
                         ok = ok + 1
