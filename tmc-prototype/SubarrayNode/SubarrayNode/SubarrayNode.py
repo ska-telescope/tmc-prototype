@@ -44,10 +44,10 @@ class SubarrayNode(SKASubarray):
     @DebugIt()
     def Scan(self, argin):
         """
-        This function schedules a scan for execution on a subarray. Command has a parameter which
+        Schedules a scan for execution on a subarray. Command has a parameter which
         indicates the time (TAI) at which the Scan will start. Subarray transitions to
         obsState = SCANNING, when the execution of a scan starts.
-        :param argin:
+        :param argin: String array with Scan start time as first element.
         :return:
         """
         try:
@@ -82,7 +82,7 @@ class SubarrayNode(SKASubarray):
     @DebugIt()
     def EndScan(self):
         """
-        This method schedules an end scan commandcan be either an automatic or an externally
+        Ends the scan. It can be either an automatic or an externally
         triggered transition after the scanning completes normally.
         :return:
         """
@@ -121,8 +121,8 @@ class SubarrayNode(SKASubarray):
     @DebugIt()
     def AssignResources(self, argin):
         """
-        This method issues assign resources command on a subarray.
-        :param argin: List of receptors
+        Assigns resources to the Subarray.
+        :param argin: List of receptors.
         :return:
         """
         try:
@@ -185,8 +185,8 @@ class SubarrayNode(SKASubarray):
     @DebugIt()
     def ReleaseAllResources(self):
         """
-        This method releases all the resources from a subarray
-        :return:
+        Releases all the resources from the Subarray.
+        :return: List of resources removed.
         """
         argout = []
         try:
@@ -241,8 +241,9 @@ class SubarrayNode(SKASubarray):
 
     def setHealth(self, evt):
         """
-        This method assigns health status of the subarray.
-        :param evt: Health status of the subarray
+        Retrieves the subscribed DishMaster health state, aggregate them to evaluate
+        health state of the Subarray.
+        :param evt: A TANGO_CHANGE event on DishMaster healthState.
         :return:
         """
         if evt.err is False:
@@ -380,7 +381,7 @@ class SubarrayNode(SKASubarray):
 
     def init_device(self):
         """
-        This method initializes the attributes of a subarray node
+        Initializes the attributes and properties of the Subarray node.
         :return:
         """
         SKASubarray.init_device(self)
@@ -411,14 +412,14 @@ class SubarrayNode(SKASubarray):
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
     def always_executed_hook(self):
-        """ This method is an internal construct of TANGO """
+        """ Internal construct of TANGO. """
         # PROTECTED REGION ID(SubarrayNode.always_executed_hook) ENABLED START #
         pass
         # PROTECTED REGION END #    //  SubarrayNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
-        """ This method is an internal construct of TANGO """
+        """ Internal construct of TANGO. """
         pass
         # PROTECTED REGION END #    //  SubarrayNode.delete_device
 
@@ -427,31 +428,31 @@ class SubarrayNode(SKASubarray):
     # ------------------
 
     def read_scanID(self):
-        """ This is a getter method for the scanID attribute """
+        """ Returns the Scan ID. """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
         return self._scan_id
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
     def read_sbID(self):
-        """ This is a getter method for the sbID attribute """
+        """ Returns the scheduling block ID. """
         # PROTECTED REGION ID(SubarrayNode.sbID_read) ENABLED START #
         return self._sb_id
         # PROTECTED REGION END #    //  SubarrayNode.sbID_read
 
     def read_activityMessage(self):
-        """ This is a getter method for the activityMessage attribute """
+        """ Returns activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_read) ENABLED START #
         return self._read_activity_message
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_read
 
     def write_activityMessage(self, value):
-        """ This is a setter method for activityMessage attribute """
+        """ Sets the activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
     def read_receptorIDList(self):
-        """ This is a getter method for the receptorIDList attribute """
+        """ Returns the receptor IDs allocated to the Subarray. """
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
         return self._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
@@ -469,8 +470,8 @@ class SubarrayNode(SKASubarray):
     def Configure(self, argin):
         # PROTECTED REGION ID(SubarrayNode.Configure) ENABLED START #
         """
-        This method issues the configure command for a Dish.
-        :param argin: "Pointing parameters of Dish - Azimuth and Elevation Angle."
+        Configures the resources assinged to the Subarray.
+        :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
         :return:
         """
         try:
@@ -503,7 +504,7 @@ class SubarrayNode(SKASubarray):
 
     def is_Configure_allowed(self):
         # PROTECTED REGION ID(SubarrayNode.is_Configure_allowed) ENABLED START #
-        """ This method is an internal construct of TANGO """
+        """ Checks if the Configure command is allowed in the current state of the Subarray. """
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
                                         DevState.STANDBY]
         # PROTECTED REGION END #    //  SubarrayNode.is_Configure_allowed
@@ -516,10 +517,11 @@ class SubarrayNode(SKASubarray):
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SubarrayNode.main) ENABLED START #
     """
-    This method runs the Subarray node.
+    Runs the SubarrayNode.
     :param args:
     :param kwargs:
     :return:
+    SubarrayNode TANGO object.
     """
     return run((SubarrayNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SubarrayNode.main

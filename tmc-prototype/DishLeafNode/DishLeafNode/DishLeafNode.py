@@ -34,8 +34,8 @@ class DishLeafNode(SKABaseDevice):
 
     def dishModeCallback(self, evt):
         """
-        This method identifies the Dish mode which is received as an event
-        :param evt: dishMode
+        Retrieves the subscribed dishMode attribute of DishMaster.
+        :param evt: A TANGO_CHANGE event on dishMode attribute.
         :return:
         """
         if evt.err is False:
@@ -82,8 +82,8 @@ class DishLeafNode(SKABaseDevice):
 
     def dishPointingStateCallback(self, evt):
         """
-        This method identifies the pointing state of the Dish which is received as an event
-        :param evt: dishPointingState
+        Retrieves the subscribed pointingState attribute of DishMaster.
+        :param evt: A TANGO_CHANGE event on pointingState attribute.
         :return:
         """
         if evt.err is False:
@@ -115,9 +115,8 @@ class DishLeafNode(SKABaseDevice):
 
     def dishHealthStateCallback(self, evt):
         """
-        This method identifies the heath state of the Dish which is received as an event
-        :param self:
-        :param evt: dishHealthState
+        Retrieves the subscribed healthState attribute of DishMaster.
+        :param evt: A TANGO_CHANGE event on healthState attribute.
         :return:
         """
         if evt.err is False:
@@ -150,8 +149,8 @@ class DishLeafNode(SKABaseDevice):
 
     def dishCapturingCallback(self, evt):
         """
-        This method identifies whether the Dish is capturing data by comparing the received event
-        :param evt: dishCapturing status
+        Retrieves the subscribed capturing attribute of DishMaster.
+        :param evt: A TANGO_CHANGE event on capturing attribute.
         :return:
         """
         if evt.err is False:
@@ -177,8 +176,8 @@ class DishLeafNode(SKABaseDevice):
 
     def dishAchievedPointingCallback(self, evt):
         """
-        This method identifies whether the Dish has achieved pointing.
-        :param evt: dishAchievedPointing
+        Retrieves the subscribed achievedPointing attribute of DishMaster.
+        :param evt: A TANGO_CHANGE event on achievedPointing attribute.
         :return:
         """
         if evt.err is False:
@@ -198,8 +197,8 @@ class DishLeafNode(SKABaseDevice):
 
     def dishDesiredPointingCallback(self, evt):
         """
-         This method identifies whether the Dish has reached the desired pointing.
-        :param evt: dishDesiredPointing
+        Retrieves the subscribed desiredPointing attribute of DishMaster.
+        :param evt: A TANGO_CHANGE event on desiredPointing attribute.
         :return:
         """
         if evt.err is False:
@@ -219,8 +218,8 @@ class DishLeafNode(SKABaseDevice):
 
     def commandCallback(self, event):
         """
-        This method checks whether the command has been successfully invoked.
-        :param event: status of the command invoked (true or false)
+        Checks whether the command has been successfully invoked on DishMaster.
+        :param event: response from DishMaster for the invoked command
         :return:
         """
         try:
@@ -286,8 +285,8 @@ class DishLeafNode(SKABaseDevice):
 
     def init_device(self):
         """
-        This method initializes the attributes. It subscribes to the different events of the Dish
-        Master.
+        Initializes the attributes and properties of DishLeafNode and subscribes change event
+        on attributes of DishMaster.
         :return:
         """
         SKABaseDevice.init_device(self)
@@ -343,13 +342,13 @@ class DishLeafNode(SKABaseDevice):
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(DishLeafNode.always_executed_hook) ENABLED START #
-        """ This method is an internal construct of TANGO """
+        """ Internal construct of TANGO. """
         pass
         # PROTECTED REGION END #    //  DishLeafNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(DishLeafNode.delete_device) ENABLED START #
-        """ This method is an internal construct of TANGO """
+        """ Internal construct of TANGO. """
         pass
         # PROTECTED REGION END #    //  DishLeafNode.delete_device
 
@@ -359,20 +358,13 @@ class DishLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(DishLeafNode.activityMessage_read) ENABLED START #
-        """
-        This is a getter method for the activityMessage attribute
-        :return:
-        """
+        """ Returns the activityMessage """
         return self._read_activity_message
         # PROTECTED REGION END #    //  DishLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(DishLeafNode.activityMessage_write) ENABLED START #
-        """
-        This is a setter method for the activityMessage attribute
-        :param value: activityMessage
-        :return:
-        """
+        """ Sets the activityMessage """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  DishLeafNode.activityMessage_write
 
@@ -386,10 +378,7 @@ class DishLeafNode(SKABaseDevice):
     @DebugIt()
     def SetStowMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStowMode) ENABLED START #
-        """
-        This command is used to stow the receptor.
-        :return:
-        """
+        """ Triggers the DishMaster to transit into Stow Mode """
         try:
             self._dish_proxy.command_inout_asynch(CONST.CMD_SET_STOW_MODE, self.commandCallback)
 
@@ -404,10 +393,7 @@ class DishLeafNode(SKABaseDevice):
     @DebugIt()
     def SetStandByLPMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStandByLPMode) ENABLED START #
-        """
-        This command is to bring the Telescope into a STANDBY state (i.e. Low Power State)
-        :return:
-        """
+        """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State) """
         try:
             self._dish_proxy.command_inout_asynch(CONST.CMD_SET_STANDBYLP_MODE, self.commandCallback)
         except Exception as except_occurred:
@@ -421,10 +407,7 @@ class DishLeafNode(SKABaseDevice):
     @DebugIt()
     def SetOperateMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetOperateMode) ENABLED START #
-        """
-        This command triggers the Dish to transition to the Operate Dish Element mode.
-        :return:
-        """
+        """ Triggers the DishMaster to transit into Operate mode. """
         try:
             self._dish_proxy.command_inout_asynch(CONST.CMD_SET_OPERATE_MODE, self.commandCallback)
         except Exception as except_occurred:
@@ -441,7 +424,7 @@ class DishLeafNode(SKABaseDevice):
     def Scan(self, argin):
         # PROTECTED REGION ID(DishLeafNode.Scan) ENABLED START #
         """
-        Command the Dish to start the Scan.
+        Triggers the DishMaster to start the Scan.
         :param argin: timestamp
         :return:
         """
@@ -462,9 +445,8 @@ class DishLeafNode(SKABaseDevice):
     @DebugIt()
     def EndScan(self, argin):
         # PROTECTED REGION ID(DishLeafNode.EndScan) ENABLED START #
-        """
-        Command the Dish to stop the Scan.
-        :param argin:
+        """ Triggers the DishMaster to stop the Scan.
+        :param argin: timestamp
         :return:
         """
         try:
@@ -483,9 +465,8 @@ class DishLeafNode(SKABaseDevice):
     def Configure(self, argin):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
-        Command to configure Dish. Configuration includes setting pointing coordinates of Dish
-        for a given observation.
-        :param argin: TBD
+        Configures the Dish by setting pointing coordinates for a given observation.
+        :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
         :return:
         """
         try:
@@ -503,7 +484,7 @@ class DishLeafNode(SKABaseDevice):
 
     def is_Configure_allowed(self):
         # PROTECTED REGION ID(DishLeafNode.is_Configure_allowed) ENABLED START #
-        """ This method is an internal construct of TANGO """
+        """ Checks if the Configure command is allowed in the current state of DishLeafNode """
         return self.get_state() not in [DevState.INIT, DevState.ALARM, DevState.DISABLE,
                                         DevState.OFF, DevState.STANDBY]
         # PROTECTED REGION END #    //  DishLeafNode.is_Configure_allowed
@@ -515,9 +496,7 @@ class DishLeafNode(SKABaseDevice):
     @DebugIt()
     def StartCapture(self, argin):
         # PROTECTED REGION ID(DishLeafNode.StartCapture) ENABLED START #
-        """
-        This method sends the command to Start capture on the configured band.
-        Command only valid in SPFRx Data_Capture mode.
+        """ Triggers the DishMaster to Start capture on the set configured band.
         :param argin: timestamp
         :return:
         """
@@ -538,7 +517,7 @@ class DishLeafNode(SKABaseDevice):
     def StopCapture(self, argin):
         # PROTECTED REGION ID(DishLeafNode.StopCapture) ENABLED START #
         """
-        This method sends the command to Stop capture on the configured band.
+        Triggers the DishMaster to Stop capture on the set configured band.
         :param argin: timestamp
         :return:
         """
@@ -555,10 +534,7 @@ class DishLeafNode(SKABaseDevice):
     @DebugIt()
     def SetStandbyFPMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStandbyFPMode) ENABLED START #
-        """
-        This command triggers the Dish to transition to the STANDBY-FP Dish Element Mode
-        :return:
-        """
+        """ Triggers the DishMaster to transition into the STANDBY-FP (Standby-Full power) mode. """
         try:
             self._dish_proxy.command_inout_asynch(CONST.CMD_SET_STANDBYFP_MODE, self.commandCallback)
         except Exception as except_occurred:
@@ -575,8 +551,7 @@ class DishLeafNode(SKABaseDevice):
     def Slew(self, argin):
         # PROTECTED REGION ID(DishLeafNode.Slew) ENABLED START #
         """
-        This method sends the slew command to the Dish master. Dish moves to the commanded
-        pointing angle at the maximum speed, as defined by specified slew rate.
+        Triggers the DishMaster to slew the dish towards the set pointing coordinates.
         :param argin: timestamp
         :return:
         """
@@ -596,10 +571,11 @@ class DishLeafNode(SKABaseDevice):
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishLeafNode.main) ENABLED START #
     """
-    The main method runs the DishLeafNode
+    Runs the DishLeafNode.
     :param args:
     :param kwargs:
     :return:
+    DishLeafNode TANGO object.
     """
     return run((DishLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  DishLeafNode.main

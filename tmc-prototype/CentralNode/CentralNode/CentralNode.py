@@ -33,10 +33,10 @@ class CentralNode(SKABaseDevice):
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
     def subarrayHealthStateCallback(self, evt):
         """
-        :param evt: A TANGO_CHANGE event of Subarray's healthState attribute
-        :return:
-        This method retrieves individual subarray health state, aggregates them to calculate the
+        Retrieves the subscribed Subarray health state, aggregates them to calculate the
         telescope health state.
+        :param evt: A TANGO_CHANGE event on Subarray healthState.
+        :return:
         """
         if evt.err is False:
             try:
@@ -170,7 +170,7 @@ class CentralNode(SKABaseDevice):
     # ---------------
     def init_device(self):
         # PROTECTED REGION ID(CentralNode.init_device) ENABLED START #
-        """ This method initializes the attributes and properties"""
+        """ Initializes the attributes and properties of the Central Node. """
         SKABaseDevice.init_device(self)
         try:
 
@@ -243,13 +243,13 @@ class CentralNode(SKABaseDevice):
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CentralNode.always_executed_hook) ENABLED START #
-        """ This method is an internal construct of TANGO"""
+        """ Internal construct of TANGO. """
         pass
         # PROTECTED REGION END #    //  CentralNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(CentralNode.delete_device) ENABLED START #
-        """ This method is an internal construct of TANGO"""
+        """ Internal construct of TANGO. """
         pass
         # PROTECTED REGION END #    //  CentralNode.delete_device
 
@@ -259,31 +259,31 @@ class CentralNode(SKABaseDevice):
 
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
-        """ This method reads the Telescope health state."""
+        """ Returns the Telescope health state."""
         return self._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
     def read_subarray1HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray1_healthstate_read) ENABLED START #
-        """ This method reads the subarray 1 health state"""
+        """ Returns Subarray1 health state. """
         return self._subarray1_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray1_healthstate_read
 
     def read_subarray2HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray2_healthstate_read) ENABLED START #
-        """ This method reads the subarray 2 health state"""
+        """ Returns Subarray2 health state. """
         return self._subarray2_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray2_healthstate_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
-        """ This method reads activity message """
+        """ Returns activity message. """
         return self._read_activity_message
         # PROTECTED REGION END #    //  CentralNode.activity_message_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CentralNode.activity_message_write) ENABLED START #
-        """ This method reads activity message intended to write on the GUI"""
+        """ Sets the activity message. """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CentralNode.activity_message_write
 
@@ -302,8 +302,7 @@ class CentralNode(SKABaseDevice):
         """
         :param argin: List of Receptors to be stowed.
         :return:
-        This method is to stow the specified receptors.
-        This method is useful when an operator wants to stow a group of dishes.
+        Stows the specified receptors.
         """
         self.devlogmsg(CONST.STR_STOW_CMD_ISSUED_CN, int(tango.LogLevel.LOG_INFO))
         self._read_activity_message = CONST.STR_STOW_CMD_ISSUED_CN
@@ -327,7 +326,7 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def StandByTelescope(self):
         # PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
-        """ This command is to bring the Telescope into a STANDBY state (i.e. Low Power State) """
+        """ Set the Elements into STANDBY state (i.e. Low Power State). """
         self.devlogmsg(CONST.STR_STANDBY_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
         self._read_activity_message = CONST.STR_STANDBY_CMD_ISSUED
 
@@ -348,7 +347,7 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def StartUpTelescope(self):
         # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
-        """ This command is to bring the Telescope into ON state from the STANDBY state."""
+        """ Set the Elements into ON state from STANDBY state."""
         self.devlogmsg(CONST.STR_STARTUP_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
         self._read_activity_message = CONST.STR_STARTUP_CMD_ISSUED
 
@@ -372,10 +371,11 @@ class CentralNode(SKABaseDevice):
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CentralNode.main) ENABLED START #
     """
+    Runs the CentralNode.
     :param args:
     :param kwargs:
     :return:
-    This method runs the CentralNode class.
+    CentralNode TANGO object.
     """
     return run((CentralNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CentralNode.main
