@@ -58,18 +58,18 @@ class DishMaster(SKAMaster):
         """ Calculates the azimuth angle difference. """
         self._pointing_state = 1
         self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
-        if self._azimuth_difference > 0.0:
+        if self._azimuth_difference > 0.00:
             self.increment_position([1, self._azimuth_difference])
-        elif self._azimuth_difference < 0.0:
+        elif self._azimuth_difference < 0.00:
             self.decrement_position([1, abs(self._azimuth_difference)])
 
     def elevation(self):
         """ Calculates the elevation angle difference. """
         self._pointing_state = 1
         self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
-        if self._elevation_difference > 0.0:
+        if self._elevation_difference > 0.00:
             self.increment_position([2, self._elevation_difference])
-        elif self._elevation_difference < 0.0:
+        elif self._elevation_difference < 0.00:
             self.decrement_position([2, abs(self._elevation_difference)])
 
     def increment_position(self, argin):
