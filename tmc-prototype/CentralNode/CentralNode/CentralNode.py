@@ -74,32 +74,32 @@ class CentralNode(SKABaseDevice):
                     print CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt
                     self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 # Aggregated Health State
-                failed = 0
-                degraded = 0
-                unknown = 0
-                ok = 0
+                failed_health_count = 0
+                degraded_health_count = 0
+                unknown_health_count = 0
+                ok_health_count = 0
 
                 for value in self.subarrayHealthStateMap.values():
                     if value == CONST.ENUM_FAILED:
-                        failed = failed + 1
+                        failed_health_count = failed_health_count + 1
                         break
                     elif value == CONST.ENUM_DEGRADED:
                         self._telescope_health_state = 1
-                        degraded = degraded + 1
+                        degraded_health_count = degraded_health_count + 1
                     elif value == CONST.ENUM_UNKNOWN:
                         self._telescope_health_state = CONST.ENUM_UNKNOWN
-                        unknown = unknown + 1
+                        unknown_health_count = unknown_health_count + 1
                     else:
                         self._telescope_health_state = CONST.ENUM_OK
-                        ok = ok + 1
+                        ok_health_count = ok_health_count + 1
 
-                if ok == len(self.subarrayHealthStateMap.values()):
+                if ok_health_count == len(self.subarrayHealthStateMap.values()):
                     self._telescope_health_state = CONST.ENUM_OK
 
-                elif failed != 0:
+                elif failed_health_count != 0:
                     self._telescope_health_state = CONST.ENUM_FAILED
 
-                elif degraded != 0:
+                elif degraded_health_count != 0:
                     self._telescope_health_state = CONST.ENUM_DEGRADED
 
                 else:

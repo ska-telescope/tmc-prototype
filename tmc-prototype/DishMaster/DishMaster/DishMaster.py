@@ -78,19 +78,19 @@ class DishMaster(SKAMaster):
         :param argin: Difference between current and desired Azimuth/Elevation angle.
         :return: None
         """
-        temp = int(argin[1])
+        input_increment = int(argin[1])
         time.sleep(2)
         if abs(self._azimuth_difference) > abs(self._elevation_difference):
-            temp1 = abs(self._azimuth_difference)
+            max_increment = abs(self._azimuth_difference)
         elif abs(self._azimuth_difference) < abs(self._elevation_difference):
-            temp1 = abs(self._elevation_difference)
+            max_increment = abs(self._elevation_difference)
         else:
-            temp1 = temp
+            max_increment = input_increment
 
-        if temp == temp1:
-            temp = temp + 1
+        if input_increment == max_increment:
+            input_increment = input_increment + 1
 
-        for position in range(0, temp):
+        for position in range(0, input_increment):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self.devlogmsg(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             self._pointing_state = 1
@@ -109,20 +109,20 @@ class DishMaster(SKAMaster):
         :param argin: Difference between current and desired Azimuth/Elevation angle.
         :return: None
         """
-        temp2 = int(argin[1])
+        input_decrement = int(argin[1])
         time.sleep(2)
         if abs(self._azimuth_difference) > abs(self._elevation_difference):
-            temp3 = abs(self._azimuth_difference)
+            max_decrement = abs(self._azimuth_difference)
         elif abs(self._azimuth_difference) < abs(self._elevation_difference):
-            temp3 = abs(self._elevation_difference)
+            max_decrement = abs(self._elevation_difference)
         else:
-            temp3 = temp2
+            max_decrement = input_decrement
 
-        if temp2 == temp3:
-            temp2 = temp2 + 1
+        if input_decrement == max_decrement:
+            input_decrement = input_decrement + 1
 
 
-        for position in range(0, (temp2)):
+        for position in range(0, (input_decrement)):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self._pointing_state = 1
             time.sleep(2)
@@ -568,8 +568,8 @@ class DishMaster(SKAMaster):
                 self._current_time = time.time()
                 self._scan_execution_time = float(argin)
                 self._scan_delta_t = self._scan_execution_time - self._current_time
-                time1 = Timer(self._scan_delta_t, self.StartCapture, [argin])
-                time1.start()
+                schedule_scan_thread = Timer(self._scan_delta_t, self.StartCapture, [argin])
+                schedule_scan_thread.start()
                 self.devlogmsg(CONST.STR_SCAN_INPROG, int(tango.LogLevel.LOG_INFO))
             else:
                 self.set_status(CONST.STR_DISH_NOT_READY)
@@ -698,8 +698,8 @@ class DishMaster(SKAMaster):
             self._current_time = time.time()
             self._point_execution_time = self._desired_pointing[0]
             self._point_delta_t = self._point_execution_time - self._current_time
-            time1 = Timer(self._point_delta_t, self.point)
-            time1.start()
+            schedule_slew_thread = Timer(self._point_delta_t, self.point)
+            schedule_slew_thread.start()
             self.devlogmsg(CONST.STR_DISH_SLEW, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_EXE_SLEW_CMD, self.ReceptorNumber
