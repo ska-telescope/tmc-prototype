@@ -39,7 +39,11 @@ class CentralNodeDeviceTestCase(DeviceTestCase):
     # PROTECTED REGION ID(CentralNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  CentralNode.test_additionnal_import
     device = CentralNode
-    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost', 'CentralAlarmHandler': '', 'TMAlarmHandler': '', 'TMMidSubarrayNodes': 'ska_mid/tm_subarray_node/1', 'NumDishes': '4', 'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d', 
+    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
+                  'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
+                  'StorageLoggingTarget': 'localhost', 'CentralAlarmHandler': '',
+                  'TMAlarmHandler': '', 'TMMidSubarrayNodes': 'ska_mid/tm_subarray_node/1',
+                  'NumDishes': '4', 'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
                   }
     empty = None  # Should be []
 
