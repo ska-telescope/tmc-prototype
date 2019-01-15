@@ -76,7 +76,7 @@ class DishMaster(SKAMaster):
         """
         Increments the current pointing coordinates gradually to match the desired pointing coordinates.
         :param argin: Difference between current and desired Azimuth/Elevation angle.
-        :return:
+        :return: None
         """
         temp = int(argin[1])
         time.sleep(2)
@@ -107,7 +107,7 @@ class DishMaster(SKAMaster):
         """
         Decrements the current pointing coordinates gradually to match the desired pointing coordinates.
         :param argin: Difference between current and desired Azimuth/Elevation angle.
-        :return:
+        :return: None
         """
         temp2 = int(argin[1])
         time.sleep(2)
@@ -139,7 +139,7 @@ class DishMaster(SKAMaster):
     def check_slew(self):
         """
         Waits until the Dish is slewing and stows it later.
-        :return:
+        :return: None
         """
         while True:
             print"in while loop"
@@ -244,7 +244,7 @@ class DishMaster(SKAMaster):
     def init_device(self):
         """
         Initializes the properties and attributes of DishMaster.
-        :return:
+        :return: None
         """
         SKAMaster.init_device(self)
         # PROTECTED REGION ID(DishMaster.init_device) ENABLED START #
@@ -322,7 +322,7 @@ class DishMaster(SKAMaster):
         # PROTECTED REGION ID(DishMaster.band1SamplerFrequency_write) ENABLED START #
         """ Sets the band1 sampler frequency.
         :param value: band1SamplerFrequency
-        :return:
+        :return: None
         """
         self._band1_sampler_frequency = value
         # PROTECTED REGION END #    //  DishMaster.band1SamplerFrequency_write
@@ -332,7 +332,7 @@ class DishMaster(SKAMaster):
         """
         Sets the band2 sampler frequency.
         :param value: band2SamplerFrequency
-        :return:
+        :return: None
         """
         self._band2_sampler_frequency = value
         # PROTECTED REGION END #    //  DishMaster.band2SamplerFrequency_write
@@ -342,7 +342,7 @@ class DishMaster(SKAMaster):
         """
         Sets the band3 sampler frequency.
         :param value: band3SamplerFrequency
-        :return:
+        :return: None
         """
         self._band3_sampler_frequency = value
         # PROTECTED REGION END #    //  DishMaster.band3SamplerFrequency_write
@@ -352,7 +352,7 @@ class DishMaster(SKAMaster):
         """
         Sets band4 sampler frequency.
         :param value: band4SamplerFrequency
-        :return:
+        :return: None
         """
         self._band4_sampler_frequency = value
         # PROTECTED REGION END #    //  DishMaster.band4SamplerFrequency_write
@@ -362,7 +362,7 @@ class DishMaster(SKAMaster):
         """
         Sets the band5a sampler frequency.
         :param value: band5aSamplerFrequency
-        :return:
+        :return: None
         """
         self._band5a_sampler_frequency = value
         # PROTECTED REGION END #    //  DishMaster.band5aSamplerFrequency_write
@@ -372,7 +372,7 @@ class DishMaster(SKAMaster):
         """
         Sets the band5b sampler frequency.
         :param value: band5bSamplerFrequency
-        :return:
+        :return: None
         """
         self._band5b_sampler_frequency = value
         # PROTECTED REGION END #    //  DishMaster.band5bSamplerFrequency_write
@@ -400,7 +400,7 @@ class DishMaster(SKAMaster):
         """
         Sets the wind speed.
         :param value: WindSpeed
-        :return:
+        :return: None
         """
         self._wind_speed = value
         # PROTECTED REGION END #    //  DishMaster.WindSpeed_write
@@ -416,7 +416,7 @@ class DishMaster(SKAMaster):
         """
         Sets the desired pointing coordinates of Dish.
         :param value: desiredPointing
-        :return:
+        :return: None
         """
         self._desired_pointing = value
         # PROTECTED REGION END #    //  DishMaster.desiredPointing_write
@@ -456,16 +456,6 @@ class DishMaster(SKAMaster):
             self.devlogmsg(CONST.ERR_EXE_SET_STOW_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
 
-        # while True:
-        #     print"in while loop"
-        #     if (self._pointing_state != 1):
-        #         print "in if loop"
-        #         self._admin_mode = 1                        # Set adminMode to OFFLINE
-        #         self.set_state(tango.DevState.DISABLE)    # Set STATE to DISABLE
-        #         self._dish_mode = 6                         # set dishMode to STOW
-        #         self._health_state = 0                      # Set healthState to OK
-        #         self.set_status("Dish is stowed successfully.")
-        #         break
         # PROTECTED REGION END #    //  DishMaster.SetStowMode
 
     def is_SetStowMode_allowed(self):
@@ -534,7 +524,7 @@ class DishMaster(SKAMaster):
     def SetOperateMode(self):
         """
         Triggers the Dish to transition into the OPERATE Dish Element Mode.
-        :return:
+        :return: None
         """
         # PROTECTED REGION ID(DishMaster.SetOperateMode) ENABLED START #
         try:
@@ -567,9 +557,10 @@ class DishMaster(SKAMaster):
     def Scan(self, argin):
         # PROTECTED REGION ID(DishMaster.Scan) ENABLED START #
         """
-        Triggers the dish to scan at the set pointing coordinates and capture the data.
-        :param argin:
-        :return:
+        Triggers the dish to start scanning at the set pointing coordinates and capture the data at the
+        input timestamp.
+        :param argin: timestamp
+        :return: None
         """
         try:
             # Command to start SCAN
@@ -608,7 +599,7 @@ class DishMaster(SKAMaster):
         """
         Triggers the dish to start capturing the data on the configured band.
         :param argin: timestamp
-        :return:
+        :return: None
         """
         try:
             # Command to start Data Capturing
@@ -640,7 +631,7 @@ class DishMaster(SKAMaster):
         """
         Triggers the dish to stop capturing the data on the configured band.
         :param argin: timestamp
-        :return:
+        :return: None
         """
         try:
             # Command to stop Data Capturing
@@ -669,7 +660,7 @@ class DishMaster(SKAMaster):
         # PROTECTED REGION ID(DishMaster.SetStandbyFPMode) ENABLED START #
         """
         Triggers the Dish to transition into the STANDBY-FP (Standby-Full power) Dish Element Mode.
-        :return:
+        :return: None
         """
         try:
             # Command to set Dish to STANDBY-FP Mode
@@ -700,7 +691,7 @@ class DishMaster(SKAMaster):
         """
         Triggers the Dish to move (or slew) at the commanded pointing coordinates.
         :param argin: timestamp
-        :return:
+        :return: None
         """
         try:
             # Execute POINT command at given timestamp
@@ -721,15 +712,13 @@ class DishMaster(SKAMaster):
 # Run server
 # ----------
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishMaster.main) ENABLED START #
     """
     Runs the DishMaster.
-    :param args:
-    :param kwargs:
-    :return:
-    DishMaster TANGO object.
+    :param args: Arguments internal to TANGO
+    :param kwargs: Arguments internal to TANGO
+    :return: DishMaster TANGO object.
     """
     return run((DishMaster,), args=args, **kwargs)
     # PROTECTED REGION END #    //  DishMaster.main

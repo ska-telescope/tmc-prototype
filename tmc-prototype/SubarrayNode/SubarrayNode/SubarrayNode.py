@@ -14,15 +14,16 @@ other TM Components (such as OET, Central Node) for a Subarray.
 """
 
 # tango imports
-import random
-import string
 
 import tango
 from tango import DebugIt, DevState, AttrWriteType
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from SKASubarray import SKASubarray
+
 # Additional import
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
+import random
+import string
 import CONST
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
@@ -48,7 +49,7 @@ class SubarrayNode(SKASubarray):
         indicates the time (TAI) at which the Scan will start. Subarray transitions to
         obsState = SCANNING, when the execution of a scan starts.
         :param argin: String array with Scan start time as first element.
-        :return:
+        :return: None
         """
         try:
             print CONST.STR_SCAN_IP_ARG, argin
@@ -61,14 +62,13 @@ class SubarrayNode(SKASubarray):
             cmdData.insert(tango.DevString, argin[0])
             self._dish_leaf_node_group.command_inout(CONST.CMD_SCAN, cmdData)
             self._obs_state = 3
+
             # set obsState to SCANNING when the scan is started
             self.set_status(CONST.STR_SA_SCANNING)
             self.devlogmsg(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
 
         except Exception as e:
-            print CONST.ERR_SCAN_CMD
-            print e
-
+            print CONST.ERR_SCAN_CMD, "\n", e
             self._read_activity_message = CONST.ERR_SCAN_CMD + str(e)
 
             self.devlogmsg(CONST.ERR_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -81,10 +81,8 @@ class SubarrayNode(SKASubarray):
     )
     @DebugIt()
     def EndScan(self):
-        """
-        Ends the scan. It can be either an automatic or an externally
-        triggered transition after the scanning completes normally.
-        :return:
+        """ Ends the scan. It can be either an automatic or an externally triggered transition
+        after the scanning completes normally.
         """
         try:
             print CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list()
@@ -92,6 +90,7 @@ class SubarrayNode(SKASubarray):
             cmdData.insert(tango.DevString, "0")
             self._dish_leaf_node_group.command_inout(CONST.CMD_END_SCAN, cmdData)
             self._obs_state = 0
+
             # set obsState to IDLE when the scan is ended
             self._scan_id = ""
             self._sb_id = ""
@@ -99,9 +98,7 @@ class SubarrayNode(SKASubarray):
             self.devlogmsg(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
 
         except Exception as e:
-            print CONST.ERR_END_SCAN_CMD
-            print e
-
+            print CONST.ERR_END_SCAN_CMD, "\n", e
             self._read_activity_message = CONST.ERR_END_SCAN_CMD + str(e)
 
             self.devlogmsg(CONST.ERR_END_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -123,7 +120,7 @@ class SubarrayNode(SKASubarray):
         """
         Assigns resources to the Subarray.
         :param argin: List of receptors.
-        :return:
+        :return: List of Resources added to the Subarray.
         """
         try:
 
@@ -163,8 +160,7 @@ class SubarrayNode(SKASubarray):
             self.devlogmsg(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except Exception as e:
-            print CONST.ERR_ASSIGN_RES_CMD
-            print e
+            print CONST.ERR_ASSIGN_RES_CMD, "\n", e
 
             self._read_activity_message = CONST.ERR_ASSIGN_RES_CMD + str(e)
 
@@ -174,7 +170,7 @@ class SubarrayNode(SKASubarray):
         return argin
 
     def is_AssignResources_allowed(self):
-        """"""
+        """Checks if AssignResources is allowed in the current state of SubarrayNode."""
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
                                         DevState.STANDBY]
 
@@ -201,16 +197,12 @@ class SubarrayNode(SKASubarray):
 
             print CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy
             print CONST.STR_HEALTH_ID, self._health_event_id
-            #self._dish_leaf_node_proxy[0].unsubscribe_event(self._health_event_id[0])
-            #self._dish_leaf_node_proxy[1].unsubscribe_event(self._health_event_id[1])
+
             print CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID
 
             for dev in self.testDeviceVsEventID:
                 dev.unsubscribe_event(self.testDeviceVsEventID[dev])
             self.testDeviceVsEventID = {}
-            #
-            #     self._dish_leaf_node_proxy[leaf].unsubscribe_event(self._health_event_id[leaf])
-            #     print "after unsubscribing"
             self._health_event_id = []
             self._dish_leaf_node_proxy = []
             del self._receptor_id_list[:]
@@ -223,8 +215,7 @@ class SubarrayNode(SKASubarray):
             self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
             self.devlogmsg(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except Exception as e:
-            print CONST.ERR_RELEASE_RES_CMD
-            print e
+            print CONST.ERR_RELEASE_RES_CMD, "\n", e
             print CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy
             print CONST.STR_HEALTH_ID, self._health_event_id
 
@@ -235,7 +226,7 @@ class SubarrayNode(SKASubarray):
         return argout
 
     def is_ReleaseAllResources_allowed(self):
-        """"""
+        """Checks if ReleaseAllResources is allowed in the current state of SubarrayNode."""
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
                                         DevState.STANDBY]
 
@@ -244,7 +235,7 @@ class SubarrayNode(SKASubarray):
         Retrieves the subscribed DishMaster health state, aggregate them to evaluate
         health state of the Subarray.
         :param evt: A TANGO_CHANGE event on DishMaster healthState.
-        :return:
+        :return: None
         """
         if evt.err is False:
             try:
@@ -316,21 +307,11 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors)
             self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
 
-
-
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 
     # -----------------
     # Device Properties
     # -----------------
-
-
-
-
-
-
-
-
 
     DishLeafNodePrefix = device_property(
         dtype='str', default_value="ska_mid/tm_leaf_node/d"
@@ -339,21 +320,6 @@ class SubarrayNode(SKASubarray):
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     scanID = attribute(
         dtype='str',
@@ -368,8 +334,6 @@ class SubarrayNode(SKASubarray):
         access=AttrWriteType.READ_WRITE,
     )
 
-
-
     receptorIDList = attribute(
         dtype=('uint16',),
         max_dim_x=100,
@@ -382,7 +346,7 @@ class SubarrayNode(SKASubarray):
     def init_device(self):
         """
         Initializes the attributes and properties of the Subarray node.
-        :return:
+        :return: None
         """
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
@@ -457,7 +421,6 @@ class SubarrayNode(SKASubarray):
         return self._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
 
-
     # --------
     # Commands
     # --------
@@ -472,7 +435,7 @@ class SubarrayNode(SKASubarray):
         """
         Configures the resources assinged to the Subarray.
         :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
-        :return:
+        :return: None
         """
         try:
             print CONST.STR_CONFIGURE_IP_ARG, argin
@@ -485,19 +448,17 @@ class SubarrayNode(SKASubarray):
 
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevVarStringArray, argin)
-            self._obs_state = 1     # set obsState to CONFIGURING when the configuration is started
+            # set obsState to CONFIGURING when the configuration is started
+            self._obs_state = 1
             self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
-            self._obs_state = 2
             # set obsState to READY when the configuration is completed
+            self._obs_state = 2
             self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self.devlogmsg(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
         except Exception as e:
-            print CONST.ERR_CONFIGURE_CMD
-            print e
-
+            print CONST.ERR_CONFIGURE_CMD, "\n", e
             self._read_activity_message = CONST.ERR_CONFIGURE_CMD + str(e)
-
             self.devlogmsg(CONST.ERR_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
 
         # PROTECTED REGION END #    //  SubarrayNode.Configure
@@ -513,15 +474,13 @@ class SubarrayNode(SKASubarray):
 # Run server
 # ----------
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SubarrayNode.main) ENABLED START #
     """
     Runs the SubarrayNode.
-    :param args:
-    :param kwargs:
-    :return:
-    SubarrayNode TANGO object.
+    :param args: Arguments internal to TANGO
+    :param kwargs: Arguments internal to TANGO
+    :return: SubarrayNode TANGO object.
     """
     return run((SubarrayNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SubarrayNode.main

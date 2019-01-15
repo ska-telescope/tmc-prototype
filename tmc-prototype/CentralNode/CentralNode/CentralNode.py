@@ -36,7 +36,7 @@ class CentralNode(SKABaseDevice):
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
         telescope health state.
         :param evt: A TANGO_CHANGE event on Subarray healthState.
-        :return:
+        :return: None
         """
         if evt.err is False:
             try:
@@ -168,6 +168,7 @@ class CentralNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
+
     def init_device(self):
         # PROTECTED REGION ID(CentralNode.init_device) ENABLED START #
         """ Initializes the attributes and properties of the Central Node. """
@@ -287,7 +288,6 @@ class CentralNode(SKABaseDevice):
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CentralNode.activity_message_write
 
-
     # --------
     # Commands
     # --------
@@ -300,9 +300,9 @@ class CentralNode(SKABaseDevice):
     def StowAntennas(self, argin):
         # PROTECTED REGION ID(CentralNode.StowAntennas) ENABLED START #
         """
-        :param argin: List of Receptors to be stowed.
-        :return:
         Stows the specified receptors.
+        :param argin: List of Receptors to be stowed.
+        :return: None
         """
         self.devlogmsg(CONST.STR_STOW_CMD_ISSUED_CN, int(tango.LogLevel.LOG_INFO))
         self._read_activity_message = CONST.STR_STOW_CMD_ISSUED_CN
@@ -367,15 +367,13 @@ class CentralNode(SKABaseDevice):
 # Run server
 # ----------
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CentralNode.main) ENABLED START #
     """
     Runs the CentralNode.
-    :param args:
-    :param kwargs:
-    :return:
-    CentralNode TANGO object.
+    :param args: Arguments internal to TANGO
+    :param kwargs: Arguments internal to TANGO
+    :return: CentralNode TANGO object.
     """
     return run((CentralNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CentralNode.main
