@@ -16,6 +16,6 @@ description = """Provides the monitoring and control interface required by users
 other TM Components (such as OET, Central Node) for a Subarray."""
 author = "jyotin.ska"
 author_email = "jyotin.ska at gmail.com"
-license = """GPL"""
+license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
