@@ -1,0 +1,2 @@
+.. automodule:: DishMaster
+    :members: DishMaster

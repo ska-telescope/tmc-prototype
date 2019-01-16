@@ -1,0 +1,2 @@
+.. automodule:: SubarrayNode
+    :members: SubarrayNode
