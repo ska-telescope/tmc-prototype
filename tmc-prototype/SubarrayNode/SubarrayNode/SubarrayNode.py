@@ -9,26 +9,21 @@
 
 """ Subarray Node
 
-Provides the monitoring and control interface required by users as well as 
+Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
 
-# PyTango imports
-import random
-import string
-
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
+# tango imports
+import tango
+from tango import DebugIt, DevState, AttrWriteType, PipeWriteType, AttrQuality, DispLevel
+from tango.server import run, Device, DeviceMeta, attribute, command, device_property
 from SKASubarray import SKASubarray
+
 # Additional import
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
-import tango
+import random
+import string
+import CONST
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 __all__ = ["SubarrayNode", "main"]
@@ -36,7 +31,7 @@ __all__ = ["SubarrayNode", "main"]
 
 class SubarrayNode(SKASubarray):
     """
-    Provides the monitoring and control interface required by users as well as 
+    Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
     """
     __metaclass__ = DeviceMeta
@@ -48,65 +43,66 @@ class SubarrayNode(SKASubarray):
     )
     @DebugIt()
     def Scan(self, argin):
-
+        """
+        Schedules a scan for execution on a subarray. Command has a parameter which
+        indicates the time (TAI) at which the Scan will start. Subarray transitions to
+        obsState = SCANNING, when the execution of a scan starts.
+        :param argin: String array with Scan start time as first element.
+        :return: None
+        """
         try:
-            print "argin in Scan:", argin
+            print CONST.STR_SCAN_IP_ARG, argin
             if type(float(argin[0])) == float:
-                assert self._obs_state == 0, "Scan is already in progress"
-
-                print "Scan inputs Arguments :-> ", argin
-                print "Group Definitions in scan function :-> ", self._dish_leaf_node_group.get_device_list()
-
-                self._read_activity_message = "Scan inputs Arguments :-> " + str(argin)
-                self._read_activity_message = "Group Definitions in scan function :-> " + str(self._dish_leaf_node_group.get_device_list())
-
-                cmdData = PyTango.DeviceData()
-                cmdData.insert(PyTango.DevString, argin[0])
-                self._dish_leaf_node_group.command_inout("Scan", cmdData)
-                self._obs_state = 3                                                                                         # set obsState to SCANNING when the scan is started
-                self.set_status("Subarray is scanning at the desired pointing coordinates.")
-                self.devlogmsg("Subarray is scanning at the desired pointing coordinates.", 4)
-
-        except Exception as e:
-            print "Exception in Scan command:"
-            print e
-
-            self._read_activity_message = "Exception in Scan command: \n " + str(e)
-
-            self.devlogmsg("Exception occurred while Subarray is scanning at the desired pointing coordinates.", 2)
+                assert self._obs_state != 3, CONST.SCAN_ALREADY_IN_PROGRESS
+                print CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list()
+                self._read_activity_message = CONST.STR_SCAN_IP_ARG + str(argin)
+                self._read_activity_message = CONST.STR_GRP_DEF + str(
+                    self._dish_leaf_node_group.get_device_list())
+                cmdData = tango.DeviceData()
+                cmdData.insert(tango.DevString, argin[0])
+                self._dish_leaf_node_group.command_inout(CONST.CMD_SCAN, cmdData)
+                # set obsState to SCANNING when the scan is started
+                self._obs_state = 3
+                self.set_status(CONST.STR_SA_SCANNING)
+                self.devlogmsg(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
+        except Exception as except_occured:
+            print CONST.ERR_SCAN_CMD, "\n", except_occured
+            self._read_activity_message = CONST.ERR_SCAN_CMD + str(except_occured)
+            self.devlogmsg(CONST.ERR_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
 
     def is_Scan_allowed(self):
-        return self.get_state() not in [DevState.FAULT,DevState.UNKNOWN,DevState.DISABLE,DevState.STANDBY]
-    
+        """ This method is an internal construct of TANGO """
+        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+                                        DevState.STANDBY]
     @command(
     )
     @DebugIt()
     def EndScan(self):
-
+        """ Ends the scan. It can be either an automatic or an externally triggered transition
+        after the scanning completes normally.
+        """
         try:
-            assert self._obs_state == 3, "Scan is already completed"
+            assert self._obs_state == 3, CONST.SCAN_ALREADY_COMPLETED
             if self._obs_state == 3:
-                print "Group Definitions in EndScan function :-> ", self._dish_leaf_node_group.get_device_list()
-                cmdData = PyTango.DeviceData()
-                cmdData.insert(PyTango.DevString, "0")
-                self._dish_leaf_node_group.command_inout("EndScan", cmdData)
-                self._obs_state = 0                                                                                         # set obsState to IDLE when the scan is ended
+                print CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list()
+                cmdData = tango.DeviceData()
+                cmdData.insert(tango.DevString, "0")
+                self._dish_leaf_node_group.command_inout(CONST.CMD_END_SCAN, cmdData)
+                # set obsState to IDLE when the scan is ended
+                self._obs_state = 0
                 self._scan_id = ""
                 self._sb_id = ""
-                self.set_status("Scan is completed")
-                self.devlogmsg("Scan is completed", 4)
-
-        except Exception as e:
-            print "Exception in EndScan command:"
-            print e
-
-            self._read_activity_message = "Exception in EndScan command: \n " + str(e)
-
-            self.devlogmsg("Exception occurred while ending the scan on Subarray.", 2)
+                self.set_status(CONST.STR_SCAN_COMPLETE)
+                self.devlogmsg(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
+        except Exception as except_occured:
+            print CONST.ERR_END_SCAN_CMD, "\n", except_occured
+            self._read_activity_message = CONST.ERR_END_SCAN_CMD + str(except_occured)
+            self.devlogmsg(CONST.ERR_END_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
 
     def is_EndScan_allowed(self):
-        return self.get_state() not in [DevState.FAULT,DevState.UNKNOWN,DevState.DISABLE,DevState.STANDBY]
-
+        """ This method is an internal construct of TANGO """
+        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+                                        DevState.STANDBY]
 
     @command(
         dtype_in=('str',),
@@ -116,87 +112,54 @@ class SubarrayNode(SKASubarray):
     )
     @DebugIt()
     def AssignResources(self, argin):
-
+        """
+        Assigns resources to the Subarray.
+        :param argin: List of receptors.
+        :return: List of Resources added to the Subarray.
+        """
         try:
             for leafId in range(0, len(argin)):
                 if type(float(argin[leafId])) == float:
                     pass
-
             for leafId in range(0, len(argin)):
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  argin[leafId])
-                devProxy = PyTango.DeviceProxy(self.DishLeafNodePrefix + argin[leafId])
+                devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + argin[leafId])
                 self._dish_leaf_node_proxy.append(devProxy)
-                self._event_id = devProxy.subscribe_event("dishHealthState",
-                                                        PyTango.EventType.CHANGE_EVENT,
-                                                        self.setHealth,
-                                                        stateless=True)
+                self._event_id = devProxy.subscribe_event(CONST.EVT_DISH_HEALTH_STATE,
+                                                          tango.EventType.CHANGE_EVENT,
+                                                          self.setHealth,
+                                                          stateless=True)
                 self.testDeviceVsEventID[devProxy] = self._event_id
                 self._health_event_id.append(self._event_id)
                 self._receptor_id_list.append(int(argin[leafId]))
                 self.dishHealthStateMap[devProxy] = -1
-            print 'self.testDeviceVsEventID ', self.testDeviceVsEventID
-            print "Group definition :-> ", self._dish_leaf_node_group.get_device_list(True)
-            print "LeafNode proxies :-> ", self._dish_leaf_node_proxy
-
-            self._read_activity_message = "Group definition :-> " + str(self._dish_leaf_node_group.get_device_list(True))
-            self._read_activity_message = "LeafNode proxies :-> " + str(self._dish_leaf_node_proxy)
-
-            print "Subscribing HealthState attributes of Leaf Nodes..."
-
-            self._read_activity_message = "Subscribing HealthState attributes of Leaf Nodes..."
-
-            '''for leaf in range(0, len(self._dish_leaf_node_proxy)):
-                self.dishHealthStateMap[self._dish_leaf_node_proxy[leaf]] = -1
-
-
-
-            for leaf in range(0, len(self._dish_leaf_node_proxy)):
-                self._event_id = (self._dish_leaf_node_proxy[leaf]).subscribe_event("dishHealthState",
-                                                                                  PyTango.EventType.CHANGE_EVENT,
-                                                                                  self.setHealth,
-                                                                                  stateless=True)
-                 
-
-            # for leaf in range(len(self._dish_leaf_node_proxy)-1, len(self._dish_leaf_node_proxy)-1-len(argin), -1 ):
-            #     self._event_id = self._dish_leaf_node_proxy[leaf].subscribe_event("dishHealthState",
-            #                                                                            PyTango.EventType.CHANGE_EVENT,
-            #                                                                            self.setHealth,
-            #                                                                            stateless=True)
-            #
-
-            # self._health_event_id.append(self._dish_leaf_node_proxy[0].subscribe_event("dishHealthState",
-            #                                                                             PyTango.EventType.CHANGE_EVENT,
-            #                                                                             self.setHealth,
-            #                                                                             stateless=True))
-            # self._health_event_id.append(self._dish_leaf_node_proxy[1].subscribe_event("dishHealthState",
-            #                                                                               PyTango.EventType.CHANGE_EVENT,
-            #                                                                               self.setHealth,
-            #                                                                               stateless=True))
-
-
-                self._health_event_id.append(self._event_id)'''
-            print "DishHealth EventID array is:" , self._health_event_id
-
-            self._read_activity_message = "DishHealth EventID array is:" +  str(self._health_event_id)
-
-            self.set_state(DevState.ON)                                                                                 # Set state = ON
-            self._obs_state = 0                                                                                         # set obsState to "IDLE"
-            self.set_status("Receptors are assigned successfully.")
-            self.devlogmsg("Receptors are assigned successfully.", 4)
-
-        except Exception as e:
-            print "Exception in AssignResources command:"
-            print e
-
-            self._read_activity_message = "Exception in AssignResources command: \n " + str(e)
-
-            self.devlogmsg("Exception occurred in AssignResources command.", 2)
-            argin = str(e)
-
+            print CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID
+            print CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list(True)
+            print CONST.STR_LN_PROXIES, self._dish_leaf_node_proxy
+            self._read_activity_message = CONST.STR_GRP_DEF + str(
+                self._dish_leaf_node_group.get_device_list(True))
+            self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
+            print CONST.STR_SUBS_HEALTH_ST_LN
+            self._read_activity_message = CONST.STR_SUBS_HEALTH_ST_LN
+            print CONST.STR_HS_EVNT_ID, self._health_event_id
+            self._read_activity_message = CONST.STR_HS_EVNT_ID +  str(self._health_event_id)
+            # Set state = ON
+            self.set_state(DevState.ON)
+            # set obsState to "IDLE"
+            self._obs_state = 0
+            self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
+            self.devlogmsg(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        except Exception as except_occured:
+            print CONST.ERR_ASSIGN_RES_CMD, "\n", except_occured
+            self._read_activity_message = CONST.ERR_ASSIGN_RES_CMD + str(except_occured)
+            self.devlogmsg(CONST.ERR_ASSIGN_RES_CMD, int(tango.LogLevel.LOG_ERROR))
+            argin = str(except_occured)
         return argin
 
     def is_AssignResources_allowed(self):
-        return self.get_state() not in [DevState.FAULT,DevState.UNKNOWN,DevState.DISABLE,DevState.STANDBY]
+        """Checks if AssignResources is allowed in the current state of SubarrayNode."""
+        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+                                        DevState.STANDBY]
 
     @command(
         dtype_out=('str',),
@@ -204,144 +167,118 @@ class SubarrayNode(SKASubarray):
     )
     @DebugIt()
     def ReleaseAllResources(self):
-
+        """
+        Releases all the resources from the Subarray.
+        :return: List of resources removed.
+        """
         argout = []
         try:
-            assert self.testDeviceVsEventID != {}, "Resources are already released from Subarray"
+            assert self.testDeviceVsEventID != {}, CONST.RESRC_ALREADY_RELEASED
             if self.testDeviceVsEventID != {}:
-                print "Group definition in release function:-> " + str(self._dish_leaf_node_group.get_device_list(True))
+                print CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
                 self._dish_leaf_node_group.remove_all()
-                print "Group definition in release function after removal:-> "+ str(self._dish_leaf_node_group.get_device_list(True))
-
-                self._read_activity_message = "Group definition in release function:-> " + str(self._dish_leaf_node_group.get_device_list(True))
-
+                print CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
+                self._read_activity_message = CONST.STR_GRP_DEF + str(
+                    self._dish_leaf_node_group.get_device_list(True))
                 argout.extend(self._dish_leaf_node_group.get_device_list(True))
-
-                print "Dishproxy list", self._dish_leaf_node_proxy
-                print "health id in Release fun ", self._health_event_id
-                #self._dish_leaf_node_proxy[0].unsubscribe_event(self._health_event_id[0])
-                #self._dish_leaf_node_proxy[1].unsubscribe_event(self._health_event_id[1])
-
-                '''for leaf in range(0, len(self._health_event_id)):
-                    print "DishLeafNode proxy :-> ", self._dish_leaf_node_proxy[leaf]
-                    print "Health Event ID :-> ", self._health_event_id[leaf]
-                    self._dish_leaf_node_proxy[leaf].unsubscribe_event(self._health_event_id[leaf])'''
-                print 'self.testDeviceVsEventID ', self.testDeviceVsEventID
-
+                print CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy
+                print CONST.STR_HEALTH_ID, self._health_event_id
+                print CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID
                 for dev in self.testDeviceVsEventID:
                     dev.unsubscribe_event(self.testDeviceVsEventID[dev])
                 self.testDeviceVsEventID = {}
-                #
-                #     self._dish_leaf_node_proxy[leaf].unsubscribe_event(self._health_event_id[leaf])
-                #     print "after unsubscribing"
                 self._health_event_id = []
                 self._dish_leaf_node_proxy = []
                 del self._receptor_id_list[:]
-
                 self._scan_id = ""
                 self._sb_id = ""
-
-                self.set_state(DevState.OFF)                                                                                # Set state = OFF
-                self._obs_state = 0                                                                                         # set obsState to "IDLE"
-                self.set_status("All the receptors are removed from the Subarray node.")
-                self.devlogmsg("All the receptors are removed from the Subarray node.", 4)
-        except Exception as e:
-            print "Exception in ReleaseAllResources command:"
-            print e
-            print "Dishproxy list", self._dish_leaf_node_proxy
-            print "health id in Release fun ", self._health_event_id
-
-            self._read_activity_message = "Exception in ReleaseAllResources command: \n " + str(e)
-
+                self.set_state(DevState.OFF)    # Set state = OFF
+                self._obs_state = 0             # set obsState to "IDLE"
+                self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
+                self.devlogmsg(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        except Exception as except_occured:
+            print CONST.ERR_RELEASE_RES_CMD, "\n", except_occured
+            print CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy
+            print CONST.STR_HEALTH_ID, self._health_event_id
+            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(except_occured)
             argout = []
-            self.devlogmsg("Exception occurred in ReleaseAllResources command.", 2)
+            self.devlogmsg(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
         return argout
 
     def is_ReleaseAllResources_allowed(self):
-        return self.get_state() not in [DevState.FAULT,DevState.UNKNOWN,DevState.DISABLE,DevState.STANDBY]
+        """Checks if ReleaseAllResources is allowed in the current state of SubarrayNode."""
+        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+                                        DevState.STANDBY]
 
-    def setHealth (self, evt):
-        if (evt.err == False):
+    def setHealth(self, evt):
+        """
+        Retrieves the subscribed DishMaster health state, aggregate them to evaluate
+        health state of the Subarray.
+        :param evt: A TANGO_CHANGE event on DishMaster healthState.
+        :return: None
+        """
+        if evt.err is False:
             try:
                 self._dish_health_state = evt.attr_value.value
                 self.dishHealthStateMap[evt.device] = self._dish_health_state
-                if (self._dish_health_state == 0):
-                    print "Health state of " + str(evt.device) + " :-> OK"
-                    self._read_activity_message = "Health state of " + str(evt.device) + " :-> OK"
-
-                elif (self._dish_health_state == 1):
-                    print "Health state of " + str(evt.device) + " :-> DEGRADED"
-                    self._read_activity_message = "Health state of " + str(evt.device) + " :-> DEGRADED"
-
-                elif (self._dish_health_state == 2):
-                    print "Health state of " + str(evt.device) + " :-> FAILED"
-                    self._read_activity_message = "Health state of " + str(evt.device) + " :-> FAILED"
-
-                elif (self._dish_health_state == 3):
-                    print "Health state of " + str(evt.device) + " :-> UNKNOWN"
-                    self._read_activity_message = "Health state of " + str(evt.device) + " :-> UNKNOWN"
-
+                if self._dish_health_state == CONST.ENUM_OK:
+                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_OK
+                elif self._dish_health_state == CONST.ENUM_DEGRADED:
+                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_DEGRADED
+                elif self._dish_health_state == CONST.ENUM_FAILED:
+                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_FAILED
+                elif self._dish_health_state == CONST.ENUM_UNKNOWN:
+                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + CONST.STR_UNKNOWN
                 else:
-                    print "Dish Health state event returned unknown value! \n", evt
-                    self._read_activity_message = "Dish Health state event returned unknown value! \n" + str(evt)
-
+                    print CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt
+                    self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 #Aggregated Health State
-                failed = 0
-                degraded = 0
-                unknown = 0
-                ok = 0
-                for value in (self.dishHealthStateMap.values()):
+                failed_health_count = 0
+                degraded_health_count = 0
+                unknown_health_count = 0
+                ok_health_count = 0
+                for value in self.dishHealthStateMap.values():
                     if value == 2:
-                        failed = failed + 1
+                        failed_health_count = failed_health_count + 1
                         break
                     elif value == 1:
                         self._health_state = 1
-                        degraded = degraded + 1
+                        degraded_health_count = degraded_health_count + 1
                     elif value == 3:
                         self._health_state = 3
-                        unknown = unknown + 1
-
+                        unknown_health_count = unknown_health_count + 1
                     else:
                         self._health_state = 0
-                        ok = ok + 1
-
-                if ok == len(self.dishHealthStateMap.values()):
+                        ok_health_count = ok_health_count + 1
+                if ok_health_count == len(self.dishHealthStateMap.values()):
                     self._health_state = 0
-
-                elif failed != 0:
+                elif failed_health_count != 0:
                     self._health_state = 2
-
-                elif degraded != 0:
+                elif degraded_health_count   != 0:
                     self._health_state = 1
-
                 else:
                     self._health_state = 3
-
-            except Exception as e:
-                print "Unexpected error while aggregating Health state!\n", e.message
-                self._read_activity_message = "Unexpected error while aggregating Health state!\n" + str(e.message)
-
-                self.devlogmsg("Unexpected error while aggregating Health state.", 2)
+            except Exception as except_occured:
+                print CONST.ERR_AGGR_HEALTH_STATE, except_occured.message
+                self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured.message)
+                self.devlogmsg(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
         else:
-            print "Error event on subscribing HealthState attribute!\n", evt.errors
-            self._read_activity_message = "Error event on subscribing HealthState attribute!\n" + str(evt.errors)
-            self.devlogmsg("Error event on subscribing HealthState attribute.", 2)
-
-
-
+            print CONST.ERR_SUBSR_SA_HEALTH_STATE, evt.errors
+            self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors)
+            self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 
     # -----------------
     # Device Properties
     # -----------------
-
-
-
-
-
-
-
-
 
     DishLeafNodePrefix = device_property(
         dtype='str', default_value="ska_mid/tm_leaf_node/d"
@@ -350,21 +287,6 @@ class SubarrayNode(SKASubarray):
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     scanID = attribute(
         dtype='str',
@@ -379,8 +301,6 @@ class SubarrayNode(SKASubarray):
         access=AttrWriteType.READ_WRITE,
     )
 
-
-
     receptorIDList = attribute(
         dtype=('uint16',),
         max_dim_x=100,
@@ -391,40 +311,43 @@ class SubarrayNode(SKASubarray):
     # ---------------
 
     def init_device(self):
+        """
+        Initializes the attributes and properties of the Subarray node.
+        :return: None
+        """
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
-
         self.set_state(DevState.INIT)
-        self.set_status("Initializing SubarrayNode...")
-        self.SkaLevel = 2                                                                                               # set SKALevel to "2"
-        self._admin_mode = 0                                                                                            # set adminMode to "ON-LINE"
-        self._health_state = 0                                                                                          # set health state to "OK"
-        self._obs_state = 0                                                                                             # set obsState to "IDLE"
-        self._obs_mode = 0                                                                                              # set obsMode to "IDLE"
+        self.set_status(CONST.STR_SA_INIT)
+        self.SkaLevel = 2                       # set SKALevel to "2"
+        self._admin_mode = 0                    # set adminMode to "ON-LINE"
+        self._health_state = 0                  # set health state to "OK"
+        self._obs_state = 0                     # set obsState to "IDLE"
+        self._obs_mode = 0                     # set obsMode to "IDLE"
         self._simulation_mode = False
         self._scan_id = ""
         self._sb_id = ""
         self._receptor_id_list = []
         self.dishHealthStateMap = {}
-
-        self._dish_leaf_node_group = PyTango.Group("DishLeafNode_Group")
+        self._dish_leaf_node_group = tango.Group(CONST.GRP_DISH_LEAF_NODE)
         self._dish_leaf_node_proxy = []
         self._health_event_id = []
         self.testDeviceVsEventID = {}
-        self.set_state(DevState.OFF)                                                                                    # Set state = OFF
-        self._read_activity_message = "Subarray node is initialized successfully."
-        self.set_status("SubarrayNode is initialized successfully.")
-        self.devlogmsg("SubarrayNode is initialized successfully.", 4)
-
+        self.set_state(DevState.OFF)            # Set state = OFF
+        self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
+        self.set_status(CONST.STR_SA_INIT_SUCCESS)
+        self.devlogmsg(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
     def always_executed_hook(self):
+        """ Internal construct of TANGO. """
         # PROTECTED REGION ID(SubarrayNode.always_executed_hook) ENABLED START #
         pass
         # PROTECTED REGION END #    //  SubarrayNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
+        """ Internal construct of TANGO. """
         pass
         # PROTECTED REGION END #    //  SubarrayNode.delete_device
 
@@ -433,85 +356,96 @@ class SubarrayNode(SKASubarray):
     # ------------------
 
     def read_scanID(self):
+        """ Returns the Scan ID. """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
         return self._scan_id
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
     def read_sbID(self):
+        """ Returns the scheduling block ID. """
         # PROTECTED REGION ID(SubarrayNode.sbID_read) ENABLED START #
         return self._sb_id
         # PROTECTED REGION END #    //  SubarrayNode.sbID_read
 
     def read_activityMessage(self):
+        """ Returns activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_read) ENABLED START #
         return self._read_activity_message
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_read
 
     def write_activityMessage(self, value):
+        """ Sets the activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
     def read_receptorIDList(self):
+        """ Returns the receptor IDs allocated to the Subarray. """
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
         return self._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
-
 
     # --------
     # Commands
     # --------
 
     @command(
-    dtype_in=('str',), 
-    doc_in="Pointing parameters of Dish - Azimuth and Elevation Angle.", 
+        dtype_in=('str',),
+        doc_in="Pointing parameters of Dish - Azimuth and Elevation Angle.",
     )
     @DebugIt()
     def Configure(self, argin):
         # PROTECTED REGION ID(SubarrayNode.Configure) ENABLED START #
-
+        """
+        Configures the resources assinged to the Subarray.
+        :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
+        :return: None
+        """
         try:
             for i in range(0, len(argin)):
                 if type(float(argin[i])) == float:
                     pass
-            #print "Input Arguments for Configure command :-> " , argin
-            #print "Group Definitions during Configure command :-> " ,  self._dish_leaf_node_group.get_device_list()
-
-            self._read_activity_message = "Input Arguments for Configure command :-> " + str(argin)
-            self._read_activity_message =  "Group Definitions during Configure command :-> " + str(self._dish_leaf_node_group.get_device_list())
-
-            cmdData = PyTango.DeviceData()
-            cmdData.insert(PyTango.DevVarStringArray, argin)
-            self._obs_state = 1                                                                                         # set obsState to CONFIGURING when the configuration is started
-            self._dish_leaf_node_group.command_inout("Configure", cmdData)
-            self._obs_state = 2                                                                                         # set obsState to READY when the configuration is completed
+            self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
+            self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN + str(
+                self._dish_leaf_node_group.get_device_list())
+            cmdData = tango.DeviceData()
+            cmdData.insert(tango.DevVarStringArray, argin)
+            # set obsState to CONFIGURING when the configuration is started
+            self._obs_state = 1
+            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
+            # set obsState to READY when the configuration is completed
+            self._obs_state = 2
             self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-            self.devlogmsg("Configure command invoked on Subarray", 4)
-        except Exception as e:
-            print "Exception in Configure command:"
-            print e
-
-            self._read_activity_message = "Exception in Configure command: \n " + str(e)
-
-            self.devlogmsg("Exception occurred in Configure command.", 2)
-
+            self.devlogmsg(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+        except Exception as except_occured:
+            print CONST.ERR_CONFIGURE_CMD, "\n", except_occured
+            self._read_activity_message = CONST.ERR_CONFIGURE_CMD + str(except_occured)
+            self.devlogmsg(CONST.ERR_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  SubarrayNode.Configure
 
     def is_Configure_allowed(self):
         # PROTECTED REGION ID(SubarrayNode.is_Configure_allowed) ENABLED START #
-        return self.get_state() not in [DevState.FAULT,DevState.UNKNOWN,DevState.DISABLE,DevState.STANDBY]
+        """ Checks if the Configure command is allowed in the current state of the Subarray. """
+        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+                                        DevState.STANDBY]
         # PROTECTED REGION END #    //  SubarrayNode.is_Configure_allowed
 
 # ----------
 # Run server
 # ----------
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SubarrayNode.main) ENABLED START #
+    """
+    Runs the SubarrayNode.
+    :param args: Arguments internal to TANGO
+    :param kwargs: Arguments internal to TANGO
+    :return: SubarrayNode TANGO object.
+    """
     return run((SubarrayNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SubarrayNode.main
+
 
 if __name__ == '__main__':
     main()

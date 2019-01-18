@@ -35,7 +35,7 @@ setup(name=name,
       entry_points={'console_scripts':['SubarrayNode = SubarrayNode:main']},
       author='jyotin.ska',
       author_email='jyotin.ska at gmail.com',
-      license='GPL',
+      license='BSD-3-Clause',
       long_description=long_description,
       url='www.tango-controls.org',
       platforms="All Platforms"
