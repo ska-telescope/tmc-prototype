@@ -15,6 +15,6 @@ version_info = version.split(".")
 description = """SKA Dish Master TANGO device server"""
 author = "apurva.ska"
 author_email = "apurva.ska at gmail.com"
-license = """GPL"""
+license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
