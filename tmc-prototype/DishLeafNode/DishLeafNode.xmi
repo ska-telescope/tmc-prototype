@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="DishLeafNode" pogoRevision="9.4">
-    <description description="A Leaf control node for DishMaster." title="" sourcePath="/home/rajiv/tmc_prototype_github/branch_story-AT1-122/tmc-prototype/tmc-prototype/DishLeafNode" language="PythonHL" filestogenerate="XMI   file,Code files,Python Package,Protected Regions,Sphinx,html Pages" license="GPL" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
+    <description description="A Leaf control node for DishMaster." title="" sourcePath="/home/rajiv/tmc_prototype_github/branch_story-AT1-122/tmc-prototype/tmc-prototype/DishLeafNode" language="PythonHL" filestogenerate="XMI   file,Code files,Python Package,Protected Regions,Sphinx,html Pages" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <inheritances classname="SKABaseDevice" sourcePath="../lmc-base-classes/skabase/SKABaseDevice"/>
       <identification contact="at gmail.com - jyotin.ska" author="jyotin.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
