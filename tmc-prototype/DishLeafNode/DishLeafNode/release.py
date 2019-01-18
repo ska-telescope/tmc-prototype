@@ -15,6 +15,6 @@ version_info = version.split(".")
 description = """A Leaf control node for DishMaster."""
 author = "jyotin.ska"
 author_email = "jyotin.ska at gmail.com"
-license = """GPL"""
+license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
