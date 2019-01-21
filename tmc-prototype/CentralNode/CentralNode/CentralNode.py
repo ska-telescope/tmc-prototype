@@ -102,11 +102,11 @@ class CentralNode(SKABaseDevice):
             except Exception as except_occured:
                 print CONST.ERR_AGGR_HEALTH_STATE, except_occured
                 self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
-                self.devlogmsg(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+                self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
         else:
             print CONST.ERR_SUBSR_SA_HEALTH_STATE, evt
             self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
-            self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+            self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
     # -----------------
@@ -181,7 +181,7 @@ class CentralNode(SKABaseDevice):
         except Exception as except_occured:
             print CONST.ERR_INIT_PROP_ATTR_CN
             self._read_activity_message = CONST.ERR_INIT_PROP_ATTR_CN
-            self.devlogmsg(CONST.ERR_INIT_PROP_ATTR_CN, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_INIT_PROP_ATTR_CN, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
             print CONST.STR_ERR_MSG, except_occured
         #  Get Dish Leaf Node devices List
@@ -196,7 +196,7 @@ class CentralNode(SKABaseDevice):
         except Exception as except_occured:
             print CONST.ERR_IN_READ_DISH_LN_DEVS, except_occured
             self._read_activity_message = CONST.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
-            self.devlogmsg(CONST.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
         '''
         for dish in range(1, (self.NumDishes+1)):
             self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
@@ -210,7 +210,7 @@ class CentralNode(SKABaseDevice):
                                                                                   name])
                 print CONST.STR_ERR_MSG, except_occured
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-                self.devlogmsg(CONST.ERR_IN_CREATE_PROXY, int(tango.LogLevel.LOG_ERROR))
+                self.dev_logging(CONST.ERR_IN_CREATE_PROXY, int(tango.LogLevel.LOG_ERROR))
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
@@ -222,7 +222,7 @@ class CentralNode(SKABaseDevice):
                 print CONST.ERR_SUBSR_SA_HEALTH_STATE, self.TMMidSubarrayNodes[subarray]
                 self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(self.TMMidSubarrayNodes[
                                                                                         subarray])
-                self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
+                self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
                 print CONST.STR_ERR_MSG, except_occured
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
         # PROTECTED REGION END #    //  CentralNode.init_device
@@ -301,7 +301,7 @@ class CentralNode(SKABaseDevice):
             for leafId in range(0, len(argin)):
                 if type(float(argin[leafId])) == float:
                     pass
-            self.devlogmsg(CONST.STR_STOW_CMD_ISSUED_CN, int(tango.LogLevel.LOG_INFO))
+            self.dev_logging(CONST.STR_STOW_CMD_ISSUED_CN, int(tango.LogLevel.LOG_INFO))
             self._read_activity_message = CONST.STR_STOW_CMD_ISSUED_CN
             for i in range(0, len(argin)):
                 device_name = self.DishLeafNodePrefix + argin[i]
@@ -313,7 +313,7 @@ class CentralNode(SKABaseDevice):
                     self._read_activity_message = CONST.ERR_EXE_STOW_CMD + str(device_name)
                     print CONST.STR_ERR_MSG, except_occured
                     self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-                    self.devlogmsg(CONST.STR_ERR_MSG, int(tango.LogLevel.LOG_ERROR))
+                    self.dev_logging(CONST.STR_ERR_MSG, int(tango.LogLevel.LOG_ERROR))
         except Exception as except_occured:
             print CONST.ERR_EXE_STOW_CMD, except_occured
             self._read_activity_message = CONST.ERR_EXE_STOW_CMD + str(except_occured)
@@ -325,7 +325,7 @@ class CentralNode(SKABaseDevice):
     def StandByTelescope(self):
         # PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
         """ Set the Elements into STANDBY state (i.e. Low Power State). """
-        self.devlogmsg(CONST.STR_STANDBY_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
+        self.dev_logging(CONST.STR_STANDBY_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
         self._read_activity_message = CONST.STR_STANDBY_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
@@ -336,7 +336,7 @@ class CentralNode(SKABaseDevice):
                                                                                   name])
                 print CONST.STR_ERR_MSG, except_occured
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-                self.devlogmsg(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
+                self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
     @command(
@@ -345,7 +345,7 @@ class CentralNode(SKABaseDevice):
     def StartUpTelescope(self):
         # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
         """ Set the Elements into ON state from STANDBY state."""
-        self.devlogmsg(CONST.STR_STARTUP_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
+        self.dev_logging(CONST.STR_STARTUP_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
         self._read_activity_message = CONST.STR_STARTUP_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
@@ -356,7 +356,7 @@ class CentralNode(SKABaseDevice):
                                                                                   name])
                 print CONST.STR_ERR_MSG, except_occured
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-                self.devlogmsg(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
+                self.dev_logging(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
 # ----------

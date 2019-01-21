@@ -59,7 +59,7 @@ def tango_context(request): #, dishmaster_context):
     print "klass is:", klass
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'DishMasterFQDN': "tango://apurva-pc:10000/mid_d0001/elt/master",
+                  'DishMasterFQDN': "mid_d0001/elt/master",
                   }
 
     print "In tango_context", properties['DishMasterFQDN']
@@ -82,5 +82,5 @@ def initialize_device(tango_context):
 
 @pytest.fixture(scope="class")
 def create_dish_proxy():
-    dish_proxy = DeviceProxy("tango://apurva-pc:10000/mid_d0001/elt/master")
+    dish_proxy = DeviceProxy("mid_d0001/elt/master")
     return dish_proxy

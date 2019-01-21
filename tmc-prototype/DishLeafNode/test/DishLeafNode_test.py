@@ -20,6 +20,7 @@ import time
 import pytest
 import DishLeafNode.DishLeafNode.CONST as CONST
 from mock import MagicMock
+import tango
 from tango import DevState, EventType
 from DishLeafNode.DishLeafNode import DishLeafNode
 
@@ -236,26 +237,23 @@ class TestDishLeafNode(object):
     def test_centralLoggingLevel(self, tango_context):
         """Test for centralLoggingLevel"""
         # PROTECTED REGION ID(DishLeafNode.test_centralLoggingLevel) ENABLED START #
-        level = 5
-        tango_context.device.centralLoggingLevel = level
-        assert tango_context.device.centralLoggingLevel == level
+        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
+        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  DishLeafNode.test_centralLoggingLevel
 
     def test_elementLoggingLevel(self, tango_context):
         """Test for elementLoggingLevel"""
         # PROTECTED REGION ID(DishLeafNode.test_elementLoggingLevel) ENABLED START #
-        level = 5
-        tango_context.device.elementLoggingLevel = level
-        assert tango_context.device.elementLoggingLevel == level
+        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
+        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  DishLeafNode.test_elementLoggingLevel
 
     def test_storageLoggingLevel(self, tango_context):
         """Test for storageLoggingLevel"""
         # PROTECTED REGION ID(DishLeafNode.test_storageLoggingLevel) ENABLED START #
         #self.device.storageLoggingLevel
-        level = 5
-        tango_context.device.storageLoggingLevel = level
-        assert tango_context.device.storageLoggingLevel == level
+        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
+        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  DishLeafNode.test_storageLoggingLevel
 
     def test_healthState(self, tango_context):
@@ -308,7 +306,7 @@ class TestDishLeafNode(object):
                                                 EventType.CHANGE_EVENT,
                                                 DishLeafNode.dishModeCallback)
         time.sleep(2)
-        assert tango_context.device.activityMessage == CONST.STR_DISH_OPERATE_MODE
+        assert tango_context.device.activityMessage == CONST.STR_DISH_OPERATE_MODE or CONST.STR_SETOPERATE_SUCCESS
         assert create_dish_proxy.dishMode == "OPERATE" or 8
         create_dish_proxy.unsubscribe_event(eid)
 

@@ -18,7 +18,8 @@ sys.path.insert(0, os.path.abspath(path))
 # Imports
 from time import sleep
 from mock import MagicMock
-from PyTango import DevFailed, DevState
+import tango
+from tango import DevFailed, DevState
 #from devicetest import DeviceTestCase, main
 import pytest
 from SubarrayNode import SubarrayNode
@@ -218,9 +219,8 @@ class TestSubarrayNode(object):
     def test_centralLoggingLevel(self, tango_context):
         """Test for centralLoggingLevel"""
         # PROTECTED REGION ID(SubarrayNode.test_centralLoggingLevel) ENABLED START #
-        level = 5
-        tango_context.device.centralLoggingLevel = level
-        assert tango_context.device.centralLoggingLevel == level
+        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
+        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  SubarrayNode.test_centralLoggingLevel
 
     def test_configurationDelayExpected(self, tango_context):
@@ -246,9 +246,8 @@ class TestSubarrayNode(object):
     def test_elementLoggingLevel(self, tango_context):
         """Test for elementLoggingLevel"""
         # PROTECTED REGION ID(SubarrayNode.test_elementLoggingLevel) ENABLED START #
-        level = 5
-        tango_context.device.elementLoggingLevel = level
-        assert tango_context.device.elementLoggingLevel == level
+        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
+        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  SubarrayNode.test_elementLoggingLevel
 
     def test_healthState(self, tango_context):
@@ -280,9 +279,8 @@ class TestSubarrayNode(object):
     def test_storageLoggingLevel(self, tango_context):
         """Test for storageLoggingLevel"""
         # PROTECTED REGION ID(SubarrayNode.test_storageLoggingLevel) ENABLED START #
-        level = 5
-        tango_context.device.storageLoggingLevel = level
-        assert tango_context.device.storageLoggingLevel == level
+        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
+        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  SubarrayNode.test_storageLoggingLevel
 
     def test_testMode(self, tango_context):

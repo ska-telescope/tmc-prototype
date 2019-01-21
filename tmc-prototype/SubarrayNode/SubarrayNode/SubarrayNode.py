@@ -64,11 +64,11 @@ class SubarrayNode(SKASubarray):
                 # set obsState to SCANNING when the scan is started
                 self._obs_state = 3
                 self.set_status(CONST.STR_SA_SCANNING)
-                self.devlogmsg(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
+                self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_SCAN_CMD, "\n", except_occured
             self._read_activity_message = CONST.ERR_SCAN_CMD + str(except_occured)
-            self.devlogmsg(CONST.ERR_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -93,11 +93,11 @@ class SubarrayNode(SKASubarray):
                 self._scan_id = ""
                 self._sb_id = ""
                 self.set_status(CONST.STR_SCAN_COMPLETE)
-                self.devlogmsg(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
+                self.dev_logging(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_END_SCAN_CMD, "\n", except_occured
             self._read_activity_message = CONST.ERR_END_SCAN_CMD + str(except_occured)
-            self.devlogmsg(CONST.ERR_END_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_END_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
 
     def is_EndScan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -148,11 +148,11 @@ class SubarrayNode(SKASubarray):
             # set obsState to "IDLE"
             self._obs_state = 0
             self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
-            self.devlogmsg(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_ASSIGN_RES_CMD, "\n", except_occured
             self._read_activity_message = CONST.ERR_ASSIGN_RES_CMD + str(except_occured)
-            self.devlogmsg(CONST.ERR_ASSIGN_RES_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_ASSIGN_RES_CMD, int(tango.LogLevel.LOG_ERROR))
             argin = str(except_occured)
         return argin
 
@@ -195,14 +195,14 @@ class SubarrayNode(SKASubarray):
                 self.set_state(DevState.OFF)    # Set state = OFF
                 self._obs_state = 0             # set obsState to "IDLE"
                 self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
-                self.devlogmsg(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.dev_logging(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_RELEASE_RES_CMD, "\n", except_occured
             print CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy
             print CONST.STR_HEALTH_ID, self._health_event_id
             self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(except_occured)
             argout = []
-            self.devlogmsg(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
         return argout
 
     def is_ReleaseAllResources_allowed(self):
@@ -269,11 +269,11 @@ class SubarrayNode(SKASubarray):
             except Exception as except_occured:
                 print CONST.ERR_AGGR_HEALTH_STATE, except_occured.message
                 self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured.message)
-                self.devlogmsg(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
+                self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
         else:
             print CONST.ERR_SUBSR_SA_HEALTH_STATE, evt.errors
             self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors)
-            self.devlogmsg(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 
     # -----------------
@@ -336,7 +336,7 @@ class SubarrayNode(SKASubarray):
         self.set_state(DevState.OFF)            # Set state = OFF
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
-        self.devlogmsg(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        self.dev_logging(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
     def always_executed_hook(self):
@@ -417,11 +417,11 @@ class SubarrayNode(SKASubarray):
             self._obs_state = 2
             self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-            self.devlogmsg(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+            self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_CONFIGURE_CMD, "\n", except_occured
             self._read_activity_message = CONST.ERR_CONFIGURE_CMD + str(except_occured)
-            self.devlogmsg(CONST.ERR_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  SubarrayNode.Configure
 
     def is_Configure_allowed(self):
