@@ -16,9 +16,8 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import pytest
-from mock import MagicMock
+from tango import DevFailed, DevState
 
-from PyTango import DevState
 
 # PROTECTED REGION ID(SKATestDevice.test_additional_imports) ENABLED START #
 # PROTECTED REGION END #    //  SKATestDevice.test_additional_imports
@@ -113,7 +112,6 @@ class TestSKATestDevice(object):
         # PROTECTED REGION ID(SKATestDevice.test_Reset) ENABLED START #
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  SKATestDevice.test_Reset
-
 
     # PROTECTED REGION ID(SKATestDevice.test_obsState_decorators) ENABLED START #
     # PROTECTED REGION END #    //  SKATestDevice.test_obsState_decorators
@@ -226,5 +224,3 @@ class TestSKATestDevice(object):
         # PROTECTED REGION ID(SKATestDevice.test_testMode) ENABLED START #
         assert tango_context.device.testMode == ''
         # PROTECTED REGION END #    //  SKATestDevice.test_testMode
-
-
