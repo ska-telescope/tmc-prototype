@@ -2,6 +2,7 @@
 STR_ERR_MSG = "Error message is: \n"
 STR_DISH_POINT_INPROG = "Dish is pointing towards the desired coordinates."
 STR_DISH_POINT_SUCCESS = "Dish has pointed towards the desired coordinates."
+STR_DISH_POINT_ALREADY = "Dish is already pointed towards the desired coordinates."
 STR_DISH_STOW_SUCCESS = "Dish is stowed successfully."
 STR_DISH_INIT_SUCCESS = "Dish Master is initialised successfully."
 STR_DISH_STANDBYLP_MODE = "Dish is in STANDBY-LP mode."

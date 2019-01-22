@@ -39,33 +39,37 @@ class DishMaster(SKAMaster):
         if((self._achieved_pointing[1] != self._desired_pointing[1]) |
            (self._achieved_pointing[2] != self._desired_pointing[2])):
             try:
-                self.azimuth_thread = threading.Thread(None, self.azimuth, 'DishMaster')
-                self.elevation_thread = threading.Thread(None, self.elevation, 'DishMaster')
-                self.azimuth_thread.start()
-                self.elevation_thread.start()
+                self.change_azimuth_thread = threading.Thread(None, self.azimuth, 'DishMaster')
+                self.change_elevation_thread = threading.Thread(None, self.elevation, 'DishMaster')
+                self.change_azimuth_thread.start()
+                self.change_elevation_thread.start()
                 self._pointing_state = 1
-
             except Exception as except_occured:
                 print CONST.ERR_EXE_POINT_FN, self.ReceptorNumber
                 print CONST.STR_ERR_MSG, except_occured
+        else:
+            self.set_status(CONST.STR_DISH_POINT_ALREADY)
+            self.dev_logging(CONST.STR_DISH_POINT_ALREADY, int(tango.LogLevel.LOG_INFO))
 
     def azimuth(self):
         """ Calculates the azimuth angle difference. """
         self._pointing_state = 1
+        azimuth_index = 1
         self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
         if self._azimuth_difference > 0.00:
-            self.increment_position([1, self._azimuth_difference])
+            self.increment_position([azimuth_index, self._azimuth_difference])
         elif self._azimuth_difference < 0.00:
-            self.decrement_position([1, abs(self._azimuth_difference)])
+            self.decrement_position([azimuth_index, abs(self._azimuth_difference)])
 
     def elevation(self):
         """ Calculates the elevation angle difference. """
         self._pointing_state = 1
+        elevation_index = 2
         self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
         if self._elevation_difference > 0.00:
-            self.increment_position([2, self._elevation_difference])
+            self.increment_position([elevation_index, self._elevation_difference])
         elif self._elevation_difference < 0.00:
-            self.decrement_position([2, abs(self._elevation_difference)])
+            self.decrement_position([elevation_index, abs(self._elevation_difference)])
 
     def increment_position(self, argin):
         """

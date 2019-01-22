@@ -186,8 +186,6 @@ class DishLeafNode(SKABaseDevice):
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
-                # error = PyTango.DevFailed(*event.errors)
-                # PyTango.Except.print_exception(error)
                 print CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors)
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)

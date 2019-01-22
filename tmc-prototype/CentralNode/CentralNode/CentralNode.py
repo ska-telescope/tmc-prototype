@@ -49,7 +49,7 @@ class CentralNode(SKABaseDevice):
                 else:
                     print CONST.EVT_UNKNOWN_SA
                     self._read_activity_message = CONST.EVT_UNKNOWN_SA
-                self.subarrayHealthStateMap[evt.device] = self._subarray_health_state
+                self.subarray_health_state_map[evt.device] = self._subarray_health_state
                 if self._subarray_health_state == CONST.ENUM_OK:
                     print CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_OK
@@ -78,7 +78,7 @@ class CentralNode(SKABaseDevice):
                 degraded_health_count = 0
                 unknown_health_count = 0
                 ok_health_count = 0
-                for value in self.subarrayHealthStateMap.values():
+                for value in self.subarray_health_state_map.values():
                     if value == CONST.ENUM_FAILED:
                         failed_health_count = failed_health_count + 1
                         break
@@ -91,7 +91,7 @@ class CentralNode(SKABaseDevice):
                     else:
                         self._telescope_health_state = CONST.ENUM_OK
                         ok_health_count = ok_health_count + 1
-                if ok_health_count == len(self.subarrayHealthStateMap.values()):
+                if ok_health_count == len(self.subarray_health_state_map.values()):
                     self._telescope_health_state = CONST.ENUM_OK
                 elif failed_health_count != 0:
                     self._telescope_health_state = CONST.ENUM_FAILED
@@ -174,7 +174,7 @@ class CentralNode(SKABaseDevice):
             self._health_state = CONST.ENUM_OK
             self._admin_mode = 0
             self._telescope_health_state = CONST.ENUM_OK
-            self.subarrayHealthStateMap = {}
+            self.subarray_health_state_map = {}
             self._dish_leaf_node_devices = []
             self._leaf_device_proxy = []
             self.set_status(CONST.STR_INIT_SUCCESS)
@@ -214,7 +214,7 @@ class CentralNode(SKABaseDevice):
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
-                self.subarrayHealthStateMap[subarray_proxy] = -1
+                self.subarray_health_state_map[subarray_proxy] = -1
                 subarray_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE,
                                                EventType.CHANGE_EVENT,
                                                self.subarrayHealthStateCallback, stateless=True)

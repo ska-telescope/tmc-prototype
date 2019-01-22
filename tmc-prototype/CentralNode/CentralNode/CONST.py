@@ -3,8 +3,6 @@ CMD_SET_STOW_MODE = "SetStowMode"
 CMD_SET_STANDBY_MODE = "SetStandbyLPMode"
 CMD_SET_OPERATE_MODE = "SetOperateMode"
 
-
-
 #Event messages
 EVT_UNKNOWN_SA = "Event from the Unknown Subarray device!"
 EVT_SUBSR_SA_HEALTH_STATE = "healthState"
@@ -21,7 +19,6 @@ ERR_EXE_STOW_CMD = "Unexpected error in executing STOW command "
 ERR_EXE_STANDBY_CMD = "Unexpected error in executing STANDBY Telescope command "
 ERR_EXE_STARTUP_CMD = "Unexpected error in executing STARTUP Telescope command "
 
-
 #strings
 #General strings
 STR_HEALTH_STATE = "Health state of "
@@ -37,15 +34,12 @@ STR_STARTUP_CMD_ISSUED = "StartUpTelescope command invoked from Central node"
 STR_INIT_SUCCESS = "CentralNode is initialized successfully."
 STR_FALSE = "False"
 
-
 #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SA1 = "ska_mid/tm_subarray_node/1"
 PROP_DEF_VAL_TM_MID_SA2 = "ska_mid/tm_subarray_node/2"
 PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
 
 GET_DEVICE_LIST_TANGO_DB = "ska_mid/tm_leaf_node/d000*"
-
-
 
 ENUM_LAB_OK = "OK"
 ENUM_LAB_DEGRADED = "DEGRADED"
@@ -58,4 +52,3 @@ ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = range(0, 4)
 #INTEGERS
 INT_SKA_LEVEL = 1
 
-#
