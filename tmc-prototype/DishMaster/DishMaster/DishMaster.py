@@ -4,31 +4,27 @@
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
 """
 SKA Dish Master TANGO device server
 """
 
-# Additional import
-# PROTECTED REGION ID(DishMaster.additionnal_import) ENABLED START #
-import time
-import threading
-from threading import Timer
-
-# tango imports
+# PyTango imports
 import tango
 from tango import DebugIt, DevState, AttrWriteType
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from SKAMaster import SKAMaster
-
+# Additional import
+# PROTECTED REGION ID(DishMaster.additionnal_import) ENABLED START #
+import time
+from threading import Timer
+import threading
 import CONST
-
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
-
 
 class DishMaster(SKAMaster):
     """
@@ -38,39 +34,42 @@ class DishMaster(SKAMaster):
     # PROTECTED REGION ID(DishMaster.class_variable) ENABLED START #
 
     # Function to set achieved pointing attribute to the desired pointing attribute
-
     def point(self):
         """ Points the dish towards the desired pointing coordinates. """
         if((self._achieved_pointing[1] != self._desired_pointing[1]) |
            (self._achieved_pointing[2] != self._desired_pointing[2])):
             try:
-                self.azimuth_thread = threading.Thread(None, self.azimuth, 'DishMaster')
-                self.elevation_thread = threading.Thread(None, self.elevation, 'DishMaster')
-                self.azimuth_thread.start()
-                self.elevation_thread.start()
+                self.change_azimuth_thread = threading.Thread(None, self.azimuth, 'DishMaster')
+                self.change_elevation_thread = threading.Thread(None, self.elevation, 'DishMaster')
+                self.change_azimuth_thread.start()
+                self.change_elevation_thread.start()
                 self._pointing_state = 1
-
             except Exception as except_occured:
                 print CONST.ERR_EXE_POINT_FN, self.ReceptorNumber
                 print CONST.STR_ERR_MSG, except_occured
+        else:
+            self.set_status(CONST.STR_DISH_POINT_ALREADY)
+            self.dev_logging(CONST.STR_DISH_POINT_ALREADY, int(tango.LogLevel.LOG_INFO))
 
     def azimuth(self):
         """ Calculates the azimuth angle difference. """
         self._pointing_state = 1
+        azimuth_index = 1
         self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
         if self._azimuth_difference > 0.00:
-            self.increment_position([1, self._azimuth_difference])
+            self.increment_position([azimuth_index, self._azimuth_difference])
         elif self._azimuth_difference < 0.00:
-            self.decrement_position([1, abs(self._azimuth_difference)])
+            self.decrement_position([azimuth_index, abs(self._azimuth_difference)])
 
     def elevation(self):
         """ Calculates the elevation angle difference. """
         self._pointing_state = 1
+        elevation_index = 2
         self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
         if self._elevation_difference > 0.00:
-            self.increment_position([2, self._elevation_difference])
+            self.increment_position([elevation_index, self._elevation_difference])
         elif self._elevation_difference < 0.00:
-            self.decrement_position([2, abs(self._elevation_difference)])
+            self.decrement_position([elevation_index, abs(self._elevation_difference)])
 
     def increment_position(self, argin):
         """
@@ -86,20 +85,18 @@ class DishMaster(SKAMaster):
             max_increment = abs(self._elevation_difference)
         else:
             max_increment = input_increment
-
         if input_increment == max_increment:
             input_increment = input_increment + 1
-
         for position in range(0, input_increment):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
-            self.devlogmsg(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+            self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             self._pointing_state = 1
             time.sleep(2)
             if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                     self._achieved_pointing[2] == self._desired_pointing[2]):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
-                self.devlogmsg(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:
                 self._achieved_pointing[argin[0]] = self._achieved_pointing[argin[0]] + 1
 
@@ -117,11 +114,8 @@ class DishMaster(SKAMaster):
             max_decrement = abs(self._elevation_difference)
         else:
             max_decrement = input_decrement
-
         if input_decrement == max_decrement:
             input_decrement = input_decrement + 1
-
-
         for position in range(0, (input_decrement)):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self._pointing_state = 1
@@ -130,11 +124,9 @@ class DishMaster(SKAMaster):
                     self._achieved_pointing[2] == self._desired_pointing[2]):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
-                self.devlogmsg(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-
+                self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:
                 self._achieved_pointing[argin[0]] = self._achieved_pointing[argin[0]] - 1
-
 
     def check_slew(self):
         """
@@ -142,24 +134,20 @@ class DishMaster(SKAMaster):
         :return: None
         """
         while True:
-            print"in while loop"
             if self._pointing_state != 1:
-                print "in if loop"
                 self._admin_mode = 1                        # Set adminMode to OFFLINE
-                self.set_state(tango.DevState.DISABLE)      # Set STATE to DISABLE
+                self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
                 self._dish_mode = 6                         # Set dishMode to STOW
                 self._health_state = 0                      # Set healthState to OK
                 self.set_status(CONST.STR_DISH_STOW_SUCCESS)
-                self.devlogmsg(CONST.STR_DISH_STOW_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.dev_logging(CONST.STR_DISH_STOW_SUCCESS, int(tango.LogLevel.LOG_INFO))
                 break
-
 
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
     # Device Properties
     # -----------------
-
     ReceptorNumber = device_property(
         dtype='uint',
     )
@@ -167,7 +155,6 @@ class DishMaster(SKAMaster):
     # ----------
     # Attributes
     # ----------
-
     dishMode = attribute(
         dtype='DevEnum',
         enum_labels=["OFF", "STARTUP", "SHUTDOWN", "STANDBY-LP",
@@ -224,8 +211,6 @@ class DishMaster(SKAMaster):
         unit="km/h",
     )
 
-
-
     desiredPointing = attribute(
         dtype=('double',),
         access=AttrWriteType.READ_WRITE,
@@ -240,7 +225,6 @@ class DishMaster(SKAMaster):
     # ---------------
     # General methods
     # ---------------
-
     def init_device(self):
         """
         Initializes the properties and attributes of DishMaster.
@@ -251,7 +235,6 @@ class DishMaster(SKAMaster):
         try:
             # Initialise Properties
             self.SkaLevel = 1                           # Set SkaLevel to 1
-
             # Initialise Attributes
             self._health_state = 0                      # Set healthState to OK
             self._admin_mode = 0                        # Set adminMode to ONLINE
@@ -264,32 +247,26 @@ class DishMaster(SKAMaster):
             self._band5a_sampler_frequency = 0          # Set Band 5a Sampler Frequency to 0
             self._band5b_sampler_frequency = 0          # Set Band 5b Sampler Frequency to 0
             self._capturing = False
-            self._desired_pointing = [0, 20, 40]
+            self._desired_pointing = [0, 2, 4]
             self._achieved_pointing = [0, 0, 0]
             self._elevation_difference = 0
             self._azimuth_difference = 0
             self._configured_band = 1
             self._wind_speed = 5
-            self.set_state(tango.DevState.STANDBY)    # Set STATE to STANDBY
-
+            self.set_state(DevState.STANDBY)            # Set STATE to STANDBY
             # Initialise Point command variables
             self._current_time = 0
             self._point_execution_time = 0
             self._point_delta_t = 0
-
             # Initialise Scan command variables
             self._scan_execution_time = 0
             self._scan_delta_t = 0
-
             self.set_status(CONST.STR_DISH_INIT_SUCCESS)
-            self.devlogmsg(CONST.STR_DISH_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-
+            self.dev_logging(CONST.STR_DISH_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_INIT_PROP_ATTR_DISH, self.ReceptorNumber
-            self.devlogmsg("Unexpected error in initialising properties and attributes on Dish",
-                           int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_INIT_PROP_ATTR_DISH, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
-
         # PROTECTED REGION END #    //  DishMaster.always_executed_hook
 
     def always_executed_hook(self):
@@ -305,7 +282,6 @@ class DishMaster(SKAMaster):
     # ------------------
     # Attributes methods
     # ------------------
-
     def read_dishMode(self):
         # PROTECTED REGION ID(DishMaster.dishMode_read) ENABLED START #
         """ Returns the dishMode. """
@@ -427,11 +403,9 @@ class DishMaster(SKAMaster):
         return self._achieved_pointing
         # PROTECTED REGION END #    //  DishMaster.achievedPointing_read
 
-
     # --------
     # Commands
     # --------
-
     @command(
     )
     @DebugIt()
@@ -450,12 +424,10 @@ class DishMaster(SKAMaster):
             time.sleep(1)
             self.stow_thread = threading.Thread(None, self.check_slew, 'DishMaster')
             self.stow_thread.start()
-
         except Exception as except_occured:
             print CONST.ERR_EXE_SET_STOW_MODE_CMD, self.ReceptorNumber
-            self.devlogmsg(CONST.ERR_EXE_SET_STOW_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_EXE_SET_STOW_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
-
         # PROTECTED REGION END #    //  DishMaster.SetStowMode
 
     def is_SetStowMode_allowed(self):
@@ -476,16 +448,21 @@ class DishMaster(SKAMaster):
         """
         try:
             # Command to set Dish to STANDBY-LP Mode
-            self.set_state(tango.DevState.STANDBY)     # Set STATE to STANDBY
+            self.set_state(DevState.STANDBY)             # Set STATE to STANDBY
             self._dish_mode = 3                          # set dishMode to STANDBYLP
             self.set_status(CONST.STR_DISH_STANDBYLP_MODE)
-            self.devlogmsg(CONST.STR_DISH_STANDBYLP_MODE, int(tango.LogLevel.LOG_INFO))
-
+            self.dev_logging(CONST.STR_DISH_STANDBYLP_MODE, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, self.ReceptorNumber
-            self.devlogmsg(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.set_status(str(except_occured))
+            self.dev_logging(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
         # PROTECTED REGION END #    //  DishMaster.SetStandbyLPMode
+
+    def is_SetStandbyLPMode_allowed(self):
+        # PROTECTED REGION ID(DishMaster.is_SetMaintenanceMode_allowed) ENABLED START #
+        return self._pointing_state not in [1, 2, 3]
+        # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
 
     @command(
     )
@@ -500,16 +477,14 @@ class DishMaster(SKAMaster):
         try:
             # Command to set Dish to MAINTENANCE Mode
             self._admin_mode = 2                        # Set adminMode to MAINTENANCE
-            self.set_state(tango.DevState.DISABLE)    # Set STATE to DISABLE
+            self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
             self._dish_mode = 5                         # set dishMode to MAINTENANCE
             self.set_status(CONST.STR_DISH_MAINT_MODE)
-            self.devlogmsg(CONST.STR_DISH_MAINT_MODE, int(tango.LogLevel.LOG_INFO))
-
+            self.dev_logging(CONST.STR_DISH_MAINT_MODE, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_EXE_SET_MAINT_MODE_CMD, self.ReceptorNumber
-            self.devlogmsg(CONST.ERR_EXE_SET_MAINT_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_EXE_SET_MAINT_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
-
         # PROTECTED REGION END #    //  DishMaster.SetMaintenanceMode
 
     def is_SetMaintenanceMode_allowed(self):
@@ -530,15 +505,14 @@ class DishMaster(SKAMaster):
         try:
             # Command to set Dish to OPERATE Mode
             self._admin_mode = 0                        # Set adminMode to ONLINE
-            self.set_state(tango.DevState.ON)         # Set STATE to ON
+            self.set_state(DevState.ON)                 # Set STATE to ON
             self._dish_mode = 8                         # set dishMode to OPERATE
             self.set_status(CONST.STR_DISH_OPERATE_MODE)
-            self.devlogmsg(CONST.STR_DISH_OPERATE_MODE, int(tango.LogLevel.LOG_INFO))
+            self.dev_logging(CONST.STR_DISH_OPERATE_MODE, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_EXE_SET_OPERATE_MODE_CMD, self.ReceptorNumber
-            self.devlogmsg(CONST.ERR_EXE_SET_OPERATE_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_EXE_SET_OPERATE_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
-
         # PROTECTED REGION END #    //  DishMaster.SetOperateMode
 
     def is_SetOperateMode_allowed(self):
@@ -570,15 +544,14 @@ class DishMaster(SKAMaster):
                 self._scan_delta_t = self._scan_execution_time - self._current_time
                 schedule_scan_thread = Timer(self._scan_delta_t, self.StartCapture, [argin])
                 schedule_scan_thread.start()
-                self.devlogmsg(CONST.STR_SCAN_INPROG, int(tango.LogLevel.LOG_INFO))
+                self.dev_logging(CONST.STR_SCAN_INPROG, int(tango.LogLevel.LOG_INFO))
             else:
                 self.set_status(CONST.STR_DISH_NOT_READY)
-                self.devlogmsg(CONST.STR_DISH_NOT_READY, int(tango.LogLevel.LOG_INFO))
+                self.dev_logging(CONST.STR_DISH_NOT_READY, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_EXE_SCAN_CMD, self.ReceptorNumber
-            self.devlogmsg(CONST.ERR_EXE_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_EXE_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
-
         # PROTECTED REGION END #    //  DishMaster.Scan
 
     def is_Scan_allowed(self):
@@ -602,16 +575,20 @@ class DishMaster(SKAMaster):
         :return: None
         """
         try:
-            # Command to start Data Capturing
-            self._capturing = True                      # set Capturing to True
-            self._pointing_state = 3                    # set pointingState to SCAN
-            self.set_status(CONST.STR_DATA_CAPTURE_STRT)
-            self.devlogmsg(CONST.STR_DATA_CAPTURE_STRT, int(tango.LogLevel.LOG_INFO))
+            if type(float(argin)) == float:
+                if (self._capturing == False):
+                    # Command to start Data Capturing
+                    self._capturing = True                      # set Capturing to True
+                    self._pointing_state = 3                    # set pointingState to SCAN
+                    self.set_status(CONST.STR_DATA_CAPTURE_STRT)
+                    self.dev_logging(CONST.STR_DATA_CAPTURE_STRT, int(tango.LogLevel.LOG_INFO))
+                else:
+                    self.set_status(CONST.STR_DATA_CAPTURE_ALREADY_STARTED)
+                    self.dev_logging(CONST.STR_DATA_CAPTURE_ALREADY_STARTED, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_EXE_STRT_CAPTURE_CMD, self.ReceptorNumber
-            self.devlogmsg(CONST.ERR_EXE_STRT_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_EXE_STRT_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
-
         # PROTECTED REGION END #    //  DishMaster.StartCapture
 
     def is_StartCapture_allowed(self):
@@ -634,16 +611,20 @@ class DishMaster(SKAMaster):
         :return: None
         """
         try:
-            # Command to stop Data Capturing
-            self._capturing = False                     # set Capturing to FALSE
-            self._pointing_state = 0                    # set pointingState to READY
-            self.set_status(CONST.STR_DATA_CAPTURE_STOP)
-            self.devlogmsg(CONST.STR_DATA_CAPTURE_STOP, int(tango.LogLevel.LOG_INFO))
+            if type(float(argin)) == float:
+                if (self._capturing == True):
+                    # Command to stop Data Capturing
+                    self._capturing = False                     # set Capturing to FALSE
+                    self._pointing_state = 0                    # set pointingState to READY
+                    self.set_status(CONST.STR_DATA_CAPTURE_STOP)
+                    self.dev_logging(CONST.STR_DATA_CAPTURE_STOP, int(tango.LogLevel.LOG_INFO))
+                else:
+                    self.set_status(CONST.STR_DATA_CAPTURE_ALREADY_STOPPED)
+                    self.dev_logging(CONST.STR_DATA_CAPTURE_ALREADY_STOPPED, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_EXE_STOP_CAPTURE_CMD, self.ReceptorNumber
-            self.devlogmsg(CONST.ERR_EXE_STOP_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_EXE_STOP_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
-
         # PROTECTED REGION END #    //  DishMaster.StopCapture
 
     def is_StopCapture_allowed(self):
@@ -664,15 +645,14 @@ class DishMaster(SKAMaster):
         """
         try:
             # Command to set Dish to STANDBY-FP Mode
-            self.set_state(tango.DevState.STANDBY)    # set STATE to STANDBY
+            self.set_state(DevState.STANDBY)            # set STATE to STANDBY
             self._dish_mode = 4                         # set dishMode to STANDBY-FP
             self.set_status(CONST.STR_DISH_STANDBYFP_MODE)
-            self.devlogmsg(CONST.STR_DISH_STANDBYFP_MODE, int(tango.LogLevel.LOG_INFO))
+            self.dev_logging(CONST.STR_DISH_STANDBYFP_MODE, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_EXE_SET_STNBYFP_MODE_CMD, self.ReceptorNumber
-            self.devlogmsg(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
-
         # PROTECTED REGION END #    //  DishMaster.SetStandbyFPMode
 
     def is_SetStandbyFPMode_allowed(self):
@@ -694,23 +674,24 @@ class DishMaster(SKAMaster):
         :return: None
         """
         try:
-            # Execute POINT command at given timestamp
-            self._current_time = time.time()
-            self._point_execution_time = self._desired_pointing[0]
-            self._point_delta_t = self._point_execution_time - self._current_time
-            schedule_slew_thread = Timer(self._point_delta_t, self.point)
-            schedule_slew_thread.start()
-            self.devlogmsg(CONST.STR_DISH_SLEW, int(tango.LogLevel.LOG_INFO))
+            if type(float(argin)) == float:
+                # Execute POINT command at given timestamp
+                self._current_time = time.time()
+                self._point_execution_time = self._desired_pointing[0]
+                self._point_delta_t = self._point_execution_time - self._current_time
+                schedule_slew_thread = Timer(self._point_delta_t, self.point)
+                schedule_slew_thread.start()
+                self.dev_logging(CONST.STR_DISH_SLEW, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print CONST.ERR_EXE_SLEW_CMD, self.ReceptorNumber
-            self.devlogmsg(CONST.ERR_EXE_SLEW_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_EXE_SLEW_CMD, int(tango.LogLevel.LOG_ERROR))
             print CONST.STR_ERR_MSG, except_occured
-
         # PROTECTED REGION END #    //  DishMaster.Slew
 
 # ----------
 # Run server
 # ----------
+
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishMaster.main) ENABLED START #
@@ -722,6 +703,7 @@ def main(args=None, **kwargs):
     """
     return run((DishMaster,), args=args, **kwargs)
     # PROTECTED REGION END #    //  DishMaster.main
+
 
 if __name__ == '__main__':
     main()

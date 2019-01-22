@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="CentralNode" pogoRevision="9.4">
-    <description description="Central Node is a coordinator of the complete M&amp;C system." title="CentralNode" sourcePath="/home/rajiv/tmc-prototype/tmc-prototype/CentralNode" language="PythonHL" filestogenerate="XMI   file,Code files,Python Package,Protected Regions,Sphinx,html Pages" license="GPL" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
+    <description description="Central Node is a coordinator of the complete M&amp;C system." title="CentralNode" sourcePath="/home/rajiv/tmc-prototype/tmc-prototype/CentralNode" language="PythonHL" filestogenerate="XMI   file,Code files,Python Package,Protected Regions,Sphinx,html Pages" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <inheritances classname="SKABaseDevice" sourcePath="../../../tmc-prototype_old/lmc-base-classes/skabase/SKABaseDevice"/>
       <identification contact="at gmail.com - apurva.ska" author="apurva.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
@@ -46,18 +46,18 @@
     <deviceProperties name="TMMidSubarrayNodes" description="List of TM_Mid Subarray TANGO Device Names.">
       <type xsi:type="pogoDsl:StringVectorType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>ska_mid/tm_subarray_node/1</DefaultPropValue>
-      <DefaultPropValue>ska_mid/tm_subarray_node/2</DefaultPropValue>
+      <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_subarray_node/1</DefaultPropValue>
+      <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_subarray_node/2</DefaultPropValue>
     </deviceProperties>
     <deviceProperties name="NumDishes" description="Number of dishes commissioned.">
       <type xsi:type="pogoDsl:UIntType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>4</DefaultPropValue>
+      <DefaultPropValue>1</DefaultPropValue>
     </deviceProperties>
     <deviceProperties name="DishLeafNodePrefix" description="Prefix used to obtain list of dish leaf node devices deployed from the TANGO database.">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>ska_mid/tm_leaf_node/d</DefaultPropValue>
+      <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_leaf_node/d</DefaultPropValue>
     </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="none">

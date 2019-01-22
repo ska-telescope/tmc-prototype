@@ -5,7 +5,6 @@
 #
 #
 
-
 """Release information for Python Package"""
 
 name = """tangods-skalogger"""

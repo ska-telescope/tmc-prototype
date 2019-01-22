@@ -7,24 +7,22 @@
 
 """ SKATestDevice
 
-A generic Test device for testing SKA base class functionalites.
+A generic Test device for testing SKA base class functionalities.
 """
 
-# PyTango imports
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
+# tango imports
+import tango
+from tango import DebugIt
+from tango.server import run
+from tango.server import DeviceMeta, attribute, command
 from SKABaseDevice import SKABaseDevice
+import logging
 # Additional import
+from logging.handlers import SysLogHandler
 # PROTECTED REGION ID(SKATestDevice.additionnal_import) ENABLED START #
 import json
-
 from skabase.utils import (exception_manager, convert_api_value, coerce_value)
+
 # PROTECTED REGION END #    //  SKATestDevice.additionnal_import
 
 __all__ = ["SKATestDevice", "main"]
@@ -32,7 +30,7 @@ __all__ = ["SKATestDevice", "main"]
 
 class SKATestDevice(SKABaseDevice):
     """
-    A generic Test device for testing SKA base class functionalites.
+    A generic Test device for testing SKA base class functionalities.
     """
     __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SKATestDevice.class_variable) ENABLED START #
@@ -42,16 +40,6 @@ class SKATestDevice(SKABaseDevice):
     # Device Properties
     # -----------------
 
-
-
-
-
-
-
-
-
-
-
     # ----------
     # Attributes
     # ----------
@@ -59,13 +47,16 @@ class SKATestDevice(SKABaseDevice):
     obsState = attribute(
         dtype='DevEnum',
         doc="Observing State",
-        enum_labels=["IDLE", "CONFIGURING", "READY", "SCANNING", "PAUSED", "ABORTED", "FAULT", ],
+        enum_labels=["IDLE", "CONFIGURING", "READY", "SCANNING",
+                     "PAUSED", "ABORTED", "FAULT", ],
     )
 
     obsMode = attribute(
         dtype='DevEnum',
         doc="Observing Mode",
-        enum_labels=["IDLE", "IMG_CONTINUUM", "IMG_SPECTRAL_LINE", "IMG_ZOOM", "PULSAR_SEARCH", "TRANSIENT_SEARCH_FAST", "TRANSIENT_SEARCH_SLOW", "PULSAR_TIMING", "VLBI", ],
+        enum_labels=["IDLE", "IMG_CONTINUUM", "IMG_SPECTRAL_LINE", "IMG_ZOOM",
+                     "PULSAR_SEARCH", "TRANSIENT_SEARCH_FAST", "TRANSIENT_SEARCH_SLOW",
+                     "PULSAR_TIMING", "VLBI", ],
     )
 
     configurationProgress = attribute(
@@ -81,16 +72,6 @@ class SKATestDevice(SKABaseDevice):
         unit="seconds",
         doc="Configuration delay expected in seconds",
     )
-
-
-
-
-
-
-
-
-
-
 
     # ---------------
     # General methods
@@ -117,34 +98,46 @@ class SKATestDevice(SKABaseDevice):
 
     def read_obsState(self):
         # PROTECTED REGION ID(SKATestDevice.obsState_read) ENABLED START #
+        """Reads Observing State of the device"""
         return 0
         # PROTECTED REGION END #    //  SKATestDevice.obsState_read
 
     def read_obsMode(self):
         # PROTECTED REGION ID(SKATestDevice.obsMode_read) ENABLED START #
+        """Reads Observing Mode of the device"""
         return 0
         # PROTECTED REGION END #    //  SKATestDevice.obsMode_read
 
     def read_configurationProgress(self):
         # PROTECTED REGION ID(SKATestDevice.configurationProgress_read) ENABLED START #
+        """Reads percentage configuration progress"""
         return 0
         # PROTECTED REGION END #    //  SKATestDevice.configurationProgress_read
 
     def read_configurationDelayExpected(self):
         # PROTECTED REGION ID(SKATestDevice.configurationDelayExpected_read) ENABLED START #
+        """Reads configuration delay expected in seconds"""
         return 0
         # PROTECTED REGION END #    //  SKATestDevice.configurationDelayExpected_read
-
 
     # --------
     # Commands
     # --------
 
     @command(
-    dtype_in='str', 
-    doc_in="JSON encoded dict with this format\n{``group``: str,  # name of existing group\n  ``command``: str, # name of command to run\n  ``arg_type``: str,  # data type of command input argument\n  ``arg_value``: str, # value for command input argument\n  ``forward``: bool  # True if command should be forwarded to all subgroups (default)\n}", 
-    dtype_out='str', 
-    doc_out="Return value from command on the group, as a JSON encoded string.\nThis will be a list of dicts of the form \n[ \n{``device_name``: str,  # TANGO device name\n  ``argout``: <value>,  # return value from command (type depends on command)\n  ``failed``: bool  # True if command failed\n},\n{ ... },\n ... ]", 
+        dtype_in='str',
+        doc_in="JSON encoded dict with this format\n{``group``: str,  # name of existing group\n"
+               "  ``command``: str, # name of command to run\n"
+               "  ``arg_type``: str,  # data type of command input argument\n"
+               "  ``arg_value``: str, # value for command input argument\n"
+               "  ``forward``: bool  # True if command should be forwarded to "
+               "all subgroups (default)\n}",
+        dtype_out='str',
+        doc_out="Return value from command on the group, as a JSON encoded string.\n"
+                "This will be a list of dicts of the form \n[ \n{``device_name``: str,  "
+                "# TANGO device name\n  ``argout``: <value>,  # return value from "
+                "command (type depends on command)\n  ``failed``: bool  # True if command failed\n},"
+                "\n{ ... },\n ... ]",
     )
     @DebugIt()
     def RunGroupCommand(self, argin):
@@ -183,9 +176,11 @@ class SKATestDevice(SKABaseDevice):
 # Run server
 # ----------
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SKATestDevice.main) ENABLED START #
+    """
+    Main entry point of the module.
+    """
     return run((SKATestDevice,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SKATestDevice.main
 

@@ -44,6 +44,12 @@ STR_GRP_DEF_CONFIGURE_FN = "Group Definitions during Configure command :-> "
 
 STR_CONFIGURE_CMD_INVOKED_SA = "Configure command invoked on Subarray"
 
+SCAN_ALREADY_IN_PROGRESS = "Scan is already in progress"
+SCAN_ALREADY_COMPLETED = "Scan is already completed"
+RESRC_ALREADY_RELEASED = "Resources are already released from Subarray"
+STR_FALSE = "False"
+STR_OK = "OK"
+
 
 #Error messages
 ERR_SCAN_CMD = "Exception in Scan command:"
@@ -56,3 +62,7 @@ ERR_CONFIGURE_CMD = "Exception in Configure command: \n "
 
 #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = range(0, 4)
+
+
+
+

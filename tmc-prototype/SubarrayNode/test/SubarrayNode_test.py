@@ -5,7 +5,7 @@
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 """Contain the tests for the Subarray Node."""
 
@@ -18,10 +18,12 @@ sys.path.insert(0, os.path.abspath(path))
 # Imports
 from time import sleep
 from mock import MagicMock
-from PyTango import DevFailed, DevState
+import tango
+from tango import DevFailed, DevState
 #from devicetest import DeviceTestCase, main
 import pytest
 from SubarrayNode import SubarrayNode
+import SubarrayNode.SubarrayNode.CONST as CONST
 
 # Note:
 #
@@ -58,7 +60,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION END #    //  SubarrayNode.test_mocking
 
     def test_properties(self, tango_context):
-        # test the properties
+        """Test for properties"""
         # PROTECTED REGION ID(SubarrayNode.test_properties) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_properties
         pass
@@ -96,7 +98,7 @@ class TestSubarrayNode(object):
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(SubarrayNode.test_Status) ENABLED START #
-        assert tango_context.device.Status() == "SubarrayNode is initialized successfully."
+        assert tango_context.device.Status() == CONST.STR_SA_INIT_SUCCESS
         # PROTECTED REGION END #    //  SubarrayNode.test_Status
 
     def test_State(self, tango_context):
@@ -108,6 +110,10 @@ class TestSubarrayNode(object):
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
+        list = ["a"]
+        tango_context.device.AssignResources(list)
+        assert tango_context.device.State() == DevState.OFF
+        assert tango_context.device.receptorIDList == None
         list = ["0001"]
         tango_context.device.AssignResources(list)
         assert tango_context.device.State() == DevState.ON
@@ -119,8 +125,12 @@ class TestSubarrayNode(object):
     def test_Scan(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
+        tango_context.device.Scan("a")
+        assert tango_context.device.obsState == 0
         tango_context.device.Scan("0")
         assert tango_context.device.obsState == 3
+        tango_context.device.Scan("0")
+        assert CONST.SCAN_ALREADY_IN_PROGRESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
     def test_EndSB(self, tango_context):
@@ -133,6 +143,8 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
         tango_context.device.EndScan()
         assert tango_context.device.obsState == 0
+        tango_context.device.EndScan()
+        assert CONST.SCAN_ALREADY_COMPLETED in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
     def test_ObsState(self, tango_context):
@@ -151,6 +163,8 @@ class TestSubarrayNode(object):
         tango_context.device.ReleaseAllResources()
         assert tango_context.device.obsState == 0
         assert tango_context.device.State() == DevState.OFF
+        tango_context.device.ReleaseAllResources()
+        assert CONST.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
 
     def test_ReleaseResources(self, tango_context):
@@ -161,6 +175,7 @@ class TestSubarrayNode(object):
     def test_Reset(self, tango_context):
         """Test for Reset"""
         # PROTECTED REGION ID(SubarrayNode.test_Reset) ENABLED START #
+        assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  SubarrayNode.test_Reset
 
     def test_Resume(self, tango_context):
@@ -176,6 +191,10 @@ class TestSubarrayNode(object):
     def test_Configure(self, tango_context):
         """Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
+        tango_context.device.Configure(["a", "1"])
+        assert tango_context.device.obsState == 0
+        tango_context.device.Configure(["1","1"])
+        assert tango_context.device.obsState == 2
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
     def test_activationTime(self, tango_context):
@@ -193,15 +212,15 @@ class TestSubarrayNode(object):
     def test_buildState(self, tango_context):
         """Test for buildState"""
         # PROTECTED REGION ID(SubarrayNode.test_buildState) ENABLED START #
-        assert tango_context.device.buildState == "tangods-skabasedevice, 1.0.0, A generic base device for SKA."
+        assert tango_context.device.buildState == (
+            "tangods-skabasedevice, 1.0.0, A generic base device for SKA.")
         # PROTECTED REGION END #    //  SubarrayNode.test_buildState
 
     def test_centralLoggingLevel(self, tango_context):
         """Test for centralLoggingLevel"""
         # PROTECTED REGION ID(SubarrayNode.test_centralLoggingLevel) ENABLED START #
-        level = 5
-        tango_context.device.centralLoggingLevel = level
-        assert tango_context.device.centralLoggingLevel == level
+        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
+        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  SubarrayNode.test_centralLoggingLevel
 
     def test_configurationDelayExpected(self, tango_context):
@@ -227,9 +246,8 @@ class TestSubarrayNode(object):
     def test_elementLoggingLevel(self, tango_context):
         """Test for elementLoggingLevel"""
         # PROTECTED REGION ID(SubarrayNode.test_elementLoggingLevel) ENABLED START #
-        level = 5
-        tango_context.device.elementLoggingLevel = level
-        assert tango_context.device.elementLoggingLevel == level
+        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
+        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  SubarrayNode.test_elementLoggingLevel
 
     def test_healthState(self, tango_context):
@@ -247,7 +265,7 @@ class TestSubarrayNode(object):
     def test_obsState(self, tango_context):
         """Test for obsState"""
         # PROTECTED REGION ID(SubarrayNode.test_obsState) ENABLED START #
-        assert tango_context.device.obsState == 0
+        assert tango_context.device.obsState == 2
         # PROTECTED REGION END #    //  SubarrayNode.test_obsState
 
     def test_simulationMode(self, tango_context):
@@ -261,15 +279,14 @@ class TestSubarrayNode(object):
     def test_storageLoggingLevel(self, tango_context):
         """Test for storageLoggingLevel"""
         # PROTECTED REGION ID(SubarrayNode.test_storageLoggingLevel) ENABLED START #
-        level = 5
-        tango_context.device.storageLoggingLevel = level
-        assert tango_context.device.storageLoggingLevel == level
+        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
+        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  SubarrayNode.test_storageLoggingLevel
 
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(SubarrayNode.test_testMode) ENABLED START #
-        test_mode = "False"
+        test_mode = CONST.STR_FALSE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_testMode
@@ -283,19 +300,19 @@ class TestSubarrayNode(object):
     def test_scanID(self, tango_context):
         """Test for scanID"""
         # PROTECTED REGION ID(SubarrayNode.test_scanID) ENABLED START #
-        assert tango_context.device.scanID == ""
+        assert tango_context.device.scanID != ""
         # PROTECTED REGION END #    //  SubarrayNode.test_scanID
 
     def test_sbID(self, tango_context):
         """Test for sbID"""
         # PROTECTED REGION ID(SubarrayNode.test_sbID) ENABLED START #
-        assert tango_context.device.sbID == ""
+        assert tango_context.device.sbID != ""
         # PROTECTED REGION END #    //  SubarrayNode.test_sbID
 
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(SubarrayNode.test_activityMessage) ENABLED START #
-        message = "OK"
+        message = CONST.STR_OK
         tango_context.device.activityMessage = message
         assert tango_context.device.activityMessage == message
         # PROTECTED REGION END #    //  SubarrayNode.test_activityMessage
@@ -317,7 +334,3 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_receptorIDList) ENABLED START #
         assert tango_context.device.receptorIDList == None
         # PROTECTED REGION END #    //  SubarrayNode.test_receptorIDList
-
-# Main execution
-if __name__ == "__main__":
-    main()
