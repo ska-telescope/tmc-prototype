@@ -22,10 +22,18 @@ def tango_context(request):
     fq_test_class_name = request.cls.__module__
     fq_test_class_name_details = fq_test_class_name.split(".")
     package_name = fq_test_class_name_details[0]
+    print ("package name is: ", package_name)
     class_name = module_name = fq_test_class_name_details[0]
     module = importlib.import_module("{}.{}".format(package_name, module_name))
+    print ("module and class name is: ", module_name, class_name)
     klass = getattr(module, class_name)
-    tango_context = DeviceTestContext(klass, process=False)
+    print("klass is: ", klass)
+    # dishmaster_module = importlib.import_module("{}.{}".format('DishMaster', 'DishMaster'))
+    # klass = getattr(dishmaster_module, 'DishMaster')
+    properties = {'GroupDefinitions': ''}
+    # tango_context = DeviceTestContext(klass, properties=properties)
+    # tango_context.start()
+    tango_context = DeviceTestContext(klass, process=False, properties=properties)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context

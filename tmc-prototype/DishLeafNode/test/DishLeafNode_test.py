@@ -8,17 +8,20 @@
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 """Contain the tests for the ."""
+from __future__ import print_function
 
 # Path
+from builtins import object
 import sys
 import os
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/DishLeafNode"
+sys.path.insert(0, module_path)
 
 # Imports
 import time
 import pytest
-import DishLeafNode.DishLeafNode.CONST as CONST
+import CONST
 from mock import MagicMock
 import tango
 from tango import DevState, EventType
@@ -105,7 +108,7 @@ class TestDishLeafNode(object):
         """Test for SetOperateMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetOperateMode) ENABLED START #
         tango_context.device.SetOperateMode()
-        print tango_context.device.activityMessage
+        print(tango_context.device.activityMessage)
         time.sleep(2)
         assert tango_context.device.activityMessage == (CONST.STR_SETOPERATE_SUCCESS) or (
                                                         CONST.STR_DISH_OPERATE_MODE)
@@ -123,8 +126,8 @@ class TestDishLeafNode(object):
     def test_Configure_invalid_arguments(self, tango_context):
         """Test for Configure_invalid_arguments"""
         tango_context.device.Configure(["a", "b"])
-        print tango_context.device.activityMessage
-        print tango_context.device.activityMessage
+        print(tango_context.device.activityMessage)
+        print(tango_context.device.activityMessage)
         assert CONST.ERR_EXE_CONFIGURE_CMD in tango_context.device.activityMessage
 
     def test_Scan(self, tango_context):
@@ -187,7 +190,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION ID(DishLeafNode.test_SetStandbyFPMode) ENABLED START #
         tango_context.device.SetStandbyFPMode()
         time.sleep(4)
-        print tango_context.device.activityMessage
+        print(tango_context.device.activityMessage)
         assert tango_context.device.activityMessage == (CONST.STR_STANDBYFP_SUCCESS) or (
                                                         CONST.STR_DISH_STANDBYFP_MODE)
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStandbyFPMode
@@ -225,7 +228,7 @@ class TestDishLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "tangods-skabasedevice, 1.0.0, A generic base device for SKA.")
+            "tangods-dishleafnode, 1.0.0, A Leaf control node for DishMaster.")
         # PROTECTED REGION END #    //  DishLeafNode.test_buildState
 
     def test_versionId(self, tango_context):

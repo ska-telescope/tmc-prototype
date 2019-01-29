@@ -2,13 +2,16 @@
 A module defining a list of fixture functions that are shared across all the skabase
 tests.
 """
+from __future__ import absolute_import
 import mock
 import pytest
 import importlib
+import os
+import sys
 
 from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
-import CentralNode.CONST as CONST
+import CentralNode.CentralNode.CONST as CONST
 
 
 @pytest.fixture(scope="class")

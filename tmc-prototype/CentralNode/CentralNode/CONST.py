@@ -1,4 +1,5 @@
 # In/Out command constants
+from builtins import range
 CMD_SET_STOW_MODE = "SetStowMode"
 CMD_SET_STANDBY_MODE = "SetStandbyLPMode"
 CMD_SET_OPERATE_MODE = "SetOperateMode"
@@ -47,7 +48,7 @@ ENUM_LAB_FAILED = "FAILED"
 ENUM_LAB_UNKNOWN = "UNKNOWN"
 
 #ENUMS
-ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = range(0, 4)
+ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 
 #INTEGERS
 INT_SKA_LEVEL = 1

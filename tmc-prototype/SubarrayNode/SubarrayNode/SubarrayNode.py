@@ -12,29 +12,33 @@
 Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
 # tango imports
+from builtins import str
+from builtins import range
 import tango
 from tango import DebugIt, DevState, AttrWriteType, PipeWriteType, AttrQuality, DispLevel
 from tango.server import run, Device, DeviceMeta, attribute, command, device_property
-from SKASubarray import SKASubarray
+from skabase.SKASubarray.SKASubarray import SKASubarray
 
 # Additional import
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 import random
 import string
 import CONST
+from future.utils import with_metaclass
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 __all__ = ["SubarrayNode", "main"]
 
 
-class SubarrayNode(SKASubarray):
+class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
     """
-    __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
 
     @command(
@@ -51,10 +55,10 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         try:
-            print CONST.STR_SCAN_IP_ARG, argin
+            print(CONST.STR_SCAN_IP_ARG, argin)
             if type(float(argin[0])) == float:
                 assert self._obs_state != 3, CONST.SCAN_ALREADY_IN_PROGRESS
-                print CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list()
+                print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list())
                 self._read_activity_message = CONST.STR_SCAN_IP_ARG + str(argin)
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list())
@@ -66,7 +70,7 @@ class SubarrayNode(SKASubarray):
                 self.set_status(CONST.STR_SA_SCANNING)
                 self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
-            print CONST.ERR_SCAN_CMD, "\n", except_occured
+            print(CONST.ERR_SCAN_CMD, "\n", except_occured)
             self._read_activity_message = CONST.ERR_SCAN_CMD + str(except_occured)
             self.dev_logging(CONST.ERR_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
 
@@ -84,7 +88,7 @@ class SubarrayNode(SKASubarray):
         try:
             assert self._obs_state == 3, CONST.SCAN_ALREADY_COMPLETED
             if self._obs_state == 3:
-                print CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list()
+                print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list())
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevString, "0")
                 self._dish_leaf_node_group.command_inout(CONST.CMD_END_SCAN, cmdData)
@@ -95,7 +99,7 @@ class SubarrayNode(SKASubarray):
                 self.set_status(CONST.STR_SCAN_COMPLETE)
                 self.dev_logging(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
-            print CONST.ERR_END_SCAN_CMD, "\n", except_occured
+            print(CONST.ERR_END_SCAN_CMD, "\n", except_occured)
             self._read_activity_message = CONST.ERR_END_SCAN_CMD + str(except_occured)
             self.dev_logging(CONST.ERR_END_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
 
@@ -133,15 +137,15 @@ class SubarrayNode(SKASubarray):
                 self._health_event_id.append(self._event_id)
                 self._receptor_id_list.append(int(argin[leafId]))
                 self.dishHealthStateMap[devProxy] = -1
-            print CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID
-            print CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list(True)
-            print CONST.STR_LN_PROXIES, self._dish_leaf_node_proxy
+            print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
+            print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list(True))
+            print(CONST.STR_LN_PROXIES, self._dish_leaf_node_proxy)
             self._read_activity_message = CONST.STR_GRP_DEF + str(
                 self._dish_leaf_node_group.get_device_list(True))
             self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
-            print CONST.STR_SUBS_HEALTH_ST_LN
+            print(CONST.STR_SUBS_HEALTH_ST_LN)
             self._read_activity_message = CONST.STR_SUBS_HEALTH_ST_LN
-            print CONST.STR_HS_EVNT_ID, self._health_event_id
+            print(CONST.STR_HS_EVNT_ID, self._health_event_id)
             self._read_activity_message = CONST.STR_HS_EVNT_ID +  str(self._health_event_id)
             # Set state = ON
             self.set_state(DevState.ON)
@@ -150,7 +154,7 @@ class SubarrayNode(SKASubarray):
             self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
             self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
-            print CONST.ERR_ASSIGN_RES_CMD, "\n", except_occured
+            print(CONST.ERR_ASSIGN_RES_CMD, "\n", except_occured)
             self._read_activity_message = CONST.ERR_ASSIGN_RES_CMD + str(except_occured)
             self.dev_logging(CONST.ERR_ASSIGN_RES_CMD, int(tango.LogLevel.LOG_ERROR))
             argin = str(except_occured)
@@ -175,15 +179,15 @@ class SubarrayNode(SKASubarray):
         try:
             assert self.testDeviceVsEventID != {}, CONST.RESRC_ALREADY_RELEASED
             if self.testDeviceVsEventID != {}:
-                print CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
+                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
                 self._dish_leaf_node_group.remove_all()
-                print CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
+                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
                 argout.extend(self._dish_leaf_node_group.get_device_list(True))
-                print CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy
-                print CONST.STR_HEALTH_ID, self._health_event_id
-                print CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID
+                print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
+                print(CONST.STR_HEALTH_ID, self._health_event_id)
+                print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
                 for dev in self.testDeviceVsEventID:
                     dev.unsubscribe_event(self.testDeviceVsEventID[dev])
                 self.testDeviceVsEventID = {}
@@ -197,9 +201,9 @@ class SubarrayNode(SKASubarray):
                 self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
                 self.dev_logging(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
-            print CONST.ERR_RELEASE_RES_CMD, "\n", except_occured
-            print CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy
-            print CONST.STR_HEALTH_ID, self._health_event_id
+            print(CONST.ERR_RELEASE_RES_CMD, "\n", except_occured)
+            print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
+            print(CONST.STR_HEALTH_ID, self._health_event_id)
             self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(except_occured)
             argout = []
             self.dev_logging(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -222,30 +226,30 @@ class SubarrayNode(SKASubarray):
                 self._dish_health_state = evt.attr_value.value
                 self.dishHealthStateMap[evt.device] = self._dish_health_state
                 if self._dish_health_state == CONST.ENUM_OK:
-                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_OK
                 elif self._dish_health_state == CONST.ENUM_DEGRADED:
-                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_DEGRADED
                 elif self._dish_health_state == CONST.ENUM_FAILED:
-                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_FAILED
                 elif self._dish_health_state == CONST.ENUM_UNKNOWN:
-                    print CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_UNKNOWN
                 else:
-                    print CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt
+                    print(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
                     self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 #Aggregated Health State
                 failed_health_count = 0
                 degraded_health_count = 0
                 unknown_health_count = 0
                 ok_health_count = 0
-                for value in self.dishHealthStateMap.values():
+                for value in list(self.dishHealthStateMap.values()):
                     if value == 2:
                         failed_health_count = failed_health_count + 1
                         break
@@ -258,7 +262,7 @@ class SubarrayNode(SKASubarray):
                     else:
                         self._health_state = 0
                         ok_health_count = ok_health_count + 1
-                if ok_health_count == len(self.dishHealthStateMap.values()):
+                if ok_health_count == len(list(self.dishHealthStateMap.values())):
                     self._health_state = 0
                 elif failed_health_count != 0:
                     self._health_state = 2
@@ -267,11 +271,11 @@ class SubarrayNode(SKASubarray):
                 else:
                     self._health_state = 3
             except Exception as except_occured:
-                print CONST.ERR_AGGR_HEALTH_STATE, except_occured.message
+                print(CONST.ERR_AGGR_HEALTH_STATE, except_occured.message)
                 self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured.message)
                 self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
         else:
-            print CONST.ERR_SUBSR_SA_HEALTH_STATE, evt.errors
+            print(CONST.ERR_SUBSR_SA_HEALTH_STATE, evt.errors)
             self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors)
             self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
@@ -419,7 +423,7 @@ class SubarrayNode(SKASubarray):
             self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
-            print CONST.ERR_CONFIGURE_CMD, "\n", except_occured
+            print(CONST.ERR_CONFIGURE_CMD, "\n", except_occured)
             self._read_activity_message = CONST.ERR_CONFIGURE_CMD + str(except_occured)
             self.dev_logging(CONST.ERR_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  SubarrayNode.Configure

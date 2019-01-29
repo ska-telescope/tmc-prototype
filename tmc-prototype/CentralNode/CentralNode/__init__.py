@@ -15,6 +15,8 @@ Central Node is a coordinator of the complete M&C system.
 from . import release
 from .CentralNode import CentralNode, main
 
+__all__ = ["CentralNode", "CONST", "release"]
+
 __version__ = release.version
 __version_info__ = release.version_info
 __author__ = release.author
