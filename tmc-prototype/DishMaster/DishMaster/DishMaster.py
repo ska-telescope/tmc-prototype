@@ -248,9 +248,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.init_device) ENABLED START #
         try:
             # Initialise Properties
-            print("GroupDefinitions: ", self.GroupDefinitions)
-            if self.GroupDefinitions:
-                print ("GroupDefinitions Not empty")
             self.SkaLevel = 1                           # Set SkaLevel to 1
             # Initialise Attributes
             self._health_state = 0                      # Set healthState to OK
