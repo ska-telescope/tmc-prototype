@@ -133,6 +133,7 @@ class TestCentralNode(object):
         """Test for StandByTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
         tango_context.device.StandByTelescope()
+        time.sleep(2)
         assert tango_context.device.activityMessage == CONST.STR_STANDBY_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
