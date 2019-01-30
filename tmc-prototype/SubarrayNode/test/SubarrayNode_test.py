@@ -8,12 +8,15 @@
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 """Contain the tests for the Subarray Node."""
+from __future__ import print_function
 
 # Path
+from builtins import object
 import sys
 import os
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
+sys.path.insert(0, module_path)
 
 # Imports
 from time import sleep
@@ -22,8 +25,8 @@ import tango
 from tango import DevFailed, DevState
 #from devicetest import DeviceTestCase, main
 import pytest
-from SubarrayNode import SubarrayNode
-import SubarrayNode.SubarrayNode.CONST as CONST
+from SubarrayNode.SubarrayNode import SubarrayNode
+import CONST
 
 # Note:
 #
@@ -118,7 +121,7 @@ class TestSubarrayNode(object):
         tango_context.device.AssignResources(list)
         assert tango_context.device.State() == DevState.ON
         assert len(tango_context.device.receptorIDList) == 1
-        print "receptor id list is:", tango_context.device.receptorIDList
+        print("receptor id list is:", tango_context.device.receptorIDList)
         assert tango_context.device.obsState == 0
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 

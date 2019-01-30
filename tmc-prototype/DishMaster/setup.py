@@ -38,5 +38,5 @@ setup(name=name,
       license='BSD-3-Clause',
       long_description=long_description,
       url='www.tango-controls.org',
-      platforms="All Platforms"
+      platforms="All Platforms", install_requires=['CONST']
       )
