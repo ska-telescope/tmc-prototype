@@ -1,2 +1,7 @@
-.. automodule:: CentralNode
-    :members: CentralNode
+Central Node
+************
+.. automodule:: CentralNode.CentralNode
+
+
+.. autoclass:: CentralNode
+   :members:

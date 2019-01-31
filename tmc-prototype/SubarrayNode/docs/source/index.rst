@@ -1,2 +1,7 @@
-.. automodule:: SubarrayNode
-    :members: SubarrayNode
+Subarray Node
+*************
+.. automodule:: SubarrayNode.SubarrayNode
+
+
+.. autoclass:: SubarrayNode
+   :members:
