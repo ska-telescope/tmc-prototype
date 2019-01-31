@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(conf_dir, os.path.pardir))
 sys.path.insert(0, os.path.join(conf_dir, os.path.pardir, os.path.pardir))
 
 # Configuration
-extensions = ['sphinx.ext.autodoc', 'devicedoc']
+extensions = ['sphinx.ext.autodoc']
 master_doc = 'index'
 
 # Data

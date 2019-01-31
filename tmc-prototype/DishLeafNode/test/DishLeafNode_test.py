@@ -19,14 +19,13 @@ module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/DishLeafNo
 sys.path.insert(0, module_path)
 
 # Imports
-import time
-import pytest
-import CONST
 from mock import MagicMock
 import tango
 from tango import DevState, EventType
 from DishLeafNode.DishLeafNode import DishLeafNode
-
+import CONST
+import pytest
+import time
 # Note:
 #
 # Since the device uses an inner thread, it is necessary to

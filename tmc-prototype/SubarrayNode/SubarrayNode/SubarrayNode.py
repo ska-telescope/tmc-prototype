@@ -15,6 +15,13 @@ other TM Components (such as OET, Central Node) for a Subarray.
 from __future__ import print_function
 from __future__ import absolute_import
 
+import os
+import sys
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
+sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
+
 # tango imports
 from builtins import str
 from builtins import range

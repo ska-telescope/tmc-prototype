@@ -3,7 +3,7 @@ A module defining a list of fixture functions that are shared across all the ska
 tests.
 """
 
-
+from __future__ import absolute_import
 import mock
 import pytest
 import importlib

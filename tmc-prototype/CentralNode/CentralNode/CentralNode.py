@@ -19,6 +19,7 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CentralNode"
 sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
 
 # tango imports
 from builtins import str

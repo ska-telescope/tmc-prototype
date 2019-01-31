@@ -1,5 +1,4 @@
 # In/Out command constants
-from builtins import range
 CMD_SET_STOW_MODE = "SetStowMode"
 CMD_SET_STANDBY_MODE = "SetStandbyLPMode"
 CMD_SET_OPERATE_MODE = "SetOperateMode"

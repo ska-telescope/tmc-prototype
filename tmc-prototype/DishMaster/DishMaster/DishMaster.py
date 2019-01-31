@@ -13,10 +13,16 @@ SKA Dish Master TANGO device server
 from __future__ import print_function
 from __future__ import absolute_import
 
+# import sys
+# import os
+# path = os.path.join(os.path.dirname(__file__), os.pardir)
+# sys.path.insert(0, os.path.abspath(path))
+# print("sys.path: ", sys.path)
 import sys
 import os
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/DishMaster"
+sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
 # PyTango imports
