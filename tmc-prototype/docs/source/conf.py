@@ -26,7 +26,7 @@ class Mock(MagicMock):
 # Mock tango modules
 MOCK_MODULES = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta', 'command',
                 'future', 'future.utils', 'logging', 'logging.handlers']
-
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 # -- Project information -----------------------------------------------------
 
 project = 'TMC Prototype'
