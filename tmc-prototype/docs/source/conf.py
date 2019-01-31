@@ -25,7 +25,11 @@ class Mock(MagicMock):
 
 # Mock tango modules
 MOCK_MODULES = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta', 'command',
-                'future', 'future.utils', 'logging', 'logging.handlers']
+                'future', 'future.utils', 'logging', 'logging.handlers', 'skabase',
+                'skabase.SKABaseDevice.SKABaseDevice', 'SKABaseDevice',
+                'skabase.SKAMaster.SKAMaster', 'SKAMaster',
+                'skabase.SKASubarray.SKASubarray', 'SKASubarray'
+                ]
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 # -- Project information -----------------------------------------------------
 
