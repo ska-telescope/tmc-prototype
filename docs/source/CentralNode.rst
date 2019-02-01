@@ -4,4 +4,4 @@
    contain the root `toctree` directive.
 
 
-.. include:: ../../CentralNode/docs/source/index.rst
+.. include:: ../../tmcprototype/CentralNode/docs/source/index.rst
