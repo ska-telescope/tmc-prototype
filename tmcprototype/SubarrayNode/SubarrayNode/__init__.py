@@ -13,7 +13,7 @@ Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
 
-from . import release
+from . import release, CONST
 from .SubarrayNode import SubarrayNode, main
 
 __version__ = release.version

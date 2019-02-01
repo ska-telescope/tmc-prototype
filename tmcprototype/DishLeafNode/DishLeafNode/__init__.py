@@ -12,7 +12,7 @@
 A Leaf control node for DishMaster.
 """
 
-from . import release
+from . import release, CONST
 from .DishLeafNode import DishLeafNode, main
 
 __all__ = ["DishLeafNode", "CONST", "release"]

@@ -11,7 +11,7 @@
 
 SKA Dish Master TANGO device server
 """
-from . import release
+from . import release, CONST
 from .DishMaster import DishMaster, main
 
 __all__ = ["DishMaster", "CONST", "release"]
