@@ -14,23 +14,29 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('../../'))
 
-from mock import Mock as MagicMock
+autodock_mock_imports = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta', 'command',
+                 'future', 'future.utils', 'logging', 'logging.handlers', 'skabase',
+                 'skabase.SKABaseDevice.SKABaseDevice', 'SKABaseDevice',
+                 'skabase.SKAMaster.SKAMaster', 'SKAMaster',
+                 'skabase.SKASubarray.SKASubarray', 'SKASubarray'
+                 ]
+# from mock import Mock as MagicMock
 
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return MagicMock()
+# class Mock(MagicMock):
+#     @classmethod
+#     def __getattr__(cls, name):
+#         return MagicMock()
 
-# Mock tango modules
-MOCK_MODULES = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta', 'command',
-                'future', 'future.utils', 'logging', 'logging.handlers', 'skabase',
-                'skabase.SKABaseDevice.SKABaseDevice', 'SKABaseDevice',
-                'skabase.SKAMaster.SKAMaster', 'SKAMaster',
-                'skabase.SKASubarray.SKASubarray', 'SKASubarray'
-                ]
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+# # Mock tango modules
+# MOCK_MODULES = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta', 'command',
+#                 'future', 'future.utils', 'logging', 'logging.handlers', 'skabase',
+#                 'skabase.SKABaseDevice.SKABaseDevice', 'SKABaseDevice',
+#                 'skabase.SKAMaster.SKAMaster', 'SKAMaster',
+#                 'skabase.SKASubarray.SKASubarray', 'SKASubarray'
+#                 ]
+# sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 # -- Project information -----------------------------------------------------
 
 project = 'TMC Prototype'
