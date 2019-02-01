@@ -3,5 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+tmcprototype.SubarrayNode.SubarrayNode
+======================================
 
-.. include:: ../../SubarrayNode/docs/source/index.rst
+.. automodule:: tmcprototype.SubarrayNode.SubarrayNode
+   :members:
+   :undoc-members:
