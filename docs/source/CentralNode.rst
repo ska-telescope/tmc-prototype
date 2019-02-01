@@ -3,5 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+tmcprototype.CentralNode.CentralNode
+====================================
 
-.. include:: ../../tmcprototype/CentralNode/docs/source/index.rst
+.. automodule:: tmcprototype.CentralNode.CentralNode
+   :members:
+   :undoc-members:
