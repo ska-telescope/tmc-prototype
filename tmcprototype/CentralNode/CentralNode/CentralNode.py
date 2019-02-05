@@ -125,27 +125,22 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # -----------------
     CentralAlarmHandler = device_property(
         dtype='str',
-        doc="Device name of CentralAlarmHandler ",
     )
 
     TMAlarmHandler = device_property(
         dtype='str',
-        doc="Device name of TMAlarmHandler ",
     )
 
     TMMidSubarrayNodes = device_property(
-        dtype=('str',), default_value=[CONST.PROP_DEF_VAL_TM_MID_SA1, CONST.PROP_DEF_VAL_TM_MID_SA2],
-        doc = "List of TM Mid Subarray Node devices",
+        dtype=('str',), default_value=[CONST.PROP_DEF_VAL_TM_MID_SA1, CONST.PROP_DEF_VAL_TM_MID_SA2]
     )
 
     NumDishes = device_property(
-        dtype='uint', default_value=1,
-        doc="Number of Dishes",
+        dtype='uint', default_value=1
     )
 
     DishLeafNodePrefix = device_property(
-        dtype='str', default_value=CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX,
-        doc = "Device name prefix for Dish Leaf Node",
+        dtype='str', default_value=CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX
     )
 
     # ----------
@@ -155,25 +150,21 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     telescopeHealthState = attribute(
         dtype='DevEnum',
         enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
-        doc="Health state of Telescope",
     )
 
     subarray1HealthState = attribute(
         dtype='DevEnum',
         enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
-        doc="Health state of Subarray1",
     )
 
     subarray2HealthState = attribute(
         dtype='DevEnum',
         enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
-        doc="Health state of Subarray2",
     )
 
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
-        doc="Activity Message",
     )
 
     # ---------------

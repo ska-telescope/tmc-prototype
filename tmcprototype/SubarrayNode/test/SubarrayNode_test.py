@@ -18,9 +18,6 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
 sys.path.insert(0, module_path)
 
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
-
 # Imports
 from time import sleep
 from mock import MagicMock
@@ -219,7 +216,7 @@ class TestSubarrayNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SubarrayNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 1.0.0, A set of generic base devices for SKA Telescope.")
+            "tangods-skabasedevice, 1.0.0, A generic base device for SKA.")
         # PROTECTED REGION END #    //  SubarrayNode.test_buildState
 
     def test_centralLoggingLevel(self, tango_context):

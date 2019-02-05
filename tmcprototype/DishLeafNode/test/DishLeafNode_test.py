@@ -18,17 +18,13 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/DishLeafNode"
 sys.path.insert(0, module_path)
 
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
-
 # Imports
 from mock import MagicMock
 import tango
 from tango import DevState, EventType
-import pytest
-#from tmcprototype.DishLeafNode import DishLeafNode
 from DishLeafNode.DishLeafNode import DishLeafNode
 import CONST
+import pytest
 import time
 # Note:
 #
@@ -231,7 +227,7 @@ class TestDishLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 1.0.0, A set of generic base devices for SKA Telescope.")
+            "tangods-dishleafnode, 1.0.0, A Leaf control node for DishMaster.")
         # PROTECTED REGION END #    //  DishLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
