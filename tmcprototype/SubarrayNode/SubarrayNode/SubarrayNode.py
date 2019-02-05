@@ -293,7 +293,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     DishLeafNodePrefix = device_property(
         dtype='str', default_value="ska_mid/tm_leaf_node/d",
-        doc = "Device name prefix for the Dish Leaf Node",
     )
 
     # ----------
@@ -302,24 +301,20 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     scanID = attribute(
         dtype='str',
-        doc="ID of ongoing SCAN",
     )
 
     sbID = attribute(
         dtype='str',
-        doc="ID of ongoing Scheduling Block",
     )
 
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
-        doc="Activity Message",
     )
 
     receptorIDList = attribute(
         dtype=('uint16',),
         max_dim_x=100,
-        doc="ID List of the Receptors assigned in the Subarray",
     )
 
     # ---------------
