@@ -20,7 +20,6 @@ sys.path.insert(0, module_path)
 
 path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
-sys.path.append("/home/user/Integration_P3/tmc-prototype/tmc-prototype/DishMaster/DishMaster/")
 
 # Imports
 from mock import MagicMock
@@ -256,7 +255,7 @@ class TestDishMaster(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishMaster.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "tangods-skabasedevice, 1.0.0, A generic base device for SKA.")
+            "lmcbaseclasses, 1.0.0, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  DishMaster.test_buildState
 
     def test_versionId(self, tango_context):

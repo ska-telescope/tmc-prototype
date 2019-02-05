@@ -21,6 +21,10 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CentralNode"
 sys.path.insert(0, module_path)
 
+path = os.path.join(os.path.dirname(__file__), os.pardir)
+sys.path.insert(0, os.path.abspath(path))
+
+
 # Imports
 from mock import MagicMock
 import tango
@@ -168,7 +172,7 @@ class TestCentralNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(CentralNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "tangods-centralnode, 1.0.0, Central Node is a coordinator of the complete M&C system.")
+            "lmcbaseclasses, 1.0.0, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  CentralNode.test_buildState
 
     def test_versionId(self, tango_context):

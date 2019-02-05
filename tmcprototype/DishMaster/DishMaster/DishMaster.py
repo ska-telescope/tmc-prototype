@@ -170,6 +170,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     # -----------------
     ReceptorNumber = device_property(
         dtype='uint',
+        doc="Number of Receptor ",
     )
 
     # ----------
@@ -179,67 +180,82 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         dtype='DevEnum',
         enum_labels=["OFF", "STARTUP", "SHUTDOWN", "STANDBY-LP",
                      "STANDBY-FP", "MAINTENANCE", "STOW", "CONFIG", "OPERATE", ],
+        doc="Mode of the dish",
     )
 
     pointingState = attribute(
         dtype='DevEnum',
         enum_labels=["READY", "SLEW", "TRACK", "SCAN", ],
+        doc="Pointing state of the dish",
+
     )
 
     band1SamplerFrequency = attribute(
         dtype='double',
         access=AttrWriteType.WRITE,
+        doc="Band1 Sampler Frequency of the dish",
     )
 
     band2SamplerFrequency = attribute(
         dtype='double',
         access=AttrWriteType.WRITE,
+        doc="Band2 Sampler Frequency of the dish",
     )
 
     band3SamplerFrequency = attribute(
         dtype='double',
         access=AttrWriteType.WRITE,
+        doc="Band3 Sampler Frequency of the dish",
     )
 
     band4SamplerFrequency = attribute(
         dtype='double',
         access=AttrWriteType.WRITE,
+        doc="Band4 Sampler Frequency of the dish",
     )
 
     band5aSamplerFrequency = attribute(
         dtype='double',
         access=AttrWriteType.WRITE,
+        doc="Band5a Sampler Frequency of the dish",
     )
 
     band5bSamplerFrequency = attribute(
         dtype='double',
         access=AttrWriteType.WRITE,
+        doc="Band5b Sampler Frequency of the dish",
     )
 
     capturing = attribute(
         dtype='bool',
+        doc="Data Capturing of the dish",
     )
 
     ConfiguredBand = attribute(
         dtype='DevEnum',
         enum_labels=["BAND1", "BAND2", "BAND3", "BAND4", "BAND5a", "BAND5b", "NONE", ],
+        doc="Configured band of the dish",
     )
 
     WindSpeed = attribute(
         dtype='double',
         access=AttrWriteType.READ_WRITE,
         unit="km/h",
+        doc="Wind speed of the dish",
+
     )
 
     desiredPointing = attribute(
         dtype=('double',),
         access=AttrWriteType.READ_WRITE,
         max_dim_x=7,
+        doc="Desired pointing coordinates of the dish",
     )
 
     achievedPointing = attribute(
         dtype=('double',),
         max_dim_x=7,
+        doc="Achieved pointing coordinates of the dish",
     )
 
     # ---------------

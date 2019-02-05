@@ -217,6 +217,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # -----------------
     DishMasterFQDN = device_property(
         dtype='str',
+        doc="FQDN of Dish Master Device",
     )
 
     # ----------
@@ -225,6 +226,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
+        doc="Activity Message",
     )
 
     dishHealthState = attribute(name="dishHealthState", label="dishHealthState", forwarded=True)

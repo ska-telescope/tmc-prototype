@@ -19,11 +19,12 @@ def tango_context(request):
     request: _pytest.fixtures.SubRequest
         A request object gives access to the requesting test context.
     """
+    print ("In conftest file")
     fq_test_class_name = request.cls.__module__
     fq_test_class_name_details = fq_test_class_name.split(".")
-    package_name = fq_test_class_name_details[0]
+    package_name = fq_test_class_name_details[1]
     print ("package name is: ", package_name)
-    class_name = module_name = fq_test_class_name_details[0]
+    class_name = module_name = fq_test_class_name_details[1]
     module = importlib.import_module("{}.{}".format(package_name, module_name))
     print ("module and class name is: ", module_name, class_name)
     klass = getattr(module, class_name)
