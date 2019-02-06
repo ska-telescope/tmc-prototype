@@ -1,2 +1,0 @@
-.. automodule:: DishLeafNode
-    :members: DishLeafNode
