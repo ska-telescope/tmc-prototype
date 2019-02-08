@@ -1,0 +1,27 @@
+*.py[cod]
+*.egg-info
+*.eggs
+.ipynb_checkpoints
+
+build
+dist
+.cache
+__pycache__
+
+htmlcov
+.coverage
+coverage.xml
+.pytest_cache
+
+# ide
+.idea
+.eclipse
+.vscode
+
+.make
+Makefile
+Dockerfile
+.release
+.gitlab-ci.yml
+.gitignore
+
