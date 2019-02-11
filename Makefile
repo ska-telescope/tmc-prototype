@@ -8,10 +8,10 @@
 # the Docker tag for this project. The definition below inherits the standard
 # value for DOCKER_REGISTRY_HOST (=rska-registry.av.it.pt) and overwrites
 # DOCKER_REGISTRY_USER and PROJECT to give a final Docker tag of
-# ska-registry.av.it.pt/dishmaster/dishmaster
+# ska-registry.av.it.pt/tmc-prototype/tmcprototype
 #
 DOCKER_REGISTRY_USER:=tango-example
-PROJECT = tmc-prototype
+PROJECT = tmcprototype
 
 #
 # include makefile to pick up the standard Make targets, e.g., 'make build'
