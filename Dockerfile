@@ -28,4 +28,4 @@ RUN buildDeps="ca-certificates git" \
 
 USER tango
 
-CMD ["/venv/bin/python", "tmc-prototype/tmcprototype/DishMaster/DishMaster/DishMaster.py"]
+CMD ["/venv/bin/python", "/app/tmc-prototype/tmcprototype/DishMaster/DishMaster/DishMaster.py"]
