@@ -41,3 +41,22 @@ test:
   artifacts:
     paths:
       - public
+
+
+pages:
+  tags:
+    - docker-executor
+  stage: test
+
+  script:
+   - make build
+   - make test
+   - ls -la
+   - mkdir .public
+   - cp build/coverage.xml .public
+   - cp -r build/htmlcov/* .public
+   - mv .public public
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
