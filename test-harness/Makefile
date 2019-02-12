@@ -7,8 +7,8 @@ all: test
 test:
 	retry -- tango_admin --check-device test/DishMaster/01
 	ls -ls
-	cd tmc-prototype/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
-	cd tmc-prototype/tmcprototype/DishMaster && ./code-analysis.sh | tee code_analysis.stdout
+	cd /tmc-prototype/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
+	cd /tmc-prototype/tmcprototype/DishMaster && ./code-analysis.sh | tee code_analysis.stdout
 	if [ -d /build ]; then \
 		mv tmc-prototype/tmcprototype/DishMaster/setup_py_test.stdout /build; \
 		mv tmc-prototype/tmcprototype/DishMaster/code_analysis.stdout /build; \
