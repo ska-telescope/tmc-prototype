@@ -6,16 +6,14 @@ all: test
 # then be extracted to form the CI summary for the test procedure.
 test:
 	retry -- tango_admin --check-device test/DishMaster/01
-	cd app
-	ls -l
-	cd /app/tmc-prototype
-#	cd /app/tmc-prototype/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
-#	cd /app/tmc-prototype/tmcprototype/DishMaster && ./code-analysis.sh | tee code_analysis.stdout
+	ls -ls
+	cd tmc-prototype/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
+	cd tmc-prototype/tmcprototype/DishMaster && ./code-analysis.sh | tee code_analysis.stdout
 	if [ -d /build ]; then \
-		mv /app/tmc-prototype/tmcprototype/DishMaster/setup_py_test.stdout /build; \
-		mv /app/tmc-prototype/tmcprototype/DishMaster/code_analysis.stdout /build; \
-		mv /app/tmc-prototype/tmcprototype/DishMaster/htmlcov /build; \
-		mv /app/tmc-prototype/tmcprototype/DishMaster/coverage.xml /build; \
+		mv tmc-prototype/tmcprototype/DishMaster/setup_py_test.stdout /build; \
+		mv tmc-prototype/tmcprototype/DishMaster/code_analysis.stdout /build; \
+		mv tmc-prototype/tmcprototype/DishMaster/htmlcov /build; \
+		mv tmc-prototype/tmcprototype/DishMaster/coverage.xml /build; \
 	fi;
 
 .PHONY: all test
