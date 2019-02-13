@@ -57,7 +57,7 @@ services:
       sh -c "wait-for-it.sh databaseds:10000 --timeout=30 --strict --
              tango_admin --add-server DishMaster/test DishMaster test/DishMaster/01 &&\
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             /venv/bin/python /app/tmc-prototype/tmcprototype/DishMaster/DishMaster/DishMaster.py test"
+             /venv/bin/python /app/tmcprototype/DishMaster/DishMaster/DishMaster.py test"
     volumes_from:
       - rsyslog-tmcprototype:rw
 
