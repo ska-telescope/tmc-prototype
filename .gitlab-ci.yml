@@ -27,6 +27,7 @@ before_script:
 
 stages:
   - test
+  - pages
 
 
 test:
@@ -46,15 +47,15 @@ test:
 pages:
   tags:
     - docker-executor
-  stage: test
+  stage: pages
 
   script:
    - make build
    - make test
    - ls -la
    - mkdir .public
-   - cp build/coverage.xml .public
-   - cp -r build/htmlcov/* .public
+   - cp build/dishmaster_coverage.xml .public
+   - cp -r build/dishmaster_htmlcov/* .public
    - mv .public public
   artifacts:
     paths:
