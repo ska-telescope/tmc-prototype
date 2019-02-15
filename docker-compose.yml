@@ -101,7 +101,7 @@ services:
              tango_admin --check-device ska_mid/tm_leaf_node/d0001 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
              /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py test1 &&\
-             /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py test2"             "
+             /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py test2"
     volumes_from:
     - rsyslog-tmcprototype:rw
 
