@@ -128,10 +128,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-                #print("In if in increment")
+                print("In if in increment", self._pointing_state)
             else:
                 self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
-                #print("In else in increment")
+                print("In else in increment", self._pointing_state)
             #print("index : coordinate: ", argin[0], argin[1])
 
             print("index and achieved pointing", argin[0], self._achieved_pointing[argin[0]])
@@ -186,10 +186,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-                print("In if in increment")
+                print("In if in decrement", self._pointing_state)
             else:
                 self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] - 0.01), 2)
-                print("In else in increment")
+                print("In else in decrement", self._pointing_state)
             #print("index : coordinate: ", argin[0], argin[1])
             print("index and achieved pointing", argin[0], self._achieved_pointing[argin[0]])
 
