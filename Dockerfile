@@ -28,4 +28,4 @@ RUN buildDeps="ca-certificates git" \
 
 USER tango
 
-CMD ["/venv/bin/python", "/app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py"]
+CMD ["/venv/bin/python", "/app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py"]
