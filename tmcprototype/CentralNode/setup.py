@@ -38,5 +38,23 @@ setup(name=name,
       license='BSD-3-Clause',
       long_description=long_description,
       url='www.tango-controls.org',
-      platforms="All Platforms"
-      )
+      platforms="All Platforms", install_requires=['pytango', 'mock'],
+      #test_suite='test',
+      #install_requires=['pytango'],  # FIXME: add your package's dependencies to this list
+      setup_requires=[
+          # dependency for `python setup.py test`
+          'pytest-runner',
+          # dependencies for `python setup.py build_sphinx`
+          'sphinx',
+          'recommonmark'
+      ],
+      tests_require=[
+          'pytest',
+          'pytest-cov',
+          'pytest-json-report',
+          'pycodestyle',
+      ],
+      extras_require={
+          'dev':  ['prospector[with_pyroma]', 'yapf', 'isort']
+      }
+)

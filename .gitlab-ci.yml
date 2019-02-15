@@ -60,6 +60,8 @@ pages:
    - cp -r build/dishleafnode_htmlcov/* .public
    - cp build/subarraynode_coverage.xml .public
    - cp -r build/subarraynode_htmlcov/* .public
+   - cp build/centralnode_coverage.xml .public
+   - cp -r build/centralnode_htmlcov/* .public
    - mv .public public
   artifacts:
     paths:

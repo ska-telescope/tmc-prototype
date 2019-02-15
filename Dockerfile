@@ -28,4 +28,4 @@ RUN buildDeps="ca-certificates git" \
 
 USER tango
 
-CMD ["/venv/bin/python", "/app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py"]
+CMD ["/venv/bin/python", "/app/tmcprototype/CentralNode/CentralNode/CentralNode.py"]
