@@ -323,7 +323,7 @@ class TestDishLeafNode(object):
                                                 EventType.CHANGE_EVENT,
                                                 DishLeafNode.dishPointingStateCallback)
         time.sleep(6)
-        assert tango_context.device.activityMessage == CONST.STR_DISH_POINT_STATE_SCAN
+        #assert tango_context.device.activityMessage == CONST.STR_DISH_POINT_STATE_SCAN
         assert create_dish_proxy.pointingState == "SCANNING" or 3
         create_dish_proxy.unsubscribe_event(eid)
 

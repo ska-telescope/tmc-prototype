@@ -39,6 +39,7 @@ from threading import Timer
 import threading
 import CONST
 from future.utils import with_metaclass
+import numpy
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
@@ -76,6 +77,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         self._pointing_state = 1
         azimuth_index = 1
         self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
+        print("azimuth difference is: ", self._azimuth_difference)
         if self._azimuth_difference > 0.00:
             self.increment_position([azimuth_index, self._azimuth_difference])
         elif self._azimuth_difference < 0.00:
@@ -86,6 +88,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         self._pointing_state = 1
         elevation_index = 2
         self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
+        print("elevation difference is: ", (self._elevation_difference))
         if self._elevation_difference > 0.00:
             self.increment_position([elevation_index, self._elevation_difference])
         elif self._elevation_difference < 0.00:
@@ -97,28 +100,64 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         :param argin: Difference between current and desired Azimuth/Elevation angle.
         :return: None
         """
-        input_increment = int(argin[1])
-        time.sleep(2)
+        print("argin in increment postion old: ", argin)
+        #input_increment = int(argin[1])
+        input_increment = argin[1]
+        print("argin in increment postion: ", input_increment)
+        #time.sleep(1)
         if abs(self._azimuth_difference) > abs(self._elevation_difference):
             max_increment = abs(self._azimuth_difference)
         elif abs(self._azimuth_difference) < abs(self._elevation_difference):
             max_increment = abs(self._elevation_difference)
         else:
             max_increment = input_increment
+
+        print("max increment is: ", max_increment)
+        print("input increment is: ", input_increment)
         if input_increment == max_increment:
-            input_increment = input_increment + 1
-        for position in range(0, input_increment):
+            input_increment = input_increment + 0.01
+
+        print("print input increment 1", input_increment)
+        for position in numpy.arange(0, input_increment, 0.01):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             self._pointing_state = 1
-            time.sleep(2)
+            time.sleep(0.01)
             if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                     self._achieved_pointing[2] == self._desired_pointing[2]):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                #print("In if in increment")
             else:
-                self._achieved_pointing[argin[0]] = self._achieved_pointing[argin[0]] + 1
+                self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
+                #print("In else in increment")
+            #print("index : coordinate: ", argin[0], argin[1])
+
+            print("index and achieved pointing", argin[0], self._achieved_pointing[argin[0]])
+
+
+        # print("print input increment 1", input_increment)
+        # for position in range(0, int(input_increment)):
+        #     self.set_status(CONST.STR_DISH_POINT_INPROG)
+        #     self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+        #     self._pointing_state = 1
+        #     time.sleep(0.2)
+        #     if (int(self._achieved_pointing[1]) == int(self._desired_pointing[1])) and (
+        #             int(self._achieved_pointing[2]) == int(self._desired_pointing[2])):
+        #         self._pointing_state = 0
+        #         self.set_status(CONST.STR_DISH_POINT_SUCCESS)
+        #         self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        #         print("In if in increment")
+        #     else:
+        #         self._achieved_pointing[argin[0]] = self._achieved_pointing[argin[0]] + 1
+        #         print("In else in increment")
+        #     print("index : coordinate: ", argin[0], argin[1])
+        #     print("index and achieved pointing", argin[0], self._achieved_pointing[argin[0]])
+        #
+        # if (int(self._achieved_pointing[1]) == int(self._desired_pointing[1])) and (
+        #         int(self._achieved_pointing[2]) == int(self._desired_pointing[2])):
+        #     self._achieved_pointing
 
     def decrement_position(self, argin):
         """
@@ -126,8 +165,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         :param argin: Difference between current and desired Azimuth/Elevation angle.
         :return: None
         """
-        input_decrement = int(argin[1])
-        time.sleep(2)
+        input_decrement = argin[1]
+        #time.sleep(2)
         if abs(self._azimuth_difference) > abs(self._elevation_difference):
             max_decrement = abs(self._azimuth_difference)
         elif abs(self._azimuth_difference) < abs(self._elevation_difference):
@@ -135,18 +174,38 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         else:
             max_decrement = input_decrement
         if input_decrement == max_decrement:
-            input_decrement = input_decrement + 1
-        for position in range(0, (input_decrement)):
+            input_decrement = input_decrement + 0.01
+
+        for position in numpy.arange(0, input_decrement, 0.01):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
+            self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             self._pointing_state = 1
-            time.sleep(2)
+            time.sleep(0.01)
             if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                     self._achieved_pointing[2] == self._desired_pointing[2]):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                print("In if in increment")
             else:
-                self._achieved_pointing[argin[0]] = self._achieved_pointing[argin[0]] - 1
+                self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] - 0.01), 2)
+                print("In else in increment")
+            #print("index : coordinate: ", argin[0], argin[1])
+            print("index and achieved pointing", argin[0], self._achieved_pointing[argin[0]])
+
+        # for position in range(0, (input_decrement)):
+        #     self.set_status(CONST.STR_DISH_POINT_INPROG)
+        #     self._pointing_state = 1
+        #     time.sleep(2)
+        #     if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
+        #             self._achieved_pointing[2] == self._desired_pointing[2]):
+        #         self._pointing_state = 0
+        #         self.set_status(CONST.STR_DISH_POINT_SUCCESS)
+        #         self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        #     else:
+        #         self._achieved_pointing[argin[0]] = self._achieved_pointing[argin[0]] - 1
+        #     #print("index : coordinate: ", argin[0], argin[1])
+
 
     def check_slew(self):
         """
@@ -710,6 +769,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         :return: None
         """
         try:
+            print("Argin In DishMaster: ", self._desired_pointing)
             if type(float(argin)) == float:
                 # Execute POINT command at given timestamp
                 self._current_time = time.time()
