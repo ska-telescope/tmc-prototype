@@ -61,6 +61,25 @@ services:
     volumes_from:
       - rsyslog-tmcprototype:rw
 
+  dishleafnode:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - tmcprototype
+    environment:
+      - TANGO_HOST=databaseds:10000
+    command: >
+      sh -c "wait-for-it.sh databaseds:10000 --timeout=30 --strict --
+             tango_admin --add-server DishLeafNode/test DishLeafNode test/DishLeafNode/01 &&\
+             tango_admin --add-property test/DishLeafNode/01 DishMasterFQDN test/DishMaster/01 &&\
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --check-device test/DishMaster/01 &&\
+             tango_admin --ping-device test/DishMaster/01 10 &&\
+             /venv/bin/python /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py test"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
+
   rsyslog-tmcprototype:
     container_name: rsyslog-tmcprototype
     image: jumanjiman/rsyslog

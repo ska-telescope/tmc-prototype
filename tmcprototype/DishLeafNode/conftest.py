@@ -47,11 +47,13 @@ def tango_context(request): #, dishmaster_context):
     fq_test_class_name_details = fq_test_class_name.split(".")
     package_name = fq_test_class_name_details[1]
     class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format(package_name, module_name))
-    klass = getattr(module, class_name)
+    #module = importlib.import_module("{}.{}".format(package_name, module_name))
+    module = importlib.import_module("{}.{}".format("DishLeafNode", "DishLeafNode"))
+    #klass = getattr(module, class_name)
+    klass = getattr(module, "DishLeafNode")
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'DishMasterFQDN': "mid_d0001/elt/master",
+                  'DishMasterFQDN': "test/DishMaster/01",
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process= False)
     tango_context.start()
@@ -71,5 +73,5 @@ def initialize_device(tango_context):
 
 @pytest.fixture(scope="class")
 def create_dish_proxy():
-    dish_proxy = DeviceProxy("mid_d0001/elt/master")
+    dish_proxy = DeviceProxy("test/DishMaster/01")
     return dish_proxy
