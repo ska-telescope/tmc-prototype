@@ -5,8 +5,8 @@ echo
 
 echo "MODULE ANALYSIS"
 echo "---------------"
-pylint CentralNode
+pylint --rcfile=rcfile CentralNode
 
 echo "TESTS ANALYSIS"
 echo "--------------"
-pylint test
+pylint --rcfile=rcfile test

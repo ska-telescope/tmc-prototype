@@ -5,8 +5,8 @@ echo
 
 echo "MODULE ANALYSIS"
 echo "---------------"
-pylint SubarrayNode
+pylint --rcfile=rcfile SubarrayNode
 
 echo "TESTS ANALYSIS"
 echo "--------------"
-pylint test
+pylint --rcfile=rcfile test

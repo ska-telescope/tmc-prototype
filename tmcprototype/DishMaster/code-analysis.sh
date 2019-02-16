@@ -5,8 +5,8 @@ echo
 
 echo "MODULE ANALYSIS"
 echo "---------------"
-pylint DishMaster
+pylint --rcfile=rcfile DishMaster
 
 echo "TESTS ANALYSIS"
 echo "--------------"
-pylint test
+pylint --rcfile=rcfile test

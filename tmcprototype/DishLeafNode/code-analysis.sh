@@ -5,8 +5,9 @@ echo
 
 echo "MODULE ANALYSIS"
 echo "---------------"
-pylint DishLeafNode
+pylint --rcfile=rcfile DishLeafNode
+
 
 echo "TESTS ANALYSIS"
 echo "--------------"
-pylint test
+pylint --rcfile=rcfile test
