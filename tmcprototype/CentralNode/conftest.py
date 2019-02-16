@@ -11,8 +11,8 @@ import sys
 
 from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
-import tmcprototype.CentralNode.CentralNode.CONST as CONST
-
+#import tmcprototype.CentralNode.CentralNode.CONST as CONST
+from .CentralNode import CONST as CONST
 
 @pytest.fixture(scope="class")
 def tango_context(request):
