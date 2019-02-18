@@ -197,9 +197,9 @@ class TestSubarrayNode(object):
     def test_Configure(self, tango_context):
         """Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
-        tango_context.device.Configure(["a", "1"])
-        assert tango_context.device.obsState == 0
-        tango_context.device.Configure(["1","1"])
+        # tango_context.device.Configure(["a", "1"])
+        # assert tango_context.device.obsState == 0
+        tango_context.device.Configure(["Polaris | polaris, radec, 02:31:50.88, 89:15:51.4", '2019-02-18 11:17:00'])
         assert tango_context.device.obsState == 2
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 

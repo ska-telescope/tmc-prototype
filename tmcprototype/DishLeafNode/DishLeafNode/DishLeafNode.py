@@ -30,7 +30,6 @@ from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 import CONST
 from future.utils import with_metaclass
-import katpoint
 import math
 import katpoint
 import ephem
@@ -217,69 +216,76 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
 
     def convert_radec_to_azel(self, data):
-        print ("data is:", data)
-        print(type(data))
-        # Setting Observer Position as Pune
-        a = katpoint.Antenna(name='d1', latitude='18:31:48:00', longitude='73:50:23.99', altitude=570)
-        print("Pune latitude, longitude and altitude: ", a)
-        print("-----------------------------------------------------")
+        try:
+            print ("data is:", data)
+            print(type(data))
+            # Setting Observer Position as Pune
+            a = katpoint.Antenna(name='d1', latitude='18:31:48:00', longitude='73:50:23.99', altitude=570)
+            print("Pune latitude, longitude and altitude: ", a)
+            print("-----------------------------------------------------")
 
-        # Compute Target Coordinates
-        # for moon
-        #target = 'Moon | moon, radec, 05:38:41.00, 20:37:56'
-        target = data[0]
-        # for Jupiter
-        #target = 'Jupiter | Jupiter, radec, 17:14:36.00, -22:24:13'
+            # Compute Target Coordinates
+            # for moon
+            #target = 'Moon | moon, radec, 05:38:41.00, 20:37:56'
+            target = data[0]
+            # for Jupiter
+            #target = 'Jupiter | Jupiter, radec, 17:14:36.00, -22:24:13'
 
-        #target = 'Sirius | sirius, radec, 6:45:8.10.00, -16:43:22.5'
+            #target = 'Sirius | sirius, radec, 6:45:8.10.00, -16:43:22.5'
 
-        t = katpoint.Target(target)
-        print(t)
-        t2 = katpoint.Target.apparent_radec(t, antenna=a)
-        print("t2 is: ", t2)
-        # t2_ra = ephem.hours(t2[0])
-        t2_ra = katpoint._ephem_extra.angle_from_hours(t2[0])
-        print("t2 ra: ", t2_ra)
-        # t2_dec = ephem.degrees(t2[1])
-        t2_dec = katpoint._ephem_extra.angle_from_degrees(t2[1])
-        print("t2 dec: ", t2_dec)
-        print("-----------------------------------------------------")
+            t = katpoint.Target(target)
+            timestamp = katpoint.Timestamp(timestamp=data[1])
+            print(t)
+            t2 = katpoint.Target.apparent_radec(t, timestamp=timestamp, antenna=a)
+            print("t2 is: ", t2)
+            # t2_ra = ephem.hours(t2[0])
+            t2_ra = katpoint._ephem_extra.angle_from_hours(t2[0])
+            print("t2 ra: ", t2_ra)
+            # t2_dec = ephem.degrees(t2[1])
+            t2_dec = katpoint._ephem_extra.angle_from_degrees(t2[1])
+            print("t2 dec: ", t2_dec)
+            print("-----------------------------------------------------")
 
-        # calculate sidereal time in radians
-        side_time = a.local_sidereal_time()
-        print("sidereal time is: ", side_time)
-        side_time_radians1 = katpoint.deg2rad(math.degrees(side_time))
-        print("sidereal time in radians new is: ", side_time_radians1)
-        print("-----------------------------------------------------")
+            # calculate sidereal time in radians
+            side_time = a.local_sidereal_time(timestamp=timestamp)
+            print("sidereal time is: ", side_time)
+            side_time_radians1 = katpoint.deg2rad(math.degrees(side_time))
+            print("sidereal time in radians new is: ", side_time_radians1)
+            print("-----------------------------------------------------")
 
-        # converting ra to ha
-        ha = side_time_radians1 - t2[0]
-        print("hour angle in radians is:", ha)
-        print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(ha))
-        print("-----------------------------------------------------")
+            # converting ra to ha
+            ha = side_time_radians1 - t2[0]
+            print("hour angle in radians is:", ha)
+            print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(ha))
+            print("-----------------------------------------------------")
 
-        # Geodetic latitude of the observer
-        degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
-        print("degree_decimal is: ", degree_decimal)
-        latitude_radian = katpoint.deg2rad(degree_decimal)
-        #print("latitude radian katpoint: ", katpoint.deg2rad(degree_decimal))
-        print("latitude radian: ", latitude_radian)
-        print("-----------------------------------------------------")
+            # Geodetic latitude of the observer
+            degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
+            print("degree_decimal is: ", degree_decimal)
+            latitude_radian = katpoint.deg2rad(degree_decimal)
+            #print("latitude radian katpoint: ", katpoint.deg2rad(degree_decimal))
+            print("latitude radian: ", latitude_radian)
+            print("-----------------------------------------------------")
 
-        enu_array = katpoint.hadec_to_enu(ha, t2[1], latitude_radian)
-        print("enu coordinates: ", enu_array)
-        print("-----------------------------------------------------")
+            enu_array = katpoint.hadec_to_enu(ha, t2[1], latitude_radian)
+            print("enu coordinates: ", enu_array)
+            print("-----------------------------------------------------")
 
-        self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
-        print("azimuth and elevation coordinates: ", self.az_el_coordinates)
-        print("-----------------------------------------------------")
+            self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
+            print("azimuth and elevation coordinates: ", self.az_el_coordinates)
+            print("-----------------------------------------------------")
 
-        # az = ephem.degrees(az_el_coordinates[0])
-        self.az = katpoint.rad2deg(self.az_el_coordinates[0])
-        print("Azimuth coordinate: ", self.az)
+            # az = ephem.degrees(az_el_coordinates[0])
+            self.az = katpoint.rad2deg(self.az_el_coordinates[0])
+            print("Azimuth coordinate: ", self.az)
 
-        self.el = katpoint.rad2deg(self.az_el_coordinates[1])
-        print("Elevation Coordinate: ", self.el)
+            self.el = katpoint.rad2deg(self.az_el_coordinates[1])
+            print("Elevation Coordinate: ", self.el)
+
+        except Exception as except_occurred:
+            self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
+            #self.set_status(CONST.ERR_RADEC_TO_AZEL)
+            self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
@@ -492,17 +498,19 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
             # Invoke slew command on DishMaster with az and el as inputs
             #argin1 = [float(argin[0]), float(argin[1])]
-            if (self.el <= 90):
+            if (self.el >= 0 and self.el < 90):
                 # To obtain positive value of azimuth coordinate
                 if (self.az < 0):
                    self.az = 360 - abs(self.az)
                 argin1 = [round(self.az, 2), round(self.el, 2)]
+                print("az and el round2: ", argin1)
                 spectrum = [0]
                 spectrum.extend((argin1))
                 self._dish_proxy.desiredPointing = spectrum
                 self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SLEW, "0", self.commandCallback)
             else:
-                print("Target can not be observed as target elevation is invalid")
+                #print(CONST.STR_TARGET_NOT_OBSERVED)
+                self._read_activity_message = CONST.STR_TARGET_NOT_OBSERVED
         except Exception as except_occurred:
              print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
              self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD +  str(except_occurred)
