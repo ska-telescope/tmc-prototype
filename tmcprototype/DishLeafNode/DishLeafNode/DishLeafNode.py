@@ -217,68 +217,36 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def convert_radec_to_azel(self, data):
         try:
-            print ("data is:", data)
-            print(type(data))
             # Setting Observer Position as Pune
-            a = katpoint.Antenna(name='d1', latitude='18:31:48:00', longitude='73:50:23.99', altitude=570)
-            print("Pune latitude, longitude and altitude: ", a)
-            print("-----------------------------------------------------")
+            dish_antenna = katpoint.Antenna(name='d1', latitude='18:31:48:00', longitude='73:50:23.99', altitude=570)
 
             # Compute Target Coordinates
-            # for moon
-            #target = 'Moon | moon, radec, 05:38:41.00, 20:37:56'
-            target = data[0]
-            # for Jupiter
-            #target = 'Jupiter | Jupiter, radec, 17:14:36.00, -22:24:13'
-
-            #target = 'Sirius | sirius, radec, 6:45:8.10.00, -16:43:22.5'
-
-            t = katpoint.Target(target)
+            target_radec = data[0]
+            desired_target = katpoint.Target(target_radec)
             timestamp = katpoint.Timestamp(timestamp=data[1])
-            print(t)
-            t2 = katpoint.Target.apparent_radec(t, timestamp=timestamp, antenna=a)
-            print("t2 is: ", t2)
-            # t2_ra = ephem.hours(t2[0])
-            t2_ra = katpoint._ephem_extra.angle_from_hours(t2[0])
-            print("t2 ra: ", t2_ra)
-            # t2_dec = ephem.degrees(t2[1])
-            t2_dec = katpoint._ephem_extra.angle_from_degrees(t2[1])
-            print("t2 dec: ", t2_dec)
-            print("-----------------------------------------------------")
+            target_apparnt_radec = katpoint.Target.apparent_radec(desired_target, timestamp=timestamp, antenna=dish_antenna)
+            target_apparnt_ra = katpoint._ephem_extra.angle_from_hours(target_apparnt_radec[0])
+            target_apparnt_dec = katpoint._ephem_extra.angle_from_degrees(target_apparnt_radec[1])
 
             # calculate sidereal time in radians
-            side_time = a.local_sidereal_time(timestamp=timestamp)
-            print("sidereal time is: ", side_time)
-            side_time_radians1 = katpoint.deg2rad(math.degrees(side_time))
-            print("sidereal time in radians new is: ", side_time_radians1)
-            print("-----------------------------------------------------")
+            side_time = dish_antenna.local_sidereal_time(timestamp=timestamp)
+            side_time_radian = katpoint.deg2rad(math.degrees(side_time))
 
             # converting ra to ha
-            ha = side_time_radians1 - t2[0]
-            print("hour angle in radians is:", ha)
-            print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(ha))
-            print("-----------------------------------------------------")
+            hour_angle = side_time_radian - target_apparnt_radec[0]
+            #print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(hour_angle))
 
             # Geodetic latitude of the observer
-            degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
-            print("degree_decimal is: ", degree_decimal)
-            latitude_radian = katpoint.deg2rad(degree_decimal)
-            #print("latitude radian katpoint: ", katpoint.deg2rad(degree_decimal))
-            print("latitude radian: ", latitude_radian)
-            print("-----------------------------------------------------")
+            latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
+            latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
 
-            enu_array = katpoint.hadec_to_enu(ha, t2[1], latitude_radian)
-            print("enu coordinates: ", enu_array)
-            print("-----------------------------------------------------")
+            # Calculate enu coordinates
+            enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
 
+            # Calculate Az El coordinates
             self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
-            print("azimuth and elevation coordinates: ", self.az_el_coordinates)
-            print("-----------------------------------------------------")
-
-            # az = ephem.degrees(az_el_coordinates[0])
             self.az = katpoint.rad2deg(self.az_el_coordinates[0])
             print("Azimuth coordinate: ", self.az)
-
             self.el = katpoint.rad2deg(self.az_el_coordinates[1])
             print("Elevation Coordinate: ", self.el)
 

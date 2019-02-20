@@ -81,8 +81,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         #time.sleep(1)
         self._pointing_state = 1
         azimuth_index = 1
-        # self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
-        # print("azimuth difference is: ", self._azimuth_difference)
         if self._azimuth_difference > 0.00:
             self.increment_position([azimuth_index, self._azimuth_difference])
         elif self._azimuth_difference < 0.00:
@@ -92,8 +90,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """ Calculates the elevation angle difference. """
         self._pointing_state = 1
         elevation_index = 2
-        # self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
-        # print("elevation difference is: ", (self._elevation_difference))
         if self._elevation_difference > 0.00:
             self.increment_position([elevation_index, self._elevation_difference])
         elif self._elevation_difference < 0.00:
@@ -105,10 +101,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         :param argin: Difference between current and desired Azimuth/Elevation angle.
         :return: None
         """
-        print("argin in increment postion old: ", argin)
         #input_increment = int(argin[1])
         input_increment = argin[1]
-        print("argin in increment postion: ", input_increment)
         #time.sleep(1)
         if abs(self._azimuth_difference) > abs(self._elevation_difference):
             max_increment = abs(self._azimuth_difference)
@@ -117,12 +111,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         else:
             max_increment = input_increment
 
-        print("max increment is: ", max_increment)
-        print("input increment is: ", input_increment)
         if input_increment == max_increment:
             input_increment = input_increment + 0.01
 
-        print("print input increment 1", input_increment)
         for position in numpy.arange(0, input_increment, 0.01):
             print(position)
             self.set_status(CONST.STR_DISH_POINT_INPROG)
@@ -134,13 +125,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-                #print("In if in increment", self._pointing_state)
             else:
                 self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
-                #print("In else in increment", self._pointing_state)
-            #print("index : coordinate: ", argin[0], argin[1])
-
-            print("index and achieved pointing", argin[0], self._achieved_pointing[argin[0]])
 
 
     def decrement_position(self, argin):
@@ -170,12 +156,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-                print("In if in decrement", self._pointing_state)
             else:
                 self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] - 0.01), 2)
-                print("In else in decrement", self._pointing_state)
-            #print("index : coordinate: ", argin[0], argin[1])
-            print("index and achieved pointing", argin[0], self._achieved_pointing[argin[0]])
 
     def check_slew(self):
         """
