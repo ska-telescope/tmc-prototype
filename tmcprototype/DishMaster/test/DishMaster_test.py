@@ -195,10 +195,10 @@ class TestDishMaster(object):
         """Test for Slew"""
         # PROTECTED REGION ID(DishMaster.test_Slew) ENABLED START #
         tango_context.device.StopCapture("0")
-        tango_context.device.desiredPointing = [0, 1, 1]
+        tango_context.device.desiredPointing = [0, 1.00, 1.00]
         # Testing for invalid argument
         tango_context.device.Slew("a")
-        time.sleep(8)
+        time.sleep(5)
         result = []
         for i in range(1, len(tango_context.device.achievedPointing)):
             if (tango_context.device.achievedPointing[i] != 1):
@@ -208,7 +208,7 @@ class TestDishMaster(object):
         assert all(result)
         # Testing for valid argument
         tango_context.device.Slew("0")
-        time.sleep(8)
+        time.sleep(5)
         result = []
         for i in range(1,len(tango_context.device.achievedPointing)):
             if (tango_context.device.achievedPointing[i] == 1):

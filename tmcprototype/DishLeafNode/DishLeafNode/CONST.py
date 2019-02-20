@@ -101,7 +101,7 @@ ERR_EXE_START_CAPTURE_CMD = "Exception occurred in StartCapture command"
 ERR_EXE_STOP_CAPTURE_CMD = "Exception occurred in StopCapture command"
 ERR_EXE_STANDBYFP_CMD = "Exception occurred in SetStandbyFPMode command"
 ERR_EXE_SLEW_CMD = "Exception occurred in Slew command"
-
+ERR_RADEC_TO_AZEL = "Exception occurred in Ra-Dec to Az-El conversion "
 # commands success string
 STR_SETSTANDBYLP_SUCCESS = "Command :-> SetStandbyLPMode invoked successfully."
 STR_SETOPERATE_SUCCESS = "Command :-> SetOperateMode invoked successfully."
@@ -117,3 +117,5 @@ STR_CAPTURE_EVENT = "StopCapture command is invoked on DishMaster"
 STR_ACHIEVEDPOINTING_1_0 = "Achieved Pointing :-> [0. 1. 0.]"
 STR_ACHIEVEDPOINTING_0_0 = "Achieved Pointing :-> [0. 0. 0.]"
 STR_DESIREDPOINTING_0_0 = "Desired Pointing :-> [0. 0. 0.]"
+
+STR_TARGET_NOT_OBSERVED = "Target can not be observed."

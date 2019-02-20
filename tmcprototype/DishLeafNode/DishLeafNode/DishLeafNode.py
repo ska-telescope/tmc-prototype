@@ -30,6 +30,9 @@ from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 import CONST
 from future.utils import with_metaclass
+import math
+import katpoint
+import ephem
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]
@@ -210,7 +213,56 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
             self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
-    # PROTECTED REGION END #    //  DishLeafNode.class_variable
+
+
+    def convert_radec_to_azel(self, data):
+        try:
+            # Setting Observer Position as Pune
+            dish_antenna = katpoint.Antenna(name='d1',
+                                            latitude='18:31:48:00',
+                                            longitude='73:50:23.99',
+                                            altitude=570)
+
+            # Compute Target Coordinates
+            target_radec = data[0]
+            desired_target = katpoint.Target(target_radec)
+            timestamp = katpoint.Timestamp(timestamp=data[1])
+            target_apparnt_radec = katpoint.Target.apparent_radec(desired_target,
+                                                                  timestamp=timestamp,
+                                                                  antenna=dish_antenna)
+
+            # TODO: Conversion of apparent ra and dec using katpoint library for future refererence.
+            #target_apparnt_ra = katpoint._ephem_extra.angle_from_hours(target_apparnt_radec[0])
+            #target_apparnt_dec = katpoint._ephem_extra.angle_from_degrees(target_apparnt_radec[1])
+
+            # calculate sidereal time in radians
+            side_time = dish_antenna.local_sidereal_time(timestamp=timestamp)
+            side_time_radian = katpoint.deg2rad(math.degrees(side_time))
+
+            # converting ra to ha
+            hour_angle = side_time_radian - target_apparnt_radec[0]
+            #print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(hour_angle))
+
+            # Geodetic latitude of the observer
+            latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
+            latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
+
+            # Calculate enu coordinates
+            enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
+
+            # Calculate Az El coordinates
+            self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
+            self.az = katpoint.rad2deg(self.az_el_coordinates[0])
+            print("Azimuth coordinate: ", self.az)
+            self.el = katpoint.rad2deg(self.az_el_coordinates[1])
+            print("Elevation Coordinate: ", self.el)
+
+        except Exception as except_occurred:
+            self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
+            #self.set_status(CONST.ERR_RADEC_TO_AZEL)
+            self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
+
+# PROTECTED REGION END #    //  DishLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -375,7 +427,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             if type(float(argin)) == float:
                 print(CONST.STR_IN_SCAN)
-                self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SCAN, argin, self.commandCallback)
+                self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SCAN,
+                                                      argin, self.commandCallback)
                 print(CONST.STR_OUT_SCAN)
         except Exception as except_occurred:
             print(CONST.ERR_EXE_SCAN_CMD, except_occurred)
@@ -396,7 +449,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         try:
             if type(float(argin)) == float:
-                self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE, argin, self.commandCallback)
+                self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE,
+                                                      argin, self.commandCallback)
         except Exception as except_occurred:
             print(CONST.ERR_EXE_END_SCAN_CMD, except_occurred)
             self._read_activity_message = CONST.ERR_EXE_END_SCAN_CMD+ str(except_occurred)
@@ -412,19 +466,30 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
-        :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
+        :param argin: String array that includes pointing parameters of Dish - Azimuth and
+        Elevation Angle.
         :return: None
         """
         try:
-            argin1 = [float(argin[0]), float(argin[1])]
-            spectrum = [0]
-            spectrum.extend((argin1))
-            self._dish_proxy.desiredPointing = spectrum
-            self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SLEW, "0", self.commandCallback)
+            # Convert ra and dec to az and el
+            self.convert_radec_to_azel(argin)
+            # Invoke slew command on DishMaster with az and el as inputs
+            if (self.el >= 0 and self.el < 90):
+                # To obtain positive value of azimuth coordinate
+                if (self.az < 0):
+                   self.az = 360 - abs(self.az)
+                roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
+                print("az and el round2: ", roundoff_az_el)
+                spectrum = [0]
+                spectrum.extend((roundoff_az_el))
+                self._dish_proxy.desiredPointing = spectrum
+                self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SLEW, "0", self.commandCallback)
+            else:
+                self._read_activity_message = CONST.STR_TARGET_NOT_OBSERVED
         except Exception as except_occurred:
-            print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD +  str(except_occurred)
-            self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
+             print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
+             self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD +  str(except_occurred)
+             self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.Configure
 
     def is_Configure_allowed(self):
@@ -529,3 +594,4 @@ def main(args=None, **kwargs):
 
 if __name__ == '__main__':
     main()
+
