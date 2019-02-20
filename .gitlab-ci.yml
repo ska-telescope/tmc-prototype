@@ -26,44 +26,23 @@ before_script:
 # It is also specified that only the master branch will be subject of this job.
 
 stages:
-  - test
   - pages
-
-
-test:
-  tags:
-    - docker-executor
-  stage: test
-  script:
-    - make build
-    - make test
-    - mv build public
-    - make push
-  artifacts:
-    paths:
-      - public
 
 
 pages:
   tags:
     - docker-executor
   stage: pages
-
   script:
-   - make build
-   - make test
-   - ls -la
-   - mkdir .public
-   - cp build/dishmaster_coverage.xml .public
-   - cp -r build/dishmaster_htmlcov/* .public
-   - cp build/dishleafnode_coverage.xml .public
-   - cp -r build/dishleafnode_htmlcov/* .public
-   - cp build/subarraynode_coverage.xml .public
-   - cp -r build/subarraynode_htmlcov/* .public
-   - cp build/centralnode_coverage.xml .public
-   - cp -r build/centralnode_htmlcov/* .public
-   - mv .public public
+    - make build
+    - make test
+    - ls -la
+    - mv build public
+    - cp -r public/dishmaster_htmlcov/* public
+    - cp -r public/dishleafnode_htmlcov/* public
+    - cp -r public/subarraynode_htmlcov/* public
+    - cp -r public/centralnode_htmlcov/* public
+    - make push
   artifacts:
     paths:
       - public
-    expire_in: 30 days
