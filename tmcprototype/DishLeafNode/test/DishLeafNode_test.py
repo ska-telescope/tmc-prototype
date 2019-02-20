@@ -7,7 +7,7 @@
 #
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
-"""Contain the tests for the ."""
+"""Contain the tests for DishLeafNode."""
 from __future__ import print_function
 
 # Path
