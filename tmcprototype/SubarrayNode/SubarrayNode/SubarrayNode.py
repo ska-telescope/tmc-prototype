@@ -418,14 +418,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return: None
         """
         try:
-            for i in range(0, len(argin)):
-                if type(float(argin[i])) == float:
-                    pass
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
             self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN + str(
                 self._dish_leaf_node_group.get_device_list())
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevVarStringArray, argin)
+
             # set obsState to CONFIGURING when the configuration is started
             self._obs_state = 1
             self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)

@@ -13,11 +13,6 @@ SKA Dish Master TANGO device server
 from __future__ import print_function
 from __future__ import absolute_import
 
-# import sys
-# import os
-# path = os.path.join(os.path.dirname(__file__), os.pardir)
-# sys.path.insert(0, os.path.abspath(path))
-# print("sys.path: ", sys.path)
 import sys
 import os
 file_path = os.path.dirname(os.path.abspath(__file__))
@@ -39,6 +34,7 @@ from threading import Timer
 import threading
 import CONST
 from future.utils import with_metaclass
+import numpy
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
@@ -59,6 +55,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         if((self._achieved_pointing[1] != self._desired_pointing[1]) |
            (self._achieved_pointing[2] != self._desired_pointing[2])):
             try:
+                self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
+                print("azimuth difference is: ", self._azimuth_difference)
+                self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
+                print("elevation difference is: ", (self._elevation_difference))
                 self.change_azimuth_thread = threading.Thread(None, self.azimuth, 'DishMaster')
                 self.change_elevation_thread = threading.Thread(None, self.elevation, 'DishMaster')
                 self.change_azimuth_thread.start()
@@ -73,9 +73,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def azimuth(self):
         """ Calculates the azimuth angle difference. """
+        #time.sleep(1)
         self._pointing_state = 1
         azimuth_index = 1
-        self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
         if self._azimuth_difference > 0.00:
             self.increment_position([azimuth_index, self._azimuth_difference])
         elif self._azimuth_difference < 0.00:
@@ -85,7 +85,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """ Calculates the elevation angle difference. """
         self._pointing_state = 1
         elevation_index = 2
-        self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
         if self._elevation_difference > 0.00:
             self.increment_position([elevation_index, self._elevation_difference])
         elif self._elevation_difference < 0.00:
@@ -97,28 +96,33 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         :param argin: Difference between current and desired Azimuth/Elevation angle.
         :return: None
         """
-        input_increment = int(argin[1])
-        time.sleep(2)
+        #input_increment = int(argin[1])
+        input_increment = argin[1]
+        #time.sleep(1)
         if abs(self._azimuth_difference) > abs(self._elevation_difference):
             max_increment = abs(self._azimuth_difference)
         elif abs(self._azimuth_difference) < abs(self._elevation_difference):
             max_increment = abs(self._elevation_difference)
         else:
             max_increment = input_increment
+
         if input_increment == max_increment:
-            input_increment = input_increment + 1
-        for position in range(0, input_increment):
+            input_increment = input_increment + 0.01
+
+        for position in numpy.arange(0, input_increment, 0.01):
+            print(position)
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             self._pointing_state = 1
-            time.sleep(2)
+            time.sleep(0.01)
             if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                     self._achieved_pointing[2] == self._desired_pointing[2]):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:
-                self._achieved_pointing[argin[0]] = self._achieved_pointing[argin[0]] + 1
+                self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
+
 
     def decrement_position(self, argin):
         """
@@ -126,8 +130,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         :param argin: Difference between current and desired Azimuth/Elevation angle.
         :return: None
         """
-        input_decrement = int(argin[1])
-        time.sleep(2)
+        input_decrement = argin[1]
+        #time.sleep(2)
         if abs(self._azimuth_difference) > abs(self._elevation_difference):
             max_decrement = abs(self._azimuth_difference)
         elif abs(self._azimuth_difference) < abs(self._elevation_difference):
@@ -135,18 +139,20 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         else:
             max_decrement = input_decrement
         if input_decrement == max_decrement:
-            input_decrement = input_decrement + 1
-        for position in range(0, (input_decrement)):
+            input_decrement = input_decrement + 0.01
+
+        for position in numpy.arange(0, input_decrement, 0.01):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
+            self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             self._pointing_state = 1
-            time.sleep(2)
+            time.sleep(0.01)
             if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                     self._achieved_pointing[2] == self._desired_pointing[2]):
                 self._pointing_state = 0
                 self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                 self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:
-                self._achieved_pointing[argin[0]] = self._achieved_pointing[argin[0]] - 1
+                self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] - 0.01), 2)
 
     def check_slew(self):
         """
@@ -710,6 +716,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         :return: None
         """
         try:
+            print("Argin In DishMaster: ", self._desired_pointing)
             if type(float(argin)) == float:
                 # Execute POINT command at given timestamp
                 self._current_time = time.time()
