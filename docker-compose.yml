@@ -74,8 +74,7 @@ services:
              tango_admin --add-server DishLeafNode/test DishLeafNode ska_mid/tm_leaf_node/d0001 &&\
              tango_admin --add-property test/DishLeafNode/01 DishMasterFQDN mid_d0001/elt/master &&\
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             tango_admin --check-device mid_d0001/elt/master &&\
-             tango_admin --ping-device mid_d0001/elt/master 10 &&\
+             retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master &&\
              /venv/bin/python /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py test"
     volumes_from:
       - rsyslog-tmcprototype:rw
@@ -96,10 +95,8 @@ services:
              tango_admin --add-server SubarrayNode/test2 SubarrayNode ska_mid/tm_subarray_node/2 &&\
              tango_admin --add-property ska_mid/tm_subarray_node/2 DishLeafNodePrefix ska_mid/tm_leaf_node/d &&\
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             tango_admin --check-device mid_d0001/elt/master &&\
-             tango_admin --ping-device mid_d0001/elt/master 10 &&\
-             tango_admin --check-device ska_mid/tm_leaf_node/d0001 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
+             retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master &&\
+             retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001 &&\
              /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py test1 &&\
              /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py test2"
     volumes_from:
@@ -119,14 +116,10 @@ services:
       sh -c "wait-for-it.sh databaseds:10000 --timeout=30 --strict --
              tango_admin --add-server CentralNode/test CentralNode ska_mid/tm_central/central_node &&\
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             tango_admin --check-device mid_d0001/elt/master &&\
-             tango_admin --ping-device mid_d0001/elt/master 10 &&\
-             tango_admin --check-device ska_mid/tm_leaf_node/d0001 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
-             tango_admin --check-device ska_mid/tm_subarray_node/1 &&\
-             tango_admin --ping-device ska_mid/tm_subarray_node/1 10 &&\
-             tango_admin --check-device ska_mid/tm_subarray_node/2 &&\
-             tango_admin --ping-device ska_mid/tm_subarray_node/2 10 &&\
+             retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master &&\
+             retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001 &&\
+             retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1 &&\
+             retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2 &&\
              /venv/bin/python /app/tmcprototype/CentralNode/CentralNode/CentralNode.py test"
     volumes_from:
     - rsyslog-tmcprototype:rw
