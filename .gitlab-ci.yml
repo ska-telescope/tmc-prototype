@@ -34,6 +34,7 @@ pages:
     - docker-executor
   stage: pages
   script:
+    - make build
     - make test
     - ls -la
     - mv build public

@@ -6,8 +6,12 @@ from __future__ import absolute_import
 import mock
 import pytest
 import importlib
+import os
+import sys
+
 from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
+#import tmcprototype.CentralNode.CentralNode.CONST as CONST
 from .CentralNode import CONST as CONST
 
 @pytest.fixture(scope="class")
@@ -19,11 +23,10 @@ def tango_context(request):
     request: _pytest.fixtures.SubRequest
         A request object gives access to the requesting test context.
     """
-    # TODO: package_name and class_name can be used in future
-    # fq_test_class_name = request.cls.__module__
-    # fq_test_class_name_details = fq_test_class_name.split(".")
-    # package_name = fq_test_class_name_details[1]
-    # class_name = module_name = fq_test_class_name_details[1]
+    fq_test_class_name = request.cls.__module__
+    fq_test_class_name_details = fq_test_class_name.split(".")
+    package_name = fq_test_class_name_details[1]
+    class_name = module_name = fq_test_class_name_details[1]
     module = importlib.import_module("{}.{}".format("CentralNode", "CentralNode"))
     klass = getattr(module, "CentralNode")
     tango_context = DeviceTestContext(klass)

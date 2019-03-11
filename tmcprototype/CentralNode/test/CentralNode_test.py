@@ -15,6 +15,8 @@ import sys
 import os
 import time
 
+from tango import EventType
+
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CentralNode"
 sys.path.insert(0, module_path)
@@ -22,14 +24,14 @@ sys.path.insert(0, module_path)
 path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
+
 # Imports
+from mock import MagicMock
 import tango
-import pytest
-import CONST
-from tango import DevState, EventType
+from tango import DevState
 from CentralNode.CentralNode import CentralNode
-
-
+import CONST
+import pytest
 
 # Note:
 #
