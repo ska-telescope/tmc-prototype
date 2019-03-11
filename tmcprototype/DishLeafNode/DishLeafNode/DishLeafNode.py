@@ -32,7 +32,6 @@ import CONST
 from future.utils import with_metaclass
 import math
 import katpoint
-import ephem
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]

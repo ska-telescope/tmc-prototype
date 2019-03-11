@@ -26,7 +26,6 @@ from mock import MagicMock
 import tango
 from tango import DevState, EventType
 import pytest
-#from tmcprototype.DishLeafNode import DishLeafNode
 from DishLeafNode.DishLeafNode import DishLeafNode
 import CONST
 import time

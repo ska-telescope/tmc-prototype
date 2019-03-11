@@ -40,8 +40,6 @@ setup(
       long_description=long_description,
       url='www.tango-controls.org',
       platforms="All Platforms", install_requires=['pytango', 'mock'],
-      #test_suite='test',
-      #install_requires=['pytango'],  # FIXME: add your package's dependencies to this list
       setup_requires=[
           # dependency for `python setup.py test`
           'pytest-runner',
