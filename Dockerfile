@@ -21,7 +21,10 @@ RUN buildDeps="ca-certificates git" \
    && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $buildDeps \
    && su tango -c "/venv/bin/pip install git+https://github.com/ska-telescope/lmc-base-classes.git" \
    && apt-get purge -y --auto-remove $buildDeps \
-   && rm -rf /var/lib/apt/lists/* /home/tango/.cache
+   && rm -rf /var/lib/apt/lists/* /home/tango/.cache \
+   && DEBIAN_FRONTEND=noninteractive apt-get update \
+   && DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential libssl-dev libffi-dev python3-dev
+
 
 USER tango
 
