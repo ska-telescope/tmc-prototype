@@ -1,10 +1,17 @@
 #
-# Docker compose file for TANGO database and database device server
+# Docker compose file for testing the TMC prototype in CI environment. 
+# The current setup provides one containers each for Tango DB, databaseds service, 
+# Central Node, two Subarray Nodes(two subarrays in single container), one Dish Leaf Node,
+# one Dish Master and one rsyslog service (for logging)
 #
 # Defines:
 #   - tangodb: MariaDB database with TANGO schema
 #   - databaseds: TANGO database device server
-#
+#   - rsyslog-tmcprototype: rsyslog service for logger
+#   - dishmaster: Simulator of Dish Master device
+#   - dishleafnode: Dish Leaf Node
+#   - subarraynode: Subarray Node
+#   - centralnode: Central Node
 # Requires:
 #   - None
 #
