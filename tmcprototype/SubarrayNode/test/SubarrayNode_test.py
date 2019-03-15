@@ -22,11 +22,8 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-from time import sleep
-from mock import MagicMock
 import tango
 from tango import DevFailed, DevState
-#from devicetest import DeviceTestCase, main
 import pytest
 from SubarrayNode.SubarrayNode import SubarrayNode
 import CONST

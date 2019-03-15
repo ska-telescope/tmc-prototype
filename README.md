@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/tmc-prototype/badge/?version=master)](https://developer.skatelescope.org/projects/tmc-prototype/en/master/?badge=master)
+
 # tmc-prototype
 This is the repository for TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction. The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards.
 
