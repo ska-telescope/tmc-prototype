@@ -1,6 +1,6 @@
 #
 # Docker compose file for testing the TMC prototype in CI environment. 
-# The current setup provides one containers each for Tango DB, databaseds service, 
+# The current setup provides one container each for Tango DB, databaseds service,
 # Central Node, two Subarray Nodes(two subarrays in single container), one Dish Leaf Node,
 # one Dish Master and one rsyslog service (for logging)
 #

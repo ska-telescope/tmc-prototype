@@ -472,7 +472,17 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         try:
             # Convert ra and dec to az and el
-            self.convert_radec_to_azel(argin)
+            radec_value = argin[0].replace('|', ',')
+            timestamp_value = argin[1].replace('|', ' ')
+            print("radec_value: ", radec_value)
+            print("timestamp_value: ", timestamp_value)
+            katpoint_arg = []
+            katpoint_arg.insert(0, radec_value)
+            katpoint_arg.insert(1, timestamp_value)
+            print("katpoint_arg: ", katpoint_arg)
+            self.convert_radec_to_azel(katpoint_arg)
+            # self.convert_radec_to_azel(argin)
+
             # Invoke slew command on DishMaster with az and el as inputs
             if (self.el >= 0 and self.el < 90):
                 # To obtain positive value of azimuth coordinate

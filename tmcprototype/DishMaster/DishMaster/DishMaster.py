@@ -108,21 +108,30 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
         if input_increment == max_increment:
             input_increment = input_increment + 0.01
-
+        self.set_status(CONST.STR_DISH_POINT_INPROG)
+        self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+        self._pointing_state = 1
         for position in numpy.arange(0, input_increment, 0.01):
-            print(position)
-            self.set_status(CONST.STR_DISH_POINT_INPROG)
-            self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
-            self._pointing_state = 1
-            time.sleep(0.01)
-            if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
-                    self._achieved_pointing[2] == self._desired_pointing[2]):
-                self._pointing_state = 0
-                self.set_status(CONST.STR_DISH_POINT_SUCCESS)
-                self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            # self.set_status(CONST.STR_DISH_POINT_INPROG)
+            # self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+            # self._pointing_state = 1
+            if (position == input_increment):
+                break
             else:
-                self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
-
+                print("position and index in else", position, argin[0])
+                time.sleep(0.01)
+                if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
+                        self._achieved_pointing[2] == self._desired_pointing[2]):
+                    print("desired and achieved are equal")
+                    self._pointing_state = 0
+                    self.set_status(CONST.STR_DISH_POINT_SUCCESS)
+                    self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                else:
+                    self.set_status(CONST.STR_DISH_POINT_INPROG)
+                    self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+                    self._pointing_state = 1
+                    self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
+                print("achieved pointing is: ", self._achieved_pointing)
 
     def decrement_position(self, argin):
         """
@@ -141,18 +150,30 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         if input_decrement == max_decrement:
             input_decrement = input_decrement + 0.01
 
+        self.set_status(CONST.STR_DISH_POINT_INPROG)
+        self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+        self._pointing_state = 1
         for position in numpy.arange(0, input_decrement, 0.01):
-            self.set_status(CONST.STR_DISH_POINT_INPROG)
-            self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
-            self._pointing_state = 1
-            time.sleep(0.01)
-            if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
-                    self._achieved_pointing[2] == self._desired_pointing[2]):
-                self._pointing_state = 0
-                self.set_status(CONST.STR_DISH_POINT_SUCCESS)
-                self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            # self.set_status(CONST.STR_DISH_POINT_INPROG)
+            # self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+            # self._pointing_state = 1
+            if (position == input_decrement):
+                break
             else:
-                self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] - 0.01), 2)
+                time.sleep(0.01)
+                print("position and index", position, argin[0])
+                if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
+                        self._achieved_pointing[2] == self._desired_pointing[2]):
+                    print("desired and achieved are equal")
+                    self._pointing_state = 0
+                    self.set_status(CONST.STR_DISH_POINT_SUCCESS)
+                    self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                else:
+                    self.set_status(CONST.STR_DISH_POINT_INPROG)
+                    self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+                    self._pointing_state = 1
+                    self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] - 0.01), 2)
+                print("achieved pointing is: ", self._achieved_pointing)
 
     def check_slew(self):
         """
