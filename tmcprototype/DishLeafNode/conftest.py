@@ -8,7 +8,7 @@ import mock
 import pytest
 import importlib
 
-from PyTango._PyTango import DeviceProxy
+from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
 
 
@@ -43,12 +43,15 @@ def tango_context(request): #, dishmaster_context):
     request: _pytest.fixtures.SubRequest
         A request object gives access to the requesting test context.
     """
-    fq_test_class_name = request.cls.__module__
-    fq_test_class_name_details = fq_test_class_name.split(".")
-    package_name = fq_test_class_name_details[1]
-    class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format(package_name, module_name))
-    klass = getattr(module, class_name)
+    # TODO: package_name and class_name can be used in future
+    # fq_test_class_name = request.cls.__module__
+    # fq_test_class_name_details = fq_test_class_name.split(".")
+    # package_name = fq_test_class_name_details[1]
+    # class_name = module_name = fq_test_class_name_details[1]
+    # module = importlib.import_module("{}.{}".format(package_name, module_name))
+    # klass = getattr(module, class_name)
+    module = importlib.import_module("{}.{}".format("DishLeafNode", "DishLeafNode"))
+    klass = getattr(module, "DishLeafNode")
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
                   'DishMasterFQDN': "mid_d0001/elt/master",

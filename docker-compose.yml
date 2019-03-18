@@ -1,0 +1,143 @@
+#
+# Docker compose file for testing the TMC prototype in CI environment. 
+# The current setup provides one container each for Tango DB, databaseds service,
+# Central Node, two Subarray Nodes(two subarrays in single container), one Dish Leaf Node,
+# one Dish Master and one rsyslog service (for logging)
+#
+# Defines:
+#   - tangodb: MariaDB database with TANGO schema
+#   - databaseds: TANGO database device server
+#   - rsyslog-tmcprototype: rsyslog service for logger
+#   - dishmaster: Simulator of Dish Master device
+#   - dishleafnode: Dish Leaf Node
+#   - subarraynode: Subarray Node
+#   - centralnode: Central Node
+# Requires:
+#   - None
+#
+version: '2'
+volumes:
+  tangodb: {}
+
+services:
+  tangodb:
+    image: ska-registry.av.it.pt/ska-docker/tango-db:latest
+    depends_on:
+      - rsyslog-tmcprototype
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=tango
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+    volumes:
+      - tangodb:/var/lib/mysql
+
+  databaseds:
+    image: ska-registry.av.it.pt/ska-docker/tango-cpp:latest
+    depends_on:
+      - tangodb
+    environment:
+      - MYSQL_HOST=tangodb:3306
+      - MYSQL_DATABASE=tango
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+      - TANGO_HOST=databaseds:10000
+    entrypoint:
+      - /usr/local/bin/wait-for-it.sh
+      - tangodb:3306
+      - --timeout=30
+      - --strict
+      - --
+      - /usr/local/bin/DataBaseds
+      - "2"
+      - -ORBendPoint
+      - giop:tcp::10000
+
+  dishmaster:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+    environment:
+      - TANGO_HOST=databaseds:10000
+    command: >
+      sh -c "wait-for-it.sh databaseds:10000 --timeout=30 --strict --
+             tango_admin --add-server DishMaster/test DishMaster mid_d0001/elt/master &&\
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             /venv/bin/python /app/tmcprototype/DishMaster/DishMaster/DishMaster.py test"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
+
+  dishleafnode:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - dishmaster
+    environment:
+      - TANGO_HOST=databaseds:10000
+    command: >
+      sh -c "wait-for-it.sh databaseds:10000 --timeout=30 --strict --
+             tango_admin --add-server DishLeafNode/test DishLeafNode ska_mid/tm_leaf_node/d0001 &&\
+             tango_admin --add-property test/DishLeafNode/01 DishMasterFQDN mid_d0001/elt/master &&\
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --check-device mid_d0001/elt/master &&\
+             tango_admin --ping-device mid_d0001/elt/master 10 &&\
+             /venv/bin/python /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py test"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
+
+  subarraynode:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+    - databaseds
+    - rsyslog-tmcprototype
+    - dishmaster
+    - dishleafnode
+    environment:
+    - TANGO_HOST=databaseds:10000
+    command: >
+      sh -c "wait-for-it.sh databaseds:10000 --timeout=30 --strict --
+             tango_admin --add-server SubarrayNode/test1 SubarrayNode ska_mid/tm_subarray_node/1 &&\
+             tango_admin --add-property ska_mid/tm_subarray_node/1 DishLeafNodePrefix ska_mid/tm_leaf_node/d &&\
+             tango_admin --add-server SubarrayNode/test2 SubarrayNode ska_mid/tm_subarray_node/2 &&\
+             tango_admin --add-property ska_mid/tm_subarray_node/2 DishLeafNodePrefix ska_mid/tm_leaf_node/d &&\
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --check-device mid_d0001/elt/master &&\
+             tango_admin --ping-device mid_d0001/elt/master 10 &&\
+             tango_admin --check-device ska_mid/tm_leaf_node/d0001 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
+             /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py test1 &&\
+             /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py test2"
+    volumes_from:
+    - rsyslog-tmcprototype:rw
+
+  centralnode:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+    - databaseds
+    - rsyslog-tmcprototype
+    - dishmaster
+    - dishleafnode
+    - subarraynode
+    environment:
+    - TANGO_HOST=databaseds:10000
+    command: >
+      sh -c "wait-for-it.sh databaseds:10000 --timeout=30 --strict --
+             tango_admin --add-server CentralNode/test CentralNode ska_mid/tm_central/central_node &&\
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --check-device mid_d0001/elt/master &&\
+             tango_admin --ping-device mid_d0001/elt/master 10 &&\
+             tango_admin --check-device ska_mid/tm_leaf_node/d0001 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
+             tango_admin --check-device ska_mid/tm_subarray_node/1 &&\
+             tango_admin --ping-device ska_mid/tm_subarray_node/1 10 &&\
+             tango_admin --check-device ska_mid/tm_subarray_node/2 &&\
+             tango_admin --ping-device ska_mid/tm_subarray_node/2 10 &&\
+             /venv/bin/python /app/tmcprototype/CentralNode/CentralNode/CentralNode.py test"
+    volumes_from:
+    - rsyslog-tmcprototype:rw
+
+  rsyslog-tmcprototype:
+    container_name: rsyslog-tmcprototype
+    image: jumanjiman/rsyslog

@@ -26,7 +26,8 @@ exec(open(release_filename).read())
 
 pack = ['SubarrayNode']
 
-setup(name=name,
+setup(
+      name=name,
       version=version,
       description='Provides the monitoring and control interface required by users as well as \nother TM Components (such as OET, Central Node) for a Subarray.',
       packages=pack,
@@ -38,5 +39,23 @@ setup(name=name,
       license='BSD-3-Clause',
       long_description=long_description,
       url='www.tango-controls.org',
-      platforms="All Platforms"
-      )
+      platforms="All Platforms",
+      install_requires=['pytango', 'mock'],
+      #test_suite='test',
+      setup_requires=[
+          # dependency for `python setup.py test`
+          'pytest-runner',
+          # dependencies for `python setup.py build_sphinx`
+          'sphinx',
+          'recommonmark'
+      ],
+      tests_require=[
+          'pytest',
+          'pytest-cov',
+          'pytest-json-report',
+          'pycodestyle',
+      ],
+      extras_require={
+          'dev':  ['prospector[with_pyroma]', 'yapf', 'isort']
+      }
+)

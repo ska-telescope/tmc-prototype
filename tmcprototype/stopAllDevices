@@ -1,5 +1,5 @@
 #!/bin/sh
-python -c "import tango; print(tango.__version__)"
+python3 -c "import tango; print(tango.__version__)"
 
 echo "========================= Stopping Central Node ========================="
 pkill -9 -f ./CentralNode/CentralNode/CentralNode.py &
