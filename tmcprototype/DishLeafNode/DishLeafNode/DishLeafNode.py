@@ -255,6 +255,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(hour_angle))
 
             # Geodetic latitude of the observer
+            # TODO: For refererence
             #latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
             latitude_degree_decimal = self.dmstodd(str(dish_antenna_latitude))
             latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
