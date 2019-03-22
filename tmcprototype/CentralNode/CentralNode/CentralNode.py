@@ -32,6 +32,7 @@ from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 import CONST
 from future.utils import with_metaclass
+import json
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
@@ -197,6 +198,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.subarray_health_state_map = {}
             self._dish_leaf_node_devices = []
             self._leaf_device_proxy = []
+            self.subarray_FQDN_dict = {}
             self.set_status(CONST.STR_INIT_SUCCESS)
         except Exception as except_occured:
             print(CONST.ERR_INIT_PROP_ATTR_CN)
@@ -231,6 +233,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
                 self.dev_logging(CONST.ERR_IN_CREATE_PROXY, int(tango.LogLevel.LOG_ERROR))
+
+
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
@@ -238,6 +242,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 subarray_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE,
                                                EventType.CHANGE_EVENT,
                                                self.subarrayHealthStateCallback, stateless=True)
+
+                #populate subarrayID-subarray proxy map
+                tokens = self.TMMidSubarrayNodes[subarray].split('/')
+                subarrayID = int(tokens[2])
+                self.subarray_FQDN_dict[subarrayID] = subarray_proxy
             except Exception as except_occured:
                 print(CONST.ERR_SUBSR_SA_HEALTH_STATE, self.TMMidSubarrayNodes[subarray])
                 self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(self.TMMidSubarrayNodes[
@@ -245,6 +254,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+        print("Subarray dictionary: ", self.subarray_FQDN_dict)
         # PROTECTED REGION END #    //  CentralNode.init_device
 
     def always_executed_hook(self):
@@ -378,6 +388,39 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
                 self.dev_logging(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
+
+    @command(
+    dtype_in='str', 
+    doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. The individual string should contain dish numbers in string format with preceding zeroes upto 3 digits. E.g. 0001, 0002", 
+    )
+    @DebugIt()
+    def AssignResources(self, argin):
+        # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
+        """
+        This command assigns resources to given subarray. It accepts the subarray id and receptor id list as JSON string.
+        :param argin: The string in JSON format. The JSON contains following values:
+                      subarrayID: DevShort
+                      dish: JSON object consisting
+                         receptorIDList: DevVarStringArray. The individual string should contain dish numbers in string
+                                         format with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+                      Example:
+                      {
+                        'subarrayID': 1,
+                        'dish': {
+                                  'receptorIDList': ["0001", 0002]
+                                }
+                      }
+        :return: None.
+        """
+        try:
+            jsonArgument = json.loads(argin)
+            subarrayID= jsonArgument['subarrayID']
+            subarrayProxy = self.subarray_FQDN_dict[subarrayID]
+            print("subarrayProxy: ", subarrayProxy)
+        except KeyError:
+
+        pass
+        # PROTECTED REGION END #    //  CentralNode.AssignResources
 
 # ----------
 # Run server
