@@ -252,6 +252,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
             # converting ra to ha
             hour_angle = side_time_radian - target_apparnt_radec[0]
+            # TODO: Conversion of hour angle from radian to HH:MM:SS for future refererence.
             #print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(hour_angle))
 
             # Geodetic latitude of the observer
@@ -272,7 +273,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except Exception as except_occurred:
             self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
-            #self.set_status(CONST.ERR_RADEC_TO_AZEL)
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
