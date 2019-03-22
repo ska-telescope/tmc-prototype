@@ -32,6 +32,7 @@ import CONST
 from future.utils import with_metaclass
 import math
 import katpoint
+import re
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]
@@ -214,6 +215,15 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
 
 
+    def dmstodd(self, dish_antenna_latitude):
+        # Convert latitude from deg:min:sec to degree decimal
+        dd = re.split('[:]+', dish_antenna_latitude)
+        deg_dec = abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
+        if "-" in dd[0]:
+            return deg_dec * (-1)
+        else:
+            return deg_dec
+
     def convert_radec_to_azel(self, data):
         try:
             # Setting Observer Position as Pune
@@ -221,6 +231,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                             latitude='18:31:48:00',
                                             longitude='73:50:23.99',
                                             altitude=570)
+            # Antenna latitude
+            dish_antenna_latitude = dish_antenna.ref_observer.lat
 
             # Compute Target Coordinates
             target_radec = data[0]
@@ -243,7 +255,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(hour_angle))
 
             # Geodetic latitude of the observer
-            latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
+            #latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
+            latitude_degree_decimal = self.dmstodd(str(dish_antenna_latitude))
             latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
 
             # Calculate enu coordinates
