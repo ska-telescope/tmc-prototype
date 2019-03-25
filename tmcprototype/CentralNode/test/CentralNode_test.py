@@ -270,3 +270,18 @@ class TestCentralNode(object):
                                                      CentralNode.subarrayHealthStateCallback)
         assert CONST.STR_HEALTH_STATE in tango_context.device.activityMessage
         create_subarray2_proxy.unsubscribe_event(eid)
+
+    def test_AssignResources(self, tango_context, create_subarray1_proxy):
+        test_input = \
+            {
+            "subarrayID": 1,
+            "dish":
+                {
+                    "receptorIDList": ["0001", "0002"]
+                }
+            }
+
+        tango_context.device.AssignResources(test_input)
+        eid = create_subarray1_proxy.subscribe_event()
+        assert
+        create_subarray1_proxy.unsubscribe_event(eid)

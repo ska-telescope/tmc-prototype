@@ -391,7 +391,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     @command(
     dtype_in='str', 
-    doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. The individual string should contain dish numbers in string format with preceding zeroes upto 3 digits. E.g. 0001, 0002", 
+    doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
+           "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
+           "The individual string should contain dish numbers in string format with "
+           "preceding zeroes upto 3 digits. E.g. 0001, 0002",
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -405,19 +408,29 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                          format with preceding zeroes upto 3 digits. E.g. 0001, 0002.
                       Example:
                       {
-                        'subarrayID': 1,
-                        'dish': {
-                                  'receptorIDList': ["0001", 0002]
+                        "subarrayID": 1,
+                        "dish": {
+                                  "receptorIDList": ["0001", "0002"]
                                 }
                       }
         :return: None.
         """
         try:
+            #serialize the json
             jsonArgument = json.loads(argin)
-            subarrayID= jsonArgument['subarrayID']
+
+            #invoke command on subarray node
+            subarrayID = jsonArgument["subarrayID"]
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
             print("subarrayProxy: ", subarrayProxy)
-        except KeyError:
+
+            subarrayProxy.command_inout_raw(CONST.CMD_ASSIGN_RESOURCES, json.dumps(jsonArgument["dish"]))
+        except ValueError as json_exception:
+            self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
+            print(CONST.ERR_INVALID_JSON, json_exception)
+        except KeyError as json_exception:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
+            print(CONST.ERR_JSON_KEY_NOT_FOUND, json_exception)
 
         pass
         # PROTECTED REGION END #    //  CentralNode.AssignResources
