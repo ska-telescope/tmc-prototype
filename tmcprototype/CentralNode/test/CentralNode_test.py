@@ -30,6 +30,7 @@ from tango import DevState, EventType
 from CentralNode.CentralNode import CentralNode
 import CONST
 import pytest
+import json
 
 # Note:
 #
@@ -272,16 +273,20 @@ class TestCentralNode(object):
         create_subarray2_proxy.unsubscribe_event(eid)
 
     def test_AssignResources(self, tango_context, create_subarray1_proxy):
-        test_input = \
-            {
-            "subarrayID": 1,
-            "dish":
-                {
-                    "receptorIDList": ["0001", "0002"]
-                }
-            }
-
+        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
         tango_context.device.AssignResources(test_input)
-        eid = create_subarray1_proxy.subscribe_event()
-        assert
-        create_subarray1_proxy.unsubscribe_event(eid)
+        result = create_subarray1_proxy.receptorIDList
+        create_subarray1_proxy.ReleaseAllResources()
+        assert result == [1]
+
+    def test_AssignResources_invalid_json(self, tango_context, create_subarray1_proxy):
+        test_input = '{"invalid_key"}'
+        tango_context.device.AssignResources(test_input)
+        time.sleep(1)
+        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+
+    def test_AssignResources_key_not_found(self, tango_context, create_subarray1_proxy):
+        test_input = '{"dish":{"receptorIDList":["0001"]}}'
+        tango_context.device.AssignResources(test_input)
+        time.sleep(1)
+        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage

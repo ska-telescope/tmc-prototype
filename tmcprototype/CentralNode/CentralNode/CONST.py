@@ -8,6 +8,7 @@ CMD_ASSIGN_RESOURCES = "AssignResources"
 #Event messages
 EVT_UNKNOWN_SA = "Event from the Unknown Subarray device!"
 EVT_SUBSR_SA_HEALTH_STATE = "healthState"
+EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
 #
 #Error messages
 ERR_AGGR_HEALTH_STATE = "Unexpected error while aggregating Health state!\n"

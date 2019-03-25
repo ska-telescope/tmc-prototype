@@ -414,24 +414,23 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                 }
                       }
         :return: None.
+
+        Note: From jive, enter input as: {"subarrayID":1,"dish":{"receptorIDList":["0001"]}} without any space
         """
         try:
             #serialize the json
             jsonArgument = json.loads(argin)
 
             #invoke command on subarray node
-            subarrayID = jsonArgument["subarrayID"]
+            subarrayID = int(jsonArgument['subarrayID'])
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-            print("subarrayProxy: ", subarrayProxy)
-
-            subarrayProxy.command_inout_raw(CONST.CMD_ASSIGN_RESOURCES, json.dumps(jsonArgument["dish"]))
+            subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
         except ValueError as json_exception:
             self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.ERR_INVALID_JSON, json_exception)
+            self.activityMessage = CONST.ERR_INVALID_JSON
         except KeyError as json_exception:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.ERR_JSON_KEY_NOT_FOUND, json_exception)
-
+            self.activityMessage = CONST.ERR_JSON_KEY_NOT_FOUND
         pass
         # PROTECTED REGION END #    //  CentralNode.AssignResources
 
