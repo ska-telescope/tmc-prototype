@@ -400,24 +400,35 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
         """
-        This command assigns resources to given subarray. It accepts the subarray id and receptor id list as JSON string.
-        
-        :param argin: The string in JSON format. The JSON contains following values:
-                      subarrayID: DevShort
+        This command assigns resources to given subarray. It accepts the subarray id and
+        receptor id list in JSON string format. Upon successful execution, the
+        'receptorIDList' attribute of the given subarray is populated with the given
+        receptors.
 
-                      dish: JSON object consisting
-                         receptorIDList: DevVarStringArray. The individual string should contain dish numbers in string
-                                         format with preceding zeroes upto 3 digits. E.g. 0001, 0002.
-                      Example:
-                      {
-                        "subarrayID": 1,
-                        "dish": {
-                                  "receptorIDList": ["0001", "0002"]
-                                }
-                      }
+        :param argin: The string in JSON format. The JSON contains following values:
+
+
+            subarrayID:
+                DevShort. Mandatory.
+
+            dish:
+                Mandatory JSON object consisting of
+
+                receptorIDList:
+                    DevVarStringArray.
+                    The individual string should contain dish numbers in string format with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+
+            Example:
+                {
+                "subarrayID": 1,
+                "dish": {
+                "receptorIDList": ["0001", "0002"]
+                }
+                }
+
         :return: None.
 
-        Note: From jive, enter input as: {"subarrayID":1,"dish":{"receptorIDList":["0001"]}} without any space
+        Note: From Jive, enter input as: {"subarrayID":1,"dish":{"receptorIDList":["0001"]}} without any space.
         """
         try:
             #serialize the json
