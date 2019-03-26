@@ -401,8 +401,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
         """
         This command assigns resources to given subarray. It accepts the subarray id and receptor id list as JSON string.
+        
         :param argin: The string in JSON format. The JSON contains following values:
                       subarrayID: DevShort
+
                       dish: JSON object consisting
                          receptorIDList: DevVarStringArray. The individual string should contain dish numbers in string
                                          format with preceding zeroes upto 3 digits. E.g. 0001, 0002.
