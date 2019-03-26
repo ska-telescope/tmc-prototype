@@ -27,6 +27,7 @@ before_script:
 
 stages:
   - pages
+  - trigger
 
 
 pages:
@@ -45,3 +46,10 @@ pages:
   artifacts:
     paths:
       - public
+
+
+trigger:
+  stage: trigger
+  image: appropriate/curl
+  script:
+    - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
