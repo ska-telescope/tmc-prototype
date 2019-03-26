@@ -427,10 +427,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
         except ValueError as json_exception:
             self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
-            self.activityMessage = CONST.ERR_INVALID_JSON
+            self._read_activity_message = CONST.ERR_INVALID_JSON
         except KeyError as json_exception:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
-            self.activityMessage = CONST.ERR_JSON_KEY_NOT_FOUND
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
         pass
         # PROTECTED REGION END #    //  CentralNode.AssignResources
 
