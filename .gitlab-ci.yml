@@ -31,12 +31,13 @@ stages:
 
 
 pages:
+  before_script:
+   - docker login -u $DOCKER_REGISTRY_USER_LOGIN -p $CI_REGISTRY_PASS_LOGIN $CI_REGISTRY
   tags:
     - docker-executor
   stage: pages
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   script:
-    - docker login -u $DOCKER_REGISTRY_USER_LOGIN -p $CI_REGISTRY_PASS_LOGIN $CI_REGISTRY
     - make test
     - ls -la
     - mv build public
