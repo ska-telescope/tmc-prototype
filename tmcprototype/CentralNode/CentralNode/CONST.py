@@ -2,10 +2,13 @@
 CMD_SET_STOW_MODE = "SetStowMode"
 CMD_SET_STANDBY_MODE = "SetStandbyLPMode"
 CMD_SET_OPERATE_MODE = "SetOperateMode"
+CMD_ASSIGN_RESOURCES = "AssignResources"
+
 
 #Event messages
 EVT_UNKNOWN_SA = "Event from the Unknown Subarray device!"
 EVT_SUBSR_SA_HEALTH_STATE = "healthState"
+EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
 #
 #Error messages
 ERR_AGGR_HEALTH_STATE = "Unexpected error while aggregating Health state!\n"
@@ -18,6 +21,9 @@ ERR_IN_CREATE_PROXY = "Unexpected error in creating proxy of the device "
 ERR_EXE_STOW_CMD = "Unexpected error in executing STOW command "
 ERR_EXE_STANDBY_CMD = "Unexpected error in executing STANDBY Telescope command "
 ERR_EXE_STARTUP_CMD = "Unexpected error in executing STARTUP Telescope command "
+ERR_INVALID_JSON = "Invalid JSON format"
+ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
+
 
 #strings
 #General strings
