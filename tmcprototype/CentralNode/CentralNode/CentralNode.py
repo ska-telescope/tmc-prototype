@@ -199,6 +199,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._dish_leaf_node_devices = []
             self._leaf_device_proxy = []
             self.subarray_FQDN_dict = {}
+            self._subarray_allocation = {}
             self.set_status(CONST.STR_INIT_SUCCESS)
         except Exception as except_occured:
             print(CONST.ERR_INIT_PROP_ATTR_CN)
@@ -221,7 +222,13 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
         '''
         for dish in range(1, (self.NumDishes+1)):
+            # Update self._dish_leaf_node_devices variable
             self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
+
+            # Initialize self.subarray_allocation variable to indicate availability of the dishes
+            dish_ID = "Dish000" + str(dish)
+            self._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
+
         # Create proxies of Dish Leaf Node devices
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
@@ -255,6 +262,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
         print("Subarray dictionary: ", self.subarray_FQDN_dict)
+
         # PROTECTED REGION END #    //  CentralNode.init_device
 
     def always_executed_hook(self):
@@ -433,11 +441,31 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             #serialize the json
             jsonArgument = json.loads(argin)
-
             #invoke command on subarray node
             subarrayID = int(jsonArgument['subarrayID'])
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-            subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
+
+            # Check for the duplicate receptor allocation
+            duplicate_allocation_count = 0
+            duplicate_allocation_dish_ids = []
+            for dish in range(0, len(jsonArgument["dish"]["receptorIDList"])):
+                dish_ID = "Dish" + jsonArgument["dish"]["receptorIDList"][dish]
+                if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
+                    duplicate_allocation_dish_ids.append(dish_ID)
+                    duplicate_allocation_count = duplicate_allocation_count + 1
+            if duplicate_allocation_count == 0:
+                self._resources_allocated = subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
+                print("Response of AssignResources command: ", self._resources_allocated)
+                # Update self._subarray_allocation variable to update subarray allocation for the related dishes
+                for dish in range(0,len(self._resources_allocated)):
+                    dish_ID = "Dish" + str(self._resources_allocated[dish])
+                    self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+
+                self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
+            else:
+                print(CONST.STR_DISH_DUPLICATE , duplicate_allocation_dish_ids)
+                self._read_activity_message = CONST.STR_DISH_DUPLICATE + str(duplicate_allocation_dish_ids)
+            print("Updated resource matrix is: ", self._subarray_allocation)
         except ValueError as json_exception:
             self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON

@@ -260,6 +260,33 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_activityMessage) ENABLED START #
         # PROTECTED REGION END #    //  CentralNode.test_activityMessage
 
+    def test_AssignResources(self, tango_context, create_subarray1_proxy):
+        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+        tango_context.device.AssignResources(test_input)
+        time.sleep(3)
+        result = create_subarray1_proxy.receptorIDList
+        assert result == [1]
+
+    def test_duplicate_Allocation(self, tango_context):
+        test_input1 = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+        tango_context.device.AssignResources(test_input1)
+        time.sleep(1)
+        print ("Activity Message: ", tango_context.device.activityMessage)
+        assert CONST.STR_DISH_DUPLICATE in tango_context.device.activityMessage
+
+    def test_AssignResources_invalid_json(self, tango_context, create_subarray1_proxy):
+        create_subarray1_proxy.ReleaseAllResources()
+        test_input = '{"invalid_key"}'
+        tango_context.device.AssignResources(test_input)
+        time.sleep(1)
+        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+
+    def test_AssignResources_key_not_found(self, tango_context):
+        test_input = '{"dish":{"receptorIDList":["0001"]}}'
+        tango_context.device.AssignResources(test_input)
+        time.sleep(1)
+        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+
     def test_subarray1_health_change_event(self, tango_context, create_subarray1_proxy):
         eid = create_subarray1_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE, EventType.CHANGE_EVENT,
                                                      CentralNode.subarrayHealthStateCallback)
@@ -271,22 +298,3 @@ class TestCentralNode(object):
                                                      CentralNode.subarrayHealthStateCallback)
         assert CONST.STR_HEALTH_STATE in tango_context.device.activityMessage
         create_subarray2_proxy.unsubscribe_event(eid)
-
-    def test_AssignResources(self, tango_context, create_subarray1_proxy):
-        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
-        tango_context.device.AssignResources(test_input)
-        result = create_subarray1_proxy.receptorIDList
-        create_subarray1_proxy.ReleaseAllResources()
-        assert result == [1]
-
-    def test_AssignResources_invalid_json(self, tango_context, create_subarray1_proxy):
-        test_input = '{"invalid_key"}'
-        tango_context.device.AssignResources(test_input)
-        time.sleep(1)
-        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
-
-    def test_AssignResources_key_not_found(self, tango_context, create_subarray1_proxy):
-        test_input = '{"dish":{"receptorIDList":["0001"]}}'
-        tango_context.device.AssignResources(test_input)
-        time.sleep(1)
-        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
