@@ -13,6 +13,7 @@ pytango = "==9.2.5"
 # 'RUN ipython profile create' line from Dockerfile.
 itango = "*"
 katpoint = "*"
+pyyaml = "==4.2b1"
 
 [dev-packages]
 docutils = "*"
