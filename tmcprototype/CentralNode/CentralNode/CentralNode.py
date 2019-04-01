@@ -261,7 +261,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-        print("Subarray dictionary: ", self.subarray_FQDN_dict)
 
         # PROTECTED REGION END #    //  CentralNode.init_device
 
@@ -424,7 +423,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 receptorIDList:
                     DevVarStringArray.
-                    The individual string should contain dish numbers in string format with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+                    The individual string should contain dish numbers in string format with preceding zeroes upto 3
+                    digits. E.g. 0001, 0002.
 
             Example:
                 {
@@ -439,12 +439,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         Note: From Jive, enter input as: {"subarrayID":1,"dish":{"receptorIDList":["0001"]}} without any space.
         """
         try:
-            #serialize the json
+            # serialize the json
             jsonArgument = json.loads(argin)
-            #invoke command on subarray node
+            # Create subarray proxy
             subarrayID = int(jsonArgument['subarrayID'])
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-
             # Check for the duplicate receptor allocation
             duplicate_allocation_count = 0
             duplicate_allocation_dish_ids = []
@@ -454,8 +453,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     duplicate_allocation_dish_ids.append(dish_ID)
                     duplicate_allocation_count = duplicate_allocation_count + 1
             if duplicate_allocation_count == 0:
-                self._resources_allocated = subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
-                print("Response of AssignResources command: ", self._resources_allocated)
+                self._resources_allocated = subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES,
+                                            jsonArgument["dish"]["receptorIDList"])
                 # Update self._subarray_allocation variable to update subarray allocation for the related dishes
                 for dish in range(0,len(self._resources_allocated)):
                     dish_ID = "Dish" + str(self._resources_allocated[dish])
@@ -465,7 +464,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             else:
                 print(CONST.STR_DISH_DUPLICATE , duplicate_allocation_dish_ids)
                 self._read_activity_message = CONST.STR_DISH_DUPLICATE + str(duplicate_allocation_dish_ids)
-            print("Updated resource matrix is: ", self._subarray_allocation)
         except ValueError as json_exception:
             self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON

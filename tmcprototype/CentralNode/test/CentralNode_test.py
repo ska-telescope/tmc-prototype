@@ -265,17 +265,20 @@ class TestCentralNode(object):
         tango_context.device.AssignResources(test_input)
         time.sleep(3)
         result = create_subarray1_proxy.receptorIDList
+        create_subarray1_proxy.ReleaseAllResources()
         assert result == [1]
 
-    def test_duplicate_Allocation(self, tango_context):
-        test_input1 = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+    def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
+        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+        tango_context.device.AssignResources(test_input)
+        time.sleep(3)
+        test_input1 = '{"subarrayID":2,"dish":{"receptorIDList":["0001"]}}'
         tango_context.device.AssignResources(test_input1)
         time.sleep(1)
-        print ("Activity Message: ", tango_context.device.activityMessage)
         assert CONST.STR_DISH_DUPLICATE in tango_context.device.activityMessage
-
-    def test_AssignResources_invalid_json(self, tango_context, create_subarray1_proxy):
         create_subarray1_proxy.ReleaseAllResources()
+
+    def test_AssignResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
         tango_context.device.AssignResources(test_input)
         time.sleep(1)
