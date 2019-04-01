@@ -124,9 +124,16 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def AssignResources(self, argin):
         """
-        Assigns resources to the Subarray.
-        :param argin: List of receptors.
+        Assigns resources to the subarray. It accepts receptor id list as an array of
+        DevStrings . Upon successful execution, the 'receptorIDList' attribute of the
+         given subarray is populated with the given receptors. And returns list of
+         assigned resources as list of DevStrings.
+
+        :param argin:
+            DevVarStringArray. List of receptor IDs to be allocated to subarray.
+
         :return: List of Resources added to the Subarray.
+            DevVarStringArray. List of receptors.
         """
         try:
             # Allocation success and failure lists

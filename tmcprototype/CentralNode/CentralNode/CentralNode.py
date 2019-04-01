@@ -226,7 +226,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
 
             # Initialize self.subarray_allocation variable to indicate availability of the dishes
-            dish_ID = "Dish000" + str(dish)
+            dish_ID = "dish000" + str(dish)
             self._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
 
         # Create proxies of Dish Leaf Node devices
@@ -402,12 +402,17 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
            "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
            "The individual string should contain dish numbers in string format with "
            "preceding zeroes upto 3 digits. E.g. 0001, 0002",
+    dtype_out='str', 
+    doc_out="The string in JSON format. The JSON contains following values:\ndish:"
+            " JSON object consisting receptors allocated successfully: DevVarStringArray."
+            " The individual string should contain dish numbers in string format with "
+            "preceding zeroes upto 3 digits. E.g. 0001, 0002",
     )
     @DebugIt()
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
         """
-        This command assigns resources to given subarray. It accepts the subarray id and
+        Assigns resources to given subarray. It accepts the subarray id and
         receptor id list in JSON string format. Upon successful execution, the
         'receptorIDList' attribute of the given subarray is populated with the given
         receptors.
@@ -423,8 +428,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 receptorIDList:
                     DevVarStringArray.
-                    The individual string should contain dish numbers in string format with preceding zeroes upto 3
-                    digits. E.g. 0001, 0002.
+                    The individual string should contain dish numbers in string format
+                    with preceding zeroes upto 3 digits. E.g. 0001, 0002.
 
             Example:
                 {
@@ -434,10 +439,28 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 }
                 }
 
-        :return: None.
+        Note: From Jive, enter input as:
+        {"subarrayID":1,"dish":{"receptorIDList":["0001"]}} without any space.
 
-        Note: From Jive, enter input as: {"subarrayID":1,"dish":{"receptorIDList":["0001"]}} without any space.
+        :return: The string in JSON format. The JSON contains following values:
+
+            dish:
+                Mandatory JSON object consisting of
+
+                receptorIDList: Contains ids of the receptors which are successfully
+                allocated. Empty on unsuccessful allocation.
+                    DevVarStringArray.
+                    The individual string contains dish numbers in string format with
+                    preceding zeroes upto 3 digits. E.g. 0001, 0002.
+
+            Example:
+                {
+                "dish": {
+                "receptorIDList": ["0001", "0002"]
+                }
+                }
         """
+        receptorIDList = []
         try:
             # serialize the json
             jsonArgument = json.loads(argin)
@@ -448,17 +471,21 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             duplicate_allocation_count = 0
             duplicate_allocation_dish_ids = []
             for dish in range(0, len(jsonArgument["dish"]["receptorIDList"])):
-                dish_ID = "Dish" + jsonArgument["dish"]["receptorIDList"][dish]
+                dish_ID = "dish" + jsonArgument["dish"]["receptorIDList"][dish]
                 if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
                     duplicate_allocation_dish_ids.append(dish_ID)
                     duplicate_allocation_count = duplicate_allocation_count + 1
             if duplicate_allocation_count == 0:
                 self._resources_allocated = subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES,
                                             jsonArgument["dish"]["receptorIDList"])
-                # Update self._subarray_allocation variable to update subarray allocation for the related dishes
+
+                # Update self._subarray_allocation variable to update subarray allocation
+                # for the related dishes.
+                # Also append the allocated dish to out argument.
                 for dish in range(0,len(self._resources_allocated)):
-                    dish_ID = "Dish" + str(self._resources_allocated[dish])
+                    dish_ID = "dish" + str(self._resources_allocated[dish])
                     self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+                    receptorIDList.append(self._resources_allocated[dish])
 
                 self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
             else:
@@ -470,7 +497,15 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except KeyError as json_exception:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
-        pass
+
+        argout = {
+            "dish": {
+                "receptorIDList_success": receptorIDList
+                        }
+                }
+        #argout['dish']['receptorIDList'] = receptorIDList
+        #argout['receptorIDList'] = receptorIDList
+        return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.AssignResources
 
 # ----------
