@@ -39,6 +39,8 @@ STR_STANDBY_CMD_ISSUED = "StandByTelescope command invoked from Central node"
 STR_STARTUP_CMD_ISSUED = "StartUpTelescope command invoked from Central node"
 STR_INIT_SUCCESS = "CentralNode is initialized successfully."
 STR_FALSE = "False"
+STR_DISH_DUPLICATE = "List of the dishes that are already allocated: "
+STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully"
 
 #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SA1 = "ska_mid/tm_subarray_node/1"

@@ -199,6 +199,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._dish_leaf_node_devices = []
             self._leaf_device_proxy = []
             self.subarray_FQDN_dict = {}
+            self._subarray_allocation = {}
             self.set_status(CONST.STR_INIT_SUCCESS)
         except Exception as except_occured:
             print(CONST.ERR_INIT_PROP_ATTR_CN)
@@ -221,7 +222,13 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
         '''
         for dish in range(1, (self.NumDishes+1)):
+            # Update self._dish_leaf_node_devices variable
             self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
+
+            # Initialize self.subarray_allocation variable to indicate availability of the dishes
+            dish_ID = "dish000" + str(dish)
+            self._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
+
         # Create proxies of Dish Leaf Node devices
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
@@ -254,7 +261,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-        print("Subarray dictionary: ", self.subarray_FQDN_dict)
+
         # PROTECTED REGION END #    //  CentralNode.init_device
 
     def always_executed_hook(self):
@@ -395,12 +402,17 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
            "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
            "The individual string should contain dish numbers in string format with "
            "preceding zeroes upto 3 digits. E.g. 0001, 0002",
+    dtype_out='str', 
+    doc_out="The string in JSON format. The JSON contains following values:\ndish:"
+            " JSON object consisting receptors allocated successfully: DevVarStringArray."
+            " The individual string should contain dish numbers in string format with "
+            "preceding zeroes upto 3 digits. E.g. 0001, 0002",
     )
     @DebugIt()
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
         """
-        This command assigns resources to given subarray. It accepts the subarray id and
+        Assigns resources to given subarray. It accepts the subarray id and
         receptor id list in JSON string format. Upon successful execution, the
         'receptorIDList' attribute of the given subarray is populated with the given
         receptors.
@@ -415,8 +427,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 Mandatory JSON object consisting of
 
                 receptorIDList:
-                    DevVarStringArray.
-                    The individual string should contain dish numbers in string format with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+                    DevVarStringArray
+                    The individual string should contain dish numbers in string format
+                    with preceding zeroes upto 3 digits. E.g. 0001, 0002.
 
             Example:
                 {
@@ -426,25 +439,76 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 }
                 }
 
-        :return: None.
+        Note: From Jive, enter input as:
+        {"subarrayID":1,"dish":{"receptorIDList":["0001"]}} without any space.
 
-        Note: From Jive, enter input as: {"subarrayID":1,"dish":{"receptorIDList":["0001"]}} without any space.
+        :return: The string in JSON format. The JSON contains following values:
+
+            dish:
+                Mandatory JSON object consisting of
+
+                receptorIDList_success:
+                    DevVarStringArray
+                    Contains ids of the receptors which are successfully allocated. Empty on unsuccessful allocation.
+
+
+            Example:
+                {
+                "dish": {
+                "receptorIDList_success": ["0001", "0002"]
+                        }
+                }
         """
+        receptorIDList = []
         try:
-            #serialize the json
+            # serialize the json
             jsonArgument = json.loads(argin)
-
-            #invoke command on subarray node
+            # Create subarray proxy
             subarrayID = int(jsonArgument['subarrayID'])
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-            subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
+            # Check for the duplicate receptor allocation
+            duplicate_allocation_count = 0
+            duplicate_allocation_dish_ids = []
+            input_receptor_list = jsonArgument["dish"]["receptorIDList"]
+            len_input_receptor_list =  len(input_receptor_list)
+            for dish in range(0, len_input_receptor_list):
+                dish_ID = "dish" + input_receptor_list[dish]
+                if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
+                    duplicate_allocation_dish_ids.append(dish_ID)
+                    duplicate_allocation_count = duplicate_allocation_count + 1
+            if duplicate_allocation_count == 0:
+                self._resources_allocated = subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES,
+                                            jsonArgument["dish"]["receptorIDList"])
+
+                # Update self._subarray_allocation variable to update subarray allocation
+                # for the related dishes.
+                # Also append the allocated dish to out argument.
+                for dish in range(0,len(self._resources_allocated)):
+                    dish_ID = "dish" + (self._resources_allocated[dish])
+                    self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+                    receptorIDList.append(self._resources_allocated[dish])
+
+                self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
+            else:
+                print(CONST.STR_DISH_DUPLICATE , duplicate_allocation_dish_ids)
+                self._read_activity_message = CONST.STR_DISH_DUPLICATE + str(duplicate_allocation_dish_ids)
         except ValueError as json_exception:
             self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON
         except KeyError as json_exception:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
-        pass
+
+        argout = {
+            "dish": {
+                "receptorIDList_success": receptorIDList
+                        }
+                }
+
+        # For future reference
+        #argout['dish']['receptorIDList'] = receptorIDList
+        #argout['receptorIDList'] = receptorIDList
+        return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.AssignResources
 
 # ----------
