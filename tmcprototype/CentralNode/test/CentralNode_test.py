@@ -262,11 +262,11 @@ class TestCentralNode(object):
 
     def test_AssignResources(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
-        tango_context.device.AssignResources(test_input)
+        retVal = json.loads(tango_context.device.AssignResources(test_input))
         time.sleep(3)
         result = create_subarray1_proxy.receptorIDList
         create_subarray1_proxy.ReleaseAllResources()
-        assert result == [1]
+        assert result == [1] and retVal["dish"]["receptorIDList_success"] == ["0001"]
 
     def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'

@@ -469,8 +469,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Check for the duplicate receptor allocation
             duplicate_allocation_count = 0
             duplicate_allocation_dish_ids = []
-            for dish in range(0, len(jsonArgument["dish"]["receptorIDList"])):
-                dish_ID = "dish" + jsonArgument["dish"]["receptorIDList"][dish]
+            input_receptor_list = jsonArgument["dish"]["receptorIDList"]
+            len_input_receptor_list =  len(input_receptor_list)
+            for dish in range(0, len_input_receptor_list):
+                dish_ID = "dish" + input_receptor_list[dish]
                 if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
                     duplicate_allocation_dish_ids.append(dish_ID)
                     duplicate_allocation_count = duplicate_allocation_count + 1
@@ -502,6 +504,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 "receptorIDList_success": receptorIDList
                         }
                 }
+
+        # For future reference
         #argout['dish']['receptorIDList'] = receptorIDList
         #argout['receptorIDList'] = receptorIDList
         return json.dumps(argout)
