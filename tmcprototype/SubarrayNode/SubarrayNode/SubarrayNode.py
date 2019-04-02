@@ -126,14 +126,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         Assigns resources to the subarray. It accepts receptor id list as an array of
         DevStrings . Upon successful execution, the 'receptorIDList' attribute of the
-         given subarray is populated with the given receptors. And returns list of
-         assigned resources as list of DevStrings.
+        given subarray is populated with the given receptors. And returns list of
+        assigned resources as array of DevStrings.
 
         :param argin:
             DevVarStringArray. List of receptor IDs to be allocated to subarray.
 
-        :return: List of Resources added to the Subarray.
-            DevVarStringArray. List of receptors.
+        :return:
+            DevVarStringArray. List of Resources added to the Subarray.
         """
         try:
             # Allocation success and failure lists

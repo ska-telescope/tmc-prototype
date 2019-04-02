@@ -427,7 +427,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 Mandatory JSON object consisting of
 
                 receptorIDList:
-                    DevVarStringArray.
+                    DevVarStringArray
                     The individual string should contain dish numbers in string format
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
 
@@ -447,17 +447,16 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             dish:
                 Mandatory JSON object consisting of
 
-                receptorIDList: Contains ids of the receptors which are successfully
-                allocated. Empty on unsuccessful allocation.
-                    DevVarStringArray.
-                    The individual string contains dish numbers in string format with
-                    preceding zeroes upto 3 digits. E.g. 0001, 0002.
+                receptorIDList_success:
+                    DevVarStringArray
+                    Contains ids of the receptors which are successfully allocated. Empty on unsuccessful allocation.
+
 
             Example:
                 {
                 "dish": {
-                "receptorIDList": ["0001", "0002"]
-                }
+                "receptorIDList_success": ["0001", "0002"]
+                        }
                 }
         """
         receptorIDList = []
@@ -483,7 +482,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
                 for dish in range(0,len(self._resources_allocated)):
-                    dish_ID = "dish" + str(self._resources_allocated[dish])
+                    dish_ID = "dish" + (self._resources_allocated[dish])
                     self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
                     receptorIDList.append(self._resources_allocated[dish])
 
