@@ -124,26 +124,50 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def AssignResources(self, argin):
         """
-        Assigns resources to the Subarray.
-        :param argin: List of receptors.
-        :return: List of Resources added to the Subarray.
+        Assigns resources to the subarray. It accepts receptor id list as an array of
+        DevStrings . Upon successful execution, the 'receptorIDList' attribute of the
+        given subarray is populated with the given receptors. And returns list of
+        assigned resources as array of DevStrings.
+
+        :param argin:
+            DevVarStringArray. List of receptor IDs to be allocated to subarray.
+
+        :return:
+            DevVarStringArray. List of Resources added to the Subarray.
         """
         try:
+            # Allocation success and failure lists
+            allocation_success = []
+            allocation_failure = []
             for leafId in range(0, len(argin)):
                 if type(float(argin[leafId])) == float:
                     pass
             for leafId in range(0, len(argin)):
-                self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  argin[leafId])
-                devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + argin[leafId])
-                self._dish_leaf_node_proxy.append(devProxy)
-                self._event_id = devProxy.subscribe_event(CONST.EVT_DISH_HEALTH_STATE,
-                                                          tango.EventType.CHANGE_EVENT,
-                                                          self.setHealth,
-                                                          stateless=True)
-                self.testDeviceVsEventID[devProxy] = self._event_id
-                self._health_event_id.append(self._event_id)
-                self._receptor_id_list.append(int(argin[leafId]))
-                self.dishHealthStateMap[devProxy] = -1
+                try:
+                    self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  argin[leafId])
+                    devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + argin[leafId])
+                    self._dish_leaf_node_proxy.append(devProxy)
+                    # Update the list allocation_success with the dishes allocated successfully to subarray
+                    allocation_success.append(argin[leafId])
+                    self._event_id = devProxy.subscribe_event(CONST.EVT_DISH_HEALTH_STATE,
+                                                              tango.EventType.CHANGE_EVENT,
+                                                              self.setHealth,
+                                                              stateless=True)
+                    self.testDeviceVsEventID[devProxy] = self._event_id
+                    self._health_event_id.append(self._event_id)
+                    self._receptor_id_list.append(int(argin[leafId]))
+                    self.dishHealthStateMap[devProxy] = -1
+
+                except Exception as except_occured:
+                    allocation_failure.append(argin[leafId])
+                    # Exception Logic to remove Id from subarray group
+                    group_dishes = self._dish_leaf_node_group.get_device_list()
+                    if group_dishes.contains(self.DishLeafNodePrefix +  argin[leafId]):
+                        self._dish_leaf_node_group.remove(self.DishLeafNodePrefix + argin[leafId])
+                    # unsubscribe event
+                    if self.testDeviceVsEventID[devProxy]:
+                        devProxy.unsubscribe_event(self.testDeviceVsEventID[devProxy])
+
             print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
             print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list(True))
             print(CONST.STR_LN_PROXIES, self._dish_leaf_node_proxy)
@@ -158,14 +182,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.set_state(DevState.ON)
             # set obsState to "IDLE"
             self._obs_state = 0
-            self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
             self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
             print(CONST.ERR_ASSIGN_RES_CMD, "\n", except_occured)
             self._read_activity_message = CONST.ERR_ASSIGN_RES_CMD + str(except_occured)
             self.dev_logging(CONST.ERR_ASSIGN_RES_CMD, int(tango.LogLevel.LOG_ERROR))
             argin = str(except_occured)
-        return argin
+        return allocation_success
 
     def is_AssignResources_allowed(self):
         """Checks if AssignResources is allowed in the current state of SubarrayNode."""
