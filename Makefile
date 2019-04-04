@@ -74,8 +74,9 @@ test: build  ## test the application
 	  rm -fr build; \
 	  docker cp $(BUILD):/build .; \
 	  docker rm -f -v $(BUILD); \
-	  docker logs tmc-prototype_tmcprototype_1; \
-	  docker logs tmc-prototype_tmcprototype_1 > build/container.log 2>&1; \
+# =====   to enable logs, just uncomment below commands  ======
+#      docker logs tmc-prototype_dishmaster1_1; \
+#	   docker logs tmc-prototype_dishmaster1_1 > build/dishmaster1.log 2>&1; \
 	  DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) docker-compose down; \
 	  exit $$status
 
