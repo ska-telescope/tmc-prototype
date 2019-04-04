@@ -65,8 +65,10 @@ make = tar -c test-harness/ | \
 	   sudo ln -sf /var/run/rsyslog/dev/log /dev/log && \
 	   make TANGO_HOST=databaseds:10000 $1"
 
-test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-test: build  ## test the application
+test:   down ## clear left overs from previous run
+        DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
+test:
+    build  ## test the application
 	$(INIT_CACHE)
 	DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) docker-compose up -d
 	$(call make,test); \
@@ -83,13 +85,15 @@ test: build  ## test the application
 pull:  ## download the application image
 	docker pull $(IMAGE_TO_TEST)
 
-up: build  ## start develop/test environment
+up: down ## clear leftovers from previous run
+    build  ## start develop/test environment
 	DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) docker-compose up -d
 
 piplock: build  ## overwrite Pipfile.lock with the image version
 	docker run $(IMAGE_TO_TEST) cat /app/Pipfile.lock > $(CURDIR)/Pipfile.lock
 
-interactive: up
+interactive: down ## clear left overs from previous run
+             up
 interactive:  ## start an interactive session using the project image (caution: R/W mounts source directory to /app)
 	docker run --rm -it --name=$(PROJECT)-dev -e TANGO_HOST=databaseds:10000 --network=$(DOCKER_NETWORK) \
           -v $(CURDIR):/app --volumes-from=rsyslog-tmcprototype:rw $(IMAGE_TO_TEST) /bin/bash
