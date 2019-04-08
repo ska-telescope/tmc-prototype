@@ -37,7 +37,7 @@ build wheel for publication: # Executed on a tag
     - tags
   artifacts:
     paths:
-      - ./dist/
+      - ./tmcprototype/CentralNode/dist/
 
 build wheel for development: # Executed on a commit
   stage: build
@@ -50,7 +50,7 @@ build wheel for development: # Executed on a commit
     - tags
   artifacts:
     paths:
-      - ./dist/
+      - ./tmcprototype/CentralNode/dist/
 
 run tests:
   stage: test
