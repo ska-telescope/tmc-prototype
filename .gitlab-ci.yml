@@ -26,7 +26,7 @@ stages:
   - publish
   - pages
 
-build wheel for publication: # Executed on a tag
+build CentralNode wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
@@ -39,7 +39,7 @@ build wheel for publication: # Executed on a tag
     paths:
       - ./tmcprototype/CentralNode/dist/
 
-build wheel for development: # Executed on a commit
+build CentralNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
@@ -51,6 +51,84 @@ build wheel for development: # Executed on a commit
   artifacts:
     paths:
       - ./tmcprototype/CentralNode/dist/
+
+build SubarrayNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SubarrayNode
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SubarrayNode/dist/
+
+build SubarrayNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SubarrayNode
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SubarrayNode/dist/
+
+build DishLeafNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/DishLeafNode
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/DishLeafNode/dist/
+
+build DishLeafNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/DishLeafNode
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/DishLeafNode/dist/
+
+build DishMaster wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/DishMaster
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/DishMaster/dist/
+
+build DishMaster wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/DishMaster
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/DishMaster/dist/
 
 run tests:
   stage: test
