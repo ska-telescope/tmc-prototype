@@ -233,8 +233,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # Create proxies of Dish Leaf Node devices
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
-                self._leaf_device_proxy.append(DeviceProxy(CONST.TANGO_LOCAL_HOST +
-                                                           self._dish_leaf_node_devices[name]))
+                self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
             except Exception as except_occured:
                 print(CONST.ERR_IN_CREATE_PROXY, self._dish_leaf_node_devices[name])
                 self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self._dish_leaf_node_devices[
@@ -246,7 +245,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
-                subarray_proxy = DeviceProxy(CONST.TANGO_LOCAL_HOST + self.TMMidSubarrayNodes[subarray])
+                subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
                 self.subarray_health_state_map[subarray_proxy] = -1
                 subarray_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE,
                                                EventType.CHANGE_EVENT,
@@ -345,7 +344,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for i in range(0, len(argin)):
                 device_name = self.DishLeafNodePrefix + argin[i]
                 try:
-                    device_proxy = DeviceProxy(CONST.TANGO_LOCAL_HOST + device_name)
+                    device_proxy = DeviceProxy(device_name)
                     device_proxy.command_inout(CONST.CMD_SET_STOW_MODE)
                 except Exception as except_occured:
                     print(CONST.ERR_EXE_STOW_CMD, device_name)
