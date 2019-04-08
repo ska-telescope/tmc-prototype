@@ -83,7 +83,7 @@ MYSQL_HOST := $(shell hostname):3306
 else
 # distinguish the bridge network from others by adding the project name
 NETWORK_MODE := $(NETWORK_MODE)-$(PROJECT)
-TANGO_HOST := $(CONTAINER_NAME_PREFIX)${TANGO_HOST}
+TANGO_HOST := $(CONTAINER_NAME_PREFIX)databaseds:10000
 MYSQL_HOST := $(CONTAINER_NAME_PREFIX)tangodb:3306
 endif
 
