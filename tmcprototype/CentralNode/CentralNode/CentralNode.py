@@ -223,8 +223,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         '''
         for dish in range(1, (self.NumDishes+1)):
             # Update self._dish_leaf_node_devices variable
-            self._dish_leaf_node_devices.append(self.DishLeafNodePrefix +
-                                                "000" + str(dish))
+            self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
 
             # Initialize self.subarray_allocation variable to indicate availability of the dishes
             dish_ID = "dish000" + str(dish)
