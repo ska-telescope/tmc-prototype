@@ -235,9 +235,6 @@ To open the interactive mode using terminal, execute:
 
 `make interactive`
 
-There are some issues reported on running tmc-prototype with docker on local environment.
-This section will be updated once those issues will be resolved.
-
 # 6: Documentation
 * [TMC Prototype (Stage I) Design Document](https://docs.google.com/document/d/1JFGXb8NGXPfi9ZwOQMPU6_Dwc1UxCHelRc-tjVVuoD0/edit?usp=sharing)
 * [ReadTheDocs](https://developer.skatelescope.org/projects/tmc-prototype/en/master/)
