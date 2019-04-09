@@ -1,3 +1,10 @@
+# Use bash shell with pipefail option enabled so that the return status of a
+# piped command is the value of the last (rightmost) commnand to exit with a
+# non-zero status. This lets us pipe output into tee but still exit on test
+# failures.
+SHELL = /bin/bash
+.SHELLFLAGS = -o pipefail -c
+
 all: test
 
 # wait for the device to be available before beginning the test
@@ -5,20 +12,26 @@ all: test
 # The following steps copy across useful output to this volume which can
 # then be extracted to form the CI summary for the test procedure.
 test:
-	tango_admin --check-device mid_d0001/elt/master
-	tango_admin --check-device ska_mid/tm_leaf_node/d0001
-	tango_admin --check-device ska_mid/tm_subarray_node/1
-	tango_admin --check-device ska_mid/tm_subarray_node/2
-	tango_admin --check-device ska_mid/tm_central/central_node
-	ls -ls
+	retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
+
 	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
-	cd /app/tmcprototype/DishMaster && ./code-analysis.sh | tee code_analysis.stdout
+	-cd /app/tmcprototype/DishMaster && ./code-analysis.sh | tee code_analysis.stdout
 	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
-	cd /app/tmcprototype/DishLeafNode && ./code-analysis.sh | tee code_analysis.stdout
+	-cd /app/tmcprototype/DishLeafNode && ./code-analysis.sh | tee code_analysis.stdout
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
-	cd /app/tmcprototype/SubarrayNode && ./code-analysis.sh | tee code_analysis.stdout
+	-cd /app/tmcprototype/SubarrayNode && ./code-analysis.sh | tee code_analysis.stdout
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
-	cd /app/tmcprototype/CentralNode && ./code-analysis.sh | tee code_analysis.stdout
+	-cd /app/tmcprototype/CentralNode && ./code-analysis.sh | tee code_analysis.stdout
 	if [ -d /build ]; then \
         mv /app/tmcprototype/DishMaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
         mv /app/tmcprototype/DishMaster/code_analysis.stdout /build/dishmaster_code_analysis.stdout; \

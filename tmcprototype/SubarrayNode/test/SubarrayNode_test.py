@@ -216,7 +216,7 @@ class TestSubarrayNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SubarrayNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 1.0.0, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.1.2, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SubarrayNode.test_buildState
 
     def test_centralLoggingLevel(self, tango_context):
@@ -297,7 +297,7 @@ class TestSubarrayNode(object):
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(SubarrayNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "1.0.0"
+        assert tango_context.device.versionId == "0.1.2"
         # PROTECTED REGION END #    //  SubarrayNode.test_versionId
 
     def test_scanID(self, tango_context):
@@ -323,7 +323,7 @@ class TestSubarrayNode(object):
     def test_assignedResources(self, tango_context):
         """Test for assignedResources"""
         # PROTECTED REGION ID(SubarrayNode.test_assignedResources) ENABLED START #
-        assert tango_context.device.assignedResources == ("",)
+        assert tango_context.device.assignedResources == None
         # PROTECTED REGION END #    //  SubarrayNode.test_assignedResources
 
     def test_configuredCapabilities(self, tango_context):
