@@ -30,9 +30,6 @@ IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):lates
 # used during the test procedure. The volume is not used during the build
 # procedure
 #
-# TODO: WORKS LOCALLY
-# CACHE_VOLUME = tmcprototype-test-cache
-# TODO: WORKS CI/CD
 CACHE_VOLUME = $(PROJECT)-test-cache
 
 # optional docker run-time arguments
@@ -99,11 +96,6 @@ DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(
 #
 .DEFAULT_GOAL := help
 
-# TODO: WORKS LOCALLY
-# DOCKER_NETWORK := $(shell echo "$(notdir $(CURDIR))"_default | tr -d "-" | tr A-Z a-z)
-# TODO: WORKS CI/CD
-DOCKER_NETWORK := $(shell echo "$(notdir $(CURDIR))"_default | tr A-Z a-z)
-
 #
 # defines a function to copy the ./test-harness directory into the container
 # and then runs the requested make target in the container. The container is:
@@ -134,9 +126,6 @@ test: build up ## test the application
 	  rm -fr build; \
 	  docker cp $(BUILD):/build .; \
 	  docker rm -f -v $(BUILD); \
-# ===== To enable logs on container, use below command by replacing with the appropriate container name: =====
-#      docker logs <<container_name>>; \
-#	   docker logs <<container_name > build/<<container_name>>.log 2>&1; \
 	  $(MAKE) down; \
 	  exit $$status
 
