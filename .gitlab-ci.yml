@@ -139,6 +139,7 @@ run tests:
     - docker-executor
   script:
     - apt install -y python3-pip
+    - apt install -y pkg-config
     - echo $(ls -d ./tmcprototype/CentralNode/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
     - echo $(ls -d ./tmcprototype/SubarrayNode/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
     - echo $(ls -d ./tmcprototype/DishLeafNode/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
