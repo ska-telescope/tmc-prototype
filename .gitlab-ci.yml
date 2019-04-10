@@ -131,22 +131,13 @@ build DishMaster wheel for development: # Executed on a commit
       - ./tmcprototype/DishMaster/dist/
 
 run tests:
+  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   stage: test
   before_script:
   - docker login -u $DOCKER_REGISTRY_USER_LOGIN -p $CI_REGISTRY_PASS_LOGIN $CI_NX_REGISTRY
   tags:
     - docker-executor
   script:
-    - apt install -y python3-pip
-    - apt install -y pkg-config
-    - echo $(ls -d ./tmcprototype/CentralNode/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
-    - echo $(ls -d ./tmcprototype/SubarrayNode/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
-    - echo $(ls -d ./tmcprototype/DishLeafNode/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
-    - echo $(ls -d ./tmcprototype/DishMaster/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
-    - pip3 install -U $(ls -d ./tmcprototype/CentralNode/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
-    - pip3 install -U $(ls -d ./tmcprototype/SubarrayNode/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
-    - pip3 install -U $(ls -d ./tmcprototype/DishLeafNode/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
-    - pip3 install -U $(ls -d ./tmcprototype/DishMaster/dist/*.whl | grep $CI_COMMIT_SHORT_SHA)
     - make test
 
 publish to nexus:
