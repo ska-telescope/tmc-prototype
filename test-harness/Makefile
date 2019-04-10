@@ -28,7 +28,7 @@ test:
 	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
-	-cd /app/tmcprototype && ./code-analysis.sh | tee code_analysis.stdout
+	-cd /app && ./code-analysis.sh | tee code_analysis.stdout
 	if [ -d /build ]; then \
         mv /app/tmcprototype/DishMaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
         mv /app/tmcprototype/DishMaster/htmlcov /build/dishmaster_htmlcov; \
@@ -42,6 +42,6 @@ test:
         mv /app/tmcprototype/CentralNode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout; \
         mv /app/tmcprototype/CentralNode/htmlcov /build/centralnode_htmlcov; \
         mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml; \
-        mv /app/tmcprototype/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
+        mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
     fi;
 .PHONY: all test
