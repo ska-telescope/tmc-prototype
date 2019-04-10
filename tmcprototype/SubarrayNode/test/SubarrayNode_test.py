@@ -11,7 +11,6 @@
 from __future__ import print_function
 
 # Path
-from builtins import object
 import sys
 import os
 file_path = os.path.dirname(os.path.abspath(__file__))
@@ -23,7 +22,7 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import tango
-from tango import DevFailed, DevState
+from tango import DevState
 import pytest
 from SubarrayNode.SubarrayNode import SubarrayNode
 import CONST
@@ -113,12 +112,12 @@ class TestSubarrayNode(object):
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        list = ["a"]
-        tango_context.device.AssignResources(list)
+        receptor_list = ["a"]
+        tango_context.device.AssignResources(receptor_list)
         assert tango_context.device.State() == DevState.OFF
         assert tango_context.device.receptorIDList == None
-        list = ["0001"]
-        tango_context.device.AssignResources(list)
+        receptor_list = ["0001"]
+        tango_context.device.AssignResources(receptor_list)
         assert tango_context.device.State() == DevState.ON
         assert len(tango_context.device.receptorIDList) == 1
         print("receptor id list is:", tango_context.device.receptorIDList)

@@ -21,7 +21,6 @@ sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
 # PyTango imports
-from builtins import str
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType
 from tango.server import run, DeviceMeta, command, device_property, attribute
@@ -499,8 +498,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Invoke slew command on DishMaster with az and el as inputs
             if (self.el >= 0 and self.el < 90):
                 # To obtain positive value of azimuth coordinate
-                if (self.az < 0):
-                   self.az = 360 - abs(self.az)
+                if self.az < 0:
+                    self.az = 360 - abs(self.az)
                 roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
                 print("az and el round2: ", roundoff_az_el)
                 spectrum = [0]
@@ -510,9 +509,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             else:
                 self._read_activity_message = CONST.STR_TARGET_NOT_OBSERVED
         except Exception as except_occurred:
-             print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
-             self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD +  str(except_occurred)
-             self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
+            print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
+            self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD +  str(except_occurred)
+            self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.Configure
 
     def is_Configure_allowed(self):

@@ -23,11 +23,9 @@ sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
 # tango imports
-from builtins import str
-from builtins import range
 import tango
-from tango import DebugIt, DevState, AttrWriteType, PipeWriteType, AttrQuality, DispLevel
-from tango.server import run, Device, DeviceMeta, attribute, command, device_property
+from tango import DebugIt, DevState, AttrWriteType
+from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKASubarray.SKASubarray import SKASubarray
 
 # Additional import
