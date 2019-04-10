@@ -351,13 +351,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def always_executed_hook(self):
         # PROTECTED REGION ID(DishLeafNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  DishLeafNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(DishLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  DishLeafNode.delete_device
 
     # ------------------

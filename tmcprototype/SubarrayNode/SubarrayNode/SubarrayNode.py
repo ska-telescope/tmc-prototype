@@ -379,13 +379,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def always_executed_hook(self):
         """ Internal construct of TANGO. """
         # PROTECTED REGION ID(SubarrayNode.always_executed_hook) ENABLED START #
-        pass
         # PROTECTED REGION END #    //  SubarrayNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  SubarrayNode.delete_device
 
     # ------------------
