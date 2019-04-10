@@ -63,7 +63,6 @@ class TestDishMaster(object):
         """Test for Properties"""
         # PROTECTED REGION ID(DishMaster.test_properties) ENABLED START #
         # PROTECTED REGION END #    //  DishMaster.test_properties
-        pass
 
     def test_State(self, tango_context):
         """Test for State"""

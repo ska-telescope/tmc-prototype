@@ -265,13 +265,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def always_executed_hook(self):
         # PROTECTED REGION ID(CentralNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  CentralNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(CentralNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  CentralNode.delete_device
 
     # ------------------

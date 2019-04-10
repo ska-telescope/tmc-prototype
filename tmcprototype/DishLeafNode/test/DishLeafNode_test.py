@@ -62,7 +62,6 @@ class TestDishLeafNode(object):
     def test_properties(self, tango_context):
         """ test the properties """
         # PROTECTED REGION END #    //  DishLeafNode.test_properties
-        pass
 
     def test_State(self, tango_context): #, dishmaster_context):
         """Test for State"""

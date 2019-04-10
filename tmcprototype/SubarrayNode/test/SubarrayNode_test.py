@@ -65,7 +65,6 @@ class TestSubarrayNode(object):
         """Test for properties"""
         # PROTECTED REGION ID(SubarrayNode.test_properties) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_properties
-        pass
 
     def test_Abort(self, tango_context):
         """Test for Abort"""
