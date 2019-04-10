@@ -132,7 +132,6 @@ build DishMaster wheel for development: # Executed on a commit
 
 run tests:
   stage: test
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   before_script:
   - docker login -u $DOCKER_REGISTRY_USER_LOGIN -p $CI_REGISTRY_PASS_LOGIN $CI_NX_REGISTRY
   tags:
