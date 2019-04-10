@@ -17,7 +17,7 @@ RUN buildDeps="ca-certificates git" \
    && apt-get purge -y --auto-remove $buildDeps \
    && rm -rf /var/lib/apt/lists/* /home/tango/.cache \
    && DEBIAN_FRONTEND=noninteractive apt-get update \
-   && DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential libssl-dev libffi-dev python3-dev
+   && DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential libssl-dev libffi-dev python3-dev pkg-config
 
 
 USER tango
