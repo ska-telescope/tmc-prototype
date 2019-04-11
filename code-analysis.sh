@@ -5,14 +5,14 @@ echo
 
 echo "MODULE ANALYSIS"
 echo "---------------"
-pylint --rcfile=rcfile tmcprototype/DishMaster/DishMaster
-pylint --rcfile=rcfile tmcprototype/DishLeafNode/DishLeafNode
-pylint --rcfile=rcfile tmcprototype/SubarrayNode/SubarrayNode
-pylint --rcfile=rcfile tmcprototype/CentralNode/CentralNode
+pylint --rcfile=.pylintrc tmcprototype/DishMaster/DishMaster
+pylint --rcfile=.pylintrc tmcprototype/DishLeafNode/DishLeafNode
+pylint --rcfile=.pylintrc tmcprototype/SubarrayNode/SubarrayNode
+pylint --rcfile=.pylintrc tmcprototype/CentralNode/CentralNode
 
 echo "TESTS ANALYSIS"
 echo "--------------"
-pylint --rcfile=rcfile tmcprototype/DishMaster/test
-pylint --rcfile=rcfile tmcprototype/DishLeafNode/test
-pylint --rcfile=rcfile tmcprototype/SubarrayNode/test
-pylint --rcfile=rcfile tmcprototype/CentralNode/test
+pylint --rcfile=.pylintrc tmcprototype/DishMaster/test
+pylint --rcfile=.pylintrc tmcprototype/DishLeafNode/test
+pylint --rcfile=.pylintrc tmcprototype/SubarrayNode/test
+pylint --rcfile=.pylintrc tmcprototype/CentralNode/test
