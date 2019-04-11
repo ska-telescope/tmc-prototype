@@ -11,7 +11,6 @@
 from __future__ import print_function
 
 # Path
-from builtins import object
 import sys
 import os
 file_path = os.path.dirname(os.path.abspath(__file__))
@@ -22,9 +21,8 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-from mock import MagicMock
 import tango
-from tango import DevState, EventType
+from tango import DevState
 import pytest
 from DishLeafNode.DishLeafNode import DishLeafNode
 import CONST
@@ -64,7 +62,6 @@ class TestDishLeafNode(object):
     def test_properties(self, tango_context):
         """ test the properties """
         # PROTECTED REGION END #    //  DishLeafNode.test_properties
-        pass
 
     def test_State(self, tango_context): #, dishmaster_context):
         """Test for State"""

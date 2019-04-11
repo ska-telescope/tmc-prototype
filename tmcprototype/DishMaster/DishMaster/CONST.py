@@ -1,4 +1,3 @@
-from builtins import range
 #string constants
 STR_ERR_MSG = "Error message is: \n"
 STR_DISH_POINT_INPROG = "Dish is pointing towards the desired coordinates."

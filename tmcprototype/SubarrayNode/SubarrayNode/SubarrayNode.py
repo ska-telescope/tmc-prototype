@@ -23,11 +23,9 @@ sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
 # tango imports
-from builtins import str
-from builtins import range
 import tango
-from tango import DebugIt, DevState, AttrWriteType, PipeWriteType, AttrQuality, DispLevel
-from tango.server import run, Device, DeviceMeta, attribute, command, device_property
+from tango import DebugIt, DevState, AttrWriteType
+from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKASubarray.SKASubarray import SKASubarray
 
 # Additional import
@@ -381,13 +379,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def always_executed_hook(self):
         """ Internal construct of TANGO. """
         # PROTECTED REGION ID(SubarrayNode.always_executed_hook) ENABLED START #
-        pass
         # PROTECTED REGION END #    //  SubarrayNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  SubarrayNode.delete_device
 
     # ------------------
