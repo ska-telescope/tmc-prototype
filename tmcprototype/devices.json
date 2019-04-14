@@ -94,5 +94,11 @@
     "serverName": "CentralNode/01",
     "name": "ska_mid/tm_central/central_node",
     "properties": []
+  },
+  {
+    "class": "alarmHandler",
+    "serverName": "TMAlarmHandler/01",
+    "name": "ska_mid/tm_alarmhandler/tmalarmhandler",
+    "properties": []
   }
 ]
