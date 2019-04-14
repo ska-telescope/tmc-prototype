@@ -317,3 +317,19 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              ./app/alarmhandler-srv 01"
+
+  configure-alarms:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - tm-alarmhandler
+      - dishmaster1
+      - dishmaster2
+      - dishmaster3
+      - dishmaster4
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}configure-alarms
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             /venv/bin/python /app/tmcprototype/TMAlarmHandler/configure_alarms.py"
