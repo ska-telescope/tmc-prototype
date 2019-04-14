@@ -2,103 +2,150 @@
   {
     "class": "DishMaster",
     "serverName": "DishMaster/01",
-    "name": "mid_d0001/elt/master",
-    "properties": []
+    "devName": "mid_d0001/elt/master",
+    "deviceProperties": [],
+    "attributeProperties" : []
   },
   {
     "class": "DishMaster",
     "serverName": "DishMaster/02",
-    "name": "mid_d0002/elt/master",
-    "properties": []
+    "devName": "mid_d0002/elt/master",
+    "deviceProperties": [],
+    "attributeProperties" : []
   },
   {
     "class": "DishMaster",
     "serverName": "DishMaster/03",
-    "name": "mid_d0003/elt/master",
-    "properties": []
+    "devName": "mid_d0003/elt/master",
+    "deviceProperties": [],
+    "attributeProperties" : []
   },
   {
     "class": "DishMaster",
     "serverName": "DishMaster/04",
-    "name": "mid_d0004/elt/master",
-    "properties": []
+    "devName": "mid_d0004/elt/master",
+    "deviceProperties": [],
+    "attributeProperties" : []
   },
   {
     "class": "DishLeafNode",
     "serverName": "DishLeafNode/01",
-    "name": "ska_mid/tm_leaf_node/d0001",
-    "properties": [
+    "devName": "ska_mid/tm_leaf_node/d0001",
+    "deviceProperties": [
       {
-        "name": "DishMasterFQDN",
-        "value": "mid_d0001/elt/master"
+        "devPropName": "DishMasterFQDN",
+        "devPropValue": "mid_d0001/elt/master"
+      }
+    ],
+    "attributeProperties" : [
+      {
+        "attributeName":"dishHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue":"mid_d0001/elt/master/healthState"
       }
     ]
   },
   {
     "class": "DishLeafNode",
     "serverName": "DishLeafNode/02",
-    "name": "ska_mid/tm_leaf_node/d0002",
-    "properties": [
+    "devName": "ska_mid/tm_leaf_node/d0002",
+    "deviceProperties": [
       {
-        "name": "DishMasterFQDN",
-        "value": "mid_d0002/elt/master"
+        "devPropName": "DishMasterFQDN",
+        "devPropValue": "mid_d0002/elt/master"
+      }
+    ],
+    "attributeProperties" : [
+      {
+        "attributeName":"dishHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue":"mid_d0002/elt/master/healthState"
       }
     ]
   },
   {
     "class": "DishLeafNode",
     "serverName": "DishLeafNode/03",
-    "name": "ska_mid/tm_leaf_node/d0003",
-    "properties": [
+    "devName": "ska_mid/tm_leaf_node/d0003",
+    "deviceProperties": [
       {
-        "name": "DishMasterFQDN",
-        "value": "mid_d0003/elt/master"
+        "devPropName": "DishMasterFQDN",
+        "devPropValue": "mid_d0003/elt/master"
+      }
+    ],
+    "attributeProperties" : [
+      {
+        "attributeName":"dishHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue":"mid_d0003/elt/master/healthState"
       }
     ]
   },
   {
     "class": "DishLeafNode",
     "serverName": "DishLeafNode/04",
-    "name": "ska_mid/tm_leaf_node/d0004",
-    "properties": [
+    "devName": "ska_mid/tm_leaf_node/d0004",
+    "deviceProperties": [
       {
-        "name": "DishMasterFQDN",
-        "value": "mid_d0004/elt/master"
+        "devPropName": "DishMasterFQDN",
+        "devPropValue": "mid_d0004/elt/master"
+      }
+    ],
+    "attributeProperties" : [
+      {
+        "attributeName":"dishHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue":"mid_d0004/elt/master/healthState"
       }
     ]
   },
   {
     "class": "SubarrayNode",
     "serverName": "SubarrayNode/sa1",
-    "name": "ska_mid/tm_subarray_node/1",
-    "properties": [
+    "devName": "ska_mid/tm_subarray_node/1",
+    "deviceProperties": [
       {
-        "name": "DishLeafNodePrefix",
-        "value": "ska_mid/tm_leaf_node/d"
+        "devPropName": "DishLeafNodePrefix",
+        "devPropValue": "ska_mid/tm_leaf_node/d"
       }
-    ]
+    ],
+    "attributeProperties" : []
   },
   {
     "class": "SubarrayNode",
     "serverName": "SubarrayNode/sa2",
-    "name": "ska_mid/tm_subarray_node/2",
-    "properties": [
+    "devName": "ska_mid/tm_subarray_node/2",
+    "deviceProperties": [
       {
-        "name": "DishLeafNodePrefix",
-        "value": "ska_mid/tm_leaf_node/d"
+        "devPropName": "DishLeafNodePrefix",
+        "devPropValue": "ska_mid/tm_leaf_node/d"
       }
-    ]
+    ],
+    "attributeProperties" : []
   },
   {
     "class": "CentralNode",
     "serverName": "CentralNode/01",
-    "name": "ska_mid/tm_central/central_node",
-    "properties": []
+    "devName": "ska_mid/tm_central/central_node",
+    "deviceProperties": [],
+    "attributeProperties" : [
+      {
+        "attributeName":"subarray1HealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue":"ska_mid/tm_subarray_node/1/healthState"
+      },
+      {
+        "attributeName":"subarray2HealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue":"ska_mid/tm_subarray_node/2/healthState"
+      }
+    ]
   },
   {
     "class": "alarmHandler",
     "serverName": "TMAlarmHandler/01",
-    "name": "ska_mid/tm_alarmhandler/tmalarmhandler",
-    "properties": []
+    "devname": "ska_mid/tm_alarmhandler/tmalarmhandler",
+    "deviceProperties": [],
+    "attributeProperties" : []
   }
 ]
