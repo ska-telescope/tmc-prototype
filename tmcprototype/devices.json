@@ -4,28 +4,28 @@
     "serverName": "DishMaster/01",
     "devName": "mid_d0001/elt/master",
     "deviceProperties": [],
-    "attributeProperties" : []
+    "attributeProperties": []
   },
   {
     "class": "DishMaster",
     "serverName": "DishMaster/02",
     "devName": "mid_d0002/elt/master",
     "deviceProperties": [],
-    "attributeProperties" : []
+    "attributeProperties": []
   },
   {
     "class": "DishMaster",
     "serverName": "DishMaster/03",
     "devName": "mid_d0003/elt/master",
     "deviceProperties": [],
-    "attributeProperties" : []
+    "attributeProperties": []
   },
   {
     "class": "DishMaster",
     "serverName": "DishMaster/04",
     "devName": "mid_d0004/elt/master",
     "deviceProperties": [],
-    "attributeProperties" : []
+    "attributeProperties": []
   },
   {
     "class": "DishLeafNode",
@@ -37,11 +37,11 @@
         "devPropValue": "mid_d0001/elt/master"
       }
     ],
-    "attributeProperties" : [
+    "attributeProperties": [
       {
-        "attributeName":"dishHealthState",
+        "attributeName": "dishHealthState",
         "attrPropName": "__root_att",
-        "attrPropValue":"mid_d0001/elt/master/healthState"
+        "attrPropValue": "mid_d0001/elt/master/healthState"
       }
     ]
   },
@@ -55,11 +55,11 @@
         "devPropValue": "mid_d0002/elt/master"
       }
     ],
-    "attributeProperties" : [
+    "attributeProperties": [
       {
-        "attributeName":"dishHealthState",
+        "attributeName": "dishHealthState",
         "attrPropName": "__root_att",
-        "attrPropValue":"mid_d0002/elt/master/healthState"
+        "attrPropValue": "mid_d0002/elt/master/healthState"
       }
     ]
   },
@@ -73,11 +73,11 @@
         "devPropValue": "mid_d0003/elt/master"
       }
     ],
-    "attributeProperties" : [
+    "attributeProperties": [
       {
-        "attributeName":"dishHealthState",
+        "attributeName": "dishHealthState",
         "attrPropName": "__root_att",
-        "attrPropValue":"mid_d0003/elt/master/healthState"
+        "attrPropValue": "mid_d0003/elt/master/healthState"
       }
     ]
   },
@@ -91,11 +91,11 @@
         "devPropValue": "mid_d0004/elt/master"
       }
     ],
-    "attributeProperties" : [
+    "attributeProperties": [
       {
-        "attributeName":"dishHealthState",
+        "attributeName": "dishHealthState",
         "attrPropName": "__root_att",
-        "attrPropValue":"mid_d0004/elt/master/healthState"
+        "attrPropValue": "mid_d0004/elt/master/healthState"
       }
     ]
   },
@@ -109,7 +109,7 @@
         "devPropValue": "ska_mid/tm_leaf_node/d"
       }
     ],
-    "attributeProperties" : []
+    "attributeProperties": []
   },
   {
     "class": "SubarrayNode",
@@ -121,24 +121,31 @@
         "devPropValue": "ska_mid/tm_leaf_node/d"
       }
     ],
-    "attributeProperties" : []
+    "attributeProperties": []
   },
   {
     "class": "CentralNode",
     "serverName": "CentralNode/01",
     "devName": "ska_mid/tm_central/central_node",
     "deviceProperties": [],
-    "attributeProperties" : [
+    "attributeProperties": [
       {
-        "attributeName":"subarray1HealthState",
+        "attributeName": "subarray1HealthState",
         "attrPropName": "__root_att",
-        "attrPropValue":"ska_mid/tm_subarray_node/1/healthState"
+        "attrPropValue": "ska_mid/tm_subarray_node/1/healthState"
       },
       {
-        "attributeName":"subarray2HealthState",
+        "attributeName": "subarray2HealthState",
         "attrPropName": "__root_att",
-        "attrPropValue":"ska_mid/tm_subarray_node/2/healthState"
+        "attrPropValue": "ska_mid/tm_subarray_node/2/healthState"
       }
     ]
+  },
+  {
+    "class": "SKALogger",
+    "serverName": "SKALogger/Ref",
+    "devName": "ref/elt/logger",
+    "deviceProperties": [],
+    "attributeProperties": []
   }
 ]

@@ -12,6 +12,8 @@
 #   - dishleafnode: Dish Leaf Node
 #   - subarraynode: Subarray Node
 #   - centralnode: Central Node
+#   - tmclogger: Logger for TMC
+#   - tmclogviewer: Log viewer for TMC prototype
 # Requires:
 #   - None
 #
@@ -305,3 +307,58 @@ services:
     image: jumanjiman/rsyslog
     container_name: ${CONTAINER_NAME_PREFIX}rsyslog-tmcprototype
     network_mode: ${NETWORK_MODE}
+
+  tmclogger:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/lmcbaseclasses:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}logger
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             /venv/bin/python /app/skabase/SKALogger/SKALogger.py Ref"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
+
+  tmclogviewer:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-java:latest
+    depends_on:
+    - databaseds
+    - rsyslog-tmcprototype
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}tmclogviewer
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    - XAUTHORITY=/tmp/.docker.xauth
+    - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             TANGO_HOST=${TANGO_HOST} /usr/local/bin/logviewer"
+
+  configurelogger:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - dishmaster1
+      - dishmaster2
+      - dishmaster3
+      - dishmaster4
+      - dishleafnode1
+      - dishleafnode2
+      - dishleafnode3
+      - dishleafnode4
+      - subarraynode1
+      - subarraynode2
+      - centralnode
+      - tmclogviewer
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}configurelogger
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             /venv/bin/python /app/tmcprototype/configure_logging.py"
