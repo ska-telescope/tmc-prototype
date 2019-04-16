@@ -8,7 +8,7 @@ with open('/app/tmcprototype/TMAlarmHandler/alarms.json', 'r') as file:
     jsonAlarmsString = file.read().replace('\n', '')
 
 # Creating DeviceProxy for Alarm Handler device
-alarmHandler_proxy = DeviceProxy("alarmhandler/1/1")
+alarmHandler_proxy = DeviceProxy("ska_mid/tm_alarmhandler/tmalarmhandler")
 
 # Configure Alarms on DishMaster WindSpeed attribute
 # Loading alarms.json file and creating an object
