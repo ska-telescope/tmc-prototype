@@ -1,4 +1,4 @@
-FROM ${DOCKER_REGISTRY_HOST}/ska-docker/tango-cpp:latest AS buildenv
+FROM nexus.engageska-portugal.pt/ska-docker/tango-cpp:latest AS buildenv
 
 #install alarm handler
 USER root
