@@ -1,8 +1,10 @@
+#!/usr/bin/env python
 from tango import DeviceProxy
 import json
 
+# Update file path to devices.json in order to test locally
+# To test on docker environment use path : /app/tmcprototoype/devices.json
 with open('/app/tmcprototype/TMAlarmHandler/alarms.json', 'r') as file:
-#with open('/home/user/projects/tmc-prototype/tmcprototype/TMAlarmHandler/alarms.json', 'r') as file:
     jsonAlarmsString = file.read().replace('\n', '')
 
 # Creating DeviceProxy for Alarm Handler device

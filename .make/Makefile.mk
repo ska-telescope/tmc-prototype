@@ -50,7 +50,7 @@ pre-build:
 post-build:
 
 pre-push:
-	docker login -u ci-cd -p ci-cd-pipeline-8237 nexus.engageska-portugal.pt
+	docker login -u ci-cd -p $(CI_REGISTRY_PASS_LOGIN) $(CI_NX_REGISTRY)
 
 post-push:
 
