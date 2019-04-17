@@ -3,6 +3,7 @@ CMD_SET_STOW_MODE = "SetStowMode"
 CMD_SET_STANDBY_MODE = "SetStandbyLPMode"
 CMD_SET_OPERATE_MODE = "SetOperateMode"
 CMD_ASSIGN_RESOURCES = "AssignResources"
+CMD_RELEASE_RESOURCES = "ReleaseAllResources"
 
 
 #Event messages
@@ -23,7 +24,7 @@ ERR_EXE_STANDBY_CMD = "Unexpected error in executing STANDBY Telescope command "
 ERR_EXE_STARTUP_CMD = "Unexpected error in executing STARTUP Telescope command "
 ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
-
+ERR_RELEASE_RESOURCES_CMD = "Error occured while releasing resources"
 
 #strings
 #General strings
@@ -41,6 +42,10 @@ STR_INIT_SUCCESS = "CentralNode is initialized successfully."
 STR_FALSE = "False"
 STR_DISH_DUPLICATE = "List of the dishes that are already allocated: "
 STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully"
+STR_FALSE_TAG = "Resources cannot be released since ReleaseALL Tag is False"
+STR_REL_RESOURCES =  "Resources have been released successfully"
+STR_ALL_RES_NOT_REL = "All the resources are not released"
+STR_LIST_RES_NOT_REL = "List of the resources that are not released:"
 
 #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SA1 = "ska_mid/tm_subarray_node/1"

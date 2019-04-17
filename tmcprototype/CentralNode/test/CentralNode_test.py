@@ -268,6 +268,30 @@ class TestCentralNode(object):
         create_subarray1_proxy.ReleaseAllResources()
         assert result == [1] and retVal["dish"]["receptorIDList_success"] == ["0001"]
 
+    def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
+        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0002"]}}'
+        tango_context.device.AssignResources(test_input)
+        time.sleep(3)
+        test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        retVal = json.loads(tango_context.device.ReleaseResources(test_input))
+        time.sleep(3)
+        result = create_subarray1_proxy.receptorIDList
+        assert result == None and retVal["receptorIDList"] == []
+
+    # FIXME: Assertion Failed as events are not subscribed. activityMessage updated with error.
+    # def test_ReleaseResources_invalid_json(self, tango_context):
+    #     test_input = '{"invalid_key"}'
+    #     tango_context.device.ReleaseResources(test_input)
+    #     time.sleep(1)
+    #     assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+
+    # FIXME: Assertion Failed as events are not subscribed. activityMessage updated with error.
+    # def test_ReleaseResources_key_not_found(self, tango_context):
+    #     test_input = '{"releaseALL":true,"receptorIDList":[]}'
+    #     tango_context.device.ReleaseResources(test_input)
+    #     time.sleep(1)
+    #     assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+
     # FIXME: Assertion Failed as events are not subscribed. activityMessage updated with error.
     # def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
     #     test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
