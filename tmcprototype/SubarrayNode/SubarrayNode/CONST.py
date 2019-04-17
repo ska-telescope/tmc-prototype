@@ -1,8 +1,6 @@
 
 #Events
-from builtins import range
 EVT_DISH_HEALTH_STATE = "dishHealthState"
-
 
 #Commands
 CMD_SCAN = "Scan"

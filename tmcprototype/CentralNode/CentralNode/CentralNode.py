@@ -22,11 +22,9 @@ sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
 # tango imports
-from builtins import str
-from builtins import range
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, utils, DeviceData, DevState
-from tango.server import run, Device, DeviceMeta, attribute, command, device_property
+from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState
+from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
@@ -209,19 +207,19 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.STR_ERR_MSG, except_occured)
         #  Get Dish Leaf Node devices List
         # TODO: Getting DishLeafNode devices list from TANGO DB
-        '''
-        self.tango_db = PyTango.Database()
-        try:
-            self.dev_dbdatum = self.tango_db.get_device_exported(CONST.GET_DEVICE_LIST_TANGO_DB)
-            self._dish_leaf_node_devices.extend(self.dev_bdatum.value_string)
-            print self._dish_leaf_node_devices
+        # self.tango_db = PyTango.Database()
+        # try:
+        #     self.dev_dbdatum = self.tango_db.get_device_exported(CONST.GET_DEVICE_LIST_TANGO_DB)
+        #     self._dish_leaf_node_devices.extend(self.dev_bdatum.value_string)
+        #     print self._dish_leaf_node_devices
+        #
+        # except Exception as except_occured:
+        #     print CONST.ERR_IN_READ_DISH_LN_DEVS, except_occured
+        #     self._read_activity_message = CONST.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
+        #     self.dev_logging(CONST.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
 
-        except Exception as except_occured:
-            print CONST.ERR_IN_READ_DISH_LN_DEVS, except_occured
-            self._read_activity_message = CONST.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
-            self.dev_logging(CONST.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
-        '''
         for dish in range(1, (self.NumDishes+1)):
+
             # Update self._dish_leaf_node_devices variable
             self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
 
@@ -267,13 +265,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def always_executed_hook(self):
         # PROTECTED REGION ID(CentralNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  CentralNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(CentralNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  CentralNode.delete_device
 
     # ------------------

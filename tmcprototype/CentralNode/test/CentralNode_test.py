@@ -10,7 +10,6 @@
 """Contain the tests for the CentralNode."""
 
 # Path
-from builtins import object
 import sys
 import os
 import time
@@ -24,9 +23,8 @@ sys.path.insert(0, os.path.abspath(path))
 
 
 # Imports
-from mock import MagicMock
 import tango
-from tango import DevState, EventType
+from tango import DevState
 from CentralNode.CentralNode import CentralNode
 import CONST
 import pytest

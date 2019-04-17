@@ -21,8 +21,6 @@ sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
 # PyTango imports
-from builtins import str
-from builtins import range
 import tango
 from tango import DebugIt, DevState, AttrWriteType
 from tango.server import run, DeviceMeta, attribute, command, device_property
