@@ -57,24 +57,48 @@ services:
       - -ORBendPoint
       - giop:tcp::10000
 
-  configure-devices:
+  add-devs-and-props:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
       - databaseds
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}configure
+    container_name: ${CONTAINER_NAME_PREFIX}add-devs-and-props
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python /app/tmcprototype/configure.py"
+             /venv/bin/python /app/tmcprototype/addDevicesAndProperties.py"
+
+  conf-polling-events:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+    - databaseds
+    - dishmaster1
+    - dishmaster2
+    - dishmaster3
+    - dishmaster4
+    - dishleafnode1
+    - dishleafnode2
+    - dishleafnode3
+    - dishleafnode4
+    - subarraynode1
+    - subarraynode2
+    - centralnode
+
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}conf-polling-events
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             /venv/bin/python /app/tmcprototype/configurePollingAndEvents.py"
 
   dishmaster1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dishmaster1
     environment:
@@ -91,7 +115,7 @@ services:
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dishmaster2
     environment:
@@ -108,7 +132,7 @@ services:
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dishmaster3
     environment:
@@ -125,7 +149,7 @@ services:
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dishmaster4
     environment:
@@ -143,7 +167,7 @@ services:
       - databaseds
       - rsyslog-tmcprototype
       - dishmaster1
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dishleafnode1
     environment:
@@ -162,7 +186,7 @@ services:
       - databaseds
       - rsyslog-tmcprototype
       - dishmaster2
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dishleafnode2
     environment:
@@ -181,7 +205,7 @@ services:
       - databaseds
       - rsyslog-tmcprototype
       - dishmaster3
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dishleafnode3
     environment:
@@ -200,7 +224,7 @@ services:
       - databaseds
       - rsyslog-tmcprototype
       - dishmaster4
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dishleafnode4
     environment:
@@ -222,7 +246,7 @@ services:
       - dishleafnode2
       - dishleafnode3
       - dishleafnode4
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}subarraynode1
     environment:
@@ -251,7 +275,7 @@ services:
       - dishleafnode2
       - dishleafnode3
       - dishleafnode4
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}subarraynode2
     environment:
@@ -278,7 +302,7 @@ services:
       - rsyslog-tmcprototype
       - subarraynode1
       - subarraynode2
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}centralnode
     environment:
@@ -309,7 +333,7 @@ services:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmalarmhandler
     depends_on:
       - databaseds
-      - configure-devices
+      - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}tmalarmhandler
     environment:
@@ -326,6 +350,7 @@ services:
       - dishmaster2
       - dishmaster3
       - dishmaster4
+      - conf-polling-events
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}configure-alarms
     environment:
