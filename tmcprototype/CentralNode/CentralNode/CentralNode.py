@@ -562,23 +562,26 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         "receptorIDList" : []
                     }
         """
-
         try:
+            release_success = False
+            res_not_released = []
             jsonArgument = json.loads(argin)
             subarrayID = jsonArgument['subarrayID']
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
-                self._command_success = subarrayProxy.command_inout(CONST.CMD_RELEASE_RESOURCES)
+                res_not_released = subarrayProxy.command_inout(CONST.CMD_RELEASE_RESOURCES)
                 self._read_activity_message = CONST.STR_REL_RESOURCES
                 self.dev_logging(CONST.STR_REL_RESOURCES, int(tango.LogLevel.LOG_INFO))
-                if not self._command_success:
+                if not res_not_released:
+                    release_success = True
                     for Dish_ID, Dish_Status in self._subarray_allocation.items():
                         if Dish_Status == subarray_name:
                             self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                 else:
                     self._read_activity_message = CONST.STR_LIST_RES_NOT_REL \
-                                                  + self._command_success
+                                                  + res_not_released
+                    release_success = False
             else:
                 self._read_activity_message = CONST.STR_FALSE_TAG
 
@@ -590,13 +593,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
 
         argout = {
-            "ReleaseAll" : True,
-            "receptorIDList" : []
+            "ReleaseAll" : release_success,
+            "receptorIDList" : res_not_released
         }
-
         return json.dumps(argout)
-        # PROTECTED REGION END #    //  CentralNode.ReleaseResources
-
+        # PROTECTED REGION END #    //  CentralNode.ReleaseResource
 # ----------
 # Run server
 # ----------
