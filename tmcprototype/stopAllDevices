@@ -16,4 +16,3 @@ sleep 1
 echo "========================= Stopping Dish Masters ========================="
 pkill -9 -f ./DishMaster/DishMaster/DishMaster.py &
 sleep 1
-
