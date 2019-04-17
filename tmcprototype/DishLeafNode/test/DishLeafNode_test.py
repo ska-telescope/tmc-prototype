@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import tango
-from tango import DevState
+from tango import DevState, EventType
 import pytest
 from DishLeafNode.DishLeafNode import DishLeafNode
 import CONST
@@ -96,19 +96,18 @@ class TestDishLeafNode(object):
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  DishLeafNode.test_Reset
 
-    # FIXME: Assertion with error event as events are not subscribed.
-    # def test_SetStandByLPMode(self, tango_context):
-    #     """Test for SetStandByLPMode"""
-    #     # PROTECTED REGION ID(DishLeafNode.test_SetStandByLPMode) ENABLED START #
-    #     tango_context.device.SetStandByLPMode()
-    #     assert tango_context.device.activityMessage == CONST.STR_SETSTANDBYLP_SUCCESS
-    #     # PROTECTED REGION END #    //  DishLeafNode.test_SetStandByLPMode
+    def test_SetStandByLPMode(self, tango_context):
+        """Test for SetStandByLPMode"""
+        # PROTECTED REGION ID(DishLeafNode.test_SetStandByLPMode) ENABLED START #
+        tango_context.device.SetStandByLPMode()
+        time.sleep(4)
+        assert tango_context.device.activityMessage == CONST.STR_SETSTANDBYLP_SUCCESS
+        # PROTECTED REGION END #    //  DishLeafNode.test_SetStandByLPMode
 
     def test_SetOperateMode(self, tango_context, create_dish_proxy):
         """Test for SetOperateMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetOperateMode) ENABLED START #
         tango_context.device.SetOperateMode()
-        print(tango_context.device.activityMessage)
         time.sleep(2)
         assert tango_context.device.activityMessage == (CONST.STR_SETOPERATE_SUCCESS) or (
                                                         CONST.STR_DISH_OPERATE_MODE)
@@ -213,18 +212,14 @@ class TestDishLeafNode(object):
                                                         CONST.STR_ACHIEVEDPOINTING_0_0)
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStowMode
 
-    # FIXME: Assertion with error event as events are not subscribed.
-    # def test_Slew(self, tango_context):
-    #     """Test for Slew"""
-    #     # PROTECTED REGION ID(DishLeafNode.test_Slew) ENABLED START #
-    #     tango_context.device.SetStandByLPMode()
-    #     time.sleep(4)
-    #     tango_context.device.Slew("0")
-    #     time.sleep(8)
-    #     # FIXME: Assertion with error event as events are not subscribed.
-    #     # assert tango_context.device.activityMessage == CONST.STR_SLEW_SUCCESS
-    #     assert "Error event" in tango_context.device.activityMessage
-
+    def test_Slew(self, tango_context):
+        """Test for Slew"""
+        # PROTECTED REGION ID(DishLeafNode.test_Slew) ENABLED START #
+        tango_context.device.SetStandByLPMode()
+        time.sleep(4)
+        tango_context.device.Slew("0")
+        time.sleep(8)
+        assert tango_context.device.activityMessage == CONST.STR_SLEW_SUCCESS
 
     def test_Slew_invalid_arguments(self, tango_context):
         """Test for Slew_invalid_arguments"""
@@ -312,40 +307,37 @@ class TestDishLeafNode(object):
         assert tango_context.device.activityMessage == CONST.STR_OK
         # PROTECTED REGION END #    //  DishLeafNode.test_activityMessage
 
-    # FIXME: Assertion Failed as events are not subscribed. activityMessage updated with error.
-    # def test_dishMode_change_event(self, tango_context, create_dish_proxy):
-    #     """Test for dishMode_change_event"""
-    #     tango_context.device.SetOperateMode()
-    #     eid = create_dish_proxy.subscribe_event(CONST.EVT_DISH_MODE,
-    #                                             EventType.CHANGE_EVENT,
-    #                                             DishLeafNode.dishModeCallback)
-    #     time.sleep(2)
-    #     assert tango_context.device.activityMessage == CONST.STR_DISH_OPERATE_MODE or CONST.STR_SETOPERATE_SUCCESS
-    #     assert create_dish_proxy.dishMode == "OPERATE" or 8
-    #     create_dish_proxy.unsubscribe_event(eid)
+    def test_dishMode_change_event(self, tango_context, create_dish_proxy):
+        """Test for dishMode_change_event"""
+        tango_context.device.SetOperateMode()
+        eid = create_dish_proxy.subscribe_event(CONST.EVT_DISH_MODE,
+                                                EventType.CHANGE_EVENT,
+                                                DishLeafNode.dishModeCallback)
+        time.sleep(2)
+        assert tango_context.device.activityMessage == CONST.STR_DISH_OPERATE_MODE or CONST.STR_SETOPERATE_SUCCESS
+        assert create_dish_proxy.dishMode == "OPERATE" or 8
+        create_dish_proxy.unsubscribe_event(eid)
 
-    # FIXME: Assertion Failed as events are not subscribed. activityMessage updated with error.
-    # def test_pointingState_change_event(self, tango_context, create_dish_proxy):
-    #     """Test for pointingState_change_event"""
-    #     tango_context.device.Scan("0")
-    #     eid = create_dish_proxy.subscribe_event(CONST.EVT_DISH_POINTING_STATE,
-    #                                             EventType.CHANGE_EVENT,
-    #                                             DishLeafNode.dishPointingStateCallback)
-    #     time.sleep(6)
-    #     #assert tango_context.device.activityMessage == CONST.STR_DISH_POINT_STATE_SCAN
-    #     assert create_dish_proxy.pointingState == "SCANNING" or 3
-    #     create_dish_proxy.unsubscribe_event(eid)
+    def test_pointingState_change_event(self, tango_context, create_dish_proxy):
+        """Test for pointingState_change_event"""
+        tango_context.device.Scan("0")
+        eid = create_dish_proxy.subscribe_event(CONST.EVT_DISH_POINTING_STATE,
+                                                EventType.CHANGE_EVENT,
+                                                DishLeafNode.dishPointingStateCallback)
+        time.sleep(6)
+        #assert tango_context.device.activityMessage == CONST.STR_DISH_POINT_STATE_SCAN
+        assert create_dish_proxy.pointingState == "SCANNING" or 3
+        create_dish_proxy.unsubscribe_event(eid)
 
-    # FIXME: Assertion Failed as events are not subscribed. activityMessage updated with error.
-    # def test_capturing_change_event(self, tango_context, create_dish_proxy):
-    #     """Test for capturing_change_event"""
-    #     tango_context.device.StopCapture("0")
-    #     eid = create_dish_proxy.subscribe_event(CONST.EVT_DISH_CAPTURING,
-    #                                             EventType.CHANGE_EVENT,
-    #                                             DishLeafNode.dishCapturingCallback)
-    #     time.sleep(6)
-    #     assert tango_context.device.activityMessage == (CONST.STR_DISH_CAPTURING_FALSE) or (
-    #                                                     CONST.STR_DISH_POINT_STATE_READY) or (
-    #                                                     CONST.STR_CAPTURE_EVENT)
-    #     assert create_dish_proxy.capturing == False
-    #     create_dish_proxy.unsubscribe_event(eid)
+    def test_capturing_change_event(self, tango_context, create_dish_proxy):
+        """Test for capturing_change_event"""
+        tango_context.device.StopCapture("0")
+        eid = create_dish_proxy.subscribe_event(CONST.EVT_DISH_CAPTURING,
+                                                EventType.CHANGE_EVENT,
+                                                DishLeafNode.dishCapturingCallback)
+        time.sleep(6)
+        assert tango_context.device.activityMessage == (CONST.STR_DISH_CAPTURING_FALSE) or (
+                                                        CONST.STR_DISH_POINT_STATE_READY) or (
+                                                        CONST.STR_CAPTURE_EVENT)
+        assert create_dish_proxy.capturing == False
+        create_dish_proxy.unsubscribe_event(eid)
