@@ -86,16 +86,6 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_DeconfigureCapability) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_DeconfigureCapability
 
-    def test_GetMetrics(self, tango_context):
-        """Test for GetMetrics"""
-        # PROTECTED REGION ID(SubarrayNode.test_GetMetrics) ENABLED START #
-        # PROTECTED REGION END #    //  SubarrayNode.test_GetMetrics
-
-    def test_GetVersionInfo(self, tango_context):
-        """Test for GetVersionInfo"""
-        # PROTECTED REGION ID(SubarrayNode.test_GetVersionInfo) ENABLED START #
-        # PROTECTED REGION END #    //  SubarrayNode.test_GetVersionInfo
-
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(SubarrayNode.test_Status) ENABLED START #
@@ -148,16 +138,6 @@ class TestSubarrayNode(object):
         assert CONST.SCAN_ALREADY_COMPLETED in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
-    def test_ObsState(self, tango_context):
-        """Test for ObsState"""
-        # PROTECTED REGION ID(SubarrayNode.test_ObsState) ENABLED START #
-        # PROTECTED REGION END #    //  SubarrayNode.test_ObsState
-
-    def test_Pause(self, tango_context):
-        """Test for Pause"""
-        # PROTECTED REGION ID(SubarrayNode.test_Pause) ENABLED START #
-        # PROTECTED REGION END #    //  SubarrayNode.test_Pause
-
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
@@ -183,11 +163,6 @@ class TestSubarrayNode(object):
         """Test for Resume"""
         # PROTECTED REGION ID(SubarrayNode.test_Resume) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_Resume
-
-    def test_ToJson(self, tango_context):
-        """Test for ToJson"""
-        # PROTECTED REGION ID(SubarrayNode.test_ToJson) ENABLED START #
-        # PROTECTED REGION END #    //  SubarrayNode.test_ToJson
 
     def test_Configure(self, tango_context):
         """Test for Configure"""
@@ -318,11 +293,6 @@ class TestSubarrayNode(object):
         assert tango_context.device.activityMessage == message
         # PROTECTED REGION END #    //  SubarrayNode.test_activityMessage
 
-    def test_assignedResources(self, tango_context):
-        """Test for assignedResources"""
-        # PROTECTED REGION ID(SubarrayNode.test_assignedResources) ENABLED START #
-        assert tango_context.device.assignedResources == None
-        # PROTECTED REGION END #    //  SubarrayNode.test_assignedResources
 
     def test_configuredCapabilities(self, tango_context):
         """Test for configuredCapabilities"""

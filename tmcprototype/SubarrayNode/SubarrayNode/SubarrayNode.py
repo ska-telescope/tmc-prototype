@@ -200,11 +200,18 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def ReleaseAllResources(self):
         """
-        Releases all the resources from the Subarray.
-        :return: List of resources removed.
+        Releases all the resources from the subarray. If the command execution fails, array of receptors (device names)
+        which are failed to be realeased from the subarray, is returned to Central Node. Upon successful execution,
+        all the resources of a given subarray get released and empty array is returned.
+
+        :param argin:
+            DevVoid.
+
+        :return:
+            DevVarStringArray.
         """
-        argout = []
         try:
+            argout = []
             assert self.testDeviceVsEventID != {}, CONST.RESRC_ALREADY_RELEASED
             if self.testDeviceVsEventID != {}:
                 print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
@@ -212,7 +219,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
-                argout.extend(self._dish_leaf_node_group.get_device_list(True))
                 print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
                 print(CONST.STR_HEALTH_ID, self._health_event_id)
                 print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
@@ -233,8 +239,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
             print(CONST.STR_HEALTH_ID, self._health_event_id)
             self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(except_occured)
-            argout = []
             self.dev_logging(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
+
+        argout.extend(self._dish_leaf_node_group.get_device_list(True))
         return argout
 
     def is_ReleaseAllResources_allowed(self):
