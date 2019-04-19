@@ -16,6 +16,10 @@ for x in range(10):
 
 # Update file path to devices.json in order to test locally
 # To test on docker environment use path : /app/tmcprototoype/devices.json
+
+# with open('/home/user/projects/tmc-prototype/tmcprototype/devices.json', 'r') as file:
+#     jsonDevices = file.read().replace('\n', '')
+
 with open('/app/tmcprototype/devices.json', 'r') as file:
     jsonDevices = file.read().replace('\n', '')
 
@@ -35,16 +39,18 @@ for device in json_devices:
     for deviceProperty in device["deviceProperties"]:
         # Adding device property: deviceProperty["devPropValue"]
         # with value: deviceProperty["devPropValue"]
-        db.put_device_property(dev_info.name,
-                               {deviceProperty["devPropName"]:
-                                    deviceProperty["devPropValue"]})
+        if (deviceProperty["devPropName"]) != "" and (deviceProperty["devPropValue"] != ""):
+            db.put_device_property(dev_info.name,
+                                   {deviceProperty["devPropName"]:
+                                        deviceProperty["devPropValue"]})
 
     # Adding attribute properties
     for attributeProperty in device["attributeProperties"]:
         # Adding attribute property: attributeProperty["attrPropName"]
         # for attribute: attributeProperty["attributeName"]
         # with value: " + attributeProperty["attrPropValue"]
-        db.put_device_attribute_property(dev_info.name,
-                                         {attributeProperty["attributeName"]:
-                                              {attributeProperty["attrPropName"]:
-                                                   attributeProperty["attrPropValue"]}})
+        if(attributeProperty["attrPropName"])!="" and (attributeProperty["attrPropValue"]!=""):
+            db.put_device_attribute_property(dev_info.name,
+                                             {attributeProperty["attributeName"]:
+                                                  {attributeProperty["attrPropName"]:
+                                                       attributeProperty["attrPropValue"]}})
