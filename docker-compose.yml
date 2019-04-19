@@ -355,6 +355,7 @@ services:
       - subarraynode2
       - centralnode
       - tmclogviewer
+      - tmclogger
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}configurelogger
     environment:

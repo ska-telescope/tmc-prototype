@@ -3,28 +3,48 @@
     "class": "DishMaster",
     "serverName": "DishMaster/01",
     "devName": "mid_d0001/elt/master",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": []
   },
   {
     "class": "DishMaster",
     "serverName": "DishMaster/02",
     "devName": "mid_d0002/elt/master",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": []
   },
   {
     "class": "DishMaster",
     "serverName": "DishMaster/03",
     "devName": "mid_d0003/elt/master",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": []
   },
   {
     "class": "DishMaster",
     "serverName": "DishMaster/04",
     "devName": "mid_d0004/elt/master",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": []
   },
   {
@@ -33,17 +53,11 @@
     "devName": "ska_mid/tm_leaf_node/d0001",
     "deviceProperties": [
       {
-        "devPropName": "DishMasterFQDN",
-        "devPropValue": "mid_d0001/elt/master"
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
-    "attributeProperties": [
-      {
-        "attributeName": "dishHealthState",
-        "attrPropName": "__root_att",
-        "attrPropValue": "mid_d0001/elt/master/healthState"
-      }
-    ]
+    "attributeProperties": []
   },
   {
     "class": "DishLeafNode",
@@ -51,17 +65,11 @@
     "devName": "ska_mid/tm_leaf_node/d0002",
     "deviceProperties": [
       {
-        "devPropName": "DishMasterFQDN",
-        "devPropValue": "mid_d0002/elt/master"
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
-    "attributeProperties": [
-      {
-        "attributeName": "dishHealthState",
-        "attrPropName": "__root_att",
-        "attrPropValue": "mid_d0002/elt/master/healthState"
-      }
-    ]
+    "attributeProperties": []
   },
   {
     "class": "DishLeafNode",
@@ -69,17 +77,11 @@
     "devName": "ska_mid/tm_leaf_node/d0003",
     "deviceProperties": [
       {
-        "devPropName": "DishMasterFQDN",
-        "devPropValue": "mid_d0003/elt/master"
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
-    "attributeProperties": [
-      {
-        "attributeName": "dishHealthState",
-        "attrPropName": "__root_att",
-        "attrPropValue": "mid_d0003/elt/master/healthState"
-      }
-    ]
+    "attributeProperties": []
   },
   {
     "class": "DishLeafNode",
@@ -87,17 +89,11 @@
     "devName": "ska_mid/tm_leaf_node/d0004",
     "deviceProperties": [
       {
-        "devPropName": "DishMasterFQDN",
-        "devPropValue": "mid_d0004/elt/master"
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
-    "attributeProperties": [
-      {
-        "attributeName": "dishHealthState",
-        "attrPropName": "__root_att",
-        "attrPropValue": "mid_d0004/elt/master/healthState"
-      }
-    ]
+    "attributeProperties": []
   },
   {
     "class": "SubarrayNode",
@@ -105,8 +101,8 @@
     "devName": "ska_mid/tm_subarray_node/1",
     "deviceProperties": [
       {
-        "devPropName": "DishLeafNodePrefix",
-        "devPropValue": "ska_mid/tm_leaf_node/d"
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
     "attributeProperties": []
@@ -117,8 +113,8 @@
     "devName": "ska_mid/tm_subarray_node/2",
     "deviceProperties": [
       {
-        "devPropName": "DishLeafNodePrefix",
-        "devPropValue": "ska_mid/tm_leaf_node/d"
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
     "attributeProperties": []
@@ -127,25 +123,24 @@
     "class": "CentralNode",
     "serverName": "CentralNode/01",
     "devName": "ska_mid/tm_central/central_node",
-    "deviceProperties": [],
-    "attributeProperties": [
+    "deviceProperties": [
       {
-        "attributeName": "subarray1HealthState",
-        "attrPropName": "__root_att",
-        "attrPropValue": "ska_mid/tm_subarray_node/1/healthState"
-      },
-      {
-        "attributeName": "subarray2HealthState",
-        "attrPropName": "__root_att",
-        "attrPropValue": "ska_mid/tm_subarray_node/2/healthState"
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
-    ]
+    ],
+    "attributeProperties": []
   },
   {
     "class": "SKALogger",
     "serverName": "SKALogger/Ref",
     "devName": "ref/elt/logger",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": []
   }
 ]

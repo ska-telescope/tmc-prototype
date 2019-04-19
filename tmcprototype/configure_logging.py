@@ -1,25 +1,42 @@
-from tango import DeviceProxy
+from tango import DeviceProxy, DevFailed
 import json
-
-# Connected to the databaseds
+import time
 
 # Update file path to devices.json in order to test locally
 # To test on docker environment use path : /app/tmcprototoype/devices.json
-with open('/app/tmcprototype/devices.json', 'r') as file:
+config_json_file = '/app/tmcprototype/devices.json'
+
+with open(config_json_file, 'r') as file:
     jsonDevices = file.read().replace('\n', '')
 
-
 # Creating SKALogger DeviceProxy
-logger_proxy = DeviceProxy("ref/elt/logger")
+logger_device = "ref/elt/logger"
+logger_proxy = DeviceProxy(logger_device)
 
-# Loading devices.json file and creating an object
+logging_target = "device::" + logger_device
+print("logging_target: ", logging_target)
+
+# Parse json
 json_devices = json.loads(jsonDevices)
 
 for device in json_devices:
-    # Setting Logging Level and Logging Target
-    device_proxy = DeviceProxy(device["devName"])
-    device_proxy.set_logging_level(5)
-    device_proxy.add_logging_target("device::ref/elt/logger")
+    print("device name: ", device["devName"])
+    if device["devName"] != logger_device:
+        # Set Logging Level
+        device_proxy = DeviceProxy(device["devName"])
+        print("device_proxy : ", device_proxy )
+        device_proxy.set_logging_level(5)
+        time.sleep(2)
 
-    # Setting Element Logging Level
-    logger_proxy.command_inout("SetElementLoggingLevel", ([5], [device["devName"]]))
+        try:
+            # Set Logging target
+            device_proxy.add_logging_target(logging_target)
+            time.sleep(2)
+        except DevFailed as df:
+            print("Failed to set logging target: ", df)
+
+         # Setting Element Logging Level
+        logger_proxy.command_inout("SetCentralLoggingLevel", ([5], [device["devName"]]))
+        time.sleep(2)
+        logger_proxy.command_inout("SetElementLoggingLevel", ([5], [device["devName"]]))
+        time.sleep(2)
