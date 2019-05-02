@@ -485,6 +485,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     receptorIDList.append(self._resources_allocated[dish])
 
                 self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
+                self.dev_logging(CONST.STR_ASSIGN_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:
                 print(CONST.STR_DISH_DUPLICATE , duplicate_allocation_dish_ids)
                 self._read_activity_message = CONST.STR_DISH_DUPLICATE + str(duplicate_allocation_dish_ids)
@@ -494,7 +495,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except KeyError:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
-
         argout = {
             "dish": {
                 "receptorIDList_success": receptorIDList
@@ -507,6 +507,97 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.AssignResources
 
+    @command(
+    dtype_in='str', 
+    dtype_out='str', 
+    )
+    @DebugIt()
+    def ReleaseResources(self, argin):
+        # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
+
+        """
+        Release all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+        receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command is
+        invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the resources of the
+        Subarray are released.
+        When releaseALL is False, ReleaseResources will be invoked on the Subarray and the resources provided in
+        receptorIDList tag, are released from Subarray. This selective release of the resources when releaseALL is
+        False, will be implemented in the later stages of the prototype.
+
+        :param argin: The string in JSON format. The JSON contains following values:
+
+            subarrayID:
+                DevShort. Mandatory.
+
+            releaseALL:
+                Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
+
+            receptorIDList:
+                DevVarStringArray. Empty when releaseALL tag is True.
+
+            Example:
+                {
+                    "subarrayID": 1,
+                    "releaseALL": true
+                    "receptorIDList": []
+                }
+
+
+            Note: From Jive, enter input as:
+                {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
+
+            :return: argout: The string in JSON format. The JSON contains following values:
+
+                releaseALL:
+                    Boolean(True or False). If True, all the resources are successfully released from the Subarray.
+
+                receptorIDList:
+                    DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns resources
+                    (device names) that are noe released from the subarray.
+
+                Example:
+                    argout =
+                    {
+                        "ReleaseAll" : True,
+                        "receptorIDList" : []
+                    }
+        """
+        try:
+            release_success = False
+            res_not_released = []
+            jsonArgument = json.loads(argin)
+            subarrayID = jsonArgument['subarrayID']
+            subarrayProxy = self.subarray_FQDN_dict[subarrayID]
+            subarray_name = "SA" + str(subarrayID)
+            if jsonArgument['releaseALL'] == True:
+                res_not_released = subarrayProxy.command_inout(CONST.CMD_RELEASE_RESOURCES)
+                self._read_activity_message = CONST.STR_REL_RESOURCES
+                self.dev_logging(CONST.STR_REL_RESOURCES, int(tango.LogLevel.LOG_INFO))
+                if not res_not_released:
+                    release_success = True
+                    for Dish_ID, Dish_Status in self._subarray_allocation.items():
+                        if Dish_Status == subarray_name:
+                            self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
+                else:
+                    self._read_activity_message = CONST.STR_LIST_RES_NOT_REL \
+                                                  + res_not_released
+                    release_success = False
+            else:
+                self._read_activity_message = CONST.STR_FALSE_TAG
+
+        except ValueError:
+            self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON
+        except KeyError:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+
+        argout = {
+            "ReleaseAll" : release_success,
+            "receptorIDList" : res_not_released
+        }
+        return json.dumps(argout)
+        # PROTECTED REGION END #    //  CentralNode.ReleaseResource
 # ----------
 # Run server
 # ----------

@@ -9,7 +9,71 @@
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "achievedPointing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "adminMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "capturing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "ConfiguredBand",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "desiredPointing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "dishMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "pointingState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "WindSpeed",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "DishMaster",
@@ -21,7 +85,71 @@
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "achievedPointing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "adminMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "capturing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "ConfiguredBand",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "desiredPointing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "dishMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "pointingState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "WindSpeed",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "DishMaster",
@@ -33,7 +161,71 @@
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "achievedPointing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "adminMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "capturing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "ConfiguredBand",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "desiredPointing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "dishMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "pointingState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "WindSpeed",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "DishMaster",
@@ -45,7 +237,71 @@
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "achievedPointing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "adminMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "capturing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "ConfiguredBand",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "desiredPointing",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "dishMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "pointingState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "WindSpeed",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "DishLeafNode",
@@ -53,11 +309,37 @@
     "devName": "ska_mid/tm_leaf_node/d0001",
     "deviceProperties": [
       {
+        "devPropName": "DishMasterFQDN",
+        "devPropValue": "mid_d0001/elt/master"
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "dishHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue": "mid_d0001/elt/master/healthState",
+        "pollingPeriod": "",
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "DishLeafNode",
@@ -65,11 +347,37 @@
     "devName": "ska_mid/tm_leaf_node/d0002",
     "deviceProperties": [
       {
+        "devPropName": "DishMasterFQDN",
+        "devPropValue": "mid_d0002/elt/master"
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "dishHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue": "mid_d0002/elt/master/healthState",
+        "pollingPeriod": "",
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "DishLeafNode",
@@ -77,11 +385,37 @@
     "devName": "ska_mid/tm_leaf_node/d0003",
     "deviceProperties": [
       {
+        "devPropName": "DishMasterFQDN",
+        "devPropValue": "mid_d0003/elt/master"
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "dishHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue": "mid_d0003/elt/master/healthState",
+        "pollingPeriod": "",
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "DishLeafNode",
@@ -89,11 +423,37 @@
     "devName": "ska_mid/tm_leaf_node/d0004",
     "deviceProperties": [
       {
+        "devPropName": "DishMasterFQDN",
+        "devPropValue": "mid_d0004/elt/master"
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "dishHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue": "mid_d0004/elt/master/healthState",
+        "pollingPeriod": "",
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "SubarrayNode",
@@ -101,11 +461,58 @@
     "devName": "ska_mid/tm_subarray_node/1",
     "deviceProperties": [
       {
+        "devPropName": "DishLeafNodePrefix",
+        "devPropValue": "ska_mid/tm_leaf_node/d"
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "adminMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "obsMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "obsState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "receptorIDList",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "SubarrayNode",
@@ -113,11 +520,58 @@
     "devName": "ska_mid/tm_subarray_node/2",
     "deviceProperties": [
       {
+        "devPropName": "DishLeafNodePrefix",
+        "devPropValue": "ska_mid/tm_leaf_node/d"
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "adminMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "obsMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "obsState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "receptorIDList",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
     "class": "CentralNode",
@@ -129,12 +583,41 @@
         "devPropValue": 1
       }
     ],
-    "attributeProperties": []
+    "attributeProperties": [
+      {
+        "attributeName": "subarray1HealthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "subarray2HealthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "telescopeHealthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
   },
   {
-    "class": "SKALogger",
-    "serverName": "SKALogger/Ref",
-    "devName": "ref/elt/logger",
+    "class": "AlarmHandler",
+    "serverName": "alarmhandler-srv/01",
+    "devName": "ska_mid/tm_alarmhandler/tmalarmhandler",
     "deviceProperties": [
       {
         "devPropName": "SkaLevel",

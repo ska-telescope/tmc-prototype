@@ -52,12 +52,9 @@ TMC prototype has covered (or planning to cover) following architectural aspects
 * [x] Conversion of Ra-Dec to Az-El coordinates using KATPOINT
 * [ ] Calculate Az-El periodically in Dish Leaf Node and implement tracking functionality in Dish Master
 * [ ] Monitor CSP Master using CSP Master Leaf Node
-* [ ] Accept configuration as strings (JSON) from OET for following commands:
-    * [ ] AssignResources
-    * [ ] ReleaseResources
-    * [ ] Configure (not planned for PI #2)
-    * [ ] Scan (not planned for PI #2)
-    * [ ] EndScan (not planned for PI #2)
+* [x] Accept configuration as strings (JSON) from OET for following commands:
+    * [x] AssignResources
+    * [x] ReleaseResources
 
 **NOTE:** Refer the Demo link provided in the [Documentation](#6-documentation) section for more details.
 

@@ -16,10 +16,10 @@ python3 ./DishLeafNode/DishLeafNode/DishLeafNode.py 04 &
 sleep 1
 
 echo "========================= Starting Subarray Node 1 ========================="
-python3 ./SubarrayNode/SubarrayNode/SubarrayNode.py sub1 &
+python3 ./SubarrayNode/SubarrayNode/SubarrayNode.py sa1 &
 
 echo "========================= Starting Subarray Node 2 ========================="
-python3 ./SubarrayNode/SubarrayNode/SubarrayNode.py sub2 &
+python3 ./SubarrayNode/SubarrayNode/SubarrayNode.py sa2 &
 sleep 1
 
 echo "========================= Starting Central Node ========================="

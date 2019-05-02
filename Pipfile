@@ -14,6 +14,7 @@ pytango = "==9.2.5"
 itango = "*"
 katpoint = "*"
 pyyaml = "==4.2b1"
+mock = "*"
 
 [dev-packages]
 docutils = "*"
