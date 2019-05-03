@@ -1,0 +1,2 @@
+.. automodule:: CspMasterLeafNode
+    :members: CspMasterLeafNode
