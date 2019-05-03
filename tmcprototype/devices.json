@@ -533,7 +533,12 @@
     "class": "CentralNode",
     "serverName": "CentralNode/01",
     "devName": "ska_mid/tm_central/central_node",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "NumDishes",
+        "devPropValue": "4"
+      }
+    ],
     "attributeProperties": [
       {
         "attributeName": "subarray1HealthState",
