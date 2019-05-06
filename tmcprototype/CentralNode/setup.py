@@ -32,7 +32,7 @@ setup(name=name,
       packages=pack,
       include_package_data=True,
       test_suite="test",
-      entry_points={'console_scripts':['CentralNode = CentralNode:main']},
+      entry_points={'console_scripts': ['CentralNode = CentralNode:main']},
       author='apurva.ska',
       author_email='apurva.ska at gmail.com',
       license='BSD-3-Clause',
@@ -40,7 +40,7 @@ setup(name=name,
       url='www.tango-controls.org',
       platforms="All Platforms",
       install_requires=['pytango==9.2.5', 'mock'],
-      #test_suite='test',
+      # test_suite='test',
       setup_requires=[
           # dependency for `python setup.py test`
           'pytest-runner',
@@ -55,6 +55,6 @@ setup(name=name,
           'pycodestyle',
       ],
       extras_require={
-          'dev':  ['prospector[with_pyroma]', 'yapf', 'isort']
+          'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
       }
-)
+      )

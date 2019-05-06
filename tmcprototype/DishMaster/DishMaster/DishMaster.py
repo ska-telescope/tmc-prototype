@@ -19,20 +19,19 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/DishMaster"
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
-
+# PROTECTED REGION ID(DishMaster.additionnal_import) ENABLED START #
+import time
+from threading import Timer
+import threading
+import numpy
 # PyTango imports
 import tango
 from tango import DebugIt, DevState, AttrWriteType
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKAMaster.SKAMaster import SKAMaster
 # Additional import
-# PROTECTED REGION ID(DishMaster.additionnal_import) ENABLED START #
-import time
-from threading import Timer
-import threading
 import CONST
 from future.utils import with_metaclass
-import numpy
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
@@ -637,7 +636,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """
         try:
             if type(float(argin)) == float:
-                if (self._capturing == False):
+                if (self._capturing is False):
                     # Command to start Data Capturing
                     self._capturing = True                      # set Capturing to True
                     self._pointing_state = 3                    # set pointingState to SCAN
@@ -673,7 +672,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """
         try:
             if type(float(argin)) == float:
-                if (self._capturing == True):
+                if (self._capturing is True):
                     # Command to stop Data Capturing
                     self._capturing = False                     # set Capturing to FALSE
                     self._pointing_state = 0                    # set pointingState to READY

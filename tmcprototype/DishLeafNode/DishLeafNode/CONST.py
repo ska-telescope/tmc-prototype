@@ -1,3 +1,7 @@
+"""
+This file is part of the SubarrayNode project and defines variables used
+"""
+
 #Events
 EVT_DISH_MODE = "dishMode"
 EVT_DISH_POINTING_STATE = "pointingState"
@@ -107,7 +111,7 @@ STR_SETSTANDBYLP_SUCCESS = "Command :-> SetStandbyLPMode invoked successfully."
 STR_SETOPERATE_SUCCESS = "Command :-> SetOperateMode invoked successfully."
 STR_CONFIGURE_SUCCESS = "Command :-> Configure invoked successfully."
 STR_SCAN_SUCCESS = "Command :-> Scan invoked successfully."
-STR_ENDSCAN_SUCCESS= "Command :-> EndScaninvoked successfully."
+STR_ENDSCAN_SUCCESS = "Command :-> EndScaninvoked successfully."
 STR_STARTCAPTURE_SUCCESS = "Command :-> StartCapture invoked successfully."
 STR_STOPCAPTURE_SUCCESS = "Command :-> StopCapture invoked successfully."
 STR_STANDBYFP_SUCCESS = "Command :-> SetStandbyFPMode invoked successfully."

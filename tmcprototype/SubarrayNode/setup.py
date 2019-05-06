@@ -27,35 +27,36 @@ exec(open(release_filename).read())
 pack = ['SubarrayNode']
 
 setup(
-      name=name,
-      version=version,
-      description='Provides the monitoring and control interface required by users as well as \nother TM Components (such as OET, Central Node) for a Subarray.',
-      packages=pack,
-      include_package_data=True,
-      test_suite="test",
-      entry_points={'console_scripts':['SubarrayNode = SubarrayNode:main']},
-      author='jyotin.ska',
-      author_email='jyotin.ska at gmail.com',
-      license='BSD-3-Clause',
-      long_description=long_description,
-      url='www.tango-controls.org',
-      platforms="All Platforms",
-      install_requires=['pytango==9.2.5', 'mock'],
-      #test_suite='test',
-      setup_requires=[
-          # dependency for `python setup.py test`
-          'pytest-runner',
-          # dependencies for `python setup.py build_sphinx`
-          'sphinx',
-          'recommonmark'
-      ],
-      tests_require=[
-          'pytest',
-          'pytest-cov',
-          'pytest-json-report',
-          'pycodestyle',
-      ],
-      extras_require={
-          'dev':  ['prospector[with_pyroma]', 'yapf', 'isort']
-      }
-)
+    name=name,
+    version=version,
+    description='Provides the monitoring and control interface required by users as well as \n'
+                'other TM Components (such as OET, Central Node) for a Subarray.',
+    packages=pack,
+    include_package_data=True,
+    test_suite="test",
+    entry_points={'console_scripts':['SubarrayNode = SubarrayNode:main']},
+    author='jyotin.ska',
+    author_email='jyotin.ska at gmail.com',
+    license='BSD-3-Clause',
+    long_description=long_description,
+    url='www.tango-controls.org',
+    platforms="All Platforms",
+    install_requires=['pytango==9.2.5', 'mock'],
+    #test_suite='test',
+    setup_requires=[
+        # dependency for `python setup.py test`
+        'pytest-runner',
+        # dependencies for `python setup.py build_sphinx`
+        'sphinx',
+        'recommonmark'
+    ],
+    tests_require=[
+        'pytest',
+        'pytest-cov',
+        'pytest-json-report',
+        'pycodestyle',
+    ],
+    extras_require={
+        'dev':  ['prospector[with_pyroma]', 'yapf', 'isort']
+    }
+    )

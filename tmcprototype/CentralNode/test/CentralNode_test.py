@@ -51,7 +51,7 @@ class TestCentralNode(object):
     device = CentralNode
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost','CentralAlarmHandler': '', 'TMAlarmHandler': '',
+                  'StorageLoggingTarget': 'localhost', 'CentralAlarmHandler': '', 'TMAlarmHandler': '',
                   'TMMidSubarrayNodes': 'ska_mid/tm_subarray_node/1', 'NumDishes': '4',
                   'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
                   }

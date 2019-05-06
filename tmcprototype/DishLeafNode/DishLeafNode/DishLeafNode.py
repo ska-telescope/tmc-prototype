@@ -19,19 +19,21 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/DishLeafNode"
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
+# PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
+import math
+import re
+import katpoint
+from future.utils import with_metaclass
 
 # PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+
+
 # Additional import
-# PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 import CONST
-from future.utils import with_metaclass
-import math
-import katpoint
-import re
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]
@@ -532,7 +534,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_START_CAPTURE,
-                                                  argin, self.commandCallback)
+                                                      argin, self.commandCallback)
         except Exception as except_occurred:
             print(CONST.ERR_EXE_START_CAPTURE_CMD, except_occurred)
             self._read_activity_message = CONST.ERR_EXE_START_CAPTURE_CMD + str(except_occurred)
@@ -614,4 +616,3 @@ def main(args=None, **kwargs):
 
 if __name__ == '__main__':
     main()
-

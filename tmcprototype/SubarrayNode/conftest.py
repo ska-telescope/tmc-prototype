@@ -2,9 +2,10 @@
 A module defining a list of fixture functions that are shared across all the skabase
 tests.
 """
+import importlib
 import mock
 import pytest
-import importlib
+
 
 
 from tango.test_context import DeviceTestContext

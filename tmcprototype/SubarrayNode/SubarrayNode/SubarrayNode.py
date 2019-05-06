@@ -22,22 +22,22 @@ module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNo
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
+# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
+import random
+import string
 # tango imports
 import tango
 from tango import DebugIt, DevState, AttrWriteType
 from tango.server import run, DeviceMeta, attribute, command, device_property
+from future.utils import with_metaclass
 from skabase.SKASubarray.SKASubarray import SKASubarray
 
 # Additional import
-# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
-import random
-import string
 import CONST
-from future.utils import with_metaclass
+
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 __all__ = ["SubarrayNode", "main"]
-
 
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
@@ -200,9 +200,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def ReleaseAllResources(self):
         """
-        Releases all the resources from the subarray. If the command execution fails, array of receptors (device names)
-        which are failed to be realeased from the subarray, is returned to Central Node. Upon successful execution,
-        all the resources of a given subarray get released and empty array is returned.
+        Releases all the resources from the subarray. If the command execution fails, array of receptors
+        (device names) which are failed to be realeased from the subarray, is returned to Central Node.
+        Upon successful execution, all the resources of a given subarray get released and empty array
+        is returned.
 
         :param argin:
             DevVoid.
@@ -301,7 +302,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     self._health_state = 0
                 elif failed_health_count != 0:
                     self._health_state = 2
-                elif degraded_health_count   != 0:
+                elif degraded_health_count != 0:
                     self._health_state = 1
                 else:
                     self._health_state = 3
@@ -321,7 +322,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     DishLeafNodePrefix = device_property(
         dtype='str', default_value="ska_mid/tm_leaf_node/d",
-        doc = "Device name prefix for the Dish Leaf Node",
+        doc="Device name prefix for the Dish Leaf Node",
     )
 
     # ----------

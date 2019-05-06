@@ -104,7 +104,7 @@ class TestSubarrayNode(object):
         receptor_list = ["a"]
         tango_context.device.AssignResources(receptor_list)
         assert tango_context.device.State() == DevState.OFF
-        assert tango_context.device.receptorIDList == None
+        assert tango_context.device.receptorIDList is None
         receptor_list = ["0001"]
         tango_context.device.AssignResources(receptor_list)
         assert tango_context.device.State() == DevState.ON
@@ -156,7 +156,7 @@ class TestSubarrayNode(object):
     def test_Reset(self, tango_context):
         """Test for Reset"""
         # PROTECTED REGION ID(SubarrayNode.test_Reset) ENABLED START #
-        assert tango_context.device.Reset() == None
+        assert tango_context.device.Reset() is None
         # PROTECTED REGION END #    //  SubarrayNode.test_Reset
 
     def test_Resume(self, tango_context):
@@ -169,7 +169,8 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
         # tango_context.device.Configure(["a", "1"])
         # assert tango_context.device.obsState == 0
-        tango_context.device.Configure(["Polaris | polaris, radec, 02:31:50.88, 89:15:51.4", '2019-02-18 11:17:00'])
+        tango_context.device.Configure(["Polaris | polaris, radec, 02:31:50.88, 89:15:51.4",
+                                        '2019-02-18 11:17:00'])
         assert tango_context.device.obsState == 2
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
@@ -297,11 +298,11 @@ class TestSubarrayNode(object):
     def test_configuredCapabilities(self, tango_context):
         """Test for configuredCapabilities"""
         # PROTECTED REGION ID(SubarrayNode.test_configuredCapabilities) ENABLED START #
-        assert tango_context.device.configuredCapabilities == None
+        assert tango_context.device.configuredCapabilities is None
         # PROTECTED REGION END #    //  SubarrayNode.test_configuredCapabilities
 
     def test_receptorIDList(self, tango_context):
         """Test for receptorIDList"""
         # PROTECTED REGION ID(SubarrayNode.test_receptorIDList) ENABLED START #
-        assert tango_context.device.receptorIDList == None
+        assert tango_context.device.receptorIDList is None
         # PROTECTED REGION END #    //  SubarrayNode.test_receptorIDList
