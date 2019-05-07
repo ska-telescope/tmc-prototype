@@ -504,6 +504,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except KeyError:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(dev_failed)
         argout = {
             "dish": {
                 "receptorIDList_success": receptorIDList
@@ -600,6 +603,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except KeyError:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_RELEASE_RESOURCES + str(dev_failed)
 
         argout = {
             "ReleaseAll" : release_success,

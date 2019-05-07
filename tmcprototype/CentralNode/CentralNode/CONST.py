@@ -26,6 +26,8 @@ ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 ERR_RELEASE_RESOURCES_CMD = "Error occured while releasing resources"
 ERR_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting Subarray Healthstate!"
+ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray! \n"
+ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray! \n"
 
 #strings
 #General strings
