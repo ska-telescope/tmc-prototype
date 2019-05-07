@@ -31,7 +31,6 @@ from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteT
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 
-
 # Additional import
 import CONST
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
@@ -601,7 +600,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 # Run server
 # ----------
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishLeafNode.main) ENABLED START #
     """
@@ -612,7 +610,6 @@ def main(args=None, **kwargs):
     """
     return run((DishLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  DishLeafNode.main
-
 
 if __name__ == '__main__':
     main()

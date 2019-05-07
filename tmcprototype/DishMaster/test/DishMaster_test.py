@@ -27,7 +27,6 @@ import pytest
 from DishMaster.DishMaster import DishMaster
 import CONST
 
-
 # Note:
 #
 # Since the device uses an inner thread, it is necessary to

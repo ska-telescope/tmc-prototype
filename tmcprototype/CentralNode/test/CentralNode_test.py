@@ -21,7 +21,6 @@ sys.path.insert(0, module_path)
 path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
-
 # Imports
 import tango
 from tango import DevState, EventType
@@ -39,7 +38,6 @@ import json
 # Here, we use a factor 3 between the read period and the sleep calls.
 #
 # Look at devicetest examples for more advanced testing
-
 
 # Device test case
 @pytest.mark.usefixtures("tango_context", "initialize_device")

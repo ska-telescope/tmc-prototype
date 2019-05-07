@@ -25,7 +25,8 @@ print("sys.path: ", sys.path)
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 import random
 import string
-# tango imports
+
+# Tango imports
 import tango
 from tango import DebugIt, DevState, AttrWriteType
 from tango.server import run, DeviceMeta, attribute, command, device_property
@@ -486,7 +487,6 @@ def main(args=None, **kwargs):
     """
     return run((SubarrayNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SubarrayNode.main
-
 
 if __name__ == '__main__':
     main()

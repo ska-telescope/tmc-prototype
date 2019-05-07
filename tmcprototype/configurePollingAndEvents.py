@@ -23,13 +23,13 @@ for device in json_devices:
         print("Polling Period: ", attributeProperty["pollingPeriod"])
         if(attributeProperty["pollingPeriod"] != ""):
             attributeProxy.poll(attributeProperty["pollingPeriod"])
-            else:
+        else:
             print("Skip setting polling period...")
-            if(attributeProperty["changeEventAbs"] != ""):
-                attrInfoEx = attributeProxy.get_config()
-                absChange = ChangeEventInfo()
-                absChange.abs_change = attributeProperty["changeEventAbs"]
-                attrInfoEx.events.ch_event = absChange
-                attributeProxy.set_config(attrInfoEx)
-                else:
-                print("Skip setting change event absolute...")
+        if(attributeProperty["changeEventAbs"] != ""):
+            attrInfoEx = attributeProxy.get_config()
+            absChange = ChangeEventInfo()
+            absChange.abs_change = attributeProperty["changeEventAbs"]
+            attrInfoEx.events.ch_event = absChange
+            attributeProxy.set_config(attrInfoEx)
+        else:
+            print("Skip setting change event absolute...")

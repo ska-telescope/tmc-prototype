@@ -21,11 +21,12 @@ module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CentralNod
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
-# tango imports
+# Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+
 # Additional import
 
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
@@ -600,7 +601,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 # Run server
 # ----------
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CentralNode.main) ENABLED START #
     """
@@ -611,7 +611,6 @@ def main(args=None, **kwargs):
     """
     return run((CentralNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CentralNode.main
-
 
 if __name__ == '__main__':
     main()
