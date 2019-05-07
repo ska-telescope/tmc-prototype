@@ -553,7 +553,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 receptorIDList:
                     DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns resources
-                    (device names) that are noe released from the subarray.
+                    (device names) that are not released from the subarray.
 
                 Example:
                     argout =

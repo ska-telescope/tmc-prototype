@@ -198,6 +198,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
         """
         try:
+
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
                 print(CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors))
@@ -482,6 +483,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         try:
             # Convert ra and dec to az and el
+            #radec|2:31:50.91|89:15:51.4 2019-02-21|07:00:00
+
             radec_value = argin[0].replace('|', ',')
             timestamp_value = argin[1].replace('|', ' ')
             print("radec_value: ", radec_value)

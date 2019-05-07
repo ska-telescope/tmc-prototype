@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="DishMaster" pogoRevision="9.4">
-    <description description="SKA Dish Master TANGO device server" title="DishMaster Simulator" sourcePath="/home/rajiv/tmc-prototype_old/DishMaster" language="PythonHL" filestogenerate="XMI   file,Code files,Python Package,Protected Regions,Sphinx,html Pages" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
+    <description description="SKA Dish Master TANGO device server" title="DishMaster Simulator" sourcePath="/home/user/projects/tmc-prototype/tmcprototype/DishMaster" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
-      <inheritances classname="SKABaseDevice" sourcePath="../lmc-base-classes/skabase/SKABaseDevice"/>
-      <inheritances classname="SKAMaster" sourcePath="/home/rajiv/tmc-prototype_old/lmc-base-classes/skabase/SKAMaster"/>
+      <inheritances classname="SKABaseDevice" sourcePath="../../../lmc-base-classes/skabase/SKABaseDevice"/>
+      <inheritances classname="SKAMaster" sourcePath="/home/user/projects/lmc-base-classes/skabase/SKAMaster"/>
       <identification contact="at gmail.com - apurva.ska" author="apurva.ska" emailDomain="gmail.com" classFamily="tmc-prototype" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
     </description>
     <deviceProperties name="SkaLevel" description="Indication of importance of the device in the SKA hierarchy &#xA;to support drill-down navigation: 1..6, with 1 highest.&#xA;Default is 4, making provision for &#xA;EltMaster, EltAlarms, EltTelState = 1&#xA;SubEltMaster = 2&#xA;Subarray, Capability = 2/3&#xA;Others = 4 (or 5 or 6)">
@@ -221,6 +221,15 @@
     </commands>
     <commands name="Slew" description="Dish moves to the commanded pointing angle." execMethod="slew" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="Timestamp at which command should be executed.">
+        <type xsi:type="pogoDsl:StringType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="Track" description="" execMethod="track" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="">
         <type xsi:type="pogoDsl:StringType"/>
       </argin>
       <argout description="">
@@ -452,6 +461,14 @@
       <properties description="" label="" unit="km/h" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
       <eventCriteria relChange="" absChange="1" period=""/>
     </attributes>
+    <attributes name="azimuthOverWrap" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="false" isDynamic="false">
+      <dataType xsi:type="pogoDsl:BooleanType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+    </attributes>
     <attributes name="maxCapabilities" attType="Spectrum" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="20" maxY="" allocReadMember="true">
       <dataType xsi:type="pogoDsl:StringType"/>
       <changeEvent fire="false" libCheckCriteria="false"/>
@@ -484,6 +501,14 @@
       <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
       <eventCriteria relChange="" absChange="1" period=""/>
     </attributes>
+    <attributes name="AzElOffset" attType="Spectrum" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="2" maxY="" allocReadMember="false" isDynamic="false">
+      <dataType xsi:type="pogoDsl:DoubleType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+    </attributes>
     <states name="ON" description="This state could have been called OK or OPERATIONAL. It means that the device is in its operational state. (E.g. the power supply is giving its nominal current, th motor is ON and ready to move, the instrument is operating). This state is modified by the Attribute alarm checking of the DeviceImpl:dev_state method. i.e. if the State is ON and one attribute has its quality factor to ATTR_WARNING or ATTR_ALARM, then the State is modified to ALARM.">
       <status abstract="false" inherited="true" concrete="true"/>
     </states>
@@ -508,6 +533,6 @@
     <states name="DISABLE" description="The device cannot be switched ON for an external reason. E.g. the power supply has its door open, the safety conditions are not satisfactory to allow the device to operate.">
       <status abstract="false" inherited="true" concrete="true"/>
     </states>
-    <preferences docHome="./doc_html" makefileHome="/home/rajiv/tango-9.2.2/share/pogo/preferences"/>
+    <preferences docHome="./doc_html" makefileHome="/home/user/tango-9.2.5a/share/pogo/preferences"/>
   </classes>
 </pogoDsl:PogoSystem>
