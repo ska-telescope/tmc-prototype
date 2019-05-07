@@ -25,6 +25,7 @@ print("sys.path: ", sys.path)
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState
 from tango.server import run, DeviceMeta, attribute, command, device_property
+from tango import DevFailed
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
@@ -109,6 +110,14 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._telescope_health_state = CONST.ENUM_DEGRADED
                 else:
                     self._telescope_health_state = CONST.ENUM_UNKNOWN
+            except KeyError as key_error:
+                print(CONST.ERR_SUBARRAY_HEALTHSTATE, key_error)
+                self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+                self.dev_logging(CONST.ERR_SUBARRAY_HEALTHSTATE, int(tango.LogLevel.LOG_FATAL))
+            except DevFailed as dev_failed:
+                print(CONST.ERR_SUBSR_SA_HEALTH_STATE, dev_failed)
+                self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
             except Exception as except_occured:
                 print(CONST.ERR_AGGR_HEALTH_STATE, except_occured)
                 self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
@@ -182,8 +191,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def init_device(self):
         # PROTECTED REGION ID(CentralNode.init_device) ENABLED START #
         """ Initializes the attributes and properties of the Central Node. """
-        SKABaseDevice.init_device(self)
         try:
+            SKABaseDevice.init_device(self)
             self._subarray1_health_state = CONST.ENUM_OK
             self._subarray2_health_state = CONST.ENUM_OK
             self.set_state(DevState.ON)
@@ -199,12 +208,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.subarray_FQDN_dict = {}
             self._subarray_allocation = {}
             self.set_status(CONST.STR_INIT_SUCCESS)
-        except Exception as except_occured:
+        except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR_CN)
             self._read_activity_message = CONST.ERR_INIT_PROP_ATTR_CN
             self.dev_logging(CONST.ERR_INIT_PROP_ATTR_CN, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-            print(CONST.STR_ERR_MSG, except_occured)
+            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
+            print(CONST.STR_ERR_MSG, dev_failed)
         #  Get Dish Leaf Node devices List
         # TODO: Getting DishLeafNode devices list from TANGO DB
         # self.tango_db = PyTango.Database()
@@ -231,12 +240,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
-            except Exception as except_occured:
+            except DevFailed as dev_failed:
                 print(CONST.ERR_IN_CREATE_PROXY, self._dish_leaf_node_devices[name])
                 self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self._dish_leaf_node_devices[
                                                                                   name])
-                print(CONST.STR_ERR_MSG, except_occured)
-                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                print(CONST.STR_ERR_MSG, dev_failed)
+                self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
                 self.dev_logging(CONST.ERR_IN_CREATE_PROXY, int(tango.LogLevel.LOG_ERROR))
 
 
@@ -252,13 +261,13 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 tokens = self.TMMidSubarrayNodes[subarray].split('/')
                 subarrayID = int(tokens[2])
                 self.subarray_FQDN_dict[subarrayID] = subarray_proxy
-            except Exception as except_occured:
+            except DevFailed as dev_failed:
                 print(CONST.ERR_SUBSR_SA_HEALTH_STATE, self.TMMidSubarrayNodes[subarray])
                 self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(self.TMMidSubarrayNodes[
                                                                                         subarray])
                 self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
-                print(CONST.STR_ERR_MSG, except_occured)
-                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                print(CONST.STR_ERR_MSG, dev_failed)
+                self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
 
         # PROTECTED REGION END #    //  CentralNode.init_device
 
@@ -341,11 +350,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 try:
                     device_proxy = DeviceProxy(device_name)
                     device_proxy.command_inout(CONST.CMD_SET_STOW_MODE)
-                except Exception as except_occured:
+                except DevFailed as dev_failed:
                     print(CONST.ERR_EXE_STOW_CMD, device_name)
                     self._read_activity_message = CONST.ERR_EXE_STOW_CMD + str(device_name)
-                    print(CONST.STR_ERR_MSG, except_occured)
-                    self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                    print(CONST.STR_ERR_MSG, dev_failed)
+                    self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
                     self.dev_logging(CONST.STR_ERR_MSG, int(tango.LogLevel.LOG_ERROR))
         except Exception as except_occured:
             print(CONST.ERR_EXE_STOW_CMD, except_occured)
@@ -363,12 +372,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_STANDBY_MODE)
-            except Exception as except_occured:
+            except DevFailed as dev_failed:
                 print(CONST.ERR_EXE_STANDBY_CMD, self._dish_leaf_node_devices[name])
                 self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self._dish_leaf_node_devices[
                                                                                   name])
-                print(CONST.STR_ERR_MSG, except_occured)
-                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                print(CONST.STR_ERR_MSG, dev_failed)
+                self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
                 self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
@@ -383,7 +392,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_OPERATE_MODE)
-            except Exception as except_occured:
+            except DevFailed as except_occured:
                 print(CONST.ERR_EXE_STARTUP_CMD, self._dish_leaf_node_devices[name])
                 self._read_activity_message = CONST.ERR_EXE_STARTUP_CMD + str(self._dish_leaf_node_devices[
                                                                                   name])

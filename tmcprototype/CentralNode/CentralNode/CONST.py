@@ -12,7 +12,7 @@ EVT_SUBSR_SA_HEALTH_STATE = "healthState"
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
 #
 #Error messages
-ERR_AGGR_HEALTH_STATE = "Unexpected error while aggregating Health state!\n"
+ERR_AGGR_HEALTH_STATE = "Unexpected error while aggregating Subarray Health state!\n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error event on subscribing Subarray HealthState!\n"
 ERR_INIT_PROP_ATTR_CN = "Unexpected error on initialising properties and attributes " \
                         "on Central Node device."
@@ -25,6 +25,7 @@ ERR_EXE_STARTUP_CMD = "Unexpected error in executing STARTUP Telescope command "
 ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 ERR_RELEASE_RESOURCES_CMD = "Error occured while releasing resources"
+ERR_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting Subarray Healthstate!"
 
 #strings
 #General strings
