@@ -4,10 +4,10 @@
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-""" CspMasterLeafNode
+""" CspMasterLeafNode - Leaf Node to monitor and control CSP Master.
 
 """
 
@@ -37,13 +37,24 @@ __all__ = ["CspMasterLeafNode", "main"]
 
 class CspMasterLeafNode(SKABaseDevice):
     """
+    **Properties:**
+
+    - CspMasterFQDN   - Property to provide FQDN of CSP Master Device
+
+    **Attributes:**
+
+    - cspHealthState  - Forwarded attribute to provide CSP Master Health State
+    - activityMessage - Attribute to provide activity message
+
     """
     __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(CspMasterLeafNode.class_variable) ENABLED START #\
     def cspCbfHealthCallback(self, evt):
         """
         Retrieves the subscribed cspCbfHealthState attribute of CSPMaster.
+
         :param evt: A TANGO_CHANGE event on cspCbfHealthState attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -73,7 +84,9 @@ class CspMasterLeafNode(SKABaseDevice):
     def cspPssHealthCallback(self, evt):
         """
         Retrieves the subscribed cspPssHealthState attribute of CSPMaster.
+
         :param evt: A TANGO_CHANGE event on cspPssHealthState attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -103,7 +116,9 @@ class CspMasterLeafNode(SKABaseDevice):
     def cspPstHealthCallback(self, evt):
         """
         Retrieves the subscribed cspPstHealthState attribute of CSPMaster.
+
         :param evt: A TANGO_CHANGE event on cspPstHealthState attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -133,7 +148,9 @@ class CspMasterLeafNode(SKABaseDevice):
     def commandCallback(self, event):
         """
         Checks whether the command has been successfully invoked on CSPMaster.
-        :param event: response from CspMaster for the invoked command
+
+        :param event: response from CspMaster for the invoked command.
+
         :return: None
         """
         try:
@@ -167,6 +184,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
     CspMasterFQDN = device_property(
         dtype='str',
+        doc="FQDN of CSP Master Device",
     )
 
     # ----------
@@ -186,6 +204,7 @@ class CspMasterLeafNode(SKABaseDevice):
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
+        doc="Activity Message",
     )
 
     cspHealthState = attribute(name="cspHealthState", label="cspHealthState", forwarded=True)
@@ -194,6 +213,12 @@ class CspMasterLeafNode(SKABaseDevice):
     # ---------------
 
     def init_device(self):
+        """
+            Initializes the attributes and properties of CAPMasterLeafNode and subscribes change event
+            on attributes of CSPMaster.
+
+            :return: None
+            """
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(CspMasterLeafNode.init_device) ENABLED START #
         self._read_activity_message = CONST.STR_CSP_INIT_LEAF_NODE
@@ -240,12 +265,12 @@ class CspMasterLeafNode(SKABaseDevice):
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspMasterLeafNode.always_executed_hook) ENABLED START #
-        pass
+        """ Internal construct of TANGO. """
         # PROTECTED REGION END #    //  CspMasterLeafNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(CspMasterLeafNode.delete_device) ENABLED START #
-        pass
+        """ Internal construct of TANGO. """
         # PROTECTED REGION END #    //  CspMasterLeafNode.delete_device
 
     # ------------------
@@ -254,13 +279,13 @@ class CspMasterLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_read) ENABLED START #
-        """ Returns the activityMessage """
+        """ Returns the activityMessage. """
         return self._read_activity_message
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_write) ENABLED START #
-        """ Sets the activityMessage """
+        """ Sets the activityMessage. """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_write
 
@@ -277,7 +302,15 @@ class CspMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def On(self, argin):
         # PROTECTED REGION ID(CspMasterLeafNode.On) ENABLED START #
-        """ Triggers On the CSPMaster"""
+        """ Triggers On the CSP Element.
+
+        :param argin: DevStringArray.
+
+        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
+        each array element specifies the FQDN of the CSP SubElement to switch ON.
+
+        :return: None
+        """
         self._csp_proxy.command_inout_asynch(CONST.CMD_ON, argin, self.commandCallback)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.On
@@ -290,7 +323,15 @@ class CspMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def Off(self, argin):
         # PROTECTED REGION ID(CspMasterLeafNode.Off) ENABLED START #
-        """ Triggers Off the CSPMaster"""
+        """ Triggers Off the CSP Element.
+
+        :param argin: DevStringArray.
+
+        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
+        each array element specifies the FQDN of the CSP SubElement to switch OFF.
+
+        :return: None
+        """
         self._csp_proxy.command_inout_asynch(CONST.CMD_OFF, self.commandCallback)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Off
@@ -304,7 +345,16 @@ class CspMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def Standby(self, argin):
         # PROTECTED REGION ID(CspMasterLeafNode.Standby) ENABLED START #
-        """ Sets Standby Mode on the CSPMaster"""
+        """ Sets Standby Mode on the CSP Element.
+
+        :param argin: DevStringArray.
+
+        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
+        each array element specifies the FQDN of the CSP SubElement to put in
+        STANDBY mode.
+
+        :return: None
+        """
         self._csp_proxy.command_inout_asynch(CONST.CMD_STANDBY, self.commandCallback)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
@@ -316,7 +366,7 @@ class CspMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def SetCbfAdminMode(self, argin):
         # PROTECTED REGION ID(CspMasterLeafNode.SetCbfAdminMode) ENABLED START #
-        """Sets Admin Mode of the CSP Cbf"""
+        """Sets Admin Mode of the CSP Cbf."""
         self._csp_proxy.command_inout_asynch(CONST.CMD_SET_CBF_ADMIN_MODE, self.commandCallback)
         # PROTECTED REGION END #    //  CspMasterLeafNode.SetCbfAdminMode
 
@@ -327,7 +377,7 @@ class CspMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def SetPssAdminMode(self, argin):
         # PROTECTED REGION ID(CspMasterLeafNode.SetPssAdminMode) ENABLED START #
-        """Sets Admin Mode of the CSP Pss"""
+        """Sets Admin Mode of the CSP Pss."""
         self._csp_proxy.command_inout_asynch(CONST.CMD_SET_PSS_ADMIN_MODE, self.commandCallback)
         # PROTECTED REGION END #    //  CspMasterLeafNode.SetPssAdminMode
 
@@ -338,7 +388,7 @@ class CspMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def SetPstAdminMode(self, argin):
         # PROTECTED REGION ID(CspMasterLeafNode.SetPstAdminMode) ENABLED START #
-        """Sets Admin Mode of the CSP Pst"""
+        """Sets Admin Mode of the CSP Pst."""
         self._csp_proxy.command_inout_asynch(CONST.CMD_SET_PST_ADMIN_MODE, self.commandCallback)
         # PROTECTED REGION END #    //  CspMasterLeafNode.SetPstAdminMode
 
@@ -349,6 +399,15 @@ class CspMasterLeafNode(SKABaseDevice):
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CspMasterLeafNode.main) ENABLED START #
+    """
+    Runs the CspMasterLeafNode.
+
+    :param args: Arguments internal to TANGO
+
+    :param kwargs: Arguments internal to TANGO
+
+    :return: CspMasterLeafNode TANGO object.
+    """
     return run((CspMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
 

@@ -4,15 +4,17 @@
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-"""CspMasterLeafNode
+"""CspMasterLeafNode - Leaf Node to monitor and control CSP Master.
 
 """
 
 from . import release
 from .CspMasterLeafNode import CspMasterLeafNode, main
+
+__all__ = ["CspMasterLeafNode", "CONST", "release"]
 
 __version__ = release.version
 __version_info__ = release.version_info
