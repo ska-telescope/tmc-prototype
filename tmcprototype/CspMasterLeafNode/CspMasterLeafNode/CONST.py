@@ -32,6 +32,7 @@ STR_CSP_MASTER_INIT_SUCCESS = "Csp Master Leaf Node initialized successfully."
 STR_CSP_INIT_LEAF_NODE = "Initializing CSP Master Leaf Node ...."
 STR_CSPMASTER_FQDN = "CSPMasterFQDN :-> "
 STR_FALSE = "False"
+STR_DEV_ALARM = "The device is in ALARM state."
 
 
 # Error messages
