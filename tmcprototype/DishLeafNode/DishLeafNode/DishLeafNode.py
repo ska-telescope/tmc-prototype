@@ -46,7 +46,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishModeCallback(self, evt):
         """
         Retrieves the subscribed dishMode attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on dishMode attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -94,7 +96,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishPointingStateCallback(self, evt):
         """
         Retrieves the subscribed pointingState attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on pointingState attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -127,7 +131,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishCapturingCallback(self, evt):
         """
         Retrieves the subscribed capturing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on capturing attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -154,7 +160,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishAchievedPointingCallback(self, evt):
         """
         Retrieves the subscribed achievedPointing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on achievedPointing attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -174,7 +182,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishDesiredPointingCallback(self, evt):
         """
         Retrieves the subscribed desiredPointing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on desiredPointing attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -194,7 +204,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def commandCallback(self, event):
         """
         Checks whether the command has been successfully invoked on DishMaster.
+
         :param event: response from DishMaster for the invoked command
+
         :return: None
         """
         try:
