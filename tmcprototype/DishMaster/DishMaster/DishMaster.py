@@ -191,12 +191,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 break
 
     def track_slew(self):
-        print("TRACK-SLEW starts:", time.time())
         az_diff = abs(self._desired_pointing[1] - self._achieved_pointing[1])
         el_diff = abs(self._desired_pointing[2] - self._achieved_pointing[2])
-        az_increament = az_diff / 10
-        el_increament = el_diff / 10
-
+        az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
+        el_increament = el_diff / 10           #Dish will move in 10 steps to desired el.
         for i in range(10):
             if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
                 self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
@@ -209,9 +207,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
             print("Achieved Pointing:", self._achieved_pointing)
             time.sleep(2)
-        self._pointing_state = 0  # Set pointingState to READY Mode
-        print("TRACK-SLEW ends:", time.time())
-
+        self._pointing_state = 0               # Set pointingState to READY Mode
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -800,28 +796,34 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     )
     @DebugIt()
     def Track(self, argin):
-        # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
-        #argin format : YYYY-DD-MM HH:MM:SS
-        print("\n")
-        print("Desired Co-ordinates", self._desired_pointing)
-        print("Achieved Co-ordinates", self._achieved_pointing)
-        print("Timestamp:", argin)
+        try:
+            # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
+            # argin format : YYYY-DD-MM HH:MM:SS
+            print("\n")
+            print("Timestamp:", argin)
 
-        self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
-        self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
+            self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
+            self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
 
-        actual_az_lim = abs((self._achieved_pointing[1] - self._desired_pointing[1])* math.cos(((self._desired_pointing[2])*math.pi)/180))
-        actual_el_lim = abs(self._achieved_pointing[2] - self._desired_pointing[2])
+            actual_az_lim = abs((self._achieved_pointing[1] - self._desired_pointing[1])
+                                * math.cos(((self._desired_pointing[2]) * math.pi)/180))
+            actual_el_lim = abs(self._achieved_pointing[2] - self._desired_pointing[2])
 
-        if(float(actual_az_lim) <= self.preconfig_az_lim and float(actual_el_lim) <= self.preconfig_el_lim) is True:
-            self._pointing_state = 2                    # Set pointingState to TRACK Mode
-            self._achieved_pointing[1] = self._desired_pointing[1]
-            self._achieved_pointing[2] = self._desired_pointing[2]
-            self._pointing_state = 0                    # Set pointingState to READY Mode
-        else:
-            self._pointing_state = 1  # Set pointingState to SLEW Mode
-            self.track_slew_thread = threading.Thread(None, self.track_slew, 'DishMaster')
-            self.track_slew_thread.start()
+            if(float(actual_az_lim) <= self.preconfig_az_lim and float(actual_el_lim) <= self.preconfig_el_lim) is True:
+            #if dish is within the preconfigured limit then dish will slew slowly (TRACK)
+                self._pointing_state = 2                    # Set pointingState to TRACK Mode
+                self._achieved_pointing[1] = self._desired_pointing[1]
+                self._achieved_pointing[2] = self._desired_pointing[2]
+                print("Achieved Pointing:", self._achieved_pointing)
+                self._pointing_state = 0                    # Set pointingState to READY Mode
+            else:
+            #if dish is out of preconfigured limit then dish will slew fast (Slew)
+                self._pointing_state = 1  # Set pointingState to SLEW Mode
+                self.track_slew_thread = threading.Thread(None, self.track_slew, 'DishMaster')
+                self.track_slew_thread.start()
+
+        except Exception as except_occured:
+            print(CONST.STR_ERR_MSG, except_occured)
 
         # PROTECTED REGION END #    //  DishMaster.Track
 

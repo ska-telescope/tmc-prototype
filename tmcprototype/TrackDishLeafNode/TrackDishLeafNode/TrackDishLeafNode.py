@@ -8,7 +8,9 @@
 # See LICENSE.txt for more info.
 
 """ TrackDishLeafNode
-
+This Tango device is created for Proof of Concept(POC) of source tracking.
+It contains tracking and its related functionality only. In future it
+will be at DishLeafNode level.
 """
 
 # PyTango imports
@@ -17,17 +19,16 @@ from tango import DebugIt, ApiUtil
 from tango.server import run
 from tango.server import Device, DeviceMeta
 from tango.server import attribute, command
-from tango import AttrQuality, DispLevel, DevState
-from tango import AttrWriteType, PipeWriteType, DeviceProxy
+from tango import AttrWriteType, DeviceProxy
 # Additional import
 # PROTECTED REGION ID(TrackDishLeafNode.additionnal_import) ENABLED START #
 import katpoint
 import re
-import numpy
 import datetime
 import math
 import time
 import threading
+
 # PROTECTED REGION END #    //  TrackDishLeafNode.additionnal_import
 
 __all__ = ["TrackDishLeafNode", "main"]
@@ -37,6 +38,7 @@ class TrackDishLeafNode(Device):
     """
     """
     __metaclass__ = DeviceMeta
+
     # PROTECTED REGION ID(TrackDishLeafNode.class_variable) ENABLED START #
 
     def dmstodd(self, dish_antenna_latitude):
@@ -98,7 +100,6 @@ class TrackDishLeafNode(Device):
         except Exception as except_occurred:
             print("Exception occured in Conversion")
 
-
     def commandCallback(self, event):
         """
         Checks whether the command has been successfully invoked on DishMaster.
@@ -106,7 +107,6 @@ class TrackDishLeafNode(Device):
         :return: None
         """
         try:
-            #print("timestamp_commandCallback(): ", datetime.datetime.utcnow())
             if event.err:
                 log = "Error in invoking command:" + event.cmd_name
                 print("Error in invoking command:" + event.cmd_name + "\n" + str(event.errors))
@@ -120,39 +120,46 @@ class TrackDishLeafNode(Device):
             print("Exception in CommandCallback!: \n", except_occurred)
             self._read_activity_message = "Exception in CommandCallback!: \n" + str(except_occurred)
 
-
-    def track(self,argin):
-        for i in range(20):
+    def track(self, argin):
+        tracking_time_sec = 25  # Currently 25 sec
+        for i in range(tracking_time_sec * 10):
             try:
-                #Jive Input : radec|2:31:50.91|89:15:51.4   #Polaris
+                # Jive Input : radec|2:31:50.91|89:15:51.4   #Polaris
                 radec_value = argin.replace('|', ',')
-                #timestamp_value = argin[1].replace('|', ' ')
+                # RaDec as input argument
+                '''
+                Timestamp value if given as input argument
+                timestamp_value = argin[1].replace('|', ' ')
+                '''
+                # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
-                print("\n")
-                print(i ,"th iteration")
+                print(i, "th iteration")
                 katpoint_arg = []
                 katpoint_arg.insert(0, radec_value)
                 katpoint_arg.insert(1, timestamp_value)
+                # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
 
                 # Invoke Track command on DishMaster with az and el as inputs
                 if (self.el >= 17.5 and self.el < 90):
-                    # To obtain positive value of azimuth coordinate
-                    if self.az < 0:
+                    # Dish can track iff elevation of source is >= 17.5 and < 90 degree
+                    if self.az < 0:  # To obtain positive value of azimuth coordinate
                         self.az = 360 - abs(self.az)
                     roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
                     spectrum = [0]
                     spectrum.extend((roundoff_az_el))
+                    # assign calculated AzEl to desiredPointing attribute of Dishmaster
                     self._dish_proxy.desiredPointing = spectrum
                     print("self._dish_proxy.desiredPointing", self._dish_proxy.desiredPointing)
-
+                    # Invoke Track command of Dish Master
                     self._dish_proxy.command_inout_asynch("Track", timestamp_value, self.commandCallback)
                 else:
                     print("Elevation limit is reached")
                     break
             except Exception as except_occurred:
-                print("Exception occured in Track")
-            time.sleep(0.098)
+                print("Exception occured in Track", except_occurred)
+            # This sleep is for maintaining 10 Hz frquency
+            time.sleep(0.1)
 
     # PROTECTED REGION END #    //  TrackDishLeafNode.class_variable
 
@@ -204,9 +211,10 @@ class TrackDishLeafNode(Device):
 
     def write_ATTR1(self, value):
         # PROTECTED REGION ID(TrackDishLeafNode.ATTR1_write) ENABLED START #
-	    self._attr1 = value
-        #pass
-        # PROTECTED REGION END #    //  TrackDishLeafNode.ATTR1_write
+        self._attr1 = value
+
+    # pass
+    # PROTECTED REGION END #    //  TrackDishLeafNode.ATTR1_write
 
     def read_ATTR2(self):
         # PROTECTED REGION ID(TrackDishLeafNode.ATTR2_read) ENABLED START #
@@ -215,24 +223,24 @@ class TrackDishLeafNode(Device):
 
     def write_ATTR2(self, value):
         # PROTECTED REGION ID(TrackDishLeafNode.ATTR2_write) ENABLED START #
-	    self._attr2 = value
-        #pass
-        # PROTECTED REGION END #    //  TrackDishLeafNode.ATTR2_write
+        self._attr2 = value
 
+    # pass
+    # PROTECTED REGION END #    //  TrackDishLeafNode.ATTR2_write
 
     # --------
     # Commands
     # --------
 
     @command(
-    dtype_in=('str',), 
-    dtype_out=('str',), 
+        dtype_in=('str',),
+        dtype_out=('str',),
     )
     @DebugIt()
     def TRACK(self, argin):
+        # Executing tracking logic in a separate thread.
         self.track_thread = threading.Thread(None, self.track, 'TrackDishLeafNode', args=argin)
         self.track_thread.start()
-
         return [""]
 
         # PROTECTED REGION END #    //  TrackDishLeafNode.TRACK
@@ -247,6 +255,7 @@ def main(args=None, **kwargs):
     # PROTECTED REGION ID(TrackDishLeafNode.main) ENABLED START #
     return run((TrackDishLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  TrackDishLeafNode.main
+
 
 if __name__ == '__main__':
     main()

@@ -423,9 +423,11 @@ class TestDishMaster(object):
         # PROTECTED REGION END #    //  DishMaster.test_achievedPointing
 
     def test_TRACK(self, tango_context):
+        """Test for Tracking"""
+        # PROTECTED REGION ID(DishMaster.test_TRACK) ENABLED START #
         tango_context.device.pointingState == 1
         tango_context.device.desiredPointing = [0, 1, 2]
-        #tango_context.device.desiredPointing = 'radec|2:31:50.91|89:15:51.4'
         tango_context.device.track('2019-07-05 12:12:12.0')
         time.sleep(25)
         assert tango_context.device.pointingState == 0
+        # PROTECTED REGION END #    //  DishMaster.test_TRACK
