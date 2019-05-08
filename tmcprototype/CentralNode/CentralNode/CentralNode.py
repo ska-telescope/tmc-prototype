@@ -459,6 +459,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
+
         """
         Assigns resources to given subarray. It accepts the subarray id and
         receptor id list in JSON string format. Upon successful execution, the
@@ -504,7 +505,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 {
                 "dish": {
                 "receptorIDList_success": ["0001", "0002"]
-                        }
+                }
                 }
         """
         receptorIDList = []
@@ -590,8 +591,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             Example:
                 {
                     "subarrayID": 1,
-                    "releaseALL": true
+                    "releaseALL": true,
                     "receptorIDList": []
+
                 }
 
 
@@ -608,11 +610,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     (device names) that are noe released from the subarray.
 
                 Example:
-                    argout =
-                    {
+                    argout = {
                         "ReleaseAll" : True,
                         "receptorIDList" : []
-                    }
+                        }
         """
         try:
             release_success = False

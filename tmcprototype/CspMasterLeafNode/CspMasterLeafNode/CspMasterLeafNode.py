@@ -72,10 +72,10 @@ class CspMasterLeafNode(SKABaseDevice):
 
     def cspPssHealthCallback(self, evt):
         """
-                Retrieves the subscribed cspPssHealthState attribute of CSPMaster.
-                :param evt: A TANGO_CHANGE event on cspPssHealthState attribute.
-                :return: None
-                """
+        Retrieves the subscribed cspPssHealthState attribute of CSPMaster.
+        :param evt: A TANGO_CHANGE event on cspPssHealthState attribute.
+        :return: None
+        """
         if evt.err is False:
             try:
                 self._csp_pss_health = evt.attr_value.value
@@ -102,10 +102,10 @@ class CspMasterLeafNode(SKABaseDevice):
 
     def cspPstHealthCallback(self, evt):
         """
-                Retrieves the subscribed cspPstHealthState attribute of CSPMaster.
-                :param evt: A TANGO_CHANGE event on cspPstHealthState attribute.
-                :return: None
-                """
+        Retrieves the subscribed cspPstHealthState attribute of CSPMaster.
+        :param evt: A TANGO_CHANGE event on cspPstHealthState attribute.
+        :return: None
+        """
         if evt.err is False:
             try:
                 self._csp_pst_health = evt.attr_value.value
