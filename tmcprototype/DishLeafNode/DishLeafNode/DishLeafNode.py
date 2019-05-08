@@ -315,6 +315,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         Initializes the attributes and properties of DishLeafNode and subscribes change event
         on attributes of DishMaster.
+
         :return: None
         """
         SKABaseDevice.init_device(self)
@@ -443,7 +444,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Scan) ENABLED START #
         """
         Triggers the DishMaster to start the Scan.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -466,7 +469,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def EndScan(self, argin):
         # PROTECTED REGION ID(DishLeafNode.EndScan) ENABLED START #
         """ Triggers the DishMaster to stop the Scan.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -488,8 +493,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
+
         :param argin: String array that includes pointing parameters of Dish - Azimuth and
         Elevation Angle.
+
         :return: None
         """
         try:
@@ -538,7 +545,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def StartCapture(self, argin):
         # PROTECTED REGION ID(DishLeafNode.StartCapture) ENABLED START #
         """ Triggers the DishMaster to Start capture on the set configured band.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -560,7 +569,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.StopCapture) ENABLED START #
         """
         Triggers the DishMaster to Stop capture on the set configured band.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -595,7 +606,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Slew) ENABLED START #
         """
         Triggers the DishMaster to slew the dish towards the set pointing coordinates.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -616,8 +629,11 @@ def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishLeafNode.main) ENABLED START #
     """
     Runs the DishLeafNode.
+
     :param args: Arguments internal to TANGO
+
     :param kwargs: Arguments internal to TANGO
+
     :return: DishLeafNode TANGO object.
     """
     return run((DishLeafNode,), args=args, **kwargs)
