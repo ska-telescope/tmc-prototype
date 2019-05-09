@@ -26,6 +26,7 @@ from tango import DevState, EventType
 from CspMasterLeafNode.CspMasterLeafNode import CspMasterLeafNode
 import CONST
 import pytest
+import time
 
 # Note:
 #
@@ -93,15 +94,23 @@ class TestCspMasterLeafNode(object):
         """Test for On"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_On) ENABLED START #
         tango_context.device.On([])
-        assert (CONST.ERR_INVOKING_CMD in tango_context.device.activityMessage) or (
-                CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage)
+        time.sleep(1)
+        assert ((CONST.ERR_INVOKING_CMD in tango_context.device.activityMessage) or (
+                CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
+                (CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
+                (CONST.STR_CSP_CBF_HEALTH_UNKNOWN in tango_context.device.activityMessage)
+                )
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_On
 
     def test_On_invalid_argument(self, tango_context):
         """Test for On"""
         tango_context.device.On(["a/b/c"])
-        assert (CONST.ERR_INVOKING_CMD in tango_context.device.activityMessage) or (
-                CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage)
+        time.sleep(1)
+        assert ((CONST.ERR_INVOKING_CMD in tango_context.device.activityMessage) or (
+                CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
+                (CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
+                (CONST.STR_CSP_CBF_HEALTH_UNKNOWN in tango_context.device.activityMessage)
+                )
     def test_Off(self, tango_context):
         """Test for Off"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_Off) ENABLED START #
