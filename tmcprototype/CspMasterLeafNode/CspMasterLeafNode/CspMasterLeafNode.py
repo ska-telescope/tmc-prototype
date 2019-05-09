@@ -14,28 +14,28 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+# Tango imports
 import sys
 import os
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspMasterLeafNode"
-sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
-
-# PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType
-from tango.server import run, DeviceMeta, command, device_property, attribute, Device
+from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+
 # Additional import
 # PROTECTED REGION ID(CspMasterLeafNode.additionnal_import) ENABLED START #
 from future.utils import with_metaclass
 import CONST
+
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspMasterLeafNode"
+sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
 # PROTECTED REGION END #    //  CspMasterLeafNode.additionnal_import
 
 __all__ = ["CspMasterLeafNode", "main"]
 
-
-class CspMasterLeafNode(SKABaseDevice):
+class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     **Properties:**
 
@@ -105,9 +105,9 @@ class CspMasterLeafNode(SKABaseDevice):
                     print(CONST.STR_CSP_PSS_HEALTH_UNKNOWN)
                     self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_UNKNOWN
             except Exception as except_occurred:
-                print(CONST.ERR_CSP_PSS_HEALTH_CB, except_occurred.message)
-                self._read_activity_message = CONST.ERR_CSP_PSS_HEALTH_CB + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_CSP_PSS_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
+                print(CONST.ERR_CSP_CBF_HEALTH_CB, except_occurred.message)
+                self._read_activity_message = CONST.ERR_CSP_CBF_HEALTH_CB + str(except_occurred.message)
+                self.dev_logging(CONST.ERR_CSP_CBF_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
@@ -245,7 +245,7 @@ class CspMasterLeafNode(SKABaseDevice):
         # Subscribing to CSPMaster Attributes
         try:
             self._csp_proxy.subscribe_event(CONST.EVT_CBF_HEALTH, EventType.CHANGE_EVENT,
-                                             self.cspCbfHealthCallback, stateless=True)
+                                            self.cspCbfHealthCallback, stateless=True)
             self._csp_proxy.subscribe_event(CONST.EVT_PSS_HEALTH, EventType.CHANGE_EVENT,
                                             self.cspPssHealthCallback, stateless=True)
             self._csp_proxy.subscribe_event(CONST.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
@@ -295,9 +295,9 @@ class CspMasterLeafNode(SKABaseDevice):
     # --------
 
     @command(
-    dtype_in=('str',), 
-    doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-           "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch ON.",
+        dtype_in=('str',),
+        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
+               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch ON.",
     )
     @DebugIt()
     def On(self, argin):
@@ -316,9 +316,9 @@ class CspMasterLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  CspMasterLeafNode.On
 
     @command(
-    dtype_in=('str',), 
-    doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-           "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch OFF.",
+        dtype_in=('str',),
+        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
+               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch OFF.",
     )
     @DebugIt()
     def Off(self, argin):
@@ -332,15 +332,15 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
-        self._csp_proxy.command_inout_asynch(CONST.CMD_OFF, self.commandCallback)
+        self._csp_proxy.command_inout_asynch(CONST.CMD_OFF, argin, self.commandCallback)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Off
 
     @command(
-    dtype_in=('str',), 
-    doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-           "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
-           "STANDBY mode.",
+        dtype_in=('str',),
+        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
+               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
+               "STANDBY mode.",
     )
     @DebugIt()
     def Standby(self, argin):
@@ -355,41 +355,41 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
-        self._csp_proxy.command_inout_asynch(CONST.CMD_STANDBY, self.commandCallback)
+        self._csp_proxy.command_inout_asynch(CONST.CMD_STANDBY, argin, self.commandCallback)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
 
     @command(
-    dtype_in='DevEnum', 
-    doc_in="adminMode", 
+        dtype_in='DevEnum',
+        doc_in="adminMode",
     )
     @DebugIt()
     def SetCbfAdminMode(self, argin):
         # PROTECTED REGION ID(CspMasterLeafNode.SetCbfAdminMode) ENABLED START #
         """Sets Admin Mode of the CSP Cbf."""
-        self._csp_proxy.command_inout_asynch(CONST.CMD_SET_CBF_ADMIN_MODE, self.commandCallback)
+        self._csp_proxy.command_inout_asynch(CONST.CMD_SET_CBF_ADMIN_MODE, argin, self.commandCallback)
         # PROTECTED REGION END #    //  CspMasterLeafNode.SetCbfAdminMode
 
     @command(
-    dtype_in='DevEnum', 
-    doc_in="adminMode", 
+        dtype_in='DevEnum',
+        doc_in="adminMode",
     )
     @DebugIt()
     def SetPssAdminMode(self, argin):
         # PROTECTED REGION ID(CspMasterLeafNode.SetPssAdminMode) ENABLED START #
         """Sets Admin Mode of the CSP Pss."""
-        self._csp_proxy.command_inout_asynch(CONST.CMD_SET_PSS_ADMIN_MODE, self.commandCallback)
+        self._csp_proxy.command_inout_asynch(CONST.CMD_SET_PSS_ADMIN_MODE, argin, self.commandCallback)
         # PROTECTED REGION END #    //  CspMasterLeafNode.SetPssAdminMode
 
     @command(
-    dtype_in='DevEnum', 
-    doc_in="adminMode", 
+        dtype_in='DevEnum',
+        doc_in="adminMode",
     )
     @DebugIt()
     def SetPstAdminMode(self, argin):
         # PROTECTED REGION ID(CspMasterLeafNode.SetPstAdminMode) ENABLED START #
         """Sets Admin Mode of the CSP Pst."""
-        self._csp_proxy.command_inout_asynch(CONST.CMD_SET_PST_ADMIN_MODE, self.commandCallback)
+        self._csp_proxy.command_inout_asynch(CONST.CMD_SET_PST_ADMIN_MODE, argin, self.commandCallback)
         # PROTECTED REGION END #    //  CspMasterLeafNode.SetPstAdminMode
 
 # ----------

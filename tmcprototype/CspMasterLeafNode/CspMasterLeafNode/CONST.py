@@ -1,3 +1,5 @@
+""" Python file containing String Variables for CSP Master Leaf Node"""
+
 # Events
 EVT_CBF_HEALTH = "cspCbfHealthState"
 EVT_PSS_HEALTH = "cspPssHealthState"
