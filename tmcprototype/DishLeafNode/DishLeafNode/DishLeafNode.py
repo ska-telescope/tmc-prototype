@@ -494,8 +494,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         Configures the Dish by setting pointing coordinates for a given observation.
 
-        :param argin: String array that includes pointing parameters of Dish - Azimuth and
-        Elevation Angle.
+        :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
 
         :return: None
         """
