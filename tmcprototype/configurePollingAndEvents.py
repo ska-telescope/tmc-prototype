@@ -18,19 +18,18 @@ for device in json_devices:
     deviceName = device["devName"]
 
     for attributeProperty in device["attributeProperties"]:
-            attributeProxy = AttributeProxy(deviceName + "/" + attributeProperty["attributeName"])
-            print("Device: ", deviceName, " Attribute: ", attributeProperty["attributeName"])
-            print("Polling Period: ", attributeProperty["pollingPeriod"])
-            if(attributeProperty["pollingPeriod"] != ""):
-                attributeProxy.poll(attributeProperty["pollingPeriod"])
-            else:
-                print("Skip setting polling period...")
-
-            if(attributeProperty["changeEventAbs"] != ""):
-                attrInfoEx = attributeProxy.get_config()
-                absChange = ChangeEventInfo()
-                absChange.abs_change = attributeProperty["changeEventAbs"]
-                attrInfoEx.events.ch_event = absChange
-                attributeProxy.set_config(attrInfoEx)
-            else:
-                print("Skip setting change event absolute...")
+        attributeProxy = AttributeProxy(deviceName + "/" + attributeProperty["attributeName"])
+        print("Device: ", deviceName, " Attribute: ", attributeProperty["attributeName"])
+        print("Polling Period: ", attributeProperty["pollingPeriod"])
+        if(attributeProperty["pollingPeriod"] != ""):
+            attributeProxy.poll(attributeProperty["pollingPeriod"])
+        else:
+            print("Skip setting polling period...")
+        if(attributeProperty["changeEventAbs"] != ""):
+            attrInfoEx = attributeProxy.get_config()
+            absChange = ChangeEventInfo()
+            absChange.abs_change = attributeProperty["changeEventAbs"]
+            attrInfoEx.events.ch_event = absChange
+            attributeProxy.set_config(attrInfoEx)
+        else:
+            print("Skip setting change event absolute...")

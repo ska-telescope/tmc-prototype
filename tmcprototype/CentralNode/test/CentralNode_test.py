@@ -21,7 +21,6 @@ sys.path.insert(0, module_path)
 path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
-
 # Imports
 import tango
 from tango import DevState, EventType
@@ -40,7 +39,6 @@ import json
 #
 # Look at devicetest examples for more advanced testing
 
-
 # Device test case
 @pytest.mark.usefixtures("tango_context", "initialize_device")
 
@@ -51,7 +49,7 @@ class TestCentralNode(object):
     device = CentralNode
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost','CentralAlarmHandler': '', 'TMAlarmHandler': '',
+                  'StorageLoggingTarget': 'localhost', 'CentralAlarmHandler': '', 'TMAlarmHandler': '',
                   'TMMidSubarrayNodes': 'ska_mid/tm_subarray_node/1', 'NumDishes': '4',
                   'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
                   }
@@ -264,7 +262,7 @@ class TestCentralNode(object):
         time.sleep(3)
         result = create_subarray1_proxy.receptorIDList
         create_subarray1_proxy.ReleaseAllResources()
-        assert result == [1] and retVal["dish"]["receptorIDList_success"] == ["0001"]
+        assert result == (1,) and retVal["dish"]["receptorIDList_success"] == ["0001"]
 
     def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0002"]}}'
