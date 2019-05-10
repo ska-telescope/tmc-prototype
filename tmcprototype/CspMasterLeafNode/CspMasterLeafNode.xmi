@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="CspMasterLeafNode" pogoRevision="9.4">
-    <description description="" title="CspMasterLeafNode" sourcePath="/home/user/projects/tmc-prototype/tmcprototype/CspMasterLeafNode" language="PythonHL" filestogenerate="XMI   file,Code files,Python Package,Protected Regions,Sphinx,html Pages" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
+    <description description="" title="CspMasterLeafNode" sourcePath="/home/user/projects/tmc-prototype/tmcprototype/CspMasterLeafNode" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <inheritances classname="SKABaseDevice" sourcePath="../../../lmc-base-classes/skabase/SKABaseDevice"/>
       <identification contact="at gmail.com - apurva.ska" author="apurva.ska" emailDomain="gmail.com" classFamily="SoftwareSystem" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
@@ -31,6 +31,7 @@
     <deviceProperties name="CspMasterFQDN" description="FQDN of the CSP Master TANGO Device Server. Value of this property &#x2192; tango://mid-csp-tango:10000/mid_csp/elt/master">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>csp/master/1</DefaultPropValue>
     </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="none">
