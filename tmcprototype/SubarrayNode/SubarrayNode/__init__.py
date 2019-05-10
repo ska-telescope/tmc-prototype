@@ -9,7 +9,7 @@
 
 """Subarray Node
 
-Provides the monitoring and control interface required by users as well as 
+Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
 

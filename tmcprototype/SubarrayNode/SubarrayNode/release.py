@@ -12,7 +12,7 @@
 name = """tangods-subarraynode"""
 version = "1.0.0"
 version_info = version.split(".")
-description = """Provides the monitoring and control interface required by users as well as 
+description = """Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray."""
 author = "jyotin.ska"
 author_email = "jyotin.ska at gmail.com"

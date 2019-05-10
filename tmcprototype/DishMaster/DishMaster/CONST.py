@@ -19,7 +19,7 @@ STR_DATA_CAPTURE_ALREADY_STOPPED = "Data Capuring is already stopped."
 STR_FALSE = "False"
 
 #Error messages
-ERR_EXE_POINT_FN ="Unexpected error in executing POINT function on Dish"
+ERR_EXE_POINT_FN = "Unexpected error in executing POINT function on Dish"
 ERR_INIT_PROP_ATTR_DISH = "Unexpected error in initialising properties and attributes on Dish"
 ERR_EXE_SET_STOW_MODE_CMD = "Unexpected error in executing SetStowMode Command on Dish"
 ERR_EXE_SET_STNBYLP_MODE_CMD = "Unexpected error in executing SetStandbyLPMode Command on Dish"
