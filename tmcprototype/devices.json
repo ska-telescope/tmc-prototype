@@ -3,7 +3,12 @@
     "class": "DishMaster",
     "serverName": "DishMaster/01",
     "devName": "mid_d0001/elt/master",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": [
       {
         "attributeName": "achievedPointing",
@@ -74,7 +79,12 @@
     "class": "DishMaster",
     "serverName": "DishMaster/02",
     "devName": "mid_d0002/elt/master",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": [
       {
         "attributeName": "achievedPointing",
@@ -145,7 +155,12 @@
     "class": "DishMaster",
     "serverName": "DishMaster/03",
     "devName": "mid_d0003/elt/master",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": [
       {
         "attributeName": "achievedPointing",
@@ -216,7 +231,12 @@
     "class": "DishMaster",
     "serverName": "DishMaster/04",
     "devName": "mid_d0004/elt/master",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": [
       {
         "attributeName": "achievedPointing",
@@ -291,6 +311,10 @@
       {
         "devPropName": "DishMasterFQDN",
         "devPropValue": "mid_d0001/elt/master"
+      },
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
     "attributeProperties": [
@@ -325,6 +349,10 @@
       {
         "devPropName": "DishMasterFQDN",
         "devPropValue": "mid_d0002/elt/master"
+      },
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
     "attributeProperties": [
@@ -359,6 +387,10 @@
       {
         "devPropName": "DishMasterFQDN",
         "devPropValue": "mid_d0003/elt/master"
+      },
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
     "attributeProperties": [
@@ -393,6 +425,10 @@
       {
         "devPropName": "DishMasterFQDN",
         "devPropValue": "mid_d0004/elt/master"
+      },
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
     "attributeProperties": [
@@ -427,6 +463,10 @@
       {
         "devPropName": "DishLeafNodePrefix",
         "devPropValue": "ska_mid/tm_leaf_node/d"
+      },
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
     "attributeProperties": [
@@ -482,6 +522,10 @@
       {
         "devPropName": "DishLeafNodePrefix",
         "devPropValue": "ska_mid/tm_leaf_node/d"
+      },
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
       }
     ],
     "attributeProperties": [
@@ -533,7 +577,12 @@
     "class": "CentralNode",
     "serverName": "CentralNode/01",
     "devName": "ska_mid/tm_central/central_node",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": [
       {
         "attributeName": "subarray1HealthState",
@@ -569,7 +618,12 @@
     "class": "AlarmHandler",
     "serverName": "alarmhandler-srv/01",
     "devName": "ska_mid/tm_alarmhandler/tmalarmhandler",
-    "deviceProperties": [],
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
     "attributeProperties": []
   }
 ]

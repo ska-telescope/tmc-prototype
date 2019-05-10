@@ -144,7 +144,8 @@ piplock: build  ## overwrite Pipfile.lock with the image version
 interactive: up
 interactive:  ## start an interactive session using the project image (caution: R/W mounts source directory to /app)
 	docker run --rm -it -p 3000:3000 --name=$(CONTAINER_NAME_PREFIX)dev -e TANGO_HOST=$(TANGO_HOST) --network=$(NETWORK_MODE) \
-          -v $(CURDIR):/app --volumes-from=$(CONTAINER_NAME_PREFIX)rsyslog-tmcprototype:rw $(IMAGE_TO_TEST) /bin/bash
+	       -v $(CURDIR):/app --volumes-from=$(CONTAINER_NAME_PREFIX)rsyslog-tmcprototype:rw nexus.engageska-portugal.pt/ska-docker/tango-java:latest /bin/bash
+#          -v $(CURDIR):/app --volumes-from=$(CONTAINER_NAME_PREFIX)rsyslog-tmcprototype:rw $(IMAGE_TO_TEST) /bin/bash
 
 down:  ## stop develop/test environment and any interactive session
 	docker ps | grep $(CONTAINER_NAME_PREFIX)dev && docker stop $(PROJECT)-dev || true
