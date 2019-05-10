@@ -1,5 +1,5 @@
 """
-This file is part of the SubarrayNode project and defines variables used
+This file is part of the DishLeafNode project and defines variables used
 """
 
 #Events
