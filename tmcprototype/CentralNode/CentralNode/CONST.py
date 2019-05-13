@@ -46,7 +46,7 @@ STR_FALSE = "False"
 STR_DISH_DUPLICATE = "List of the dishes that are already allocated: "
 STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully"
 STR_FALSE_TAG = "False in ReleaseALL tag is not yet supported"
-STR_REL_RESOURCES =  "Resources have been released successfully"
+STR_REL_RESOURCES = "Resources have been released successfully"
 STR_ALL_RES_NOT_REL = "All the resources are not released"
 STR_LIST_RES_NOT_REL = "List of the resources that are not released:"
 
@@ -67,4 +67,3 @@ ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 
 #INTEGERS
 INT_SKA_LEVEL = 1
-

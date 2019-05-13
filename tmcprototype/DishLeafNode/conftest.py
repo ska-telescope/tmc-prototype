@@ -4,9 +4,10 @@ tests.
 """
 
 from __future__ import absolute_import
+import importlib
 import mock
 import pytest
-import importlib
+
 
 from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
@@ -25,7 +26,8 @@ def dishmaster_context():
     ###########################
     dishmaster_module = importlib.import_module("{}.{}".format('DishMaster', 'DishMaster'))
     dishmaster_klass = getattr(dishmaster_module, 'DishMaster')
-    dishmaster_context = DeviceTestContext(dishmaster_klass , process= True) #, device_name="mid_d0001/elt/master")
+    dishmaster_context = DeviceTestContext(dishmaster_klass , process= True) #,
+    device_name="mid_d0001/elt/master")
     ##########################
     dishmaster_context.start()
     dishmaster_klass.get_name = mock.Mock(side_effect=dishmaster_context.get_device_access)
@@ -56,7 +58,7 @@ def tango_context(request): #, dishmaster_context):
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
                   'DishMasterFQDN': "mid_d0001/elt/master",
                   }
-    tango_context = DeviceTestContext(klass, properties=properties, process= False)
+    tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context

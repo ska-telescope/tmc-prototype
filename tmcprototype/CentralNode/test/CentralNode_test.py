@@ -21,7 +21,6 @@ sys.path.insert(0, module_path)
 path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
-
 # Imports
 import tango
 from tango import DevState, EventType
@@ -40,7 +39,6 @@ import json
 #
 # Look at devicetest examples for more advanced testing
 
-
 # Device test case
 @pytest.mark.usefixtures("tango_context", "initialize_device")
 
@@ -51,7 +49,7 @@ class TestCentralNode(object):
     device = CentralNode
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost','CentralAlarmHandler': '', 'TMAlarmHandler': '',
+                  'StorageLoggingTarget': 'localhost', 'CentralAlarmHandler': '', 'TMAlarmHandler': '',
                   'TMMidSubarrayNodes': 'ska_mid/tm_subarray_node/1', 'NumDishes': '4',
                   'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
                   }

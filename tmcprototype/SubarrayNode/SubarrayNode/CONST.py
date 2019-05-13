@@ -1,4 +1,6 @@
-
+"""
+This file is part of the SubarrayNode project and defines variables used
+"""
 #Events
 EVT_DISH_HEALTH_STATE = "dishHealthState"
 
@@ -15,7 +17,7 @@ STR_SCAN_IP_ARG = "Scan inputs Arguments :-> "
 STR_GRP_DEF_SCAN_FN = "Group Definitions in scan function :-> "
 STR_SA_SCANNING = "Subarray is scanning at the desired pointing coordinates."
 
-STR_GRP_DEF_END_SCAN_FN ="Group Definitions in EndScan function :-> "
+STR_GRP_DEF_END_SCAN_FN = "Group Definitions in EndScan function :-> "
 STR_SCAN_COMPLETE = "Scan is completed"
 STR_TEST_DEV_VS_EVT_ID = "self.testDeviceVsEventID "
 STR_GRP_DEF = "Group definition :-> "
@@ -61,7 +63,3 @@ ERR_CONFIGURE_CMD = "Exception in Configure command: \n "
 
 #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
-
-
-
-
