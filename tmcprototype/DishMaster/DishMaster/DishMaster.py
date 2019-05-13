@@ -33,6 +33,8 @@ import threading
 import CONST
 from future.utils import with_metaclass
 import numpy
+import math
+import datetime
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
@@ -188,6 +190,24 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self.dev_logging(CONST.STR_DISH_STOW_SUCCESS, int(tango.LogLevel.LOG_INFO))
                 break
 
+    def track_slew(self):
+        az_diff = abs(self._desired_pointing[1] - self._achieved_pointing[1])
+        el_diff = abs(self._desired_pointing[2] - self._achieved_pointing[2])
+        az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
+        el_increament = el_diff / 10           #Dish will move in 10 steps to desired el.
+        for i in range(10):
+            if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
+                self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
+            else:
+                self._achieved_pointing[1] = self._achieved_pointing[1] - az_increament
+
+            if (self._desired_pointing[2] - self._achieved_pointing[2]) > 0:
+                self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
+            else:
+                self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
+            print("Achieved Pointing:", self._achieved_pointing)
+            time.sleep(2)
+        self._pointing_state = 0               # Set pointingState to READY Mode
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -267,7 +287,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         access=AttrWriteType.READ_WRITE,
         unit="km/h",
         doc="Wind speed of the dish",
+    )
 
+    azimuthOverWrap = attribute(
+        dtype='bool',
     )
 
     desiredPointing = attribute(
@@ -281,6 +304,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         dtype=('double',),
         max_dim_x=7,
         doc="Achieved pointing coordinates of the dish",
+    )
+
+    AzElOffset = attribute(
+        dtype=('double',),
+        max_dim_x=2,
     )
 
     # ---------------
@@ -322,6 +350,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             # Initialise Scan command variables
             self._scan_execution_time = 0
             self._scan_delta_t = 0
+            self._azeloffset = [0, 0]
+            self._azimuthoverwrap = False
             self.set_status(CONST.STR_DISH_INIT_SUCCESS)
             self.dev_logging(CONST.STR_DISH_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occured:
@@ -442,6 +472,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         self._wind_speed = value
         # PROTECTED REGION END #    //  DishMaster.WindSpeed_write
 
+    def read_azimuthOverWrap(self):
+        # PROTECTED REGION ID(DishMaster.azimuthOverWrap_read) ENABLED START #
+        return self._azimuthoverwrap
+        # PROTECTED REGION END #    //  DishMaster.azimuthOverWrap_read
+
     def read_desiredPointing(self):
         # PROTECTED REGION ID(DishMaster.desiredPointing_read) ENABLED START #
         """ Returns the desired pointing coordinates of Dish. """
@@ -463,6 +498,12 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """ Returns the achieved pointing coordinates of Dish. """
         return self._achieved_pointing
         # PROTECTED REGION END #    //  DishMaster.achievedPointing_read
+
+    def read_AzElOffset(self):
+        # PROTECTED REGION ID(DishMaster.AzElOffset_read) ENABLED START #
+        return self._azeloffset
+        # PROTECTED REGION END #    //  DishMaster.AzElOffset_read
+
 
     # --------
     # Commands
@@ -750,6 +791,46 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             print(CONST.STR_ERR_MSG, except_occured)
         # PROTECTED REGION END #    //  DishMaster.Slew
 
+    @command(
+    dtype_in='str',
+    )
+    @DebugIt()
+    def Track(self, argin):
+        try:
+            # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
+            # argin format : YYYY-DD-MM HH:MM:SS
+            print("\n")
+            print("Timestamp:", datetime.datetime.utcnow())
+
+            self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
+            self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
+
+            actual_az_lim = abs((self._achieved_pointing[1] - self._desired_pointing[1])
+                                * math.cos(((self._desired_pointing[2]) * math.pi)/180))
+            actual_el_lim = abs(self._achieved_pointing[2] - self._desired_pointing[2])
+
+            if(float(actual_az_lim) <= self.preconfig_az_lim and float(actual_el_lim) <= self.preconfig_el_lim) is True:
+            #if dish is within the preconfigured limit then dish will slew slowly (TRACK)
+                self._pointing_state = 2                    # Set pointingState to TRACK Mode
+                self._achieved_pointing[1] = self._desired_pointing[1]
+                self._achieved_pointing[2] = self._desired_pointing[2]
+                print("Achieved Pointing:", self._achieved_pointing)
+                self._pointing_state = 0                    # Set pointingState to READY Mode
+            else:
+            #if dish is out of preconfigured limit then dish will slew fast (Slew)
+                self._pointing_state = 1  # Set pointingState to SLEW Mode
+                self.track_slew_thread = threading.Thread(None, self.track_slew, 'DishMaster')
+                self.track_slew_thread.start()
+
+        except Exception as except_occured:
+            print(CONST.STR_ERR_MSG, except_occured)
+
+        # PROTECTED REGION END #    //  DishMaster.Track
+
+    def is_Track_allowed(self):
+        # PROTECTED REGION ID(DishMaster.is_SetMaintenanceMode_allowed) ENABLED START #
+        return self._pointing_state not in [1, 2, 3]
+        # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
 # ----------
 # Run server
 # ----------
