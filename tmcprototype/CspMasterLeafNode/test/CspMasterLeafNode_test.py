@@ -48,7 +48,7 @@ class TestCspMasterLeafNode(object):
     # PROTECTED REGION END #    //  CspMasterLeafNode.test_additionnal_import
     device = CspMasterLeafNode
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost', 'CspMasterFQDN': 'csp/master/1',
+                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost', 'CspMasterFQDN': 'mid_csp/elt/master',
                   }
     empty = None  # Should be []
 
