@@ -10,6 +10,7 @@ init-hook='
     sys.path.append("./tmcprototype/DishMaster");
     sys.path.append("./tmcprototype/DishMaster/DishMaster");
     sys.path.append("./tmcprototype/DishLeafNode");
+    sys.path.append("./tmcprototype/CspMasterLeafNode");
     sys.path.append("./tmcprototype/SubarrayNode");
     sys.path.append("./tmcprototype/CentralNode");
     sys.path.append("/usr/local/lib/python3.5/dist-packages");
@@ -47,7 +48,9 @@ load-plugins=
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
 disable=C,R,attribute-defined-outside-init,invalid-name,no-init,no-member,no-self-use,
-	no-name-in-module,unused-argument,fixme,broad-except,redefined-builtin
+	no-name-in-module,unused-argument,undefined-variable,unused-import,pointless-string-statement,
+	syntax-error,import-error,bare-except,exec-used,protected-access,fixme,broad-except,
+	redefined-builtin,redefined-outer-name
 
 
 [REPORTS]

@@ -20,6 +20,9 @@ test:
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
+
+	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
+
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node

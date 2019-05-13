@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import tango
-from tango import DevState, EventType
+from tango import DevState
 from CspMasterLeafNode.CspMasterLeafNode import CspMasterLeafNode
 import CONST
 import pytest
@@ -47,8 +47,8 @@ class TestCspMasterLeafNode(object):
     # PROTECTED REGION ID(CspMasterLeafNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  CspMasterLeafNode.test_additionnal_import
     device = CspMasterLeafNode
-    properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost', 'CspMasterFQDN': 'tango://theta:10000/csp/master/1',
+    properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
+                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost', 'CspMasterFQDN': 'mid_csp/elt/master',
                   }
     empty = None  # Should be []
 
@@ -221,7 +221,3 @@ class TestCspMasterLeafNode(object):
         # PROTECTED REGION ID(CspMasterLeafNode.test_activityMessage) ENABLED START #
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_activityMessage
 
-
-# Main execution
-if __name__ == "__main__":
-    main()

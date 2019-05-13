@@ -21,12 +21,14 @@ module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CentralNod
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
-# tango imports
+# Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+
 # Additional import
+
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 import CONST
 from future.utils import with_metaclass
@@ -147,7 +149,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     TMMidSubarrayNodes = device_property(
         dtype=('str',), default_value=[CONST.PROP_DEF_VAL_TM_MID_SA1, CONST.PROP_DEF_VAL_TM_MID_SA2],
-        doc = "List of TM Mid Subarray Node devices",
+        doc="List of TM Mid Subarray Node devices",
     )
 
     NumDishes = device_property(
@@ -157,7 +159,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     DishLeafNodePrefix = device_property(
         dtype='str', default_value=CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX,
-        doc = "Device name prefix for Dish Leaf Node",
+        doc="Device name prefix for Dish Leaf Node",
     )
 
     CspMasterLeafNodeFQDN = device_property(
@@ -250,8 +252,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
             except Exception as except_occured:
                 print(CONST.ERR_IN_CREATE_PROXY, self._dish_leaf_node_devices[name])
-                self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self._dish_leaf_node_devices[
-                                                                                  name])
+                self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + \
+                                              str(self._dish_leaf_node_devices[name])
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
                 self.dev_logging(CONST.ERR_IN_CREATE_PROXY, int(tango.LogLevel.LOG_ERROR))
@@ -284,8 +286,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.subarray_FQDN_dict[subarrayID] = subarray_proxy
             except Exception as except_occured:
                 print(CONST.ERR_SUBSR_SA_HEALTH_STATE, self.TMMidSubarrayNodes[subarray])
-                self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(self.TMMidSubarrayNodes[
-                                                                                        subarray])
+                self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + \
+                                              str(self.TMMidSubarrayNodes[subarray])
                 self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
@@ -396,8 +398,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_STANDBY_MODE)
             except Exception as except_occured:
                 print(CONST.ERR_EXE_STANDBY_CMD, self._dish_leaf_node_devices[name])
-                self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self._dish_leaf_node_devices[
-                                                                                  name])
+                self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + \
+                                              str(self._dish_leaf_node_devices[name])
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
                 self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -426,8 +428,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_OPERATE_MODE)
             except Exception as except_occured:
                 print(CONST.ERR_EXE_STARTUP_CMD, self._dish_leaf_node_devices[name])
-                self._read_activity_message = CONST.ERR_EXE_STARTUP_CMD + str(self._dish_leaf_node_devices[
-                                                                                  name])
+                self._read_activity_message = CONST.ERR_EXE_STARTUP_CMD + \
+                                              str(self._dish_leaf_node_devices[name])
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
                 self.dev_logging(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -444,18 +446,16 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
-    @command(
-    dtype_in='str', 
-    doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
+    @command(dtype_in='str',
+             doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
            "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
            "The individual string should contain dish numbers in string format with "
            "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-    dtype_out='str', 
-    doc_out="The string in JSON format. The JSON contains following values:\ndish:"
+             dtype_out='str',
+             doc_out="The string in JSON format. The JSON contains following values:\ndish:"
             " JSON object consisting receptors allocated successfully: DevVarStringArray."
             " The individual string should contain dish numbers in string format with "
-            "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-    )
+            "preceding zeroes upto 3 digits. E.g. 0001, 0002", )
     @DebugIt()
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
@@ -498,7 +498,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 receptorIDList_success:
                     DevVarStringArray
-                    Contains ids of the receptors which are successfully allocated. Empty on unsuccessful allocation.
+                    Contains ids of the receptors which are successfully allocated. Empty on unsuccessful
+                    allocation.
 
 
             Example:
@@ -519,20 +520,20 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             duplicate_allocation_count = 0
             duplicate_allocation_dish_ids = []
             input_receptor_list = jsonArgument["dish"]["receptorIDList"]
-            len_input_receptor_list =  len(input_receptor_list)
+            len_input_receptor_list= len(input_receptor_list)
             for dish in range(0, len_input_receptor_list):
                 dish_ID = "dish" + input_receptor_list[dish]
                 if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
                     duplicate_allocation_dish_ids.append(dish_ID)
                     duplicate_allocation_count = duplicate_allocation_count + 1
             if duplicate_allocation_count == 0:
-                self._resources_allocated = subarrayProxy.command_inout(CONST.CMD_ASSIGN_RESOURCES,
-                                            jsonArgument["dish"]["receptorIDList"])
+                self._resources_allocated = subarrayProxy.command_inout(
+                    CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
 
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
-                for dish in range(0,len(self._resources_allocated)):
+                for dish in range(0, len(self._resources_allocated)):
                     dish_ID = "dish" + (self._resources_allocated[dish])
                     self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
                     receptorIDList.append(self._resources_allocated[dish])
@@ -540,8 +541,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
                 self.dev_logging(CONST.STR_ASSIGN_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:
-                print(CONST.STR_DISH_DUPLICATE , duplicate_allocation_dish_ids)
-                self._read_activity_message = CONST.STR_DISH_DUPLICATE + str(duplicate_allocation_dish_ids)
+                print(CONST.STR_DISH_DUPLICATE, duplicate_allocation_dish_ids)
+                self._read_activity_message = CONST.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
         except ValueError:
             self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON
@@ -560,22 +561,19 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.AssignResources
 
-    @command(
-    dtype_in='str', 
-    dtype_out='str', 
-    )
+    @command(dtype_in='str', dtype_out='str', )
     @DebugIt()
     def ReleaseResources(self, argin):
         # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
 
         """
         Release all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
-        receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command is
-        invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the resources of the
-        Subarray are released.
-        When releaseALL is False, ReleaseResources will be invoked on the Subarray and the resources provided in
-        receptorIDList tag, are released from Subarray. This selective release of the resources when releaseALL is
-        False, will be implemented in the later stages of the prototype.
+        receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+        is         invoked on the respective subarray. In this case, the receptorIDList tag is empty as all
+        the resources of the Subarray are released.
+        When releaseALL is False, ReleaseResources will be invoked on the Subarray and the resources provided
+        in receptorIDList tag, are released from Subarray. This selective release of the resources when
+        releaseALL is False, will be implemented in the later stages of the prototype.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -603,11 +601,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             :return: argout: The string in JSON format. The JSON contains following values:
 
                 releaseALL:
-                    Boolean(True or False). If True, all the resources are successfully released from the Subarray.
+                    Boolean(True or False). If True, all the resources are successfully released from the
+                    Subarray.
 
                 receptorIDList:
-                    DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns resources
-                    (device names) that are noe released from the subarray.
+                    DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
+                    resources (device names) that are noe released from the subarray.
 
                 Example:
                     argout = {
@@ -655,7 +654,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 # Run server
 # ----------
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CentralNode.main) ENABLED START #
     """
@@ -666,7 +664,6 @@ def main(args=None, **kwargs):
     """
     return run((CentralNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CentralNode.main
-
 
 if __name__ == '__main__':
     main()

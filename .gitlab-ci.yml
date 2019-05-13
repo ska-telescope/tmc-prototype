@@ -194,6 +194,8 @@ pages:
   tags:
     - docker-executor
   stage: pages
+  only:
+    - master
   script:
     - mv build public
     - mv public/dishmaster_htmlcov/* public

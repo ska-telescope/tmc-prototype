@@ -13,6 +13,10 @@
 #   - subarraynode: Subarray Node
 #   - centralnode: Central Node
 #   - cspmasterleafnode: CSP Master Leaf Node
+#   - tmclogger: Logger for TMC
+#   - tmclogviewer: Log viewer for TMC prototype
+#   - tm-alarmhandler: TM AlarmHandler service
+#   - configure-alarms: Alarm configuration for TM AlarmHandler
 # Requires:
 #   - None
 #
@@ -93,6 +97,21 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              /venv/bin/python /app/tmcprototype/configurePollingAndEvents.py"
+
+  tmclogger:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/lmcbaseclasses:latest
+    depends_on:
+    - databaseds
+    - rsyslog-tmcprototype
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}logger
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             /venv/bin/python -u /app/skabase/SKALogger/SKALogger.py Ref"
+    volumes_from:
+        - rsyslog-tmcprototype:rw
 
   dishmaster1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -349,6 +368,48 @@ services:
     container_name: ${CONTAINER_NAME_PREFIX}rsyslog-tmcprototype
     network_mode: ${NETWORK_MODE}
 
+  configurelogger:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - tmclogger
+      - dishmaster1
+      - dishmaster2
+      - dishmaster3
+      - dishmaster4
+      - dishleafnode1
+      - dishleafnode2
+      - dishleafnode3
+      - dishleafnode4
+      - subarraynode1
+      - subarraynode2
+      - centralnode
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}configurelogger
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+            /venv/bin/python /app/tmcprototype/configure_logging.py"
+
+  tmclogviewer:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-java:latest
+    depends_on:
+    - databaseds
+    - configurelogger
+    - tmclogger
+    - rsyslog-tmcprototype
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}tmclogviewer
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    - XAUTHORITY=/tmp/.docker.xauth
+    - DISPLAY=${DISPLAY}
+    volumes:
+    - /tmp/.X11-unix:/tmp/.X11-unix
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             TANGO_HOST=${TANGO_HOST} /usr/local/bin/logviewer"
+
   tm-alarmhandler:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmalarmhandler
     depends_on:
@@ -357,10 +418,10 @@ services:
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}tmalarmhandler
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./app/alarmhandler-srv 01"
+            ./app/alarmhandler-srv 01"
 
   configure-alarms:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -390,9 +451,12 @@ services:
     - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             tango_admin --check-device mid_csp_cbf/sub_elt/master ||\
-             tango_admin --add-server CbfTestMaster/test CbfTestMaster mid_csp_cbf/sub_elt/master &&\
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
              /venv/bin/python /app/csplmc/CbfTestMaster/CbfTestMaster.py test"
+#      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#             tango_admin --check-device mid_csp_cbf/sub_elt/master ||\
+#             tango_admin --add-server CbfTestMaster/test CbfTestMaster mid_csp_cbf/sub_elt/master &&\
+#             /venv/bin/python /app/csplmc/CbfTestMaster/CbfTestMaster.py test"
     volumes_from:
     - rsyslog-tmcprototype:rw
 
@@ -408,9 +472,12 @@ services:
       - TANGO_HOST=${TANGO_HOST}
       command: >
         sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-               tango_admin --check-device mid_csp/elt/master ||\
-               tango_admin --add-server CspMaster/csp CspMaster mid_csp/elt/master &&\
-               tango_admin --ping-device mid_csp_cbf/sub_elt/master 10 &&\
+               sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
                /venv/bin/python /app/csplmc/CspMaster/CspMaster/CspMaster.py csp"
+#        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#               tango_admin --check-device mid_csp/elt/master ||\
+#               tango_admin --add-server CspMaster/csp CspMaster mid_csp/elt/master &&\
+#               tango_admin --ping-device mid_csp_cbf/sub_elt/master 10 &&\
+#               /venv/bin/python /app/csplmc/CspMaster/CspMaster/CspMaster.py csp"
       volumes_from:
       - rsyslog-tmcprototype:rw
