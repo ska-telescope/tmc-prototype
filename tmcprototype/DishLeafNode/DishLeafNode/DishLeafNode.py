@@ -32,7 +32,15 @@ from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 
 # Additional import
+# PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
+import threading
 import CONST
+from future.utils import with_metaclass
+import math
+import katpoint
+import re
+import datetime
+import time
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]
@@ -207,6 +215,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
+                print(log)
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
@@ -275,6 +284,61 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
 
+    def elevation_lim_thread(self):
+        self.event_el = threading.Event()
+        self.event_el.clear()
+        while(1):
+            if (self.el <= 17.5 or self.el > 90):
+                self.event_el.set()
+                break
+
+    def tracking_time_thread(self):
+        t = 1               #Tracking time in minute
+        self.event_track_time = threading.Event()
+        self.event_track_time.clear()
+        start_track_time = time.time()
+        while(1):
+            if start_track_time == start_track_time + t*60:
+                self.event_track_time.set()
+                break
+
+
+    def track_thread(self, argin):
+        #tracking_time_sec = 25  # Currently 25 sec
+        # Jive Input : radec|2:31:50.91|89:15:51.4   #Polaris
+        radec_value = argin.replace('|', ',')
+        # RaDec as input argument
+        '''
+        Timestamp value if given as input argument
+        timestamp_value = argin[1].replace('|', ' ')
+        '''
+        while(self.event_el.is_set() == False or self.event_track_time == False):
+            print("\n")
+            try:
+                # timestamp_value = Current system time in UTC
+                timestamp_value = str(datetime.datetime.utcnow())
+                katpoint_arg = []
+                katpoint_arg.insert(0, radec_value)
+                katpoint_arg.insert(1, timestamp_value)
+                # Conversion of RaDec to AzEl
+                self.convert_radec_to_azel(katpoint_arg)
+                if self.az < 0:
+                    self.az = 360 - abs(self.az)
+
+                roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
+                spectrum = [0]
+                spectrum.extend((roundoff_az_el))
+                # assign calculated AzEl to desiredPointing attribute of Dishmaster
+                self._dish_proxy.desiredPointing = spectrum
+                print("self._dish_proxy.desiredPointing", self._dish_proxy.desiredPointing)
+                # Invoke Track command of Dish Master
+                self._dish_proxy.command_inout_asynch("Track", "0", self.commandCallback)
+            except Exception as except_occurred:
+                print("Exception occured in Track", except_occurred)
+            time.sleep(0.1)
+        print("\n")
+        print("Elevation limit is reached")
+
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
     # -----------------
@@ -311,6 +375,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         print(CONST.STR_INIT_LEAF_NODE)
         self._read_activity_message = CONST.STR_INIT_LEAF_NODE
         self.SkaLevel = 3
+        self.el = 50.0
         try:
             print(CONST.STR_DISHMASTER_FQN, self.DishMasterFQDN)
             self._read_activity_message = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
@@ -595,6 +660,22 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_EXE_SLEW_CMD + str(except_occurred)
             self.dev_logging(CONST.ERR_EXE_SLEW_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  DishLeafNode.Slew
+
+    @command(
+    dtype_in=('str',), 
+    dtype_out=('str',), 
+    )
+    @DebugIt()
+    def Track(self, argin):
+        # PROTECTED REGION ID(DishLeafNode.Track) ENABLED START #
+        self.elevation_lim_thread_thread1 = threading.Thread(None, self.elevation_lim_thread, 'DishLeafNode')
+        self.elevation_lim_thread_thread1.start()
+        self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, 'DishLeafNode')
+        self.tracking_time_thread1.start()
+        self.track_thread1 = threading.Thread(None, self.track_thread, 'DishLeafNode', args=argin)
+        self.track_thread1.start()
+        return [""]
+        # PROTECTED REGION END #    //  DishLeafNode.Track
 
 # ----------
 # Run server
