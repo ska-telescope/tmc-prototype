@@ -1,9 +1,9 @@
 #
 # Docker compose file for testing the TMC prototype in CI environment. 
 # The current setup provides one container each for Tango DB, databaseds service,
-# Central Node, two Subarray Nodes(two subarrays in single container), one Dish Leaf Node,
-# one Dish Master and one rsyslog service (for logging)
-#
+# Central Node, CspMasterLeafNode, two Subarray Nodes in two separate containers,
+# four Dish Leaf Nodes in four separate containers, four Dish Masters in four separate containers
+# and one rsyslog service (for logging)
 # Defines:
 #   - tangodb: MariaDB database with TANGO schema
 #   - databaseds: TANGO database device server
@@ -12,6 +12,7 @@
 #   - dishleafnode: Dish Leaf Node
 #   - subarraynode: Subarray Node
 #   - centralnode: Central Node
+#   - cspmasterleafnode: CSP Master Leaf Node
 # Requires:
 #   - None
 #
@@ -81,10 +82,10 @@ services:
     - dishleafnode2
     - dishleafnode3
     - dishleafnode4
+    - cspmasterleafnode
     - subarraynode1
     - subarraynode2
     - centralnode
-
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}conf-polling-events
     environment:
@@ -237,6 +238,24 @@ services:
     volumes_from:
       - rsyslog-tmcprototype:rw
 
+  cspmasterleafnode:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+    - databaseds
+    - rsyslog-tmcprototype
+    - add-devs-and-props
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}cspmasterleafnode
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --ping-device mid_csp/elt/master 10 &&\
+             /venv/bin/python /app/tmcprototype/CspMasterLeafNode/CspMasterLeafNode/CspMasterLeafNode.py 01"
+    volumes_from:
+    - rsyslog-tmcprototype:rw
+
   subarraynode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
@@ -302,6 +321,7 @@ services:
       - rsyslog-tmcprototype
       - subarraynode1
       - subarraynode2
+      - cspmasterleafnode
       - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}centralnode
@@ -358,3 +378,39 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              /venv/bin/python /app/tmcprototype/TMAlarmHandler/configure_alarms.py"
+
+  cbftestmaster:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/csplmc:latest
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}cbftestmaster
+    depends_on:
+    - databaseds
+    - rsyslog-tmcprototype
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             tango_admin --check-device mid_csp_cbf/sub_elt/master ||\
+             tango_admin --add-server CbfTestMaster/test CbfTestMaster mid_csp_cbf/sub_elt/master &&\
+             /venv/bin/python /app/csplmc/CbfTestMaster/CbfTestMaster.py test"
+    volumes_from:
+    - rsyslog-tmcprototype:rw
+
+    cspmaster:
+      image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/csplmc:latest
+      network_mode: ${NETWORK_MODE}
+      container_name: ${CONTAINER_NAME_PREFIX}cspmaster
+      depends_on:
+      - databaseds
+      - cbftestmaster
+      - rsyslog-tmcprototype
+      environment:
+      - TANGO_HOST=${TANGO_HOST}
+      command: >
+        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+               tango_admin --check-device mid_csp/elt/master ||\
+               tango_admin --add-server CspMaster/csp CspMaster mid_csp/elt/master &&\
+               tango_admin --ping-device mid_csp_cbf/sub_elt/master 10 &&\
+               /venv/bin/python /app/csplmc/CspMaster/CspMaster/CspMaster.py csp"
+      volumes_from:
+      - rsyslog-tmcprototype:rw

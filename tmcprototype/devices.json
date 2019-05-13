@@ -420,6 +420,40 @@
     ]
   },
   {
+    "class": "CspMasterLeafNode",
+    "serverName": "CspMasterLeafNode/01",
+    "devName": "ska_mid/tm_leaf_node/csp_master",
+    "deviceProperties": [
+      {
+        "devPropName": "CspMasterFQDN",
+        "devPropValue": "mid_csp/elt/master"
+      }
+    ],
+    "attributeProperties": [
+      {
+        "attributeName": "cspHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue": "mid_csp/elt/master/healthState",
+        "pollingPeriod": "",
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
+  },
+  {
     "class": "SubarrayNode",
     "serverName": "SubarrayNode/sa1",
     "devName": "ska_mid/tm_subarray_node/1",
@@ -569,6 +603,52 @@
     "class": "AlarmHandler",
     "serverName": "alarmhandler-srv/01",
     "devName": "ska_mid/tm_alarmhandler/tmalarmhandler",
+    "deviceProperties": [],
+    "attributeProperties": []
+  },
+  {
+    "class": "CspMaster",
+    "serverName": "CspMaster/01",
+    "devName": "mid_csp/elt/master",
+    "deviceProperties": [
+      {
+      }
+    ],
+    "attributeProperties": [
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "cspCbfHealthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "cspPssHealthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "cspPstHealthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
+  },
+  {
+    "class": "CbfTestMaster",
+    "serverName": "CbfTestMaster/test",
+    "devName": "mid_csp_cbf/sub_elt/master",
     "deviceProperties": [],
     "attributeProperties": []
   }

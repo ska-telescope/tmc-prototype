@@ -1,9 +1,9 @@
 # release=0.1.0
-# tag=powersupply-0.1.0
+# tag=tmcprototype-0.1.0
 
 # -*- coding: utf-8 -*-
 #
-# This file is part of the DishMaster project
+# This file is part of the TMC prototype
 #
 #
 #
@@ -12,10 +12,10 @@
 
 """Release information for Python Package"""
 
-name = """tangods-dishmaster"""
+name = """tangods-tmcprototype"""
 version = "1.0.0"
 version_info = version.split(".")
-description = """SKA Dish Master TANGO device server"""
+description = """TMC Prototype"""
 author = "apurva.ska"
 author_email = "apurva.ska at gmail.com"
 license = """BSD-3-Clause"""
