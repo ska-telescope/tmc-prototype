@@ -8,6 +8,7 @@ EVT_DISH_HEALTH_STATE = "dishHealthState"
 CMD_SCAN = "Scan"
 CMD_CONFIGURE = "Configure"
 CMD_END_SCAN = "EndScan"
+CMD_TRACK = "Track"
 
 #GROUPS
 GRP_DISH_LEAF_NODE = "DishLeafNode_Group"
@@ -41,9 +42,12 @@ STR_SA_INIT = "Initializing SubarrayNode..."
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
 
 STR_CONFIGURE_IP_ARG = "Input Arguments for Configure command :-> "
-STR_GRP_DEF_CONFIGURE_FN = "Group Definitions during Configure command :-> "
+STR_GRP_DEF_CONFIGURE_FN = "Group devices during Configure command :-> "
+STR_TRACK_IP_ARG = "Input Arguments for Track command :-> "
+STR_GRP_DEF_TRACK_FN = "Group devices during Track command :-> "
 
 STR_CONFIGURE_CMD_INVOKED_SA = "Configure command invoked on Subarray"
+STR_TRACK_CMD_INVOKED_SA = "Track command invoked on Subarray"
 
 SCAN_ALREADY_IN_PROGRESS = "Scan is already in progress"
 SCAN_ALREADY_COMPLETED = "Scan is already completed"
@@ -60,6 +64,7 @@ ERR_RELEASE_RES_CMD = "Exception occurred in ReleaseAllResources command."
 ERR_AGGR_HEALTH_STATE = "Unexpected error while aggregating Health state!\n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error event on subscribing Subarray HealthState!\n"
 ERR_CONFIGURE_CMD = "Exception in Configure command: \n "
+ERR_TRACK_CMD = "Exception in Track command: \n "
 
 #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))

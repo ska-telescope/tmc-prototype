@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="SubarrayNode" pogoRevision="9.4">
-    <description description="Provides the monitoring and control interface required by users as well as &#xA;other TM Components (such as OET, Central Node) for a Subarray." title="Subarray Node" sourcePath="/home/user/tmc-prototype/tmc-prototype/SubarrayNode" language="PythonHL" filestogenerate="XMI   file,Code files,Python Package,Protected Regions,Sphinx,html Pages" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
+    <description description="Provides the monitoring and control interface required by users as well as &#xA;other TM Components (such as OET, Central Node) for a Subarray." title="Subarray Node" sourcePath="/home/user/projects/tmc-prototype/tmcprototype/SubarrayNode" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
-      <inheritances classname="SKAObsDevice" sourcePath="../../../tmc-prototype_local/lmc-base-classes/skabase/SKASubarray/../SKAObsDevice"/>
+      <inheritances classname="SKAObsDevice" sourcePath="../../../lmc-base-classes/skabase/SKAObsDevice"/>
       <inheritances classname="SKASubarray" sourcePath="/home/user/tmc-prototype_local/lmc-base-classes/skabase/SKASubarray"/>
       <identification contact="at gmail.com - jyotin.ska" author="jyotin.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
     </description>
@@ -233,6 +233,15 @@
       <excludedStates>UNKNOWN</excludedStates>
       <excludedStates>DISABLE</excludedStates>
       <excludedStates>STANDBY</excludedStates>
+    </commands>
+    <commands name="Track" description="" execMethod="track" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="">
+        <type xsi:type="pogoDsl:StringType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
     <attributes name="activationTime" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true">
       <dataType xsi:type="pogoDsl:DoubleType"/>

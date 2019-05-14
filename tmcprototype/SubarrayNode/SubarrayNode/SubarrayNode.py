@@ -435,7 +435,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     @command(
         dtype_in=('str',),
-        doc_in="Pointing parameters of Dish - Azimuth and Elevation Angle.",
+        doc_in="Pointing parameters of Dish - Right ascension and Declination coordinates.",
     )
     @DebugIt()
     def Configure(self, argin):
@@ -472,6 +472,53 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
                                         DevState.STANDBY]
         # PROTECTED REGION END #    //  SubarrayNode.is_Configure_allowed
+
+    @command(
+    dtype_in='str',
+    doc_in="Initial Pointing parameters of Dish - Right ascension and Declination coordinates.",
+    )
+    @DebugIt()
+    def Track(self, argin):
+        # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
+        excpt_msg = []
+        excpt_count = 0
+        print("argin is: ", argin)
+        try:
+            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
+            # set obsState to CONFIGURING when the configuration is started
+            self._obs_state = 1
+            cmd_input = []
+            cmd_input.append(argin)
+            cmdData = tango.DeviceData()
+            cmdData.insert(tango.DevVarStringArray, cmd_input)
+            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
+            # set obsState to READY when the configuration is completed
+            self._obs_state = 2
+            self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            self.dev_logging(CONST.STR_TRACK_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+
+        except tango.DevFailed as devfailed:
+            excpt_msg.append("Command failure for group of devices " + ": " + \
+                           str(devfailed.args[0].desc))
+            excpt_count += 1
+        except Exception as except_occured:
+            print(CONST.ERR_TRACK_CMD, "\n", except_occured)
+            self._read_activity_message = CONST.ERR_TRACK_CMD + str(except_occured)
+            self.dev_logging(CONST.ERR_TRACK_CMD, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append("Exception occured in Track command invoked on the group of devices " + ": " + \
+                             str(except_occured.args[0].desc))
+            excpt_count += 1
+
+        # throw exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
+            tango.Except.throw_exception("Command failed", err_msg,
+                                         "Track command execution", tango.ErrSeverity.ERR)
+        # PROTECTED REGION END #    //  SubarrayNode.Track
 
 # ----------
 # Run server
