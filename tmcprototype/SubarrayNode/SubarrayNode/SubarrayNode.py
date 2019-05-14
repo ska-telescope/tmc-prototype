@@ -482,7 +482,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
         excpt_msg = []
         excpt_count = 0
-        print("argin is: ", argin)
         try:
             self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
             # set obsState to CONFIGURING when the configuration is started
@@ -499,14 +498,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.dev_logging(CONST.STR_TRACK_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
 
         except tango.DevFailed as devfailed:
-            excpt_msg.append("Command failure for group of devices " + ": " + \
+            excpt_msg.append(CONST.ERR_TRACK_CMD + ": " + \
                            str(devfailed.args[0].desc))
             excpt_count += 1
         except Exception as except_occured:
             print(CONST.ERR_TRACK_CMD, "\n", except_occured)
             self._read_activity_message = CONST.ERR_TRACK_CMD + str(except_occured)
             self.dev_logging(CONST.ERR_TRACK_CMD, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append("Exception occured in Track command invoked on the group of devices " + ": " + \
+            excpt_msg.append(CONST.ERR_TRACK_CMD + ": " + \
                              str(except_occured.args[0].desc))
             excpt_count += 1
 
@@ -516,8 +515,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("Command failed", err_msg,
-                                         "Track command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.ERR_CMD_FAILED, err_msg,
+                                         CONST.STR_TRACK_EXECUTION, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  SubarrayNode.Track
 
 # ----------
