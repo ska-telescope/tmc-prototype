@@ -20,12 +20,12 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
+import time
 import tango
 from tango import DevState
 import pytest
 from DishMaster.DishMaster import DishMaster
 import CONST
-import time
 
 # Note:
 #
@@ -99,7 +99,7 @@ class TestDishMaster(object):
     def test_Reset(self, tango_context):
         """Test for Reset"""
         # PROTECTED REGION ID(DishMaster.test_Reset) ENABLED START #
-        assert tango_context.device.Reset() == None
+        assert tango_context.device.Reset() is None
         # PROTECTED REGION END #    //  DishMaster.test_Reset
 
     def test_SetStowMode(self, tango_context):
@@ -144,11 +144,11 @@ class TestDishMaster(object):
         # Testing for invalid argument
         tango_context.device.Scan("a")
         assert tango_context.device.pointingState != 3
-        assert tango_context.device.capturing != True
+        assert tango_context.device.capturing is not True
         # Testing for valid argument
         tango_context.device.Scan("0")
         assert tango_context.device.pointingState == 3
-        assert tango_context.device.capturing == True
+        assert tango_context.device.capturing is True
         # Testing if the Scan is already in progress
         tango_context.device.Scan("0")
         assert tango_context.device.Status() == CONST.STR_DISH_NOT_READY
@@ -159,11 +159,11 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_StopCapture) ENABLED START #
         # Testing for invalid argument
         tango_context.device.StopCapture("a")
-        assert tango_context.device.capturing != False
+        assert tango_context.device.capturing is not False
         assert tango_context.device.pointingState != 0
         # Testing for valid argument
         tango_context.device.StopCapture("0")
-        assert tango_context.device.capturing == False
+        assert tango_context.device.capturing is False
         assert tango_context.device.pointingState == 0
         # Testing if data capturing is already stopped
         tango_context.device.StopCapture("0")
@@ -176,11 +176,11 @@ class TestDishMaster(object):
         # Testing for invalid argument
         tango_context.device.StartCapture("a")
         assert tango_context.device.pointingState != 3
-        assert tango_context.device.capturing != True
+        assert tango_context.device.capturing is not True
         # Testing for valid argument
         tango_context.device.StartCapture("0")
         assert tango_context.device.pointingState == 3
-        assert tango_context.device.capturing == True
+        assert tango_context.device.capturing is True
         # Testing if data capturing is already started
         tango_context.device.StartCapture("0")
         assert tango_context.device.Status() == CONST.STR_DATA_CAPTURE_ALREADY_STARTED
@@ -205,7 +205,7 @@ class TestDishMaster(object):
         tango_context.device.Slew("0")
         time.sleep(5)
         result = []
-        for i in range(1,len(tango_context.device.achievedPointing)):
+        for i in range(1, len(tango_context.device.achievedPointing)):
             if (tango_context.device.achievedPointing[i] == 1):
                 result.append(True)
             else:
@@ -367,7 +367,7 @@ class TestDishMaster(object):
     def test_capturing(self, tango_context):
         """Test for capturing"""
         # PROTECTED REGION ID(DishMaster.test_capturing) ENABLED START #
-        assert tango_context.device.capturing == False
+        assert tango_context.device.capturing is False
         # PROTECTED REGION END #    //  DishMaster.test_capturing
 
     def test_ConfiguredBand(self, tango_context):
@@ -387,22 +387,22 @@ class TestDishMaster(object):
     def test_maxCapabilities(self, tango_context):
         """Test for maxCapabilities"""
         # PROTECTED REGION ID(DishMaster.test_maxCapabilities) ENABLED START #
-        assert tango_context.device.maxCapabilities == None
+        assert tango_context.device.maxCapabilities is None
         # PROTECTED REGION END #    //  DishMaster.test_maxCapabilities
 
     def test_availableCapabilities(self, tango_context):
         """Test for availableCapabilities"""
         # PROTECTED REGION ID(DishMaster.test_availableCapabilities) ENABLED START #
-        assert tango_context.device.availableCapabilities == None
+        assert tango_context.device.availableCapabilities is None
         # PROTECTED REGION END #    //  DishMaster.test_availableCapabilities
 
     def test_desiredPointing(self, tango_context):
         """Test for desiredPointing"""
         # PROTECTED REGION ID(DishMaster.test_desiredPointing) ENABLED START #
-        desired_pointing = [0,0,0]
+        desired_pointing = [0, 0, 0]
         result = []
-        tango_context.device.desiredPointing = [0,0,0]
-        for i in range(0,len(desired_pointing)):
+        tango_context.device.desiredPointing = [0, 0, 0]
+        for i in range(0, len(desired_pointing)):
             if (tango_context.device.desiredPointing[i] == 0):
                 result.append(True)
             else:
@@ -414,7 +414,7 @@ class TestDishMaster(object):
         """Test for achievedPointing"""
         # PROTECTED REGION ID(DishMaster.test_achievedPointing) ENABLED START #
         result = []
-        for i in range(1,len(tango_context.device.achievedPointing)):
+        for i in range(1, len(tango_context.device.achievedPointing)):
             if (tango_context.device.achievedPointing[i] == 1):
                 result.append(True)
             else:

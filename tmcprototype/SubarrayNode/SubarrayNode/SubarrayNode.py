@@ -22,22 +22,23 @@ module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNo
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
-# tango imports
-import tango
-from tango import DebugIt, DevState, AttrWriteType
-from tango.server import run, DeviceMeta, attribute, command, device_property
-from skabase.SKASubarray.SKASubarray import SKASubarray
-
-# Additional import
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 import random
 import string
-import CONST
+
+# Tango imports
+import tango
+from tango import DebugIt, DevState, AttrWriteType
+from tango.server import run, DeviceMeta, attribute, command, device_property
 from future.utils import with_metaclass
+from skabase.SKASubarray.SKASubarray import SKASubarray
+
+# Additional import
+import CONST
+
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 __all__ = ["SubarrayNode", "main"]
-
 
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
@@ -200,9 +201,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def ReleaseAllResources(self):
         """
-        Releases all the resources from the subarray. If the command execution fails, array of receptors (device names)
-        which are failed to be realeased from the subarray, is returned to Central Node. Upon successful execution,
-        all the resources of a given subarray get released and empty array is returned.
+        Releases all the resources from the subarray. If the command execution fails, array of receptors
+        (device names) which are failed to be realeased from the subarray, is returned to Central Node.
+        Upon successful execution, all the resources of a given subarray get released and empty array
+        is returned.
 
         :param argin:
             DevVoid.
@@ -301,7 +303,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     self._health_state = 0
                 elif failed_health_count != 0:
                     self._health_state = 2
-                elif degraded_health_count   != 0:
+                elif degraded_health_count != 0:
                     self._health_state = 1
                 else:
                     self._health_state = 3
@@ -321,7 +323,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     DishLeafNodePrefix = device_property(
         dtype='str', default_value="ska_mid/tm_leaf_node/d",
-        doc = "Device name prefix for the Dish Leaf Node",
+        doc="Device name prefix for the Dish Leaf Node",
     )
 
     # ----------
@@ -433,7 +435,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     @command(
         dtype_in=('str',),
-        doc_in="Pointing parameters of Dish - Azimuth and Elevation Angle.",
+        doc_in="Pointing parameters of Dish - Right ascension and Declination coordinates.",
     )
     @DebugIt()
     def Configure(self, argin):
@@ -471,6 +473,53 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                         DevState.STANDBY]
         # PROTECTED REGION END #    //  SubarrayNode.is_Configure_allowed
 
+    @command(
+    dtype_in='str',
+    doc_in="Initial Pointing parameters of Dish - Right ascension and Declination coordinates.",
+    )
+    @DebugIt()
+    def Track(self, argin):
+        # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
+        excpt_msg = []
+        excpt_count = 0
+        print("argin is: ", argin)
+        try:
+            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
+            # set obsState to CONFIGURING when the configuration is started
+            self._obs_state = 1
+            cmd_input = []
+            cmd_input.append(argin)
+            cmdData = tango.DeviceData()
+            cmdData.insert(tango.DevVarStringArray, cmd_input)
+            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
+            # set obsState to READY when the configuration is completed
+            self._obs_state = 2
+            self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            self.dev_logging(CONST.STR_TRACK_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+
+        except tango.DevFailed as devfailed:
+            excpt_msg.append("Command failure for group of devices " + ": " + \
+                           str(devfailed.args[0].desc))
+            excpt_count += 1
+        except Exception as except_occured:
+            print(CONST.ERR_TRACK_CMD, "\n", except_occured)
+            self._read_activity_message = CONST.ERR_TRACK_CMD + str(except_occured)
+            self.dev_logging(CONST.ERR_TRACK_CMD, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append("Exception occured in Track command invoked on the group of devices " + ": " + \
+                             str(except_occured.args[0].desc))
+            excpt_count += 1
+
+        # throw exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
+            tango.Except.throw_exception("Command failed", err_msg,
+                                         "Track command execution", tango.ErrSeverity.ERR)
+        # PROTECTED REGION END #    //  SubarrayNode.Track
+
 # ----------
 # Run server
 # ----------
@@ -485,7 +534,6 @@ def main(args=None, **kwargs):
     """
     return run((SubarrayNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SubarrayNode.main
-
 
 if __name__ == '__main__':
     main()
