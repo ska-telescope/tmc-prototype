@@ -54,6 +54,7 @@ SCAN_ALREADY_COMPLETED = "Scan is already completed"
 RESRC_ALREADY_RELEASED = "Resources are already released from Subarray"
 STR_FALSE = "False"
 STR_OK = "OK"
+STR_TRACK_EXECUTION = "Track command execution"
 
 
 #Error messages
@@ -65,6 +66,7 @@ ERR_AGGR_HEALTH_STATE = "Unexpected error while aggregating Health state!\n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error event on subscribing Subarray HealthState!\n"
 ERR_CONFIGURE_CMD = "Exception in Configure command: \n "
 ERR_TRACK_CMD = "Exception in Track command: \n "
+ERR_CMD_FAILED= "Command failed"
 
 #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
