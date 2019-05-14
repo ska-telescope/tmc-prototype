@@ -8,23 +8,18 @@
 # See LICENSE.txt for more info.
 
 """ Subarray Node
-
 Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
+
 from __future__ import print_function
 from __future__ import absolute_import
 
 import os
 import sys
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
-sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
-
-# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 import random
 import string
+# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 
 # Tango imports
 import tango
@@ -35,6 +30,12 @@ from skabase.SKASubarray.SKASubarray import SKASubarray
 
 # Additional import
 import CONST
+
+
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
+sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
 
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
@@ -57,7 +58,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Schedules a scan for execution on a subarray. Command has a parameter which
         indicates the time (TAI) at which the Scan will start. Subarray transitions to
         obsState = SCANNING, when the execution of a scan starts.
+
         :param argin: String array with Scan start time as first element.
+
         :return: None
         """
         try:
@@ -90,6 +93,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def EndScan(self):
         """ Ends the scan. It can be either an automatic or an externally triggered transition
         after the scanning completes normally.
+
+        :param argin: DevVoid.
+
+        :return: None
         """
         try:
             assert self._obs_state == 3, CONST.SCAN_ALREADY_COMPLETED
@@ -206,11 +213,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Upon successful execution, all the resources of a given subarray get released and empty array
         is returned.
 
-        :param argin:
-            DevVoid.
+        :param argin: DevVoid.
 
-        :return:
-            DevVarStringArray.
+        :return: DevVarStringArray.
         """
         try:
             argout = []
@@ -255,8 +260,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         Retrieves the subscribed DishMaster health state, aggregate them to evaluate
         health state of the Subarray.
+
         :param evt: A TANGO_CHANGE event on DishMaster healthState.
+
         :return: None
+
         """
         if evt.err is False:
             try:
@@ -359,6 +367,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def init_device(self):
         """
         Initializes the attributes and properties of the Subarray node.
+
         :return: None
         """
         SKASubarray.init_device(self)
@@ -442,8 +451,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION ID(SubarrayNode.Configure) ENABLED START #
         """
         Configures the resources assinged to the Subarray.
+
         :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
+
         :return: None
+
         """
         try:
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
@@ -474,12 +486,23 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION END #    //  SubarrayNode.is_Configure_allowed
 
     @command(
-    dtype_in='str',
-    doc_in="Initial Pointing parameters of Dish - Right ascension and Declination coordinates.",
+        dtype_in='str',
+        doc_in="Initial Pointing parameters of Dish - Right ascension and Declination coordinates.",
     )
     @DebugIt()
     def Track(self, argin):
         # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
+        """ Invokes Track command on the resources assigned to the Subarray.
+
+        :param argin: DevString
+
+        Argin to be provided is the Ra and Dec values in the following format: radec|2:31:50.91|89:15:51.4
+        Where first value is tag that is radec, second value is Ra in Hr:Min:Sec, and third value is Dec in
+        Deg:Min:Sec.
+
+        :return: None
+
+        """
         excpt_msg = []
         excpt_count = 0
         try:
