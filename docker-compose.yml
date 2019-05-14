@@ -14,7 +14,6 @@
 #   - centralnode: Central Node
 #   - cspmasterleafnode: CSP Master Leaf Node
 #   - tmclogger: Logger for TMC
-#   - tmclogviewer: Log viewer for TMC prototype
 #   - tm-alarmhandler: TM AlarmHandler service
 #   - configure-alarms: Alarm configuration for TM AlarmHandler
 # Requires:
@@ -393,25 +392,6 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
             /venv/bin/python /app/tmcprototype/configure_logging.py"
-
-  tmclogviewer:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-java:latest
-    depends_on:
-    - databaseds
-    - configurelogger
-    - tmclogger
-    - rsyslog-tmcprototype
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}tmclogviewer
-    environment:
-    - TANGO_HOST=${TANGO_HOST}
-    - XAUTHORITY=/tmp/.docker.xauth
-    - DISPLAY=${DISPLAY}
-    volumes:
-    - /tmp/.X11-unix:/tmp/.X11-unix
-    command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             TANGO_HOST=${TANGO_HOST} /usr/local/bin/logviewer"
 
   tm-alarmhandler:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmalarmhandler
