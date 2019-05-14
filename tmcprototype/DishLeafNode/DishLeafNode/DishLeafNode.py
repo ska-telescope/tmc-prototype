@@ -245,6 +245,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                                   timestamp=timestamp,
                                                                   antenna=dish_antenna)
 
+
+
             # TODO: Conversion of apparent ra and dec using katpoint library for future refererence.
             #target_apparnt_ra = katpoint._ephem_extra.angle_from_hours(target_apparnt_radec[0])
             #target_apparnt_dec = katpoint._ephem_extra.angle_from_degrees(target_apparnt_radec[1])
@@ -284,29 +286,29 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         while(1):
             if (self.el <= 17.5 or self.el > 90):
                 self.event_el.set()
+                print("\n", "Elevation Limit is reached")
                 break
 
     def tracking_time_thread(self):
-        t = 1               #Tracking time in minute
         self.event_track_time = threading.Event()
         self.event_track_time.clear()
         start_track_time = time.time()
+        end_track_time = start_track_time + self.TrackDuration *60
         while(1):
-            if start_track_time == start_track_time + t*60:
+            if end_track_time <= time.time():
                 self.event_track_time.set()
+                print("\n", "Time limit is reached")
                 break
 
 
     def track_thread(self, argin):
-        #tracking_time_sec = 25  # Currently 25 sec
-        # Jive Input : radec|2:31:50.91|89:15:51.4   #Polaris
         radec_value = argin.replace('|', ',')
         # RaDec as input argument
         '''
         Timestamp value if given as input argument
         timestamp_value = argin[1].replace('|', ' ')
         '''
-        while(self.event_el.is_set() == False or self.event_track_time == False):
+        while(self.event_el.is_set() == False and self.event_track_time.is_set() == False):
             print("\n")
             try:
                 # timestamp_value = Current system time in UTC
@@ -330,8 +332,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             except Exception as except_occurred:
                 print("Exception occured in Track", except_occurred)
             time.sleep(0.1)
-        print("\n")
-        print("Elevation limit is reached")
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
@@ -341,6 +341,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     DishMasterFQDN = device_property(
         dtype='str',
         doc="FQDN of Dish Master Device",
+    )
+
+    TrackDuration = device_property(
+        dtype='int',
     )
 
     # ----------
@@ -657,18 +661,17 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     @command(
     dtype_in=('str',), 
-    dtype_out=('str',), 
     )
     @DebugIt()
     def Track(self, argin):
         # PROTECTED REGION ID(DishLeafNode.Track) ENABLED START #
-        self.elevation_lim_thread_thread1 = threading.Thread(None, self.elevation_lim_thread, 'DishLeafNode')
-        self.elevation_lim_thread_thread1.start()
+        # Jive Input : radec|2:31:50.91|89:15:51.4   #Polaris
+        self.elevation_lim_thread1 = threading.Thread(None, self.elevation_lim_thread, 'DishLeafNode')
+        self.elevation_lim_thread1.start()
         self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, 'DishLeafNode')
         self.tracking_time_thread1.start()
         self.track_thread1 = threading.Thread(None, self.track_thread, 'DishLeafNode', args=argin)
         self.track_thread1.start()
-        return [""]
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
 # ----------
