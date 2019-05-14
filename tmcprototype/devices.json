@@ -666,6 +666,16 @@
     "devName": "mid_csp/elt/master",
     "deviceProperties": [
       {
+        "devPropName": "CspMidCbf",
+        "devPropValue": "mid_csp_cbf/sub_elt/master"
+      },
+      {
+        "devPropName": "CspMidPss",
+        "devPropValue": "mid_csp_pss/sub_elt/master"
+      },
+      {
+        "devPropName": "CspMidPst",
+        "devPropValue": "mid_csp_pst/sub_elt/master"
       }
     ],
     "attributeProperties": [
