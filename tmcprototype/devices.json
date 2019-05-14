@@ -615,6 +615,10 @@
       {
         "devPropName": "SkaLevel",
         "devPropValue": 1
+      },
+      {
+        "devPropName": "CspMasterLeafNodeFQDN",
+        "devPropValue": ["ska_mid/tm_leaf_node/csp_master"]
       }
     ],
     "attributeProperties": [
