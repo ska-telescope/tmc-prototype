@@ -5,7 +5,7 @@
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
 import os
@@ -28,33 +28,33 @@ pack = ['CspMasterLeafNode']
 
 setup(name=name,
       version=version,
-      description='',
+      description='CSP Master Leaf Node is the component what interfaces with CSP Master.',
       packages=pack,
       include_package_data=True,
       test_suite="test",
-      entry_points={'console_scripts':['CspMasterLeafNode = CspMasterLeafNode:main']},
+      entry_points={'console_scripts': ['CspMasterLeafNode = CspMasterLeafNode:main']},
       author='apurva.ska',
       author_email='apurva.ska at gmail.com',
-      license='GPL',
+      license='BSD-3-Clause',
       long_description=long_description,
       url='www.tango-controls.org',
       platforms="All Platforms",
       install_requires=['pytango==9.2.5', 'mock'],
-      #test_suite='test',
+      # test_suite='test',
       setup_requires=[
-        # dependency for `python setup.py test`
-        'pytest-runner',
-        # dependencies for `python setup.py build_sphinx`
-        'sphinx',
-        'recommonmark'
+          # dependency for `python setup.py test`
+          'pytest-runner',
+          # dependencies for `python setup.py build_sphinx`
+          'sphinx',
+          'recommonmark'
       ],
       tests_require=[
-            'pytest',
-            'pytest-cov',
-            'pytest-json-report',
-            'pycodestyle',
+          'pytest',
+          'pytest-cov',
+          'pytest-json-report',
+          'pycodestyle',
       ],
       extras_require={
-            'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
+          'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
       }
-)
+      )
