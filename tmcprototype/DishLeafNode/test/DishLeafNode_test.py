@@ -47,7 +47,7 @@ class TestDishLeafNode(object):
     device = DishLeafNode
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'DishMasterFQDN': 'tango://apurva-pc:10000/mid_d0001/elt/master',
+                  'DishMasterFQDN': 'tango://apurva-pc:10000/mid_d0001/elt/master','TrackDuration': 1,
                   }
     empty = None  # Should be []
 
@@ -132,7 +132,7 @@ class TestDishLeafNode(object):
         """Test for Configure_invalid_arguments"""
         tango_context.device.Configure(["Polaris | polaris, 2:31:50.88, 89:15:51.4", '2019-02-18 11:17:00'])
         print(tango_context.device.activityMessage)
-        assert CONST.ERR_RADEC_TO_AZEL in tango_context.device.activityMessage
+        assert CONST.ERR_RADEC_TO_AZEL_VAL_ERR in tango_context.device.activityMessage
 
     def test_Scan(self, tango_context):
         """Test for Scan"""
@@ -339,3 +339,19 @@ class TestDishLeafNode(object):
                (CONST.STR_DISH_POINT_STATE_READY) or (CONST.STR_CAPTURE_EVENT)
         assert create_dish_proxy.capturing is False
         create_dish_proxy.unsubscribe_event(eid)
+
+    def test_Track(self, tango_context, create_dish_proxy):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        tango_context.device.Track(["radec|2:31:50.91|89:15:51.4"])
+        time.sleep(60)
+        assert create_dish_proxy.pointingState == 0
+        # PROTECTED REGION END #    //  DishLeafNode.Track
+
+    def test_Track_invalid_arg(self, tango_context):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        tango_context.device.Track(["radec|2:31:50.91"])
+        time.sleep(5)
+        assert tango_context.device.activityMessage == CONST.ERR_RADEC_TO_AZEL_VAL_ERR
+        # PROTECTED REGION END #    //  DishLeafNode.test_Track

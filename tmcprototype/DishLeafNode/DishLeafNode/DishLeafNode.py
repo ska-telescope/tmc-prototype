@@ -20,11 +20,6 @@ module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/DishLeafNo
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
-import math
-import re
-import katpoint
-from future.utils import with_metaclass
-
 # PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType
@@ -235,6 +230,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def convert_radec_to_azel(self, data):
         try:
+            print("Data:", data)
             # Setting Observer Position as Pune
             dish_antenna = katpoint.Antenna(name='d1',
                                             latitude='18:31:48:00',
@@ -250,8 +246,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             target_apparnt_radec = katpoint.Target.apparent_radec(desired_target,
                                                                   timestamp=timestamp,
                                                                   antenna=dish_antenna)
-
-
 
             # TODO: Conversion of apparent ra and dec using katpoint library for future refererence.
             #target_apparnt_ra = katpoint._ephem_extra.angle_from_hours(target_apparnt_radec[0])
@@ -281,16 +275,24 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print("Azimuth coordinate: ", self.az)
             self.el = katpoint.rad2deg(self.az_el_coordinates[1])
             print("Elevation Coordinate: ", self.el)
+            self.RaDec_AzEl_Conversion = True
+
+        except ValueError:
+            print(CONST.ERR_RADEC_TO_AZEL_VAL_ERR)
+            self.RaDec_AzEl_Conversion = False
+            self._read_activity_message = CONST.ERR_RADEC_TO_AZEL_VAL_ERR
+            self.dev_logging(CONST.ERR_RADEC_TO_AZEL_VAL_ERR, int(tango.LogLevel.LOG_ERROR))
 
         except Exception as except_occurred:
+            self.RaDec_AzEl_Conversion = False
             self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
 
     def elevation_lim_thread(self):
         self.event_el = threading.Event()
         self.event_el.clear()
-        while(1):
-            if (self.el <= 17.5 or self.el > 90):
+        while 1:
+            if self.el <= 17.5 or self.el > 90:
                 self.event_el.set()
                 print("\n", "Elevation Limit is reached")
                 break
@@ -299,13 +301,14 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self.event_track_time = threading.Event()
         self.event_track_time.clear()
         start_track_time = time.time()
-        end_track_time = start_track_time + self.TrackDuration *60
-        while(1):
+
+        end_track_time = start_track_time + float(self.TrackDuration * 60.0)
+
+        while 1:
             if end_track_time <= time.time():
                 self.event_track_time.set()
                 print("\n", "Time limit is reached")
                 break
-
 
     def track_thread(self, argin):
         radec_value = argin.replace('|', ',')
@@ -314,7 +317,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         Timestamp value if given as input argument
         timestamp_value = argin[1].replace('|', ' ')
         '''
-        while(self.event_el.is_set() == False and self.event_track_time.is_set() == False):
+        print("argin:", argin)
+        while self.event_el.is_set() is False and self.event_track_time.is_set() is False:
             print("\n")
             try:
                 # timestamp_value = Current system time in UTC
@@ -324,20 +328,25 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 katpoint_arg.insert(1, timestamp_value)
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
-                if self.az < 0:
-                    self.az = 360 - abs(self.az)
+                if self.RaDec_AzEl_Conversion is True:
+                    if self.az < 0:
+                        self.az = 360 - abs(self.az)
 
-                roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
-                spectrum = [0]
-                spectrum.extend((roundoff_az_el))
-                # assign calculated AzEl to desiredPointing attribute of Dishmaster
-                self._dish_proxy.desiredPointing = spectrum
-                print("self._dish_proxy.desiredPointing", self._dish_proxy.desiredPointing)
-                # Invoke Track command of Dish Master
-                self._dish_proxy.command_inout_asynch("Track", "0", self.commandCallback)
+                    roundoff_az_el = [round(self.az, 12), round(self.el, 12)]
+                    spectrum = [0]
+                    spectrum.extend((roundoff_az_el))
+                    # assign calculated AzEl to desiredPointing attribute of Dishmaster
+                    self._dish_proxy.desiredPointing = spectrum
+                    print("self._dish_proxy.desiredPointing", self._dish_proxy.desiredPointing)
+                    # Invoke Track command of Dish Master
+                    self._dish_proxy.command_inout_asynch("Track", "00-00-0000 00:00:00", self.commandCallback)
+                else:
+                    break
             except Exception as except_occurred:
                 print("Exception occured in Track", except_occurred)
-            time.sleep(0.1)
+                self._read_activity_message = CONST.ERR_TRACK + str(except_occurred)
+                self.dev_logging(CONST.ERR_TRACK, int(tango.LogLevel.LOG_ERROR))
+            time.sleep(0.05)
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
@@ -350,7 +359,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     TrackDuration = device_property(
-        dtype='int',
+        dtype='int', default_value=1
     )
 
     # ----------
@@ -376,10 +385,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(DishLeafNode.init_device) ENABLED START #
+        print("TrackDur:", self.TrackDuration)
         print(CONST.STR_INIT_LEAF_NODE)
         self._read_activity_message = CONST.STR_INIT_LEAF_NODE
         self.SkaLevel = 3
         self.el = 50.0
+        self.az = 0
+        self.RaDec_AzEl_Conversion = False
         try:
             print(CONST.STR_DISHMASTER_FQN, self.DishMasterFQDN)
             self._read_activity_message = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
@@ -564,7 +576,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # self.convert_radec_to_azel(argin)
 
             # Invoke slew command on DishMaster with az and el as inputs
-            if (self.el >= 0 and self.el < 90):
+            if self.el >= 0 and self.el < 90:
                 # To obtain positive value of azimuth coordinate
                 if self.az < 0:
                     self.az = 360 - abs(self.az)
@@ -666,7 +678,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION END #    //  DishLeafNode.Slew
 
     @command(
-    dtype_in=('str',), 
+        dtype_in=('str',),
     )
     @DebugIt()
     def Track(self, argin):
@@ -676,6 +688,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self.elevation_lim_thread1.start()
         self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, 'DishLeafNode')
         self.tracking_time_thread1.start()
+        print("argin in Track: ", argin)
         self.track_thread1 = threading.Thread(None, self.track_thread, 'DishLeafNode', args=argin)
         self.track_thread1.start()
         # PROTECTED REGION END #    //  DishLeafNode.Track

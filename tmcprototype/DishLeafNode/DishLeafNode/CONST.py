@@ -106,6 +106,8 @@ ERR_EXE_STOP_CAPTURE_CMD = "Exception occurred in StopCapture command"
 ERR_EXE_STANDBYFP_CMD = "Exception occurred in SetStandbyFPMode command"
 ERR_EXE_SLEW_CMD = "Exception occurred in Slew command"
 ERR_RADEC_TO_AZEL = "Exception occurred in Ra-Dec to Az-El conversion "
+ERR_TRACK = "Exception occurred in Track command "
+ERR_RADEC_TO_AZEL_VAL_ERR = "Value Error in Ra-Dec to Az-El conversion."
 # commands success string
 STR_SETSTANDBYLP_SUCCESS = "Command :-> SetStandbyLPMode invoked successfully."
 STR_SETOPERATE_SUCCESS = "Command :-> SetOperateMode invoked successfully."
