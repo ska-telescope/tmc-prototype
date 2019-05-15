@@ -181,8 +181,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
             self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
 
-
-
     # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
 
     # -----------------
@@ -195,16 +193,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
 
     activityMessage = attribute(
         dtype='str',
@@ -256,8 +244,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
             self.dev_logging(CONST.ERR_IN_CREATE_PROXY_CSP_MASTER, int(tango.LogLevel.LOG_ERROR))
 
-
-
         # Subscribing to CSPMaster Attributes
         try:
             self._csp_proxy.subscribe_event(CONST.EVT_CBF_HEALTH, EventType.CHANGE_EVENT, self.cspCbfHealthCallback, stateless=True)
@@ -276,7 +262,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_CSP_MASTER_LEAF_INIT)
             self.dev_logging(CONST.ERR_CSP_MASTER_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
-
         # PROTECTED REGION END #    //  CspMasterLeafNode.init_device
 
     def always_executed_hook(self):
