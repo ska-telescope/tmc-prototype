@@ -31,5 +31,3 @@ ERR_EXE_STRT_CAPTURE_CMD = "Unexpected error in executing StartCapture Command o
 ERR_EXE_STOP_CAPTURE_CMD = "Unexpected error in executing StopCapture Command on Dish"
 ERR_EXE_SLEW_CMD = "Unexpected error in executing Slew Command on Dish"
 
-
-#

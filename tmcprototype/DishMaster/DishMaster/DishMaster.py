@@ -800,9 +800,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def Track(self, argin):
         try:
             # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
-            # argin format : YYYY-DD-MM HH:MM:SS
-            print("\n")
-            print("Timestamp:", datetime.datetime.utcnow())
 
             self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
             self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
