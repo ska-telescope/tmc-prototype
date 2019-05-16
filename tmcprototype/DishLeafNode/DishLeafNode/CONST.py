@@ -108,6 +108,8 @@ ERR_EXE_SLEW_CMD = "Exception occurred in Slew command"
 ERR_RADEC_TO_AZEL = "Exception occurred in Ra-Dec to Az-El conversion "
 ERR_TRACK = "Exception occurred in Track command "
 ERR_RADEC_TO_AZEL_VAL_ERR = "Value Error in Ra-Dec to Az-El conversion."
+ERR_ELE_LIM = "Elevation Limit is reached."
+ERR_TIME_LIM = "Time limit is reached."
 # commands success string
 STR_SETSTANDBYLP_SUCCESS = "Command :-> SetStandbyLPMode invoked successfully."
 STR_SETOPERATE_SUCCESS = "Command :-> SetOperateMode invoked successfully."
@@ -125,3 +127,4 @@ STR_ACHIEVEDPOINTING_0_0 = "Achieved Pointing :-> [0. 0. 0.]"
 STR_DESIREDPOINTING_0_0 = "Desired Pointing :-> [0. 0. 0.]"
 
 STR_TARGET_NOT_OBSERVED = "Target can not be observed."
+STR_EXE_TRACK = "Exception occured in Track"

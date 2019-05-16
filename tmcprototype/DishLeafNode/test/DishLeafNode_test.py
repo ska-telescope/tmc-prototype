@@ -104,7 +104,7 @@ class TestDishLeafNode(object):
         assert tango_context.device.activityMessage == CONST.STR_SETSTANDBYLP_SUCCESS
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStandByLPMode
 
-    def test_SetOperateMode(self, tango_context, create_dish_proxy):
+    def test_SetOperateMode(self, tango_context):
         """Test for SetOperateMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetOperateMode) ENABLED START #
         tango_context.device.SetOperateMode()

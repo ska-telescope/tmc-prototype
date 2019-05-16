@@ -50,8 +50,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishModeCallback(self, evt):
         """
         Retrieves the subscribed dishMode attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on dishMode attribute.
-        :return: None
+
+        :return: None.
+
         """
         if evt.err is False:
             try:
@@ -98,8 +101,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishPointingStateCallback(self, evt):
         """
         Retrieves the subscribed pointingState attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on pointingState attribute.
-        :return: None
+
+        :return: None.
+
         """
         if evt.err is False:
             try:
@@ -131,8 +137,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishCapturingCallback(self, evt):
         """
         Retrieves the subscribed capturing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on capturing attribute.
-        :return: None
+
+        :return: None.
+
         """
         if evt.err is False:
             try:
@@ -158,8 +167,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishAchievedPointingCallback(self, evt):
         """
         Retrieves the subscribed achievedPointing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on achievedPointing attribute.
-        :return: None
+
+        :return: None.
+
         """
         if evt.err is False:
             try:
@@ -178,8 +190,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishDesiredPointingCallback(self, evt):
         """
         Retrieves the subscribed desiredPointing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on desiredPointing attribute.
-        :return: None
+
+        :return: None.
+
         """
         if evt.err is False:
             try:
@@ -198,8 +213,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def commandCallback(self, event):
         """
         Checks whether the command has been successfully invoked on DishMaster.
+
         :param event: response from DishMaster for the invoked command
-        :return: None
+
+        :return: None.
+
         """
         try:
             if event.err:
@@ -220,7 +238,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
 
     def dmstodd(self, dish_antenna_latitude):
-        # Convert latitude from deg:min:sec to degree decimal
+        """Converts latitude from deg:min:sec to decimal degree format.
+
+        :param dish_antenna_latitude: latitude of Dish location in Deg:Min:Sec.
+
+        :return: latitude of Dish location in decimal Degree.
+
+        """
         dd = re.split('[:]+', dish_antenna_latitude)
         deg_dec = abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
         if "-" in dd[0]:
@@ -229,8 +253,17 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             return deg_dec
 
     def convert_radec_to_azel(self, data):
+        """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
+
+        :param data: DevVarStringArray
+        Argin to be provided is the Ra and Dec values in the following format: radec|2:31:50.91|89:15:51.4
+        Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,and third value is Dec in
+        Deg:Min:Sec.
+
+        :return: None.
+
+        """
         try:
-            print("Data:", data)
             # Setting Observer Position as Pune
             dish_antenna = katpoint.Antenna(name='d1',
                                             latitude='18:31:48:00',
@@ -289,37 +322,56 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
 
     def elevation_lim_thread(self):
+        """This thread allows Dish to track a source till elevation limit of dish.
+
+        :return: None.
+
+        """
         self.event_el = threading.Event()
         self.event_el.clear()
         while 1:
-            if self.el <= 17.5 or self.el > 90:
+            if self.el <= self.ele_min_lim or self.el > self.ele_max_lim:
                 self.event_el.set()
-                print("\n", "Elevation Limit is reached")
+                self._read_activity_message = CONST.ERR_ELE_LIM
                 break
 
     def tracking_time_thread(self):
+        """This thread allows dish to track for prespecified limit of Track Duration.
+
+        :return: None.
+
+        """
         self.event_track_time = threading.Event()
         self.event_track_time.clear()
         start_track_time = time.time()
-
-        end_track_time = start_track_time + float(self.TrackDuration * 60.0)
-
+        end_track_time = start_track_time + self.TrackDuration * 60.0
         while 1:
             if end_track_time <= time.time():
                 self.event_track_time.set()
-                print("\n", "Time limit is reached")
+                self._read_activity_message = CONST.ERR_TIME_LIM
                 break
 
     def track_thread(self, argin):
+        """This thread invokes Track command on DishMaster at the rate of 20 Hz.
+
+        :param argin: DevVarStringArray
+
+        For Track thread, argin to be provided is the Ra and Dec values in the following format:
+        radec|2:31:50.91|89:15:51.4 Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,
+        and third value is Dec in Deg:Min:Sec.
+
+        It takes system's current time in UTC as timestamp and converts RaDec to AzEl using
+        convert_radec_to_azel method of class DishLeafNode.
+
+        :return: None.
+
+        """
         radec_value = argin.replace('|', ',')
         # RaDec as input argument
-        '''
-        Timestamp value if given as input argument
-        timestamp_value = argin[1].replace('|', ' ')
-        '''
-        print("argin:", argin)
+
+        #Timestamp value if given as input argument
+        #timestamp_value = argin[1].replace('|', ' ')
         while self.event_el.is_set() is False and self.event_track_time.is_set() is False:
-            print("\n")
             try:
                 # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
@@ -339,11 +391,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._dish_proxy.desiredPointing = spectrum
                     print("self._dish_proxy.desiredPointing", self._dish_proxy.desiredPointing)
                     # Invoke Track command of Dish Master
-                    self._dish_proxy.command_inout_asynch("Track", "00-00-0000 00:00:00", self.commandCallback)
+                    self._dish_proxy.command_inout_asynch("Track", "0", self.commandCallback)
                 else:
                     break
             except Exception as except_occurred:
-                print("Exception occured in Track", except_occurred)
+                print(CONST.STR_EXE_TRACK, except_occurred)
                 self._read_activity_message = CONST.ERR_TRACK + str(except_occurred)
                 self.dev_logging(CONST.ERR_TRACK, int(tango.LogLevel.LOG_ERROR))
             time.sleep(0.05)
@@ -381,17 +433,20 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         Initializes the attributes and properties of DishLeafNode and subscribes change event
         on attributes of DishMaster.
-        :return: None
+
+        :return: None.
+
         """
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(DishLeafNode.init_device) ENABLED START #
-        print("TrackDur:", self.TrackDuration)
         print(CONST.STR_INIT_LEAF_NODE)
         self._read_activity_message = CONST.STR_INIT_LEAF_NODE
         self.SkaLevel = 3
         self.el = 50.0
         self.az = 0
         self.RaDec_AzEl_Conversion = False
+        self.ele_max_lim = 90
+        self.ele_min_lim = 17.5
         try:
             print(CONST.STR_DISHMASTER_FQN, self.DishMasterFQDN)
             self._read_activity_message = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
@@ -513,8 +568,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Scan) ENABLED START #
         """
         Triggers the DishMaster to start the Scan.
+
         :param argin: timestamp
-        :return: None
+
+        :return: None.
+
         """
         try:
             if type(float(argin)) == float:
@@ -536,8 +594,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def EndScan(self, argin):
         # PROTECTED REGION ID(DishLeafNode.EndScan) ENABLED START #
         """ Triggers the DishMaster to stop the Scan.
+
         :param argin: timestamp
-        :return: None
+
+        :return: None.
+
         """
         try:
             if type(float(argin)) == float:
@@ -558,9 +619,12 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
+
         :param argin: String array that includes pointing parameters of Dish - Azimuth and
         Elevation Angle.
-        :return: None
+
+        :return: None.
+
         """
         try:
             # Convert ra and dec to az and el
@@ -608,8 +672,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def StartCapture(self, argin):
         # PROTECTED REGION ID(DishLeafNode.StartCapture) ENABLED START #
         """ Triggers the DishMaster to Start capture on the set configured band.
+
         :param argin: timestamp
+
         :return: None
+
         """
         try:
             if type(float(argin)) == float:
@@ -630,8 +697,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.StopCapture) ENABLED START #
         """
         Triggers the DishMaster to Stop capture on the set configured band.
+
         :param argin: timestamp
+
         :return: None
+
         """
         try:
             if type(float(argin)) == float:
@@ -665,8 +735,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Slew) ENABLED START #
         """
         Triggers the DishMaster to slew the dish towards the set pointing coordinates.
+
         :param argin: timestamp
+
         :return: None
+
         """
         try:
             if type(float(argin)) == float:
@@ -683,12 +756,27 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def Track(self, argin):
         # PROTECTED REGION ID(DishLeafNode.Track) ENABLED START #
-        # Jive Input : radec|2:31:50.91|89:15:51.4   #Polaris
+        """ Invokes Track command on the DishMaster.
+
+        :param argin: DevVarStringArray
+
+        The elevation limit thread allows Dish to track a source till the observation capacity i.e.
+        elevation limit of dish.
+
+        The tracking time thread allows dish to track a source for the prespecified Track Duration
+        (provided elevation limit is not reached).
+
+        For Track command, Argin to be provided is the Ra and Dec values in the following format:
+        radec|2:31:50.91|89:15:51.4 Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,
+        and third value is Dec in Deg:Min:Sec.
+
+        :return: None
+
+        """
         self.elevation_lim_thread1 = threading.Thread(None, self.elevation_lim_thread, 'DishLeafNode')
         self.elevation_lim_thread1.start()
         self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, 'DishLeafNode')
         self.tracking_time_thread1.start()
-        print("argin in Track: ", argin)
         self.track_thread1 = threading.Thread(None, self.track_thread, 'DishLeafNode', args=argin)
         self.track_thread1.start()
         # PROTECTED REGION END #    //  DishLeafNode.Track
@@ -701,8 +789,11 @@ def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishLeafNode.main) ENABLED START #
     """
     Runs the DishLeafNode.
+
     :param args: Arguments internal to TANGO
+
     :param kwargs: Arguments internal to TANGO
+
     :return: DishLeafNode TANGO object.
     """
     return run((DishLeafNode,), args=args, **kwargs)
