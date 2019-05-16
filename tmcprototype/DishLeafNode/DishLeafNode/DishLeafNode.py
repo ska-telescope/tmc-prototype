@@ -327,10 +327,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None.
 
         """
-        self.event_el = threading.Event()
-        self.event_el.clear()
         while 1:
-            if self.el <= self.ele_min_lim or self.el > self.ele_max_lim:
+            if (self.el <= self.ele_min_lim or self.el > self.ele_max_lim) or self.event_track_time.isSet():
                 self.event_el.set()
                 self._read_activity_message = CONST.ERR_ELE_LIM
                 break
@@ -341,12 +339,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None.
 
         """
-        self.event_track_time = threading.Event()
-        self.event_track_time.clear()
         start_track_time = time.time()
         end_track_time = start_track_time + self.TrackDuration * 60.0
         while 1:
-            if end_track_time <= time.time():
+            if end_track_time <= time.time() or self.event_el.isSet():
                 self.event_track_time.set()
                 self._read_activity_message = CONST.ERR_TIME_LIM
                 break
@@ -371,8 +367,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         #Timestamp value if given as input argument
         #timestamp_value = argin[1].replace('|', ' ')
-        while self.event_el.is_set() is False and self.event_track_time.is_set() is False:
-            try:
+
+        try:
+            while self.event_el.is_set() is False and self.event_track_time.is_set() is False:
                 # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
                 katpoint_arg = []
@@ -394,11 +391,14 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._dish_proxy.command_inout_asynch("Track", "0", self.commandCallback)
                 else:
                     break
-            except Exception as except_occurred:
-                print(CONST.STR_EXE_TRACK, except_occurred)
-                self._read_activity_message = CONST.ERR_TRACK + str(except_occurred)
-                self.dev_logging(CONST.ERR_TRACK, int(tango.LogLevel.LOG_ERROR))
-            time.sleep(0.05)
+                time.sleep(0.05)
+        except Exception as except_occurred:
+            print(CONST.STR_EXE_TRACK, except_occurred)
+            self._read_activity_message = CONST.ERR_TRACK + str(except_occurred)
+            self.dev_logging(CONST.ERR_TRACK, int(tango.LogLevel.LOG_ERROR))
+        finally:
+            self.event_el.clear()
+            self.event_track_time.clear()
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
@@ -451,6 +451,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.STR_DISHMASTER_FQN, self.DishMasterFQDN)
             self._read_activity_message = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
             self._dish_proxy = DeviceProxy(self.DishMasterFQDN)   #Creating proxy to the DishMaster
+
+            #
+            self.event_el = threading.Event()
+            self.event_track_time = threading.Event()
         except Exception as except_occurred:
             print(CONST.ERR_IN_CREATE_PROXY_DM, except_occurred)
             self._read_activity_message = CONST.ERR_IN_CREATE_PROXY_DM + str(except_occurred)
@@ -773,6 +777,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
+        self.event_el.clear()
+        self.event_track_time.clear()
+
         self.elevation_lim_thread1 = threading.Thread(None, self.elevation_lim_thread, 'DishLeafNode')
         self.elevation_lim_thread1.start()
         self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, 'DishLeafNode')
