@@ -1,3 +1,5 @@
+""" Python file containing String Variables for Dish Master"""
+
 #string constants
 STR_ERR_MSG = "Error message is: \n"
 STR_DISH_POINT_INPROG = "Dish is pointing towards the desired coordinates."
@@ -30,4 +32,3 @@ ERR_EXE_SCAN_CMD = "Unexpected error in executing Scan Command on Dish"
 ERR_EXE_STRT_CAPTURE_CMD = "Unexpected error in executing StartCapture Command on Dish"
 ERR_EXE_STOP_CAPTURE_CMD = "Unexpected error in executing StopCapture Command on Dish"
 ERR_EXE_SLEW_CMD = "Unexpected error in executing Slew Command on Dish"
-

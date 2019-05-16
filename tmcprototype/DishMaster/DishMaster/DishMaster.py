@@ -24,7 +24,6 @@ print("sys.path: ", sys.path)
 import time
 from threading import Timer
 import threading
-import numpy
 
 # PyTango imports
 import tango
@@ -95,7 +94,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def increment_position(self, argin):
         """
         Increments the current pointing coordinates gradually to match the desired pointing coordinates.
+
         :param argin: Difference between current and desired Azimuth/Elevation angle.
+
         :return: None
         """
         #input_increment = int(argin[1])
@@ -117,7 +118,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             # self.set_status(CONST.STR_DISH_POINT_INPROG)
             # self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             # self._pointing_state = 1
-            if (position == input_increment):
+            if position == input_increment:
                 break
             else:
                 print("position and index in else", position, argin[0])
@@ -138,7 +139,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def decrement_position(self, argin):
         """
         Decrements the current pointing coordinates gradually to match the desired pointing coordinates.
+
         :param argin: Difference between current and desired Azimuth/Elevation angle.
+
         :return: None
         """
         input_decrement = argin[1]
@@ -159,7 +162,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             # self.set_status(CONST.STR_DISH_POINT_INPROG)
             # self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             # self._pointing_state = 1
-            if (position == input_decrement):
+            if position == input_decrement:
                 break
             else:
                 time.sleep(0.01)
@@ -180,6 +183,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def check_slew(self):
         """
         Waits until the Dish is slewing and stows it later.
+
         :return: None
         """
         while True:
@@ -193,6 +197,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 break
 
     def track_slew(self):
+        """
+        Completes slewing of Dish in 10 steps.
+
+        :return: None
+        """
         az_diff = abs(self._desired_pointing[1] - self._achieved_pointing[1])
         el_diff = abs(self._desired_pointing[2] - self._achieved_pointing[2])
         az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
@@ -207,7 +216,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
             else:
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
-            print("Achieved Pointing:", self._achieved_pointing)
             time.sleep(2)
         self._pointing_state = 0               # Set pointingState to READY Mode
     # PROTECTED REGION END #    //DishMaster.class_variable
@@ -319,6 +327,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def init_device(self):
         """
         Initializes the properties and attributes of DishMaster.
+
         :return: None
         """
         SKAMaster.init_device(self)
@@ -410,7 +419,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.band3SamplerFrequency_write) ENABLED START #
         """
         Sets the band3 sampler frequency.
+
         :param value: band3SamplerFrequency
+
         :return: None
         """
         self._band3_sampler_frequency = value
@@ -420,7 +431,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.band4SamplerFrequency_write) ENABLED START #
         """
         Sets band4 sampler frequency.
+
         :param value: band4SamplerFrequency
+
         :return: None
         """
         self._band4_sampler_frequency = value
@@ -430,7 +443,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.band5aSamplerFrequency_write) ENABLED START #
         """
         Sets the band5a sampler frequency.
+
         :param value: band5aSamplerFrequency
+
         :return: None
         """
         self._band5a_sampler_frequency = value
@@ -440,7 +455,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.band5bSamplerFrequency_write) ENABLED START #
         """
         Sets the band5b sampler frequency.
+
         :param value: band5bSamplerFrequency
+
         :return: None
         """
         self._band5b_sampler_frequency = value
@@ -468,7 +485,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.WindSpeed_write) ENABLED START #
         """
         Sets the wind speed.
+
         :param value: WindSpeed
+
         :return: None
         """
         self._wind_speed = value
@@ -476,6 +495,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def read_azimuthOverWrap(self):
         # PROTECTED REGION ID(DishMaster.azimuthOverWrap_read) ENABLED START #
+        """ Returns boolean to notify if Dish Azimuth is beyond Azimuth wrap limit. """
         return self._azimuthoverwrap
         # PROTECTED REGION END #    //  DishMaster.azimuthOverWrap_read
 
@@ -489,7 +509,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.desiredPointing_write) ENABLED START #
         """
         Sets the desired pointing coordinates of Dish.
+
         :param value: desiredPointing
+
         :return: None
         """
         self._desired_pointing = value
@@ -503,6 +525,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def read_AzElOffset(self):
         # PROTECTED REGION ID(DishMaster.AzElOffset_read) ENABLED START #
+        """ Returns Azimuth and Elevation pointing limits of Dish. """
         return self._azeloffset
         # PROTECTED REGION END #    //  DishMaster.AzElOffset_read
 
@@ -565,6 +588,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def is_SetStandbyLPMode_allowed(self):
         # PROTECTED REGION ID(DishMaster.is_SetMaintenanceMode_allowed) ENABLED START #
+        """ Checks if the SetStandbyLPMode is allowed in the current pointing state of DishMaster. """
         return self._pointing_state not in [1, 2, 3]
         # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
 
@@ -603,6 +627,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def SetOperateMode(self):
         """
         Triggers the Dish to transition into the OPERATE Dish Element Mode.
+
         :return: None
         """
         # PROTECTED REGION ID(DishMaster.SetOperateMode) ENABLED START #
@@ -637,7 +662,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """
         Triggers the dish to start scanning at the set pointing coordinates and capture the data at the
         input timestamp.
-        :param argin: timestamp
+
+        :param argin: DevString. Timestamp in UTC at which command should be executed.
+
         :return: None
         """
         try:
@@ -675,12 +702,14 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.StartCapture) ENABLED START #
         """
         Triggers the dish to start capturing the data on the configured band.
-        :param argin: timestamp
+
+        :param argin: DevString. Timestamp in UTC at which command should be executed.
+
         :return: None
         """
         try:
             if type(float(argin)) == float:
-                if (self._capturing is False):
+                if self._capturing is False:
                     # Command to start Data Capturing
                     self._capturing = True                      # set Capturing to True
                     self._pointing_state = 3                    # set pointingState to SCAN
@@ -711,12 +740,14 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.StopCapture) ENABLED START #
         """
         Triggers the dish to stop capturing the data on the configured band.
-        :param argin: timestamp
+
+        :param argin: DevString. Timestamp in UTC at which command should be executed.
+
         :return: None
         """
         try:
             if type(float(argin)) == float:
-                if (self._capturing is True):
+                if self._capturing is True:
                     # Command to stop Data Capturing
                     self._capturing = False                     # set Capturing to FALSE
                     self._pointing_state = 0                    # set pointingState to READY
@@ -745,6 +776,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.SetStandbyFPMode) ENABLED START #
         """
         Triggers the Dish to transition into the STANDBY-FP (Standby-Full power) Dish Element Mode.
+
         :return: None
         """
         try:
@@ -774,7 +806,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.Slew) ENABLED START #
         """
         Triggers the Dish to move (or slew) at the commanded pointing coordinates.
-        :param argin: timestamp
+
+        :param argin: DevString. Timestamp in UTC at which command should be executed.
+
         :return: None
         """
         try:
@@ -794,10 +828,21 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION END #    //  DishMaster.Slew
 
     @command(
-    dtype_in='str',
+        dtype_in='str',
+        doc_in="Timestamp at which command should be executed."
     )
     @DebugIt()
     def Track(self, argin):
+        """ Triggers Track on Dish. It accepts changes in DesiredPointing attribute value and tracks the
+        source. When difference between Achieved and Desired pointing attributes is more than the pointing
+        limits, Dish starts to slewing. Whereas Dish moves in tracking mode, when the difference becomes less
+        than the pointing limits.
+
+        :param argin: DevString. Timestamp in UTC at which command should be executed.
+
+        :return: None
+
+        """
         try:
             # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
 
@@ -808,15 +853,16 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                                 * math.cos(((self._desired_pointing[2]) * math.pi)/180))
             actual_el_lim = abs(self._achieved_pointing[2] - self._desired_pointing[2])
 
-            if(float(actual_az_lim) <= self.preconfig_az_lim and float(actual_el_lim) <= self.preconfig_el_lim) is True:
-            #if dish is within the preconfigured limit then dish will slew slowly (TRACK)
+            if(float(actual_az_lim) <= self.preconfig_az_lim and
+               float(actual_el_lim) <= self.preconfig_el_lim) is True:
+            #if dish is within the preconfigured limit then dish will slew slowly (TRACK).
                 self._pointing_state = 2                    # Set pointingState to TRACK Mode
                 self._achieved_pointing[1] = self._desired_pointing[1]
                 self._achieved_pointing[2] = self._desired_pointing[2]
                 print("Achieved Pointing:", self._achieved_pointing)
                 self._pointing_state = 0                    # Set pointingState to READY Mode
             else:
-            #if dish is out of preconfigured limit then dish will slew fast (Slew)
+            #if dish is out of preconfigured limit then dish will slew fast (Slew).
                 self._pointing_state = 1  # Set pointingState to SLEW Mode
                 self.track_slew_thread = threading.Thread(None, self.track_slew, 'DishMaster')
                 self.track_slew_thread.start()
@@ -828,6 +874,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def is_Track_allowed(self):
         # PROTECTED REGION ID(DishMaster.is_SetMaintenanceMode_allowed) ENABLED START #
+        """ Checks if the Track is allowed in the current pointing state of DishMaster. """
         return self._pointing_state not in [1, 2, 3]
         # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
 # ----------
@@ -838,8 +885,11 @@ def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishMaster.main) ENABLED START #
     """
     Runs the DishMaster.
+
     :param args: Arguments internal to TANGO
+
     :param kwargs: Arguments internal to TANGO
+
     :return: DishMaster TANGO object.
     """
     return run((DishMaster,), args=args, **kwargs)
