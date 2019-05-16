@@ -59,7 +59,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 elif CONST.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
                     self._subarray2_health_state = self._health_state
                 elif self.CspMasterLeafNodeFQDN[0] in evt.attr_name:
-                    # CSP Master Leaf Node Health State
                     self._csp_master_leaf_health = self._health_state
                 else:
                     print(CONST.EVT_UNKNOWN)
@@ -108,13 +107,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         failed_health_count = failed_health_count + 1
                         break
                     elif value == CONST.ENUM_DEGRADED:
-                        #self._telescope_health_state = 1
                         degraded_health_count = degraded_health_count + 1
                     elif value == CONST.ENUM_UNKNOWN:
-                        #self._telescope_health_state = CONST.ENUM_UNKNOWN
                         unknown_health_count = unknown_health_count + 1
                     else:
-                        #self._telescope_health_state = CONST.ENUM_OK
                         ok_health_count = ok_health_count + 1
                 if ok_health_count == len(list(self.subarray_health_state_map.values())) + 1:
                     self._telescope_health_state = CONST.ENUM_OK
@@ -292,7 +288,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
 
-
         # PROTECTED REGION END #    //  CentralNode.init_device
 
     def always_executed_hook(self):
@@ -312,14 +307,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
         """ Returns the Telescope health state."""
-        # if ((self._subarray1_health_state == 1) | (self._subarray2_health_state == 1)):
-        #     self._telescope_health = 1
-        # elif ((self._subarray1_health_state == 2) & (self._subarray2_health_state == 2)):
-        #     self._telescope_health = 2
-        # elif ((self._subarray1_health_state == 0) & (self._subarray2_health_state == 0)):
-        #     self._telescope_health = 0
-        # else:
-        #     self._telescope_health = 3
         return self._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
@@ -435,7 +422,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.dev_logging(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
 
         try:
-            print("STR_CSP_CBF_DEV_NAME is: ", CONST.STR_CSP_CBF_DEV_NAME)
             self._csp_master_leaf_proxy.command_inout(CONST.CMD_CSP_MASTER_LEAF_STARTUP,
                                                       [])
         except Exception as except_occured:
@@ -459,7 +445,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
-
         """
         Assigns resources to given subarray. It accepts the subarray id and
         receptor id list in JSON string format. Upon successful execution, the
