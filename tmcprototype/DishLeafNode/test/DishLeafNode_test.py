@@ -357,4 +357,3 @@ class TestDishLeafNode(object):
                (CONST.STR_DISH_POINT_STATE_READY) or (CONST.STR_CAPTURE_EVENT)
         assert create_dish_proxy.capturing is False
         create_dish_proxy.unsubscribe_event(eid)
-        
