@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import tango
-from tango import DevState, EventType, DeviceProxy
+from tango import DevState, EventType
 from CentralNode.CentralNode import CentralNode
 import CONST
 import pytest
@@ -124,25 +124,16 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
         argin = ["0001",]
         create_leafNode1_proxy.SetStandByLPMode()
-        time.sleep(2)
         tango_context.device.StowAntennas(argin)
-        time.sleep(40)
-        #assert tango_context.device.activityMessage == CONST.STR_STOW_CMD_ISSUED_CN
-        dish = DeviceProxy("mid_d0001/elt/master")
-        print("Dish state after SLEW: ", dish.State())
-        assert dish.dishMode == 6
+        assert tango_context.device.activityMessage == CONST.STR_STOW_CMD_ISSUED_CN
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
     def test_StandByTelescope(self, tango_context):
         """Test for StandByTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
-        time.sleep(10)
         tango_context.device.StandByTelescope()
-        time.sleep(20)
-        #assert tango_context.device.activityMessage == CONST.STR_STANDBY_CMD_ISSUED
-        dish = DeviceProxy("mid_d0001/elt/master")
-        print("Dish state after SLEW: ", dish.State())
-        assert dish.State() == DevState.STANDBY
+        time.sleep(2)
+        assert tango_context.device.activityMessage == CONST.STR_STANDBY_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
     def test_StandByTelescope_invalid_functionality(self, tango_context, create_leafNode1_proxy):
@@ -159,12 +150,9 @@ class TestCentralNode(object):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         create_leafNode1_proxy.EndScan("0")
-        time.sleep(2)
-        dish = DeviceProxy("mid_d0001/elt/master")
-        print("pointing state: ", dish.pointingState)
-        print("state: ", dish.State())
+        time.sleep(20)
         create_leafNode1_proxy.SetStandByLPMode()
-        time.sleep(10)
+        time.sleep(30)
         tango_context.device.StartUpTelescope()
         time.sleep(30)
         assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
