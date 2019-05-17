@@ -145,16 +145,16 @@ class TestCentralNode(object):
         tango_context.device.StandByTelescope()
         assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
         create_leafNode1_proxy.EndScan("0")
-        time.sleep(2)
+        time.sleep(8)
         create_leafNode1_proxy.SetStandbyLPMode()
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
     def test_StartUpTelescope(self, tango_context):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-        time.sleep(4)
+        time.sleep(8)
         tango_context.device.StartUpTelescope()
-        time.sleep(4)
+        time.sleep(8)
         assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
