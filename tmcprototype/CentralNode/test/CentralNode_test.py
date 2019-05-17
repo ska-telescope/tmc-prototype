@@ -150,11 +150,11 @@ class TestCentralNode(object):
     def test_StartUpTelescope(self, tango_context):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-        time.sleep(2)
+        time.sleep(5)
         tango_context.device.StandByTelescope()
-        time.sleep(12)
+        time.sleep(30)
         tango_context.device.StartUpTelescope()
-        time.sleep(8)
+        time.sleep(30)
         assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
