@@ -124,14 +124,19 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
         argin = ["0001",]
         create_leafNode1_proxy.SetStandByLPMode()
+        time.sleep(2)
         tango_context.device.StowAntennas(argin)
-        assert tango_context.device.activityMessage == CONST.STR_STOW_CMD_ISSUED_CN
+        time.sleep(40)
+        #assert tango_context.device.activityMessage == CONST.STR_STOW_CMD_ISSUED_CN
+        dish = DeviceProxy("mid_d0001/elt/master")
+        print("Dish state after SLEW: ", dish.State())
+        assert dish.dishMode == 6
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
     def test_StandByTelescope(self, tango_context):
         """Test for StandByTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
-        time.sleep(20)
+        time.sleep(10)
         tango_context.device.StandByTelescope()
         time.sleep(20)
         #assert tango_context.device.activityMessage == CONST.STR_STANDBY_CMD_ISSUED
