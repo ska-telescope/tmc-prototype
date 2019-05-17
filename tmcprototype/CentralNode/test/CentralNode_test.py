@@ -131,8 +131,9 @@ class TestCentralNode(object):
     def test_StandByTelescope(self, tango_context):
         """Test for StandByTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
+        time.sleep(20)
         tango_context.device.StandByTelescope()
-        time.sleep(8)
+        time.sleep(20)
         #assert tango_context.device.activityMessage == CONST.STR_STANDBY_CMD_ISSUED
         dish = DeviceProxy("mid_d0001/elt/master")
         print("Dish state after SLEW: ", dish.State())
