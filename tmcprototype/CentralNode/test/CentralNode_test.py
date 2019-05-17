@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import tango
-from tango import DevState, EventType
+from tango import DevState, EventType, DeviceProxy
 from CentralNode.CentralNode import CentralNode
 import CONST
 import pytest
@@ -149,12 +149,22 @@ class TestCentralNode(object):
     def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
+        time.sleep(30)
+        dish = DeviceProxy("mid_d0001/elt/master")
+        print("Dish state before endScan: ", dish.State())
+        print("Dish state before endScan: ", dish.pointingState)
         create_leafNode1_proxy.EndScan("0")
-        time.sleep(20)
+        time.sleep(30)
+        print("Dish state before standbyLP: ", dish.State())
+        print("Dish state before standbyLP: ", dish.pointingState)
         create_leafNode1_proxy.SetStandByLPMode()
         time.sleep(30)
+        print("Dish state before startup: ", dish.State())
+        print("Dish state before startup: ", dish.pointingState)
         tango_context.device.StartUpTelescope()
         time.sleep(30)
+        print("Dish state after startup: ", dish.State())
+        print("Dish state after startup: ", dish.pointingState)
         assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
