@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import tango
-from tango import DevState, EventType
+from tango import DevState, EventType, DeviceProxy
 from CentralNode.CentralNode import CentralNode
 import CONST
 import pytest
@@ -151,8 +151,9 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         create_leafNode1_proxy.EndScan("0")
         time.sleep(2)
-        print("pointing state: ", create_leafNode1_proxy.pointingState)
-        print("state: ", create_leafNode1_proxy.State())
+        dish = DeviceProxy("mid_d0001/elt/master")
+        print("pointing state: ", dish.pointingState)
+        print("state: ", dish.State())
         create_leafNode1_proxy.SetStandByLPMode()
         time.sleep(10)
         tango_context.device.StartUpTelescope()
