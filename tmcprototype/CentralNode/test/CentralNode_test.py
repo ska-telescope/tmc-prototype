@@ -132,8 +132,11 @@ class TestCentralNode(object):
         """Test for StandByTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
         tango_context.device.StandByTelescope()
-        time.sleep(2)
-        assert tango_context.device.activityMessage == CONST.STR_STANDBY_CMD_ISSUED
+        time.sleep(8)
+        #assert tango_context.device.activityMessage == CONST.STR_STANDBY_CMD_ISSUED
+        dish = DeviceProxy("mid_d0001/elt/master")
+        print("Dish state after SLEW: ", dish.State())
+        assert dish.State() == DevState.STANDBY
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
     def test_StandByTelescope_invalid_functionality(self, tango_context, create_leafNode1_proxy):
