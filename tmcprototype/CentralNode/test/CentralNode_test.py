@@ -146,6 +146,7 @@ class TestCentralNode(object):
         assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
+    # FIXME: Error in setting StandByMode on Dish
     # def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
     #     """Test for StartUpTelescope"""
     #     # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
