@@ -53,7 +53,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param evt: A TANGO_CHANGE event on dishMode attribute.
 
-        :return: None.
+        :return: None
 
         """
         if evt.err is False:
@@ -104,7 +104,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param evt: A TANGO_CHANGE event on pointingState attribute.
 
-        :return: None.
+        :return: None
 
         """
         if evt.err is False:
@@ -140,7 +140,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param evt: A TANGO_CHANGE event on capturing attribute.
 
-        :return: None.
+        :return: None
 
         """
         if evt.err is False:
@@ -170,7 +170,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param evt: A TANGO_CHANGE event on achievedPointing attribute.
 
-        :return: None.
+        :return: None
 
         """
         if evt.err is False:
@@ -193,7 +193,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param evt: A TANGO_CHANGE event on desiredPointing attribute.
 
-        :return: None.
+        :return: None
 
         """
         if evt.err is False:
@@ -216,7 +216,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param event: response from DishMaster for the invoked command
 
-        :return: None.
+        :return: None
 
         """
         try:
@@ -434,7 +434,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         Initializes the attributes and properties of DishLeafNode and subscribes change event
         on attributes of DishMaster.
 
-        :return: None.
+        :return: None
 
         """
         SKABaseDevice.init_device(self)
@@ -575,7 +575,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param argin: timestamp
 
-        :return: None.
+        :return: None
 
         """
         try:
@@ -601,7 +601,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param argin: timestamp
 
-        :return: None.
+        :return: None
 
         """
         try:
@@ -624,10 +624,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         Configures the Dish by setting pointing coordinates for a given observation.
 
-        :param argin: String array that includes pointing parameters of Dish - Azimuth and
-        Elevation Angle.
+        :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
 
-        :return: None.
+        :return: None
 
         """
         try:
@@ -641,7 +640,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             katpoint_arg.insert(1, timestamp_value)
             print("katpoint_arg: ", katpoint_arg)
             self.convert_radec_to_azel(katpoint_arg)
-            # self.convert_radec_to_azel(argin)
 
             # Invoke slew command on DishMaster with az and el as inputs
             if self.el >= 0 and self.el < 90:

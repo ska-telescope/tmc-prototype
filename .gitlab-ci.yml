@@ -104,6 +104,33 @@ build DishLeafNode wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/DishLeafNode/dist/
 
+build CspMasterLeafNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/CspMasterLeafNode
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/CspMasterLeafNode/dist/
+
+build CspMasterLeafNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/CspMasterLeafNode
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/CspMasterLeafNode/dist/
+
+
 build DishMaster wheel for publication: # Executed on a tag
   stage: build
   tags:
@@ -152,6 +179,7 @@ publish to nexus:
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CentralNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SubarrayNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/DishLeafNode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspMasterLeafNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/DishMaster/dist/*
 
   only:
@@ -171,6 +199,7 @@ pages:
   script:
     - mv build public
     - mv public/dishmaster_htmlcov/* public
+    - mv public/cspmasterleafnode_htmlcov/* public
     - mv public/dishleafnode_htmlcov/* public
     - mv public/subarraynode_htmlcov/* public
     - mv public/centralnode_htmlcov/* public

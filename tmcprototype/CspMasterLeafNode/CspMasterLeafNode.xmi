@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
-  <classes name="CentralNode" pogoRevision="9.4">
-    <description description="Central Node is a coordinator of the complete M&amp;C system." title="CentralNode" sourcePath="/home/user/projects/tmc-prototype/tmcprototype/CentralNode" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
+  <classes name="CspMasterLeafNode" pogoRevision="9.4">
+    <description description="" title="CspMasterLeafNode" sourcePath="/home/user/projects/tmc-prototype/tmcprototype/CspMasterLeafNode" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <inheritances classname="SKABaseDevice" sourcePath="../../../lmc-base-classes/skabase/SKABaseDevice"/>
-      <identification contact="at gmail.com - apurva.ska" author="apurva.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
+      <identification contact="at gmail.com - apurva.ska" author="apurva.ska" emailDomain="gmail.com" classFamily="SoftwareSystem" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
     </description>
     <deviceProperties name="SkaLevel" description="Indication of importance of the device in the SKA hierarchy &#xA;to support drill-down navigation: 1..6, with 1 highest.&#xA;Default is 4, making provision for &#xA;EltMaster, EltAlarms, EltTelState = 1&#xA;SubEltMaster = 2&#xA;Subarray, Capability = 2/3&#xA;Others = 4 (or 5 or 6)">
       <type xsi:type="pogoDsl:ShortType"/>
       <status abstract="false" inherited="true" concrete="true"/>
       <DefaultPropValue>4</DefaultPropValue>
-    </deviceProperties>
-    <deviceProperties name="MetricList" description="A subset of attributes we want to expose as metrics for this device.">
-      <type xsi:type="pogoDsl:StringVectorType"/>
-      <status abstract="false" inherited="true" concrete="true"/>
-      <DefaultPropValue>healthState</DefaultPropValue>
-      <DefaultPropValue>adminMode</DefaultPropValue>
-      <DefaultPropValue>controlMode</DefaultPropValue>
     </deviceProperties>
     <deviceProperties name="GroupDefinitions" description="Each string in the list is a JSON serialised dict defining the ``group_name``,&#xA;``devices`` and ``subgroups`` in the group.  A TANGO Group object is created&#xA;for each item in the list, according to the hierarchy defined.  This provides&#xA;easy access to the managed devices in bulk, or individually.&#xA;&#xA;The general format of the list is as follows, with optional ``devices`` and&#xA;``subgroups`` keys:&#xA;    [ {``group_name``: ``&lt;name>``,&#xA;       ``devices``: [``&lt;dev name>``, ...]},&#xA;      {``group_name``: ``&lt;name>``,&#xA;       ``devices``: [``&lt;dev name>``, ``&lt;dev name>``, ...],&#xA;       ``subgroups`` : [{&lt;nested group>},&#xA;                              {&lt;nested group>}, ...]},&#xA;      ...&#xA;      ]&#xA;&#xA;For example, a hierarchy of racks, servers and switches:&#xA;    [ {``group_name``: ``servers``,&#xA;       ``devices``: [``elt/server/1``, ``elt/server/2``,&#xA;                       ``elt/server/3``, ``elt/server/4``]},&#xA;      {``group_name``: ``switches``,&#xA;       ``devices``: [``elt/switch/A``, ``elt/switch/B``]},&#xA;      {``group_name``: ``pdus``,&#xA;       ``devices``: [``elt/pdu/rackA``, ``elt/pdu/rackB``]},&#xA;      {``group_name``: ``racks``,&#xA;      ``subgroups``: [&#xA;            {``group_name``: ``rackA``,&#xA;             ``devices``: [``elt/server/1``, ``elt/server/2``,&#xA;                               ``elt/switch/A``, ``elt/pdu/rackA``]},&#xA;            {``group_name``: ``rackB``,&#xA;             ``devices``: [``elt/server/3``, ``elt/server/4``,&#xA;                              ``elt/switch/B``, ``elt/pdu/rackB``],&#xA;             ``subgroups``: []}&#xA;       ]} ]">
       <type xsi:type="pogoDsl:StringVectorType"/>
@@ -35,34 +28,10 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <DefaultPropValue>localhost</DefaultPropValue>
     </deviceProperties>
-    <deviceProperties name="CentralAlarmHandler" description="Name of the Central Alarm Handler TANGO Device.">
+    <deviceProperties name="CspMasterFQDN" description="FQDN of the CSP Master TANGO Device Server. Value of this property &#x2192; tango://mid-csp-tango:10000/mid_csp/elt/master">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </deviceProperties>
-    <deviceProperties name="TMAlarmHandler" description="Name of the TM Alarm Handler TANGO Device.">
-      <type xsi:type="pogoDsl:StringType"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </deviceProperties>
-    <deviceProperties name="TMMidSubarrayNodes" description="List of TM_Mid Subarray TANGO Device Names.">
-      <type xsi:type="pogoDsl:StringVectorType"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_subarray_node/1</DefaultPropValue>
-      <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_subarray_node/2</DefaultPropValue>
-    </deviceProperties>
-    <deviceProperties name="NumDishes" description="Number of dishes commissioned.">
-      <type xsi:type="pogoDsl:UIntType"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>1</DefaultPropValue>
-    </deviceProperties>
-    <deviceProperties name="DishLeafNodePrefix" description="Prefix used to obtain list of dish leaf node devices deployed from the TANGO database.">
-      <type xsi:type="pogoDsl:StringType"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_leaf_node/d</DefaultPropValue>
-    </deviceProperties>
-    <deviceProperties name="CspMasterLeafNodeFQDN" description="FQDN of the CSP Master Leaf Node">
-      <type xsi:type="pogoDsl:StringVectorType"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>ska_mid/tm_leaf_node/csp_master</DefaultPropValue>
+      <DefaultPropValue>mid_csp/elt/master</DefaultPropValue>
     </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="none">
@@ -82,24 +51,6 @@
       </argout>
       <status abstract="true" inherited="true" concrete="true"/>
     </commands>
-    <commands name="GetMetrics" description="Gets list of attributes marked as metrics, with their values, &#xA;for device" execMethod="get_metrics" displayLevel="OPERATOR" polledPeriod="0">
-      <argin description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:StringType"/>
-      </argout>
-      <status abstract="false" inherited="true" concrete="true"/>
-    </commands>
-    <commands name="ToJson" description="Returns a JSON translation of this device.&#xA;Defaults for empty string argin gives commands and metris:&#xA;with_value:false, &#xA;with_commands:true, &#xA;with_metrics:true, &#xA;with_attributes:false" execMethod="to_json" displayLevel="OPERATOR" polledPeriod="0">
-      <argin description="Requests the JSON string representing this device, can be filtered &#xA;by with_commands, with_metrics, with_attributes and &#xA;with_value. Defaults for empty string  argin are:&#xA;{`with_value`:false, `with_commands`:true,&#xA;  `with_metrics`:true, `with_attributes`:false}">
-        <type xsi:type="pogoDsl:StringType"/>
-      </argin>
-      <argout description="The JSON string representing this device, &#xA;filtered as per the input argument flags">
-        <type xsi:type="pogoDsl:StringType"/>
-      </argout>
-      <status abstract="false" inherited="true" concrete="true"/>
-    </commands>
     <commands name="GetVersionInfo" description="Array of version strings of all entities modelled by this device. &#xA;(One level down only)&#xA;Each string in the array lists the version info for one entity&#xA;managed by this device. &#xA;The first entry is version info for this TANGO Device itself.&#xA;The entities may be TANGO devices, or hardware LRUs or &#xA;anything else this devices manages/models.&#xA;The intention with this command is that it can provide more &#xA;detailed information than can be captured in the versionId &#xA;and buildState attributes, if necessary.&#xA;In the minimal case the GetVersionInfo will contain only the &#xA;versionId and buildState attributes of the next lower level&#xA;entities." execMethod="get_version_info" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
@@ -118,8 +69,8 @@
       </argout>
       <status abstract="false" inherited="true" concrete="true"/>
     </commands>
-    <commands name="StowAntennas" description="This command is to stow the specified receptors." execMethod="stow_antennas" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="List of Receptors to be stowed">
+    <commands name="On" description="Transit CSP or one or more CSP SubElements fromSTANDBY to ON" execMethod="on" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="If the array length is 0, the command applies to the whole&#xA;CSP Element.&#xA;If the array length is > 1, each array element specifies the FQDN of the&#xA;CSP SubElement to switch ON.">
         <type xsi:type="pogoDsl:StringArrayType"/>
       </argin>
       <argout description="">
@@ -127,39 +78,48 @@
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="StandByTelescope" description="This command is to bring the Telescope into a STANDBY state (i.e. Low Power State)." execMethod="stand_by_telescope" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:VoidType"/>
+    <commands name="Off" description="Transit CSP or one or more CSP SubElements from ON to OFF." execMethod="off" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="If the array length is 0, the command applies to the whole&#xA;CSP Element.&#xA;If the array length is > 1, each array element specifies the FQDN of the&#xA;CSP SubElement to switch OFF.">
+        <type xsi:type="pogoDsl:StringArrayType"/>
       </argin>
       <argout description="">
         <type xsi:type="pogoDsl:VoidType"/>
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="StartUpTelescope" description="This command is to bring the Telescope into ON state from the STANDBY state." execMethod="start_up_telescope" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:VoidType"/>
+    <commands name="Standby" description="Transit CSP or one or more CSP SubElements from ON/OFF to &#xA;STANDBY." execMethod="standby" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="If the array length is 0, the command applies to the whole&#xA;CSP Element.&#xA;If the array length is > 1, each array element specifies the FQDN of the&#xA;CSP SubElement to put in STANDBY mode.">
+        <type xsi:type="pogoDsl:StringArrayType"/>
       </argin>
       <argout description="">
         <type xsi:type="pogoDsl:VoidType"/>
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="AssignResources" description="This command assigns resources to given subarray. It accepts the subarray id and receptor id list as JSON string." execMethod="assign_resources" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="The string in JSON format. The JSON contains following values:&#xA;subarrayID: DevShort&#xA;dish: JSON object consisting&#xA;- receptorIDList: DevVarStringArray. The individual string should contain dish numbers in string format with preceding zeroes upto 3 digits. E.g. 0001, 0002">
-        <type xsi:type="pogoDsl:StringType"/>
+    <commands name="SetCbfAdminMode" description="Set the administration mode of the CBF sub-element." execMethod="set_cbf_admin_mode" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="adminMode">
+        <type xsi:type="pogoDsl:EnumType"/>
       </argin>
-      <argout description="The string in JSON format. The JSON contains following values:&#xA;dish: JSON object consisting receptors allocated successfully: DevVarStringArray. The individual string should contain dish numbers in string format with preceding zeroes upto 3 digits. E.g. 0001, 0002">
-        <type xsi:type="pogoDsl:StringType"/>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="ReleaseResources" description="Release resources of given Subarray." execMethod="release_resources" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:StringType"/>
+    <commands name="SetPssAdminMode" description="Set the administration mode of the PSS sub-element." execMethod="set_pss_admin_mode" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="adminMode">
+        <type xsi:type="pogoDsl:EnumType"/>
       </argin>
       <argout description="">
-        <type xsi:type="pogoDsl:StringType"/>
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="SetPstAdminMode" description="Set the administration mode of the PST sub-element." execMethod="set_pst_admin_mode" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="adminMode">
+        <type xsi:type="pogoDsl:EnumType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
@@ -170,10 +130,8 @@
     </attributes>
     <attributes name="versionId" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="60000" maxX="" maxY="" allocReadMember="true">
       <dataType xsi:type="pogoDsl:StringType"/>
-      <changeEvent fire="false" libCheckCriteria="false"/>
-      <archiveEvent fire="false" libCheckCriteria="false"/>
-      <status abstract="false" inherited="true" concrete="true" concreteHere="false"/>
-      <properties description="Build state of this device" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+      <status abstract="false" inherited="true" concrete="true"/>
+      <properties description="Version Id of this device" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
     <attributes name="centralLoggingLevel" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true">
       <dataType xsi:type="pogoDsl:UShortType"/>
@@ -192,16 +150,12 @@
     </attributes>
     <attributes name="healthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true">
       <dataType xsi:type="pogoDsl:EnumType"/>
-      <changeEvent fire="false" libCheckCriteria="false"/>
-      <archiveEvent fire="false" libCheckCriteria="false"/>
-      <status abstract="false" inherited="true" concrete="true" concreteHere="false"/>
+      <status abstract="false" inherited="true" concrete="true"/>
       <properties description="The health state reported for this device. It interprets the current device condition &#xA;and condition of all managed devices to set this. Most possibly an aggregate attribute." label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
     <attributes name="adminMode" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" memorized="true" allocReadMember="true">
       <dataType xsi:type="pogoDsl:EnumType"/>
-      <changeEvent fire="false" libCheckCriteria="false"/>
-      <archiveEvent fire="false" libCheckCriteria="false"/>
-      <status abstract="false" inherited="true" concrete="true" concreteHere="false"/>
+      <status abstract="false" inherited="true" concrete="true"/>
       <properties description="The admin mode reported for this device. It may interpret the current device condition &#xA;and condition of all managed devices to set this. Most possibly an aggregate attribute." label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
     <attributes name="controlMode" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" memorized="true" allocReadMember="true">
@@ -219,44 +173,6 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <properties description="The test mode of the device. &#xA;Either no test mode (empty string) or an indication of the test mode." label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
-    <attributes name="telescopeHealthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="0" maxX="" maxY="" allocReadMember="false" isDynamic="false">
-      <dataType xsi:type="pogoDsl:EnumType"/>
-      <changeEvent fire="false" libCheckCriteria="false"/>
-      <archiveEvent fire="false" libCheckCriteria="false"/>
-      <dataReadyEvent fire="false" libCheckCriteria="true"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
-      <eventCriteria relChange="" absChange="1" period=""/>
-      <evArchiveCriteria relChange="" absChange="1" period="3600000"/>
-      <enumLabels>OK</enumLabels>
-      <enumLabels>DEGRADED</enumLabels>
-      <enumLabels>FAILED</enumLabels>
-      <enumLabels>UNKNOWN</enumLabels>
-    </attributes>
-    <attributes name="subarray1HealthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
-      <dataType xsi:type="pogoDsl:EnumType"/>
-      <changeEvent fire="false" libCheckCriteria="false"/>
-      <archiveEvent fire="false" libCheckCriteria="false"/>
-      <dataReadyEvent fire="false" libCheckCriteria="true"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
-      <enumLabels>OK</enumLabels>
-      <enumLabels>DEGRADED</enumLabels>
-      <enumLabels>FAILED</enumLabels>
-      <enumLabels>UNKNOWN</enumLabels>
-    </attributes>
-    <attributes name="subarray2HealthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
-      <dataType xsi:type="pogoDsl:EnumType"/>
-      <changeEvent fire="false" libCheckCriteria="false"/>
-      <archiveEvent fire="false" libCheckCriteria="false"/>
-      <dataReadyEvent fire="false" libCheckCriteria="true"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
-      <enumLabels>OK</enumLabels>
-      <enumLabels>DEGRADED</enumLabels>
-      <enumLabels>FAILED</enumLabels>
-      <enumLabels>UNKNOWN</enumLabels>
-    </attributes>
     <attributes name="activityMessage" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="false" isDynamic="false">
       <dataType xsi:type="pogoDsl:StringType"/>
       <changeEvent fire="false" libCheckCriteria="false"/>
@@ -265,7 +181,13 @@
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
+    <forwardedAttributes name="cspHealthState" label="cspHealthState">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </forwardedAttributes>
     <states name="ON" description="This state could have been called OK or OPERATIONAL. It means that the device is in its operational state. (E.g. the power supply is giving its nominal current, th motor is ON and ready to move, the instrument is operating). This state is modified by the Attribute alarm checking of the DeviceImpl:dev_state method. i.e. if the State is ON and one attribute has its quality factor to ATTR_WARNING or ATTR_ALARM, then the State is modified to ALARM.">
+      <status abstract="false" inherited="true" concrete="true"/>
+    </states>
+    <states name="OFF" description="The device is in normal condition but is not active. E.g. the power supply main circuit breaker is open; the RF transmitter has no power etc...">
       <status abstract="false" inherited="true" concrete="true"/>
     </states>
     <states name="FAULT" description="The device has a major failure that prevents it to work. For instance, A power supply has stopped due to over temperature A motor cannot move because it has fault conditions. Usually we cannot get out from this state without an intervention on the hardware or a reset command.">
@@ -278,9 +200,6 @@
       <status abstract="false" inherited="true" concrete="true"/>
     </states>
     <states name="UNKNOWN" description="The device cannot retrieve its state. It is the case when there is a communication problem to the hardware (network cut, broken cable etc...) It could also represent an incoherent situation">
-      <status abstract="false" inherited="true" concrete="true"/>
-    </states>
-    <states name="OFF" description="The device is in normal condition but is not active. E.g. the power supply main circuit breaker is open; the RF transmitter has no power etc...">
       <status abstract="false" inherited="true" concrete="true"/>
     </states>
     <states name="STANDBY" description="Equates to LOW-POWER mode. This is the initial transition from INIT if the device supports a low-power mode. The device is not fully active but is ready to operate.">

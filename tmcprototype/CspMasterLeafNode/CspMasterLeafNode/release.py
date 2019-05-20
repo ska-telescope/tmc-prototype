@@ -1,9 +1,6 @@
-# release=0.1.0
-# tag=tmcprototype-0.1.0
-
 # -*- coding: utf-8 -*-
 #
-# This file is part of the TMC prototype
+# This file is part of the CspMasterLeafNode project
 #
 #
 #
@@ -12,15 +9,12 @@
 
 """Release information for Python Package"""
 
-name = """tangods-tmcprototype"""
+name = """tangods-cspmasterleafnode"""
 version = "1.0.0"
 version_info = version.split(".")
-description = """TMC Prototype"""
+description = """CspMasterLeafNode - Leaf Node to monitor and control CSP Master."""
 author = "apurva.ska"
 author_email = "apurva.ska at gmail.com"
 license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
-
-release=1.0.0
-tag=tmcprototype-1.0.0
