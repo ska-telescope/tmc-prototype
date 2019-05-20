@@ -146,31 +146,19 @@ class TestCentralNode(object):
         assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
-    def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
-        """Test for StartUpTelescope"""
-        # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-        time.sleep(30)
-        dish = DeviceProxy("mid_d0001/elt/master")
-        print("Dish state before endScan: ", dish.State())
-        print("pointingState before endScan: ", dish.pointingState)
-        print("AChievedP before endScan: ", dish.achievedPointing)
-        create_leafNode1_proxy.EndScan("0")
-        time.sleep(30)
-        print("Dish state before standbyLP: ", dish.State())
-        print("pointingState before standbyLP: ", dish.pointingState)
-        print("AChievedP before standbyLP: ", dish.achievedPointing)
-        create_leafNode1_proxy.SetStandByLPMode()
-        time.sleep(30)
-        print("Dish state before startup: ", dish.State())
-        print("pointingState before startup: ", dish.pointingState)
-        print("AChievedP before startup: ", dish.achievedPointing)
-        tango_context.device.StartUpTelescope()
-        time.sleep(30)
-        print("Dish state after startup: ", dish.State())
-        print("pointingState after startup: ", dish.pointingState)
-        print("AChievedP after startup: ", dish.achievedPointing)
-        assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
-        # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
+    # def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
+    #     """Test for StartUpTelescope"""
+    #     # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
+    #     dish = DeviceProxy("mid_d0001/elt/master")
+    #     create_leafNode1_proxy.EndScan("0")
+    #     while dish.dishMode is not 6:
+    #         print("dish.achievedPointing: ", dish.achievedPointing)
+    #         time.sleep(1)
+    #     create_leafNode1_proxy.SetStandByLPMode()
+    #     tango_context.device.StartUpTelescope()
+    #     time.sleep(3)
+    #     assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
+    #     # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
     def test_StartUpTelescope_Negative(self, tango_context):
         """Test for StartUpTelescope"""
