@@ -151,14 +151,16 @@ class TestCentralNode(object):
     #     # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
     #     dish = DeviceProxy("mid_d0001/elt/master")
     #     create_leafNode1_proxy.EndScan("0")
-    #     while dish.dishMode is not 6:
-    #         print("dish.achievedPointing: ", dish.achievedPointing)
-    #         time.sleep(1)
+    #     # while dish.dishMode is not 6:
+    #     #     print("dish.achievedPointing: ", dish.achievedPointing)
+    #         #time.sleep(1)
+    #     time.sleep(8)
     #     create_leafNode1_proxy.SetStandByLPMode()
+    #     time.sleep(4)
     #     tango_context.device.StartUpTelescope()
-    #     time.sleep(3)
+    #     time.sleep(4)
     #     assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
-    #     # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
+        # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
     def test_StartUpTelescope_Negative(self, tango_context):
         """Test for StartUpTelescope"""

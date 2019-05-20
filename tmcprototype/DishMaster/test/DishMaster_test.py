@@ -429,5 +429,6 @@ class TestDishMaster(object):
         tango_context.device.SetStandbyLPMode()
         tango_context.device.SetOperateMode()
         tango_context.device.Track("0")
-        time.sleep(60)
+        time.sleep(80)
         assert tango_context.device.pointingState == 0
+        tango_context.device.SetStandbyLPMode()
