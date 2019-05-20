@@ -131,7 +131,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 break
             else:
                 print("position and index in else", position, argin[0])
-                #time.sleep(0.01)
+                time.sleep(0.01)
                 if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                         self._achieved_pointing[2] == self._desired_pointing[2]):
                     print("desired and achieved are equal")
@@ -184,7 +184,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             if position == input_decrement:
                 break
             else:
-                #time.sleep(0.01)
+                time.sleep(0.01)
                 print("position and index", position, argin[0])
                 if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                         self._achieved_pointing[2] == self._desired_pointing[2]):
