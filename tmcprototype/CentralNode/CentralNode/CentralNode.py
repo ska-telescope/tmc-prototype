@@ -45,7 +45,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
 
-    def subarrayHealthStateCallback(self, evt):
+    def healthStateCallback(self, evt):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
         telescope health state.
@@ -54,31 +54,33 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         if evt.err is False:
             try:
-                self._subarray_health_state = evt.attr_value.value
+                self._health_state = evt.attr_value.value
                 if CONST.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
-                    self._subarray1_health_state = self._subarray_health_state
+                    self._subarray1_health_state = self._health_state
                 elif CONST.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
-                    self._subarray2_health_state = self._subarray_health_state
+                    self._subarray2_health_state = self._health_state
+                elif self.CspMasterLeafNodeFQDN[0] in evt.attr_name:
+                    self._csp_master_leaf_health = self._health_state
                 else:
-                    print(CONST.EVT_UNKNOWN_SA)
-                    self._read_activity_message = CONST.EVT_UNKNOWN_SA
-                self.subarray_health_state_map[evt.device] = self._subarray_health_state
-                if self._subarray_health_state == CONST.ENUM_OK:
+                    print(CONST.EVT_UNKNOWN)
+                    self._read_activity_message = CONST.EVT_UNKNOWN
+                self.subarray_health_state_map[evt.device] = self._health_state
+                if self._health_state == CONST.ENUM_OK:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_OK)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_OK
-                elif self._subarray_health_state == CONST.STR_DEGRADED:
+                elif self._health_state == CONST.STR_DEGRADED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_DEGRADED)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_DEGRADED
-                elif self._subarray_health_state == CONST.STR_FAILED:
+                elif self._health_state == CONST.STR_FAILED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_FAILED)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_FAILED
-                elif self._subarray_health_state == CONST.ENUM_UNKNOWN:
+                elif self._health_state == CONST.ENUM_UNKNOWN:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_UNKNOWN)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(
@@ -91,20 +93,27 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 degraded_health_count = 0
                 unknown_health_count = 0
                 ok_health_count = 0
+                # Check the health state of Csp Master Leaf Node
+                if self._csp_master_leaf_health == CONST.ENUM_OK:
+                    ok_health_count = 1
+                elif self._csp_master_leaf_health == CONST.STR_DEGRADED:
+                    degraded_health_count = 1
+                elif self._csp_master_leaf_health == CONST.STR_FAILED:
+                    failed_health_count = 1
+                else:
+                    unknown_health_count = 1
+
                 for value in list(self.subarray_health_state_map.values()):
                     if value == CONST.ENUM_FAILED:
                         failed_health_count = failed_health_count + 1
                         break
                     elif value == CONST.ENUM_DEGRADED:
-                        self._telescope_health_state = 1
                         degraded_health_count = degraded_health_count + 1
                     elif value == CONST.ENUM_UNKNOWN:
-                        self._telescope_health_state = CONST.ENUM_UNKNOWN
                         unknown_health_count = unknown_health_count + 1
                     else:
-                        self._telescope_health_state = CONST.ENUM_OK
                         ok_health_count = ok_health_count + 1
-                if ok_health_count == len(list(self.subarray_health_state_map.values())):
+                if ok_health_count == len(list(self.subarray_health_state_map.values())) + 1:
                     self._telescope_health_state = CONST.ENUM_OK
                 elif failed_health_count != 0:
                     self._telescope_health_state = CONST.ENUM_FAILED
@@ -156,6 +165,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     DishLeafNodePrefix = device_property(
         dtype='str', default_value=CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX,
         doc="Device name prefix for Dish Leaf Node",
+    )
+
+    CspMasterLeafNodeFQDN = device_property(
+        dtype=('str',), default_value=["ska_mid/tm_leaf_node/csp_master"]
     )
 
     # ----------
@@ -250,14 +263,27 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
                 self.dev_logging(CONST.ERR_IN_CREATE_PROXY, int(tango.LogLevel.LOG_ERROR))
 
+        # Create device proxy for CSP Master Leaf Node
+        try:
+            self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN[0])
+            self._csp_master_leaf_proxy.subscribe_event(CONST.EVT_SUBSR_CSP_MASTER_HEALTH,
+                                                        EventType.CHANGE_EVENT,
+                                                        self.healthStateCallback, stateless=True)
+        except Exception as except_occured:
+            print(CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH, self.CspMasterLeafNodeFQDN[0])
+            self._read_activity_message = CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(
+                self.CspMasterLeafNodeFQDN[0])
+            self.dev_logging(CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH, int(tango.LogLevel.LOG_ERROR))
+            print(CONST.STR_ERR_MSG, except_occured)
+            self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
 
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
                 self.subarray_health_state_map[subarray_proxy] = -1
-                subarray_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE,
+                subarray_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE,
                                                EventType.CHANGE_EVENT,
-                                               self.subarrayHealthStateCallback, stateless=True)
+                                               self.healthStateCallback, stateless=True)
 
                 #populate subarrayID-subarray proxy map
                 tokens = self.TMMidSubarrayNodes[subarray].split('/')
@@ -290,14 +316,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
         """ Returns the Telescope health state."""
-        if ((self._subarray1_health_state == 1) | (self._subarray2_health_state == 1)):
-            self._telescope_health = 1
-        elif ((self._subarray1_health_state == 2) & (self._subarray2_health_state == 2)):
-            self._telescope_health = 2
-        elif ((self._subarray1_health_state == 0) & (self._subarray2_health_state == 0)):
-            self._telescope_health = 0
-        else:
-            self._telescope_health = 3
         return self._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
@@ -381,6 +399,16 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 print(CONST.STR_ERR_MSG, dev_failed)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
                 self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
+
+        try:
+            self._csp_master_leaf_proxy.command_inout(CONST.CMD_CSP_MASTER_LEAF_STANDBY, CONST.STR_CSP_CBF_DEV_NAME)
+        except Exception as except_occured:
+            print(CONST.ERR_EXE_STANDBY_CMD, self.CspMasterLeafNodeFQDN[0])
+            self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self.CspMasterLeafNodeFQDN[0])
+            print(CONST.STR_ERR_MSG, except_occured)
+            self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+            self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
+
         # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
     @command(
@@ -401,6 +429,16 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 print(CONST.STR_ERR_MSG, except_occured)
                 self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
                 self.dev_logging(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
+
+        try:
+            self._csp_master_leaf_proxy.command_inout(CONST.CMD_CSP_MASTER_LEAF_STARTUP,
+                                                      [])
+        except Exception as except_occured:
+            print(CONST.ERR_EXE_STANDBY_CMD, self.CspMasterLeafNodeFQDN[0])
+            self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self.CspMasterLeafNodeFQDN[0])
+            print(CONST.STR_ERR_MSG, except_occured)
+            self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+            self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
     @command(dtype_in='str',
@@ -462,7 +500,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 {
                 "dish": {
                 "receptorIDList_success": ["0001", "0002"]
-                        }
+                }
                 }
         """
         receptorIDList = []
@@ -548,8 +586,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             Example:
                 {
                     "subarrayID": 1,
-                    "releaseALL": true
+                    "releaseALL": true,
                     "receptorIDList": []
+
                 }
 
 
@@ -567,11 +606,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     resources (device names) that are noe released from the subarray.
 
                 Example:
-                    argout =
-                    {
+                    argout = {
                         "ReleaseAll" : True,
                         "receptorIDList" : []
-                    }
+                        }
         """
         try:
             release_success = False

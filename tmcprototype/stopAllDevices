@@ -13,6 +13,10 @@ echo "========================= Stopping Dish Leaf Nodes =======================
 pkill -9 -f ./DishLeafNode/DishLeafNode/DishLeafNode.py &
 sleep 1
 
+echo "========================= Stopping CSP Master Leaf Node ========================="
+pkill -9 -f ./CspMasterLeafNode/CspMasterLeafNode/CspMasterLeafNode.py &
+sleep 1
+
 echo "========================= Stopping Dish Masters ========================="
 pkill -9 -f ./DishMaster/DishMaster/DishMaster.py &
 sleep 1

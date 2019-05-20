@@ -47,7 +47,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishModeCallback(self, evt):
         """
         Retrieves the subscribed dishMode attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on dishMode attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -95,7 +97,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishPointingStateCallback(self, evt):
         """
         Retrieves the subscribed pointingState attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on pointingState attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -128,7 +132,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishCapturingCallback(self, evt):
         """
         Retrieves the subscribed capturing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on capturing attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -155,7 +161,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishAchievedPointingCallback(self, evt):
         """
         Retrieves the subscribed achievedPointing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on achievedPointing attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -175,7 +183,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishDesiredPointingCallback(self, evt):
         """
         Retrieves the subscribed desiredPointing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on desiredPointing attribute.
+
         :return: None
         """
         if evt.err is False:
@@ -195,7 +205,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def commandCallback(self, event):
         """
         Checks whether the command has been successfully invoked on DishMaster.
+
         :param event: response from DishMaster for the invoked command
+
         :return: None
         """
         try:
@@ -304,6 +316,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         Initializes the attributes and properties of DishLeafNode and subscribes change event
         on attributes of DishMaster.
+
         :return: None
         """
         SKABaseDevice.init_device(self)
@@ -432,7 +445,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Scan) ENABLED START #
         """
         Triggers the DishMaster to start the Scan.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -455,7 +470,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def EndScan(self, argin):
         # PROTECTED REGION ID(DishLeafNode.EndScan) ENABLED START #
         """ Triggers the DishMaster to stop the Scan.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -477,8 +494,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
-        :param argin: String array that includes pointing parameters of Dish - Azimuth and
-        Elevation Angle.
+
+        :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
+
         :return: None
         """
         try:
@@ -527,7 +545,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def StartCapture(self, argin):
         # PROTECTED REGION ID(DishLeafNode.StartCapture) ENABLED START #
         """ Triggers the DishMaster to Start capture on the set configured band.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -549,7 +569,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.StopCapture) ENABLED START #
         """
         Triggers the DishMaster to Stop capture on the set configured band.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -584,7 +606,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Slew) ENABLED START #
         """
         Triggers the DishMaster to slew the dish towards the set pointing coordinates.
+
         :param argin: timestamp
+
         :return: None
         """
         try:
@@ -604,8 +628,11 @@ def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishLeafNode.main) ENABLED START #
     """
     Runs the DishLeafNode.
+
     :param args: Arguments internal to TANGO
+
     :param kwargs: Arguments internal to TANGO
+
     :return: DishLeafNode TANGO object.
     """
     return run((DishLeafNode,), args=args, **kwargs)
