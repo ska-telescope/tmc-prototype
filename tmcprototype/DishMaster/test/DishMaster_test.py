@@ -425,7 +425,6 @@ class TestDishMaster(object):
     def test_Track(self, tango_context):
         """Test for Track command"""
         # Test for valid argument
-        tango_context.device.pointingState == 1
         tango_context.device.SetStandbyLPMode()
         tango_context.device.SetOperateMode()
         tango_context.device.Track("0")
