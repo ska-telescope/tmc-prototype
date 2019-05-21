@@ -222,17 +222,16 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
-                print(CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors))
+                #print(CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors))
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
                 self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
-                print(log)
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
+            #print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
             self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
 
@@ -265,10 +264,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         try:
             # Setting Observer Position as Pune
-            dish_antenna = katpoint.Antenna(name='d1',
-                                            latitude='18:31:48:00',
-                                            longitude='73:50:23.99',
-                                            altitude=570)
+            dish_antenna = katpoint.Antenna(name= self.dish_name ,
+                                            latitude=self.observer_location_lat,
+                                            longitude=self.observer_location_long,
+                                            altitude=self.observer_altitude)
             # Antenna latitude
             dish_antenna_latitude = dish_antenna.ref_observer.lat
 
@@ -305,9 +304,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Calculate Az El coordinates
             self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
             self.az = katpoint.rad2deg(self.az_el_coordinates[0])
-            print("Azimuth coordinate: ", self.az)
+            #print("Azimuth coordinate: ", self.az)
             self.el = katpoint.rad2deg(self.az_el_coordinates[1])
-            print("Elevation Coordinate: ", self.el)
+            #print("Elevation Coordinate: ", self.el)
             self.RaDec_AzEl_Conversion = True
 
         except ValueError:
@@ -322,19 +321,20 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
 
     def elevation_lim_thread(self):
-        """This thread allows Dish to track a source till elevation limit of dish.
+        """This thread allows Dish to track a source till elevation limits of dish.
 
         :return: None.
 
         """
         while 1:
-            if (self.el <= self.ele_min_lim or self.el > self.ele_max_lim) or self.event_track_time.isSet():
+            if (self.el <= self.ele_min_lim or self.el > self.ele_max_lim):
                 self.event_el.set()
                 self._read_activity_message = CONST.ERR_ELE_LIM
+                print(CONST.ERR_ELE_LIM)
                 break
 
     def tracking_time_thread(self):
-        """This thread allows dish to track for prespecified limit of Track Duration.
+        """This thread allows the dish to track the source for a specified Duration.
 
         :return: None.
 
@@ -342,9 +342,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         start_track_time = time.time()
         end_track_time = start_track_time + self.TrackDuration * 60.0
         while 1:
-            if end_track_time <= time.time() or self.event_el.isSet():
+            if end_track_time <= time.time():
                 self.event_track_time.set()
                 self._read_activity_message = CONST.ERR_TIME_LIM
+                print(CONST.ERR_TIME_LIM)
                 break
 
     def track_thread(self, argin):
@@ -386,19 +387,27 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     spectrum.extend((roundoff_az_el))
                     # assign calculated AzEl to desiredPointing attribute of Dishmaster
                     self._dish_proxy.desiredPointing = spectrum
-                    print("self._dish_proxy.desiredPointing", self._dish_proxy.desiredPointing)
+                    print("self._dish_proxy.desiredPointing:", self._dish_proxy.desiredPointing)
                     # Invoke Track command of Dish Master
                     self._dish_proxy.command_inout_asynch("Track", "0", self.commandCallback)
+                    print("self._dish_proxy.achievedPointing:", self._dish_proxy.achievedPointing)
+                    print("\n")
                 else:
                     break
                 time.sleep(0.05)
         except Exception as except_occurred:
-            print(CONST.STR_EXE_TRACK, except_occurred)
-            self._read_activity_message = CONST.ERR_TRACK + str(except_occurred)
-            self.dev_logging(CONST.ERR_TRACK, int(tango.LogLevel.LOG_ERROR))
+            print(CONST.ERR_EXE_TRACK, except_occurred)
+            self._read_activity_message = CONST.ERR_EXE_TRACK + str(except_occurred)
+            self.dev_logging(CONST.ERR_EXE_TRACK, int(tango.LogLevel.LOG_ERROR))
         finally:
-            self.event_el.clear()
-            self.event_track_time.clear()
+            if not self.event_el.isSet():
+                self.event_el.set()
+                time.sleep(1)
+                self.event_el.clear()
+            if not self.event_track_time.isSet():
+                self.event_track_time.set()
+                time.sleep(1)
+                self.event_track_time.clear()
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
@@ -447,6 +456,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self.RaDec_AzEl_Conversion = False
         self.ele_max_lim = 90
         self.ele_min_lim = 17.5
+        self.dish_name = 'd1'
+        self.observer_location_lat = '18:31:48:00'
+        self.observer_location_long = '73:50:23.99'
+        self.observer_altitude = 570
         try:
             print(CONST.STR_DISHMASTER_FQN, self.DishMasterFQDN)
             self._read_activity_message = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)

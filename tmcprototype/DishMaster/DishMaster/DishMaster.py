@@ -237,6 +237,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             else:
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
             time.sleep(2)
+            print("Dish is Slewing.")
+            print("Dedired Pointing:", self._desired_pointing)
+            print("Achieved Pointing:", self._achieved_pointing)
+            print("\n")
         self._pointing_state = 0               # Set pointingState to READY Mode
     # PROTECTED REGION END #    //DishMaster.class_variable
 
@@ -879,6 +883,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._pointing_state = 2                    # Set pointingState to TRACK Mode
                 self._achieved_pointing[1] = self._desired_pointing[1]
                 self._achieved_pointing[2] = self._desired_pointing[2]
+                print("\n")
+                print("Dish is Tracking.")
+                print("Dedired Pointing:", self._desired_pointing)
                 print("Achieved Pointing:", self._achieved_pointing)
                 self._pointing_state = 0                    # Set pointingState to READY Mode
             else:
