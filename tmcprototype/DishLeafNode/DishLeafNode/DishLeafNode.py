@@ -387,10 +387,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     spectrum.extend((roundoff_az_el))
                     # assign calculated AzEl to desiredPointing attribute of Dishmaster
                     self._dish_proxy.desiredPointing = spectrum
-                    print("self._dish_proxy.desiredPointing:", self._dish_proxy.desiredPointing)
                     # Invoke Track command of Dish Master
                     self._dish_proxy.command_inout_asynch("Track", "0", self.commandCallback)
-                    print("self._dish_proxy.achievedPointing:", self._dish_proxy.achievedPointing)
                     print("\n")
                 else:
                     break
@@ -455,6 +453,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self.az = 0
         self.RaDec_AzEl_Conversion = False
         self.ele_max_lim = 90
+        self.horizon_el = 0
         self.ele_min_lim = 17.5
         self.dish_name = 'd1'
         self.observer_location_lat = '18:31:48:00'
@@ -646,21 +645,17 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Convert ra and dec to az and el
             radec_value = argin[0].replace('|', ',')
             timestamp_value = argin[1].replace('|', ' ')
-            print("radec_value: ", radec_value)
-            print("timestamp_value: ", timestamp_value)
             katpoint_arg = []
             katpoint_arg.insert(0, radec_value)
             katpoint_arg.insert(1, timestamp_value)
-            print("katpoint_arg: ", katpoint_arg)
             self.convert_radec_to_azel(katpoint_arg)
 
             # Invoke slew command on DishMaster with az and el as inputs
-            if self.el >= 0 and self.el < 90:
+            if self.el >= self.horizon_el  and self.el < self.ele_max_lim:
                 # To obtain positive value of azimuth coordinate
                 if self.az < 0:
                     self.az = 360 - abs(self.az)
                 roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
-                print("az and el round2: ", roundoff_az_el)
                 spectrum = [0]
                 spectrum.extend((roundoff_az_el))
                 self._dish_proxy.desiredPointing = spectrum
