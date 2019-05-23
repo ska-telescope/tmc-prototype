@@ -320,18 +320,19 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
 
-    def elevation_lim_thread(self):
-        """This thread allows Dish to track a source till elevation limits of dish.
-
-        :return: None.
-
-        """
-        while 1:
-            if (self.el <= self.ele_min_lim or self.el > self.ele_max_lim):
-                self.event_el.set()
-                self._read_activity_message = CONST.ERR_ELE_LIM
-                print(CONST.ERR_ELE_LIM)
-                break
+    # def elevation_lim_thread(self):
+    #     """This thread allows Dish to track a source till elevation limits of dish.
+    #
+    #     :return: None.
+    #
+    #     """
+    #     while 1:
+    #         if (self.el <= self.ele_min_lim or self.el > self.ele_max_lim) or self.event_track_time.isSet():
+    #             print("In ele lim thread")
+    #             self.event_el.set()
+    #             self._read_activity_message = CONST.ERR_ELE_LIM
+    #             print(CONST.ERR_ELE_LIM)
+    #             break
 
     def tracking_time_thread(self):
         """This thread allows the dish to track the source for a specified Duration.
@@ -346,6 +347,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.event_track_time.set()
                 self._read_activity_message = CONST.ERR_TIME_LIM
                 print(CONST.ERR_TIME_LIM)
+                break
+            elif self.el_limit == True:
                 break
 
     def track_thread(self, argin):
@@ -370,7 +373,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         #timestamp_value = argin[1].replace('|', ' ')
 
         try:
-            while self.event_el.is_set() is False and self.event_track_time.is_set() is False:
+            while self.event_track_time.is_set() is False:
                 # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
                 katpoint_arg = []
@@ -379,18 +382,27 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
                 if self.RaDec_AzEl_Conversion is True:
-                    if self.az < 0:
-                        self.az = 360 - abs(self.az)
+                    if self.el >= 17.5 and self.el <= 90:
+                        if self.az < 0:
+                            self.az = 360 - abs(self.az)
 
-                    roundoff_az_el = [round(self.az, 12), round(self.el, 12)]
-                    spectrum = [0]
-                    spectrum.extend((roundoff_az_el))
-                    # assign calculated AzEl to desiredPointing attribute of Dishmaster
-                    self._dish_proxy.desiredPointing = spectrum
-                    # Invoke Track command of Dish Master
-                    self._dish_proxy.command_inout_asynch("Track", "0", self.commandCallback)
-                    print("\n")
+                        roundoff_az_el = [round(self.az, 12), round(self.el, 12)]
+                        spectrum = [0]
+                        spectrum.extend((roundoff_az_el))
+                        # assign calculated AzEl to desiredPointing attribute of Dishmaster
+                        self._dish_proxy.desiredPointing = spectrum
+                        # Invoke Track command of Dish Master
+                        print("Desired Pointing:", self._dish_proxy.desiredPointing)
+                        self._dish_proxy.command_inout_asynch("Track", "0", self.commandCallback)
+                        print("Achieved Pointing:", self._dish_proxy.achievedPointing)
+                        print("\n")
+                    else:
+                        self.el_limit = True
+                        print("Elevation limit is reached.")
+                        self._read_activity_message = CONST.ERR_ELE_LIM
+                        break
                 else:
+                    print("In Break of while: AzEl conversion failed.")
                     break
                 time.sleep(0.05)
         except Exception as except_occurred:
@@ -398,14 +410,20 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_EXE_TRACK + str(except_occurred)
             self.dev_logging(CONST.ERR_EXE_TRACK, int(tango.LogLevel.LOG_ERROR))
         finally:
-            if not self.event_el.isSet():
-                self.event_el.set()
-                time.sleep(1)
-                self.event_el.clear()
-            if not self.event_track_time.isSet():
-                self.event_track_time.set()
-                time.sleep(1)
-                self.event_track_time.clear()
+            self.event_track_time.clear()
+        print("Exit")
+        #    self.event_el.clear()
+        #     if not self.event_el.isSet():
+        #         print("setting elevation lim thread")
+        #         self.event_el.set()
+        #         #time.sleep(0.1)
+        #         self.event_el.clear()
+        #     if not self.event_track_time.isSet():
+        #         print("setting time duration thread")
+        #         self.event_track_time.set()
+        #         #time.sleep(0.1)
+        #         self.event_track_time.clear()
+        # print("Exit")
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
@@ -459,13 +477,14 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self.observer_location_lat = '18:31:48:00'
         self.observer_location_long = '73:50:23.99'
         self.observer_altitude = 570
+        self.el_limit = False
         try:
             print(CONST.STR_DISHMASTER_FQN, self.DishMasterFQDN)
             self._read_activity_message = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
             self._dish_proxy = DeviceProxy(self.DishMasterFQDN)   #Creating proxy to the DishMaster
 
             #
-            self.event_el = threading.Event()
+            #self.event_el = threading.Event()
             self.event_track_time = threading.Event()
         except Exception as except_occurred:
             print(CONST.ERR_IN_CREATE_PROXY_DM, except_occurred)
@@ -783,11 +802,12 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        self.event_el.clear()
+        #self.event_el.clear()
+        self.var_el = False
         self.event_track_time.clear()
 
-        self.elevation_lim_thread1 = threading.Thread(None, self.elevation_lim_thread, 'DishLeafNode')
-        self.elevation_lim_thread1.start()
+        #self.elevation_lim_thread1 = threading.Thread(None, self.elevation_lim_thread, 'DishLeafNode')
+        #self.elevation_lim_thread1.start()
         self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, 'DishLeafNode')
         self.tracking_time_thread1.start()
         self.track_thread1 = threading.Thread(None, self.track_thread, 'DishLeafNode', args=argin)
