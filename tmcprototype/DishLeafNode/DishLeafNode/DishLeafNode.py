@@ -304,9 +304,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Calculate Az El coordinates
             self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
             self.az = katpoint.rad2deg(self.az_el_coordinates[0])
-            #print("Azimuth coordinate: ", self.az)
             self.el = katpoint.rad2deg(self.az_el_coordinates[1])
-            #print("Elevation Coordinate: ", self.el)
             self.RaDec_AzEl_Conversion = True
 
         except ValueError:
@@ -319,20 +317,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.RaDec_AzEl_Conversion = False
             self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
-
-    # def elevation_lim_thread(self):
-    #     """This thread allows Dish to track a source till elevation limits of dish.
-    #
-    #     :return: None.
-    #
-    #     """
-    #     while 1:
-    #         if (self.el <= self.ele_min_lim or self.el > self.ele_max_lim) or self.event_track_time.isSet():
-    #             print("In ele lim thread")
-    #             self.event_el.set()
-    #             self._read_activity_message = CONST.ERR_ELE_LIM
-    #             print(CONST.ERR_ELE_LIM)
-    #             break
 
     def tracking_time_thread(self):
         """This thread allows the dish to track the source for a specified Duration.
@@ -392,10 +376,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         # assign calculated AzEl to desiredPointing attribute of Dishmaster
                         self._dish_proxy.desiredPointing = spectrum
                         # Invoke Track command of Dish Master
-                        print("Desired Pointing:", self._dish_proxy.desiredPointing)
-                        self._dish_proxy.command_inout_asynch("Track", "0", self.commandCallback)
-                        print("Achieved Pointing:", self._dish_proxy.achievedPointing)
-                        print("\n")
+                        self._dish_proxy.command_inout_asynch(CONST.CMD_TRACK, "0", self.commandCallback)
                     else:
                         self.el_limit = True
                         self._read_activity_message = CONST.ERR_ELE_LIM
@@ -407,20 +388,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXE_TRACK, except_occurred)
             self._read_activity_message = CONST.ERR_EXE_TRACK + str(except_occurred)
             self.dev_logging(CONST.ERR_EXE_TRACK, int(tango.LogLevel.LOG_ERROR))
-        finally:
-            self.event_track_time.clear()
-        #    self.event_el.clear()
-        #     if not self.event_el.isSet():
-        #         print("setting elevation lim thread")
-        #         self.event_el.set()
-        #         #time.sleep(0.1)
-        #         self.event_el.clear()
-        #     if not self.event_track_time.isSet():
-        #         print("setting time duration thread")
-        #         self.event_track_time.set()
-        #         #time.sleep(0.1)
-        #         self.event_track_time.clear()
-        # print("Exit")
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
@@ -799,15 +766,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        #self.event_el.clear()
-        self.var_el = False
+        self.el_limit = False
         self.event_track_time.clear()
-
-        #self.elevation_lim_thread1 = threading.Thread(None, self.elevation_lim_thread, 'DishLeafNode')
-        #self.elevation_lim_thread1.start()
-        self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, 'DishLeafNode')
+        self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, CONST.THREAD_TRACK)
         self.tracking_time_thread1.start()
-        self.track_thread1 = threading.Thread(None, self.track_thread, 'DishLeafNode', args=argin)
+        self.track_thread1 = threading.Thread(None, self.track_thread, CONST.THREAD_TRACK, args=argin)
         self.track_thread1.start()
         # PROTECTED REGION END #    //  DishLeafNode.Track
 

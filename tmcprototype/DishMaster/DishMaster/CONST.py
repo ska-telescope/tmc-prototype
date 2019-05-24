@@ -19,6 +19,7 @@ STR_DATA_CAPTURE_STOP = "Data Capturing stopped."
 STR_DATA_CAPTURE_ALREADY_STARTED = "Data Capuring is already in progress."
 STR_DATA_CAPTURE_ALREADY_STOPPED = "Data Capuring is already stopped."
 STR_FALSE = "False"
+STR_ACHIEVED_POINTING = "Achieved Pointing"
 
 #Error messages
 ERR_EXE_POINT_FN = "Unexpected error in executing POINT function on Dish"
@@ -32,3 +33,5 @@ ERR_EXE_SCAN_CMD = "Unexpected error in executing Scan Command on Dish"
 ERR_EXE_STRT_CAPTURE_CMD = "Unexpected error in executing StartCapture Command on Dish"
 ERR_EXE_STOP_CAPTURE_CMD = "Unexpected error in executing StopCapture Command on Dish"
 ERR_EXE_SLEW_CMD = "Unexpected error in executing Slew Command on Dish"
+
+THREAD_TRACK = "DishMaster"
