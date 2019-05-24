@@ -115,8 +115,7 @@ class TestCentralNode(object):
         """Test for StowAntennas"""
         # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
         argin = ["0001",]
-        with pytest.raises(tango.DevFailed) :
-            tango_context.device.StartUpTelescope()
+        tango_context.device.StartUpTelescope()
         with pytest.raises(tango.DevFailed) :
             tango_context.device.StowAntennas(argin)
         assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
