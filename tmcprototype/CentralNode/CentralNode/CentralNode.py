@@ -448,16 +448,17 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
-    @command(dtype_in='str',
-             doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-           "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
-           "The individual string should contain dish numbers in string format with "
-           "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-             dtype_out='str',
-             doc_out="The string in JSON format. The JSON contains following values:\ndish:"
-            " JSON object consisting receptors allocated successfully: DevVarStringArray."
-            " The individual string should contain dish numbers in string format with "
-            "preceding zeroes upto 3 digits. E.g. 0001, 0002", )
+    @command(
+        dtype_in='str',
+        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
+        "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
+        "The individual string should contain dish numbers in string format with "
+        "preceding zeroes upto 3 digits. E.g. 0001, 0002",
+        dtype_out='str',
+        doc_out="The string in JSON format. The JSON contains following values:\ndish:"
+        " JSON object consisting receptors allocated successfully: DevVarStringArray."
+        " The individual string should contain dish numbers in string format with "
+        "preceding zeroes upto 3 digits. E.g. 0001, 0002", )
     @DebugIt()
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #

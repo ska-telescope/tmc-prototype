@@ -47,7 +47,7 @@ class TestDishLeafNode(object):
     device = DishLeafNode
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'DishMasterFQDN': 'mid_d0001/elt/master',
+                  'DishMasterFQDN': 'mid_d0001/elt/master','TrackDuration': 1,
                   }
     empty = None  # Should be []
 
@@ -104,7 +104,7 @@ class TestDishLeafNode(object):
         assert tango_context.device.activityMessage == CONST.STR_SETSTANDBYLP_SUCCESS
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStandByLPMode
 
-    def test_SetOperateMode(self, tango_context, create_dish_proxy):
+    def test_SetOperateMode(self, tango_context):
         """Test for SetOperateMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetOperateMode) ENABLED START #
         tango_context.device.SetOperateMode()
@@ -112,6 +112,7 @@ class TestDishLeafNode(object):
         assert tango_context.device.activityMessage == (CONST.STR_SETOPERATE_SUCCESS) or \
                (CONST.STR_DISH_OPERATE_MODE)
         # PROTECTED REGION END #    //  DishLeafNode.test_SetOperateMode
+
 
     def test_Configure(self, tango_context):
         """Test for Configure"""
@@ -132,7 +133,7 @@ class TestDishLeafNode(object):
         """Test for Configure_invalid_arguments"""
         tango_context.device.Configure(["Polaris | polaris, 2:31:50.88, 89:15:51.4", '2019-02-18 11:17:00'])
         print(tango_context.device.activityMessage)
-        assert CONST.ERR_RADEC_TO_AZEL in tango_context.device.activityMessage
+        assert CONST.ERR_RADEC_TO_AZEL_VAL_ERR in tango_context.device.activityMessage
 
     def test_Scan(self, tango_context):
         """Test for Scan"""
@@ -218,8 +219,9 @@ class TestDishLeafNode(object):
     def test_Slew(self, tango_context):
         """Test for Slew"""
         # PROTECTED REGION ID(DishLeafNode.test_Slew) ENABLED START #
+        time.sleep(8)
         tango_context.device.SetStandByLPMode()
-        time.sleep(4)
+        time.sleep(8)
         tango_context.device.Slew("0")
         time.sleep(8)
         assert tango_context.device.activityMessage == CONST.STR_SLEW_SUCCESS
@@ -232,6 +234,23 @@ class TestDishLeafNode(object):
             tango_context.device.Slew("a")
         assert CONST.ERR_EXE_SLEW_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  DishLeafNode.test_Slew
+
+    def test_Track(self, tango_context, create_dish_proxy):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        tango_context.device.Track(["radec|2:31:50.91|89:15:51.4"])
+        time.sleep(60)
+        assert create_dish_proxy.pointingState == 0
+        # PROTECTED REGION END #    //  DishLeafNode.Track
+
+    def test_Track_invalid_arg(self, tango_context):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        tango_context.device.Track(["radec|2:31:50.91"])
+        time.sleep(5)
+        assert tango_context.device.activityMessage == CONST.ERR_RADEC_TO_AZEL_VAL_ERR
+        tango_context.device.SetStandByLPMode()
+        # PROTECTED REGION END #    //  DishLeafNode.test_Track
 
     def test_buildState(self, tango_context):
         """Test for buildState"""
@@ -344,3 +363,4 @@ class TestDishLeafNode(object):
                (CONST.STR_DISH_POINT_STATE_READY) or (CONST.STR_CAPTURE_EVENT)
         assert create_dish_proxy.capturing is False
         create_dish_proxy.unsubscribe_event(eid)
+        tango_context.device.SetStandByLPMode()

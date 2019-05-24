@@ -6,6 +6,7 @@
 #
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
+""" main.py file of DishMaster project"""
 
 from __future__ import absolute_import
 from .DishMaster import main

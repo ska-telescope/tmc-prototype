@@ -313,6 +313,10 @@
         "devPropValue": "mid_d0001/elt/master"
       },
       {
+        "devPropName": "TrackDuration",
+        "devPropValue": 0.5
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       }
