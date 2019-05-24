@@ -314,7 +314,7 @@
       },
       {
         "devPropName": "TrackDuration",
-        "devPropValue": 0.5
+        "devPropValue": 1
       },
       {
         "devPropName": "SkaLevel",
@@ -355,6 +355,10 @@
         "devPropValue": "mid_d0002/elt/master"
       },
       {
+        "devPropName": "TrackDuration",
+        "devPropValue": 1
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       }
@@ -393,6 +397,10 @@
         "devPropValue": "mid_d0003/elt/master"
       },
       {
+        "devPropName": "TrackDuration",
+        "devPropValue": 1
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       }
@@ -429,6 +437,10 @@
       {
         "devPropName": "DishMasterFQDN",
         "devPropValue": "mid_d0004/elt/master"
+      },
+      {
+        "devPropName": "TrackDuration",
+        "devPropValue": 1
       },
       {
         "devPropName": "SkaLevel",
