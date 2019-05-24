@@ -15,15 +15,16 @@
  * 4   - Unit and Integration Testing
      * 4.1 - Testing DishMaster
      * 4.2 - Testing DishLeafNode
-     * 4.3 - Testing SubarrayNode
-     * 4.4 - Testing CentralNode
+     * 4.3 - Testing CSPMasterLeafNode
+     * 4.4 - Testing SubarrayNode
+     * 4.5 - Testing CentralNode
  * 5   - Running tmc-prototype inside Docker containers
  * 6   - Documentation
 
 # 1: Introduction
 This is the repository for TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
-The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.5.2** (PyTango 9.5.2a), it is a single repository consisting four packages - CentralNode, SubarrayNode, DishLeafNode and DishMaster.
+The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.5.2** (PyTango 9.5.2a), it is a single repository consisting five packages - CentralNode, SubarrayNode, DishLeafNode, CSPMasterLeafNode and DishMaster.
 
 It also consists a Taurus based GUI in a separate folder which is compatible only with **Python 2.7.12**.
 
@@ -33,12 +34,12 @@ TMC prototype has covered (or planning to cover) following architectural aspects
 * [x] Use of base classes for development of control nodes and Dish Master Simulator
 * [x] Hierarchy of control nodes - Central node, Subarray node, Leaf Node
 * [x] Interface between the TMC and Element LMC (Dish Master)
-* [x] Integration of KATPOINT library
+* [x] Integration of KATPoint library
 * [x] Use of Alarm Handler
 * [x] Use of Central Logger
-* [ ] Interface between the CentralNode/SubarrayNode and OET
-* [ ] Interface between the TMC and CSP Master
-* [ ] Source tracking
+* [x] Interface between the CentralNode/SubarrayNode and OET
+* [x] Interface between the TMC and CSP Master
+* [x] Source tracking
 
 ### 1.2: Functionality
 
@@ -49,9 +50,13 @@ TMC prototype has covered (or planning to cover) following architectural aspects
 * [x] Basic configuration (setting target pointing coordinates) of a Subarray
 * [x] Commands and Events propagation
 * [x] TANGO group commands
-* [x] Conversion of Ra-Dec to Az-El coordinates using KATPOINT
-* [ ] Calculate Az-El periodically in Dish Leaf Node and implement tracking functionality in Dish Master
-* [ ] Monitor CSP Master using CSP Master Leaf Node
+* [x] Conversion of Ra-Dec to Az-El coordinates using KATPoint
+* [x] Calculate Az-El periodically in Dish Leaf Node and implement tracking functionality in Dish Master
+* [x] Interface between the TMC and CSP Master:
+	* [x] Develop a CSP Master Leaf Node
+	* [x] Monitor/subscribe CSP Master attributes from CSP Master Leaf Node
+	* [x] Modify aggregation of overall Telescope Health (residing in Central Node) to include CSP Master health
+	* [x] Modify StartUpTelescope command on Central Node to start CSP Master device
 * [x] Accept configuration as strings (JSON) from OET for following commands:
     * [x] AssignResources
     * [x] ReleaseResources
@@ -67,7 +72,7 @@ TMC prototype has covered (or planning to cover) following architectural aspects
 * [PyTango (9.2.4)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
 * skabase (LMC Base classes for SKA): Refer Section 3.1 for installation guide
 * [Elettra Alarm Handler](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing)
-* [katpoint](https://pypi.org/project/katpoint/)
+* [KATPoint](https://pypi.org/project/katpoint/)
 * [pytest](https://pypi.org/project/pytest/)
 * [pytest-cov](https://pypi.org/project/pytest-cov/)
 * [pytest-json-report](https://pypi.org/project/pytest-json-report/)
@@ -164,57 +169,69 @@ Once all the TMC TANGO devices are up and running, one can proceed to run the ta
 # 4: Unit and Integration Testing
 The hierarchy of TANGO devices are as follows:
 
-Central Node -> SubarrayNode -> DishLeafNode -> DishMaster
+Central Node -> SubarrayNode -> DishLeafNode/CSPMasterLeafNode -> DishMaster/CSPMaster
 
 (The flow from left to right depicts the Client -> Server relationship)
 
-One needs to have DishMaster running prior to executing the test cases of DishLeafNode.
-Similarly, one needs to have DishLeafNode and DishMaster running prior to executing the test cases of SubarrayNode.
-And at last, SubarrayNode, DishLeafNode and DishMaster should be running prior to executing the test cases of CentralNode.
+One needs to have DishMaster/CSPMaster running prior to executing the test cases of DishLeafNode/CSPMasterLeafNode.
+Similarly, one needs to have DishLeafNode/CSPMasterLeafNode and DishMaster/CSPMaster running prior to executing the test cases of SubarrayNode. And at last, SubarrayNode, DishLeafNode/CSPMasterLeafNode and DishMaster/CSPMaster should be running prior to executing the test cases of CentralNode.
 
 We are required to start the dependent TANGO devices in order to test a given TANGO devices due to this [issue.](http://www.tango-controls.org/community/forum/c/development/python/testing-tango-devices-using-pytest/)
 
 Once the configuration of TMC TANGO devices is successful, one can proceed to test the prototype. Start the TMC TANGO devices as specified in (#running-tmc-prototype) section.
 
+**Note:** Refer [csp-lmc-prototype](https://github.com/ska-telescope/csp-lmc-prototype) for CSP TANGO devices.
+
 ### 4.1: Testing DishMaster
 * Navigate to the DishMaster folder:
 
     `cd tmcprototype/DishMaster/DishMaster`
-    
-* To excute test cases, run:
+
+* To execute test cases, run:
 
     `py.test --cov=DishMaster test/`
 
 ### 4.2 Testing DishLeafNode
-**Note:** DishMaster TANGO Device should be up and running.
+**Prerequisite:** DishMaster TANGO Device should be up and running.
 
 * Navigate to the DishLeafNode folder:
 
     `cd tmcprototype/DishLeafNode/DishLeafNode`
-    
-* To excute test cases, run:
+
+* To execute test cases, run:
 
     `py.test --cov=DishLeafNode test/`
 
-### 4.3 Testing SubarrayNode
-**Note:** DishLeafNode and DishMaster TANGO Devices should be up and running.
+### 4.3 Testing CSPMasterLeafNode
+**Prerequisite:** CSPMaster TANGO Device should be up and running.
+
+* Navigate to the CSPMasterLeafNode folder:
+
+    `cd tmcprototype/CSPMasterLeafNode/CSPMasterLeafNode`
+
+* To execute test cases, run:
+
+    `py.test --cov=CSPMasterLeafNode test/`
+
+### 4.4 Testing SubarrayNode
+**Prerequisite:** DishLeafNode and DishMaster TANGO Devices should be up and running.
 
 * Navigate to the SubarrayNode folder:
 
     `cd tmcprototype/SubarrayNode/SubarrayNode`
-    
-* To excute test cases, run:
+
+* To execute test cases, run:
 
     `py.test --cov=SubarrayNode test/`
 
-### 4.4 Testing CentralNode
-**Note:** Two instances of SubarrayNode (sub1, sub2), DishLeafNode and DishMaster TANGO Devices should be up and running.
+### 4.5 Testing CentralNode
+**Prerequisite:** Two instances of SubarrayNode (sub1, sub2), DishLeafNode and DishMaster TANGO Devices should be up and running.
 
 * Navigate to the CentralNode folder:
 
     `cd tmcprototype/CentralNode/CentralNode`
-    
-* To excute test cases, run:
+
+* To execute test cases, run:
 
     `py.test --cov=CentralNode test/`
 
@@ -228,12 +245,10 @@ In order to test the entire prototype, execute:
 
 `make test`
 
-To open the interactive mode using terminal, execute:
-
-`make interactive`
 
 # 6: Documentation
-* [TMC Prototype (Stage I) Design Document](https://docs.google.com/document/d/1JFGXb8NGXPfi9ZwOQMPU6_Dwc1UxCHelRc-tjVVuoD0/edit?usp=sharing)
+* [TMC Prototype (Stage II) Design Document](https://docs.google.com/document/d/1DaLCQZ79yMlGYm2GPE03KpQ80kzjb1f98bWhgV_2Rpo/edit?usp=sharing)
 * [ReadTheDocs](https://developer.skatelescope.org/projects/tmc-prototype/en/master/)
 * [OSO-UI / TMC PI2 meeting notes](https://docs.google.com/document/d/1sEEXwSMJatzFlP1iIw1d4ZrtEgvYvOS-_FPBmKd1i9A/edit)
 * [TMC Stage I Prototype Demo](https://replay.skatelescope.org/replay/showRecordingExternal.html?key=3Na630an0coGgdK)
+* [Comparison and Analysis of Astronomical Software (KATPoint and SOFA)](https://docs.google.com/document/d/1mD7-FbH4htkC9RJxFcP7SaMnRq2hVtTg76UIQQPD9W4/edit?usp=sharing)

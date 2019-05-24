@@ -18,6 +18,7 @@ CMD_DISH_SCAN = "Scan"
 CMD_DISH_SLEW = "Slew"
 CMD_STOP_CAPTURE = "StopCapture"
 CMD_START_CAPTURE = "StartCapture"
+CMD_TRACK = "Track"
 
 #string constants
 STR_DISH_STANDBYLP_MODE = "Dish is in STANDBY-LP mode."
@@ -106,6 +107,10 @@ ERR_EXE_STOP_CAPTURE_CMD = "Exception occurred in StopCapture command"
 ERR_EXE_STANDBYFP_CMD = "Exception occurred in SetStandbyFPMode command"
 ERR_EXE_SLEW_CMD = "Exception occurred in Slew command"
 ERR_RADEC_TO_AZEL = "Exception occurred in Ra-Dec to Az-El conversion "
+ERR_RADEC_TO_AZEL_VAL_ERR = "Value Error in Ra-Dec to Az-El conversion."
+ERR_ELE_LIM = "Minimum elevation limit has been reached."
+ERR_TIME_LIM = "Tracking duration is complete."
+ERR_EXE_TRACK = "Exception occured in the execution of Track command."
 # commands success string
 STR_SETSTANDBYLP_SUCCESS = "Command :-> SetStandbyLPMode invoked successfully."
 STR_SETOPERATE_SUCCESS = "Command :-> SetOperateMode invoked successfully."
@@ -122,4 +127,6 @@ STR_ACHIEVEDPOINTING_1_0 = "Achieved Pointing :-> [0. 1. 0.]"
 STR_ACHIEVEDPOINTING_0_0 = "Achieved Pointing :-> [0. 0. 0.]"
 STR_DESIREDPOINTING_0_0 = "Desired Pointing :-> [0. 0. 0.]"
 
-STR_TARGET_NOT_OBSERVED = "Target can not be observed."
+STR_TARGET_NOT_OBSERVED = "Cannot point to the source."
+
+THREAD_TRACK = "DishLeafNode"

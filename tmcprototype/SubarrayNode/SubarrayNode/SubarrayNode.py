@@ -8,23 +8,18 @@
 # See LICENSE.txt for more info.
 
 """ Subarray Node
-
 Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
+
 from __future__ import print_function
 from __future__ import absolute_import
 
 import os
 import sys
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
-sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
-
-# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 import random
 import string
+# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 
 # Tango imports
 import tango
@@ -35,6 +30,12 @@ from skabase.SKASubarray.SKASubarray import SKASubarray
 
 # Additional import
 import CONST
+
+
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
+sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
 
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
@@ -57,7 +58,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Schedules a scan for execution on a subarray. Command has a parameter which
         indicates the time (TAI) at which the Scan will start. Subarray transitions to
         obsState = SCANNING, when the execution of a scan starts.
+
         :param argin: String array with Scan start time as first element.
+
         :return: None
         """
         try:
@@ -90,6 +93,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def EndScan(self):
         """ Ends the scan. It can be either an automatic or an externally triggered transition
         after the scanning completes normally.
+
+        :param argin: DevVoid.
+
+        :return: None
         """
         try:
             assert self._obs_state == 3, CONST.SCAN_ALREADY_COMPLETED
@@ -206,11 +213,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Upon successful execution, all the resources of a given subarray get released and empty array
         is returned.
 
-        :param argin:
-            DevVoid.
+        :param argin: DevVoid.
 
-        :return:
-            DevVarStringArray.
+        :return: DevVarStringArray.
         """
         try:
             argout = []
@@ -255,8 +260,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         Retrieves the subscribed DishMaster health state, aggregate them to evaluate
         health state of the Subarray.
+
         :param evt: A TANGO_CHANGE event on DishMaster healthState.
+
         :return: None
+
         """
         if evt.err is False:
             try:
@@ -359,6 +367,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def init_device(self):
         """
         Initializes the attributes and properties of the Subarray node.
+
         :return: None
         """
         SKASubarray.init_device(self)
@@ -435,15 +444,18 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     @command(
         dtype_in=('str',),
-        doc_in="Pointing parameters of Dish - Azimuth and Elevation Angle.",
+        doc_in="Pointing parameters of Dish - Right ascension and Declination coordinates.",
     )
     @DebugIt()
     def Configure(self, argin):
         # PROTECTED REGION ID(SubarrayNode.Configure) ENABLED START #
         """
         Configures the resources assinged to the Subarray.
+
         :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
+
         :return: None
+
         """
         try:
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
@@ -472,6 +484,63 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
                                         DevState.STANDBY]
         # PROTECTED REGION END #    //  SubarrayNode.is_Configure_allowed
+
+    @command(
+        dtype_in='str',
+        doc_in="Initial Pointing parameters of Dish - Right ascension and Declination coordinates.",
+    )
+    @DebugIt()
+    def Track(self, argin):
+        # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
+        """ Invokes Track command on the resources assigned to the Subarray.
+
+        :param argin: DevString
+
+        Argin to be provided is the Ra and Dec values in the following format: radec|2:31:50.91|89:15:51.4
+        Where first value is tag that is radec, second value is Ra in Hr:Min:Sec, and third value is Dec in
+        Deg:Min:Sec.
+
+        :return: None
+
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
+            # set obsState to CONFIGURING when the configuration is started
+            self._obs_state = 1
+            cmd_input = []
+            cmd_input.append(argin)
+            cmdData = tango.DeviceData()
+            cmdData.insert(tango.DevVarStringArray, cmd_input)
+            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
+            # set obsState to READY when the configuration is completed
+            self._obs_state = 2
+            self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            self.dev_logging(CONST.STR_TRACK_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+
+        except tango.DevFailed as devfailed:
+            excpt_msg.append(CONST.ERR_TRACK_CMD + ": " + \
+                           str(devfailed.args[0].desc))
+            excpt_count += 1
+        except Exception as except_occured:
+            print(CONST.ERR_TRACK_CMD, "\n", except_occured)
+            self._read_activity_message = CONST.ERR_TRACK_CMD + str(except_occured)
+            self.dev_logging(CONST.ERR_TRACK_CMD, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_TRACK_CMD + ": " + \
+                             str(except_occured.args[0].desc))
+            excpt_count += 1
+
+        # throw exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
+            tango.Except.throw_exception(CONST.ERR_CMD_FAILED, err_msg,
+                                         CONST.STR_TRACK_EXECUTION, tango.ErrSeverity.ERR)
+        # PROTECTED REGION END #    //  SubarrayNode.Track
 
 # ----------
 # Run server
