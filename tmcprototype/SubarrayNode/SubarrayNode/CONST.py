@@ -53,13 +53,25 @@ STR_OK = "OK"
 
 
 #Error messages
-ERR_SCAN_CMD = "Exception in Scan command:"
+ERR_SCAN_CMD = "Exception in Scan command: "
 ERR_END_SCAN_CMD = "Exception in End Scan command:"
-ERR_ASSIGN_RES_CMD = "Exception in AssignResources command:"
+ERR_ASSIGN_RES_CMD = "Exception in AssignResources command: "
 ERR_RELEASE_RES_CMD = "Exception occurred in ReleaseAllResources command."
 ERR_AGGR_HEALTH_STATE = "Unexpected error while aggregating Health state!\n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error event on subscribing Subarray HealthState!\n"
 ERR_CONFIGURE_CMD = "Exception in Configure command: \n "
+ERR_ADDING_LEAFNODE = "Exception occurred while adding LeafNodes! "
+ERR_END_SCAN_CMD_ON_GROUP = "Error invoking EndScan command on DishLeafNode group"
+ERR_RELEASE_RES_CMD_GROUP = "Error invoking AssignResources command on DishLeafNode group"
+ERR_SETHEALTH_CALLBK = "KeyError occurred in setHealth callback of SubarrayNode!"
+ERR_CONFIGURE_CMD_GROUP = "Error invoking Configure command on DishLeafNode group! "
+
+
+ERR_INVALID_DATATYPE = " Invalid argument "
+ERR_DUPLICATE_END_SCAN_CMD = "End Scan Command Already Executed"
+ERR_DUPLICATE_SCAN_CMD = "Scan Command Already Executed"
+ERR_INVALID_JSON = "Invalid JSON format"
+ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 
 #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))

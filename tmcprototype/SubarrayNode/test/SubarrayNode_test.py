@@ -102,7 +102,8 @@ class TestSubarrayNode(object):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         receptor_list = ["a"]
-        tango_context.device.AssignResources(receptor_list)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(receptor_list)
         assert tango_context.device.State() == DevState.OFF
         assert tango_context.device.receptorIDList is None
         receptor_list = ["0001"]
@@ -116,11 +117,13 @@ class TestSubarrayNode(object):
     def test_Scan(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-        tango_context.device.Scan("a")
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan("a")
         assert tango_context.device.obsState == 0
         tango_context.device.Scan("0")
         assert tango_context.device.obsState == 3
-        tango_context.device.Scan("0")
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan("0")
         assert CONST.SCAN_ALREADY_IN_PROGRESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
@@ -134,8 +137,9 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
         tango_context.device.EndScan()
         assert tango_context.device.obsState == 0
-        tango_context.device.EndScan()
-        assert CONST.SCAN_ALREADY_COMPLETED in tango_context.device.activityMessage
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndScan()
+        assert CONST.ERR_DUPLICATE_END_SCAN_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
     def test_ReleaseAllResources(self, tango_context):
@@ -144,7 +148,8 @@ class TestSubarrayNode(object):
         tango_context.device.ReleaseAllResources()
         assert tango_context.device.obsState == 0
         assert tango_context.device.State() == DevState.OFF
-        tango_context.device.ReleaseAllResources()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseAllResources()
         assert CONST.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
 
