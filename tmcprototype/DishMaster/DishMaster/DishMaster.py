@@ -65,7 +65,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._pointing_state = 1
             except Exception as except_occured:
                 print(CONST.ERR_EXE_POINT_FN, self.ReceptorNumber)
-                print(CONST.STR_ERR_MSG, except_occured)
+                print(CONST.ERR_MSG, except_occured)
         else:
             self.set_status(CONST.STR_DISH_POINT_ALREADY)
             self.dev_logging(CONST.STR_DISH_POINT_ALREADY, int(tango.LogLevel.LOG_INFO))
@@ -382,7 +382,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         except Exception as except_occured:
             print(CONST.ERR_INIT_PROP_ATTR_DISH, self.ReceptorNumber)
             self.dev_logging(CONST.ERR_INIT_PROP_ATTR_DISH, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
+            print(CONST.ERR_MSG, except_occured)
         # PROTECTED REGION END #    //  DishMaster.always_executed_hook
 
     def always_executed_hook(self):
@@ -571,8 +571,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             print(CONST.ERR_EXE_SET_STOW_MODE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SET_STOW_MODE_CMD + str(self.ReceptorNumber))
             self.dev_logging(CONST.ERR_EXE_SET_STOW_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            excpt_msg.append(CONST.STR_ERR_MSG + str(except_occured))
+            print(CONST.ERR_MSG, except_occured)
+            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
 
         # Throw Exception
         if excpt_count > 0:
@@ -615,8 +615,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_count += 1
             self.set_status(str(except_occured))
             self.dev_logging(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            excpt_msg.append(CONST.STR_ERR_MSG + str(except_occured))
+            print(CONST.ERR_MSG, except_occured)
+            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -660,8 +660,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_msg.append(CONST.ERR_EXE_SET_MAINT_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.dev_logging(CONST.ERR_EXE_SET_MAINT_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            excpt_msg.append(CONST.STR_ERR_MSG + str(except_occured))
+            print(CONST.ERR_MSG, except_occured)
+            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -705,8 +705,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_msg.append(CONST.ERR_EXE_SET_OPERATE_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.dev_logging(CONST.ERR_EXE_SET_OPERATE_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            excpt_msg.append(CONST.STR_ERR_MSG + str(except_occured))
+            print(CONST.ERR_MSG, except_occured)
+            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
             # Throw Exception
@@ -762,8 +762,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_msg.append(CONST.ERR_EXE_SCAN_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.dev_logging(CONST.ERR_EXE_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            excpt_msg.append(CONST.STR_ERR_MSG + str(except_occured))
+            print(CONST.ERR_MSG, except_occured)
+            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -817,8 +817,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_msg.append(CONST.ERR_EXE_STRT_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.dev_logging(CONST.ERR_EXE_STRT_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            excpt_msg.append(CONST.STR_ERR_MSG + str(except_occured))
+            print(CONST.ERR_MSG, except_occured)
+            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -871,8 +871,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_msg.append(CONST.ERR_EXE_STOP_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.dev_logging(CONST.ERR_EXE_STOP_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            excpt_msg.append(CONST.STR_ERR_MSG + str(except_occured))
+            print(CONST.ERR_MSG, except_occured)
+            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -916,8 +916,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_msg.append(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.dev_logging(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            excpt_msg.append(CONST.STR_ERR_MSG + str(except_occured))
+            print(CONST.ERR_MSG, except_occured)
+            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -968,8 +968,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_msg.append(CONST.ERR_EXE_SLEW_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.dev_logging(CONST.ERR_EXE_SLEW_CMD, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            excpt_msg.append(CONST.STR_ERR_MSG + str(except_occured))
+            print(CONST.ERR_MSG, except_occured)
+            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -1026,7 +1026,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self.track_slew_thread.start()
 
         except Exception as except_occured:
-            print(CONST.STR_ERR_MSG, except_occured)
+            print(CONST.ERR_MSG, except_occured)
 
         # PROTECTED REGION END #    //  DishMaster.Track
 

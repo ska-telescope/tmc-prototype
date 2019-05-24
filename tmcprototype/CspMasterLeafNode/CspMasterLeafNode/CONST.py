@@ -40,25 +40,25 @@ STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
 
 
 # Error messages
-ERR_INIT_PROP_ATTR = "Unexpected error on initialising properties and attributes!"
-ERR_IN_CREATE_PROXY = "Unexpected error in creating proxy of the device "
-ERR_CSP_CBF_HEALTH_CB = "Unexpected error in CspCbfHealthCallback!"
-ERR_ON_SUBS_CSP_CBF_HEALTH = "Error event on subscribing CspCbfHealth attribute!"
-ERR_CSP_PSS_HEALTH_CB = "Unexpected error in CspPssHealthCallback!"
-ERR_ON_SUBS_CSP_PSS_HEALTH = "Error event on subscribing CspPssHealth attribute!"
-ERR_CSP_PST_HEALTH_CB = "Unexpected error in CspPstHealthCallback!"
-ERR_ON_SUBS_CSP_PST_HEALTH = "Error event on subscribing CspPstHealth attribute!"
+ERR_INIT_PROP_ATTR = "Error on initialising properties and attributes "
+ERR_IN_CREATE_PROXY = "Error in creating proxy of the device "
+ERR_CSP_CBF_HEALTH_CB = "Error in CspCbfHealthCallback "
+ERR_ON_SUBS_CSP_CBF_HEALTH = "Error in subscribing CspCbfHealth attribute "
+ERR_CSP_PSS_HEALTH_CB = "Error in CspPssHealthCallback "
+ERR_ON_SUBS_CSP_PSS_HEALTH = "Error in subscribing CspPssHealth attribute "
+ERR_CSP_PST_HEALTH_CB = "Error in CspPstHealthCallback "
+ERR_ON_SUBS_CSP_PST_HEALTH = "Error in subscribing CspPstHealth attribute "
 
 ERR_SUBS_CSP_MASTER_LEAF_ATTR = "Exception occurred while subscribing to Csp Master attribute"
 
-ERR_CSP_MASTER_LEAF_INIT = "Error occured in Csp Master Leaf Node initialization!"
+ERR_CSP_MASTER_LEAF_INIT = "Error occured in Csp Master Leaf Node initialization "
 ERR_INVOKING_CMD = "Error in invoking command:"
 
-ERR_IN_CREATE_PROXY_CSP_MASTER = "Unexpected error in creating proxy to the CSP Master "
+ERR_IN_CREATE_PROXY_CSP_MASTER = "Error in creating proxy to the CSP Master "
 
-ERR_EXCEPT_CMD_CB = "Exception in CommandCallback!: \n"
-ERR_INVOKING_CMD = "Error in invoking command:"
-STR_ERR_MSG = "Error message is: "
+ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
+ERR_INVOKING_CMD = "Error in invoking command: "
+ERR_MSG = "Error message is: "
 
 #ENUMS
 ENUM_HEALTH_OK, ENUM_HEALTH_DEGRADED, ENUM_HEALTH_FAILED, ENUM_HEALTH_UNKNOWN = list(range(0, 4))

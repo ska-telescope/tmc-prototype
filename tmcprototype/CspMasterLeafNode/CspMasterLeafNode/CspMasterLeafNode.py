@@ -229,8 +229,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_INIT_PROP_ATTR)
             self._read_activity_message = CONST.ERR_INIT_PROP_ATTR
             self.dev_logging(CONST.ERR_INIT_PROP_ATTR, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
-            print(CONST.STR_ERR_MSG, dev_failed)
+            self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
+            print(CONST.ERR_MSG, dev_failed)
 
         try:
             self._read_activity_message = CONST.STR_CSPMASTER_FQDN + str(self.CspMasterFQDN)
@@ -240,8 +240,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_IN_CREATE_PROXY, self.CspMasterFQDN)
             self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
             self.set_state(DevState.FAULT)
-            print(CONST.STR_ERR_MSG, dev_failed)
-            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
+            print(CONST.ERR_MSG, dev_failed)
+            self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
             self.dev_logging(CONST.ERR_IN_CREATE_PROXY_CSP_MASTER, int(tango.LogLevel.LOG_ERROR))
 
         # Subscribing to CSPMaster Attributes

@@ -30,23 +30,17 @@ STR_DISH_SHUTDOWN_MODE = "Dish is in SHUTDOWN mode."
 STR_DISH_STOW_MODE = "Dish is in STOW mode."
 STR_DISH_CONFIG_MODE = "Dish is in CONFIG mode."
 STR_DISH_OFF_MODE = "Dish is in OFF mode."
-STR_DISH_UNKNOWN_MODE = "Dish Mode :-> UNKNOWN!\n"
+STR_DISH_UNKNOWN_MODE = "Dish Mode :-> UNKNOWN\n"
 
 STR_DISH_POINT_STATE_READY = "Dish Pointing State :-> READY"
 STR_DISH_POINT_STATE_SLEW = "Dish Pointing State :-> SLEWING"
 STR_DISH_POINT_STATE_TRACK = "Dish Pointing State :-> TRACKING"
 STR_DISH_POINT_STATE_SCAN = "Dish Pointing State :-> SCANNING"
-STR_DISH_POINT_STATE_UNKNOWN = "Dish is in UNKNOWN pointing state!\n"
-
-STR_DISH_HEALTH_STATE_OK = "Dish Health state :-> OK"
-STR_DISH_HEALTH_STATE_DEGRADED = "Dish Health state :-> DEGRADED"
-STR_DISH_HEALTH_STATE_FAILED = "Dish Health state :-> FAILED"
-STR_DISH_HEALTH_STATE_UNKNOWN = "Dish Health state :-> UNKNOWN"
-STR_DISH_HEALTH_STATE_ERR = "Error: Dish Health state :-> "
+STR_DISH_POINT_STATE_UNKNOWN = "Dish is in UNKNOWN pointing state\n"
 
 STR_DISH_CAPTURING_TRUE = "Dish data capturing :-> TRUE"
 STR_DISH_CAPTURING_FALSE = "Dish data capturing :-> FALSE"
-STR_DISH_CAPTURING_UNKNOWN = "Dish date capturing :-> UNKNOWN!\n"
+STR_DISH_CAPTURING_UNKNOWN = "Dish date capturing :-> UNKNOWN\n"
 
 STR_ACHIEVED_POINTING = "Achieved Pointing :-> "
 STR_DESIRED_POINTING = "Desired Pointing :-> "
@@ -67,33 +61,33 @@ STR_OK = "OK"
 
 
 #error messages
-ERR_DISH_MODE_CB = "Unexpected error in DishModeCallback!"
-ERR_ON_SUBS_DISH_MODE_ATTR = "Error event on subscribing DishMode attribute!"
+ERR_DISH_MODE_CB = "Error in DishModeCallback "
+ERR_ON_SUBS_DISH_MODE_ATTR = "Error in subscribing DishMode attribute "
 
-ERR_DISH_POINT_STATE_CB = "Unexpected error in DishPointingStateCallback!"
-ERR_ON_SUBS_DISH_POINT_ATTR = "Error event on subscribing DishPointing attribute!"
+ERR_DISH_POINT_STATE_CB = "Error in DishPointingStateCallback "
+ERR_ON_SUBS_DISH_POINT_ATTR = "Error in subscribing DishPointing attribute "
 
-ERR_DISH_POINT_STATE_UNKNOWN = "Dish is in UNKNOWN pointing state!\n"
+ERR_DISH_POINT_STATE_UNKNOWN = "Dish is in UNKNOWN pointing state \n"
 
-ERR_DISH_HEALTH_STATE_CB = "Unexpected error in DishHealthStateCallback!"
-ERR_SUBSR_DISH_HEALTH_STATE = "Error event on subscribing Dish HealthState attribute!\n"
+ERR_DISH_HEALTH_STATE_CB = "Error in DishHealthStateCallback "
+ERR_SUBSR_DISH_HEALTH_STATE = "Error in subscribing Dish HealthState attribute \n"
 
-ERR_DISH_CAPTURING_CB = "Unexpected error in DishCapturingCallback!"
-ERR_SUBSR_CAPTURING_ATTR = "Error event on subscribing Capturing attribute!\n"
+ERR_DISH_CAPTURING_CB = "Error in DishCapturingCallback "
+ERR_SUBSR_CAPTURING_ATTR = "Error in subscribing Capturing attribute \n"
 
-ERR_DISH_ACHVD_POINT = "Unexpected error in DishAchievedPointingCallback!"
-ERR_ON_SUBS_DISH_ACHVD_ATTR = "Error event on subscribing AchievedPointing attribute!"
+ERR_DISH_ACHVD_POINT = "Error in DishAchievedPointingCallback "
+ERR_ON_SUBS_DISH_ACHVD_ATTR = "Error in subscribing AchievedPointing attribute "
 
-ERR_DISH_DESIRED_POINT = "Unexpected error in DishDesiredPointingCallback!"
-ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR = "Error event on subscribing DesiredPointing attribute!"
+ERR_DISH_DESIRED_POINT = "Error in DishDesiredPointingCallback "
+ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR = "Error in subscribing DesiredPointing attribute "
 
-ERR_EXCEPT_CMD_CB = "Exception in CommandCallback!: \n"
-ERR_INVOKING_CMD = "Error in invoking command:"
+ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
+ERR_INVOKING_CMD = "Error in invoking command: "
 
-ERR_IN_CREATE_PROXY_DM = "Unexpected error in creating proxy to the Dish Master "
+ERR_IN_CREATE_PROXY_DM = "Error in creating proxy to the Dish Master "
 ERR_SUBS_DISH_ATTR = "Exception occurred while subscribing to Dish attributes"
 
-ERR_DISH_INIT = "Error occured in Dish Leaf Node initialization!"
+ERR_DISH_INIT = "Error occured in Dish Leaf Node initialization "
 
 ERR_EXE_STOW_CMD = "Exception in executing STOW command "
 ERR_EXE_STANDBYLP_CMD = "Exception occurred in SetStandByLPMode command."
