@@ -187,7 +187,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     CspMasterFQDN = device_property(
-        dtype='str', default_value="mid_csp/elt/master"
+        dtype='str', #default_value="mid_csp/elt/master"
     )
 
     # ----------
@@ -235,7 +235,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             self._read_activity_message = CONST.STR_CSPMASTER_FQDN + str(self.CspMasterFQDN)
             # Creating proxy to the CSPMaster
-            self._csp_proxy = DeviceProxy(self.CspMasterFQDN)
+            self._csp_proxy = DeviceProxy(str(self.CspMasterFQDN))
         except DevFailed as dev_failed:
             print(CONST.ERR_IN_CREATE_PROXY, self.CspMasterFQDN)
             self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
