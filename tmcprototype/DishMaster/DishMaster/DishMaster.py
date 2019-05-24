@@ -236,8 +236,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
             else:
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
-            print("Desired Pointing:", self._desired_pointing)
-            print("Achieved Pointing:", self._achieved_pointing)
+            print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
             time.sleep(2)
         self._pointing_state = 0               # Set pointingState to READY Mode
     # PROTECTED REGION END #    //DishMaster.class_variable
@@ -881,13 +880,12 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._pointing_state = 2                    # Set pointingState to TRACK Mode
                 self._achieved_pointing[1] = self._desired_pointing[1]
                 self._achieved_pointing[2] = self._desired_pointing[2]
-                print("Desired Pointing:", self._desired_pointing)
-                print("Achieved Pointing:", self._achieved_pointing)
+                print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
                 self._pointing_state = 0                    # Set pointingState to READY Mode
             else:
             #if dish is out of preconfigured limit then dish will slew fast (Slew).
                 self._pointing_state = 1  # Set pointingState to SLEW Mode
-                self.track_slew_thread = threading.Thread(None, self.track_slew, 'DishMaster')
+                self.track_slew_thread = threading.Thread(None, self.track_slew, CONST.THREAD_TRACK)
                 self.track_slew_thread.start()
 
         except Exception as except_occured:

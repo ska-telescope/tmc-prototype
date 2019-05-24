@@ -18,6 +18,7 @@ CMD_DISH_SCAN = "Scan"
 CMD_DISH_SLEW = "Slew"
 CMD_STOP_CAPTURE = "StopCapture"
 CMD_START_CAPTURE = "StartCapture"
+CMD_TRACK = "Track"
 
 #string constants
 STR_DISH_STANDBYLP_MODE = "Dish is in STANDBY-LP mode."
@@ -127,3 +128,5 @@ STR_ACHIEVEDPOINTING_0_0 = "Achieved Pointing :-> [0. 0. 0.]"
 STR_DESIREDPOINTING_0_0 = "Desired Pointing :-> [0. 0. 0.]"
 
 STR_TARGET_NOT_OBSERVED = "Cannot point to the source."
+
+THREAD_TRACK = "DishLeafNode"
