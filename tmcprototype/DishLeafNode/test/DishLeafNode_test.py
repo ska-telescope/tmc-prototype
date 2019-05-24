@@ -248,7 +248,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
         tango_context.device.Track(["radec|2:31:50.91"])
         time.sleep(5)
-        assert tango_context.device.activityMessage == CONST.ERR_RADEC_TO_AZEL_VAL_ERR
+        assert CONST.ERR_RADEC_TO_AZEL_VAL_ERR in tango_context.device.activityMessage
         tango_context.device.SetStandByLPMode()
         # PROTECTED REGION END #    //  DishLeafNode.test_Track
 
