@@ -398,11 +398,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         print("\n")
                     else:
                         self.el_limit = True
-                        print("Elevation limit is reached.")
                         self._read_activity_message = CONST.ERR_ELE_LIM
                         break
                 else:
-                    print("In Break of while: AzEl conversion failed.")
                     break
                 time.sleep(0.05)
         except Exception as except_occurred:
@@ -411,7 +409,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_EXE_TRACK, int(tango.LogLevel.LOG_ERROR))
         finally:
             self.event_track_time.clear()
-        print("Exit")
         #    self.event_el.clear()
         #     if not self.event_el.isSet():
         #         print("setting elevation lim thread")
@@ -436,7 +433,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     TrackDuration = device_property(
-        dtype='int', default_value=1
+        dtype='int', default_value=0.5
     )
 
     # ----------

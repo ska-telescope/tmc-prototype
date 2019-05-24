@@ -234,7 +234,7 @@ class TestDishLeafNode(object):
         """Test for Track"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
         tango_context.device.Track(["radec|2:31:50.91|89:15:51.4"])
-        time.sleep(80)
+        time.sleep(60)
         assert create_dish_proxy.pointingState == 0
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
