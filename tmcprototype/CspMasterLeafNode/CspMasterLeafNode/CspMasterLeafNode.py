@@ -165,6 +165,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
@@ -180,6 +182,17 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
             self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
+            tango.Except.throw_exception("CspMasterLeafNode_Commandfailed", err_msg,
+                                         "CspMasterLeafNode Command Callback", tango.ErrSeverity.ERR)
 
     # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
 
@@ -187,7 +200,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     CspMasterFQDN = device_property(
-        dtype='str', #default_value="mid_csp/elt/master"
+        dtype='str',
     )
 
     # ----------

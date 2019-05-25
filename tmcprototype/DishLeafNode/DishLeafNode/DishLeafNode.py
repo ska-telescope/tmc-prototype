@@ -207,10 +207,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
-                #print(CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors))
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
                 self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
@@ -219,10 +220,19 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            #print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
             self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
 
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
+            tango.Except.throw_exception("DishLeafNode_Commandfailed", err_msg,
+                                         "DishLeafNode Command Callback", tango.ErrSeverity.ERR)
 
     def dmstodd(self, dish_antenna_latitude):
         """Converts latitude from deg:min:sec to decimal degree format.
