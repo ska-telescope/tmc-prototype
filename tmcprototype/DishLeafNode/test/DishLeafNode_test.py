@@ -47,7 +47,7 @@ class TestDishLeafNode(object):
     device = DishLeafNode
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'DishMasterFQDN': 'tango://apurva-pc:10000/mid_d0001/elt/master','TrackDuration': 1,
+                  'DishMasterFQDN': 'mid_d0001/elt/master','TrackDuration': 1,
                   }
     empty = None  # Should be []
 
@@ -96,7 +96,7 @@ class TestDishLeafNode(object):
         assert tango_context.device.Reset() is None
         # PROTECTED REGION END #    //  DishLeafNode.test_Reset
 
-    def test_SetStandByLPMode(self, tango_context):
+    def test_SetStandByLPMode(self, tango_context, create_dish_proxy):
         """Test for SetStandByLPMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetStandByLPMode) ENABLED START #
         tango_context.device.SetStandByLPMode()
@@ -146,7 +146,8 @@ class TestDishLeafNode(object):
 
     def test_Scan_invalid_arguments(self, tango_context):
         """Test for Scan_invalid_arguments"""
-        tango_context.device.Scan("a")
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan("a")
         assert CONST.ERR_EXE_SCAN_CMD in tango_context.device.activityMessage
 
     def test_EndScan(self, tango_context):
@@ -160,7 +161,8 @@ class TestDishLeafNode(object):
 
     def test_EndScan_invalid_arguments(self, tango_context):
         """Test for EndScan_invalid_arguments"""
-        tango_context.device.EndScan("a")
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndScan("a")
         assert CONST.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
 
     def test_StartCapture(self, tango_context):
@@ -174,7 +176,8 @@ class TestDishLeafNode(object):
 
     def test_StartCapture_invalid_arguments(self, tango_context):
         """Test for StartCapture_invalid_arguments"""
-        tango_context.device.StartCapture("a")
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StartCapture("a")
         assert CONST.ERR_EXE_START_CAPTURE_CMD in tango_context.device.activityMessage
 
     def test_StopCapture(self, tango_context):
@@ -188,7 +191,8 @@ class TestDishLeafNode(object):
 
     def test_StopCapture_invalid_arguments(self, tango_context):
         """Test for StopCapture_invalid_arguments"""
-        tango_context.device.StopCapture("a")
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StopCapture("a")
         assert CONST.ERR_EXE_STOP_CAPTURE_CMD in tango_context.device.activityMessage
 
     def test_SetStandbyFPMode(self, tango_context):
@@ -226,7 +230,8 @@ class TestDishLeafNode(object):
         """Test for Slew_invalid_arguments"""
         tango_context.device.SetStandByLPMode()
         time.sleep(4)
-        tango_context.device.Slew("a")
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Slew("a")
         assert CONST.ERR_EXE_SLEW_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  DishLeafNode.test_Slew
 
@@ -243,7 +248,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
         tango_context.device.Track(["radec|2:31:50.91"])
         time.sleep(5)
-        assert tango_context.device.activityMessage == CONST.ERR_RADEC_TO_AZEL_VAL_ERR
+        assert CONST.ERR_RADEC_TO_AZEL_VAL_ERR in tango_context.device.activityMessage
         tango_context.device.SetStandByLPMode()
         # PROTECTED REGION END #    //  DishLeafNode.test_Track
 

@@ -22,7 +22,7 @@ print("sys.path: ", sys.path)
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType
+from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 
@@ -50,9 +50,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishModeCallback(self, evt):
         """
         Retrieves the subscribed dishMode attribute of DishMaster.
-
         :param evt: A TANGO_CHANGE event on dishMode attribute.
-
         :return: None
 
         """
@@ -101,9 +99,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishPointingStateCallback(self, evt):
         """
         Retrieves the subscribed pointingState attribute of DishMaster.
-
         :param evt: A TANGO_CHANGE event on pointingState attribute.
-
         :return: None
 
         """
@@ -137,9 +133,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishCapturingCallback(self, evt):
         """
         Retrieves the subscribed capturing attribute of DishMaster.
-
         :param evt: A TANGO_CHANGE event on capturing attribute.
-
         :return: None
 
         """
@@ -167,9 +161,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishAchievedPointingCallback(self, evt):
         """
         Retrieves the subscribed achievedPointing attribute of DishMaster.
-
         :param evt: A TANGO_CHANGE event on achievedPointing attribute.
-
         :return: None
 
         """
@@ -190,9 +182,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishDesiredPointingCallback(self, evt):
         """
         Retrieves the subscribed desiredPointing attribute of DishMaster.
-
         :param evt: A TANGO_CHANGE event on desiredPointing attribute.
-
         :return: None
 
         """
@@ -213,16 +203,15 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def commandCallback(self, event):
         """
         Checks whether the command has been successfully invoked on DishMaster.
-
         :param event: response from DishMaster for the invoked command
-
         :return: None
 
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
-                #print(CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors))
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
                 self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
@@ -231,10 +220,18 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            #print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
             self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
 
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CMD_CALLBK, tango.ErrSeverity.ERR)
 
     def dmstodd(self, dish_antenna_latitude):
         """Converts latitude from deg:min:sec to decimal degree format.
@@ -306,13 +303,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.az = katpoint.rad2deg(self.az_el_coordinates[0])
             self.el = katpoint.rad2deg(self.az_el_coordinates[1])
             self.RaDec_AzEl_Conversion = True
-
-        except ValueError:
+        except ValueError as value_err:
             print(CONST.ERR_RADEC_TO_AZEL_VAL_ERR)
             self.RaDec_AzEl_Conversion = False
-            self._read_activity_message = CONST.ERR_RADEC_TO_AZEL_VAL_ERR
+            self._read_activity_message = CONST.ERR_RADEC_TO_AZEL_VAL_ERR + str(value_err)
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL_VAL_ERR, int(tango.LogLevel.LOG_ERROR))
-
         except Exception as except_occurred:
             self.RaDec_AzEl_Conversion = False
             self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
@@ -422,7 +417,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         Initializes the attributes and properties of DishLeafNode and subscribes change event
         on attributes of DishMaster.
-
         :return: None
 
         """
@@ -445,14 +439,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             print(CONST.STR_DISHMASTER_FQN, self.DishMasterFQDN)
             self._read_activity_message = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
-            self._dish_proxy = DeviceProxy(self.DishMasterFQDN)   #Creating proxy to the DishMaster
-
-            #
-            #self.event_el = threading.Event()
+            self._dish_proxy = DeviceProxy(str(self.DishMasterFQDN))   #Creating proxy to the DishMaster
             self.event_track_time = threading.Event()
-        except Exception as except_occurred:
-            print(CONST.ERR_IN_CREATE_PROXY_DM, except_occurred)
-            self._read_activity_message = CONST.ERR_IN_CREATE_PROXY_DM + str(except_occurred)
+        except DevFailed as dev_failed:
+            print(CONST.ERR_IN_CREATE_PROXY_DM, dev_failed)
+            self._read_activity_message = CONST.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
             self.set_state(DevState.FAULT)
         self._admin_mode = 0                                    #Setting adminMode to "ONLINE"
         self._health_state = 0                                  #Setting healthState to "OK"
@@ -476,9 +467,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_DISH_INIT_SUCCESS)
             self.dev_logging(CONST.STR_DISH_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-        except Exception as except_occurred:
-            print(CONST.ERR_SUBS_DISH_ATTR, except_occurred)
-            self._read_activity_message = CONST.ERR_SUBS_DISH_ATTR + str(except_occurred)
+        except DevFailed as dev_failed:
+            print(CONST.ERR_SUBS_DISH_ATTR, dev_failed)
+            self._read_activity_message = CONST.ERR_SUBS_DISH_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_DISH_INIT)
             self.dev_logging(CONST.ERR_DISH_INIT, int(tango.LogLevel.LOG_ERROR))
@@ -539,8 +530,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def is_SetStandByLPMode_allowed(self):
         # PROTECTED REGION ID(DishLeafNode.is_SetStandbyLPMode_allowed) ENABLED START #
-        print(self._dish_proxy.pointingState)
-        print(self._dish_proxy.pointingState not in [1, 2, 3])
         return self._dish_proxy.pointingState not in [1, 2, 3]
         # PROTECTED REGION END #    //  DishLeafNode.is_SetStandbyLPMode_allowed
 
@@ -567,22 +556,31 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Scan) ENABLED START #
         """
         Triggers the DishMaster to start the Scan.
-
         :param argin: timestamp
-
         :return: None
 
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             if type(float(argin)) == float:
                 print(CONST.STR_IN_SCAN)
                 self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SCAN,
                                                       argin, self.commandCallback)
                 print(CONST.STR_OUT_SCAN)
-        except Exception as except_occurred:
-            print(CONST.ERR_EXE_SCAN_CMD, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_SCAN_CMD + str(except_occurred)
-            self.dev_logging(CONST.ERR_EXE_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
+        except ValueError as value_error:
+            print(CONST.ERR_EXE_SCAN_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
+            self._read_activity_message = CONST.ERR_EXE_SCAN_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Scan
 
     @command(
@@ -593,20 +591,29 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def EndScan(self, argin):
         # PROTECTED REGION ID(DishLeafNode.EndScan) ENABLED START #
         """ Triggers the DishMaster to stop the Scan.
-
         :param argin: timestamp
-
         :return: None
 
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE,
                                                       argin, self.commandCallback)
-        except Exception as except_occurred:
-            print(CONST.ERR_EXE_END_SCAN_CMD, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_END_SCAN_CMD+ str(except_occurred)
-            self.dev_logging(CONST.ERR_EXE_END_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
+        except ValueError as value_error:
+            print(CONST.ERR_EXE_END_SCAN_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
+            self._read_activity_message = CONST.ERR_EXE_END_SCAN_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.EndScan
 
     @command(
@@ -618,12 +625,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
-
-        :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
-
+        :param argin: String array that includes pointing parameters of Dish - Azimuth and
+        Elevation Angle.
         :return: None
 
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             # Convert ra and dec to az and el
             radec_value = argin[0].replace('|', ',')
@@ -640,7 +648,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self.az = 360 - abs(self.az)
                 roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
                 spectrum = [0]
-                spectrum.extend((roundoff_az_el))
+                spectrum.extend(roundoff_az_el)
                 self._dish_proxy.desiredPointing = spectrum
                 self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SLEW, "0", self.commandCallback)
             else:
@@ -649,6 +657,16 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
             self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD +  str(except_occurred)
             self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Configure
 
     def is_Configure_allowed(self):
@@ -665,20 +683,31 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def StartCapture(self, argin):
         # PROTECTED REGION ID(DishLeafNode.StartCapture) ENABLED START #
         """ Triggers the DishMaster to Start capture on the set configured band.
-
         :param argin: timestamp
-
         :return: None
 
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_START_CAPTURE,
                                                       argin, self.commandCallback)
-        except Exception as except_occurred:
-            print(CONST.ERR_EXE_START_CAPTURE_CMD, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_START_CAPTURE_CMD + str(except_occurred)
-            self.dev_logging(CONST.ERR_EXE_START_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
+        except ValueError as value_error:
+            print(CONST.ERR_EXE_START_CAPTURE_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
+            self._read_activity_message = CONST.ERR_EXE_START_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_STARTCAPTURE_EXEC, tango.ErrSeverity.ERR)
+
+
         # PROTECTED REGION END #    //  DishLeafNode.StartCapture
 
     @command(
@@ -690,19 +719,28 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.StopCapture) ENABLED START #
         """
         Triggers the DishMaster to Stop capture on the set configured band.
-
         :param argin: timestamp
-
         :return: None
 
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE, argin, self.commandCallback)
-        except Exception as except_occurred:
-            print(CONST.ERR_EXE_STOP_CAPTURE_CMD, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_STOP_CAPTURE_CMD + str(except_occurred)
-            self.dev_logging(CONST.ERR_EXE_STOP_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
+        except ValueError as value_error:
+            print(CONST.ERR_EXE_STOP_CAPTURE_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
+            self._read_activity_message = CONST.ERR_EXE_STOP_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_STOPCAPTURE_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.StopCapture
 
     @command(
@@ -728,19 +766,29 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Slew) ENABLED START #
         """
         Triggers the DishMaster to slew the dish towards the set pointing coordinates.
-
         :param argin: timestamp
-
         :return: None
 
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SLEW, argin, self.commandCallback)
-        except Exception as except_occurred:
-            print(CONST.ERR_EXE_SLEW_CMD, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_SLEW_CMD + str(except_occurred)
+        except ValueError as value_error:
+            print(CONST.ERR_EXE_SLEW_CMD, "\n", CONST.ERR_INVALID_DATATYPE, str(value_error))
+            self._read_activity_message = CONST.ERR_EXE_SLEW_CMD + "\n" + CONST.ERR_INVALID_DATATYPE + str(value_error)
             self.dev_logging(CONST.ERR_EXE_SLEW_CMD, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SLEW_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Slew
 
     @command(
@@ -782,11 +830,8 @@ def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishLeafNode.main) ENABLED START #
     """
     Runs the DishLeafNode.
-
     :param args: Arguments internal to TANGO
-
     :param kwargs: Arguments internal to TANGO
-
     :return: DishLeafNode TANGO object.
     """
     return run((DishLeafNode,), args=args, **kwargs)

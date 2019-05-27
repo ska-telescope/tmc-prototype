@@ -165,6 +165,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
@@ -180,6 +182,16 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
             self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CSP_CMD_CALLBK, tango.ErrSeverity.ERR)
 
     # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
 
@@ -187,7 +199,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     CspMasterFQDN = device_property(
-        dtype='str', default_value="mid_csp/elt/master"
+        dtype='str',
     )
 
     # ----------
@@ -229,19 +241,19 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_INIT_PROP_ATTR)
             self._read_activity_message = CONST.ERR_INIT_PROP_ATTR
             self.dev_logging(CONST.ERR_INIT_PROP_ATTR, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
-            print(CONST.STR_ERR_MSG, dev_failed)
+            self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
+            print(CONST.ERR_MSG, dev_failed)
 
         try:
             self._read_activity_message = CONST.STR_CSPMASTER_FQDN + str(self.CspMasterFQDN)
             # Creating proxy to the CSPMaster
-            self._csp_proxy = DeviceProxy(self.CspMasterFQDN)
+            self._csp_proxy = DeviceProxy(str(self.CspMasterFQDN))
         except DevFailed as dev_failed:
             print(CONST.ERR_IN_CREATE_PROXY, self.CspMasterFQDN)
             self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
             self.set_state(DevState.FAULT)
-            print(CONST.STR_ERR_MSG, dev_failed)
-            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
+            print(CONST.ERR_MSG, dev_failed)
+            self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
             self.dev_logging(CONST.ERR_IN_CREATE_PROXY_CSP_MASTER, int(tango.LogLevel.LOG_ERROR))
 
         # Subscribing to CSPMaster Attributes

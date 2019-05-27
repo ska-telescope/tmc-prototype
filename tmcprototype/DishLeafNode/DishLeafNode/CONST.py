@@ -30,23 +30,17 @@ STR_DISH_SHUTDOWN_MODE = "Dish is in SHUTDOWN mode."
 STR_DISH_STOW_MODE = "Dish is in STOW mode."
 STR_DISH_CONFIG_MODE = "Dish is in CONFIG mode."
 STR_DISH_OFF_MODE = "Dish is in OFF mode."
-STR_DISH_UNKNOWN_MODE = "Dish Mode :-> UNKNOWN!\n"
+STR_DISH_UNKNOWN_MODE = "Dish Mode :-> UNKNOWN\n"
 
 STR_DISH_POINT_STATE_READY = "Dish Pointing State :-> READY"
 STR_DISH_POINT_STATE_SLEW = "Dish Pointing State :-> SLEWING"
 STR_DISH_POINT_STATE_TRACK = "Dish Pointing State :-> TRACKING"
 STR_DISH_POINT_STATE_SCAN = "Dish Pointing State :-> SCANNING"
-STR_DISH_POINT_STATE_UNKNOWN = "Dish is in UNKNOWN pointing state!\n"
-
-STR_DISH_HEALTH_STATE_OK = "Dish Health state :-> OK"
-STR_DISH_HEALTH_STATE_DEGRADED = "Dish Health state :-> DEGRADED"
-STR_DISH_HEALTH_STATE_FAILED = "Dish Health state :-> FAILED"
-STR_DISH_HEALTH_STATE_UNKNOWN = "Dish Health state :-> UNKNOWN"
-STR_DISH_HEALTH_STATE_ERR = "Error: Dish Health state :-> "
+STR_DISH_POINT_STATE_UNKNOWN = "Dish is in UNKNOWN pointing state\n"
 
 STR_DISH_CAPTURING_TRUE = "Dish data capturing :-> TRUE"
 STR_DISH_CAPTURING_FALSE = "Dish data capturing :-> FALSE"
-STR_DISH_CAPTURING_UNKNOWN = "Dish date capturing :-> UNKNOWN!\n"
+STR_DISH_CAPTURING_UNKNOWN = "Dish date capturing :-> UNKNOWN\n"
 
 STR_ACHIEVED_POINTING = "Achieved Pointing :-> "
 STR_DESIRED_POINTING = "Desired Pointing :-> "
@@ -67,34 +61,33 @@ STR_OK = "OK"
 
 
 #error messages
-ERR_DISH_MODE_CB = "Unexpected error in DishModeCallback!"
-ERR_ON_SUBS_DISH_MODE_ATTR = "Error event on subscribing DishMode attribute!"
+ERR_DISH_MODE_CB = "Error in DishModeCallback "
+ERR_ON_SUBS_DISH_MODE_ATTR = "Error in subscribing DishMode attribute "
 
-ERR_DISH_POINT_STATE_CB = "Unexpected error in DishPointingStateCallback!"
-ERR_ON_SUBS_DISH_POINT_ATTR = "Error event on subscribing DishPointing attribute!"
+ERR_DISH_POINT_STATE_CB = "Error in DishPointingStateCallback "
+ERR_ON_SUBS_DISH_POINT_ATTR = "Error in subscribing DishPointing attribute "
 
-ERR_DISH_POINT_STATE_UNKNOWN = "Dish is in UNKNOWN pointing state!\n"
+ERR_DISH_POINT_STATE_UNKNOWN = "Dish is in UNKNOWN pointing state \n"
 
-ERR_DISH_HEALTH_STATE_CB = "Unexpected error in DishHealthStateCallback!"
-ERR_SUBSR_DISH_HEALTH_STATE = "Error event on subscribing Dish HealthState attribute!\n"
+ERR_DISH_HEALTH_STATE_CB = "Error in DishHealthStateCallback "
+ERR_SUBSR_DISH_HEALTH_STATE = "Error in subscribing Dish HealthState attribute \n"
 
+ERR_DISH_CAPTURING_CB = "Error in DishCapturingCallback "
+ERR_SUBSR_CAPTURING_ATTR = "Error in subscribing Capturing attribute \n"
 
-ERR_DISH_CAPTURING_CB = "Unexpected error in DishCapturingCallback!"
-ERR_SUBSR_CAPTURING_ATTR = "Error event on subscribing Capturing attribute!\n"
+ERR_DISH_ACHVD_POINT = "Error in DishAchievedPointingCallback "
+ERR_ON_SUBS_DISH_ACHVD_ATTR = "Error in subscribing AchievedPointing attribute "
 
-ERR_DISH_ACHVD_POINT = "Unexpected error in DishAchievedPointingCallback!"
-ERR_ON_SUBS_DISH_ACHVD_ATTR = "Error event on subscribing AchievedPointing attribute!"
+ERR_DISH_DESIRED_POINT = "Error in DishDesiredPointingCallback "
+ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR = "Error in subscribing DesiredPointing attribute "
 
-ERR_DISH_DESIRED_POINT = "Unexpected error in DishDesiredPointingCallback!"
-ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR = "Error event on subscribing DesiredPointing attribute!"
+ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
+ERR_INVOKING_CMD = "Error in invoking command: "
 
-ERR_EXCEPT_CMD_CB = "Exception in CommandCallback!: \n"
-ERR_INVOKING_CMD = "Error in invoking command:"
-
-ERR_IN_CREATE_PROXY_DM = "Unexpected error in creating proxy to the Dish Master "
+ERR_IN_CREATE_PROXY_DM = "Error in creating proxy to the Dish Master "
 ERR_SUBS_DISH_ATTR = "Exception occurred while subscribing to Dish attributes"
 
-ERR_DISH_INIT = "Error occured in Dish Leaf Node initialization!"
+ERR_DISH_INIT = "Error occured in Dish Leaf Node initialization "
 
 ERR_EXE_STOW_CMD = "Exception in executing STOW command "
 ERR_EXE_STANDBYLP_CMD = "Exception occurred in SetStandByLPMode command."
@@ -107,20 +100,31 @@ ERR_EXE_STOP_CAPTURE_CMD = "Exception occurred in StopCapture command"
 ERR_EXE_STANDBYFP_CMD = "Exception occurred in SetStandbyFPMode command"
 ERR_EXE_SLEW_CMD = "Exception occurred in Slew command"
 ERR_RADEC_TO_AZEL = "Exception occurred in Ra-Dec to Az-El conversion "
-ERR_RADEC_TO_AZEL_VAL_ERR = "Value Error in Ra-Dec to Az-El conversion."
+ERR_INVALID_DATATYPE = " Invalid argument "
+ERR_RADEC_TO_AZEL_VAL_ERR = "Value Error in Ra-Dec to Az-El conversion"
 ERR_ELE_LIM = "Minimum elevation limit has been reached."
 ERR_TIME_LIM = "Tracking duration is complete."
 ERR_EXE_TRACK = "Exception occured in the execution of Track command."
+
 # commands success string
 STR_SETSTANDBYLP_SUCCESS = "Command :-> SetStandbyLPMode invoked successfully."
 STR_SETOPERATE_SUCCESS = "Command :-> SetOperateMode invoked successfully."
 STR_CONFIGURE_SUCCESS = "Command :-> Configure invoked successfully."
 STR_SCAN_SUCCESS = "Command :-> Scan invoked successfully."
-STR_ENDSCAN_SUCCESS = "Command :-> EndScaninvoked successfully."
+STR_ENDSCAN_SUCCESS = "Command :-> EndScan invoked successfully."
 STR_STARTCAPTURE_SUCCESS = "Command :-> StartCapture invoked successfully."
 STR_STOPCAPTURE_SUCCESS = "Command :-> StopCapture invoked successfully."
 STR_STANDBYFP_SUCCESS = "Command :-> SetStandbyFPMode invoked successfully."
 STR_SLEW_SUCCESS = "Command :-> Slew invoked successfully."
+
+STR_CMD_FAILED = "DishLeafNode_Commandfailed"
+STR_SLEW_EXEC = "Slew command execution"
+STR_STOPCAPTURE_EXEC = "StopCapture command execution"
+STR_STARTCAPTURE_EXEC = "StartCapture command execution"
+STR_CONFIGURE_EXEC = "Configure command execution"
+STR_ENDSCAN_EXEC = "EndScan command execution"
+STR_SCAN_EXEC = "Scan command execution"
+STR_CMD_CALLBK = "DishLeafNode Command Callback"
 
 STR_CAPTURE_EVENT = "StopCapture command is invoked on DishMaster"
 STR_ACHIEVEDPOINTING_1_0 = "Achieved Pointing :-> [0. 1. 0.]"

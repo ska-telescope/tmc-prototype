@@ -629,6 +629,10 @@
     "devName": "ska_mid/tm_central/central_node",
     "deviceProperties": [
       {
+        "devPropName": "NumDishes",
+        "devPropValue": "4"
+      },
+      {
         "devPropName": "SkaLevel",
         "devPropValue": 1
       },

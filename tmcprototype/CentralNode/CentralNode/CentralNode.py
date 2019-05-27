@@ -25,6 +25,7 @@ print("sys.path: ", sys.path)
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState
 from tango.server import run, DeviceMeta, attribute, command, device_property
+from tango import DevFailed
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 
 # Additional import
@@ -44,7 +45,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
 
-    def healthStateCallback(self, evt):
+    def subarrayHealthStateCallback(self, evt):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
         telescope health state.
@@ -53,33 +54,31 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         if evt.err is False:
             try:
-                self._health_state = evt.attr_value.value
+                self._subarray_health_state = evt.attr_value.value
                 if CONST.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
-                    self._subarray1_health_state = self._health_state
+                    self._subarray1_health_state = self._subarray_health_state
                 elif CONST.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
-                    self._subarray2_health_state = self._health_state
-                elif self.CspMasterLeafNodeFQDN[0] in evt.attr_name:
-                    self._csp_master_leaf_health = self._health_state
+                    self._subarray2_health_state = self._subarray_health_state
                 else:
-                    print(CONST.EVT_UNKNOWN)
-                    self._read_activity_message = CONST.EVT_UNKNOWN
-                self.subarray_health_state_map[evt.device] = self._health_state
-                if self._health_state == CONST.ENUM_OK:
+                    print(CONST.EVT_UNKNOWN_SA)
+                    self._read_activity_message = CONST.EVT_UNKNOWN_SA
+                self.subarray_health_state_map[evt.device] = self._subarray_health_state
+                if self._subarray_health_state == CONST.ENUM_OK:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_OK)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_OK
-                elif self._health_state == CONST.STR_DEGRADED:
+                elif self._subarray_health_state == CONST.STR_DEGRADED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_DEGRADED)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_DEGRADED
-                elif self._health_state == CONST.STR_FAILED:
+                elif self._subarray_health_state == CONST.STR_FAILED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_FAILED)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_FAILED
-                elif self._health_state == CONST.ENUM_UNKNOWN:
+                elif self._subarray_health_state == CONST.ENUM_UNKNOWN:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_UNKNOWN)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(
@@ -92,27 +91,20 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 degraded_health_count = 0
                 unknown_health_count = 0
                 ok_health_count = 0
-                # Check the health state of Csp Master Leaf Node
-                if self._csp_master_leaf_health == CONST.ENUM_OK:
-                    ok_health_count = 1
-                elif self._csp_master_leaf_health == CONST.STR_DEGRADED:
-                    degraded_health_count = 1
-                elif self._csp_master_leaf_health == CONST.STR_FAILED:
-                    failed_health_count = 1
-                else:
-                    unknown_health_count = 1
-
                 for value in list(self.subarray_health_state_map.values()):
                     if value == CONST.ENUM_FAILED:
                         failed_health_count = failed_health_count + 1
                         break
                     elif value == CONST.ENUM_DEGRADED:
+                        self._telescope_health_state = 1
                         degraded_health_count = degraded_health_count + 1
                     elif value == CONST.ENUM_UNKNOWN:
+                        self._telescope_health_state = CONST.ENUM_UNKNOWN
                         unknown_health_count = unknown_health_count + 1
                     else:
+                        self._telescope_health_state = CONST.ENUM_OK
                         ok_health_count = ok_health_count + 1
-                if ok_health_count == len(list(self.subarray_health_state_map.values())) + 1:
+                if ok_health_count == len(list(self.subarray_health_state_map.values())):
                     self._telescope_health_state = CONST.ENUM_OK
                 elif failed_health_count != 0:
                     self._telescope_health_state = CONST.ENUM_FAILED
@@ -120,6 +112,14 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._telescope_health_state = CONST.ENUM_DEGRADED
                 else:
                     self._telescope_health_state = CONST.ENUM_UNKNOWN
+            except KeyError as key_error:
+                print(CONST.ERR_SUBARRAY_HEALTHSTATE, key_error)
+                self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+                self.dev_logging(CONST.ERR_SUBARRAY_HEALTHSTATE, int(tango.LogLevel.LOG_FATAL))
+            except DevFailed as dev_failed:
+                print(CONST.ERR_SUBSR_SA_HEALTH_STATE, dev_failed)
+                self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
             except Exception as except_occured:
                 print(CONST.ERR_AGGR_HEALTH_STATE, except_occured)
                 self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
@@ -158,10 +158,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         doc="Device name prefix for Dish Leaf Node",
     )
 
-    CspMasterLeafNodeFQDN = device_property(
-        dtype=('str',), default_value=["ska_mid/tm_leaf_node/csp_master"]
-    )
-
     # ----------
     # Attributes
     # ----------
@@ -197,8 +193,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def init_device(self):
         # PROTECTED REGION ID(CentralNode.init_device) ENABLED START #
         """ Initializes the attributes and properties of the Central Node. """
-        SKABaseDevice.init_device(self)
         try:
+            SKABaseDevice.init_device(self)
             self._subarray1_health_state = CONST.ENUM_OK
             self._subarray2_health_state = CONST.ENUM_OK
             self.set_state(DevState.ON)
@@ -214,24 +210,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.subarray_FQDN_dict = {}
             self._subarray_allocation = {}
             self.set_status(CONST.STR_INIT_SUCCESS)
-        except Exception as except_occured:
+        except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR_CN)
             self._read_activity_message = CONST.ERR_INIT_PROP_ATTR_CN
             self.dev_logging(CONST.ERR_INIT_PROP_ATTR_CN, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-            print(CONST.STR_ERR_MSG, except_occured)
-        #  Get Dish Leaf Node devices List
-        # TODO: Getting DishLeafNode devices list from TANGO DB
-        # self.tango_db = PyTango.Database()
-        # try:
-        #     self.dev_dbdatum = self.tango_db.get_device_exported(CONST.GET_DEVICE_LIST_TANGO_DB)
-        #     self._dish_leaf_node_devices.extend(self.dev_bdatum.value_string)
-        #     print self._dish_leaf_node_devices
-        #
-        # except Exception as except_occured:
-        #     print CONST.ERR_IN_READ_DISH_LN_DEVS, except_occured
-        #     self._read_activity_message = CONST.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
-        #     self.dev_logging(CONST.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
+            print(CONST.STR_ERR_MSG, dev_failed)
 
         for dish in range(1, (self.NumDishes+1)):
 
@@ -246,47 +230,31 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
-            except Exception as except_occured:
+            except (DevFailed, KeyError) as except_occurred:
                 print(CONST.ERR_IN_CREATE_PROXY, self._dish_leaf_node_devices[name])
                 self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + \
                                               str(self._dish_leaf_node_devices[name])
-                print(CONST.STR_ERR_MSG, except_occured)
-                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                print(CONST.STR_ERR_MSG, except_occurred)
+                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occurred)
                 self.dev_logging(CONST.ERR_IN_CREATE_PROXY, int(tango.LogLevel.LOG_ERROR))
-
-        # Create device proxy for CSP Master Leaf Node
-        try:
-            self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN[0])
-            self._csp_master_leaf_proxy.subscribe_event(CONST.EVT_SUBSR_CSP_MASTER_HEALTH,
-                                                        EventType.CHANGE_EVENT,
-                                                        self.healthStateCallback, stateless=True)
-        except Exception as except_occured:
-            print(CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH, self.CspMasterLeafNodeFQDN[0])
-            self._read_activity_message = CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(
-                self.CspMasterLeafNodeFQDN[0])
-            self.dev_logging(CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH, int(tango.LogLevel.LOG_ERROR))
-            print(CONST.STR_ERR_MSG, except_occured)
-            self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
                 self.subarray_health_state_map[subarray_proxy] = -1
-                subarray_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE,
+                subarray_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE,
                                                EventType.CHANGE_EVENT,
-                                               self.healthStateCallback, stateless=True)
-
+                                               self.subarrayHealthStateCallback, stateless=True)
                 #populate subarrayID-subarray proxy map
                 tokens = self.TMMidSubarrayNodes[subarray].split('/')
                 subarrayID = int(tokens[2])
                 self.subarray_FQDN_dict[subarrayID] = subarray_proxy
-            except Exception as except_occured:
+            except DevFailed as dev_failed:
                 print(CONST.ERR_SUBSR_SA_HEALTH_STATE, self.TMMidSubarrayNodes[subarray])
                 self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + \
                                               str(self.TMMidSubarrayNodes[subarray])
                 self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
-                print(CONST.STR_ERR_MSG, except_occured)
-                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                print(CONST.STR_ERR_MSG, dev_failed)
+                self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
 
         # PROTECTED REGION END #    //  CentralNode.init_device
 
@@ -307,6 +275,14 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
         """ Returns the Telescope health state."""
+        if ((self._subarray1_health_state == 1) | (self._subarray2_health_state == 1)):
+            self._telescope_health = 1
+        elif ((self._subarray1_health_state == 2) & (self._subarray2_health_state == 2)):
+            self._telescope_health = 2
+        elif ((self._subarray1_health_state == 0) & (self._subarray2_health_state == 0)):
+            self._telescope_health = 0
+        else:
+            self._telescope_health = 3
         return self._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
@@ -350,6 +326,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :param argin: List of Receptors to be stowed.
         :return: None
         """
+        excpt_count = 0
+        excpt_msg = []
         try:
             for leafId in range(0, len(argin)):
                 if type(float(argin[leafId])) == float:
@@ -361,15 +339,41 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 try:
                     device_proxy = DeviceProxy(device_name)
                     device_proxy.command_inout(CONST.CMD_SET_STOW_MODE)
-                except Exception as except_occured:
+                except DevFailed as dev_failed:
                     print(CONST.ERR_EXE_STOW_CMD, device_name)
                     self._read_activity_message = CONST.ERR_EXE_STOW_CMD + str(device_name)
-                    print(CONST.STR_ERR_MSG, except_occured)
-                    self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                    excpt_msg.append(self._read_activity_message)
+                    print(CONST.STR_ERR_MSG, dev_failed)
+                    self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
                     self.dev_logging(CONST.STR_ERR_MSG, int(tango.LogLevel.LOG_ERROR))
+                    excpt_msg.append(self._read_activity_message)
+                    excpt_count += 1
+
+                # throw exception:
+                if excpt_count > 0:
+                    err_msg = ' '
+                    for item in excpt_msg:
+                        err_msg += item + "\n"
+                    tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                                 CONST.STR_STOW_ANTENNA_EXEC, tango.ErrSeverity.ERR)
+        except ValueError as value_error:
+            print(CONST.ERR_STOW_ARGIN, value_error)
+            self._read_activity_message = CONST.ERR_STOW_ARGIN + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
         except Exception as except_occured:
             print(CONST.ERR_EXE_STOW_CMD, except_occured)
             self._read_activity_message = CONST.ERR_EXE_STOW_CMD + str(except_occured)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_STOW_ANTENNA_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CentralNode.stow_antennas
 
     @command(
@@ -378,28 +382,31 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def StandByTelescope(self):
         # PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
         """ Set the Elements into STANDBY state (i.e. Low Power State). """
+        excpt_count =0
+        excpt_msg =[]
         self.dev_logging(CONST.STR_STANDBY_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
         self._read_activity_message = CONST.STR_STANDBY_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_STANDBY_MODE)
-            except Exception as except_occured:
+            except DevFailed as dev_failed:
                 print(CONST.ERR_EXE_STANDBY_CMD, self._dish_leaf_node_devices[name])
                 self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + \
                                               str(self._dish_leaf_node_devices[name])
-                print(CONST.STR_ERR_MSG, except_occured)
-                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                excpt_msg.append(self._read_activity_message)
+                print(CONST.STR_ERR_MSG, dev_failed)
+                self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
                 self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
+                excpt_msg.append(self._read_activity_message)
+                excpt_count += 1
 
-        try:
-            self._csp_master_leaf_proxy.command_inout(CONST.CMD_CSP_MASTER_LEAF_STANDBY, CONST.STR_CSP_CBF_DEV_NAME)
-        except Exception as except_occured:
-            print(CONST.ERR_EXE_STANDBY_CMD, self.CspMasterLeafNodeFQDN[0])
-            self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self.CspMasterLeafNodeFQDN[0])
-            print(CONST.STR_ERR_MSG, except_occured)
-            self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-            self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
-
+            # throw exception:
+            if excpt_count > 0:
+                err_msg = ' '
+                for item in excpt_msg:
+                    err_msg += item + "\n"
+                tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                             CONST.STR_STANDBY_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
     @command(
@@ -408,28 +415,33 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def StartUpTelescope(self):
         # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
         """ Set the Elements into ON state from STANDBY state."""
+        excpt_count =0
+        excpt_msg = []
         self.dev_logging(CONST.STR_STARTUP_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
         self._read_activity_message = CONST.STR_STARTUP_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_OPERATE_MODE)
-            except Exception as except_occured:
+            except DevFailed as dev_failed:
                 print(CONST.ERR_EXE_STARTUP_CMD, self._dish_leaf_node_devices[name])
                 self._read_activity_message = CONST.ERR_EXE_STARTUP_CMD + \
                                               str(self._dish_leaf_node_devices[name])
-                print(CONST.STR_ERR_MSG, except_occured)
-                self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
+                excpt_msg.append(self._read_activity_message)
+                print(CONST.STR_ERR_MSG, dev_failed)
+                self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
                 self.dev_logging(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
+                excpt_msg.append(self._read_activity_message)
+                excpt_count += 1
 
-        try:
-            self._csp_master_leaf_proxy.command_inout(CONST.CMD_CSP_MASTER_LEAF_STARTUP,
-                                                      [])
-        except Exception as except_occured:
-            print(CONST.ERR_EXE_STANDBY_CMD, self.CspMasterLeafNodeFQDN[0])
-            self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self.CspMasterLeafNodeFQDN[0])
-            print(CONST.STR_ERR_MSG, except_occured)
-            self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-            self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
+            # throw exception:
+            if excpt_count > 0:
+                err_msg = ' '
+                for item in excpt_msg:
+                    err_msg += item + "\n"
+                tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                             CONST.STR_STARTUP_EXEC, tango.ErrSeverity.ERR)
+
+
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
     @command(
@@ -492,10 +504,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 {
                 "dish": {
                 "receptorIDList_success": ["0001", "0002"]
-                }
+                        }
                 }
         """
         receptorIDList = []
+        excpt_msg = []
+        excpt_count = 0
         try:
             # serialize the json
             jsonArgument = json.loads(argin)
@@ -529,12 +543,35 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             else:
                 print(CONST.STR_DISH_DUPLICATE, duplicate_allocation_dish_ids)
                 self._read_activity_message = CONST.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
-        except ValueError:
-            self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_INVALID_JSON
-        except KeyError:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+        except ValueError as value_error:
+            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except KeyError as key_error:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        #throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
+
         argout = {
             "dish": {
                 "receptorIDList_success": receptorIDList
@@ -575,9 +612,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             Example:
                 {
                     "subarrayID": 1,
-                    "releaseALL": true,
+                    "releaseALL": true
                     "receptorIDList": []
-
                 }
 
 
@@ -595,11 +631,14 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     resources (device names) that are noe released from the subarray.
 
                 Example:
-                    argout = {
+                    argout =
+                    {
                         "ReleaseAll" : True,
                         "receptorIDList" : []
-                        }
+                    }
         """
+        excpt_count = 0
+        excpt_msg =[]
         try:
             release_success = False
             res_not_released = []
@@ -622,13 +661,29 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     release_success = False
             else:
                 self._read_activity_message = CONST.STR_FALSE_TAG
+        except ValueError as value_error:
+            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except KeyError as key_error:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_RELEASE_RESOURCES + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
 
-        except ValueError:
-            self.dev_logging(CONST.ERR_INVALID_JSON, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_INVALID_JSON
-        except KeyError:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_RELEASE_RES_EXEC, tango.ErrSeverity.ERR)
 
         argout = {
             "ReleaseAll" : release_success,

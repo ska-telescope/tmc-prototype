@@ -142,7 +142,10 @@ class TestDishMaster(object):
         """Test for Scan"""
         # PROTECTED REGION ID(DishMaster.test_Scan) ENABLED START #
         # Testing for invalid argument
-        tango_context.device.Scan("a")
+        # tango_context.device.Scan("a")
+        with pytest.raises(tango.DevFailed) :
+            argin = "a"
+            tango_context.device.Scan(argin)
         assert tango_context.device.pointingState != 3
         assert tango_context.device.capturing is not True
         # Testing for valid argument
@@ -158,7 +161,9 @@ class TestDishMaster(object):
         """Test for StopCapture"""
         # PROTECTED REGION ID(DishMaster.test_StopCapture) ENABLED START #
         # Testing for invalid argument
-        tango_context.device.StopCapture("a")
+        with pytest.raises(tango.DevFailed) :
+            argin = "a"
+            tango_context.device.StopCapture(argin)
         assert tango_context.device.capturing is not False
         assert tango_context.device.pointingState != 0
         # Testing for valid argument
@@ -174,7 +179,9 @@ class TestDishMaster(object):
         """Test for StartCapture"""
         # PROTECTED REGION ID(DishMaster.test_StartCapture) ENABLED START #
         # Testing for invalid argument
-        tango_context.device.StartCapture("a")
+        with pytest.raises(tango.DevFailed) :
+            argin = "a"
+            tango_context.device.StartCapture(argin)
         assert tango_context.device.pointingState != 3
         assert tango_context.device.capturing is not True
         # Testing for valid argument
@@ -192,7 +199,9 @@ class TestDishMaster(object):
         tango_context.device.StopCapture("0")
         tango_context.device.desiredPointing = [0, 1.00, 1.00]
         # Testing for invalid argument
-        tango_context.device.Slew("a")
+        with pytest.raises(tango.DevFailed) :
+            argin = "a"
+            tango_context.device.Slew(argin)
         time.sleep(5)
         result = []
         for i in range(1, len(tango_context.device.achievedPointing)):

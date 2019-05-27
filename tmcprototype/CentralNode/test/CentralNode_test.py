@@ -106,8 +106,9 @@ class TestCentralNode(object):
         """Test for StowAntennas"""
         # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
         argin = ["a", ]
-        tango_context.device.StowAntennas(argin)
-        assert CONST.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.StowAntennas(argin)
+        assert CONST.ERR_STOW_ARGIN in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
     def test_StowAntennas_invalid_functionality(self, tango_context):
@@ -115,7 +116,8 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
         argin = ["0001",]
         tango_context.device.StartUpTelescope()
-        tango_context.device.StowAntennas(argin)
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.StowAntennas(argin)
         assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
@@ -142,7 +144,8 @@ class TestCentralNode(object):
         create_leafNode1_proxy.SetOperateMode()
         create_leafNode1_proxy.Scan("0")
         time.sleep(1)
-        tango_context.device.StandByTelescope()
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.StandByTelescope()
         assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
@@ -166,7 +169,8 @@ class TestCentralNode(object):
     def test_StartUpTelescope_Negative(self, tango_context):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-        tango_context.device.StartUpTelescope()
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.StartUpTelescope()
         assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
@@ -243,7 +247,7 @@ class TestCentralNode(object):
     def test_telescopeHealthState(self, tango_context):
         """Test for telescopeHealthState"""
         # PROTECTED REGION ID(CentralNode.test_telescopeHealthState) ENABLED START #
-        assert tango_context.device.telescopeHealthState == 1
+        assert tango_context.device.telescopeHealthState == 0
         # PROTECTED REGION END #    //  CentralNode.test_telescopeHealthState
 
     def test_subarray1HealthState(self, tango_context):
@@ -273,23 +277,28 @@ class TestCentralNode(object):
 
     def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0002"]}}'
-        tango_context.device.AssignResources(test_input)
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.AssignResources(test_input)
         time.sleep(3)
         test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-        retVal = json.loads(tango_context.device.ReleaseResources(test_input))
+        with pytest.raises(tango.DevFailed) :
+            retVal = json.loads(tango_context.device.ReleaseResources(test_input))
+            assert retVal["receptorIDList"] == []
         time.sleep(3)
         result = create_subarray1_proxy.receptorIDList
-        assert result == None and retVal["receptorIDList"] == []
+        assert result == None
 
     def test_ReleaseResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
-        tango_context.device.ReleaseResources(test_input)
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.ReleaseResources(test_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
 
     def test_ReleaseResources_key_not_found(self, tango_context):
         test_input = '{"releaseALL":true,"receptorIDList":[]}'
-        tango_context.device.ReleaseResources(test_input)
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.ReleaseResources(test_input)
         time.sleep(1)
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
@@ -305,24 +314,26 @@ class TestCentralNode(object):
 
     def test_AssignResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
-        tango_context.device.AssignResources(test_input)
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.AssignResources(test_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
 
     def test_AssignResources_key_not_found(self, tango_context):
         test_input = '{"dish":{"receptorIDList":["0001"]}}'
-        tango_context.device.AssignResources(test_input)
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.AssignResources(test_input)
         time.sleep(1)
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
     def test_subarray1_health_change_event(self, tango_context, create_subarray1_proxy):
-        eid = create_subarray1_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE, EventType.CHANGE_EVENT,
-                                                     CentralNode.healthStateCallback)
+        eid = create_subarray1_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE, EventType.CHANGE_EVENT,
+                                                     CentralNode.subarrayHealthStateCallback)
         assert CONST.STR_HEALTH_STATE in tango_context.device.activityMessage
         create_subarray1_proxy.unsubscribe_event(eid)
 
     def test_subarray2_health_change_event(self, tango_context, create_subarray2_proxy):
-        eid = create_subarray2_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE, EventType.CHANGE_EVENT,
-                                                     CentralNode.healthStateCallback)
+        eid = create_subarray2_proxy.subscribe_event(CONST.EVT_SUBSR_SA_HEALTH_STATE, EventType.CHANGE_EVENT,
+                                                     CentralNode.subarrayHealthStateCallback)
         assert CONST.STR_HEALTH_STATE in tango_context.device.activityMessage
         create_subarray2_proxy.unsubscribe_event(eid)
