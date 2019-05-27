@@ -256,13 +256,13 @@ class TestDishLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.1.3, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.1.1, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  DishLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(DishLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.1.3"
+        assert tango_context.device.versionId == "0.1.1"
         # PROTECTED REGION END #    //  DishLeafNode.test_versionId
 
     def test_centralLoggingLevel(self, tango_context):

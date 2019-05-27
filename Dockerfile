@@ -6,15 +6,7 @@ RUN ipython profile create
 
 #install lmc-base-classes
 USER root
-RUN buildDeps="ca-certificates git" \
-   && DEBIAN_FRONTEND=noninteractive apt-get update \
-   && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $buildDeps \
-   && su tango -c "/venv/bin/pip install git+https://github.com/ska-telescope/lmc-base-classes.git" \
-   && apt-get purge -y --auto-remove $buildDeps \
-   && rm -rf /var/lib/apt/lists/* /home/tango/.cache \
-   && DEBIAN_FRONTEND=noninteractive apt-get update \
-   && DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential libssl-dev libffi-dev python3-dev
-
+RUN DEBIAN_FRONTEND=noninteractive pip3 install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.1.1+89644f0d/lmcbaseclasses-0.1.1+89644f0d.tar.gz
 
 USER tango
 
