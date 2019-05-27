@@ -54,7 +54,13 @@ SCAN_ALREADY_COMPLETED = "Scan is already completed"
 RESRC_ALREADY_RELEASED = "Resources are already released from Subarray"
 STR_FALSE = "False"
 STR_OK = "OK"
-STR_TRACK_EXECUTION = "Track command execution"
+STR_TRACK_EXEC = "Track command execution"
+STR_CMD_FAILED = "SubarrayNode_Commandfailed"
+STR_CONFIGURE_EXEC = "Configure command execution"
+STR_RELEASE_ALL_RES_EXEC = "ReleaseAllResources command execution"
+STR_ASSIGN_RES_EXEC = "AssignResources command execution"
+STR_END_SCAN_EXEC = "ENDSCAN command execution"
+STR_SCAN_EXEC = "SCAN command execution"
 
 
 #Error messages
@@ -76,7 +82,6 @@ ERR_DUPLICATE_SCAN_CMD = "Scan Command Already Executed"
 ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 ERR_TRACK_CMD = "Exception in Track command: \n "
-ERR_CMD_FAILED = "Command failed"
 
 #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))

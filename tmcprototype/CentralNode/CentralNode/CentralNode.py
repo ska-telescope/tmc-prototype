@@ -355,8 +355,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     for item in excpt_msg:
                         err_msg += item + "\n"
                         self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-                    tango.Except.throw_exception("CentralNode_CommandFailed", err_msg,
-                                                 "StowAntennas command execution", tango.ErrSeverity.ERR)
+                    tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                                 CONST.STR_STOW_ANTENNA_EXEC, tango.ErrSeverity.ERR)
         except ValueError as value_error:
             print(CONST.ERR_STOW_ARGIN, value_error)
             self._read_activity_message = CONST.ERR_STOW_ARGIN + str(value_error)
@@ -374,8 +374,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("CentralNode_Commandfailed", err_msg,
-                                         "StowAntennas command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_STOW_ANTENNA_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CentralNode.stow_antennas
 
     @command(
@@ -408,8 +408,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 for item in excpt_msg:
                     err_msg += item + "\n"
                     self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-                tango.Except.throw_exception("CentralNode_Commandfailed", err_msg,
-                                             "StandByTelescope command execution", tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                             CONST.STR_STANDBY_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
     @command(
@@ -442,8 +442,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 for item in excpt_msg:
                     err_msg += item + "\n"
                     self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-                tango.Except.throw_exception("CentralNode_Commandfailed", err_msg,
-                                             "StartUpTelescope command execution", tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                             CONST.STR_STARTUP_EXEC, tango.ErrSeverity.ERR)
 
 
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
@@ -574,8 +574,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("CentralNode_Commandfailed", err_msg,
-                                         "AssignResources command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
         argout = {
             "dish": {
@@ -688,8 +688,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("CentralNode_CommandFailed", err_msg,
-                                         "ReleaseResources command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_RELEASE_RES_EXEC, tango.ErrSeverity.ERR)
 
         argout = {
             "ReleaseAll" : release_success,

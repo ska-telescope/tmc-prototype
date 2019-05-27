@@ -36,7 +36,6 @@ import CONST
 from future.utils import with_metaclass
 import numpy
 import math
-import datetime
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
@@ -116,14 +115,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             self._pointing_state = 1
-            # if self._achieved_pointing[argin[0]] % 100 > 0:
-            #     step_size = 100
-            # elif self._achieved_pointing[argin[0]] % 10 > 0:
-            #     step_size = 10
-            # elif self._achieved_pointing[argin[0]] % 1 > 0:
-            #     step_size = 1
-            # else:
-            #     step_size = 0.01
 
             if position == input_increment:
                 break
@@ -139,8 +130,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                     self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
                     self._pointing_state = 1
                     self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
-                    #self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + step_size), 2)
-                print("achieved pointing is: ", self._achieved_pointing)
 
     def decrement_position(self, argin):
         """
@@ -168,20 +157,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
             self._pointing_state = 1
-            # if self._achieved_pointing[argin[0]] % 100 > 0:
-            #     step_size = 100
-            # elif self._achieved_pointing[argin[0]] % 10 > 0:
-            #     step_size = 10
-            # elif self._achieved_pointing[argin[0]] % 1 > 0:
-            #     step_size = 1
-            # else:
-            #     step_size = 0.01
 
             if position == input_decrement:
                 break
             else:
                 time.sleep(0.01)
-                print("position and index", position, argin[0])
                 if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                         self._achieved_pointing[2] == self._desired_pointing[2]):
                     self._pointing_state = 0
@@ -580,8 +560,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishMaster_Commandfailed", err_msg,
-                                         "SetStowMode command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SET_STOWMODE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetStowMode
 
@@ -625,8 +605,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishMaster_Commandfailed", err_msg,
-                                         "SetStandbyLPMode command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SET_STANDBYLPMODE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetStandbyLPMode
 
@@ -670,8 +650,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishMaster_Commandfailed", err_msg,
-                                         "SetMaintenanceMode command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SET_MAINTENANCEMODE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetMaintenanceMode
 
@@ -715,8 +695,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 for item in excpt_msg:
                     err_msg += item + "\n"
                     self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-                tango.Except.throw_exception("DishMaster_Commandfailed", err_msg,
-                                             "SetOperateMode command execution", tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                             CONST.STR_SET_OPERATEMODE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetOperateMode
 
@@ -772,8 +752,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishMaster_Commandfailed", err_msg,
-                                         "Scan command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.Scan
 
@@ -827,8 +807,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishMaster_Commandfailed", err_msg,
-                                         "StartCapture command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_STARTCAPTURE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.StartCapture
 
@@ -881,8 +861,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishMaster_Commandfailed", err_msg,
-                                         "StopCapture command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_STOPCAPTURE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.StopCapture
 
@@ -926,8 +906,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishMaster_Commandfailed", err_msg,
-                                         "SetStandbyFPMode command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SETSTANDBYFP_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetStandbyFPMode
 
@@ -954,7 +934,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         excpt_count = 0
         excpt_msg = []
         try:
-            print("Argin In DishMaster: ", self._desired_pointing)
             if type(float(argin)) == float:
                 # Execute POINT command at given timestamp
                 self._current_time = time.time()
@@ -978,11 +957,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishMaster_Commandfailed", err_msg,
-                                         "Slew command execution", tango.ErrSeverity.ERR)
-
-
-
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SLEW_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishMaster.Slew
 
     @command(

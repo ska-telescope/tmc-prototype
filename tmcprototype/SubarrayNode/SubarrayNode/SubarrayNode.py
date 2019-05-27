@@ -109,8 +109,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("SubarrayNode_Commandfailed", err_msg,
-                                         "SCAN command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -166,8 +166,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("SubarrayNode_Commandfailed", err_msg,
-                                         "ENDSCAN command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_END_SCAN_EXEC, tango.ErrSeverity.ERR)
 
     def is_EndScan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -265,8 +265,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("SubarrayNode_Commandfailed", err_msg,
-                                         "AssignResources command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
         return allocation_success
 
     def is_AssignResources_allowed(self):
@@ -341,8 +341,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("SubarrayNode_Commandfailed", err_msg,
-                                         "ReleaseAllResources command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
 
 
         argout.extend(self._dish_leaf_node_group.get_device_list(True))
@@ -594,8 +594,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("SubarrayNode_Commandfailed", err_msg,
-                                         "Configure command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  SubarrayNode.Configure
 
     def is_Configure_allowed(self):
@@ -658,8 +658,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception(CONST.ERR_CMD_FAILED, err_msg,
-                                         CONST.STR_TRACK_EXECUTION, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  SubarrayNode.Track
 
 # ----------

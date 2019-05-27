@@ -191,8 +191,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("CspMasterLeafNode_Commandfailed", err_msg,
-                                         "CspMasterLeafNode Command Callback", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CSP_CMD_CALLBK, tango.ErrSeverity.ERR)
 
     # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
 

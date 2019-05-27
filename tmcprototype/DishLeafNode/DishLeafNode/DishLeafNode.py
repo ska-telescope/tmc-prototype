@@ -231,8 +231,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishLeafNode_Commandfailed", err_msg,
-                                         "DishLeafNode Command Callback", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CMD_CALLBK, tango.ErrSeverity.ERR)
 
     def dmstodd(self, dish_antenna_latitude):
         """Converts latitude from deg:min:sec to decimal degree format.
@@ -581,8 +581,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishLeafNode_Commandfailed", err_msg,
-                                         "Scan command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Scan
 
     @command(
@@ -615,8 +615,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishLeafNode_Commandfailed", err_msg,
-                                         "EndScan command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.EndScan
 
     @command(
@@ -669,8 +669,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishLeafNode_Commandfailed", err_msg,
-                                         "Configure command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Configure
 
     def is_Configure_allowed(self):
@@ -709,8 +709,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishLeafNode_Commandfailed", err_msg,
-                                         "StartCapture command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_STARTCAPTURE_EXEC, tango.ErrSeverity.ERR)
 
 
         # PROTECTED REGION END #    //  DishLeafNode.StartCapture
@@ -745,8 +745,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishLeafNode_Commandfailed", err_msg,
-                                         "StopCapture command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_STOPCAPTURE_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.StopCapture
 
     @command(
@@ -794,8 +794,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for item in excpt_msg:
                 err_msg += item + "\n"
                 self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
-            tango.Except.throw_exception("DishLeafNode_Commandfailed", err_msg,
-                                         "Slew command execution", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SLEW_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Slew
 
     @command(

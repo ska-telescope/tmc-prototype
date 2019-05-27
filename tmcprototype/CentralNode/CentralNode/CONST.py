@@ -51,6 +51,13 @@ STR_REL_RESOURCES = "Resources have been released successfully"
 STR_ALL_RES_NOT_REL = "All the resources are not released"
 STR_LIST_RES_NOT_REL = "List of the resources that are not released:"
 
+STR_CMD_FAILED = "CentralNode_CommandFailed"
+STR_STOW_ANTENNA_EXEC = "StowAntennas command execution"
+STR_RELEASE_RES_EXEC = "ReleaseResources command execution"
+STR_ASSIGN_RES_EXEC = "AssignResources command execution"
+STR_STARTUP_EXEC = "StartUpTelescope command execution"
+STR_STANDBY_EXEC = "StandByTelescope command execution"
+
 #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SA1 = "ska_mid/tm_subarray_node/1"
 PROP_DEF_VAL_TM_MID_SA2 = "ska_mid/tm_subarray_node/2"

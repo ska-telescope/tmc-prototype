@@ -21,6 +21,17 @@ STR_DATA_CAPTURE_ALREADY_STOPPED = "Data Capuring is already stopped."
 STR_FALSE = "False"
 STR_ACHIEVED_POINTING = "Achieved Pointing"
 
+STR_CMD_FAILED = "DishMaster_Commandfailed"
+STR_SLEW_EXEC = "Slew command execution"
+STR_SETSTANDBYFP_EXEC = "SetStandbyFPMode command execution"
+STR_STOPCAPTURE_EXEC = "StopCapture command execution"
+STR_STARTCAPTURE_EXEC = "StartCapture command execution"
+STR_SCAN_EXEC = "Scan command execution"
+STR_SET_OPERATEMODE_EXEC = "SetOperateMode command execution"
+STR_SET_MAINTENANCEMODE_EXEC = "SetMaintenanceMode command execution"
+STR_SET_STANDBYLPMODE_EXEC = "SetStandbyLPMode command execution"
+STR_SET_STOWMODE_EXEC = "SetStowMode command execution"
+
 #Error messages
 ERR_EXE_POINT_FN = "Error in executing POINT function on Dish"
 ERR_INIT_PROP_ATTR_DISH = "Error in initialising properties and attributes on Dish"
