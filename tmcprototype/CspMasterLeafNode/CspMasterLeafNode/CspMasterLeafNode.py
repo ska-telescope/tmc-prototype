@@ -190,7 +190,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_CSP_CMD_CALLBK, tango.ErrSeverity.ERR)
 

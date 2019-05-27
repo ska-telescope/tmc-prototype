@@ -559,7 +559,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SET_STOWMODE_EXEC, tango.ErrSeverity.ERR)
 
@@ -604,7 +603,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SET_STANDBYLPMODE_EXEC, tango.ErrSeverity.ERR)
 
@@ -649,7 +647,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SET_MAINTENANCEMODE_EXEC, tango.ErrSeverity.ERR)
 
@@ -694,7 +691,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 err_msg = ' '
                 for item in excpt_msg:
                     err_msg += item + "\n"
-                    self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
                 tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                              CONST.STR_SET_OPERATEMODE_EXEC, tango.ErrSeverity.ERR)
 
@@ -751,7 +747,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
@@ -806,7 +801,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_STARTCAPTURE_EXEC, tango.ErrSeverity.ERR)
 
@@ -860,7 +854,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_STOPCAPTURE_EXEC, tango.ErrSeverity.ERR)
 
@@ -905,7 +898,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SETSTANDBYFP_EXEC, tango.ErrSeverity.ERR)
 
@@ -956,7 +948,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SLEW_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishMaster.Slew

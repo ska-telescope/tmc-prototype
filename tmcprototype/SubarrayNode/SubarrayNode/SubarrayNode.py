@@ -108,7 +108,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
@@ -165,7 +164,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_END_SCAN_EXEC, tango.ErrSeverity.ERR)
 
@@ -264,7 +262,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
         return allocation_success
@@ -340,7 +337,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
 
@@ -593,7 +589,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  SubarrayNode.Configure
@@ -657,7 +652,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  SubarrayNode.Track

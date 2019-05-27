@@ -354,7 +354,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     err_msg = ' '
                     for item in excpt_msg:
                         err_msg += item + "\n"
-                        self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
                     tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                                  CONST.STR_STOW_ANTENNA_EXEC, tango.ErrSeverity.ERR)
         except ValueError as value_error:
@@ -373,7 +372,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_STOW_ANTENNA_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CentralNode.stow_antennas
@@ -407,7 +405,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 err_msg = ' '
                 for item in excpt_msg:
                     err_msg += item + "\n"
-                    self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
                 tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                              CONST.STR_STANDBY_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CentralNode.standby_telescope
@@ -441,7 +438,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 err_msg = ' '
                 for item in excpt_msg:
                     err_msg += item + "\n"
-                    self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
                 tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                              CONST.STR_STARTUP_EXEC, tango.ErrSeverity.ERR)
 
@@ -573,7 +569,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
@@ -687,7 +682,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-                self.dev_logging(item, int(tango.LogLevel.LOG_ERROR))
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_RELEASE_RES_EXEC, tango.ErrSeverity.ERR)
 
