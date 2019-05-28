@@ -5,10 +5,13 @@ CMD_SET_OPERATE_MODE = "SetOperateMode"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_RESOURCES = "ReleaseAllResources"
 
+CMD_CSP_MASTER_LEAF_STANDBY = "Standby"
+CMD_CSP_MASTER_LEAF_STARTUP = "On"
 
 #Event messages
-EVT_UNKNOWN_SA = "Event from the Unknown Subarray device "
-EVT_SUBSR_SA_HEALTH_STATE = "healthState"
+EVT_UNKNOWN = "Event from the Unknown device!"
+EVT_SUBSR_HEALTH_STATE = "healthState"
+EVT_SUBSR_CSP_MASTER_HEALTH = "cspHealthState"
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
 #
 #Error messages
@@ -50,6 +53,7 @@ STR_FALSE_TAG = "False in ReleaseALL tag is not yet supported"
 STR_REL_RESOURCES = "Resources have been released successfully"
 STR_ALL_RES_NOT_REL = "All the resources are not released"
 STR_LIST_RES_NOT_REL = "List of the resources that are not released:"
+STR_CSP_CBF_DEV_NAME = "mid_csp_cbf/sub_elt/master"
 
 STR_CMD_FAILED = "CentralNode_CommandFailed"
 STR_STOW_ANTENNA_EXEC = "StowAntennas command execution"
