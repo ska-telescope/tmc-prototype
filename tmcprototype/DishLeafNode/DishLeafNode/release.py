@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """tangods-dishleafnode"""
-version = "1.0.0"
+version = "0.1.0"
 version_info = version.split(".")
 description = """A Leaf control node for DishMaster."""
 author = "jyotin.ska"

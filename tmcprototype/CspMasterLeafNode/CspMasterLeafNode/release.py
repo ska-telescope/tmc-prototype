@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """tangods-cspmasterleafnode"""
-version = "1.0.0"
+version = "0.1.0"
 version_info = version.split(".")
 description = """CspMasterLeafNode - Leaf Node to monitor and control CSP Master."""
 author = "apurva.ska"

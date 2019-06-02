@@ -252,3 +252,4 @@ In order to test the entire prototype, execute:
 * [OSO-UI / TMC PI2 meeting notes](https://docs.google.com/document/d/1sEEXwSMJatzFlP1iIw1d4ZrtEgvYvOS-_FPBmKd1i9A/edit)
 * [TMC Stage I Prototype Demo](https://replay.skatelescope.org/replay/showRecordingExternal.html?key=3Na630an0coGgdK)
 * [Comparison and Analysis of Astronomical Software (KATPoint and SOFA)](https://docs.google.com/document/d/1mD7-FbH4htkC9RJxFcP7SaMnRq2hVtTg76UIQQPD9W4/edit?usp=sharing)
+* [TMC Prototype Learnings](https://docs.google.com/document/d/1DMhb_6NM0oaZMhSwEE79_B-MwycwzuH-RJsuOd5Zjlw/edit?usp=sharing)
