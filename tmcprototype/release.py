@@ -8,7 +8,7 @@
 """Release information for Python Package"""
 
 name = """tangods-tmcprototype"""
-version = "1.0.0"
+version = "0.1.0"
 version_info = version.split(".")
 description = """A package consisting of Telescope Monitoring and Control Functionalty."""
 author = "ncra"
