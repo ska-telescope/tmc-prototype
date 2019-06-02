@@ -1,6 +1,3 @@
-from __future__ import print_function
-from builtins import str
-from builtins import range
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from taurus.qt.qtgui.display import TaurusLabel
@@ -106,12 +103,12 @@ class mainWindow_SKA(QtGui.QMainWindow):
             self.deviceVsprxoy['LeafNode2'] = tango.DeviceProxy('ska_mid/tm_leaf_node/d0002')
             self.deviceVsprxoy['LeafNode3'] = tango.DeviceProxy('ska_mid/tm_leaf_node/d0003')
             self.deviceVsprxoy['LeafNode4'] = tango.DeviceProxy('ska_mid/tm_leaf_node/d0004')
-            print('self.dishProxy', self.dishProxy)
+            print 'self.dishProxy', self.dishProxy
             self.dishProxy['Dish1'] =  tango.DeviceProxy('mid_d0001/elt/master')
             self.dishProxy['Dish2'] =  tango.DeviceProxy('mid_d0002/elt/master')
             self.dishProxy['Dish3'] =  tango.DeviceProxy('mid_d0003/elt/master')
             self.dishProxy['Dish4'] =  tango.DeviceProxy('mid_d0004/elt/master')
-            print('self.dishProxy', self.dishProxy)
+            print 'self.dishProxy', self.dishProxy
         except Exception as e:
             self.plainTextEdit.appendPlainText('Unable to create device proxy')
 
@@ -182,11 +179,11 @@ class mainWindow_SKA(QtGui.QMainWindow):
         try:
             try:
                 receptorIDList = event.attr_value.value
-		print("Start of the event: ", str(receptorIDList))
+		print "Start of the event: ", str(receptorIDList)
                 #print "Printing value :-> ", type(receptorIDList)
                 #print "Printing Attr value :-> ", event.attr_value
             except:
-                print('in dish color first try', event.attr_value)
+                print 'in dish color first try', event.attr_value
             device = str(event.device.dev_name())
             if receptorIDList is not None and len(receptorIDList)>0 and device[-1] == '1':
                 for i in receptorIDList:
@@ -202,9 +199,9 @@ class mainWindow_SKA(QtGui.QMainWindow):
                 for j in notColored:
                    self.tableWidgetDish.item(0,j).setBackgroundColor(QtCore.Qt.white)       
         except Exception as e:
-            print("In exception of the event: ", str(receptorIDList))
+            print "In exception of the event: ", str(receptorIDList)
             #print "Printing Attr value :-> ", event.attr_value
-            print('in dishcolor error:', str(e))
+            print 'in dishcolor error:', str(e)
         
         
     def updateval(self, eve):
@@ -247,7 +244,7 @@ class mainWindow_SKA(QtGui.QMainWindow):
                 item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter| QtCore.Qt.AlignCenter)
                 self.tableWidgetDish.setItem(5,int(device.dev_name()[8]),item)    
             elif eve.attr_value.name.lower() == 'dishMode'.lower():
-                print('dishmode', device.dev_name())
+                print 'dishmode', device.dev_name()
                 item = QtGui.QTableWidgetItem(device.dishMode.name)
                 item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter| QtCore.Qt.AlignCenter)
                 self.tableWidgetDish.setItem(6,int(device.dev_name()[8]),item) 
@@ -310,7 +307,7 @@ class mainWindow_SKA(QtGui.QMainWindow):
             self.deviceVsprxoy['LeafNode4'].subscribe_event('activityMessage', tango.EventType.CHANGE_EVENT, self.activityLogs)
         except Exception as e:
             raise
-            print('[Error]: ', str(e))
+            print '[Error]: ', str(e)
 
 if __name__=='__main__':
     app = QtGui.QApplication(sys.argv)
