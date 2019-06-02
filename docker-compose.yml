@@ -437,10 +437,6 @@ services:
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
              /venv/bin/python /app/csplmc/CbfTestMaster/CbfTestMaster.py test"
-#      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-#             tango_admin --check-device mid_csp_cbf/sub_elt/master ||\
-#             tango_admin --add-server CbfTestMaster/test CbfTestMaster mid_csp_cbf/sub_elt/master &&\
-#             /venv/bin/python /app/csplmc/CbfTestMaster/CbfTestMaster.py test"
     volumes_from:
     - rsyslog-tmcprototype:rw
 
@@ -459,10 +455,5 @@ services:
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
              /venv/bin/python /app/csplmc/CspMaster/CspMaster/CspMaster.py 01"
-#        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-#               tango_admin --check-device mid_csp/elt/master ||\
-#               tango_admin --add-server CspMaster/csp CspMaster mid_csp/elt/master &&\
-#               tango_admin --ping-device mid_csp_cbf/sub_elt/master 10 &&\
-#               /venv/bin/python /app/csplmc/CspMaster/CspMaster/CspMaster.py csp"
     volumes_from:
     - rsyslog-tmcprototype:rw
