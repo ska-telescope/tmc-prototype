@@ -211,6 +211,7 @@ pages:
 
 trigger:
   image: appropriate/curl
+  stage: trigger
   tags:
   - docker-executor
   script:
