@@ -25,6 +25,7 @@ stages:
   - test
   - publish
   - pages
+  - trigger
 
 build CentralNode wheel for publication: # Executed on a tag
   stage: build
@@ -207,3 +208,10 @@ pages:
   artifacts:
     paths:
       - public
+
+trigger:
+  image: appropriate/curl
+  tags:
+  - docker-executor
+  script:
+  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
