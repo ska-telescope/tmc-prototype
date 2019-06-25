@@ -335,6 +335,24 @@ services:
     volumes_from:
     - rsyslog-tmcprototype:rw
 
+  sdpsubarray:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - add-devs-and-props
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarray
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             /venv/bin/python /app/tmcprototype/SdpSubarray/SdpSubarray/SdpSubarray.py 01"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
+
+
   centralnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:

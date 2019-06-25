@@ -24,6 +24,7 @@ test:
 	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
+	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
 	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
