@@ -11,27 +11,30 @@
 
 """
 
-# PyTango imports
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
-from SKAMaster import SKAMaster
-# Additional import
+import sys
+import os
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpMaster"
+sys.path.insert(0, module_path)
+
 # PROTECTED REGION ID(SdpMaster.additionnal_import) ENABLED START #
+# PyTango imports
+import tango
+from tango import DebugIt, DevState, AttrWriteType
+from tango.server import run, DeviceMeta, attribute, command, device_property
+from skabase.SKAMaster.SKAMaster import SKAMaster
+
+# Additional import
+from future.utils import with_metaclass
 # PROTECTED REGION END #    //  SdpMaster.additionnal_import
 
 __all__ = ["SdpMaster", "main"]
 
 
-class SdpMaster(SKAMaster):
+class SdpMaster(with_metaclass(DeviceMeta, SKAMaster)):
     """
     """
-    __metaclass__ = DeviceMeta
+    # __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SdpMaster.class_variable) ENABLED START #
     # PROTECTED REGION END #    //  SdpMaster.class_variable
 

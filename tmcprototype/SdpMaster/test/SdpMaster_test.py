@@ -12,15 +12,26 @@
 # Path
 import sys
 import os
+
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpMaster"
+sys.path.insert(0, module_path)
+
 path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-from time import sleep
-from mock import MagicMock
-from PyTango import DevFailed, DevState
-from devicetest import DeviceTestCase, main
-from SdpMaster import SdpMaster
+import time
+import tango
+from tango import DevState
+import pytest
+from SdpMaster.SdpMaster import SdpMaster
+
+# from time import sleep
+# from mock import MagicMock
+# from PyTango import DevFailed, DevState
+# from devicetest import DeviceTestCase, main
+# from SdpMaster import SdpMaster
 
 # Note:
 #
@@ -31,10 +42,10 @@ from SdpMaster import SdpMaster
 # Here, we use a factor 3 between the read period and the sleep calls.
 #
 # Look at devicetest examples for more advanced testing
-
+@pytest.mark.usefixtures("tango_context", "initialize_device")
 
 # Device test case
-class SdpMasterDeviceTestCase(DeviceTestCase):
+class SdpMasterDeviceTestCase(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(SdpMaster.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  SdpMaster.test_additionnal_import

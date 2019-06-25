@@ -746,6 +746,21 @@
         "pollingPeriod": 1000,
         "changeEventAbs": "1"
       }
+    ],
+    {
+    "class": "SdpMaster",
+    "serverName": "SdpMaster/01",
+    "devName": "mid_sdp/elt/master",
+    "deviceProperties": [
+    ],
+    "attributeProperties": [
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
     ]
   }
 ]
