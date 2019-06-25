@@ -285,7 +285,6 @@ services:
     - databaseds
     - rsyslog-tmcprototype
     - add-devs-and-props
-    - sdpsubarray
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}sdpsubarrayleafnode
     environment:
