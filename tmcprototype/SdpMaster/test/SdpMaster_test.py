@@ -42,10 +42,11 @@ from SdpMaster.SdpMaster import SdpMaster
 # Here, we use a factor 3 between the read period and the sleep calls.
 #
 # Look at devicetest examples for more advanced testing
-@pytest.mark.usefixtures("tango_context", "initialize_device")
 
 # Device test case
-class SdpMasterDeviceTestCase(object):
+@pytest.mark.usefixtures("tango_context", "initialize_device")
+
+class TestSdpMaster(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(SdpMaster.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  SdpMaster.test_additionnal_import
@@ -217,8 +218,3 @@ class SdpMasterDeviceTestCase(object):
         # PROTECTED REGION ID(SdpMaster.test_availableCapabilities) ENABLED START #
         self.device.availableCapabilities
         # PROTECTED REGION END #    //  SdpMaster.test_availableCapabilities
-
-
-# Main execution
-if __name__ == "__main__":
-    main()
