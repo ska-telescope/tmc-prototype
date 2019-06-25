@@ -624,6 +624,47 @@
     ]
   },
   {
+    "class": "CspSubarray",
+    "serverName": "CspSubarray/01",
+    "devName": "mid-csp/elt/subarray01",
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 2
+      }
+    ],
+    "attributeProperties": [
+      {
+        "attributeName": "opState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 2000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "adminMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 2000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 2000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "testMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 2000,
+        "changeEventAbs": "1"
+      }
+    ]
+  },
+  {
     "class": "CentralNode",
     "serverName": "CentralNode/01",
     "devName": "ska_mid/tm_central/central_node",

@@ -1,0 +1,2 @@
+.. automodule:: CspSubarray
+    :members: CspSubarray
