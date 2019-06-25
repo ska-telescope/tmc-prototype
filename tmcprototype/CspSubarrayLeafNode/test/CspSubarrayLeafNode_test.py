@@ -13,6 +13,8 @@
 import sys
 import os
 import time
+import pytest
+import json
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
@@ -40,6 +42,8 @@ from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
 
 
 # Device test case
+@pytest.mark.usefixtures("tango_context", "initialize_device")
+
 class TestCspSubarrayLeafNode(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(CspSubarrayLeafNode.test_additionnal_import) ENABLED START #
