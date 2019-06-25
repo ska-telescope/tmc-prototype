@@ -38,6 +38,9 @@ test:
         mv /app/tmcprototype/DishMaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
         mv /app/tmcprototype/DishMaster/htmlcov /build/dishmaster_htmlcov; \
         mv /app/tmcprototype/DishMaster/coverage.xml /build/dishmaster_coverage.xml; \
+        mv /app/tmcprototype/CspSubarrayLeafNode/setup_py_test.stdout /build/cspsubarrayleafnode_setup_py_test.stdout; \
+        mv /app/tmcprototype/CspSubarrayLeafNode/htmlcov /build/cspsubarrayleafnode_htmlcov; \
+        mv /app/tmcprototype/CspSubarrayLeafNode/coverage.xml /build/cspsubarrayleafnode_coverage.xml; \
         mv /app/tmcprototype/DishLeafNode/setup_py_test.stdout /build/dishleafnode_setup_py_test.stdout; \
         mv /app/tmcprototype/DishLeafNode/htmlcov /build/dishleafnode_htmlcov; \
         mv /app/tmcprototype/DishLeafNode/coverage.xml /build/dishleafnode_coverage.xml; \
