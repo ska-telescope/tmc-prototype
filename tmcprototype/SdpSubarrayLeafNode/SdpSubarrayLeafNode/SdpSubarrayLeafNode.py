@@ -12,6 +12,8 @@
 """
 
 # PyTango imports
+import sys
+import os
 import PyTango
 from PyTango import DebugIt
 from PyTango.server import run
@@ -23,6 +25,10 @@ from PyTango import AttrWriteType, PipeWriteType
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(SdpSubarrayLeafNode.additionnal_import) ENABLED START #
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpSubarrayLeafNode"
+sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
 __all__ = ["SdpSubarrayLeafNode", "main"]
@@ -73,6 +79,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def init_device(self):
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(SdpSubarrayLeafNode.init_device) ENABLED START #
+        self._receive_addresses = "abc"
+        self._active_processing_block = "1"
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -91,12 +99,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def read_ActiveProcessingBlocks(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ActiveProcessingBlocks_read) ENABLED START #
-        return ''
+        return self._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ActiveProcessingBlocks_read
 
     def read_ReceiveAddresses(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReceiveAddresses_read) ENABLED START #
-        return ''
+        return self._receive_addresses
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReceiveAddresses_read
 
 
