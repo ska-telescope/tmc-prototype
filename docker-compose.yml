@@ -81,6 +81,7 @@ services:
     - dishmaster2
     - dishmaster3
     - dishmaster4
+    - cspsubarrayleafnode
     - dishleafnode1
     - dishleafnode2
     - dishleafnode3
