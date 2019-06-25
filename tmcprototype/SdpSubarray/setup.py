@@ -28,7 +28,7 @@ pack = ['SdpSubarray']
 
 setup(name=name,
       version=version,
-      description='',
+      description='SDP Subarray device',
       packages=pack,
       include_package_data=True,
       test_suite="test",
@@ -38,5 +38,23 @@ setup(name=name,
       license='GPL',
       long_description=long_description,
       url='www.tango-controls.org',
-      platforms="All Platforms"
+      platforms="All Platforms",
+      install_requires=['pytango==9.2.5', 'mock'],
+      # test_suite='test',
+      setup_requires=[
+          # dependency for `python setup.py test`
+          'pytest-runner',
+          # dependencies for `python setup.py build_sphinx`
+          'sphinx',
+          'recommonmark'
+      ],
+      tests_require=[
+          'pytest',
+          'pytest-cov',
+          'pytest-json-report',
+          'pycodestyle',
+      ],
+      extras_require={
+          'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
+      }
       )
