@@ -12,6 +12,8 @@
 """
 
 # Tango imports
+import os
+import sys
 import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed, Group
 from tango.server import run, DeviceMeta, attribute, command, device_property
@@ -19,6 +21,11 @@ from future.utils import with_metaclass
 from skabase.SKASubarray.SKASubarray import SKASubarray
 # PROTECTED REGION ID(SdpSubarray.additionnal_import) ENABLED START #
 import CONST
+
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpSubarray"
+sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
 # PROTECTED REGION END #    //  SdpSubarray.additionnal_import
 
 __all__ = ["SdpSubarray", "main"]
@@ -58,6 +65,7 @@ class SdpSubarray(SKASubarray):
         Assigns resources to the subarray.
         """
         print("SdpSubarray.AssignResources command executed successfully.")
+        return ""
 
     def is_AssignResources_allowed(self):
         """Checks if AssignResources is allowed in the current state of SubarrayNode."""
@@ -70,6 +78,7 @@ class SdpSubarray(SKASubarray):
         Releases resources from the subarray.
         """
         print("SdpSubarray.ReleaseResources command executed successfully.")
+        return ""
 
     def is_ReleaseResources_allowed(self):
         """Checks if AssignResources is allowed in the current state of SubarrayNode."""

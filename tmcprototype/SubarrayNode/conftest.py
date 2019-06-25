@@ -27,8 +27,8 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format(package_name, module_name))
     # klass = getattr(module, class_name)
-    module = importlib.import_module("{}.{}".format("SubarrayNode", "SubarrayNode"))
-    klass = getattr(module, "SubarrayNode")
+    module = importlib.import_module("{}.{}".format("SdpSubarray", "SdpSubarray"))
+    klass = getattr(module, "SdpSubarray")
     tango_context = DeviceTestContext(klass)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
