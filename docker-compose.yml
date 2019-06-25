@@ -90,6 +90,7 @@ services:
     - subarraynode2
     - centralnode
     - cspmaster
+    - cspsubarray
     - cbftestmaster
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}conf-polling-events
@@ -335,7 +336,7 @@ services:
     volumes_from:
     - rsyslog-tmcprototype:rw
 
-  cspsubarray1:
+  cspsubarray:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
       - databaseds
