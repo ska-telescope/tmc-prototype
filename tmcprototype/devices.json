@@ -303,6 +303,40 @@
       }
     ]
   },
+
+  {
+    "class": "CspSubarrayLeafNode",
+    "serverName": "CspSubarrayLeafNode/01",
+    "devName": "ska_mid/tm_leaf_node/csp_subarray",
+    "deviceProperties": [
+      {
+        "devPropName": "CspSubarrayPrefix",
+        "devPropValue": "mid-csp/elt/subarray01"
+      },
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 3
+      }
+    ],
+    "attributeProperties": [
+      {
+        "attributeName": "adminMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
+  },
+
+
   {
     "class": "DishLeafNode",
     "serverName": "DishLeafNode/01",
