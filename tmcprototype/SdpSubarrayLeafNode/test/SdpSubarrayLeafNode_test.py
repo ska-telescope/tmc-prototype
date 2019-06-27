@@ -12,6 +12,9 @@
 # Path
 import sys
 import os
+# Path
+import sys
+import os
 import time
 
 file_path = os.path.dirname(os.path.abspath(__file__))
@@ -55,8 +58,7 @@ class TestSdpSubarrayLeafNode(object):
     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_additionnal_import
     device = SdpSubarrayLeafNode
-    properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+    properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost', 
                   }
     empty = None  # Should be []
 
@@ -98,17 +100,17 @@ class TestSdpSubarrayLeafNode(object):
         self.device.Reset()
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Reset
 
-    def test_ReleaseResource(self, tango_context):
-        """Test for ReleaseResource"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseResource) ENABLED START #
-        self.device.ReleaseResource()
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseResource
+    def test_ReleaseResources(self, tango_context):
+        """Test for ReleaseResources"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseResources) ENABLED START #
+        self.device.ReleaseResources("")
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseResources
 
-    def test_AssignResource(self, tango_context):
-        """Test for AssignResource"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResource) ENABLED START #
-        self.device.AssignResource("")
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResource
+    def test_AssignResources(self, tango_context):
+        """Test for AssignResources"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+        self.device.AssignResources("")
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
     def test_Configure(self, tango_context):
         """Test for Configure"""
@@ -116,17 +118,29 @@ class TestSdpSubarrayLeafNode(object):
         self.device.Configure("")
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Configure
 
-    def test_StartScan(self, tango_context):
-        """Test for StartScan"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_StartScan) ENABLED START #
-        self.device.StartScan("")
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_StartScan
+    def test_Scan(self, tango_context):
+        """Test for Scan"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan) ENABLED START #
+        self.device.Scan()
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
 
-    def test_StopScan(self, tango_context):
-        """Test for StopScan"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_StopScan) ENABLED START #
-        self.device.StopScan()
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_StopScan
+    def test_EndScan(self, tango_context):
+        """Test for EndScan"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndScan) ENABLED START #
+        self.device.EndScan()
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndScan
+
+    def test_EndSB(self, tango_context):
+        """Test for EndSB"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
+        self.device.EndSB()
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
+
+    def test_Abort(self, tango_context):
+        """Test for Abort"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Abort) ENABLED START #
+        self.device.Abort()
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Abort
 
     def test_buildState(self, tango_context):
         """Test for buildState"""
@@ -188,12 +202,6 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_testMode) ENABLED START #
         self.device.testMode
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_testMode
-
-    def test_ActiveProcessingBlocks(self, tango_context):
-        """Test for ActiveProcessingBlocks"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ActiveProcessingBlocks) ENABLED START #
-        assert tango_context.device.ActiveProcessingBlocks == "1"
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ActiveProcessingBlocks
 
     def test_ReceiveAddresses(self, tango_context):
         """Test for ReceiveAddresses"""

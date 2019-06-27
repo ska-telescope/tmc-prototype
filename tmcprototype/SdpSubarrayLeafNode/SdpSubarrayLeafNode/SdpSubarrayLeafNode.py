@@ -12,8 +12,6 @@
 """
 
 # PyTango imports
-import sys
-import os
 import PyTango
 from PyTango import DebugIt
 from PyTango.server import run
@@ -25,6 +23,8 @@ from PyTango import AttrWriteType, PipeWriteType
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(SdpSubarrayLeafNode.additionnal_import) ENABLED START #
+import os
+import sys
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpSubarrayLeafNode"
 sys.path.insert(0, module_path)
@@ -64,10 +64,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
 
 
-    ActiveProcessingBlocks = attribute(
-        dtype='str',
-    )
-
     ReceiveAddresses = attribute(
         dtype='str',
     )
@@ -80,7 +76,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(SdpSubarrayLeafNode.init_device) ENABLED START #
         self._receive_addresses = "abc"
-        self._active_processing_block = "1"
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -97,11 +92,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # Attributes methods
     # ------------------
 
-    def read_ActiveProcessingBlocks(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.ActiveProcessingBlocks_read) ENABLED START #
-        return self._active_processing_block
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ActiveProcessingBlocks_read
-
     def read_ReceiveAddresses(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReceiveAddresses_read) ENABLED START #
         return self._receive_addresses
@@ -114,23 +104,22 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(
     dtype_in='str', 
-    dtype_out='str', 
     )
     @DebugIt()
-    def ReleaseResource(self, argin):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseResource) ENABLED START #
+    def ReleaseResources(self, argin):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseResources) ENABLED START #
         pass
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseResource
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseResources
 
     @command(
     dtype_in='str', 
     dtype_out='str', 
     )
     @DebugIt()
-    def AssignResource(self, argin):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResource) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResource
+    def AssignResources(self, argin):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
+        return ""
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
     @command(
     dtype_in='str', 
@@ -142,21 +131,36 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
     @command(
-    dtype_in='str', 
     )
     @DebugIt()
-    def StartScan(self, argin):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.StartScan) ENABLED START #
+    def Scan(self):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Scan) ENABLED START #
         pass
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.StartScan
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
     @command(
     )
     @DebugIt()
-    def StopScan(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.StopScan) ENABLED START #
+    def EndScan(self):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
         pass
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.StopScan
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndScan
+
+    @command(
+    )
+    @DebugIt()
+    def EndSB(self):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
+        pass
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
+
+    @command(
+    )
+    @DebugIt()
+    def Abort(self):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
+        pass
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
 # ----------
 # Run server
