@@ -78,6 +78,7 @@ build SubarrayNode wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/SubarrayNode/dist/
 
+<<<<<<< HEAD
 build SdpSubarray wheel for publication: # Executed on a tag
   stage: build
   tags:
@@ -91,7 +92,23 @@ build SdpSubarray wheel for publication: # Executed on a tag
     paths:
       - ./tmcprototype/SdpSubarray/dist/
 
+=======
+build CspSubarray wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/CspSubarray
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/CspSubarray/dist/
+
+
 build SdpSubarray wheel for development: # Executed on a commit
+=======
   stage: build
   tags:
     - docker-executor
@@ -103,6 +120,19 @@ build SdpSubarray wheel for development: # Executed on a commit
   artifacts:
     paths:
       - ./tmcprototype/SdpSubarray/dist/
+
+build CspSubarray wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/CspSubarray
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/CspSubarray/dist/
 
 build DishLeafNode wheel for publication: # Executed on a tag
   stage: build
