@@ -10,6 +10,7 @@
 #   - rsyslog-tmcprototype: rsyslog service for logger
 #   - dishmaster: Simulator of Dish Master device
 #   - dishleafnode: Dish Leaf Node
+#   - sdpsubarrayleafnode: SDP Subarray Leaf Node
 #   - subarraynode: Subarray Node
 #   - centralnode: Central Node
 #   - cspmasterleafnode: CSP Master Leaf Node
@@ -86,6 +87,7 @@ services:
     - dishleafnode3
     - dishleafnode4
     - cspmasterleafnode
+    - sdpsubarrayleafnode
     - subarraynode1
     - subarraynode2
     - centralnode
@@ -277,6 +279,24 @@ services:
     volumes_from:
     - rsyslog-tmcprototype:rw
 
+  sdpsubarrayleafnode:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+    - databaseds
+    - rsyslog-tmcprototype
+    - add-devs-and-props
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarrayleafnode
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray 10 &&\
+             /venv/bin/python /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 01"
+    volumes_from:
+    - rsyslog-tmcprototype:rw
+
   subarraynode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
@@ -286,6 +306,7 @@ services:
       - dishleafnode2
       - dishleafnode3
       - dishleafnode4
+      - sdpsubarrayleafnode
       - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}subarraynode1
@@ -315,6 +336,7 @@ services:
       - dishleafnode2
       - dishleafnode3
       - dishleafnode4
+      - sdpsubarrayleafnode
       - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}subarraynode2

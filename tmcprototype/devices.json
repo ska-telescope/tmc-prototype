@@ -506,6 +506,44 @@
     ]
   },
   {
+    "class": "SdpSubarrayLeafNode",
+    "serverName": "SdpSubarrayLeafNode/01",
+    "devName": "ska_mid/tm_leaf_node/sdp_subarray",
+    "deviceProperties": [
+      {
+        "devPropName": "SdpSubarrayFQDN",
+        "devPropValue": "mid_sdp/elt/subarray_1"
+      },
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ],
+    "attributeProperties": [
+      {
+        "attributeName": "sdpSubarrayHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue": "ska_mid/tm_leaf_node/sdp_subarray/healthState",
+        "pollingPeriod": "",
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
+  },
+  {
     "class": "SubarrayNode",
     "serverName": "SubarrayNode/sa1",
     "devName": "ska_mid/tm_subarray_node/1",
