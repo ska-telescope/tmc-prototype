@@ -809,5 +809,16 @@
         "changeEventAbs": "1"
       }
     ]
+  },
+  {
+    "class": "SKALogger",
+    "serverName": "SKALogger/Ref",
+    "devName": "ref/elt/logger",
+    "deviceProperties": [
+      {
+        "devPropName": "SkaLevel",
+        "devPropValue": 1
+      }
+    ]
   }
 ]
