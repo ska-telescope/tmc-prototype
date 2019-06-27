@@ -11,6 +11,7 @@ init-hook='
     sys.path.append("./tmcprototype/DishMaster/DishMaster");
     sys.path.append("./tmcprototype/DishLeafNode");
     sys.path.append("./tmcprototype/CspMasterLeafNode");
+    sys.path.append("./tmcprototype/SdpSubarrayLeafNode");
     sys.path.append("./tmcprototype/SubarrayNode");
     sys.path.append("./tmcprototype/SdpSubarray");
     sys.path.append("./tmcprototype/CentralNode");
