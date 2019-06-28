@@ -28,11 +28,6 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <DefaultPropValue>localhost</DefaultPropValue>
     </deviceProperties>
-    <deviceProperties name="SkaLevel" description="">
-      <type xsi:type="pogoDsl:ShortType"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>3</DefaultPropValue>
-    </deviceProperties>
     <deviceProperties name="CspSubarrayNodeFQDN" description="FQDN of the CSP Subarray Node Tango Device Server.">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>

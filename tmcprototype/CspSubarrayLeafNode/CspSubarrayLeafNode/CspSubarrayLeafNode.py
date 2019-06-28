@@ -12,14 +12,9 @@
 """
 
 # PyTango imports
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
+import tango
+from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
+from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
@@ -28,6 +23,9 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
 sys.path.insert(0, module_path)
+
+import json
+import CONST
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]
@@ -38,6 +36,42 @@ class CspSubarrayLeafNode(SKABaseDevice):
     """
     __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(CspSubarrayLeafNode.class_variable) ENABLED START #
+
+    def commandCallback(self, event):
+        """
+        Checks whether the command has been successfully invoked on DishMaster.
+        :param event: response from DishMaster for the invoked command
+        :return: None
+
+        """
+        excpt_count = 0
+        excpt_msg = []
+        try:
+            if event.err:
+                log = CONST.ERR_INVOKING_CMD + event.cmd_name
+                print(log)
+                self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                    event.errors)
+                self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
+            else:
+                log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
+                print(log)
+                self._read_activity_message = log
+                self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
+        except Exception as except_occurred:
+            self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
+            print(self._read_activity_message)
+            self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CMD_CALLBK, tango.ErrSeverity.ERR)
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.class_variable
 
     # -----------------
@@ -48,10 +82,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
 
 
-
-    SkaLevel = device_property(
-        dtype='int16', default_value=3
-    )
 
     CspSubarrayNodeFQDN = device_property(
         dtype='str', default_value="mid-csp/elt/subarray01"
@@ -112,7 +142,18 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def init_device(self):
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(CspSubarrayLeafNode.init_device) ENABLED START #
-        self._state = 0
+        try:
+            self._state = 0
+            # create subarray Proxy
+            self.subarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
+
+        except DevFailed as dev_failed:
+            print(CONST.ERR_INIT_PROP_ATTR_CN)
+            self._read_activity_message = CONST.ERR_INIT_PROP_ATTR_CN
+            self.dev_logging(CONST.ERR_INIT_PROP_ATTR_CN, int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
+            print(CONST.STR_ERR_MSG, dev_failed)
+
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -166,12 +207,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_read) ENABLED START #
-        return ''
+        return self._read_activity_message
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_write) ENABLED START #
-        pass
+        self._read_activity_message = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_write
 
     def read_opState(self):
@@ -225,7 +266,76 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CspSubarrayLeafNode.AssignResources) ENABLED START #
-        pass
+        """
+        #ToDo :Need to update
+        It accepts receptor id list in JSON string format and invokes AssignResources command
+        on CspSubarray with receptorIDList (list of integers) as an input argument.
+
+        :param argin: The string in JSON format. The JSON contains following values:
+
+            dish:
+                Mandatory JSON object consisting of
+
+                receptorIDList:
+                    DevVarStringArray
+                    The individual string should contain dish numbers in string format
+                    with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+
+            Example:
+                {
+                "subarrayID": 1,
+                "dish": {
+                "receptorIDList": ["0001","0002"]
+                }
+                }
+
+        Note: From Jive, enter input as:
+        {"dish":{"receptorIDList":["0001","0002"]}} without any space.
+
+        :return: None.
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            jsonArgument = json.loads(argin[0])
+            receptorIDList = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
+
+            #convert receptorIDList(list of string) to list of int
+            self.subarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, list(map(int, receptorIDList)), self.commandCallback)
+            self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
+            self.dev_logging(CONST.STR_ASSIGN_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+
+        except ValueError as value_error:
+            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        except KeyError as key_error:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
+
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
 
 # ----------
