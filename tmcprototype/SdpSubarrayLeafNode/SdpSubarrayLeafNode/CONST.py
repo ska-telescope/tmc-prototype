@@ -25,11 +25,11 @@ CMD_ASSIGN_RESOURCES = "AssignResources"
 # ERR_EXE_STOW_CMD = "Error in executing STOW command "
 # ERR_EXE_STANDBY_CMD = "Error in executing STANDBY Telescope command "
 # ERR_EXE_STARTUP_CMD = "Error in executing STARTUP Telescope command "
-# ERR_INVALID_JSON = "Invalid JSON format"
-# ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
+ERR_INVALID_JSON = "Invalid JSON format"
+ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 # ERR_RELEASE_RESOURCES_CMD = "Error occured while releasing resources "
 # ERR_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting Subarray healthState"
-# ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray \n"
+ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the SDP Subarray \n"
 # ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 # ERR_STOW_ARGIN = "Invalid StowAntennas arguments \n"
 #
@@ -45,8 +45,8 @@ CMD_ASSIGN_RESOURCES = "AssignResources"
 # STR_STOW_CMD_ISSUED_CN = "STOW command invoked from Central node on the requested dishes"
 # STR_STANDBY_CMD_ISSUED = "StandByTelescope command invoked from Central node"
 # STR_STARTUP_CMD_ISSUED = "StartUpTelescope command invoked from Central node"
-# STR_INIT_SUCCESS = "CentralNode is initialized successfully."
-# STR_FALSE = "False"
+STR_INIT_SUCCESS = "SDP Subarray Leaf Node is initialized successfully."
+STR_FALSE = "False"
 # STR_DISH_DUPLICATE = "List of the dishes that are already allocated: "
 # STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully"
 # STR_FALSE_TAG = "False in ReleaseALL tag is not yet supported"
@@ -55,15 +55,15 @@ CMD_ASSIGN_RESOURCES = "AssignResources"
 # STR_LIST_RES_NOT_REL = "List of the resources that are not released:"
 # STR_CSP_CBF_DEV_NAME = "mid_csp_cbf/sub_elt/master"
 #
-# STR_CMD_FAILED = "CentralNode_CommandFailed"
+STR_CMD_FAILED = "SDP Subarray Leaf Node_CommandFailed"
 # STR_STOW_ANTENNA_EXEC = "StowAntennas command execution"
 # STR_RELEASE_RES_EXEC = "ReleaseResources command execution"
-# STR_ASSIGN_RES_EXEC = "AssignResources command execution"
+STR_ASSIGN_RES_EXEC = "AssignResources command execution"
 # STR_STARTUP_EXEC = "StartUpTelescope command execution"
 # STR_STANDBY_EXEC = "StandByTelescope command execution"
 #
 # #PROPERTIES DEFAULT VALUES
-# PROP_DEF_VAL_TM_MID_SA1 = "ska_mid/tm_subarray_node/1"
+PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_1"
 # PROP_DEF_VAL_TM_MID_SA2 = "ska_mid/tm_subarray_node/2"
 # PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
 #
@@ -75,7 +75,7 @@ CMD_ASSIGN_RESOURCES = "AssignResources"
 # ENUM_LAB_UNKNOWN = "UNKNOWN"
 #
 # #ENUMS
-# ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
+ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 #
 # #INTEGERS
 # INT_SKA_LEVEL = 1

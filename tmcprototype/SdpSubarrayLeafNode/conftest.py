@@ -43,18 +43,8 @@ def initialize_device(tango_context):
     """
     yield tango_context.device.Init()
 
-'''
+
 @pytest.fixture(scope="class")
-def create_subarray1_proxy():
-    subarray1_proxy = DeviceProxy(CONST.PROP_DEF_VAL_TM_MID_SA1)
+def create_sdpsubarray_proxy():
+    subarray1_proxy = DeviceProxy("mid_sdp/elt/subarray_1")
     return subarray1_proxy
-
-@pytest.fixture(scope="class")
-def create_subarray2_proxy():
-    subarray2_proxy = DeviceProxy(CONST.PROP_DEF_VAL_TM_MID_SA2)
-    return subarray2_proxy
-
-@pytest.fixture(scope="class")
-def create_leafNode1_proxy():
-    leafNode1_proxy = DeviceProxy(CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX + "0001")
-    return leafNode1_proxy'''
