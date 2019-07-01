@@ -91,7 +91,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
 
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_sdp/elt/subarray_1",
+        dtype='str', default_value="tango://cmsserver2:10000/mid_sdp/elt/subarray_1",
         doc='FQDN of the SDP Subarray Node Tango Device Server.',
     )
 
@@ -242,7 +242,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 }
 
         Note: From Jive, enter input as:
-        {"dish":{"receptorIDList":["0001"]}} without any space.
+        {"processingBlockIdList": ["0001", "0002"]} without any space.
 
         :return: None
         """
@@ -251,8 +251,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         try:
             # Call SDP Subarray Command asynchronously
-            # TODO : argin - do we need to parse ?
-
+            print ("Calling Assign resources command...")
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ASSIGN_RESOURCES, argin,
                                                                           self.commandCallback)
 

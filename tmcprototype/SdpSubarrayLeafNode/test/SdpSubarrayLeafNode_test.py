@@ -54,7 +54,7 @@ class TestSdpSubarrayLeafNode(object):
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_additionnal_import
     device = SdpSubarrayLeafNode
     properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost', 'SdpSubarrayNodeFQDN': 'mid-sdp/elt/subarray_1',
+                  'StorageLoggingTarget': 'localhost', 'SdpSubarrayNodeFQDN': 'mid_sdp/elt/subarray_1',
                   }
     empty = None  # Should be []
 
@@ -106,13 +106,10 @@ class TestSdpSubarrayLeafNode(object):
     def test_AssignResources(self, tango_context, create_sdpsubarray_proxy):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
-        #self.device.AssignResources("")
-        test_input = '{"dish":{"receptorIDList":["0001"]}}'
-        time.sleep(3)
-        # result = create_sdpsubarray_proxy.receptorIDList
-        # create_sdpsubarray_proxy.ReleaseAllResources()
-        result = ''
-        assert result == '' #and retVal["dish"]["receptorIDList_success"] == ["0001"]
+        # test_input = 'receptorIDList": ["0001", "0002"]'
+        test_input = '{"processingBlockIdList": ["0001", "0002"]}'
+        retVal = tango_context.device.AssignResources(test_input)
+        assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
     # def test_Configure(self, tango_context):
