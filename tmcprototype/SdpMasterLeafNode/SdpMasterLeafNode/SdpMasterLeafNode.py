@@ -4,12 +4,13 @@
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-""" SdpMasterLeafNode
-
-TBD
+"""
+The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
+actions during an observation. It also acts as a SDP contact point for Subarray Node for observation
+execution. There is one to one mapping between SDP Subarray Leaf Node and SDP subarray.
 """
 
 # PyTango imports
@@ -40,9 +41,13 @@ __all__ = ["SdpMasterLeafNode", "main"]
 
 
 class SdpMasterLeafNode(SKABaseDevice):
+    #TODO: class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
+
     """
-    TBD
+    The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
+    actions during an observation.
     """
+    # TODO: The following statment is not reqruied if compare it with other TMC .py files
     __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SdpMasterLeafNode.class_variable) ENABLED START #
     # PROTECTED REGION END #    //  SdpMasterLeafNode.class_variable
@@ -64,17 +69,8 @@ class SdpMasterLeafNode(SKABaseDevice):
     # Attributes
     # ----------
 
-
-
-
-
-
-
-
-
-
-
     SDPHealthState = attribute(
+        #ToDo: The following doc= statements are at the end if compared with other .py files
         dtype='DevEnum',
         doc="This is a forwarded attribute from SDP Master which depicts Health State of the SDP.",
         enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
@@ -100,7 +96,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
-        doc="String providing information about the current activity in SDPleafNode.",
+        doc="String providing information about the current activity in SDPLeafNode.",
     )
 
     ProcessingBlockList = attribute(
@@ -115,12 +111,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     def init_device(self):
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(SdpMasterLeafNode.init_device) ENABLED START #
-        """
-        Initializes the attributes and properties of CSPMasterLeafNode and subscribes change event
-        on attributes of CSPMaster.
-
-        :return: None
-        """
+        """ Initializes the attributes and properties of CSPMasterLeafNode """
         try:
             SKABaseDevice.init_device(self)
             self.set_state(DevState.ON)
@@ -145,12 +136,12 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.always_executed_hook) ENABLED START #
-        pass
+        """ Internal construct of TANGO. """
         # PROTECTED REGION END #    //  SdpMasterLeafNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.delete_device) ENABLED START #
-        pass
+        """ Internal construct of TANGO. """
         # PROTECTED REGION END #    //  SdpMasterLeafNode.delete_device
 
     # ------------------

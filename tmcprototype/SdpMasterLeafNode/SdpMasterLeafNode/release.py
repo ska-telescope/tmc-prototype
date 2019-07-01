@@ -4,17 +4,21 @@
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
 """Release information for Python Package"""
 
 name = """tangods-sdpmasterleafnode"""
-version = "1.0.0"
+version = "0.1.0"
 version_info = version.split(".")
-description = """TBD"""
+description = """ The primary responsibility of the SDP Subarray 
+                  Leaf node is to monitor the SDP Subarray 
+                  and issue control actions during an observation."""
 author = "vinodnsathe.ska"
 author_email = "vinodnsathe.ska at gmail.com"
-license = """GPL"""
+license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
+
+
