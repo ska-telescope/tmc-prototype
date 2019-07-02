@@ -284,7 +284,7 @@ services:
     - databaseds
     - rsyslog-tmcprototype
     - add-devs-and-props
-    - sdpmaster
+    #- sdpmaster
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}sdpmasterleafnode
     environment:
