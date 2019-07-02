@@ -17,8 +17,8 @@ CMD_ASSIGN_RESOURCES = "AssignResources"
 # #Error messages
 # ERR_AGGR_HEALTH_STATE = "Error while aggregating Subarray healthState \n"
 # ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
-# ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes " \
-#                         "on Central Node device."
+ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes " \
+                         "on Sdp Subarray Leaf Node Node device."
 # ERR_IN_READ_DISH_LN_DEVS = "Error in reading exported Dish Leaf Node device names " \
 #                            "from database \n"
 # ERR_IN_CREATE_PROXY = "Error in creating proxy of the LeafNode device: "
@@ -35,18 +35,19 @@ ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the SDP Subar
 #
 # #strings
 # #General strings
-# STR_HEALTH_STATE = "healthState of "
-# STR_OK = " :-> OK"
-# STR_DEGRADED = " :-> DEGRADED"
-# STR_FAILED = " :-> FAILED"
-# STR_UNKNOWN = " :-> UNKNOWN"
-# STR_HEALTH_STATE_UNKNOWN_VAL = "Subarray healthState event returned unknown value \n"
-# STR_ERR_MSG = "Error message is: "
+STR_HEALTH_STATE = "healthState of "
+STR_OK = " :-> OK"
+STR_DEGRADED = " :-> DEGRADED"
+STR_FAILED = " :-> FAILED"
+STR_UNKNOWN = " :-> UNKNOWN"
+STR_HEALTH_STATE_UNKNOWN_VAL = "SDP Subarray leaf healthState event returned unknown value \n"
+STR_ERR_MSG = "Error message is: "
 # STR_STOW_CMD_ISSUED_CN = "STOW command invoked from Central node on the requested dishes"
 # STR_STANDBY_CMD_ISSUED = "StandByTelescope command invoked from Central node"
 # STR_STARTUP_CMD_ISSUED = "StartUpTelescope command invoked from Central node"
 STR_INIT_SUCCESS = "SDP Subarray Leaf Node is initialized successfully."
 STR_FALSE = "False"
+STR_PROCESSINGBLOCKID_LIST = "processingBlockIdList"
 # STR_DISH_DUPLICATE = "List of the dishes that are already allocated: "
 STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully"
 # STR_FALSE_TAG = "False in ReleaseALL tag is not yet supported"

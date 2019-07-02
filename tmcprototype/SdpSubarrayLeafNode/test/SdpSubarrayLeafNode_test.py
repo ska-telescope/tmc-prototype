@@ -106,11 +106,29 @@ class TestSdpSubarrayLeafNode(object):
     def test_AssignResources(self, tango_context, create_sdpsubarray_proxy):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
-        # test_input = 'receptorIDList": ["0001", "0002"]'
         test_input = '{"processingBlockIdList": ["0001", "0002"]}'
         retVal = tango_context.device.AssignResources(test_input)
         assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+
+    def test_AssignResources_invalid_key(self, tango_context):
+        """Test for AssignResources_invalid_key"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+        test_input = '{"processingBlock": ["0001", "0002"]}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(test_input)
+        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+
+    def test_AssignResources_invalid_format(self, tango_context):
+        """Test for AssignResources_invalid_format"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+        test_input = '{"abc"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(test_input)
+        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+
 
     # def test_Configure(self, tango_context):
     #     """Test for Configure"""

@@ -292,7 +292,6 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray 10 &&\
              /venv/bin/python /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 01"
     volumes_from:
     - rsyslog-tmcprototype:rw

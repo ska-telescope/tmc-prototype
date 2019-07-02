@@ -13,38 +13,34 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 
 """
 
-# PyTango imports
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
-
-# Additional import
 # PROTECTED REGION ID(SdpSubarrayLeafNode.additionnal_import) ENABLED START #
-from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-import tango
-from tango import DeviceProxy, DevFailed
-import CONST
-import os
 import sys
+import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpSubarrayLeafNode"
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
+# PyTango imports
+import tango
+from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango.server import run, DeviceMeta, command, device_property, attribute
+from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+# Additional imports
+
+from future.utils import with_metaclass
+import CONST
+import json
+
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 
-class SdpSubarrayLeafNode(SKABaseDevice):
+class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
     """
-    __metaclass__ = DeviceMeta
+    # __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SdpSubarrayLeafNode.class_variable) ENABLED START #
 
     def commandCallback(self, event):
@@ -91,7 +87,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
 
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="tango://cmsserver2:10000/mid_sdp/elt/subarray_1",
+        dtype='str', default_value="mid_sdp/elt/subarray_1",
         doc='FQDN of the SDP Subarray Node Tango Device Server.',
     )
 
@@ -250,9 +246,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         excpt_count = 0
 
         try:
+            jsonArgument = json.loads(argin)
+            processingBlockIDList = jsonArgument[CONST.STR_PROCESSINGBLOCKID_LIST]
+            print ("processingBlockIDList :", processingBlockIDList)
             # Call SDP Subarray Command asynchronously
             print ("Calling Assign resources command...")
-            self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ASSIGN_RESOURCES, argin,
+            self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ASSIGN_RESOURCES,
+                                                                          list(processingBlockIDList),
                                                                           self.commandCallback)
 
             print("SdpSubarrayLeafNode.Assign Resources command executed successfully.")
@@ -263,11 +263,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
-        # except KeyError as key_error:
-        #     self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
-        #     self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-        #     excpt_msg.append(self._read_activity_message)
-        #     excpt_count += 1
+        except KeyError as key_error:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
         except DevFailed as dev_failed:
             self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(dev_failed)
