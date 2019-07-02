@@ -2,16 +2,20 @@
 A module defining a list of fixture functions that are shared across all the skabase
 tests.
 """
+
 from __future__ import absolute_import
+import importlib
 import mock
 import pytest
-import importlib
+
+
+from tango import DeviceProxy, DevFailed
 from tango.test_context import DeviceTestContext
+
 
 @pytest.fixture(scope="class")
 def tango_context(request):
     """Creates and returns a TANGO DeviceTestContext object.
-
     Parameters
     ----------
     request: _pytest.fixtures.SubRequest
@@ -22,13 +26,15 @@ def tango_context(request):
     # fq_test_class_name_details = fq_test_class_name.split(".")
     # package_name = fq_test_class_name_details[1]
     # class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format("CspMasterLeafNode", "CspMasterLeafNode"))
-    klass = getattr(module, "CspMasterLeafNode")
+    # module = importlib.import_module("{}.{}".format(package_name, module_name))
+    # klass = getattr(module, class_name)
+    module = importlib.import_module("{}.{}".format("CspSubarrayLeafNode", "CspSubarrayLeafNode"))
+    klass = getattr(module, "CspSubarrayLeafNode")
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspSubarrayNodeFQDN': 'mid-csp/elt/subarray01',
+                  'CspSubarrayNodeFQDN': '',
                   }
-    tango_context = DeviceTestContext(klass, properties=properties, process= False)
+    tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context
@@ -44,3 +50,8 @@ def initialize_device(tango_context):
         Context to run a device without a database.
     """
     yield tango_context.device.Init()
+
+@pytest.fixture(scope="class")
+def create_cspsubarray1_proxy():
+    cspsubarray1_proxy = DeviceProxy("mid-csp/elt/subarray01")
+    return cspsubarray1_proxy

@@ -23,6 +23,7 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
 sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
 
 import json
 import CONST
@@ -146,6 +147,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self._state = 0
             # create subarray Proxy
             self.subarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
+            self._read_activity_message = " "
+            self.set_state(DevState.ON)
+            self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
+            self._csp_subarray_health_state = CONST.ENUM_OK
+            self._opstate = CONST.ENUM_INIT
+            self._delay_model = " "
+            self._visdestination_address = " "
 
         except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR_CN)
@@ -177,27 +185,27 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def read_delayModel(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_read) ENABLED START #
-        return ''
+        return self._delay_model
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_read
 
     def write_delayModel(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_write) ENABLED START #
-        pass
+        self._delay_model = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_write
 
     def read_visDestinationAddress(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.visDestinationAddress_read) ENABLED START #
-        return ''
+        return self._visdestination_address
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.visDestinationAddress_read
 
     def write_visDestinationAddress(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.visDestinationAddress_write) ENABLED START #
-        pass
+        self._visdestination_address = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.visDestinationAddress_write
 
     def read_CspSubarrayHealthState(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.CspSubarrayHealthState_read) ENABLED START #
-        return 0
+        return self._csp_subarray_health_state
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.CspSubarrayHealthState_read
 
     def read_versionInfo(self):
@@ -217,7 +225,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def read_opState(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.opState_read) ENABLED START #
-        return 0
+        return self._opstate
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.opState_read
 
 
@@ -301,7 +309,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             receptorIDList = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
 
             #convert receptorIDList(list of string) to list of int
-            self.subarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, list(map(int, receptorIDList)), self.commandCallback)
+            self.subarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, list(map(int, receptorIDList)),
+                                                    self.commandCallback)
             self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
             self.dev_logging(CONST.STR_ASSIGN_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
@@ -313,7 +322,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except KeyError as key_error:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            #self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
