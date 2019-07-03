@@ -35,31 +35,26 @@ import tango
 from tango import DevFailed
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 import CONST
+from future.utils import with_metaclass
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
 __all__ = ["SdpMasterLeafNode", "main"]
 
 
-class SdpMasterLeafNode(SKABaseDevice):
-    #TODO: class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
-
+class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
     """
+    #__metaclass__ = DeviceMeta
+    # TODO: class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # TODO: The following statment is not reqruied if compare it with other TMC .py files
-    __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SdpMasterLeafNode.class_variable) ENABLED START #
     # PROTECTED REGION END #    //  SdpMasterLeafNode.class_variable
 
     # -----------------
     # Device Properties
     # -----------------
-
-
-
-
-
 
     SdpMasterFQDN = device_property(
         dtype='str', default_value="mid-sdp/elt/master"

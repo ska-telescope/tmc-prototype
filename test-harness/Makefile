@@ -1,5 +1,5 @@
 # Use bash shell with pipefail option enabled so that the return status of a
-# piped command is the value of the last (rightmost) commnand to exit with a
+# piped command is the value of the last (rightmost) command to exit with a
 # non-zero status. This lets us pipe output into tee but still exit on test
 # failures.
 SHELL = /bin/bash

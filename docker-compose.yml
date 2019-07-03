@@ -292,8 +292,11 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             tango_admin --ping-device mid_sdp/elt/master 10 &&\
              /venv/bin/python /app/tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode/SdpMasterLeafNode.py 01"
+#      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+#             tango_admin --ping-device mid_sdp/elt/master 10 &&\
+#             /venv/bin/python /app/tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode/SdpMasterLeafNode.py 01"
     volumes_from:
     - rsyslog-tmcprototype:rw
 

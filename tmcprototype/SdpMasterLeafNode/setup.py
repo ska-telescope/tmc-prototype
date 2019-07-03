@@ -26,17 +26,36 @@ exec(open(release_filename).read())
 
 pack = ['SdpMasterLeafNode']
 
-setup(name=name,
-      version=version,
-      description='TBD',
-      packages=pack,
-      include_package_data=True,
-      test_suite="test",
-      entry_points={'console_scripts':['SdpMasterLeafNode = SdpMasterLeafNode:main']},
-      author='vinodnsathe.ska',
-      author_email='vinodnsathe.ska at gmail.com',
-      license='BSD-3-Clause',
-      long_description=long_description,
-      url='www.tango-controls.org',
-      platforms="All Platforms"
-      )
+setup(
+    name=name,
+    version=version,
+    description='SKA SDP Master Leaf Node TANGO device server',
+    packages=pack,
+    include_package_data=True,
+    test_suite="test",
+    entry_points={'console_scripts':['SdpMasterLeafNode = SdpMasterLeafNode:main']},
+    author='vinodnsathe.ska',
+    author_email='vinodnsathe.ska at gmail.com',
+    license='BSD-3-Clause',
+    long_description=long_description,
+    url='www.tango-controls.org',
+    platforms="All Platforms",
+    install_requires=['pytango==9.2.5', 'mock'],
+    #test_suite='test',
+    setup_requires=[
+        # dependency for `python setup.py test`
+        'pytest-runner',
+        # dependencies for `python setup.py build_sphinx`
+        'sphinx',
+        'recommonmark'
+    ],
+    tests_require=[
+        'pytest',
+        'pytest-cov',
+        'pytest-json-report',
+        'pycodestyle',
+    ],
+    extras_require={
+        'dev':  ['prospector[with_pyroma]', 'yapf', 'isort']
+    }
+)
