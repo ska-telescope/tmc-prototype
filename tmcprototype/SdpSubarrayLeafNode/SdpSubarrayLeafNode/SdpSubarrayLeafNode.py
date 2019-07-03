@@ -46,7 +46,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def commandCallback(self, event):
         """
         Checks whether the command has been successfully invoked on SDP Subarray.
-        :param event: response from SDP Subarray for the invoked command
+        :param
+            event: response from SDP Subarray for the invoked command
         :return: None
 
         """
@@ -212,7 +213,12 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def ReleaseResources(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseResources) ENABLED START #
-        pass
+        """
+        Release resources
+        :param
+            argin: None
+        :return:
+        """
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseResources
 
     @command(
@@ -224,17 +230,23 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
         """
         Assigns resources to given SDP subarray.
-        For PI#3 this command will be provided as a noop / placeholder from SDP subarray.
+        For PI#3 this command will be provided as a noop placeholder from SDP subarray.
         Eventually this will likely take a JSON string specifying the resource request.
 
 
-        :param argin: The string .
+        :param argin: The string in JSON format. The JSON contains following values:
+
+            Processing Block ID List:
+                Mandatory JSON object consisting of
+
+                processingBlockIdList:
+                    DevVarStringArray
+                    The individual string should contain PB numbers in string format
+                    with preceding zeroes upto 3 digits. E.g. 0001, 0002.
 
             Example:
                 {
-                "dish": {
-                "receptorIDList": ["0001", "0002"]
-                }
+                "processingBlockIdList": ["0001", "0002"]
                 }
 
         Note: From Jive, enter input as:
