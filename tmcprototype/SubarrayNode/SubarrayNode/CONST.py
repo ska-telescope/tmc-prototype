@@ -9,6 +9,7 @@ CMD_SCAN = "Scan"
 CMD_CONFIGURE = "Configure"
 CMD_END_SCAN = "EndScan"
 CMD_TRACK = "Track"
+CMD_ASSIGN_RESOURCES = "AssignResources"
 
 #GROUPS
 GRP_DISH_LEAF_NODE = "DishLeafNode_Group"
