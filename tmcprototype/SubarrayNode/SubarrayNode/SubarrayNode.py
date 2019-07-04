@@ -92,11 +92,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return:
             DevVarStringArray. List of Resources added to the Subarray.
         """
-        print("Entered into add_receptors_in_group")
-
-        for arg in argin:
-            print("arg: ", arg)
-
         excpt_count = 0
         excpt_msg = []
         allocation_success = []
@@ -167,23 +162,35 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
 
     def assign_csp_resources(self, argin):
+        """
+        This function assigns CSP resources to CSP Subarray through CSP Subarray Leaf
+        Node.
+
+        :param argin: List of strings
+            Contains the list of strings that has the resources ids. Currently this list
+             contains only receptor ids.
+
+        :return: List of strings.
+            Returns the list of successfully assigned resources. Currently the
+            CSPSubarrayLeafNode.AssignResources function returns void. Thus, this
+            function just loops back the input argument in case of success. In case of
+            failure, empty list is returned.
+        """
         arg_list = []
         json_argument = {}
         argout = []
         dish = {}
 
         try:
-            dish["receptorIDList"] = argin
-            json_argument["dish"] = dish
+            dish[CONST.STR_KEY_RECEPTOR_ID_LIST] = argin
+            json_argument[CONST.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
-            print("json string argument: ", arg_list)
-
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
             argout.append(argin)
         except DevFailed as df:
-            print("Failed to send command to CSP Subarray Leaf Node")
-            print("Exception: ", df)
-            self.dev_logging("Failed to send command to CSP Subarray Leaf Node.", int(tango.LogLevel.LOG_ERROR))
+            print(CONST.ERR_CSP_CMD)
+            self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
 
         # For this PI CSP Subarray Leaf Node does not return anything. So this function is
         # looping the receptor ids back.
@@ -191,25 +198,35 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
 
     def assign_sdp_resources(self, argin):
-        json_argument = {}
-        json_argument["processingBlockIdList"] = argin
-        argout = []
+        """
+        This function assigns SDP resources to SDP Subarray through SDP Subarray Leaf
+        Node.
 
-        print("self._sdp_subarray_ln_proxy: ", self._sdp_subarray_ln_proxy)
+        :param argin: List of strings
+            Contains the list of strings that has the resources ids. Currently
+            processing block ids are passed to this function.
+
+        :return: List of strings.
+            Returns the list of successfully assigned resources. Currently the
+            SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
+            function just loops back the input argument in case of success. In case of
+            failure, empty list is returned.
+        """
+        argout = []
+        json_argument = {}
+
         try:
+            json_argument[CONST.STR_KEY_PB_ID_LIST] = argin
             str_json_arg = json.dumps(json_argument)
-            print("sdp json string argument: ", str_json_arg)
             self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, str_json_arg)
             argout = argin
-        except Exception as ex:
-            print("exception in sdp assign resource")
-            print("exception: ", ex)
-            self.dev_logging("Failed to send command to SDP Subarray Leaf Node.", int(tango.LogLevel.LOG_ERROR))
-            argout = []
+        except DevFailed as df:
+            print(CONST.ERR_SDP_CMD)
+            self.dev_logging(CONST.ERR_SDP_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
 
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
-        print("sdp argout: ", argout)
         return argout
 
     @command(
@@ -350,16 +367,17 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         given subarray is populated with the given receptors. And returns list of
         assigned resources as array of DevStrings.
 
+        Note: Resource allocation for CSP and SDP resources is also implemented but
+        currently CSP accepts only receptorIDList and SDP accepts only dummy resources.
+
         :param argin:
             DevVarStringArray. List of receptor IDs to be allocated to subarray.
 
         :return:
             DevVarStringArray. List of Resources added to the Subarray.
         """
-        print("in assignresources")
         excpt_count = 0
         excpt_msg = []
-        dish_allocation_status = []
 
         # 1. Argument validation
         try:
@@ -368,36 +386,23 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 float(argin[leafId])
         except ValueError as value_error:
             print(CONST.ERR_SCAN_CMD, "\n", value_error, CONST.ERR_INVALID_DATATYPE)
+            self.dev_logging(CONST.ERR_INVALID_DATATYPE, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
-        print("calling add_receptors_in_group")
-        # dish_allocation_status = self.add_receptors_in_group(argin)
-        # print("dish_allocation_status: ", dish_allocation_status)
-
-        # 2. Assign resources in various elements
-        # try:
-        #     dish_thread = threading.Thread(target=self.add_receptors_in_group, args=argin)
-        #     dish_thread.start()
-        # except Exception as ex:
-        #     print("Exception: ", ex)
-        #
-        # dish_thread.join()
-
-
         with excpt_count is 0 and ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
-            print("Thread to add receptors")
+            self.dev_logging(CONST.STR_DISH_ALLOCATION, int(tango.LogLevel.LOG_INFO))
             dish_allocation_status = executor.submit(self.add_receptors_in_group, argin)
 
             # 2.2. Add resources in CSP subarray
-            print("Thread to add CSP resources")
+            self.dev_logging(CONST.STR_CSP_ALLOCATION, int(tango.LogLevel.LOG_INFO))
             csp_allocation_status = executor.submit(self.assign_csp_resources, argin)
 
             # 2.3. Add resources in SDP subarray
             # For PI#3, TMC sends dummy resources to SDP.
-            print("Thread to add SDP resources")
+            self.dev_logging(CONST.STR_SDP_ALLOCATION, int(tango.LogLevel.LOG_INFO))
             dummy_sdp_resources = ["PB1", "PB2"]
             sdp_allocation_status = executor.submit(self.assign_sdp_resources, dummy_sdp_resources)
 
@@ -410,99 +415,38 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
             # 2.5. prepare return value
             dish_allocation_result = dish_allocation_status.result()
+            log_msg = CONST.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
+            self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
             print("dish_allocation_result: ", dish_allocation_result)
 
             csp_allocation_result = csp_allocation_status.result()
-            print("csp_allocation_result : ", csp_allocation_result)
+            log_msg = CONST.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
+            self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            print("csp_allocation_result: ", csp_allocation_result)
 
             sdp_allocation_result = sdp_allocation_status.result()
-            print("sdp_allocation_result : ", sdp_allocation_result)
+            log_msg = CONST.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
+            self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            print("sdp_allocation_result: ", sdp_allocation_result)
 
-            # dish_allocation_result.sort()
-            # csp_allocation_result.sort()
+            dish_allocation_result.sort()
+            csp_allocation_result.sort()
             sdp_allocation_result.sort()
             argin.sort()
             dummy_sdp_resources.sort()
-            if(#dish_allocation_result == argin and
-                #csp_allocation_result == argin and
+            if( dish_allocation_result == argin and
+                csp_allocation_result == argin and
                 sdp_allocation_result == dummy_sdp_resources
             ):
                 # Currently sending only dish allocation results.
                 # argout = dish_allocation_result
-                argout = ["1", "2"]
+                argout = dish_allocation_result
             else:
                 #TODO: Need to add code to revert allocated resources
                 argout = []
 
         # return dish_allocation_result
         return argout
-
-        # if (excpt_count == 0):
-        #     for leafId in range(0, len(argin)):
-        #         try:
-        #             self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  argin[leafId])
-        #             devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + argin[leafId])
-        #             self._dish_leaf_node_proxy.append(devProxy)
-        #             # Update the list allocation_success with the dishes allocated successfully to subarray
-        #             allocation_success.append(argin[leafId])
-        #             self._event_id = devProxy.subscribe_event(CONST.EVT_DISH_HEALTH_STATE,
-        #                                                       tango.EventType.CHANGE_EVENT,
-        #                                                       self.setHealth,
-        #                                                       stateless=True)
-        #             self.testDeviceVsEventID[devProxy] = self._event_id
-        #             self._health_event_id.append(self._event_id)
-        #             self._receptor_id_list.append(int(argin[leafId]))
-        #             self.dishHealthStateMap[devProxy] = -1
-        #         except DevFailed as dev_failed:
-        #             print(CONST.ERR_ADDING_LEAFNODE, "\n", dev_failed)
-        #             self._read_activity_message = CONST.ERR_ADDING_LEAFNODE + str(dev_failed)
-        #             self.dev_logging(CONST.ERR_ADDING_LEAFNODE, int(tango.LogLevel.LOG_ERROR))
-        #             excpt_msg.append(self._read_activity_message)
-        #             excpt_count += 1
-        #             allocation_failure.append(argin[leafId])
-        #             # Exception Logic to remove Id from subarray group
-        #             group_dishes = self._dish_leaf_node_group.get_device_list()
-        #             if group_dishes.contains(self.DishLeafNodePrefix +  argin[leafId]):
-        #                 self._dish_leaf_node_group.remove(self.DishLeafNodePrefix + argin[leafId])
-        #             # unsubscribe event
-        #             if self.testDeviceVsEventID[devProxy]:
-        #                 devProxy.unsubscribe_event(self.testDeviceVsEventID[devProxy])
-        #     print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
-        #     print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list(True))
-        #     print(CONST.STR_LN_PROXIES, self._dish_leaf_node_proxy)
-        #     self._read_activity_message = CONST.STR_GRP_DEF + str(
-        #         self._dish_leaf_node_group.get_device_list(True))
-        #     self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
-        #     print(CONST.STR_SUBS_HEALTH_ST_LN)
-        #     self._read_activity_message = CONST.STR_SUBS_HEALTH_ST_LN
-        #     print(CONST.STR_HS_EVNT_ID, self._health_event_id)
-        #     self._read_activity_message = CONST.STR_HS_EVNT_ID +  str(self._health_event_id)
-        #     # Set state = ON
-        #     self.set_state(DevState.ON)
-        #     # set obsState to "IDLE"
-        #     self._obs_state = 0
-        #     self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
-        #
-        # # except ValueError as value_error:
-        # #     print(CONST.ERR_SCAN_CMD, "\n", value_error, CONST.ERR_INVALID_DATATYPE)
-        # #     self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
-        # #     excpt_msg.append(self._read_activity_message)
-        # #     excpt_count += 1
-        # except (DevFailed, Exception) as except_occurred:
-        #     print(CONST.ERR_ASSIGN_RES_CMD, "\n", except_occurred)
-        #     self._read_activity_message = CONST.ERR_ASSIGN_RES_CMD + str(except_occurred)
-        #     self.dev_logging(CONST.ERR_ASSIGN_RES_CMD, int(tango.LogLevel.LOG_ERROR))
-        #     excpt_msg.append(self._read_activity_message)
-        #     excpt_count += 1
-        #
-        # # Throw Exception
-        # if excpt_count > 0:
-        #     err_msg = ' '
-        #     for item in excpt_msg:
-        #         err_msg += item + "\n"
-        #     tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-        #                                  CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
-        # return allocation_success
 
     def is_AssignResources_allowed(self):
         """Checks if AssignResources is allowed in the current state of SubarrayNode."""

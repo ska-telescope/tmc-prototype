@@ -62,7 +62,12 @@ STR_RELEASE_ALL_RES_EXEC = "ReleaseAllResources command execution"
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
 STR_END_SCAN_EXEC = "ENDSCAN command execution"
 STR_SCAN_EXEC = "SCAN command execution"
-
+STR_DISH_ALLOCATION = "Allocating dishes"
+STR_CSP_ALLOCATION = "Allocating CSP resources"
+STR_SDP_ALLOCATION = "Allocating SDP resources"
+STR_DISH_ALLOCATION_RESULT = "Dish allocation result: "
+STR_CSP_ALLOCATION_RESULT = "CSP allocation result: "
+STR_SDP_ALLOCATION_RESULT = "SDP allocation result: "
 
 #Error messages
 ERR_SCAN_CMD = "Exception in Scan command: "
@@ -83,6 +88,13 @@ ERR_DUPLICATE_SCAN_CMD = "Scan Command Already Executed"
 ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 ERR_TRACK_CMD = "Exception in Track command: \n "
+ERR_CSP_CMD = "Failed to send command to CSP Subarray Leaf Node"
+ERR_SDP_CMD = "Failed to send command to SDP Subarray Leaf Node"
 
 #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
+
+# JSON keys
+STR_KEY_DISH = "dish"
+STR_KEY_RECEPTOR_ID_LIST = "receptorIDList"
+STR_KEY_PB_ID_LIST = "processingBlockIdList"
