@@ -12,8 +12,6 @@
 """
 
 # PyTango imports
-import sys
-import os
 import PyTango
 from PyTango import DebugIt
 from PyTango.server import run
@@ -22,10 +20,13 @@ from PyTango.server import attribute, command
 from PyTango.server import device_property
 from PyTango import AttrQuality, DispLevel, DevState
 from PyTango import AttrWriteType, PipeWriteType
-from skabase.SKASubarray.SKASubarray import SKASubarray
-# from SKASubarray import SKASubarray
+
 # Additional import
 # PROTECTED REGION ID(CspSubarray.additionnal_import) ENABLED START #
+from skabase.SKASubarray.SKASubarray import SKASubarray
+import os
+import sys
+
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarray"
 sys.path.insert(0, module_path)
@@ -53,9 +54,6 @@ class CspSubarray(SKASubarray):
 
 
 
-    SkaLevel = device_property(
-        dtype='str', default_value="2"
-    )
 
     # ----------
     # Attributes
@@ -212,6 +210,24 @@ class CspSubarray(SKASubarray):
         # PROTECTED REGION ID(CspSubarray.ConfigureScan) ENABLED START #
         pass
         # PROTECTED REGION END #    //  CspSubarray.ConfigureScan
+
+    @command(
+    dtype_in=('uint16',), 
+    )
+    @DebugIt()
+    def AddReceptors(self, argin):
+        # PROTECTED REGION ID(CspSubarray.AddReceptors) ENABLED START #
+        pass
+        # PROTECTED REGION END #    //  CspSubarray.AddReceptors
+
+    @command(
+    dtype_in=('uint16',), 
+    )
+    @DebugIt()
+    def RemoveReceptors(self, argin):
+        # PROTECTED REGION ID(CspSubarray.RemoveReceptors) ENABLED START #
+        pass
+        # PROTECTED REGION END #    //  CspSubarray.RemoveReceptors
 
 # ----------
 # Run server

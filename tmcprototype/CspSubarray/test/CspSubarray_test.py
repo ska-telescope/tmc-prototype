@@ -12,24 +12,15 @@
 # Path
 import sys
 import os
-import time
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarray"
-sys.path.insert(0, module_path)
-
 path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-import tango
-from tango import DevState, EventType, DeviceProxy
-import pytest
-import json
 from time import sleep
 from mock import MagicMock
 from PyTango import DevFailed, DevState
-#from devicetest import DeviceTestCase, main
-from CspSubarray.CspSubarray import CspSubarray
+from devicetest import DeviceTestCase, main
+from CspSubarray import CspSubarray
 
 # Note:
 #
@@ -43,12 +34,12 @@ from CspSubarray.CspSubarray import CspSubarray
 
 
 # Device test case
-class TestCspSubarray(object):
+class CspSubarrayDeviceTestCase(DeviceTestCase):
     """Test case for packet generation."""
     # PROTECTED REGION ID(CspSubarray.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  CspSubarray.test_additionnal_import
     device = CspSubarray
-    properties = {'CapabilityTypes': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'GroupDefinitions': '', 'SkaLevel': '4', 'StorageLoggingTarget': 'localhost', 'SubID': '', 'SkaLevel': '2', 
+    properties = {'CapabilityTypes': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'GroupDefinitions': '', 'SkaLevel': '4', 'StorageLoggingTarget': 'localhost', 'SubID': '', 'SkaLevel': '4', 
                   }
     empty = None  # Should be []
 
@@ -173,6 +164,18 @@ class TestCspSubarray(object):
         # PROTECTED REGION ID(CspSubarray.test_ConfigureScan) ENABLED START #
         self.device.ConfigureScan("")
         # PROTECTED REGION END #    //  CspSubarray.test_ConfigureScan
+
+    def test_AddReceptors(self):
+        """Test for AddReceptors"""
+        # PROTECTED REGION ID(CspSubarray.test_AddReceptors) ENABLED START #
+        self.device.AddReceptors([0])
+        # PROTECTED REGION END #    //  CspSubarray.test_AddReceptors
+
+    def test_RemoveReceptors(self):
+        """Test for RemoveReceptors"""
+        # PROTECTED REGION ID(CspSubarray.test_RemoveReceptors) ENABLED START #
+        self.device.RemoveReceptors([0])
+        # PROTECTED REGION END #    //  CspSubarray.test_RemoveReceptors
 
     def test_activationTime(self):
         """Test for activationTime"""
