@@ -20,6 +20,7 @@ test:
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray
 	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
 	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
@@ -29,6 +30,7 @@ test:
 
 	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
@@ -40,6 +42,7 @@ test:
         mv /app/tmcprototype/DishLeafNode/setup_py_test.stdout /build/dishleafnode_setup_py_test.stdout; \
         mv /app/tmcprototype/DishLeafNode/htmlcov /build/dishleafnode_htmlcov; \
         mv /app/tmcprototype/DishLeafNode/coverage.xml /build/dishleafnode_coverage.xml; \
+        mv /app/tmcprototype/SdpSubarrayLeafNode/coverage.xml /build/sdpsubarrayleafnode_coverage.xml; \
         mv /app/tmcprototype/CspMasterLeafNode/setup_py_test.stdout /build/cspmasterleafnode_setup_py_test.stdout; \
         mv /app/tmcprototype/CspMasterLeafNode/htmlcov /build/cspmasterleafnode_htmlcov; \
         mv /app/tmcprototype/CspMasterLeafNode/coverage.xml /build/cspmasterleafnode_coverage.xml; \
