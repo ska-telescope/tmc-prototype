@@ -94,6 +94,7 @@ services:
     - centralnode
     - cspmaster
     - cspsubarray
+    - sdpsubarray
     - cbftestmaster
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}conf-polling-events
@@ -306,6 +307,7 @@ services:
     - databaseds
     - rsyslog-tmcprototype
     - add-devs-and-props
+    - sdpsubarray
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}sdpsubarrayleafnode
     environment:
@@ -313,6 +315,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --ping-device mid_sdp/elt/subarray_1 10 &&\
              /venv/bin/python /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 01"
     volumes_from:
     - rsyslog-tmcprototype:rw
@@ -327,6 +330,7 @@ services:
       - dishleafnode3
       - dishleafnode4
       - sdpsubarrayleafnode
+      - cspsubarrayleafnode
       - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}subarraynode1
@@ -339,10 +343,14 @@ services:
              tango_admin --ping-device mid_d0002/elt/master 10 &&\
              tango_admin --ping-device mid_d0003/elt/master 10 &&\
              tango_admin --ping-device mid_d0004/elt/master 10 &&\
+             tango_admin --ping-device mid-csp/elt/subarray01 10 &&\
+             tango_admin --ping-device mid_sdp/elt/subarray_1 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray 10 &&\
              /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa1"
     volumes_from:
     - rsyslog-tmcprototype:rw
@@ -357,6 +365,7 @@ services:
       - dishleafnode3
       - dishleafnode4
       - sdpsubarrayleafnode
+      - cspsubarrayleafnode
       - add-devs-and-props
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}subarraynode2
@@ -369,31 +378,17 @@ services:
              tango_admin --ping-device mid_d0002/elt/master 10 &&\
              tango_admin --ping-device mid_d0003/elt/master 10 &&\
              tango_admin --ping-device mid_d0004/elt/master 10 &&\
+             tango_admin --ping-device mid-csp/elt/subarray01 10 &&\
+             tango_admin --ping-device mid_sdp/elt/subarray_1 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray 10 &&\
              /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa2"
     volumes_from:
     - rsyslog-tmcprototype:rw
-
-<<<<<<< HEAD
-  sdpsubarray:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
-    depends_on:
-      - databaseds
-      - rsyslog-tmcprototype
-      - add-devs-and-props
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarray
-    environment:
-      - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             /venv/bin/python /app/tmcprototype/SdpSubarray/SdpSubarray/SdpSubarray.py 01"
-    volumes_from:
-      - rsyslog-tmcprototype:rw
 
   cspsubarray:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -412,6 +407,23 @@ services:
     volumes_from:
       - rsyslog-tmcprototype:rw
 
+
+  sdpsubarray:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - add-devs-and-props
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarray
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             /venv/bin/python /app/tmcprototype/SdpSubarray/SdpSubarray/SdpSubarray.py 01"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
 
   centralnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -456,12 +468,17 @@ services:
       - dishmaster2
       - dishmaster3
       - dishmaster4
+      - cspsubarray
+      - sdpsubarray
       - dishleafnode1
       - dishleafnode2
       - dishleafnode3
       - dishleafnode4
+      - cspmasterleafnode
       - subarraynode1
       - subarraynode2
+      - sdpsubarrayleafnode
+      - cspsubarrayleafnode
       - centralnode
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}configurelogger

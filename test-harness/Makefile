@@ -36,6 +36,7 @@ test:
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspSubarray && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/SdpSubarray && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
 	cd /app && ./code-analysis.sh | tee code_analysis.stdout
@@ -49,6 +50,8 @@ test:
         mv /app/tmcprototype/DishLeafNode/setup_py_test.stdout /build/dishleafnode_setup_py_test.stdout; \
         mv /app/tmcprototype/DishLeafNode/htmlcov /build/dishleafnode_htmlcov; \
         mv /app/tmcprototype/DishLeafNode/coverage.xml /build/dishleafnode_coverage.xml; \
+        mv /app/tmcprototype/SdpSubarrayLeafNode/setup_py_test.stdout /build/sdpsubarrayleafnode_setup_py_test.stdout; \
+        mv /app/tmcprototype/SdpSubarrayLeafNode/htmlcov /build/sdpsubarrayleafnode_htmlcov; \
         mv /app/tmcprototype/SdpSubarrayLeafNode/coverage.xml /build/sdpsubarrayleafnode_coverage.xml; \
         mv /app/tmcprototype/CspMasterLeafNode/setup_py_test.stdout /build/cspmasterleafnode_setup_py_test.stdout; \
         mv /app/tmcprototype/CspMasterLeafNode/htmlcov /build/cspmasterleafnode_htmlcov; \
@@ -62,6 +65,9 @@ test:
         mv /app/tmcprototype/CspSubarray/setup_py_test.stdout /build/cspsubarray_setup_py_test.stdout; \
         mv /app/tmcprototype/CspSubarray/htmlcov /build/cspsubarray_htmlcov; \
         mv /app/tmcprototype/CspSubarray/coverage.xml /build/cspsubarray_coverage.xml; \
+        mv /app/tmcprototype/SdpSubarray/setup_py_test.stdout /build/sdpsubarray_setup_py_test.stdout; \
+        mv /app/tmcprototype/SdpSubarray/htmlcov /build/sdpsubarray_htmlcov; \
+        mv /app/tmcprototype/SdpSubarray/coverage.xml /build/sdpsubarray_coverage.xml; \
         mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
     fi;
 .PHONY: all test

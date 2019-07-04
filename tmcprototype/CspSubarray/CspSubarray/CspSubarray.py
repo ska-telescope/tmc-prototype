@@ -217,7 +217,7 @@ class CspSubarray(SKASubarray):
     @DebugIt()
     def AddReceptors(self, argin):
         # PROTECTED REGION ID(CspSubarray.AddReceptors) ENABLED START #
-        pass
+        print("CspSubarray: Add receptors command executed successfully.", argin)
         # PROTECTED REGION END #    //  CspSubarray.AddReceptors
 
     @command(
