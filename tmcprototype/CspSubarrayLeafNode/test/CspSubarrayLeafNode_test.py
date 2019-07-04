@@ -56,8 +56,7 @@ class TestCspSubarrayLeafNode(object):
     device = CspSubarrayLeafNode
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspSubarrayNodeFQDN': 'mid-csp/elt/subarray01',
-                  }
+                  'CspSubarrayNodeFQDN': 'mid-csp/elt/subarray01',}
     empty = None  # Should be []
 
     @classmethod
@@ -71,6 +70,9 @@ class TestCspSubarrayLeafNode(object):
     def test_properties(self):
         # test the properties
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_properties) ENABLED START #
+        """
+        :return:
+        """
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_properties
         pass
 
@@ -92,7 +94,6 @@ class TestCspSubarrayLeafNode(object):
         #create_cspsubarray1_proxy.device.GetVersionInfo()
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_GetVersionInfo
 
-    #FIXME
     def test_Reset(self, create_cspsubarray1_proxy):
         """Test for Reset"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_Reset) ENABLED START #
@@ -130,22 +131,31 @@ class TestCspSubarrayLeafNode(object):
         test_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
         res = tango_context.device.AssignResources(test_input)
         test_res = tango_context.device.status()
-        print(test_res)
         time.sleep(1)
-        assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage and res == None
+        assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_AssignResources
 
     def test_AssignResources_invalid_json(self, tango_context):
+        """
+        Test case to check invalid JSON format (Negative test case)
+        :param tango_context:
+        :return:
+        """
         test_input = '{"invalid_key"}'
-        with pytest.raises(tango.DevFailed) :
+        with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
 
     def test_AssignResources_key_not_found(self, tango_context):
+        """
+        Test case for missing key in JSON string (Negative test case)
+        :param tango_context:
+        :return:
+        """
         test_input = []
         test_input.append('{"dis":{"receptorIDList":["0001","0002"]}}')
-        with pytest.raises(tango.DevFailed) :
+        with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
         time.sleep(1)
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage

@@ -17,6 +17,8 @@ ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subar
 ERR_STOW_ARGIN = "Invalid StowAntennas arguments \n"
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
+ERR_INIT_PROP_ATTR_CSPSALN = "Error on initialising properties and attributes " \
+                        "on CspSubarrayLeaf Node device."
 
 #strings
 #General strings
