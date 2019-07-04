@@ -92,6 +92,7 @@ services:
     - subarraynode2
     - centralnode
     - cspmaster
+    - cspsubarray
     - cbftestmaster
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}conf-polling-events
@@ -356,6 +357,7 @@ services:
     volumes_from:
     - rsyslog-tmcprototype:rw
 
+<<<<<<< HEAD
   sdpsubarray:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
@@ -370,6 +372,23 @@ services:
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
              /venv/bin/python /app/tmcprototype/SdpSubarray/SdpSubarray/SdpSubarray.py 01"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
+
+  cspsubarray:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - add-devs-and-props
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}cspsubarray
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             /venv/bin/python /app/tmcprototype/CspSubarray/CspSubarray/CspSubarray.py 01"
     volumes_from:
       - rsyslog-tmcprototype:rw
 

@@ -26,12 +26,14 @@ test:
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
 	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1
+	retry --max=10 -- tango_admin --ping-device mid-csp/elt/subarray01
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
 	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/CspSubarray && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
 	cd /app && ./code-analysis.sh | tee code_analysis.stdout
@@ -52,6 +54,9 @@ test:
         mv /app/tmcprototype/CentralNode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout; \
         mv /app/tmcprototype/CentralNode/htmlcov /build/centralnode_htmlcov; \
         mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml; \
+        mv /app/tmcprototype/CspSubarray/setup_py_test.stdout /build/cspsubarray_setup_py_test.stdout; \
+        mv /app/tmcprototype/CspSubarray/htmlcov /build/cspsubarray_htmlcov; \
+        mv /app/tmcprototype/CspSubarray/coverage.xml /build/cspsubarray_coverage.xml; \
         mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
     fi;
 .PHONY: all test

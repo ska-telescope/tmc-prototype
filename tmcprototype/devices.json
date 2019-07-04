@@ -664,7 +664,13 @@
   {
     "class": "SdpSubarray",
     "serverName": "SdpSubarray/01",
-    "devName": "mid_sdp/elt/subarray_1",
+    "devName": "mid_sdp/elt/subarray_1"
+  },
+  {
+    "class": "CspSubarray",
+    "serverName": "CspSubarray/01",
+    "devName": "mid-csp/elt/subarray01",
+
     "deviceProperties": [
       {
         "devPropName": "SkaLevel",
@@ -673,10 +679,10 @@
     ],
     "attributeProperties": [
       {
-        "attributeName": "activityMessage",
+        "attributeName": "opState",
         "attrPropName": "",
         "attrPropValue": "",
-        "pollingPeriod": 1000,
+        "pollingPeriod": 2000,
         "changeEventAbs": ""
       },
       {
@@ -719,6 +725,13 @@
         "attrPropName": "",
         "attrPropValue": "",
         "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      },
+      {
+        "attributeName": "testMode",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 2000,
         "changeEventAbs": "1"
       }
     ]
