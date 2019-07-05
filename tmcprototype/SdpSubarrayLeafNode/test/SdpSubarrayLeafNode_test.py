@@ -129,6 +129,12 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
+    def test_ReleaseAllResources(self, tango_context):
+        """Test for ReleaseAllResources"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseAllResources) ENABLED START #
+        retVal = tango_context.device.ReleaseAllResources()
+        assert CONST.STR_REL_RESOURCES in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseAllResources
 
     # def test_Configure(self, tango_context):
     #     """Test for Configure"""

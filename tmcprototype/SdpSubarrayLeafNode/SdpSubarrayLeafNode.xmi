@@ -123,7 +123,16 @@
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="Abort" description="Command to request that all subarray processing is aborted." execMethod="abort" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+    <commands name="Abort" description="Command to request that all subarray processing is aborted." execMethod="abort" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="true" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="ReleaseAllResources" description="Command to release all resources of SDP" execMethod="release_all_resources" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
       </argin>

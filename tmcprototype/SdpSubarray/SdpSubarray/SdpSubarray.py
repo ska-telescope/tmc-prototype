@@ -84,6 +84,18 @@ class SdpSubarray(SKASubarray):
         """Checks if AssignResources is allowed in the current state of SubarrayNode."""
         return self.get_state() not in [DevState.FAULT]
 
+    @command(dtype_out=('str',), doc_out="List of resources removed from the subarray.", )
+    @DebugIt()
+    def ReleaseAllResources(self):
+        # PROTECTED REGION ID(SKASubarray.ReleaseAllResources) ENABLED START #
+        """Remove all resources to tear down to an empty subarray."""
+        print ("SdpSubarray.ReleaseAllResources command executed successfully.")
+        return "True"
+        # PROTECTED REGION END #    //  SKASubarray.ReleaseAllResources
+
+    def is_ReleaseAllResources_allowed(self):
+        return self._is_command_allowed("ReleaseResources")
+
     # PROTECTED REGION END #    //  SdpSubarray.class_variable
 
     # -----------------
