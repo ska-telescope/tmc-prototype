@@ -307,7 +307,7 @@
   {
     "class": "CspSubarrayLeafNode",
     "serverName": "CspSubarrayLeafNode/01",
-    "devName": "ska_mid/tm_leaf_node/csp_subarray",
+    "devName": "ska_mid/tm_leaf_node/csp_subarray01",
     "deviceProperties": [
       {
         "devPropName": "CspSubarrayPrefix",
@@ -542,7 +542,7 @@
   {
     "class": "SdpSubarrayLeafNode",
     "serverName": "SdpSubarrayLeafNode/01",
-    "devName": "ska_mid/tm_leaf_node/sdp_subarray",
+    "devName": "ska_mid/tm_leaf_node/sdp_subarray01",
     "deviceProperties": [
       {
         "devPropName": "SdpSubarrayFQDN",
@@ -652,11 +652,11 @@
       },
       {
         "devPropName": "CspSubarrayLNFQDN",
-        "devPropValue": "ska_mid/tm_leaf_node/csp_subarray02"
+        "devPropValue": "ska_mid/tm_leaf_node/csp_subarray01"
       },
       {
         "devPropName": "SdpSubarrayLNFQDN",
-        "devPropValue": "ska_mid/tm_leaf_node/sdp_subarray02"
+        "devPropValue": "ska_mid/tm_leaf_node/sdp_subarray01"
       }
     ],
     "attributeProperties": [
