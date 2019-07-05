@@ -52,10 +52,12 @@
     <deviceProperties name="CspSubarrayLNFQDN" description="This property stores the FQDN of CSP subarray Leaf Node device to which the Subarray Node is associated with.">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>ska_mid/tm_leaf_node/csp_subarray01</DefaultPropValue>
     </deviceProperties>
     <deviceProperties name="SdpSubarrayLNFQDN" description="This property stores the FQDN of SDP subarray Leaf Node device to which the Subarray Node is associated with.">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>ska_mid/tm_leaf_node/sdp_subarray01</DefaultPropValue>
     </deviceProperties>
     <commands name="Abort" description="Change obsState to ABORTED." execMethod="abort" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="">
