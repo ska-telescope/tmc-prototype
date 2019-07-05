@@ -27,7 +27,7 @@ import json
 
 # Tango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType, DevFailed, Group
+from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from future.utils import with_metaclass
 from skabase.SKASubarray.SKASubarray import SKASubarray
@@ -51,13 +51,15 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
 
-    def _create_csp_ln_proxy(self):
+    def create_csp_ln_proxy(self):
         retry = 0
         proxy_created_flag = False
         print("self.CspSubarrayLNFQDN: ", self.CspSubarrayLNFQDN)
         while (retry < 3):
             try:
-                self._csp_subarray_ln_proxy = tango.DeviceProxy(self.CspSubarrayLNFQDN)
+                self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
+                print("CspSubarray proxy is: ", self._csp_subarray_ln_proxy)
+                print("Cspp FQDN is: ", self.CspSubarrayLNFQDN)
                 proxy_created_flag = True
                 break
             except Exception as ex:
@@ -67,12 +69,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         return proxy_created_flag
 
-    def _create_sdp_ln_proxy(self):
+    def create_sdp_ln_proxy(self):
         retry = 0
         proxy_created_flag = False
         while (retry < 3):
             try:
-                self._sdp_subarray_ln_proxy = tango.DeviceProxy(self.SdpSubarrayLNFQDN)
+                self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+                print("SdpSubarray proxy is: ", self._sdp_subarray_ln_proxy)
+                print("Sdp FQDN is: ", self.SdpSubarrayLNFQDN)
                 proxy_created_flag = True
                 break
             except tango.DevFailed:
@@ -228,6 +232,84 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
         return argout
+
+    def remove_receptors_in_group(self):
+        """
+                Deletes tango group of the resources allocated in the subarray.
+
+                Note: Currently there are only receptors allocated so the group contains only receptor ids.
+
+                :param argin:
+                    DevVoid
+                :return:
+                    DevVoid
+                """
+        try:
+
+            if self.testDeviceVsEventID != {}:
+                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
+                self._dish_leaf_node_group.remove_all()
+                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
+                self._read_activity_message = CONST.STR_GRP_DEF + str(
+                    self._dish_leaf_node_group.get_device_list(True))
+                print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
+                print(CONST.STR_HEALTH_ID, self._health_event_id)
+                print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
+                for dev in self.testDeviceVsEventID:
+                    dev.unsubscribe_event(self.testDeviceVsEventID[dev])
+                self.testDeviceVsEventID = {}
+                self._health_event_id = []
+                self._dish_leaf_node_proxy = []
+                del self._receptor_id_list[:]
+                self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
+                self.dev_logging(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        except DevFailed as dev_failed:
+            print(CONST.ERR_RELEASE_RES_CMD_GROUP + str(dev_failed))
+            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD_GROUP + str(dev_failed)
+            self._release_excpt_msg.append(self._read_activity_message)
+            self._release_excpt_count += 1
+        except Exception as except_occurred:
+            print(CONST.ERR_RELEASE_RES_CMD, "\n", except_occurred)
+            print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
+            print(CONST.STR_HEALTH_ID, self._health_event_id)
+            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(except_occurred)
+            self.dev_logging(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
+            self._release_excpt_msg.append(self._read_activity_message)
+            self._release_excpt_count += 1
+
+    def release_csp_resources(self):
+        """
+            This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
+            Node.
+
+            :param argin: DevVoid
+
+            :return: DevVoid
+
+        """
+        try:
+            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_RELEASE_ALL_RESOURCES)
+        except DevFailed as df:
+            print(CONST.ERR_CSP_CMD)
+            self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+
+    def release_sdp_resources(self):
+        """
+            This function invokes releaseAllResources command on SDP Subarray via SDP Subarray Leaf Node.
+
+            :param argin: DevVoid
+
+            :return: DevVoid
+
+        """
+        try:
+            self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_RELEASE_ALL_RESOURCES)
+
+        except DevFailed as df:
+            print(CONST.ERR_SDP_CMD)
+            self.dev_logging(CONST.ERR_SDP_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
 
     @command(
         dtype_in=('str',),
@@ -469,55 +551,46 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :return: DevVarStringArray.
         """
-        excpt_count = 0
-        excpt_msg = []
+        self._release_excpt_count = 0
+        self._release_excpt_msg = []
+        argout = []
         try:
-            argout = []
             assert self.testDeviceVsEventID != {}, CONST.RESRC_ALREADY_RELEASED
-            if self.testDeviceVsEventID != {}:
-                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
-                self._dish_leaf_node_group.remove_all()
-                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
-                self._read_activity_message = CONST.STR_GRP_DEF + str(
-                    self._dish_leaf_node_group.get_device_list(True))
-                print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
-                print(CONST.STR_HEALTH_ID, self._health_event_id)
-                print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
-                for dev in self.testDeviceVsEventID:
-                    dev.unsubscribe_event(self.testDeviceVsEventID[dev])
-                self.testDeviceVsEventID = {}
-                self._health_event_id = []
-                self._dish_leaf_node_proxy = []
-                del self._receptor_id_list[:]
+            with self._release_excpt_count is 0 and ThreadPoolExecutor(3) as executor:
+                # 1. Delete the group of receptors
+                self.dev_logging(CONST.STR_DISH_RELEASE, int(tango.LogLevel.LOG_INFO))
+                dish_release_status = executor.submit(self.remove_receptors_in_group)
+
+                # Release resources from CSP Subarray
+                self.dev_logging(CONST.STR_CSP_RELEASE, int(tango.LogLevel.LOG_INFO))
+                csp_release_status = executor.submit(self.release_csp_resources)
+
+                # Release resources from SDP Subarray
+                self.dev_logging(CONST.STR_SDP_RELEASE, int(tango.LogLevel.LOG_INFO))
+                sdp_release_status = executor.submit(self.release_sdp_resources)
+
+                # 2.4 wait for result
+                while (dish_release_status.done() == False or
+                       csp_release_status.done() == False or
+                       sdp_release_status.done() == False
+                ):
+                    pass
+
                 self._scan_id = ""
                 self._sb_id = ""
-                self.set_state(DevState.OFF)    # Set state = OFF
-                self._obs_state = 0             # set obsState to "IDLE"
-                self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
-                self.dev_logging(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.set_state(DevState.OFF)  # Set state = OFF
+                self._obs_state = 0  # set obsState to "IDLE"
+
         except AssertionError as assert_err:
             print(CONST.ERR_RELEASE_RES_CMD + str(assert_err))
             self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(assert_err)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
-        except DevFailed as dev_failed:
-            print(CONST.ERR_RELEASE_RES_CMD_GROUP + str(dev_failed))
-            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD_GROUP + str(dev_failed)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
-        except Exception as except_occurred:
-            print(CONST.ERR_RELEASE_RES_CMD, "\n", except_occurred)
-            print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
-            print(CONST.STR_HEALTH_ID, self._health_event_id)
-            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(except_occurred)
-            self.dev_logging(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            self._release_excpt_msg.append(self._read_activity_message)
+            self._release_excpt_count += 1
 
         # Throw Exception
-        if excpt_count > 0:
+        if self._release_excpt_count > 0:
             err_msg = ' '
-            for item in excpt_msg:
+            for item in self._release_excpt_msg:
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
@@ -681,12 +754,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
-        result = self._create_csp_ln_proxy()
+        result = self.create_csp_ln_proxy()
         print("csp proxy creation result: ", result)
 
         # Create proxy for SDP Subarray Leaf Node
         self._sdp_subarray_ln_proxy = None
-        self._create_sdp_ln_proxy()
+        self.create_sdp_ln_proxy()
         print("sdp proxy creation result: ", result)
 
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS

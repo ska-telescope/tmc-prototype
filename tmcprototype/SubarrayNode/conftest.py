@@ -27,15 +27,16 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format(package_name, module_name))
     # klass = getattr(module, class_name)
+    properties = {'CspSubarrayLNFQDN': 'ska_mid/tm_leaf_node/csp_subarray01', 'SdpSubarrayLNFQDN': 'ska_mid/tm_leaf_node/sdp_subarray01',}
     module = importlib.import_module("{}.{}".format("SubarrayNode", "SubarrayNode"))
     klass = getattr(module, "SubarrayNode")
-    tango_context = DeviceTestContext(klass)
+    tango_context = DeviceTestContext(klass, properties=properties)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context
     tango_context.stop()
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def initialize_device(tango_context):
     """Re-initializes the device.
 

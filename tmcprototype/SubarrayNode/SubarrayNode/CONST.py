@@ -11,6 +11,8 @@ CMD_CONFIGURE = "Configure"
 CMD_END_SCAN = "EndScan"
 CMD_TRACK = "Track"
 CMD_ASSIGN_RESOURCES = "AssignResources"
+CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
+
 
 #GROUPS
 GRP_DISH_LEAF_NODE = "DishLeafNode_Group"
@@ -69,6 +71,9 @@ STR_SDP_ALLOCATION = "Allocating SDP resources"
 STR_DISH_ALLOCATION_RESULT = "Dish allocation result: "
 STR_CSP_ALLOCATION_RESULT = "CSP allocation result: "
 STR_SDP_ALLOCATION_RESULT = "SDP allocation result: "
+STR_DISH_RELEASE = "Releasing dishes"
+STR_CSP_RELEASE = "Releasing CSP resources"
+STR_SDP_RELEASE = "Releasing SDP resources"
 
 #Error messages
 ERR_SCAN_CMD = "Exception in Scan command: "
