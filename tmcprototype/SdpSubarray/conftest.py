@@ -2,11 +2,14 @@
 A module defining a list of fixture functions that are shared across all the skabase
 tests.
 """
-from __future__ import absolute_import
+import importlib
 import mock
 import pytest
-import importlib
+
+
+
 from tango.test_context import DeviceTestContext
+
 
 @pytest.fixture(scope="class")
 def tango_context(request):
@@ -22,19 +25,17 @@ def tango_context(request):
     # fq_test_class_name_details = fq_test_class_name.split(".")
     # package_name = fq_test_class_name_details[1]
     # class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format("CspMasterLeafNode", "CspMasterLeafNode"))
-    klass = getattr(module, "CspMasterLeafNode")
-    properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspSubarrayNodeFQDN': 'mid-csp/elt/subarray01',
-                  }
-    tango_context = DeviceTestContext(klass, properties=properties, process= False)
+    # module = importlib.import_module("{}.{}".format(package_name, module_name))
+    # klass = getattr(module, class_name)
+    module = importlib.import_module("{}.{}".format("SdpSubarray", "SdpSubarray"))
+    klass = getattr(module, "SdpSubarray")
+    tango_context = DeviceTestContext(klass)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context
     tango_context.stop()
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def initialize_device(tango_context):
     """Re-initializes the device.
 

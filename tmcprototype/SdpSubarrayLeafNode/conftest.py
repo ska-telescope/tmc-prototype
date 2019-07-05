@@ -6,7 +6,9 @@ from __future__ import absolute_import
 import mock
 import pytest
 import importlib
+from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
+# from .SdpSubarrayLeafNode import CONST as CONST
 
 @pytest.fixture(scope="class")
 def tango_context(request):
@@ -22,13 +24,13 @@ def tango_context(request):
     # fq_test_class_name_details = fq_test_class_name.split(".")
     # package_name = fq_test_class_name_details[1]
     # class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format("CspMasterLeafNode", "CspMasterLeafNode"))
-    klass = getattr(module, "CspMasterLeafNode")
-    properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspSubarrayNodeFQDN': 'mid-csp/elt/subarray01',
+    module = importlib.import_module("{}.{}".format("SdpSubarrayLeafNode", "SdpSubarrayLeafNode"))
+    klass = getattr(module, "SdpSubarrayLeafNode")
+    properties = {'SkaLevel': '3', 'MetricList': 'healthState', 'GroupDefinitions': '',
+                  'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+                  'SdpSubarrayNodeFQDN': "mid_sdp/elt/subarray_1", 'TrackDuration': 1,
                   }
-    tango_context = DeviceTestContext(klass, properties=properties, process= False)
+    tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context
@@ -44,3 +46,9 @@ def initialize_device(tango_context):
         Context to run a device without a database.
     """
     yield tango_context.device.Init()
+
+
+@pytest.fixture(scope="class")
+def create_sdpsubarray_proxy():
+    subarray1_proxy = DeviceProxy("mid_sdp/elt/subarray_1")
+    return subarray1_proxy

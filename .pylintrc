@@ -9,9 +9,13 @@ init-hook='
     import sys;
     sys.path.append("./tmcprototype/DishMaster");
     sys.path.append("./tmcprototype/DishMaster/DishMaster");
+    sys.path.append("./tmcprototype/CspSubarrayLeafNode");
     sys.path.append("./tmcprototype/DishLeafNode");
     sys.path.append("./tmcprototype/CspMasterLeafNode");
+    sys.path.append("./tmcprototype/SdpSubarrayLeafNode");
     sys.path.append("./tmcprototype/SubarrayNode");
+    sys.path.append("./tmcprototype/SdpSubarray");
+    sys.path.append("./tmcprototype/CspSubarray");
     sys.path.append("./tmcprototype/CentralNode");
     sys.path.append("/usr/local/lib/python3.5/dist-packages");
     sys.path.append("/venv/lib/python3.5/site-packages")'
@@ -50,7 +54,7 @@ load-plugins=
 disable=C,R,attribute-defined-outside-init,invalid-name,no-init,no-member,no-self-use,
 	no-name-in-module,unused-argument,undefined-variable,unused-import,pointless-string-statement,
 	syntax-error,import-error,bare-except,exec-used,protected-access,fixme,broad-except,
-	redefined-builtin,redefined-outer-name,unused-variable
+	redefined-builtin,redefined-outer-name,unused-variable,relative-import
 
 
 [REPORTS]

@@ -15,6 +15,8 @@ Welcome to TMC Prototype's documentation!
    Dish Leaf Node<DishLeafNode>
    Dish Master<DishMaster>
    CSP Master Leaf Node<CspMasterLeafNode>
+   SDP Subarray Leaf Node<SdpSubarrayLeafNode>
+   CSP Subarray Leaf Node<CspSubarrayLeafNode>
 
 Indices and tables
 ==================
