@@ -85,7 +85,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
 
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid-csp/elt/subarray01"
+        dtype='str', default_value="tango://dada:10000/mid-csp/elt/subarray01"
     )
 
     # ----------
@@ -307,7 +307,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         excpt_msg = []
         excpt_count = 0
         try:
-            self.subarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS,"0", self.commandCallback)
+            self.subarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
             self._read_activity_message = CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS
             self.dev_logging(CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
 

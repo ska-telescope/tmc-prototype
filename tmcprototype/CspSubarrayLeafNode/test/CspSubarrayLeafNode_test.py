@@ -118,10 +118,14 @@ class TestCspSubarrayLeafNode(object):
     #     self.device.EndScan("")
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
     #
-    # def test_ReleaseResources(self):
+    def test_ReleaseResources(self, tango_context):
     #     """Test for ReleaseResources"""
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_ReleaseResources) ENABLED START #
-    #     self.device.ReleaseResources()
+    #     # sel
+        res = tango_context.device.ReleaseResources()
+        test_res = tango_context.device.status()
+        time.sleep(1)
+        assert CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ReleaseResources
 
     def test_AssignResources(self, tango_context, create_cspsubarray1_proxy):
