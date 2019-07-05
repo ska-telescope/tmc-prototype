@@ -582,6 +582,14 @@
       {
         "devPropName": "SkaLevel",
         "devPropValue": 1
+      },
+      {
+        "devPropName": "CspSubarrayLNFQDN",
+        "devPropValue": "ska_mid/tm_leaf_node/csp_subarray01"
+      },
+      {
+        "devPropName": "SdpSubarrayLNFQDN",
+        "devPropValue": "ska_mid/tm_leaf_node/sdp_subarray01"
       }
     ],
     "attributeProperties": [
@@ -644,11 +652,11 @@
       },
       {
         "devPropName": "CspSubarrayLNFQDN",
-        "devPropValue": "ska_mid/tm_leaf_node/csp_subarray01"
+        "devPropValue": "ska_mid/tm_leaf_node/csp_subarray02"
       },
       {
         "devPropName": "SdpSubarrayLNFQDN",
-        "devPropValue": "ska_mid/tm_leaf_node/sdp_subarray01"
+        "devPropValue": "ska_mid/tm_leaf_node/sdp_subarray02"
       }
     ],
     "attributeProperties": [
