@@ -177,6 +177,12 @@ class CspSubarrayDeviceTestCase(DeviceTestCase):
         self.device.RemoveReceptors([0])
         # PROTECTED REGION END #    //  CspSubarray.test_RemoveReceptors
 
+    def test_RemoveAllReceptors(self):
+        """Test for RemoveAllReceptors"""
+        # PROTECTED REGION ID(CspSubarray.test_RemoveAllReceptors) ENABLED START #
+        self.device.RemoveAllReceptors()
+        # PROTECTED REGION END #    //  CspSubarray.test_RemoveAllReceptors
+
     def test_activationTime(self):
         """Test for activationTime"""
         # PROTECTED REGION ID(CspSubarray.test_activationTime) ENABLED START #

@@ -304,7 +304,31 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         :return:
         """
-        pass
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            self.subarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS,"0", self.commandCallback)
+            self._read_activity_message = CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS
+            self.dev_logging(CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_RELEASE_RESOURCES + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_RELEASE_RESOURCES  + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_RELEASE_RESOURCES  + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_RELEASE_RES_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ReleaseResources
 
     @command(
