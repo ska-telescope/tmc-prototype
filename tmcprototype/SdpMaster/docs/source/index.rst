@@ -1,0 +1,2 @@
+.. automodule:: SdpMaster
+    :members: SdpMaster

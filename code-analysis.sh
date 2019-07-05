@@ -10,6 +10,7 @@ pylint --rcfile=.pylintrc tmcprototype/DishLeafNode/DishLeafNode
 pylint --rcfile=.pylintrc tmcprototype/CspMasterLeafNode/CspMasterLeafNode
 pylint --rcfile=.pylintrc tmcprototype/SubarrayNode/SubarrayNode
 pylint --rcfile=.pylintrc tmcprototype/CentralNode/CentralNode
+pylint --rcfile=.pylintrc tmcprototype/SdpMaster/SdpMaster
 
 echo "TESTS ANALYSIS"
 echo "--------------"
@@ -18,3 +19,4 @@ pylint --rcfile=.pylintrc tmcprototype/DishLeafNode/test
 pylint --rcfile=.pylintrc tmcprototype/CspMasterLeafNode/test
 pylint --rcfile=.pylintrc tmcprototype/SubarrayNode/test
 pylint --rcfile=.pylintrc tmcprototype/CentralNode/test
+pylint --rcfile=.pylintrc tmcprototype/SdpMaster/test
