@@ -12,26 +12,15 @@
 # Path
 import sys
 import os
-
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpMaster"
-sys.path.insert(0, module_path)
-
 path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-import time
-import tango
-from tango import DevState
-import pytest
-from SdpMaster.SdpMaster import SdpMaster
-
-# from time import sleep
-# from mock import MagicMock
-# from PyTango import DevFailed, DevState
-# from devicetest import DeviceTestCase, main
-# from SdpMaster import SdpMaster
+from time import sleep
+from mock import MagicMock
+from PyTango import DevFailed, DevState
+from devicetest import DeviceTestCase, main
+from SdpMaster import SdpMaster
 
 # Note:
 #
@@ -43,10 +32,9 @@ from SdpMaster.SdpMaster import SdpMaster
 #
 # Look at devicetest examples for more advanced testing
 
-# Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device")
 
-class TestSdpMaster(object):
+# Device test case
+class SdpMasterDeviceTestCase(DeviceTestCase):
     """Test case for packet generation."""
     # PROTECTED REGION ID(SdpMaster.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  SdpMaster.test_additionnal_import
@@ -111,11 +99,17 @@ class TestSdpMaster(object):
         self.device.Off()
         # PROTECTED REGION END #    //  SdpMaster.test_Off
 
-    def test_ActivateSubarray(self):
-        """Test for ActivateSubarray"""
-        # PROTECTED REGION ID(SdpMaster.test_ActivateSubarray) ENABLED START #
-        self.device.ActivateSubarray()
-        # PROTECTED REGION END #    //  SdpMaster.test_ActivateSubarray
+    def test_StandBy(self):
+        """Test for StandBy"""
+        # PROTECTED REGION ID(SdpMaster.test_StandBy) ENABLED START #
+        self.device.StandBy()
+        # PROTECTED REGION END #    //  SdpMaster.test_StandBy
+
+    def test_Disable(self):
+        """Test for Disable"""
+        # PROTECTED REGION ID(SdpMaster.test_Disable) ENABLED START #
+        self.device.Disable()
+        # PROTECTED REGION END #    //  SdpMaster.test_Disable
 
     def test_elementLoggerAddress(self):
         """Test for elementLoggerAddress"""
@@ -207,6 +201,12 @@ class TestSdpMaster(object):
         self.device.ProcessingBlockList
         # PROTECTED REGION END #    //  SdpMaster.test_ProcessingBlockList
 
+    def test_OperatingState(self):
+        """Test for OperatingState"""
+        # PROTECTED REGION ID(SdpMaster.test_OperatingState) ENABLED START #
+        self.device.OperatingState
+        # PROTECTED REGION END #    //  SdpMaster.test_OperatingState
+
     def test_maxCapabilities(self):
         """Test for maxCapabilities"""
         # PROTECTED REGION ID(SdpMaster.test_maxCapabilities) ENABLED START #
@@ -218,3 +218,8 @@ class TestSdpMaster(object):
         # PROTECTED REGION ID(SdpMaster.test_availableCapabilities) ENABLED START #
         self.device.availableCapabilities
         # PROTECTED REGION END #    //  SdpMaster.test_availableCapabilities
+
+
+# Main execution
+if __name__ == "__main__":
+    main()

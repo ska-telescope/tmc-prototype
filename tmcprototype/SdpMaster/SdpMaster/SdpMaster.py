@@ -11,15 +11,22 @@
 
 """
 
-import sys
-import os
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpMaster"
-sys.path.insert(0, module_path)
-
+# PyTango imports
+import PyTango
+from PyTango import DebugIt
+from PyTango.server import run
+from PyTango.server import Device, DeviceMeta
+from PyTango.server import attribute, command
+from PyTango.server import device_property
+from PyTango import AttrQuality, DispLevel, DevState
+from PyTango import AttrWriteType, PipeWriteType
+from skabase.SKAMaster.SKAMaster import SKAMaster
+# Additional import
 # PROTECTED REGION ID(SdpMaster.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
+import os
+import sys
 from tango import DebugIt, DevState, AttrWriteType
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKAMaster.SKAMaster import SKAMaster
@@ -36,10 +43,10 @@ print("sys.path: ", sys.path)
 __all__ = ["SdpMaster", "main"]
 
 
-class SdpMaster(with_metaclass(DeviceMeta, SKAMaster)):
+class SdpMaster(SKAMaster):
     """
     """
-    # __metaclass__ = DeviceMeta
+    __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SdpMaster.class_variable) ENABLED START #
     # PROTECTED REGION END #    //  SdpMaster.class_variable
 
@@ -77,6 +84,11 @@ class SdpMaster(with_metaclass(DeviceMeta, SKAMaster)):
         dtype='str',
     )
 
+    OperatingState = attribute(
+        dtype='DevEnum',
+        enum_labels=["OFF", "ON", "STANDBY", "UNKNOWN", "FAULT", "DISABLE", "ALARM", "INIT"],
+    )
+
 
 
     # ---------------
@@ -86,6 +98,8 @@ class SdpMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def init_device(self):
         SKAMaster.init_device(self)
         # PROTECTED REGION ID(SdpMaster.init_device) ENABLED START #
+        self._operating_state = 'UNKNOWN'
+        self._processing_block_list = ''
         # PROTECTED REGION END #    //  SdpMaster.init_device
 
     def always_executed_hook(self):
@@ -104,8 +118,13 @@ class SdpMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def read_ProcessingBlockList(self):
         # PROTECTED REGION ID(SdpMaster.ProcessingBlockList_read) ENABLED START #
-        return ''
+        return self._processing_block_list
         # PROTECTED REGION END #    //  SdpMaster.ProcessingBlockList_read
+
+    def read_OperatingState(self):
+        # PROTECTED REGION ID(SdpMaster.OperatingState_read) ENABLED START #
+        return self._operating_state
+        # PROTECTED REGION END #    //  SdpMaster.OperatingState_read
 
 
     # --------
@@ -131,10 +150,18 @@ class SdpMaster(with_metaclass(DeviceMeta, SKAMaster)):
     @command(
     )
     @DebugIt()
-    def ActivateSubarray(self):
-        # PROTECTED REGION ID(SdpMaster.ActivateSubarray) ENABLED START #
+    def StandBy(self):
+        # PROTECTED REGION ID(SdpMaster.StandBy) ENABLED START #
         pass
-        # PROTECTED REGION END #    //  SdpMaster.ActivateSubarray
+        # PROTECTED REGION END #    //  SdpMaster.StandBy
+
+    @command(
+    )
+    @DebugIt()
+    def Disable(self):
+        # PROTECTED REGION ID(SdpMaster.Disable) ENABLED START #
+        pass
+        # PROTECTED REGION END #    //  SdpMaster.Disable
 
 # ----------
 # Run server
