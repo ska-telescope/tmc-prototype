@@ -20,7 +20,7 @@ from PyTango.server import attribute, command
 from PyTango.server import device_property
 from PyTango import AttrQuality, DispLevel, DevState
 from PyTango import AttrWriteType, PipeWriteType
-
+# from SKASubarray import SKASubarray
 # Additional import
 # PROTECTED REGION ID(CspSubarray.additionnal_import) ENABLED START #
 from skabase.SKASubarray.SKASubarray import SKASubarray
@@ -228,6 +228,14 @@ class CspSubarray(SKASubarray):
         # PROTECTED REGION ID(CspSubarray.RemoveReceptors) ENABLED START #
         pass
         # PROTECTED REGION END #    //  CspSubarray.RemoveReceptors
+
+    @command(
+    )
+    @DebugIt()
+    def RemoveAllReceptors(self):
+        # PROTECTED REGION ID(CspSubarray.RemoveAllReceptors) ENABLED START #
+        print("CspSubarray: RemoveAllReceptors command executed successfully.")
+        # PROTECTED REGION END #    //  CspSubarray.RemoveAllReceptors
 
 # ----------
 # Run server
