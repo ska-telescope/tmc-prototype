@@ -1,6 +1,9 @@
+"""
+CONST file for CspSubarrayLeafNode
+"""
 # In/Out command constants
 CMD_ASSIGN_RESOURCES = "AssignResources"
-CMD_RELEASE_RESOURCES = "ReleaseAllResources"
+CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 CMD_ADD_RECEPTORS = "AddReceptors"
 CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
 
@@ -11,7 +14,7 @@ EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the LeafNode device: "
 ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
-ERR_RELEASE_RESOURCES_CMD = "Error occured while releasing resources "
+ERR_RELEASE_ALL_RESOURCES_CMD = "Error occured while releasing resources "
 ERR_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting Subarray healthState"
 ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray \n"
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
@@ -25,7 +28,6 @@ ERR_INIT_PROP_ATTR_CSPSALN = "Error on initialising properties and attributes " 
 #General strings
 STR_RECEPTORID_LIST = "receptorIDList"
 STR_DISH = "dish"
-
 STR_HEALTH_STATE = "healthState of "
 STR_OK = " :-> OK"
 STR_DEGRADED = " :-> DEGRADED"
@@ -47,7 +49,6 @@ STR_CMD_FAILED = "CspSubarrayLeafNode Commandfailed"
 STR_CMD_CALLBK = "CspSubarrayLeafNode Command Callback"
 STR_FALSE = "False"
 PROP_DEF_VAL_CSP_MID_SA1 = "mid-csp/elt/subarray01"
-
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 ENUM_INIT, ENUM_OFF, ENUM_ON, ENUM_ALARM, ENUM_DISABLE, ENUM_FAULT, ENUM_UNKNOWN = list(range(0, 7))
 

@@ -7,8 +7,9 @@
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
 
-# from CspSubarrayLeafNode import main
-# main()
+"""
+__main__ file for CspSubarrayLeafNode
+"""
 
 from __future__ import absolute_import
 from .CspSubarrayLeafNode import main

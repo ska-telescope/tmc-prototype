@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 tmcprototype.SdpSubarrayLeafNode.SdpSubarrayLeafNode
-======================================
+====================================================
 
 .. automodule:: tmcprototype.SdpSubarrayLeafNode.SdpSubarrayLeafNode
    :members:

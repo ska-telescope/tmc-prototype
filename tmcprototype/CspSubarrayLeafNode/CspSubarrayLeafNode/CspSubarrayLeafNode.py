@@ -1,3 +1,7 @@
+"""
+CSP Subarray Leaf node is monitors the CSP Subarray and issues control actions during an observation.
+It also acts as a CSP contact point for Subarray Node for observation execution for TMC.
+"""
 # -*- coding: utf-8 -*-
 #
 # This file is part of the CspSubarrayLeafNode project
@@ -6,10 +10,7 @@
 #
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
-"""
-CSP Subarray Leaf node is monitors the CSP Subarray and issues control actions during an observation.
-It also acts as a CSP contact point for Subarray Node for observation execution for TMC.
-"""
+
 
 import sys
 import os
@@ -85,7 +86,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
 
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="tango://dada:10000/mid-csp/elt/subarray01"
+        dtype='str', default_value="mid-csp/elt/subarray01"
     )
 
     # ----------
@@ -297,10 +298,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @command(
     )
     @DebugIt()
-    def ReleaseResources(self):
+    def ReleaseAllResources(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.ReleaseResources) ENABLED START #
         """
-        This command releases the resources.
+        This command releases all the resources.
 
         :return:
         """
@@ -312,13 +313,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.dev_logging(CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except DevFailed as dev_failed:
-            self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_RELEASE_RESOURCES + str(dev_failed)
+            self.dev_logging(CONST.ERR_RELEASE__ALL_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
             excpt_msg.append(self._read_activity_message)
 
         except Exception as except_occurred:
-            self.dev_logging(CONST.ERR_RELEASE_RESOURCES  + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_RELEASE_RESOURCES  + str(except_occurred)
+            self.dev_logging(CONST.ERR_RELEASE_ALL_RESOURCES  + str(except_occurred),
+                             int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_RELEASE_ALL_RESOURCES  + str(except_occurred)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 

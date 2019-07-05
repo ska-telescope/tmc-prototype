@@ -118,23 +118,30 @@ class TestCspSubarrayLeafNode(object):
     #     self.device.EndScan("")
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
     #
-    def test_ReleaseResources(self, tango_context):
-    #     """Test for ReleaseResources"""
-    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_ReleaseResources) ENABLED START #
-    #     # sel
-        res = tango_context.device.ReleaseResources()
-        test_res = tango_context.device.status()
+    # def test_ReleaseResources(self, tango_context):
+    # #     """Test for ReleaseResources"""
+    # #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_ReleaseResources) ENABLED START #
+    #     res = tango_context.device.ReleaseResources()
+    #     test_res = tango_context.device.status()
+    #     time.sleep(1)
+    #     assert CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
+    # #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ReleaseResources
+
+    def test_ReleaseAllResources(self, tango_context):
+        """Test for ReleaseResources"""
+        res = tango_context.device.ReleaseAllResources()
+        tango_context.device.status()
         time.sleep(1)
         assert CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ReleaseResources
 
-    def test_AssignResources(self, tango_context, create_cspsubarray1_proxy):
+    def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_AssignResources) ENABLED START #
         test_input = []
         test_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
         res = tango_context.device.AssignResources(test_input)
-        test_res = tango_context.device.status()
+        tango_context.device.status()
         time.sleep(1)
         assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_AssignResources
