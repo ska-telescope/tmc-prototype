@@ -206,6 +206,68 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # --------
     # Commands
     # --------
+    @command(
+    )
+    @DebugIt()
+    def ReleaseAllResources(self):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
+        """
+                Release all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+                receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+                is         invoked on the respective subarray. In this case, the receptorIDList tag is empty as all
+                the resources of the Subarray are released.
+                When releaseALL is False, ReleaseResources will be invoked on the Subarray and the resources provided
+                in receptorIDList tag, are released from Subarray. This selective release of the resources when
+                releaseALL is False, will be implemented in the later stages of the prototype.
+                :param
+                    argin: None
+                :return:
+                """
+        excpt_msg = []
+        excpt_count = 0
+
+        try:
+
+            # Call SDP Subarray Command asynchronously
+            print("Calling ReleaseAllResources command...")
+            self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_RELEASE_RESOURCES,
+                                                                          self.commandCallback)
+
+            print("SdpSubarrayLeafNode.ReleaseAllResources command executed successfully.")
+            # Update the status of command execution status in activity message
+            self._read_activity_message = CONST.STR_REL_RESOURCES
+        except ValueError as value_error:
+            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except KeyError as key_error:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_RELEASE_RESOURCES + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_RELEASE_RESOURCES + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_RELEASE_RES_EXEC, tango.ErrSeverity.ERR)
+
+        return ""
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
 
     @command(
     dtype_in='str', 
