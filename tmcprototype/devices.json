@@ -971,6 +971,19 @@
           }
         }
       }
+    },
+    "SKALogger": {
+      "Ref": {
+        "SKALogger": {
+          "ref/elt/logger": {
+            "attribute_properties": {
+            },
+            "properties":{
+              "SkaLevel": ["1"]
+            }
+          }
+        }
+      }
     }
   }
 }
