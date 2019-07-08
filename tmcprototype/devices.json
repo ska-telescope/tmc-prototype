@@ -571,6 +571,40 @@
     ]
   },
   {
+    "class": "SdpMasterLeafNode",
+    "serverName": "SdpMasterLeafNode/01",
+    "devName": "ska_mid/tm_leaf_node/sdp_master",
+    "deviceProperties": [
+      {
+        "devPropName": "SdpMasterFQDN",
+        "devPropValue": "mid_sdp/elt/master"
+      }
+    ],
+    "attributeProperties": [
+      {
+        "attributeName": "SDPHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue": "mid_sdp/elt/master/healthState",
+        "pollingPeriod": "",
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "activityMessage",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": ""
+      },
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
+  },
+  {
     "class": "SubarrayNode",
     "serverName": "SubarrayNode/sa1",
     "devName": "ska_mid/tm_subarray_node/1",
@@ -945,6 +979,22 @@
     "serverName": "CbfTestMaster/test",
     "devName": "mid_csp_cbf/sub_elt/master",
     "deviceProperties": [],
+    "attributeProperties": [
+      {
+        "attributeName": "healthState",
+        "attrPropName": "",
+        "attrPropValue": "",
+        "pollingPeriod": 1000,
+        "changeEventAbs": "1"
+      }
+    ]
+  },
+  {
+    "class": "SdpMaster",
+    "serverName": "SdpMaster/01",
+    "devName": "mid_sdp/elt/master",
+    "deviceProperties": [
+    ],
     "attributeProperties": [
       {
         "attributeName": "healthState",

@@ -1,5 +1,5 @@
 # Use bash shell with pipefail option enabled so that the return status of a
-# piped command is the value of the last (rightmost) commnand to exit with a
+# piped command is the value of the last (rightmost) command to exit with a
 # non-zero status. This lets us pipe output into tee but still exit on test
 # failures.
 SHELL = /bin/bash
@@ -23,6 +23,8 @@ test:
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray
 	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master
+	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master
 	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
@@ -37,6 +39,8 @@ test:
 	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspSubarray && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpSubarray && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/SdpMasterLeafNode && python setup.py test | tee setup_py_test.stdout
+    cd /app/tmcprototype/SdpMaster && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
 	cd /app && ./code-analysis.sh | tee code_analysis.stdout
@@ -56,6 +60,9 @@ test:
         mv /app/tmcprototype/CspMasterLeafNode/setup_py_test.stdout /build/cspmasterleafnode_setup_py_test.stdout; \
         mv /app/tmcprototype/CspMasterLeafNode/htmlcov /build/cspmasterleafnode_htmlcov; \
         mv /app/tmcprototype/CspMasterLeafNode/coverage.xml /build/cspmasterleafnode_coverage.xml; \
+        mv /app/tmcprototype/SdpMasterLeafNode/setup_py_test.stdout /build/sdpmasterleafnode_setup_py_test.stdout; \
+        mv /app/tmcprototype/SdpMasterLeafNode/htmlcov /build/sdpmasterleafnode_htmlcov; \
+        mv /app/tmcprototype/SdpMasterLeafNode/coverage.xml /build/sdpmasterleafnode_coverage.xml; \
         mv /app/tmcprototype/SubarrayNode/setup_py_test.stdout /build/subarraynode_setup_py_test.stdout; \
         mv /app/tmcprototype/SubarrayNode/htmlcov /build/subarraynode_htmlcov; \
         mv /app/tmcprototype/SubarrayNode/coverage.xml /build/subarraynode_coverage.xml; \
@@ -68,6 +75,9 @@ test:
         mv /app/tmcprototype/SdpSubarray/setup_py_test.stdout /build/sdpsubarray_setup_py_test.stdout; \
         mv /app/tmcprototype/SdpSubarray/htmlcov /build/sdpsubarray_htmlcov; \
         mv /app/tmcprototype/SdpSubarray/coverage.xml /build/sdpsubarray_coverage.xml; \
+        mv /app/tmcprototype/SdpMaster/setup_py_test.stdout /build/sdpmaster_setup_py_test.stdout; \
+        mv /app/tmcprototype/SdpMaster/htmlcov /build/sdpmaster_htmlcov; \
+        mv /app/tmcprototype/SdpMaster/coverage.xml /build/sdpmaster_coverage.xml; \
         mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
     fi;
 .PHONY: all test
