@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="CentralNode" pogoRevision="9.4">
-    <description description="Central Node is a coordinator of the complete M&amp;C system." title="CentralNode" sourcePath="/home/user/projects/tmc-prototype/tmcprototype/CentralNode" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
+    <description description="Central Node is a coordinator of the complete M&amp;C system." title="CentralNode" sourcePath="/home/rajiv/projects/tmc-prototype/tmcprototype/CentralNode" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <inheritances classname="SKABaseDevice" sourcePath="../../../lmc-base-classes/skabase/SKABaseDevice"/>
       <identification contact="at gmail.com - apurva.ska" author="apurva.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
@@ -60,9 +60,14 @@
       <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_leaf_node/d</DefaultPropValue>
     </deviceProperties>
     <deviceProperties name="CspMasterLeafNodeFQDN" description="FQDN of the CSP Master Leaf Node">
-      <type xsi:type="pogoDsl:StringVectorType"/>
+      <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <DefaultPropValue>ska_mid/tm_leaf_node/csp_master</DefaultPropValue>
+    </deviceProperties>
+    <deviceProperties name="SdpMasterLeafNodeFQDN" description="FQDN of SDP Master Leaf Node">
+      <type xsi:type="pogoDsl:StringType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>ska_mid/tm_leaf_node/sdp_master</DefaultPropValue>
     </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="none">
@@ -289,6 +294,6 @@
     <states name="DISABLE" description="The device cannot be switched ON for an external reason. E.g. the power supply has its door open, the safety conditions are not satisfactory to allow the device to operate.">
       <status abstract="false" inherited="true" concrete="true"/>
     </states>
-    <preferences docHome="./doc_html" makefileHome="/home/user/tango-9.2.5a/share/pogo/preferences"/>
+    <preferences docHome="./doc_html" makefileHome="/home/rajiv/tango-9.2.2/share/pogo/preferences"/>
   </classes>
 </pogoDsl:PogoSystem>

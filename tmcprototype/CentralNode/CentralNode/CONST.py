@@ -5,18 +5,21 @@ CMD_SET_OPERATE_MODE = "SetOperateMode"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_RESOURCES = "ReleaseAllResources"
 
-CMD_CSP_MASTER_LEAF_STANDBY = "Standby"
-CMD_CSP_MASTER_LEAF_STARTUP = "On"
+CMD_STANDBY = "Standby"
+CMD_STARTUP = "On"
 
 #Event messages
 EVT_UNKNOWN = "Event from the Unknown device!"
 EVT_SUBSR_HEALTH_STATE = "healthState"
 EVT_SUBSR_CSP_MASTER_HEALTH = "cspHealthState"
+EVT_SUBSR_SDP_MASTER_HEALTH = "sdpHealthState"
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
 #
 #Error messages
 ERR_AGGR_HEALTH_STATE = "Error while aggregating Subarray healthState \n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
+ERR_SUBSR_CSP_MASTER_LEAF_HEALTH = "Error in subscribing CSP Master Leaf Node healthState \n"
+ERR_SUBSR_SDP_MASTER_LEAF_HEALTH = "Error in subscribing SDP Master Leaf Node healthState \n"
 ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes " \
                         "on Central Node device."
 ERR_IN_READ_DISH_LN_DEVS = "Error in reading exported Dish Leaf Node device names " \
