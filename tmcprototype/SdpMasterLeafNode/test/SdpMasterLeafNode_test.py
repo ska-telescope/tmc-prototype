@@ -188,13 +188,6 @@ class TestSdpMasterLeafNode(object):
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_testMode
 
-    def test_SDPHealthState(self, tango_context):
-        """Test for SDPHealthState"""
-        # PROTECTED REGION ID(SdpMasterLeafNode.test_SDPHealthState) ENABLED START #
-        assert tango_context.device.SDPHealthState == CONST.ENUM_OK
-        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_SDPHealthState
-
-    def test_SDPState(self, tango_context):
         """Test for SDPState"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_SDPState) ENABLED START #
         assert tango_context.device.SDPState == CONST.ENUM_STATE_INIT

@@ -26,6 +26,7 @@ from PyTango import AttrWriteType, PipeWriteType
 # PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
 import sys
 import os
+
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpMasterLeafNode"
 sys.path.insert(0, module_path)
@@ -64,12 +65,6 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Attributes
     # ----------
 
-    SDPHealthState = attribute(
-        #ToDo: The following doc= statements are at the end if compared with other .py files
-        dtype='DevEnum',
-        doc="This is a forwarded attribute from SDP Master which depicts Health State of the SDP.",
-        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
-    )
 
     SDPState = attribute(
         dtype='DevEnum',
@@ -99,6 +94,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         doc="List of Processing Block devices.",
     )
 
+    sdpHealthState = attribute(name="sdpHealthState", label="sdpHealthState", forwarded=True)
     # ---------------
     # General methods
     # ---------------
@@ -142,11 +138,6 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ------------------
     # Attributes methods
     # ------------------
-
-    def read_SDPHealthState(self):
-        # PROTECTED REGION ID(SdpMasterLeafNode.SDPHealthState_read) ENABLED START #
-        return self._sdp_health_state
-        # PROTECTED REGION END #    //  SdpMasterLeafNode.SDPHealthState_read
 
     def read_SDPState(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.SDPState_read) ENABLED START #
