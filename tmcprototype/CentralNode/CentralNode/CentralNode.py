@@ -98,19 +98,17 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 ok_health_count = 0
 
                 # Check the health state of CSP and SDP Master Leaf Nodes
-                if (self._csp_master_leaf_health == CONST.ENUM_OK) or (
-                        self._sdp_master_leaf_health == CONST.ENUM_OK):
+                if (self._csp_master_leaf_health == CONST.ENUM_OK or
+                        self._sdp_master_leaf_health == CONST.ENUM_OK ):
                     ok_health_count = 1
-                elif (self._csp_master_leaf_health == CONST.ENUM_DEGRADED) or (
+                elif (self._csp_master_leaf_health == CONST.ENUM_DEGRADED or
                         self._sdp_master_leaf_health == CONST.ENUM_DEGRADED):
                     degraded_health_count = 1
-                elif (self._csp_master_leaf_health == CONST.ENUM_FAILED) or (
-                        self._sdp_master_leaf_health == CONST.ENUM_FAILED):
+                elif (self._csp_master_leaf_health == CONST.ENUM_FAILED or
+                        self._sdp_master_leaf_health == CONST.ENUM_FAILED ):
                     failed_health_count = 1
                 else:
                     unknown_health_count = 1
-
-
 
                 for value in list(self.subarray_health_state_map.values()):
                     if value == CONST.ENUM_FAILED:
@@ -235,6 +233,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._leaf_device_proxy = []
             self.subarray_FQDN_dict = {}
             self._subarray_allocation = {}
+            self._sdp_master_leaf_health = 3
+            self._csp_master_leaf_health = 3
+            self._subarray1_health_state = 3
+            self._subarray2_health_state = 3
             self.set_status(CONST.STR_INIT_SUCCESS)
         except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR_CN)

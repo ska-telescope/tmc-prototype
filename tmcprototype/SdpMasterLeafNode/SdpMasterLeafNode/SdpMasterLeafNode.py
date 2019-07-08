@@ -90,7 +90,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # -----------------
 
     SdpMasterFQDN = device_property(
-        dtype='str', default_value="mid-sdp/elt/master"
+        dtype='str', default_value="mid_sdp/elt/master"
     )
 
     # ----------
@@ -151,8 +151,8 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_INIT_PROP_ATTR)
             self._read_activity_message = CONST.ERR_INIT_PROP_ATTR
             self.dev_logging(CONST.ERR_INIT_PROP_ATTR, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
-            print(CONST.STR_ERR_MSG, dev_failed)
+            self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
+            print(CONST.ERR_MSG, dev_failed)
 
         try:
             self._read_activity_message = CONST.STR_SDPMASTER_FQDN + str(self.SdpMasterFQDN)

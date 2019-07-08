@@ -133,6 +133,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.set_state(DevState.ON)
                 # set obsState to "IDLE"
                 self._obs_state = 0
+                self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
                 self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
             except DevFailed as dev_failed:
                 print(CONST.ERR_ADDING_LEAFNODE, "\n", dev_failed)

@@ -17,7 +17,7 @@ STR_SDP_MASTER_FQDN = "mid-sdp/elt/master"
 #
 # Error messages
 ERR_INIT_PROP_ATTR = "Error on initialising properties and attributes "
-STR_ERR_MSG = "Error message is: "
+ERR_MSG = "Error message is: "
 ERR_IN_CREATE_PROXY_SDP_MASTER = "Error in creating proxy to the SDP Master "
 
 #ENUMS
