@@ -323,7 +323,6 @@ services:
     - rsyslog-tmcprototype:rw
 
   sdpmasterleafnode:
->>>>>>> story-AT1-239
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
     - databaseds
@@ -592,7 +591,10 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             tango_admin --ping-device mid_sdp/elt/master 10 &&\
              /venv/bin/python /app/tmcprototype/SdpMaster/SdpMaster/SdpMaster.py 01"
+#      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+#             tango_admin --ping-device mid_sdp/elt/master 10 &&\
+#             /venv/bin/python /app/tmcprototype/SdpMaster/SdpMaster/SdpMaster.py 01"
     volumes_from:
     - rsyslog-tmcprototype:rw
