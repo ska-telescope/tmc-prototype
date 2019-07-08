@@ -33,7 +33,7 @@ sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
 import tango
-from tango import DevFailed
+from tango import DevFailed, DeviceProxy
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 import CONST
 from future.utils import with_metaclass
@@ -47,10 +47,42 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
     """
-    #__metaclass__ = DeviceMeta
-    # TODO: class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
-    # TODO: The following statment is not reqruied if compare it with other TMC .py files
     # PROTECTED REGION ID(SdpMasterLeafNode.class_variable) ENABLED START #
+    def commandCallback(self, event):
+        """
+        Checks whether the command has been successfully invoked on SDP Master.
+
+        :param event: response from SDP Master for the invoked command.
+
+        :return: None
+        """
+        excpt_count = 0
+        excpt_msg = []
+        try:
+            if event.err:
+                log = CONST.ERR_INVOKING_CMD + event.cmd_name
+                print(CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors))
+                self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                    event.errors)
+                self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
+            else:
+                log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
+        except Exception as except_occurred:
+            print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
+            self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
+            self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CSP_CMD_CALLBK, tango.ErrSeverity.ERR)
     # PROTECTED REGION END #    //  SdpMasterLeafNode.class_variable
 
     # -----------------
@@ -106,7 +138,6 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             SKABaseDevice.init_device(self)
             self.set_state(DevState.ON)
-            self._sdp_health_state = CONST.ENUM_OK  # Setting healthState to "OK"
             self._sdp_state = CONST.ENUM_STATE_INIT # Setting SDP State to "INIT"
             self._sdp_admin_mode = CONST.ENUM_ADMIN_MODE_ONLINE # Setting adminMode to "ONLINE"
             self._version_info = "1.0"
@@ -122,6 +153,19 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_INIT_PROP_ATTR, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
             print(CONST.STR_ERR_MSG, dev_failed)
+
+        try:
+            self._read_activity_message = CONST.STR_SDPMASTER_FQDN + str(self.SdpMasterFQDN)
+            # Creating proxy to the SDPMaster
+            print("SDP Master name: ", str(self.SdpMasterFQDN))
+            self._sdp_proxy = DeviceProxy(str(self.SdpMasterFQDN))
+        except DevFailed as dev_failed:
+            print(CONST.ERR_IN_CREATE_PROXY, self.SdpMasterFQDN)
+            self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self.SdpMasterFQDN)
+            self.set_state(DevState.FAULT)
+            print(CONST.ERR_MSG, dev_failed)
+            self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
+            self.dev_logging(CONST.ERR_IN_CREATE_PROXY_SDP_MASTER, int(tango.LogLevel.LOG_ERROR))
 
         # PROTECTED REGION END #    //  SdpMasterLeafNode.init_device
 
@@ -179,7 +223,14 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def On(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.On) ENABLED START #
-        print("SdpMasterLeafNode.On command executed successfully.")
+        """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
+
+        :param argin: DevVoid.
+
+        :return: None
+
+        """
+        self._sdp_proxy.command_inout_asynch(CONST.CMD_ON, self.commandCallback)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.On
 
     @command(
@@ -203,7 +254,16 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def Standby(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.Standby) ENABLED START #
-        print("SdpMasterLeafNode.Standby command executed successfully.")
+        """ Informs the SDP to stop any executing Processing. To get into the STANDBY state all running
+        PBs will be aborted. In normal operation we expect diable should be triggered without first going
+        into STANDBY.
+
+        :param argin: DevVoid.
+
+        :return: None
+
+        """
+        self._sdp_proxy.command_inout_asynch(CONST.CMD_STANDBY, self.commandCallback)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Standby
 
 # ----------
