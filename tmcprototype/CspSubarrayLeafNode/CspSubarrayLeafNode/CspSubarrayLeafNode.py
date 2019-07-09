@@ -118,11 +118,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
-    CspSubarrayHealthState = attribute(
-        dtype='DevEnum',
-        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
-    )
-
     versionInfo = attribute(
         dtype='str',
     )
@@ -137,6 +132,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         enum_labels=["INIT", "OFF", "ON", "ALARM", "DISABLE", "FAULT", "UNKNOWN", ],
     )
 
+    cspsubarrayHealthState = attribute(name="cspsubarrayHealthState", label="cspsubarrayHealthState",
+        forwarded=True
+    )
     # ---------------
     # General methods
     # ---------------
@@ -155,7 +153,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self._read_activity_message = " "
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
-            self._csp_subarray_health_state = CONST.ENUM_OK
+            self._csp_subarray_health_state = 0
             self._opstate = CONST.ENUM_INIT
             self._delay_model = " "
             self._visdestination_address = " "
@@ -166,7 +164,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.dev_logging(CONST.ERR_INIT_PROP_ATTR_CSPSALN, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
             print(CONST.STR_ERR_MSG, dev_failed)
-
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -214,12 +211,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         "Sets the destination address."
         self._visdestination_address = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.visDestinationAddress_write
-
-    def read_CspSubarrayHealthState(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.CspSubarrayHealthState_read) ENABLED START #
-        """ Returns the CspSubarrayHealth state."""
-        return self._csp_subarray_health_state
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.CspSubarrayHealthState_read
 
     def read_versionInfo(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.versionInfo_read) ENABLED START #

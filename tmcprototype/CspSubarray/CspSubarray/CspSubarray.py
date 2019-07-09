@@ -126,6 +126,7 @@ class CspSubarray(SKASubarray):
         self._procmode = 0
         self._receptor = []
         self._correlations = " "
+        self._health_state = 3
         # PROTECTED REGION END #    //  CspSubarray.init_device
 
     def always_executed_hook(self):
@@ -145,6 +146,11 @@ class CspSubarray(SKASubarray):
     def read_opState(self):
         # PROTECTED REGION ID(CspSubarray.opState_read) ENABLED START #
         return self._opstate
+        # PROTECTED REGION END #    //  CspSubarray.opState_read
+
+    def read_healthState(self):
+        # PROTECTED REGION ID(CspSubarray.opState_read) ENABLED START #
+        return self._health_state
         # PROTECTED REGION END #    //  CspSubarray.opState_read
 
     def read_procMode(self):

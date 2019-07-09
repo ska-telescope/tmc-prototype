@@ -4,6 +4,8 @@ This file is part of the SubarrayNode project and defines variables used
 """
 #Events
 EVT_DISH_HEALTH_STATE = "dishHealthState"
+EVT_CSPSA_HEALTH = "cspsubarrayHealthState"
+EVT_UNKNOWN = "Event from the Unknown device!"
 
 #Commands
 CMD_SCAN = "Scan"
@@ -74,6 +76,14 @@ STR_SDP_ALLOCATION_RESULT = "SDP allocation result: "
 STR_DISH_RELEASE = "Releasing dishes"
 STR_CSP_RELEASE = "Releasing CSP resources"
 STR_SDP_RELEASE = "Releasing SDP resources"
+STR_CSP_SA_HEALTH_OK = "CSP SA health is OK."
+STR_CSP_SA_HEALTH_DEGRADED = "CSP SA health is DEGRADED."
+STR_CSP_SA_HEALTH_FAILED = "CSP SA health is FAILED."
+STR_CSP_SA_HEALTH_UNKNOWN = "CSP SA health is UNKNOWN."
+STR_CSP_SA_LEAF_INIT_SUCCESS = "Csp Subarray Leaf Node initialized successfully."
+STR_HEALTH_STATE = "healthState of "
+STR_HEALTH_STATE_UNKNOWN_VAL = "CSPSubarray healthState event returned unknown value \n"
+
 
 #Error messages
 ERR_SCAN_CMD = "Exception in Scan command: "
@@ -94,8 +104,15 @@ ERR_DUPLICATE_SCAN_CMD = "Scan Command Already Executed"
 ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 ERR_TRACK_CMD = "Exception in Track command: \n "
-ERR_CSP_CMD = "Failed to send command to CSP Subarray Leaf Node"
-ERR_SDP_CMD = "Failed to send command to SDP Subarray Leaf Node"
+ERR_CSP_CMD = "Failed to send command to CSP Subarray Leaf Node."
+ERR_SDP_CMD = "Failed to send command to SDP Subarray Leaf Node."
+ERR_ON_SUBS_CSP_SA_HEALTH = "Error in subscribing cspsubarrayHealthState attribute."
+ERR_CSP_SA_HEALTH_CB = "Error in cspsubarrayHealthCallback."
+ERR_SUBS_CSP_SA_LEAF_ATTR = "Exception occurred while subscribing to Csp Subarray attribute"
+ERR_CSP_SA_LEAF_INIT = "Error occured in Csp Subarray Leaf Node initialization "
+ERR_CSP_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting CSPSubarray healthState"
+ERR_SUBSR_CSPSA_HEALTH_STATE = "Error in subscribing CSP Subarray healthState \n"
+ERR_AGGR_HEALTH_STATE = "Error while aggregating CSP Subarray healthState \n"
 
 #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
@@ -104,3 +121,5 @@ ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 STR_KEY_DISH = "dish"
 STR_KEY_RECEPTOR_ID_LIST = "receptorIDList"
 STR_KEY_PB_ID_LIST = "processingBlockIdList"
+
+PROP_DEF_VAL_TMCSP_MID_SALN = "ska_mid/tm_leaf_node/csp_subarray01"

@@ -194,18 +194,6 @@
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
-    <attributes name="CspSubarrayHealthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="0" maxX="" maxY="" allocReadMember="true" isDynamic="false">
-      <dataType xsi:type="pogoDsl:EnumType"/>
-      <changeEvent fire="false" libCheckCriteria="false"/>
-      <archiveEvent fire="false" libCheckCriteria="false"/>
-      <dataReadyEvent fire="false" libCheckCriteria="true"/>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
-      <enumLabels>OK</enumLabels>
-      <enumLabels>DEGRADED</enumLabels>
-      <enumLabels>FAILED</enumLabels>
-      <enumLabels>UNKNOWN</enumLabels>
-    </attributes>
     <attributes name="versionInfo" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="0" maxX="" maxY="" allocReadMember="true" isDynamic="false">
       <dataType xsi:type="pogoDsl:StringType"/>
       <changeEvent fire="false" libCheckCriteria="false"/>
@@ -238,6 +226,9 @@
       <enumLabels>FAULT</enumLabels>
       <enumLabels>UNKNOWN</enumLabels>
     </attributes>
+    <forwardedAttributes name="cspsubarrayHealthState" label="cspsubarrayHealthState">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </forwardedAttributes>
     <states name="ON" description="This state could have been called OK or OPERATIONAL. It means that the device is in its operational state. (E.g. the power supply is giving its nominal current, th motor is ON and ready to move, the instrument is operating). This state is modified by the Attribute alarm checking of the DeviceImpl:dev_state method. i.e. if the State is ON and one attribute has its quality factor to ATTR_WARNING or ATTR_ALARM, then the State is modified to ALARM.">
       <status abstract="false" inherited="true" concrete="true"/>
     </states>

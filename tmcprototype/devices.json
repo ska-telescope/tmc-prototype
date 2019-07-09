@@ -320,6 +320,13 @@
     ],
     "attributeProperties": [
       {
+        "attributeName": "cspsubarrayHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue": "mid-csp/elt/subarray01/healthState",
+        "pollingPeriod": "",
+        "changeEventAbs": ""
+      },
+      {
         "attributeName": "adminMode",
         "attrPropName": "",
         "attrPropValue": "",
