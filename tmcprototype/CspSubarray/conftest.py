@@ -25,7 +25,11 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     module = importlib.import_module("{}.{}".format("CspSubarray", "CspSubarray"))
     klass = getattr(module, "CspSubarray")
-    tango_context = DeviceTestContext(klass)
+    properties = {'SkaLevel': '2', 'MetricList': 'healthState', 'GroupDefinitions': '',
+                  'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+                  'CspSubarrayNodeFQDN': "mid-csp/elt/subarray01"
+                  }
+    tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context

@@ -27,6 +27,7 @@ ERR_INIT_PROP_ATTR_CSPSALN = "Error on initialising properties and attributes " 
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the device "
 ERR_MSG = "Error message is: "
 ERR_IN_CREATE_PROXY_CSPSA = "Error in creating proxy to the CSP Subarray "
+ERR_RELEASE_ALL_RESOURCES = "Error while invoking ReleaseAllResources command on CSP Subarray."
 
 #strings
 #General strings

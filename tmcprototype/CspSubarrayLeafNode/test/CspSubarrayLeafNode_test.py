@@ -76,17 +76,17 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_properties
         pass
 
-    # def test_State(self, tango_context):
-    #     """Test for State"""
-    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_State) ENABLED START #
-    #     assert tango_context.device.State() == DevState.ON
-    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_State
-    #
-    # def test_Status(self, tango_context):
-    #     """Test for Status"""
-    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_Status) ENABLED START #
-    #     assert tango_context.device.Status() == CONST.STR_CSPSALN_INIT_SUCCESS
-    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Status
+    def test_State(self, tango_context):
+        """Test for State"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_State) ENABLED START #
+        assert tango_context.device.State() == DevState.ALARM
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_State
+
+    def test_Status(self, tango_context):
+        """Test for Status"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_Status) ENABLED START #
+        assert tango_context.device.Status() != CONST.STR_CSPSALN_INIT_SUCCESS
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Status
 
     def test_GetVersionInfo(self, create_cspsubarray1_proxy):
         """Test for GetVersionInfo"""

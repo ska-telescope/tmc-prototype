@@ -304,7 +304,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.dev_logging(CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except DevFailed as dev_failed:
-            self.dev_logging(CONST.ERR_RELEASE__ALL_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_RELEASE_ALL_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
             excpt_msg.append(self._read_activity_message)
 
