@@ -184,6 +184,11 @@ class SdpSubarray(SKASubarray):
         return self._active_processing_blocks
         # PROTECTED REGION END #    //  SdpSubarray.ActiveProcessingBlocks_read
 
+    def read_healthState(self):
+        # PROTECTED REGION ID(CspSubarray.opState_read) ENABLED START #
+        return self._health_state
+        # PROTECTED REGION END #    //  CspSubarray.opState_read
+
 
     # --------
     # Commands

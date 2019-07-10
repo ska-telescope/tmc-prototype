@@ -310,7 +310,7 @@
     "devName": "ska_mid/tm_leaf_node/csp_subarray01",
     "deviceProperties": [
       {
-        "devPropName": "CspSubarrayPrefix",
+        "devPropName": "CspSubarrayNodeFQDN",
         "devPropValue": "mid-csp/elt/subarray01"
       },
       {
@@ -561,6 +561,13 @@
       }
     ],
     "attributeProperties": [
+      {
+        "attributeName": "sdpSubarrayHealthState",
+        "attrPropName": "__root_att",
+        "attrPropValue": "mid_sdp/elt/subarray_1/healthState",
+        "pollingPeriod": "",
+        "changeEventAbs": ""
+      },
       {
         "attributeName": "activityMessage",
         "attrPropName": "",

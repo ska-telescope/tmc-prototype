@@ -120,7 +120,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         unknown_health_count = unknown_health_count + 1
                     else:
                         ok_health_count = ok_health_count + 1
-                if ok_health_count == len(list(self.subarray_health_state_map.values())) + 1:
+                if ok_health_count == len(list(self.subarray_health_state_map.values())) + 2:
                     self._telescope_health_state = CONST.ENUM_OK
                 elif failed_health_count != 0:
                     self._telescope_health_state = CONST.ENUM_FAILED

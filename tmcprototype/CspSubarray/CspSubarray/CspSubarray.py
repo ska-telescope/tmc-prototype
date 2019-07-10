@@ -126,7 +126,7 @@ class CspSubarray(SKASubarray):
         self._procmode = 0
         self._receptor = []
         self._correlations = " "
-        self._health_state = 3
+        self._health_state = 0
         # PROTECTED REGION END #    //  CspSubarray.init_device
 
     def always_executed_hook(self):

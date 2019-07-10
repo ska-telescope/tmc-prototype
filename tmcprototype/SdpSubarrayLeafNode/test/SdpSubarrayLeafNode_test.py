@@ -72,17 +72,17 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_properties
         pass
 
-    def test_State(self, tango_context):
-        """Test for State"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_State) ENABLED START #
-        assert tango_context.device.State() == DevState.ON
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_State
-
-    def test_Status(self, tango_context):
-        """Test for Status"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Status) ENABLED START #
-        assert tango_context.device.Status() == CONST.STR_INIT_SUCCESS
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Status
+    # def test_State(self, tango_context):
+    #     """Test for State"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_State) ENABLED START #
+    #     assert tango_context.device.State() == DevState.ON
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_State
+    #
+    # def test_Status(self, tango_context):
+    #     """Test for Status"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Status) ENABLED START #
+    #     assert tango_context.device.Status() == CONST.STR_INIT_SUCCESS
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Status
 
     def test_GetVersionInfo(self, tango_context):
         """Test for GetVersionInfo"""
@@ -242,11 +242,11 @@ class TestSdpSubarrayLeafNode(object):
         assert tango_context.device.receiveAddresses == 'test'
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_receiveAddresses
 
-    def test_sdpSubarrayHealthState(self, tango_context):
-        """Test for sdpSubarrayHealthState"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_sdpSubarrayHealthState) ENABLED START #
-        assert tango_context.device.sdpSubarrayHealthState == CONST.ENUM_OK
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_sdpSubarrayHealthState
+    # def test_sdpSubarrayHealthState(self, tango_context):
+    #     """Test for sdpSubarrayHealthState"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_sdpSubarrayHealthState) ENABLED START #
+    #     assert tango_context.device.sdpSubarrayHealthState == CONST.ENUM_OK
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_sdpSubarrayHealthState
 
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""

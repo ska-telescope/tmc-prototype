@@ -51,129 +51,97 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
 
-    def sa_healthStateCallback(self, evt):
+    def healthStateCallback(self, evt):
         """
-        Retrieves the subscribed CSP_Subarray health state, aggregates them to calculate the
-        subarray health state.
+        Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
+        to calculate the subarray health state.
         :param evt: A TANGO_CHANGE event on CSP_Subarray healthState.
         :return: None
         """
         if evt.err is False:
             try:
                 self._health_state = evt.attr_value.value
+
                 if CONST.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa = self._health_state
+                    self.subarray_ln_health_state_map[evt.device] = self._health_state
+                elif CONST.PROP_DEF_VAL_TMSDP_MID_SALN in evt.attr_name:
+                    self._sdp_sa = self._health_state
+                    self.subarray_ln_health_state_map[evt.device] = self._health_state
                 else:
                     print(CONST.EVT_UNKNOWN)
                     self._read_activity_message = CONST.EVT_UNKNOWN
 
-                self.csp_subarray_ln_health_state_map[evt.device] = self._health_state
-
                 if self._health_state == CONST.ENUM_OK:
-                    print(CONST.STR_HEALTH_STATE + str(evt.device
-                                                       ) + CONST.STR_OK)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_OK
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK)
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
                 elif self._health_state == CONST.ENUM_DEGRADED:
-                    print(CONST.STR_HEALTH_STATE + str(evt.device
-                                                       ) + CONST.STR_DEGRADED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_DEGRADED
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED)
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_DEGRADED
+                elif self._health_state == CONST.ENUM_FAILED:
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED)
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
                 elif self._health_state == CONST.ENUM_UNKNOWN:
-                    print(CONST.STR_HEALTH_STATE + str(evt.device
-                                                       ) + CONST.STR_UNKNOWN)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(
-                        evt.device) + CONST.STR_UNKNOWN
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN)
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_UNKNOWN
                 else:
                     print(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
                     self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
 
-                # Aggregated Health State
-                failed_health_count = 0
-                degraded_health_count = 0
-                unknown_health_count = 0
-                ok_health_count = 0
-                # Check the health state of Csp Master Leaf Node
-                for value in list(self.csp_subarray_ln_health_state_map.values()):
+                for value in list(self.subarray_ln_health_state_map.values()):
                     if value == CONST.ENUM_FAILED:
-                        failed_health_count = failed_health_count + 1
+                        self.failed_health_count = self.failed_health_count + 1
                         break
                     elif value == CONST.ENUM_DEGRADED:
-                        degraded_health_count = degraded_health_count + 1
+                        self.degraded_health_count = self.degraded_health_count + 1
                     elif value == CONST.ENUM_UNKNOWN:
-                        unknown_health_count = unknown_health_count + 1
+                        self.unknown_health_count = self.unknown_health_count + 1
                     else:
-                        ok_health_count = ok_health_count + 1
+                        self.ok_health_count = self.ok_health_count + 1
 
-                    if ok_health_count == len(list(self.csp_subarray_ln_health_state_map.values())) + 1:
-                        self._subarray_health_state = CONST.ENUM_OK
-                    elif failed_health_count != 0:
-                        self._subarray_health_state = CONST.ENUM_FAILED
-                    elif degraded_health_count != 0:
-                        self._subarray_health_state = CONST.ENUM_DEGRADED
-                    else:
-                        self._subarray_health_state = CONST.ENUM_UNKNOWN
+                self.calculate_health_state()
 
             except KeyError as key_error:
-                print(CONST.ERR_CSP_SUBARRAY_HEALTHSTATE, key_error)
-                self._read_activity_message = CONST.ERR_CSP_SUBARRAY_HEALTHSTATE + str(key_error)
-                self.dev_logging(CONST.ERR_CSP_SUBARRAY_HEALTHSTATE, int(tango.LogLevel.LOG_FATAL))
+                print(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE, key_error)
+                self._read_activity_message = CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error)
+                self.dev_logging(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE, int(tango.LogLevel.LOG_FATAL))
             except DevFailed as dev_failed:
-                print(CONST.ERR_SUBSR_CSPSA_HEALTH_STATE, dev_failed)
-                self._read_activity_message = CONST.ERR_SUBSR_CSPSA_HEALTH_STATE + str(dev_failed)
-                self.dev_logging(CONST.ERR_SUBSR_CSPSA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+                print(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, dev_failed)
+                self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(dev_failed)
+                self.dev_logging(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
             except Exception as except_occured:
                 print(CONST.ERR_AGGR_HEALTH_STATE, except_occured)
                 self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
                 self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
         else:
-            print(CONST.ERR_SUBSR_CSPSA_HEALTH_STATE, evt)
-            self._read_activity_message = CONST.ERR_SUBSR_CSPSA_HEALTH_STATE + str(evt)
-            self.dev_logging(CONST.ERR_SUBSR_CSPSA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+            print(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, evt)
+            self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
+            self.dev_logging(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
 
-
-
-    def cspsubarrayHealthCallback(self, evt):
+    def calculate_health_state(self):
         """
-        Retrieves the subscribed cspsubarrayHealthState attribute of CSPSubarray.
-
-        :param evt: A TANGO_CHANGE event on cspsubarrayHealthState attribute.
-
-        :return: None
+        Calculates aggregated health state of Subarray.
         """
-        if evt.err is False:
-            try:
-                self._csp_sa_health = evt.attr_value.value
-                if self._csp_sa_health == 0:
-                    print(CONST.STR_CSP_SA_HEALTH_OK)
-                    self._read_activity_message = CONST.STR_CSP_SA_HEALTH_OK
-                elif self._csp_sa_health == 1:
-                    print(CONST.STR_CSP_SA_HEALTH_DEGRADED)
-                    self._read_activity_message = CONST.STR_CSP_SA_HEALTH_DEGRADED
-                elif self._csp_sa_health == 2:
-                    print(CONST.STR_CSP_SA_HEALTH_FAILED)
-                    self._read_activity_message = CONST.STR_CSP_SA_HEALTH_FAILED
-                else:
-                    print(CONST.STR_CSP_SA_HEALTH_UNKNOWN)
-                    self._read_activity_message = CONST.STR_CSP_SA_HEALTH_UNKNOWN
-            except DevFailed as dev_failed:
-                print(CONST.ERR_ON_SUBS_CSP_SA_HEALTH, dev_failed)
-                self._read_activity_message = CONST.ERR_ON_SUBS_CSP_SA_HEALTH + str(dev_failed)
-                self.dev_logging(CONST.ERR_ON_SUBS_CSP_SA_HEALTH, int(tango.LogLevel.LOG_FATAL))
-            except Exception as except_occurred:
-                print(CONST.ERR_CSP_CBF_HEALTH_CB, except_occurred.message)
-                self._read_activity_message = CONST.ERR_CSP_CBF_HEALTH_CB + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_CSP_CBF_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
+        if self.ok_health_count == len(list(self.subarray_ln_health_state_map.values())) + \
+                len(list(self.dishHealthStateMap.values())):
+            self._subarray_health_state = CONST.ENUM_OK
+        elif self.failed_health_count != 0:
+            self._subarray_health_state = CONST.ENUM_FAILED
+        elif self.degraded_health_count != 0:
+            self._subarray_health_state = CONST.ENUM_DEGRADED
         else:
-            print(CONST.ERR_CSP_SA_HEALTH_CB, evt.errors)
-            self._read_activity_message = CONST.ERR_CSP_SA_HEALTH_CB + str(evt.errors)
-            self.dev_logging(CONST.ERR_CSP_SA_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
+            self._subarray_health_state = CONST.ENUM_UNKNOWN
 
     def create_csp_ln_proxy(self):
+        """
+        Creates proxy of CSP Subarray Leaf Node.
+        """
         retry = 0
         proxy_created_flag = False
         print("self.CspSubarrayLNFQDN: ", self.CspSubarrayLNFQDN)
-        while (retry < 3):
+        while retry < 3:
             try:
                 self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
                 print("CspSubarray proxy is: ", self._csp_subarray_ln_proxy)
@@ -188,9 +156,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         return proxy_created_flag
 
     def create_sdp_ln_proxy(self):
+        """
+         Creates proxy of SDP Subarray Leaf Node.
+        """
         retry = 0
         proxy_created_flag = False
-        while (retry < 3):
+        while retry < 3:
             try:
                 self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
                 print("SdpSubarray proxy is: ", self._sdp_subarray_ln_proxy)
@@ -608,10 +579,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             sdp_allocation_status = executor.submit(self.assign_sdp_resources, dummy_sdp_resources)
 
             # 2.4 wait for result
-            while (dish_allocation_status.done() == False or
-                   csp_allocation_status.done() == False or
-                   sdp_allocation_status.done() == False
-            ):
+            while (dish_allocation_status.done() is False or
+                   csp_allocation_status.done() is False or
+                   sdp_allocation_status.done() is False
+                  ):
                 pass
 
             # 2.5. prepare return value
@@ -635,10 +606,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             sdp_allocation_result.sort()
             argin.sort()
             dummy_sdp_resources.sort()
-            if( dish_allocation_result == argin and
+            if(dish_allocation_result == argin and
                 csp_allocation_result == argin and
                 sdp_allocation_result == dummy_sdp_resources
-            ):
+              ):
                 # Currently sending only dish allocation results.
                 # argout = dish_allocation_result
                 argout = dish_allocation_result
@@ -689,10 +660,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 sdp_release_status = executor.submit(self.release_sdp_resources)
 
                 # 2.4 wait for result
-                while (dish_release_status.done() == False or
-                       csp_release_status.done() == False or
-                       sdp_release_status.done() == False
-                ):
+                while (dish_release_status.done() is False or
+                       csp_release_status.done() is False or
+                       sdp_release_status.done() is False
+                      ):
                     pass
 
                 self._scan_id = ""
@@ -739,49 +710,38 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.dishHealthStateMap[evt.device] = self._dish_health_state
                 if self._dish_health_state == CONST.ENUM_OK:
                     print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_OK
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
                 elif self._dish_health_state == CONST.ENUM_DEGRADED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_DEGRADED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_DEGRADED
                 elif self._dish_health_state == CONST.ENUM_FAILED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_FAILED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_FAILED
                 elif self._dish_health_state == CONST.ENUM_UNKNOWN:
                     print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_UNKNOWN
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_UNKNOWN
                 else:
                     print(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
                     self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 #Aggregated Health State
-                failed_health_count = 0
-                degraded_health_count = 0
-                unknown_health_count = 0
-                ok_health_count = 0
                 for value in list(self.dishHealthStateMap.values()):
                     if value == 2:
-                        failed_health_count = failed_health_count + 1
+                        self.failed_health_count = self.failed_health_count + 1
                         break
                     elif value == 1:
                         self._health_state = 1
-                        degraded_health_count = degraded_health_count + 1
+                        self.degraded_health_count = self.degraded_health_count + 1
                     elif value == 3:
                         self._health_state = 3
-                        unknown_health_count = unknown_health_count + 1
+                        self.unknown_health_count = self.unknown_health_count + 1
                     else:
                         self._health_state = 0
-                        ok_health_count = ok_health_count + 1
-                if ok_health_count == len(list(self.dishHealthStateMap.values())):
-                    self._health_state = 0
-                elif failed_health_count != 0:
-                    self._health_state = 2
-                elif degraded_health_count != 0:
-                    self._health_state = 1
-                else:
-                    self._health_state = 3
+                        self.ok_health_count = self.ok_health_count + 1
+
+                self.calculate_health_state()
             except KeyError as key_err:
                 print(CONST.ERR_SETHEALTH_CALLBK, str(key_err))
                 self._read_activity_message = CONST.ERR_SETHEALTH_CALLBK + str(key_err)
@@ -807,12 +767,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     CspSubarrayLNFQDN = device_property(
         dtype='str', default_value="ska_mid/tm_leaf_node/csp_subarray01",
-        doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the Subarray Node.",
+        doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
+            "Subarray Node.",
     )
 
     SdpSubarrayLNFQDN = device_property(
         dtype='str', default_value="ska_mid/tm_leaf_node/sdp_subarray01",
-        doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the Subarray Node.",
+        doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
+            "Subarray Node.",
     )
 
     # ----------
@@ -870,8 +832,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._health_event_id = []
         self.testDeviceVsEventID = {}
         self.set_state(DevState.OFF)            # Set state = OFF
-        self.csp_subarray_ln_health_state_map = {}
+        self.subarray_ln_health_state_map = {}
         self._subarray_health_state = CONST.ENUM_OK  #Aggregated
+
+        self.failed_health_count = 0
+        self.degraded_health_count = 0
+        self.unknown_health_count = 0
+        self.ok_health_count = 0
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
@@ -889,9 +856,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         #Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
         try:
-            #self.csp_subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = -1
+            self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = -1
             self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
-                                                        self.cspsubarrayHealthCallback, stateless=True)
+                                                        self.healthStateCallback, stateless=True)
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
             self.dev_logging(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
@@ -902,23 +869,23 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR)
             self.dev_logging(CONST.ERR_CSP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
+
+        # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
+        try:
+            self.subarray_ln_health_state_map[self._sdp_subarray_ln_proxy] = -1
+            self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
+                                                        self.healthStateCallback, stateless=True)
+            self.set_state(DevState.ON)
+            self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
+            self.dev_logging(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+
+        except DevFailed as dev_failed:
+            print(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR, dev_failed)
+            self._read_activity_message = CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
+            self.set_state(DevState.FAULT)
+            self.set_status(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR)
+            self.dev_logging(CONST.ERR_SDP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
         # PROTECTED REGION END #    //  SubarrayNode.init_device
-
-    # # Create device proxy for CSP Master Leaf Node
-    # try:
-    #     self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN)
-    #     self._csp_master_leaf_proxy.subscribe_event(CONST.EVT_SUBSR_CSP_MASTER_HEALTH,
-    #                                                 EventType.CHANGE_EVENT,
-    #                                                 self.healthStateCallback, stateless=True)
-    # except DevFailed as dev_failed:
-    #     print(CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH, self.CspMasterLeafNodeFQDN)
-    #     self._read_activity_message = CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(
-    #         self.CspMasterLeafNodeFQDN)
-    #     self.dev_logging(CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH, int(tango.LogLevel.LOG_ERROR))
-    #     print(CONST.STR_ERR_MSG, dev_failed)
-    #     self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
-
-
 
 
 

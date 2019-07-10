@@ -5,6 +5,7 @@ This file is part of the SubarrayNode project and defines variables used
 #Events
 EVT_DISH_HEALTH_STATE = "dishHealthState"
 EVT_CSPSA_HEALTH = "cspsubarrayHealthState"
+EVT_SDPSA_HEALTH = "sdpSubarrayHealthState"
 EVT_UNKNOWN = "Event from the Unknown device!"
 
 #Commands
@@ -80,7 +81,13 @@ STR_CSP_SA_HEALTH_OK = "CSP SA health is OK."
 STR_CSP_SA_HEALTH_DEGRADED = "CSP SA health is DEGRADED."
 STR_CSP_SA_HEALTH_FAILED = "CSP SA health is FAILED."
 STR_CSP_SA_HEALTH_UNKNOWN = "CSP SA health is UNKNOWN."
+
+STR_CSP_SA_HEALTH_OK = "CSP SA health is OK."
+STR_CSP_SA_HEALTH_DEGRADED = "CSP SA health is DEGRADED."
+STR_CSP_SA_HEALTH_FAILED = "CSP SA health is FAILED."
+STR_CSP_SA_HEALTH_UNKNOWN = "CSP SA health is UNKNOWN."
 STR_CSP_SA_LEAF_INIT_SUCCESS = "Csp Subarray Leaf Node initialized successfully."
+STR_SDP_SA_LEAF_INIT_SUCCESS = "Sdp Subarray Leaf Node initialized successfully."
 STR_HEALTH_STATE = "healthState of "
 STR_HEALTH_STATE_UNKNOWN_VAL = "CSPSubarray healthState event returned unknown value \n"
 
@@ -110,9 +117,16 @@ ERR_ON_SUBS_CSP_SA_HEALTH = "Error in subscribing cspsubarrayHealthState attribu
 ERR_CSP_SA_HEALTH_CB = "Error in cspsubarrayHealthCallback."
 ERR_SUBS_CSP_SA_LEAF_ATTR = "Exception occurred while subscribing to Csp Subarray attribute"
 ERR_CSP_SA_LEAF_INIT = "Error occured in Csp Subarray Leaf Node initialization "
-ERR_CSP_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting CSPSubarray healthState"
-ERR_SUBSR_CSPSA_HEALTH_STATE = "Error in subscribing CSP Subarray healthState \n"
-ERR_AGGR_HEALTH_STATE = "Error while aggregating CSP Subarray healthState \n"
+ERR_CSPSDP_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting CSP/SDP Subarray healthState"
+ERR_SUBSR_CSPSDPSA_HEALTH_STATE = "Error in subscribing CSP/SDP Subarray healthState on respective " \
+                                  "LeafNodes. \n"
+ERR_AGGR_HEALTH_STATE = "Error while aggregating CSP/SDP Subarray healthState \n"
+
+ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarray attribute"
+ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
+ERR_SDP_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting SDP Subarray healthState"
+ERR_SUBSR_SDPSA_HEALTH_STATE = "Error in subscribing SDP Subarray healthState \n"
+ERR_AGGR_SDP_HEALTH_STATE = "Error while aggregating SDP Subarray healthState \n"
 
 #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
@@ -123,3 +137,4 @@ STR_KEY_RECEPTOR_ID_LIST = "receptorIDList"
 STR_KEY_PB_ID_LIST = "processingBlockIdList"
 
 PROP_DEF_VAL_TMCSP_MID_SALN = "ska_mid/tm_leaf_node/csp_subarray01"
+PROP_DEF_VAL_TMSDP_MID_SALN = "ska_mid/tm_leaf_node/sdp_subarray01"
