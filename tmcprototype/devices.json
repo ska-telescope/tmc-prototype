@@ -596,7 +596,7 @@
     ],
     "attributeProperties": [
       {
-        "attributeName": "SDPHealthState",
+        "attributeName": "sdpHealthState",
         "attrPropName": "__root_att",
         "attrPropValue": "mid_sdp/elt/master/healthState",
         "pollingPeriod": "",

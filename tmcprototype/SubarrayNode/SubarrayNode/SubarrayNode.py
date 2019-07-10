@@ -850,19 +850,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.create_sdp_ln_proxy()
         print("sdp proxy creation result: ", result)
 
-        self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
-        self.set_status(CONST.STR_SA_INIT_SUCCESS)
-        self.dev_logging(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-
         #Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = -1
             self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
                                                         self.healthStateCallback, stateless=True)
-            self.set_state(DevState.ON)
+
             self.set_status(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
             self.dev_logging(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-
         except DevFailed as dev_failed:
             print(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR, dev_failed)
             self._read_activity_message = CONST.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
@@ -878,13 +873,17 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
             self.dev_logging(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
-
         except DevFailed as dev_failed:
             print(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR, dev_failed)
             self._read_activity_message = CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR)
             self.dev_logging(CONST.ERR_SDP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
+
+        self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
+        self.set_state(DevState.ON)
+        self.set_status(CONST.STR_SA_INIT_SUCCESS)
+        self.dev_logging(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
 

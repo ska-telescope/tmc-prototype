@@ -80,6 +80,7 @@ class SdpMaster(SKAMaster):
         # PROTECTED REGION ID(SdpMaster.init_device) ENABLED START #
         self._operating_state = 3
         self._processing_block_list = ''
+        self._health_state = 0
         # PROTECTED REGION END #    //  SdpMaster.init_device
 
     def always_executed_hook(self):
@@ -105,6 +106,11 @@ class SdpMaster(SKAMaster):
         # PROTECTED REGION ID(SdpMaster.OperatingState_read) ENABLED START #
         return self._operating_state
         # PROTECTED REGION END #    //  SdpMaster.OperatingState_read
+
+    def read_healthState(self):
+        # PROTECTED REGION ID(CspSubarray.opState_read) ENABLED START #
+        return self._health_state
+        # PROTECTED REGION END #    //  CspSubarray.opState_read
 
 
     # --------
