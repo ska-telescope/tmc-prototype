@@ -66,13 +66,13 @@ class TestSdpMasterLeafNode(object):
     def test_State(self, tango_context):
         # PROTECTED REGION ID(SdpMasterLeafNode.test_State) ENABLED START #
         """Test for State"""
-        assert tango_context.device.State() == DevState.ON
+        assert tango_context.device.State() == DevState.ALARM
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_State
 
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_Status) ENABLED START #
-        assert tango_context.device.Status() == CONST.STR_INIT_SUCCESS
+        assert tango_context.device.Status() != CONST.STR_INIT_SUCCESS
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Status
 
     def test_GetVersionInfo(self, tango_context):

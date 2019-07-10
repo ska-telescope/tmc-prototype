@@ -6,7 +6,9 @@ from __future__ import absolute_import
 import mock
 import pytest
 import importlib
+#from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
+#from .SdpMaster import CONST as CONST
 
 @pytest.fixture(scope="class")
 def tango_context(request):
@@ -24,10 +26,7 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     module = importlib.import_module("{}.{}".format("SdpMaster", "SdpMaster"))
     klass = getattr(module, "SdpMaster")
-    properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  }
-    tango_context = DeviceTestContext(klass, properties=properties, process= False)
+    tango_context = DeviceTestContext(klass)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context
@@ -43,3 +42,5 @@ def initialize_device(tango_context):
         Context to run a device without a database.
     """
     yield tango_context.device.Init()
+
+

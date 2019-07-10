@@ -20,24 +20,23 @@ from PyTango.server import attribute, command
 from PyTango.server import device_property
 from PyTango import AttrQuality, DispLevel, DevState
 from PyTango import AttrWriteType, PipeWriteType
-from skabase.SKAMaster.SKAMaster import SKAMaster
-# Additional import
-# PROTECTED REGION ID(SdpMaster.additionnal_import) ENABLED START #
-# PyTango imports
-import tango
-import os
-import sys
-from tango import DebugIt, DevState, AttrWriteType
-from tango.server import run, DeviceMeta, attribute, command, device_property
-from skabase.SKAMaster.SKAMaster import SKAMaster
 
 # Additional import
+# PROTECTED REGION ID(SdpMaster.additionnal_import) ENABLED START #
+import sys
+import os
+from skabase.SKAMaster.SKAMaster import SKAMaster
 from future.utils import with_metaclass
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpMaster"
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
+
+import tango
+from tango import DevFailed, DeviceProxy
+from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+from future.utils import with_metaclass
 # PROTECTED REGION END #    //  SdpMaster.additionnal_import
 
 __all__ = ["SdpMaster", "main"]
@@ -45,6 +44,9 @@ __all__ = ["SdpMaster", "main"]
 
 class SdpMaster(SKAMaster):
     """
+    The SDP Master implements internal monitor and control functionality for its underlying components
+    and provides a high-level interface which allows TMC to monitor the status of equipment and processing
+    resources, and to configure and control the signal processing functions.
     """
     __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SdpMaster.class_variable) ENABLED START #
@@ -54,31 +56,9 @@ class SdpMaster(SKAMaster):
     # Device Properties
     # -----------------
 
-
-
-
-
-
-
-
-
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     ProcessingBlockList = attribute(
         dtype='str',

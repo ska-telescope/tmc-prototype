@@ -8,7 +8,6 @@ import pytest
 import importlib
 from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
-from .SdpMasterLeafNode import CONST as CONST
 
 @pytest.fixture(scope="class")
 def tango_context(request):
@@ -46,5 +45,5 @@ def initialize_device(tango_context):
 
 @pytest.fixture(scope="class")
 def create_sdp_master_proxy():
-    sdp_master_proxy = DeviceProxy(CONST.STR_SDP_MASTER_FQDN)
+    sdp_master_proxy = DeviceProxy("tango://beta:10000/mid_sdp/elt/master")
     return sdp_master_proxy
