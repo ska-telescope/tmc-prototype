@@ -13,30 +13,29 @@ actions during an observation. It also acts as a SDP contact point for Subarray 
 execution. There is one to one mapping between SDP Subarray Leaf Node and SDP subarray.
 """
 
-# PyTango imports
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
-# Additional import
-# PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
-import sys
+from __future__ import print_function
+from __future__ import absolute_import
+
 import os
+import sys
+import random
+import string
+
+# PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
+# Tango imports
+import tango
+from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy
+from tango.server import run, DeviceMeta, attribute, command, device_property
+from future.utils import with_metaclass
+from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpMasterLeafNode"
 sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
 
-import tango
-from tango import DevFailed, DeviceProxy
-from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+# Additional import
 import CONST
-from future.utils import with_metaclass
+
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
 __all__ = ["SdpMasterLeafNode", "main"]

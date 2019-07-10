@@ -635,7 +635,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if duplicate_allocation_count == 0:
                 self._resources_allocated = subarrayProxy.command_inout(
                     CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
-
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
@@ -646,6 +645,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
                 self.dev_logging(CONST.STR_ASSIGN_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                argout = {
+                    "dish": {
+                        "receptorIDList_success": receptorIDList
+                    }
+                }
             else:
                 print(CONST.STR_DISH_DUPLICATE, duplicate_allocation_dish_ids)
                 self._read_activity_message = CONST.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
@@ -654,11 +658,13 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
+            print("ValueError")
         except KeyError as key_error:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
+            print("KeyError")
         except DevFailed as dev_failed:
             self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(dev_failed)
@@ -677,12 +683,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
-
-        argout = {
-            "dish": {
-                "receptorIDList_success": receptorIDList
-                        }
-                }
+            argout = '{"dish": {"receptorIDList_success": []}}'
 
         # For future reference
         #argout['dish']['receptorIDList'] = receptorIDList

@@ -10,33 +10,23 @@
 """ SdpMaster
 
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
-# PyTango imports
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
-
-# Additional import
-# PROTECTED REGION ID(SdpMaster.additionnal_import) ENABLED START #
 import sys
 import os
-from skabase.SKAMaster.SKAMaster import SKAMaster
-from future.utils import with_metaclass
-
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpMaster"
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 
-import tango
-from tango import DevFailed, DeviceProxy
-from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-from future.utils import with_metaclass
+# PROTECTED REGION ID(SdpMaster.additionnal_import) ENABLED START #
+# PyTango imports
+from tango import DebugIt, DevState, AttrWriteType
+from tango.server import run, DeviceMeta, attribute, command, device_property
+from skabase.SKAMaster.SKAMaster import SKAMaster
+
+# Additional import
 # PROTECTED REGION END #    //  SdpMaster.additionnal_import
 
 __all__ = ["SdpMaster", "main"]

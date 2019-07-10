@@ -79,12 +79,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # -----------------
     # Device Properties
     # -----------------
-
-
-
-
-
-
     CspSubarrayNodeFQDN = device_property(
         dtype='str', default_value="mid-csp/elt/subarray01"
     )
@@ -92,17 +86,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
-
     state = attribute(
         dtype='DevEnum',
         enum_labels=["INIT", "ON", "ALARM", "FAULT", "UNKNOWN", "DISABLE", ],
@@ -169,13 +152,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        pass
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
 
     # ------------------
@@ -253,7 +234,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         :param argin:
         :return:
         """
-        pass
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ConfigureScan
 
     @command(
@@ -268,7 +248,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         :param argin:
         :return:
         """
-        pass
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
     @command(
@@ -283,7 +262,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         :param argin:
         :return:
         """
-        pass
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndScan
 
     @command(

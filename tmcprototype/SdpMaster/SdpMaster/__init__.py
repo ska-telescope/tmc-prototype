@@ -17,7 +17,7 @@ resources, and to configure and control the signal processing functions.
 from . import release
 from .SdpMaster import SdpMaster, main
 
-__all__ = ["SdpMaster", "CONST", "release"]
+__all__ = ["SdpMaster", "release"]
 
 __version__ = release.version
 __version_info__ = release.version_info

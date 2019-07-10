@@ -67,15 +67,6 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_mocking) ENABLED START #
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_mocking
 
-    def test_properties(self):
-        # test the properties
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_properties) ENABLED START #
-        """
-        :return:
-        """
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_properties
-        pass
-
     def test_State(self, tango_context):
         """Test for State"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_State) ENABLED START #

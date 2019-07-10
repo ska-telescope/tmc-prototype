@@ -32,9 +32,9 @@ test:
 	retry --max=10 -- tango_admin --ping-device mid-csp/elt/subarray01
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
-#	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
-#	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspSubarray && python setup.py test | tee setup_py_test.stdout

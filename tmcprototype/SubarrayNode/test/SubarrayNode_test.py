@@ -101,17 +101,10 @@ class TestSubarrayNode(object):
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        tango_context.device.obsState == 2
-        receptor_list = ["a"]
-        # with pytest.raises(tango.DevFailed):
-        #     tango_context.device.AssignResources(receptor_list)
-        # assert tango_context.device.State() == DevState.OFF
-        # assert tango_context.device.receptorIDList is None
         receptor_list = ["0001"]
         tango_context.device.AssignResources(receptor_list)
         assert tango_context.device.State() == DevState.ON
         assert len(tango_context.device.receptorIDList) == 1
-        print("receptor id list is:", tango_context.device.receptorIDList)
         assert tango_context.device.obsState == 0
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
