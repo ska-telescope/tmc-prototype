@@ -45,5 +45,5 @@ def initialize_device(tango_context):
 
 @pytest.fixture(scope="class")
 def create_sdp_master_proxy():
-    sdp_master_proxy = DeviceProxy("tango://beta:10000/mid_sdp/elt/master")
+    sdp_master_proxy = DeviceProxy("mid_sdp/elt/master")
     return sdp_master_proxy
