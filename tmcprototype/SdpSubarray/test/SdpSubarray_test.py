@@ -43,7 +43,7 @@ class TestSdpSubarray(object):
     # PROTECTED REGION ID(SdpSubarray.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  SdpSubarray.test_additionnal_import
     device = SdpSubarray
-    properties = {'CapabilityTypes': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'GroupDefinitions': '', 'SkaLevel': '4', 'StorageLoggingTarget': 'localhost', 'SubID': '', 
+    properties = {'CapabilityTypes': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'GroupDefinitions': '', 'SkaLevel': '4', 'StorageLoggingTarget': 'localhost', 'SubID': '',
                   }
     empty = None  # Should be []
 
@@ -55,12 +55,12 @@ class TestSdpSubarray(object):
         # PROTECTED REGION ID(SdpSubarray.test_mocking) ENABLED START #
         # PROTECTED REGION END #    //  SdpSubarray.test_mocking
 
-    # def test_properties(self):
-    #     # test the properties
-    #     # PROTECTED REGION ID(SdpSubarray.test_properties) ENABLED START #
-    #     # PROTECTED REGION END #    //  SdpSubarray.test_properties
-    #     pass
-    #
+    def test_properties(self):
+        # test the properties
+        # PROTECTED REGION ID(SdpSubarray.test_properties) ENABLED START #
+        # PROTECTED REGION END #    //  SdpSubarray.test_properties
+        pass
+
     # def test_Abort(self):
     #     """Test for Abort"""
     #     # PROTECTED REGION ID(SdpSubarray.test_Abort) ENABLED START #
