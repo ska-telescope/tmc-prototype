@@ -765,13 +765,6 @@
     ],
     "attributeProperties": [
       {
-        "attributeName": "opState",
-        "attrPropName": "",
-        "attrPropValue": "",
-        "pollingPeriod": 2000,
-        "changeEventAbs": ""
-      },
-      {
         "attributeName": "adminMode",
         "attrPropName": "",
         "attrPropValue": "",
