@@ -26,7 +26,7 @@ def tango_context(request):
     klass = getattr(module, "CspMasterLeafNode")
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspMasterFQDN': 'mid_csp/elt/master',
+                  'CspSubarrayNodeFQDN': 'mid-csp/elt/subarray01',
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process= False)
     tango_context.start()

@@ -56,14 +56,18 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._health_state = evt.attr_value.value
                 if CONST.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     self._subarray1_health_state = self._health_state
+                    self.subarray_health_state_map[evt.device] = self._health_state
                 elif CONST.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
                     self._subarray2_health_state = self._health_state
-                elif self.CspMasterLeafNodeFQDN[0] in evt.attr_name:
+                    self.subarray_health_state_map[evt.device] = self._health_state
+                elif self.CspMasterLeafNodeFQDN in evt.attr_name:
                     self._csp_master_leaf_health = self._health_state
+                elif self.SdpMasterLeafNodeFQDN in evt.attr_name:
+                    self._sdp_master_leaf_health = self._health_state
                 else:
                     print(CONST.EVT_UNKNOWN)
                     self._read_activity_message = CONST.EVT_UNKNOWN
-                self.subarray_health_state_map[evt.device] = self._health_state
+
                 if self._health_state == CONST.ENUM_OK:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_OK)
@@ -92,12 +96,16 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 degraded_health_count = 0
                 unknown_health_count = 0
                 ok_health_count = 0
-                # Check the health state of Csp Master Leaf Node
-                if self._csp_master_leaf_health == CONST.ENUM_OK:
+
+                # Check the health state of CSP and SDP Master Leaf Nodes
+                if (self._csp_master_leaf_health == CONST.ENUM_OK or
+                        self._sdp_master_leaf_health == CONST.ENUM_OK ):
                     ok_health_count = 1
-                elif self._csp_master_leaf_health == CONST.ENUM_DEGRADED:
+                elif (self._csp_master_leaf_health == CONST.ENUM_DEGRADED or
+                        self._sdp_master_leaf_health == CONST.ENUM_DEGRADED):
                     degraded_health_count = 1
-                elif self._csp_master_leaf_health == CONST.ENUM_FAILED:
+                elif (self._csp_master_leaf_health == CONST.ENUM_FAILED or
+                        self._sdp_master_leaf_health == CONST.ENUM_FAILED ):
                     failed_health_count = 1
                 else:
                     unknown_health_count = 1
@@ -112,7 +120,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         unknown_health_count = unknown_health_count + 1
                     else:
                         ok_health_count = ok_health_count + 1
-                if ok_health_count == len(list(self.subarray_health_state_map.values())) + 1:
+                if ok_health_count == len(list(self.subarray_health_state_map.values())) + 2:
                     self._telescope_health_state = CONST.ENUM_OK
                 elif failed_health_count != 0:
                     self._telescope_health_state = CONST.ENUM_FAILED
@@ -167,7 +175,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     CspMasterLeafNodeFQDN = device_property(
-        dtype=('str',), default_value=["ska_mid/tm_leaf_node/csp_master"]
+        dtype='str', default_value="ska_mid/tm_leaf_node/csp_master"
+    )
+
+    SdpMasterLeafNodeFQDN = device_property(
+        dtype='str', default_value="ska_mid/tm_leaf_node/sdp_master"
     )
 
     # ----------
@@ -221,6 +233,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._leaf_device_proxy = []
             self.subarray_FQDN_dict = {}
             self._subarray_allocation = {}
+            self._sdp_master_leaf_health = 3
+            self._csp_master_leaf_health = 3
+            self._subarray1_health_state = 3
+            self._subarray2_health_state = 3
             self.set_status(CONST.STR_INIT_SUCCESS)
         except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR_CN)
@@ -264,15 +280,29 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Create device proxy for CSP Master Leaf Node
         try:
-            self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN[0])
+            self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN)
             self._csp_master_leaf_proxy.subscribe_event(CONST.EVT_SUBSR_CSP_MASTER_HEALTH,
                                                         EventType.CHANGE_EVENT,
                                                         self.healthStateCallback, stateless=True)
         except DevFailed as dev_failed:
-            print(CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH, self.CspMasterLeafNodeFQDN[0])
+            print(CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH, self.CspMasterLeafNodeFQDN)
             self._read_activity_message = CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(
-                self.CspMasterLeafNodeFQDN[0])
+                self.CspMasterLeafNodeFQDN)
             self.dev_logging(CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH, int(tango.LogLevel.LOG_ERROR))
+            print(CONST.STR_ERR_MSG, dev_failed)
+            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
+
+        # Create device proxy for SDP Master Leaf Node
+        try:
+            self._sdp_master_leaf_proxy = DeviceProxy(self.SdpMasterLeafNodeFQDN)
+            self._sdp_master_leaf_proxy.subscribe_event(CONST.EVT_SUBSR_SDP_MASTER_HEALTH,
+                                                        EventType.CHANGE_EVENT,
+                                                        self.healthStateCallback, stateless=True)
+        except DevFailed as dev_failed:
+            print(CONST.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH, self.SdpMasterLeafNodeFQDN)
+            self._read_activity_message = CONST.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(
+                self.SdpMasterLeafNodeFQDN)
+            self.dev_logging(CONST.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH, int(tango.LogLevel.LOG_ERROR))
             print(CONST.STR_ERR_MSG, dev_failed)
             self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
 
@@ -432,10 +462,21 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 excpt_msg.append(self._read_activity_message)
                 excpt_count += 1
         try:
-            self._csp_master_leaf_proxy.command_inout(CONST.CMD_CSP_MASTER_LEAF_STANDBY, CONST.STR_CSP_CBF_DEV_NAME)
+            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY, CONST.STR_CSP_CBF_DEV_NAME)
         except DevFailed as dev_failed:
-            print(CONST.ERR_EXE_STANDBY_CMD, self.CspMasterLeafNodeFQDN[0])
-            self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self.CspMasterLeafNodeFQDN[0])
+            print(CONST.ERR_EXE_STANDBY_CMD, self.CspMasterLeafNodeFQDN)
+            self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self.CspMasterLeafNodeFQDN)
+            print(CONST.STR_ERR_MSG, dev_failed)
+            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
+            self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        try:
+            self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY)
+        except DevFailed as dev_failed:
+            print(CONST.ERR_EXE_STANDBY_CMD, self.SdpMasterLeafNodeFQDN)
+            self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self.SdpMasterLeafNodeFQDN)
             print(CONST.STR_ERR_MSG, dev_failed)
             self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
             self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -476,14 +517,25 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 excpt_count += 1
 
         try:
-            self._csp_master_leaf_proxy.command_inout(CONST.CMD_CSP_MASTER_LEAF_STARTUP,
+            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP,
                                                       [])
         except Exception as except_occured:
-            print(CONST.ERR_EXE_STANDBY_CMD, self.CspMasterLeafNodeFQDN[0])
-            self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self.CspMasterLeafNodeFQDN[0])
+            print(CONST.ERR_EXE_STARTUP_CMD, self.CspMasterLeafNodeFQDN)
+            self._read_activity_message = CONST.ERR_EXE_STARTUP_CMD + str(self.CspMasterLeafNodeFQDN)
             print(CONST.STR_ERR_MSG, except_occured)
             self._read_activity_message = CONST.STR_ERR_MSG + str(except_occured)
-            self.dev_logging(CONST.ERR_EXE_STANDBY_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        try:
+            self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP)
+        except DevFailed as dev_failed:
+            print(CONST.ERR_EXE_STARTUP_CMD, self.SdpMasterLeafNodeFQDN)
+            self._read_activity_message = CONST.ERR_EXE_STARTUP_CMD + str(self.SdpMasterLeafNodeFQDN)
+            print(CONST.STR_ERR_MSG, dev_failed)
+            self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
+            self.dev_logging(CONST.ERR_EXE_STARTUP_CMD, int(tango.LogLevel.LOG_ERROR))
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
@@ -583,7 +635,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if duplicate_allocation_count == 0:
                 self._resources_allocated = subarrayProxy.command_inout(
                     CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
-
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
@@ -594,6 +645,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
                 self.dev_logging(CONST.STR_ASSIGN_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                argout = {
+                    "dish": {
+                        "receptorIDList_success": receptorIDList
+                    }
+                }
             else:
                 print(CONST.STR_DISH_DUPLICATE, duplicate_allocation_dish_ids)
                 self._read_activity_message = CONST.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
@@ -602,11 +658,13 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
+            print("ValueError")
         except KeyError as key_error:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
+            print("KeyError")
         except DevFailed as dev_failed:
             self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(dev_failed)
@@ -625,12 +683,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
-
-        argout = {
-            "dish": {
-                "receptorIDList_success": receptorIDList
-                        }
-                }
+            argout = '{"dish": {"receptorIDList_success": []}}'
 
         # For future reference
         #argout['dish']['receptorIDList'] = receptorIDList

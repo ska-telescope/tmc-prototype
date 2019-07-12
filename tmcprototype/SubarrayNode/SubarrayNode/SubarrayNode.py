@@ -21,9 +21,13 @@ import random
 import string
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 
+from concurrent.futures import ThreadPoolExecutor
+import threading
+import json
+
 # Tango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType, DevFailed, Group
+from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from future.utils import with_metaclass
 from skabase.SKASubarray.SKASubarray import SKASubarray
@@ -35,7 +39,6 @@ import CONST
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
 sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
 
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
@@ -47,6 +50,356 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     other TM Components (such as OET, Central Node) for a Subarray.
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
+
+    def healthStateCallback(self, evt):
+        """
+        Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
+        to calculate the subarray health state.
+        :param evt: A TANGO_CHANGE event on CSP_Subarray healthState.
+        :return: None
+        """
+        if evt.err is False:
+            try:
+                self._health_state = evt.attr_value.value
+
+                if CONST.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
+                    self._csp_sa = self._health_state
+                    self.subarray_ln_health_state_map[evt.device] = self._health_state
+                elif CONST.PROP_DEF_VAL_TMSDP_MID_SALN in evt.attr_name:
+                    self._sdp_sa = self._health_state
+                    self.subarray_ln_health_state_map[evt.device] = self._health_state
+                else:
+                    print(CONST.EVT_UNKNOWN)
+                    self._read_activity_message = CONST.EVT_UNKNOWN
+
+                if self._health_state == CONST.ENUM_OK:
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK)
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                elif self._health_state == CONST.ENUM_DEGRADED:
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED)
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_DEGRADED
+                elif self._health_state == CONST.ENUM_FAILED:
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED)
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                elif self._health_state == CONST.ENUM_UNKNOWN:
+                    print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN)
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_UNKNOWN
+                else:
+                    print(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
+                    self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
+
+                for value in list(self.subarray_ln_health_state_map.values()):
+                    if value == CONST.ENUM_FAILED:
+                        self.failed_health_count = self.failed_health_count + 1
+                        break
+                    elif value == CONST.ENUM_DEGRADED:
+                        self.degraded_health_count = self.degraded_health_count + 1
+                    elif value == CONST.ENUM_UNKNOWN:
+                        self.unknown_health_count = self.unknown_health_count + 1
+                    else:
+                        self.ok_health_count = self.ok_health_count + 1
+
+                self.calculate_health_state()
+
+            except KeyError as key_error:
+                print(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE, key_error)
+                self._read_activity_message = CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error)
+                self.dev_logging(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE, int(tango.LogLevel.LOG_FATAL))
+            except DevFailed as dev_failed:
+                print(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, dev_failed)
+                self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(dev_failed)
+                self.dev_logging(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+            except Exception as except_occured:
+                print(CONST.ERR_AGGR_HEALTH_STATE, except_occured)
+                self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
+                self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+        else:
+            print(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, evt)
+            self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
+            self.dev_logging(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+
+    def calculate_health_state(self):
+        """
+        Calculates aggregated health state of Subarray.
+        """
+        if self.ok_health_count == len(list(self.subarray_ln_health_state_map.values())) + \
+                len(list(self.dishHealthStateMap.values())):
+            self._subarray_health_state = CONST.ENUM_OK
+        elif self.failed_health_count != 0:
+            self._subarray_health_state = CONST.ENUM_FAILED
+        elif self.degraded_health_count != 0:
+            self._subarray_health_state = CONST.ENUM_DEGRADED
+        else:
+            self._subarray_health_state = CONST.ENUM_UNKNOWN
+
+    def create_csp_ln_proxy(self):
+        """
+        Creates proxy of CSP Subarray Leaf Node.
+        """
+        retry = 0
+        proxy_created_flag = False
+        print("self.CspSubarrayLNFQDN: ", self.CspSubarrayLNFQDN)
+        while retry < 3:
+            try:
+                self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
+                print("CspSubarray proxy is: ", self._csp_subarray_ln_proxy)
+                print("Cspp FQDN is: ", self.CspSubarrayLNFQDN)
+                proxy_created_flag = True
+                break
+            except Exception as ex:
+                print("exception: ", ex)
+                retry += 1
+                continue
+
+        return proxy_created_flag
+
+    def create_sdp_ln_proxy(self):
+        """
+         Creates proxy of SDP Subarray Leaf Node.
+        """
+        retry = 0
+        proxy_created_flag = False
+        while retry < 3:
+            try:
+                self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+                print("SdpSubarray proxy is: ", self._sdp_subarray_ln_proxy)
+                print("Sdp FQDN is: ", self.SdpSubarrayLNFQDN)
+                proxy_created_flag = True
+                break
+            except tango.DevFailed:
+                retry += 1
+                continue
+
+        return proxy_created_flag
+
+    def add_receptors_in_group(self, argin):
+        """
+        Creates tango group of the resources allocated in the subarray.
+
+        Note: Currently there are only receptors allocated so the group contains only receptor ids.
+
+        :param argin:
+            DevVarStringArray. List of receptor IDs to be allocated to subarray.
+        :return:
+            DevVarStringArray. List of Resources added to the Subarray.
+        """
+        excpt_count = 0
+        excpt_msg = []
+        allocation_success = []
+        allocation_failure = []
+
+        # Add each dish into the tango group
+        for leafId in range(0, len(argin)):
+            try:
+                str_leafId = argin[leafId]
+                self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
+                devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                self._dish_leaf_node_proxy.append(devProxy)
+                # Update the list allocation_success with the dishes allocated successfully to subarray
+                allocation_success.append(str_leafId)
+                self._event_id = devProxy.subscribe_event(CONST.EVT_DISH_HEALTH_STATE,
+                                                          tango.EventType.CHANGE_EVENT,
+                                                          self.setHealth,
+                                                          stateless=True)
+                self.testDeviceVsEventID[devProxy] = self._event_id
+                self._health_event_id.append(self._event_id)
+                self._receptor_id_list.append(int(str_leafId))
+                self.dishHealthStateMap[devProxy] = -1
+
+                print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
+                print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list(True))
+                print(CONST.STR_LN_PROXIES, self._dish_leaf_node_proxy)
+                self._read_activity_message = CONST.STR_GRP_DEF + str(
+                    self._dish_leaf_node_group.get_device_list(True))
+                self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
+                print(CONST.STR_SUBS_HEALTH_ST_LN)
+                self._read_activity_message = CONST.STR_SUBS_HEALTH_ST_LN
+                print(CONST.STR_HS_EVNT_ID, self._health_event_id)
+                self._read_activity_message = CONST.STR_HS_EVNT_ID + str(self._health_event_id)
+                # Set state = ON
+                self.set_state(DevState.ON)
+                # set obsState to "IDLE"
+                self._obs_state = 0
+                self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
+                self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            except DevFailed as dev_failed:
+                print(CONST.ERR_ADDING_LEAFNODE, "\n", dev_failed)
+                self._read_activity_message = CONST.ERR_ADDING_LEAFNODE + str(dev_failed)
+                self.dev_logging(CONST.ERR_ADDING_LEAFNODE, int(tango.LogLevel.LOG_ERROR))
+                excpt_msg.append(self._read_activity_message)
+                excpt_count += 1
+                allocation_failure.append(str_leafId)
+                # Exception Logic to remove Id from subarray group
+                group_dishes = self._dish_leaf_node_group.get_device_list()
+                if group_dishes.contains(self.DishLeafNodePrefix +  str_leafId):
+                    self._dish_leaf_node_group.remove(self.DishLeafNodePrefix + str_leafId)
+                # unsubscribe event
+                if self.testDeviceVsEventID[devProxy]:
+                    devProxy.unsubscribe_event(self.testDeviceVsEventID[devProxy])
+            except(DevFailed, Exception) as except_occurred:
+                print(CONST.ERR_ASSIGN_RES_CMD, "\n", except_occurred)
+                self._read_activity_message = CONST.ERR_ASSIGN_RES_CMD + str(except_occurred)
+                self.dev_logging(CONST.ERR_ASSIGN_RES_CMD, int(tango.LogLevel.LOG_ERROR))
+                excpt_msg.append(self._read_activity_message)
+                excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
+        return allocation_success
+
+
+    def assign_csp_resources(self, argin):
+        """
+        This function assigns CSP resources to CSP Subarray through CSP Subarray Leaf
+        Node.
+
+        :param argin: List of strings
+            Contains the list of strings that has the resources ids. Currently this list
+             contains only receptor ids.
+
+        :return: List of strings.
+            Returns the list of successfully assigned resources. Currently the
+            CSPSubarrayLeafNode.AssignResources function returns void. Thus, this
+            function just loops back the input argument in case of success. In case of
+            failure, empty list is returned.
+        """
+        arg_list = []
+        json_argument = {}
+        argout = []
+        dish = {}
+
+        try:
+            dish[CONST.STR_KEY_RECEPTOR_ID_LIST] = argin
+            json_argument[CONST.STR_KEY_DISH] = dish
+            arg_list.append(json.dumps(json_argument))
+            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
+            argout.append(argin)
+        except DevFailed as df:
+            print(CONST.ERR_CSP_CMD)
+            self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+
+        # For this PI CSP Subarray Leaf Node does not return anything. So this function is
+        # looping the receptor ids back.
+        return argout
+
+
+    def assign_sdp_resources(self, argin):
+        """
+        This function assigns SDP resources to SDP Subarray through SDP Subarray Leaf
+        Node.
+
+        :param argin: List of strings
+            Contains the list of strings that has the resources ids. Currently
+            processing block ids are passed to this function.
+
+        :return: List of strings.
+            Returns the list of successfully assigned resources. Currently the
+            SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
+            function just loops back the input argument in case of success. In case of
+            failure, empty list is returned.
+        """
+        argout = []
+        json_argument = {}
+
+        try:
+            json_argument[CONST.STR_KEY_PB_ID_LIST] = argin
+            str_json_arg = json.dumps(json_argument)
+            self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, str_json_arg)
+            argout = argin
+        except DevFailed as df:
+            print(CONST.ERR_SDP_CMD)
+            self.dev_logging(CONST.ERR_SDP_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+
+        # For this PI SDP Subarray Leaf Node does not return anything. So this function is
+        # looping the processing block ids back.
+        return argout
+
+    def remove_receptors_in_group(self):
+        """
+                Deletes tango group of the resources allocated in the subarray.
+
+                Note: Currently there are only receptors allocated so the group contains only receptor ids.
+
+                :param argin:
+                    DevVoid
+                :return:
+                    DevVoid
+                """
+        try:
+
+            if self.testDeviceVsEventID != {}:
+                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
+                self._dish_leaf_node_group.remove_all()
+                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
+                self._read_activity_message = CONST.STR_GRP_DEF + str(
+                    self._dish_leaf_node_group.get_device_list(True))
+                print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
+                print(CONST.STR_HEALTH_ID, self._health_event_id)
+                print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
+                for dev in self.testDeviceVsEventID:
+                    dev.unsubscribe_event(self.testDeviceVsEventID[dev])
+                self.testDeviceVsEventID = {}
+                self._health_event_id = []
+                self._dish_leaf_node_proxy = []
+                del self._receptor_id_list[:]
+                self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
+                self.dev_logging(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        except DevFailed as dev_failed:
+            print(CONST.ERR_RELEASE_RES_CMD_GROUP + str(dev_failed))
+            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD_GROUP + str(dev_failed)
+            self._release_excpt_msg.append(self._read_activity_message)
+            self._release_excpt_count += 1
+        except Exception as except_occurred:
+            print(CONST.ERR_RELEASE_RES_CMD, "\n", except_occurred)
+            print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
+            print(CONST.STR_HEALTH_ID, self._health_event_id)
+            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(except_occurred)
+            self.dev_logging(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
+            self._release_excpt_msg.append(self._read_activity_message)
+            self._release_excpt_count += 1
+
+    def release_csp_resources(self):
+        """
+            This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
+            Node.
+
+            :param argin: DevVoid
+
+            :return: DevVoid
+
+        """
+        try:
+            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_RELEASE_ALL_RESOURCES)
+        except DevFailed as df:
+            print(CONST.ERR_CSP_CMD)
+            self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+
+    def release_sdp_resources(self):
+        """
+            This function invokes releaseAllResources command on SDP Subarray via SDP Subarray Leaf Node.
+
+            :param argin: DevVoid
+
+            :return: DevVoid
+
+        """
+        try:
+            self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_RELEASE_ALL_RESOURCES)
+
+        except DevFailed as df:
+            print(CONST.ERR_SDP_CMD)
+            self.dev_logging(CONST.ERR_SDP_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
 
     @command(
         dtype_in=('str',),
@@ -186,6 +539,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         given subarray is populated with the given receptors. And returns list of
         assigned resources as array of DevStrings.
 
+        Note: Resource allocation for CSP and SDP resources is also implemented but
+        currently CSP accepts only receptorIDList and SDP accepts only dummy resources.
+
         :param argin:
             DevVarStringArray. List of receptor IDs to be allocated to subarray.
 
@@ -194,77 +550,75 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         excpt_count = 0
         excpt_msg = []
+
+        # 1. Argument validation
         try:
             # Allocation success and failure lists
-            allocation_success = []
-            allocation_failure = []
             for leafId in range(0, len(argin)):
-                if type(float(argin[leafId])) == float:
-                    pass
-            for leafId in range(0, len(argin)):
-                try:
-                    self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  argin[leafId])
-                    devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + argin[leafId])
-                    self._dish_leaf_node_proxy.append(devProxy)
-                    # Update the list allocation_success with the dishes allocated successfully to subarray
-                    allocation_success.append(argin[leafId])
-                    self._event_id = devProxy.subscribe_event(CONST.EVT_DISH_HEALTH_STATE,
-                                                              tango.EventType.CHANGE_EVENT,
-                                                              self.setHealth,
-                                                              stateless=True)
-                    self.testDeviceVsEventID[devProxy] = self._event_id
-                    self._health_event_id.append(self._event_id)
-                    self._receptor_id_list.append(int(argin[leafId]))
-                    self.dishHealthStateMap[devProxy] = -1
-                except DevFailed as dev_failed:
-                    print(CONST.ERR_ADDING_LEAFNODE, "\n", dev_failed)
-                    self._read_activity_message = CONST.ERR_ADDING_LEAFNODE + str(dev_failed)
-                    self.dev_logging(CONST.ERR_ADDING_LEAFNODE, int(tango.LogLevel.LOG_ERROR))
-                    excpt_msg.append(self._read_activity_message)
-                    excpt_count += 1
-                    allocation_failure.append(argin[leafId])
-                    # Exception Logic to remove Id from subarray group
-                    group_dishes = self._dish_leaf_node_group.get_device_list()
-                    if group_dishes.contains(self.DishLeafNodePrefix +  argin[leafId]):
-                        self._dish_leaf_node_group.remove(self.DishLeafNodePrefix + argin[leafId])
-                    # unsubscribe event
-                    if self.testDeviceVsEventID[devProxy]:
-                        devProxy.unsubscribe_event(self.testDeviceVsEventID[devProxy])
-            print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
-            print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list(True))
-            print(CONST.STR_LN_PROXIES, self._dish_leaf_node_proxy)
-            self._read_activity_message = CONST.STR_GRP_DEF + str(
-                self._dish_leaf_node_group.get_device_list(True))
-            self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
-            print(CONST.STR_SUBS_HEALTH_ST_LN)
-            self._read_activity_message = CONST.STR_SUBS_HEALTH_ST_LN
-            print(CONST.STR_HS_EVNT_ID, self._health_event_id)
-            self._read_activity_message = CONST.STR_HS_EVNT_ID +  str(self._health_event_id)
-            # Set state = ON
-            self.set_state(DevState.ON)
-            # set obsState to "IDLE"
-            self._obs_state = 0
-            self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                float(argin[leafId])
         except ValueError as value_error:
             print(CONST.ERR_SCAN_CMD, "\n", value_error, CONST.ERR_INVALID_DATATYPE)
+            self.dev_logging(CONST.ERR_INVALID_DATATYPE, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
-        except (DevFailed, Exception) as except_occurred:
-            print(CONST.ERR_ASSIGN_RES_CMD, "\n", except_occurred)
-            self._read_activity_message = CONST.ERR_ASSIGN_RES_CMD + str(except_occurred)
-            self.dev_logging(CONST.ERR_ASSIGN_RES_CMD, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
 
-        # Throw Exception
-        if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
-        return allocation_success
+        with excpt_count is 0 and ThreadPoolExecutor(3) as executor:
+            # 2.1 Create group of receptors
+            self.dev_logging(CONST.STR_DISH_ALLOCATION, int(tango.LogLevel.LOG_INFO))
+            dish_allocation_status = executor.submit(self.add_receptors_in_group, argin)
+
+            # 2.2. Add resources in CSP subarray
+            self.dev_logging(CONST.STR_CSP_ALLOCATION, int(tango.LogLevel.LOG_INFO))
+            csp_allocation_status = executor.submit(self.assign_csp_resources, argin)
+
+            # 2.3. Add resources in SDP subarray
+            # For PI#3, TMC sends dummy resources to SDP.
+            self.dev_logging(CONST.STR_SDP_ALLOCATION, int(tango.LogLevel.LOG_INFO))
+            dummy_sdp_resources = ["PB1", "PB2"]
+            sdp_allocation_status = executor.submit(self.assign_sdp_resources, dummy_sdp_resources)
+
+            # 2.4 wait for result
+            while (dish_allocation_status.done() is False or
+                   csp_allocation_status.done() is False or
+                   sdp_allocation_status.done() is False
+                  ):
+                pass
+
+            # 2.5. prepare return value
+            dish_allocation_result = dish_allocation_status.result()
+            log_msg = CONST.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
+            self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            print("dish_allocation_result: ", dish_allocation_result)
+
+            csp_allocation_result = csp_allocation_status.result()
+            log_msg = CONST.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
+            self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            print("csp_allocation_result: ", csp_allocation_result)
+
+            sdp_allocation_result = sdp_allocation_status.result()
+            log_msg = CONST.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
+            self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            print("sdp_allocation_result: ", sdp_allocation_result)
+
+            dish_allocation_result.sort()
+            csp_allocation_result.sort()
+            sdp_allocation_result.sort()
+            argin.sort()
+            dummy_sdp_resources.sort()
+            if(dish_allocation_result == argin and
+                csp_allocation_result == argin and
+                sdp_allocation_result == dummy_sdp_resources
+              ):
+                # Currently sending only dish allocation results.
+                # argout = dish_allocation_result
+                argout = dish_allocation_result
+            else:
+                #TODO: Need to add code to revert allocated resources
+                argout = []
+
+        # return dish_allocation_result
+        return argout
 
     def is_AssignResources_allowed(self):
         """Checks if AssignResources is allowed in the current state of SubarrayNode."""
@@ -287,55 +641,46 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :return: DevVarStringArray.
         """
-        excpt_count = 0
-        excpt_msg = []
+        self._release_excpt_count = 0
+        self._release_excpt_msg = []
+        argout = []
         try:
-            argout = []
             assert self.testDeviceVsEventID != {}, CONST.RESRC_ALREADY_RELEASED
-            if self.testDeviceVsEventID != {}:
-                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
-                self._dish_leaf_node_group.remove_all()
-                print(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
-                self._read_activity_message = CONST.STR_GRP_DEF + str(
-                    self._dish_leaf_node_group.get_device_list(True))
-                print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
-                print(CONST.STR_HEALTH_ID, self._health_event_id)
-                print(CONST.STR_TEST_DEV_VS_EVT_ID, self.testDeviceVsEventID)
-                for dev in self.testDeviceVsEventID:
-                    dev.unsubscribe_event(self.testDeviceVsEventID[dev])
-                self.testDeviceVsEventID = {}
-                self._health_event_id = []
-                self._dish_leaf_node_proxy = []
-                del self._receptor_id_list[:]
+            with self._release_excpt_count is 0 and ThreadPoolExecutor(3) as executor:
+                # 1. Delete the group of receptors
+                self.dev_logging(CONST.STR_DISH_RELEASE, int(tango.LogLevel.LOG_INFO))
+                dish_release_status = executor.submit(self.remove_receptors_in_group)
+
+                # Release resources from CSP Subarray
+                self.dev_logging(CONST.STR_CSP_RELEASE, int(tango.LogLevel.LOG_INFO))
+                csp_release_status = executor.submit(self.release_csp_resources)
+
+                # Release resources from SDP Subarray
+                self.dev_logging(CONST.STR_SDP_RELEASE, int(tango.LogLevel.LOG_INFO))
+                sdp_release_status = executor.submit(self.release_sdp_resources)
+
+                # 2.4 wait for result
+                while (dish_release_status.done() is False or
+                       csp_release_status.done() is False or
+                       sdp_release_status.done() is False
+                      ):
+                    pass
+
                 self._scan_id = ""
                 self._sb_id = ""
-                self.set_state(DevState.OFF)    # Set state = OFF
-                self._obs_state = 0             # set obsState to "IDLE"
-                self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
-                self.dev_logging(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.set_state(DevState.OFF)  # Set state = OFF
+                self._obs_state = 0  # set obsState to "IDLE"
+
         except AssertionError as assert_err:
             print(CONST.ERR_RELEASE_RES_CMD + str(assert_err))
             self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(assert_err)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
-        except DevFailed as dev_failed:
-            print(CONST.ERR_RELEASE_RES_CMD_GROUP + str(dev_failed))
-            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD_GROUP + str(dev_failed)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
-        except Exception as except_occurred:
-            print(CONST.ERR_RELEASE_RES_CMD, "\n", except_occurred)
-            print(CONST.STR_DISH_PROXY_LIST, self._dish_leaf_node_proxy)
-            print(CONST.STR_HEALTH_ID, self._health_event_id)
-            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(except_occurred)
-            self.dev_logging(CONST.ERR_RELEASE_RES_CMD, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            self._release_excpt_msg.append(self._read_activity_message)
+            self._release_excpt_count += 1
 
         # Throw Exception
-        if excpt_count > 0:
+        if self._release_excpt_count > 0:
             err_msg = ' '
-            for item in excpt_msg:
+            for item in self._release_excpt_msg:
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
@@ -365,49 +710,38 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.dishHealthStateMap[evt.device] = self._dish_health_state
                 if self._dish_health_state == CONST.ENUM_OK:
                     print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_OK
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
                 elif self._dish_health_state == CONST.ENUM_DEGRADED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_DEGRADED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_DEGRADED
                 elif self._dish_health_state == CONST.ENUM_FAILED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_FAILED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_FAILED
                 elif self._dish_health_state == CONST.ENUM_UNKNOWN:
                     print(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_UNKNOWN
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
+                                                  CONST.STR_UNKNOWN
                 else:
                     print(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
                     self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 #Aggregated Health State
-                failed_health_count = 0
-                degraded_health_count = 0
-                unknown_health_count = 0
-                ok_health_count = 0
                 for value in list(self.dishHealthStateMap.values()):
                     if value == 2:
-                        failed_health_count = failed_health_count + 1
+                        self.failed_health_count = self.failed_health_count + 1
                         break
                     elif value == 1:
                         self._health_state = 1
-                        degraded_health_count = degraded_health_count + 1
+                        self.degraded_health_count = self.degraded_health_count + 1
                     elif value == 3:
                         self._health_state = 3
-                        unknown_health_count = unknown_health_count + 1
+                        self.unknown_health_count = self.unknown_health_count + 1
                     else:
                         self._health_state = 0
-                        ok_health_count = ok_health_count + 1
-                if ok_health_count == len(list(self.dishHealthStateMap.values())):
-                    self._health_state = 0
-                elif failed_health_count != 0:
-                    self._health_state = 2
-                elif degraded_health_count != 0:
-                    self._health_state = 1
-                else:
-                    self._health_state = 3
+                        self.ok_health_count = self.ok_health_count + 1
+
+                self.calculate_health_state()
             except KeyError as key_err:
                 print(CONST.ERR_SETHEALTH_CALLBK, str(key_err))
                 self._read_activity_message = CONST.ERR_SETHEALTH_CALLBK + str(key_err)
@@ -429,6 +763,18 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     DishLeafNodePrefix = device_property(
         dtype='str', default_value="ska_mid/tm_leaf_node/d",
         doc="Device name prefix for the Dish Leaf Node",
+    )
+
+    CspSubarrayLNFQDN = device_property(
+        dtype='str', default_value="ska_mid/tm_leaf_node/csp_subarray01",
+        doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
+            "Subarray Node.",
+    )
+
+    SdpSubarrayLNFQDN = device_property(
+        dtype='str', default_value="ska_mid/tm_leaf_node/sdp_subarray01",
+        doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
+            "Subarray Node.",
     )
 
     # ----------
@@ -486,10 +832,62 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._health_event_id = []
         self.testDeviceVsEventID = {}
         self.set_state(DevState.OFF)            # Set state = OFF
+        self.subarray_ln_health_state_map = {}
+        self._subarray_health_state = CONST.ENUM_OK  #Aggregated
+
+        self.failed_health_count = 0
+        self.degraded_health_count = 0
+        self.unknown_health_count = 0
+        self.ok_health_count = 0
+
+        # Create proxy for CSP Subarray Leaf Node
+        self._csp_subarray_ln_proxy = None
+        result = self.create_csp_ln_proxy()
+        print("csp proxy creation result: ", result)
+
+        # Create proxy for SDP Subarray Leaf Node
+        self._sdp_subarray_ln_proxy = None
+        self.create_sdp_ln_proxy()
+        print("sdp proxy creation result: ", result)
+
+        #Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
+        try:
+            self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = -1
+            self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+                                                        self.healthStateCallback, stateless=True)
+
+            self.set_status(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
+            self.dev_logging(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        except DevFailed as dev_failed:
+            print(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR, dev_failed)
+            self._read_activity_message = CONST.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
+            self.set_state(DevState.FAULT)
+            self.set_status(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR)
+            self.dev_logging(CONST.ERR_CSP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
+
+        # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
+        try:
+            self.subarray_ln_health_state_map[self._sdp_subarray_ln_proxy] = -1
+            self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
+                                                        self.healthStateCallback, stateless=True)
+            self.set_state(DevState.ON)
+            self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
+            self.dev_logging(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        except DevFailed as dev_failed:
+            print(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR, dev_failed)
+            self._read_activity_message = CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
+            self.set_state(DevState.FAULT)
+            self.set_status(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR)
+            self.dev_logging(CONST.ERR_SDP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
+
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
+        self.set_state(DevState.ON)
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
         self.dev_logging(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
         # PROTECTED REGION END #    //  SubarrayNode.init_device
+
+
+
 
     def always_executed_hook(self):
         """ Internal construct of TANGO. """

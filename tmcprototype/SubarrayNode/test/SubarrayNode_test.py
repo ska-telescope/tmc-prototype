@@ -95,22 +95,16 @@ class TestSubarrayNode(object):
     def test_State(self, tango_context):
         """Test for State"""
         # PROTECTED REGION ID(SubarrayNode.test_State) ENABLED START #
-        assert tango_context.device.State() == DevState.OFF
+        assert tango_context.device.State() == DevState.ON
         # PROTECTED REGION END #    //  SubarrayNode.test_State
 
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        receptor_list = ["a"]
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(receptor_list)
-        assert tango_context.device.State() == DevState.OFF
-        assert tango_context.device.receptorIDList is None
         receptor_list = ["0001"]
         tango_context.device.AssignResources(receptor_list)
         assert tango_context.device.State() == DevState.ON
         assert len(tango_context.device.receptorIDList) == 1
-        print("receptor id list is:", tango_context.device.receptorIDList)
         assert tango_context.device.obsState == 0
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
@@ -127,10 +121,6 @@ class TestSubarrayNode(object):
         assert CONST.SCAN_ALREADY_IN_PROGRESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
-    def test_EndSB(self, tango_context):
-        """Test for EndSB"""
-        # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
-        # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 
     def test_EndScan(self, tango_context):
         """Test for EndScan"""

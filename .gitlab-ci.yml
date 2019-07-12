@@ -79,6 +79,58 @@ build SubarrayNode wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/SubarrayNode/dist/
 
+build CspSubarray wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/CspSubarray
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/CspSubarray/dist/
+
+build CspSubarray wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/CspSubarray
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/CspSubarray/dist/
+
+build SdpSubarray wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SdpSubarray
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SdpSubarray/dist/
+
+build SdpSubarray wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SdpSubarray
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SdpSubarray/dist/
+
 build DishLeafNode wheel for publication: # Executed on a tag
   stage: build
   tags:
@@ -131,6 +183,86 @@ build CspMasterLeafNode wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/CspMasterLeafNode/dist/
 
+build CspSubarrayLeafNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/CspSubarrayLeafNode
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/CspSubarrayLeafNode/dist/
+
+
+build SdpMasterLeafNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SdpMasterLeafNode
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SdpMasterLeafNode/dist/
+
+
+build CspSubarrayLeafNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/CspSubarrayLeafNode
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/CspSubarrayLeafNode/dist/
+
+build SdppMasterLeafNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SdpMasterLeafNode
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SdpMasterLeafNode/dist/
+
+build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SdpSubarrayLeafNode
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SdpSubarrayLeafNode/dist/
+
+build SdpSubarrayLeafNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SdpSubarrayLeafNode
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SdpSubarrayLeafNode/dist/
+
 
 build DishMaster wheel for publication: # Executed on a tag
   stage: build
@@ -158,6 +290,32 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/DishMaster/dist/
 
+build SdpMaster wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SdpMaster
+    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SdpMaster/dist/
+
+build SdpMaster wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/SdpMaster
+    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/SdpMaster/dist/
+
 run tests:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   stage: test
@@ -181,7 +339,14 @@ publish to nexus:
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SubarrayNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/DishLeafNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspMasterLeafNode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpMasterLeafNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/DishMaster/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspMaster/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpMaster/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpSubarray/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpSubarrayLeafNode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspSubarray/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspSubarrayLeafNode/dist/*
 
   only:
     variables:
@@ -200,7 +365,14 @@ pages:
   script:
     - mv build public
     - mv public/dishmaster_htmlcov/* public
+    - mv public/cspmaster_htmlcov/* public
+    - mv public/sdpmaster_htmlcov/* public
+    - mv public/cspsubarray_htmlcov/* public
+    - mv public/sdpsubarray_htmlcov/* public
     - mv public/cspmasterleafnode_htmlcov/* public
+    - mv public/cspsubarrayleafnode_htmlcov/* public
+    - mv public/sdpsubarrayleafnode_htmlcov/* public
+    - mv public/sdpmasterleafnode_htmlcov/* public
     - mv public/dishleafnode_htmlcov/* public
     - mv public/subarraynode_htmlcov/* public
     - mv public/centralnode_htmlcov/* public

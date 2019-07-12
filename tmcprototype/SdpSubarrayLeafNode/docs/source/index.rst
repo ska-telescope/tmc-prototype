@@ -1,0 +1,2 @@
+.. automodule:: SdpSubarrayLeafNode
+    :members: SdpSubarrayLeafNode
