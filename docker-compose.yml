@@ -1,5 +1,5 @@
 #
-# Docker compose file for testing the TMC prototype in CI environment. 
+# Docker compose file for testing the TMC prototype in CI environment.
 # The current setup provides one container each for Tango DB, databaseds service,
 # Central Node, CspMasterLeafNode, two Subarray Nodes in two separate containers,
 # four Dish Leaf Nodes in four separate containers, four Dish Masters in four separate containers
@@ -534,7 +534,6 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
             ./app/alarmhandler-srv 01"
-
 #  configure-alarms:
 #    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
 #    depends_on:
