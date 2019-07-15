@@ -24,10 +24,11 @@ print("sys.path: ", sys.path)
 import time
 from threading import Timer
 import threading
+import json
 
 # PyTango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType
+from tango import DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKAMaster.SKAMaster import SKAMaster
 
@@ -1002,6 +1003,64 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """ Checks if the Track is allowed in the current pointing state of DishMaster. """
         return self._pointing_state not in [1, 2, 3]
         # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
+
+    @command(
+        dtype_in='str',
+        doc_in="Pointing parameter of Dish.",
+    )
+    @DebugIt()
+    def Configure(self, argin):
+        # PROTECTED REGION ID(DishMaster.ConfigureScan) ENABLED START #
+        """
+        Configures the pointing parameters of the dish.
+        Input from jive: {"pointing":{"AZ":1.0,"EL": 1.0},"dish":{"receiverBand":"1"}}
+
+        :param argin: DevString. JSON string consists of Azimuth(deg:min:sec), Elevation(deg:min:sec) and
+        reciverBand.
+
+        :return: None.
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            jsonArgument_DM_Config = json.loads(argin)
+            AZ = jsonArgument_DM_Config[CONST.STR_POINTING]["AZ"]
+            EL = jsonArgument_DM_Config[CONST.STR_POINTING]["EL"]
+            self._desired_pointing[1] = AZ
+            self._desired_pointing[2] = EL
+            receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
+            self._configured_band = int(receiverBand)
+            self.dev_logging(CONST.STR_CONFIG_SUCCESS, int(tango.LogLevel.LOG_INFO))
+
+        except ValueError as value_error:
+            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_INVALID_JSON + str(value_error))
+            excpt_count += 1
+
+        except KeyError as key_error:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            excpt_count += 1
+
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_CONFIG_DM + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_CONFIG_DM + str(dev_failed))
+
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_CONFIG_DM + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_CONFIG_DM + str(except_occurred))
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
+
+        # PROTECTED REGION END #    //  DishMaster.ConfigureScan
+
 # ----------
 # Run server
 # ----------

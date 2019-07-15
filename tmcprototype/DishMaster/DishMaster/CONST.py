@@ -31,6 +31,9 @@ STR_SET_OPERATEMODE_EXEC = "SetOperateMode command execution"
 STR_SET_MAINTENANCEMODE_EXEC = "SetMaintenanceMode command execution"
 STR_SET_STANDBYLPMODE_EXEC = "SetStandbyLPMode command execution"
 STR_SET_STOWMODE_EXEC = "SetStowMode command execution"
+STR_CONFIG_SUCCESS = "DishMaster configured successfully."
+STR_CONFIG_DM_EXEC = "ConfigureScan command execution"
+STR_POINTING = "pointing"
 
 #Error messages
 ERR_EXE_POINT_FN = "Error in executing POINT function on Dish"
@@ -44,5 +47,8 @@ ERR_EXE_SCAN_CMD = "Error in executing Scan Command on Dish"
 ERR_EXE_STRT_CAPTURE_CMD = "Error in executing StartCapture Command on Dish"
 ERR_EXE_STOP_CAPTURE_CMD = "Error in executing StopCapture Command on Dish"
 ERR_EXE_SLEW_CMD = "Error in executing Slew Command on Dish"
+ERR_INVALID_JSON = "Invalid JSON format."
+ERR_JSON_KEY_NOT_FOUND = "JSON key not found."
+ERR_CONFIG_DM = "Error occured while Dish Master."
 
 THREAD_TRACK = "DishMaster"
