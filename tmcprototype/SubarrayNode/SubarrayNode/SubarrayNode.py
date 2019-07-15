@@ -971,7 +971,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             del dishConfiguration["sdp"]
             del dishConfiguration["csp"]
             print("dish: ", type(json.dumps(dishConfiguration)))
-
+            self._scan_id = str(scanConfiguration["scanID"])
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
         #
@@ -980,9 +980,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
         #     # set obsState to READY when the configuration is completed
             self._obs_state = 2
-            self._scan_id = str(scanConfiguration["scanID"])
+
+
         #     self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+
+            #Track on DishLeafNode
+            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
+            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
         except DevFailed as dev_failed:
             print(CONST.ERR_CONFIGURE_CMD_GROUP, "\n", dev_failed)
             self._read_activity_message = CONST.ERR_CONFIGURE_CMD_GROUP + str(dev_failed)
