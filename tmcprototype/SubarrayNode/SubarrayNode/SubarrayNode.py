@@ -972,12 +972,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             del dishConfiguration["csp"]
             print("dish: ", type(json.dumps(dishConfiguration)))
 
-        #     cmdData = tango.DeviceData()
-        #     cmdData.insert(tango.DevVarStringArray, argin)
+            cmdData = tango.DeviceData()
+            cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
         #
             # set obsState to CONFIGURING when the configuration is started
             self._obs_state = 1
-            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, json.dumps(dishConfiguration))
+            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
         #     # set obsState to READY when the configuration is completed
             self._obs_state = 2
             self._scan_id = str(scanConfiguration["scanID"])
