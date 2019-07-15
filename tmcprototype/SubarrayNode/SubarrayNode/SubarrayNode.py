@@ -954,20 +954,34 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         excpt_count = 0
         excpt_msg = []
+
         try:
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
             self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN + str(
                 self._dish_leaf_node_group.get_device_list())
-            cmdData = tango.DeviceData()
-            cmdData.insert(tango.DevVarStringArray, argin)
+            scanConfiguration = json.loads(argin[0])
+            # scanID = scanConfiguration["scanID"]
+            # pointing =  scanConfiguration["pointing"]
+            # dishConfiguration1 = scanConfiguration["dish"]
+            # cspConfiguration = scanConfiguration["csp"]
+            # sdpConfiguration = scanConfiguration["sdp"]
 
+            # Configuration of Dish
+            dishConfiguration = scanConfiguration
+            del dishConfiguration["sdp"]
+            del dishConfiguration["csp"]
+            print("dish: ", type(json.dumps(dishConfiguration)))
+
+        #     cmdData = tango.DeviceData()
+        #     cmdData.insert(tango.DevVarStringArray, argin)
+        #
             # set obsState to CONFIGURING when the configuration is started
             self._obs_state = 1
-            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
-            # set obsState to READY when the configuration is completed
+            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, json.dumps(dishConfiguration))
+        #     # set obsState to READY when the configuration is completed
             self._obs_state = 2
-            self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-            self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            self._scan_id = str(scanConfiguration["scanID"])
+        #     self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
         except DevFailed as dev_failed:
             print(CONST.ERR_CONFIGURE_CMD_GROUP, "\n", dev_failed)
