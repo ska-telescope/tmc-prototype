@@ -214,7 +214,7 @@ class CspSubarray(SKASubarray):
     @DebugIt()
     def ConfigureScan(self, argin):
         # PROTECTED REGION ID(CspSubarray.ConfigureScan) ENABLED START #
-        pass
+        print("CspSubarray: ConfigureScan is invoked successfully with argin:", argin)
         # PROTECTED REGION END #    //  CspSubarray.ConfigureScan
 
     @command(

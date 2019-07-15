@@ -116,8 +116,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
     )
 
     cspsubarrayHealthState = attribute(name="cspsubarrayHealthState", label="cspsubarrayHealthState",
-        forwarded=True
-    )
+                                       forwarded=True
+                                      )
     # ---------------
     # General methods
     # ---------------
@@ -234,6 +234,44 @@ class CspSubarrayLeafNode(SKABaseDevice):
         :param argin:
         :return:
         """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            print("argin is:", argin)
+            json.loads(argin)
+            self.subarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
+            self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
+            self.dev_logging(CONST.STR_CONFIGURESCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+
+        except ValueError as value_error:
+            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_CONFIGURESCAN_RESOURCES + str(dev_failed),
+                             int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_CONFIGURESCAN_RESOURCES + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_CONFIGURESCAN_RESOURCES  + str(except_occurred),
+                             int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_CONFIGURESCAN_RESOURCES  + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_RELEASE_RES_EXEC, tango.ErrSeverity.ERR)
+
+
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ConfigureScan
 
     @command(
@@ -285,6 +323,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.dev_logging(CONST.ERR_RELEASE_ALL_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
             excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
 
         except Exception as except_occurred:
             self.dev_logging(CONST.ERR_RELEASE_ALL_RESOURCES  + str(except_occurred),

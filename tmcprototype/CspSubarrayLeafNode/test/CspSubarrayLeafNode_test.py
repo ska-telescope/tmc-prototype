@@ -91,11 +91,29 @@ class TestCspSubarrayLeafNode(object):
         #create_cspsubarray1_proxy.device.Reset() is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Reset
 
-    # def test_ConfigureScan(self):
-    #     """Test for ConfigureScan"""
-    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
-    #     self.device.ConfigureScan("")
-    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
+    def test_ConfigureScan(self, tango_context):
+        """Test for ConfigureScan"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
+        test_input = ''
+        test_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        print("test_input", test_input)
+        res = tango_context.device.ConfigureScan(test_input)
+        tango_context.device.status()
+        time.sleep(1)
+        assert CONST.STR_CONFIGURESCAN_SUCCESS in tango_context.device.activityMessage and res is None
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
+
+    def test_ConfigureScan_invalid_json(self, tango_context):
+        """
+        Test case to check invalid JSON format (Negative test case)
+        :param tango_context:
+        :return:
+        """
+        test_input = '{"invalid_key"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ConfigureScan(test_input)
+        time.sleep(1)
+        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
     #
     # def test_StartScan(self):
     #     """Test for StartScan"""
