@@ -15,6 +15,7 @@ from __future__ import absolute_import
 
 import sys
 import os
+import json
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/DishLeafNode"
 sys.path.insert(0, module_path)
@@ -270,7 +271,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
             # Compute Target Coordinates
             target_radec = data[0]
-            desired_target = katpoint.Target(target_radec)
+            print ("target_radec:", target_radec)
+            desired_target = katpoint.Target(str(target_radec))
             timestamp = katpoint.Timestamp(timestamp=data[1])
             target_apparnt_radec = katpoint.Target.apparent_radec(desired_target,
                                                                   timestamp=timestamp,
@@ -305,6 +307,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.RaDec_AzEl_Conversion = True
         except ValueError as value_err:
             print(CONST.ERR_RADEC_TO_AZEL_VAL_ERR)
+            print(value_err)
             self.RaDec_AzEl_Conversion = False
             self._read_activity_message = CONST.ERR_RADEC_TO_AZEL_VAL_ERR + str(value_err)
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL_VAL_ERR, int(tango.LogLevel.LOG_ERROR))
@@ -345,6 +348,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None.
 
         """
+
+        print ("argin", argin, type(argin))
         radec_value = argin.replace('|', ',')
         # RaDec as input argument
 
@@ -356,7 +361,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
                 katpoint_arg = []
-                katpoint_arg.insert(0, radec_value)
+                katpoint_arg.insert(0, argin)
                 katpoint_arg.insert(1, timestamp_value)
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
@@ -390,7 +395,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     DishMasterFQDN = device_property(
-        dtype='str',
+        dtype='str',default_value="mid_d0001/elt/master",
         doc="FQDN of Dish Master Device",
     )
 
@@ -559,11 +564,18 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :param argin: timestamp
         :return: None
 
+        TODO: Scan argument will now be in JSON format
+        {"scanDuration": 10.0}
+
         """
         excpt_count = 0
         excpt_msg = []
+        # jsonArgument = json.loads(argin)
+        # scan_duration = jsonArgument['scanDuration']
+        # print("Scan duration:", scan_duration)
         try:
             if type(float(argin)) == float:
+            #if type(float(scan_duration)) == float:
                 print(CONST.STR_IN_SCAN)
                 self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SCAN,
                                                       argin, self.commandCallback)
@@ -593,12 +605,17 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Triggers the DishMaster to stop the Scan.
         :param argin: timestamp
         :return: None
-
+        TODO:
+        {"timestamp": 0}
         """
         excpt_count = 0
         excpt_msg = []
+        # jsonArgument = json.loads(argin)
+        # timestamp = jsonArgument['timestamp']
+        # print("End Scan timestamp:", timestamp)
         try:
             if type(float(argin)) == float:
+                print ("Sending end scan command...")
                 self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE,
                                                       argin, self.commandCallback)
         except ValueError as value_error:
@@ -617,30 +634,38 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION END #    //  DishLeafNode.EndScan
 
     @command(
-        dtype_in=('str',),
-        doc_in="Pointing parameter of Dish",
+    dtype_in='str', 
+    doc_in="Pointing parameter of Dish", 
     )
     @DebugIt()
     def Configure(self, argin):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
-        :param argin: String array that includes pointing parameters of Dish - Azimuth and
+        :param argin: A String in a JSON format that includes pointing parameters of Dish- Azimuth and
         Elevation Angle.
         :return: None
-
+        TODO: This will be new input string
+        2:31:50.91,89:15:51.4
+        {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
         """
         excpt_count = 0
         excpt_msg = []
+        jsonArgument = json.loads(argin)
+        ra_value = (jsonArgument["pointing"]["target"]["RA"])
+        dec_value = (jsonArgument["pointing"]["target"]["dec"])
+        receiver_band = int(jsonArgument["dish"]["receiverBand"])
+        # timestamp_value = Current system time in UTC
+        timestamp_value = str(datetime.datetime.utcnow())
         try:
             # Convert ra and dec to az and el
-            radec_value = argin[0].replace('|', ',')
-            timestamp_value = argin[1].replace('|', ' ')
+            #radec_value = argin[0].replace('|', ' ')
+            radec_value = 'radec' + ',' + str(ra_value) + ',' +str(dec_value)
+            # timestamp_value = argin[1].replace('|', ' ')
             katpoint_arg = []
             katpoint_arg.insert(0, radec_value)
             katpoint_arg.insert(1, timestamp_value)
             self.convert_radec_to_azel(katpoint_arg)
-
             # Invoke slew command on DishMaster with az and el as inputs
             if self.el >= self.horizon_el  and self.el < self.ele_max_lim:
                 # To obtain positive value of azimuth coordinate
@@ -649,13 +674,47 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
                 spectrum = [0]
                 spectrum.extend(roundoff_az_el)
-                self._dish_proxy.desiredPointing = spectrum
-                self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SLEW, "0", self.commandCallback)
+                # # Set Az-El value at Dish Master Desired Pointing attribute
+                # self._dish_proxy.desiredPointing = spectrum
+                # # Set Receiver Band Attribute of Dish Master
+                # self._dish_proxy.ConfiguredBand = receiver_band
+
+                arg_out = { "pointing": {
+                    "AZ": self.az,
+                    "EL": self.el
+
+                },
+                    "dish":{
+                        "receiverBand": receiver_band
+                    }
+
+                }
+                arg_list = json.dumps(arg_out)
+                # Send configure command to Dish Master
+                self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_CONFIGURE, str(arg_list), self.commandCallback)
             else:
                 self._read_activity_message = CONST.STR_TARGET_NOT_OBSERVED
+
+        except ValueError as value_error:
+            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_INVALID_JSON + str(value_error))
+            excpt_count += 1
+
+        except KeyError as key_error:
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            excpt_count += 1
+
+        except DevFailed as dev_failed:
+            self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
+            self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed))
+
         except Exception as except_occurred:
             print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD +  str(except_occurred)
+            self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD + str(except_occurred)
             self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
@@ -792,7 +851,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION END #    //  DishLeafNode.Slew
 
     @command(
-        dtype_in=('str',),
+    dtype_in='str', 
     )
     @DebugIt()
     def Track(self, argin):
@@ -810,16 +869,37 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         For Track command, Argin to be provided is the Ra and Dec values in the following format:
         radec|2:31:50.91|89:15:51.4 Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,
         and third value is Dec in Deg:Min:Sec.
-
+         TODO:
+         {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
         :return: None
 
         """
-        self.el_limit = False
-        self.event_track_time.clear()
-        self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, CONST.THREAD_TRACK)
-        self.tracking_time_thread1.start()
-        self.track_thread1 = threading.Thread(None, self.track_thread, CONST.THREAD_TRACK, args=argin)
-        self.track_thread1.start()
+        excpt_count = 0
+        excpt_msg = []
+        try:
+            self.el_limit = False
+            jsonArgument = json.loads(argin)
+            ra_value = (jsonArgument["pointing"]["target"]["RA"])
+            dec_value = (jsonArgument["pointing"]["target"]["dec"])
+            radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
+            self.event_track_time.clear()
+            self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, CONST.THREAD_TRACK)
+            self.tracking_time_thread1.start()
+            # Pass string argument in track_thread in brackets
+            self.track_thread1 = threading.Thread(None, self.track_thread, CONST.THREAD_TRACK, args=(radec_value,))
+            self.track_thread1.start()
+
+        except ValueError as value_error:
+            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_INVALID_JSON + str(value_error))
+            excpt_count += 1
+
+        except KeyError as key_error:
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            excpt_count += 1
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
 # ----------

@@ -16,6 +16,7 @@ CMD_SET_OPERATE_MODE = "SetOperateMode"
 CMD_SET_STANDBYFP_MODE = "SetStandbyFPMode"
 CMD_DISH_SCAN = "Scan"
 CMD_DISH_SLEW = "Slew"
+CMD_DISH_CONFIGURE = 'Configure'
 CMD_STOP_CAPTURE = "StopCapture"
 CMD_START_CAPTURE = "StartCapture"
 CMD_TRACK = "Track"
@@ -134,3 +135,5 @@ STR_DESIREDPOINTING_0_0 = "Desired Pointing :-> [0. 0. 0.]"
 STR_TARGET_NOT_OBSERVED = "Cannot point to the source."
 
 THREAD_TRACK = "DishLeafNode"
+ERR_INVALID_JSON = "Invalid JSON format."
+ERR_JSON_KEY_NOT_FOUND = "JSON key not found."
