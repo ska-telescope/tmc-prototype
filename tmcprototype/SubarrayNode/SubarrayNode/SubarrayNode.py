@@ -1137,8 +1137,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
 
-            # set obsState to CONFIGURING when the configuration is started
-            self._obs_state = 1
+            # set obsState to IDLE when the configuration is started
+            self._obs_state = 0
             # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
             self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
             # # set obsState to READY when the configuration is completed
