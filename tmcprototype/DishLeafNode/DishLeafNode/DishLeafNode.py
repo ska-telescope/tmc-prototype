@@ -413,7 +413,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     dishHealthState = attribute(name="dishHealthState", label="dishHealthState", forwarded=True)
-
+    dishPointingState = attribute(name="dishPointingState",label="dishPointingState",forwarded=True
+    )
     # ---------------
     # General methods
     # ---------------

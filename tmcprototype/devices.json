@@ -398,6 +398,11 @@
                                     "mid_d0001/elt/master/healthState"
                                 ]
                             },
+                            "dishPointingState": {
+                                "__root_att": [
+                                    "mid_d0001/elt/master/pointingState"
+                                ]
+                            },
                             "healthState": {
                                 "abs_change": [
                                     "-1",
