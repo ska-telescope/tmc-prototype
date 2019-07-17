@@ -196,6 +196,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
         :return: None
         """
+        print("Dish is SLEWING.")
         az_diff = abs(self._desired_pointing[1] - self._achieved_pointing[1])
         el_diff = abs(self._desired_pointing[2] - self._achieved_pointing[2])
         az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
@@ -212,6 +213,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
             print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
             time.sleep(2)
+        # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
+        self._pointing_state = 2
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -985,6 +988,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[1] = self._desired_pointing[1]
                 self._achieved_pointing[2] = self._desired_pointing[2]
                 print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
+                print("Dish is TRACKING.")
             else:
             #if dish is out of preconfigured limit then dish will slew fast (Slew).
                 self._pointing_state = 1                   # Set pointingState to SLEW Mode
@@ -996,11 +1000,14 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
         # PROTECTED REGION END #    //  DishMaster.Track
 
+
     def is_Track_allowed(self):
         # PROTECTED REGION ID(DishMaster.is_SetMaintenanceMode_allowed) ENABLED START #
-        """ Checks if the Track is allowed in the current pointing state of DishMaster. """
-        return self._pointing_state not in [1, 2, 3]
-        # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
+        """ Checks if the Track is allowed in the current pointing state of DishMaster. Ignore the TRACK
+        command while Dish is slewing."""
+        return self._pointing_state not in [1]
+
+    # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
 
     @command(
         dtype_in='str',

@@ -127,6 +127,8 @@ class CspSubarray(SKASubarray):
         self._receptor = []
         self._correlations = " "
         self._health_state = 0
+        self.set_state(DevState.OFF)  # Set state = OFF
+        self._opstate = 1
         # PROTECTED REGION END #    //  CspSubarray.init_device
 
     def always_executed_hook(self):
@@ -223,6 +225,8 @@ class CspSubarray(SKASubarray):
     @DebugIt()
     def AddReceptors(self, argin):
         # PROTECTED REGION ID(CspSubarray.AddReceptors) ENABLED START #
+        self.set_state(DevState.ON)  # Set state = ON
+        self._opstate = 2
         print("CspSubarray: Add receptors command executed successfully.", argin)
         # PROTECTED REGION END #    //  CspSubarray.AddReceptors
 
@@ -240,6 +244,8 @@ class CspSubarray(SKASubarray):
     @DebugIt()
     def RemoveAllReceptors(self):
         # PROTECTED REGION ID(CspSubarray.RemoveAllReceptors) ENABLED START #
+        self.set_state(DevState.OFF)  # Set state = OFF
+        self._opstate = 1
         print("CspSubarray: RemoveAllReceptors command executed successfully.")
         # PROTECTED REGION END #    //  CspSubarray.RemoveAllReceptors
 

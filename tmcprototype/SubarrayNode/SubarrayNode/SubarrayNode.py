@@ -994,6 +994,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
                                                 # SDP SA LN
         self._subarray_health_state = CONST.ENUM_OK  #Aggregated
+        self._csp_sa_obs_state = 0
+        self._sdp_sa_obs_state = 0
+
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
@@ -1032,7 +1035,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             # Subscribe sdpSubarrayObsState (forwarded attribute) of CspSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
-            self.set_state(DevState.ON)
             self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
             self.dev_logging(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except DevFailed as dev_failed:
@@ -1043,7 +1045,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.dev_logging(CONST.ERR_SDP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
 
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
-        self.set_state(DevState.ON)
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
         self.dev_logging(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
         # PROTECTED REGION END #    //  SubarrayNode.init_device

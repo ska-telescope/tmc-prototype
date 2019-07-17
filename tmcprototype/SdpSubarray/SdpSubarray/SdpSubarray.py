@@ -64,6 +64,7 @@ class SdpSubarray(SKASubarray):
         """
         Assigns resources to the subarray.
         """
+        self.set_state(DevState.ON)  # Set state = ON
         print("SdpSubarray.AssignResources command executed successfully.")
         return ""
 
@@ -77,6 +78,7 @@ class SdpSubarray(SKASubarray):
         """
         Releases resources from the subarray.
         """
+        self.set_state(DevState.OFF)  # Set state = OFF
         print("SdpSubarray.ReleaseResources command executed successfully.")
         return ""
 

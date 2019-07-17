@@ -463,8 +463,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             self._dish_proxy.subscribe_event(CONST.EVT_DISH_MODE, EventType.CHANGE_EVENT,
                                              self.dishModeCallback, stateless=True)
-            self._dish_proxy.subscribe_event(CONST.EVT_DISH_POINTING_STATE, EventType.CHANGE_EVENT,
-                                             self.dishPointingStateCallback, stateless=True)
+            # self._dish_proxy.subscribe_event(CONST.EVT_DISH_POINTING_STATE, EventType.CHANGE_EVENT,
+            #                                  self.dishPointingStateCallback, stateless=True)
             self._dish_proxy.subscribe_event(CONST.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT,
                                              self.dishCapturingCallback, stateless=True)
             self._dish_proxy.subscribe_event(CONST.EVT_ACHVD_POINT, EventType.CHANGE_EVENT,
