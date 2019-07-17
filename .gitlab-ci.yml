@@ -325,6 +325,7 @@ run tests:
     - docker-executor
   script:
     - make test
+  retry: 2
 
 publish to nexus:
   stage: publish
@@ -365,7 +366,6 @@ pages:
   script:
     - mv build public
     - mv public/dishmaster_htmlcov/* public
-    - mv public/cspmaster_htmlcov/* public
     - mv public/sdpmaster_htmlcov/* public
     - mv public/cspsubarray_htmlcov/* public
     - mv public/sdpsubarray_htmlcov/* public
