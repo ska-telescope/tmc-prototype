@@ -212,7 +212,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
             print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
             time.sleep(2)
-        self._pointing_state = 0               # Set pointingState to READY Mode
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -986,10 +985,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[1] = self._desired_pointing[1]
                 self._achieved_pointing[2] = self._desired_pointing[2]
                 print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
-                self._pointing_state = 0                    # Set pointingState to READY Mode
             else:
             #if dish is out of preconfigured limit then dish will slew fast (Slew).
-                self._pointing_state = 1  # Set pointingState to SLEW Mode
+                self._pointing_state = 1                   # Set pointingState to SLEW Mode
                 self.track_slew_thread = threading.Thread(None, self.track_slew, CONST.THREAD_TRACK)
                 self.track_slew_thread.start()
 
@@ -1016,7 +1014,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         Input from jive: {"pointing":{"AZ":1.0,"EL": 1.0},"dish":{"receiverBand":"1"}}
 
         :param argin: DevString. JSON string consists of Azimuth(deg:min:sec), Elevation(deg:min:sec) and
-        reciverBand.
+                        reciverBand.
 
         :return: None.
         """
@@ -1060,6 +1058,17 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                                          CONST.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureScan
+
+    @command(
+    )
+    @DebugIt()
+    def SetPointingState(self):
+        # PROTECTED REGION ID(DishMaster.SetPointingState) ENABLED START #
+        """
+        This command is created only for making pointingState = 0 in Track command.
+        """
+        self._pointing_state = 0
+        # PROTECTED REGION END #    //  DishMaster.SetPointingState
 
 # ----------
 # Run server

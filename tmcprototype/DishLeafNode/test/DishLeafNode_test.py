@@ -242,7 +242,8 @@ class TestDishLeafNode(object):
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
         tango_context.device.Track(input_string)
         time.sleep(60)
-        assert create_dish_proxy.pointingState == 0
+        assert (create_dish_proxy.pointingState == 1 or create_dish_proxy.pointingState == 2)
+        create_dish_proxy.SetPointingState()
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
     # def test_Track_invalid_arg(self, tango_context):

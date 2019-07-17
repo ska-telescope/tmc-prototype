@@ -432,16 +432,6 @@ class TestDishMaster(object):
         assert all(result)
         # PROTECTED REGION END #    //  DishMaster.test_achievedPointing
 
-    def test_Track(self, tango_context):
-        """Test for Track command"""
-        # Test for valid argument
-        tango_context.device.SetStandbyLPMode()
-        tango_context.device.SetOperateMode()
-        tango_context.device.Track("0")
-        time.sleep(80)
-        assert tango_context.device.pointingState == 0
-        tango_context.device.SetStandbyLPMode()
-
     def test_Configure(self, tango_context):
         """
         Test case to check DishMaster is successfully configured.
@@ -477,3 +467,14 @@ class TestDishMaster(object):
             result = tango_context.device.Configure(test_input)
         time.sleep(1)
         assert 'a' in result
+
+    def test_Track(self, tango_context):
+        """Test for Track command"""
+        # Test for valid argument
+        tango_context.device.SetStandbyLPMode()
+        tango_context.device.SetOperateMode()
+        tango_context.device.Track("0")
+        time.sleep(80)
+        assert (tango_context.device.pointingState == 1 or tango_context.device.pointingState == 2)
+        tango_context.device.SetPointingState()
+        tango_context.device.SetStandbyLPMode()

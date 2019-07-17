@@ -32,7 +32,7 @@ STR_SET_MAINTENANCEMODE_EXEC = "SetMaintenanceMode command execution"
 STR_SET_STANDBYLPMODE_EXEC = "SetStandbyLPMode command execution"
 STR_SET_STOWMODE_EXEC = "SetStowMode command execution"
 STR_CONFIG_SUCCESS = "DishMaster configured successfully."
-STR_CONFIG_DM_EXEC = "ConfigureScan command execution"
+STR_CONFIG_DM_EXEC = "Configure command execution"
 STR_POINTING = "pointing"
 
 #Error messages

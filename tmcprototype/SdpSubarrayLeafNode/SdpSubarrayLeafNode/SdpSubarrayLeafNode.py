@@ -130,6 +130,9 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     sdpSubarrayHealthState = attribute(name="sdpSubarrayHealthState", label="sdpSubarrayHealthState", forwarded=True)
+
+    sdpSubarrayObsState = attribute(name="sdpSubarrayObsState", label="sdpSubarrayObsState",forwarded=True)
+
     # ---------------
     # General methods
     # ---------------

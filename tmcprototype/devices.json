@@ -308,6 +308,11 @@
                                     "Not defined"
                                 ]
                             },
+                            "cspSubarrayObsState": {
+                                "__root_att": [
+                                    "Not defined"
+                                ]
+                            },
                             "healthState": {
                                 "abs_change": [
                                     "-1",
@@ -1054,6 +1059,11 @@
                                 ]
                             },
                             "sdpSubarrayHealthState": {
+                                "__root_att": [
+                                    "Not defined"
+                                ]
+                            },
+                            "sdpSubarrayObsState": {
                                 "__root_att": [
                                     "Not defined"
                                 ]

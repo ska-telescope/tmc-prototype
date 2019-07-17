@@ -384,6 +384,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 else:
                     break
                 time.sleep(0.05)
+            #self._dish_proxy.pointingState = 0
         except Exception as except_occurred:
             print(CONST.ERR_EXE_TRACK, except_occurred)
             self._read_activity_message = CONST.ERR_EXE_TRACK + str(except_occurred)
