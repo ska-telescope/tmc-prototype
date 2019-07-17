@@ -135,7 +135,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         try:
             self._state = 0
             # create subarray Proxy
-            self.subarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
+            self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
             self._read_activity_message = " "
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
@@ -232,23 +232,69 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def ConfigureScan(self, argin):
         # PROTECTED REGION ID(CspSubarrayLeafNode.ConfigureScan) ENABLED START #
         """
-        This command configures the scan
+        This command configures the scan. It accepts configuration capabilities in JSON string format and
+        invokes ConfigureScan command on CspSubarray with configuration capabilities in JSON string as an
+        input argument.
 
-        :param argin:
-        :return:
+            :param argin: The string in JSON format. The JSON contains following values:
+
+                csp:
+                    frequencyBand:
+                    fsp:
+                        fspID:
+                        functionMode:
+                        frequencySliceID:
+                        integrationTime:
+                        corrBandwidth:
+                        channelAveragingMap:
+
+
+                Example:
+                    {
+                     "csp": {
+                      "frequencyBand": "1",
+                      "fsp": [
+                        {
+                          "fspID": "1",
+                          "functionMode": "CORR",
+                          "frequencySliceID": 1,
+                          "integrationTime": 1400,
+                          "corrBandwidth": 0,
+                          "channelAveragingMap": [
+                          ]
+                        },
+                        {
+                          "fspID": "2",
+                          "functionMode": "CORR",
+                          "frequencySliceID": 1,
+                          "integrationTime": 1400,
+                          "corrBandwidth": 0,
+                          "channelAveragingMap": [
+                            ]
+                         }
+                        ]
+                      }
+                    }
+
+        Note: from Jive, enter input as :
+        {"csp":{"frequencyBand":"1","fsp":[{"fspID":"1","functionMode":"CORR","frequencySliceID":1,
+        "integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR",
+        "frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]}}
+        without white spaces
+
+        :return: None.
         """
         excpt_msg = []
         excpt_count = 0
         try:
-            print("argin is:", argin)
             json.loads(argin)
-            self.subarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
+            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
             self.dev_logging(CONST.STR_CONFIGURESCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            self.dev_logging(CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
@@ -272,7 +318,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             for item in excpt_msg:
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_RELEASE_RES_EXEC, tango.ErrSeverity.ERR)
+                                         CONST.STR_CONFIG_SCAN_EXEC, tango.ErrSeverity.ERR)
 
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ConfigureScan
@@ -311,14 +357,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def ReleaseAllResources(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.ReleaseResources) ENABLED START #
         """
-        This command releases all the resources.
+        It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
+        CspSubarray.
 
-        :return:
+        :return: None.
         """
         excpt_msg = []
         excpt_count = 0
         try:
-            self.subarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
+            #Invoke RemoveAllReceptors command on CspSubarray
+            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
             self._read_activity_message = CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS
             self.dev_logging(CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
@@ -351,8 +399,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CspSubarrayLeafNode.AssignResources) ENABLED START #
         """
-        It accepts receptor id list in JSON string format and invokes AssignResources command
-        on CspSubarray with receptorIDList (list of integers) as an input argument.
+        It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
+        with receptorIDList (list of integers) as an input argument.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -380,6 +428,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         excpt_msg = []
         excpt_count = 0
         try:
+            #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
             receptorIDList = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
 
@@ -387,22 +436,21 @@ class CspSubarrayLeafNode(SKABaseDevice):
             for i in range(0, len(receptorIDList)):
                 receptorIDList[i] = int(receptorIDList[i])
 
-            #Invoke Assign Resources command on CspSubarray
-            self.subarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, receptorIDList,
+            #Invoke AddReceptors command on CspSubarray
+            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, receptorIDList,
                                                     self.commandCallback)
             self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
             self.dev_logging(CONST.STR_ASSIGN_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            self.dev_logging(CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
         except KeyError as key_error:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
-            #self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 

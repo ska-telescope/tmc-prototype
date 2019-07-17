@@ -26,6 +26,7 @@ from tango import AttrWriteType, PipeWriteType
 from skabase.SKASubarray.SKASubarray import SKASubarray
 import os
 import sys
+import time
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarray"
@@ -216,7 +217,12 @@ class CspSubarray(SKASubarray):
     @DebugIt()
     def ConfigureScan(self, argin):
         # PROTECTED REGION ID(CspSubarray.ConfigureScan) ENABLED START #
-        print("CspSubarray: ConfigureScan is invoked successfully with argin:", argin)
+        #Set ObsState to CONFIGURING
+        self._obs_state = 1
+        print("ConfigureScan is invoked successfully on CspSubarray. Argin:", argin)
+        time.sleep(4)
+        #Set ObsState to READY after ConfigureScan is completed
+        self._obs_state = 2
         # PROTECTED REGION END #    //  CspSubarray.ConfigureScan
 
     @command(
@@ -227,7 +233,7 @@ class CspSubarray(SKASubarray):
         # PROTECTED REGION ID(CspSubarray.AddReceptors) ENABLED START #
         self.set_state(DevState.ON)  # Set state = ON
         self._opstate = 2
-        print("CspSubarray: Add receptors command executed successfully.", argin)
+        print("Add receptors command executed successfully on CspSubarray. Argin:", argin)
         # PROTECTED REGION END #    //  CspSubarray.AddReceptors
 
     @command(
@@ -246,7 +252,7 @@ class CspSubarray(SKASubarray):
         # PROTECTED REGION ID(CspSubarray.RemoveAllReceptors) ENABLED START #
         self.set_state(DevState.OFF)  # Set state = OFF
         self._opstate = 1
-        print("CspSubarray: RemoveAllReceptors command executed successfully.")
+        print("RemoveAllReceptors command executed successfully on CspSubarray.")
         # PROTECTED REGION END #    //  CspSubarray.RemoveAllReceptors
 
 # ----------

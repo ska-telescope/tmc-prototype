@@ -566,7 +566,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :param argin: timestamp
         :return: None
 
-        TODO: Scan argument will now be in JSON format
+        TODO: Scan argument in JSON format
         {"scanDuration": 10.0}
 
         """
@@ -607,7 +607,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Triggers the DishMaster to stop the Scan.
         :param argin: timestamp
         :return: None
-        TODO:
+        TODO: EndScan argument in JSON format
         {"timestamp": 0}
         """
         excpt_count = 0
@@ -646,10 +646,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         Configures the Dish by setting pointing coordinates for a given observation.
         :param argin: A String in a JSON format that includes pointing parameters of Dish- Azimuth and
         Elevation Angle.
+            Example:
+            {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
+
         :return: None
-        TODO: This will be new input string
-        2:31:50.91,89:15:51.4
-        {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
+
         """
         excpt_count = 0
         excpt_msg = []
@@ -860,7 +861,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Track) ENABLED START #
         """ Invokes Track command on the DishMaster.
 
-        :param argin: DevVarStringArray
+        :param argin: DevString
 
         The elevation limit thread allows Dish to track a source till the observation capacity i.e.
         elevation limit of dish.
@@ -868,11 +869,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         The tracking time thread allows dish to track a source for the prespecified Track Duration
         (provided elevation limit is not reached).
 
-        For Track command, Argin to be provided is the Ra and Dec values in the following format:
-        radec|2:31:50.91|89:15:51.4 Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,
-        and third value is Dec in Deg:Min:Sec.
-         TODO:
-         {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
+        For Track command, Argin to be provided is the Ra and Dec values in the following JSON format:
+        {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
+
         :return: None
 
         """
