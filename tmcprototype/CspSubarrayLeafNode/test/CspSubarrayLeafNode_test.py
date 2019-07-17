@@ -113,7 +113,7 @@ class TestCspSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.ConfigureScan(test_input)
         time.sleep(1)
-        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
     #
     # def test_StartScan(self):
     #     """Test for StartScan"""
@@ -165,7 +165,7 @@ class TestCspSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
         time.sleep(1)
-        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert CONST.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
 
     def test_AssignResources_key_not_found(self, tango_context):
         """
