@@ -303,6 +303,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
                 print(CONST.STR_SUBS_ATTRS_LN)
                 self._read_activity_message = CONST.STR_SUBS_ATTRS_LN
+                # TODO: FOR FUTURE REFERENCE
                 # print(CONST.STR_HS_EVNT_ID, self._health_event_id)
                 # self._read_activity_message = CONST.STR_HS_EVNT_ID + str(self._health_event_id)
                 # Set state = ON
@@ -530,16 +531,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._read_activity_message = CONST.STR_SCAN_IP_ARG + str(scanTimestamp)
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list())
-
-                # cmdData = tango.DeviceData()
-                # cmdData.insert(tango.DevString, scanTimestamp)
-                # self._dish_leaf_node_group.command_inout(CONST.CMD_SCAN, cmdData)
-
                 # set obsState to SCANNING when the scan is started
                 self._obs_state = 3
                 self.set_status(CONST.STR_SA_SCANNING)
                 self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
 
+            #TODO: FOR FUTURE IMPLEMENTATION
             # if type(float(argin[0])) == float:
             #     print("Observation state:", self._obs_state)
             #     assert self._obs_state != 3, CONST.SCAN_ALREADY_IN_PROGRESS
@@ -610,6 +607,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             if self._obs_state == 3:
                 print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list())
 
+                # TODO: FOR FUTURE IMPLEMENTATION
                 # cmdData = tango.DeviceData()
                 # cmdData.insert(tango.DevString, "0")
                 # self._dish_leaf_node_group.command_inout(CONST.CMD_END_SCAN, cmdData)
@@ -737,7 +735,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 sdp_allocation_result == dummy_sdp_resources
               ):
                 # Currently sending only dish allocation results.
-                # argout = dish_allocation_result
                 argout = dish_allocation_result
             else:
                 #TODO: Need to add code to revert allocated resources
@@ -1141,6 +1138,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN + str(
                 self._dish_leaf_node_group.get_device_list())
             scanConfiguration = json.loads(argin[0])
+
+            # TODO: FOR FUTURE IMPLEMENTATION
             # scanID = scanConfiguration["scanID"]
             # pointing =  scanConfiguration["pointing"]
             # dishConfiguration1 = scanConfiguration["dish"]
@@ -1160,6 +1159,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._obs_state = 0
             # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
             self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
+            # TODO: FOR FUTURE REFERENCE
             # # set obsState to READY when the configuration is completed
             # self._obs_state = 2
             self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
