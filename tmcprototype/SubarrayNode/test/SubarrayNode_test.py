@@ -95,7 +95,7 @@ class TestSubarrayNode(object):
     def test_State(self, tango_context):
         """Test for State"""
         # PROTECTED REGION ID(SubarrayNode.test_State) ENABLED START #
-        assert tango_context.device.State() == DevState.ON
+        assert tango_context.device.State() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_State
 
     def test_AssignResources(self, tango_context):

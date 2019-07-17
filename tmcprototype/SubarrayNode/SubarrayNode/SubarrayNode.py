@@ -504,11 +504,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def Scan(self, argin):
         """
-        Schedules a scan for execution on a subarray. Command has a parameter which
-        indicates the time (TAI) at which the Scan will start. Subarray transitions to
+        Schedules a scan for execution on a subarray. Subarray transitions to
         obsState = SCANNING, when the execution of a scan starts.
 
-        :param argin: String array with Scan start time as first element.
+        :param argin: DevString. JSON string containing scan duration. JSON string example as follows:
+
+        {"scanDuration": 10.0}
+
+        Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
         :return: None
         """
@@ -1110,7 +1113,22 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         Configures the resources assinged to the Subarray.
 
-        :param argin: String array that includes pointing parameters of Dish - Azimuth and Elevation Angle.
+        :param argin: DevString. JSON string that includes pointing parameters of Dish - Azimuth and
+        Elevation Angle, CSP Configuration and SDP Configuration parameters. JSON string example is:
+
+        {"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",
+        "dec":"89:15:51.4"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1",
+        "delayModelSubscriptionPoint":"","visDestinationAddressSubscriptionPoint":"",
+        "fsp":[{"fspID":"1","functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,
+        "corrBandwidth":0,"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,
+        "integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]},"sdp":{"configure":
+        {"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest",
+        "type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChanels":372,
+        "numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS",
+        "name":"NGC6251","ra":"2:31:50.91","dec":"89:15:51.4"}}},"scanParameters":{"12345":{"fieldId":0,
+        "intervalMs":1400}}},"configureScan":{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}
+
+        Note: While invoking this command from JIVE, provide above JSON string without any space.
 
         :return: None
 
