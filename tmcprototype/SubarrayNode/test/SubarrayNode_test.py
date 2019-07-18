@@ -126,7 +126,7 @@ class TestSubarrayNode(object):
         """Test for EndScan"""
         # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
         tango_context.device.EndScan()
-        assert tango_context.device.obsState == 0
+        assert tango_context.device.obsState == 2
         # with pytest.raises(tango.DevFailed):
         #     tango_context.device.EndScan()
         # assert CONST.ERR_DUPLICATE_END_SCAN_CMD in tango_context.device.activityMessage
@@ -171,7 +171,7 @@ class TestSubarrayNode(object):
         """Test for Track"""
         # PROTECTED REGION ID(SubarrayNode.test_Track) ENABLED START #
         tango_context.device.Track("radec|2:31:50.91|89:15:51.4")
-        assert tango_context.device.obsState == 2
+        assert tango_context.device.obsState == 0
         # PROTECTED REGION END #    //  SubarrayNode.test_Track
 
     def test_activationTime(self, tango_context):
@@ -242,7 +242,7 @@ class TestSubarrayNode(object):
     def test_obsState(self, tango_context):
         """Test for obsState"""
         # PROTECTED REGION ID(SubarrayNode.test_obsState) ENABLED START #
-        assert tango_context.device.obsState == 2
+        assert tango_context.device.obsState == 0
         # PROTECTED REGION END #    //  SubarrayNode.test_obsState
 
     def test_simulationMode(self, tango_context):
@@ -283,7 +283,7 @@ class TestSubarrayNode(object):
     def test_sbID(self, tango_context):
         """Test for sbID"""
         # PROTECTED REGION ID(SubarrayNode.test_sbID) ENABLED START #
-        assert tango_context.device.sbID != ""
+        assert tango_context.device.sbID == ""
         # PROTECTED REGION END #    //  SubarrayNode.test_sbID
 
     def test_activityMessage(self, tango_context):
