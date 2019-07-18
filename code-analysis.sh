@@ -14,7 +14,6 @@ pylint --rcfile=.pylintrc tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode
 pylint --rcfile=.pylintrc tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode
 pylint --rcfile=.pylintrc tmcprototype/SubarrayNode/SubarrayNode
 pylint --rcfile=.pylintrc tmcprototype/SdpSubarray/SdpSubarray
-pylint --rcfile=.pylintrc tmcprototype/CspSubarray/CspSubarray
 pylint --rcfile=.pylintrc tmcprototype/CentralNode/CentralNode
 
 echo "TESTS ANALYSIS"
@@ -28,5 +27,4 @@ pylint --rcfile=.pylintrc tmcprototype/SdpSubarrayLeafNode/test
 pylint --rcfile=.pylintrc tmcprototype/SdpMasterLeafNode/test
 pylint --rcfile=.pylintrc tmcprototype/SubarrayNode/test
 pylint --rcfile=.pylintrc tmcprototype/SdpSubarray/test
-pylint --rcfile=.pylintrc tmcprototype/CspSubarray/test
 pylint --rcfile=.pylintrc tmcprototype/CentralNode/test
