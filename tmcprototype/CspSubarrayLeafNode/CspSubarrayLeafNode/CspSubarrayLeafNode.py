@@ -359,8 +359,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         try:
             #Invoke RemoveAllReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
-            self._read_activity_message = CONST.STR_REMOVE_ALL_RESOURCES_SUCCESS
-            self.dev_logging(CONST.STR_REMOVE_ALL_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self._read_activity_message = CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS
+            self.dev_logging(CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except DevFailed as dev_failed:
             self.dev_logging(CONST.ERR_RELEASE_ALL_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
