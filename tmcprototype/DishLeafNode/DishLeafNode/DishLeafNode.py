@@ -97,40 +97,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
             self.dev_logging(CONST.ERR_ON_SUBS_DISH_MODE_ATTR, int(tango.LogLevel.LOG_ERROR))
 
-    def dishPointingStateCallback(self, evt):
-        """
-        Retrieves the subscribed pointingState attribute of DishMaster.
-        :param evt: A TANGO_CHANGE event on pointingState attribute.
-        :return: None
-
-        """
-        if evt.err is False:
-            try:
-                self._pointing_state = evt.attr_value.value
-                if self._pointing_state == 0:
-                    print(CONST.STR_DISH_POINT_STATE_READY)
-                    self._read_activity_message = CONST.STR_DISH_POINT_STATE_READY
-                elif self._pointing_state == 1:
-                    print(CONST.STR_DISH_POINT_STATE_SLEW)
-                    self._read_activity_message = CONST.STR_DISH_POINT_STATE_SLEW
-                elif self._pointing_state == 2:
-                    print(CONST.STR_DISH_POINT_STATE_TRACK)
-                    self._read_activity_message = CONST.STR_DISH_POINT_STATE_TRACK
-                elif self._pointing_state == 3:
-                    print(CONST.STR_DISH_POINT_STATE_SCAN)
-                    self._read_activity_message = CONST.STR_DISH_POINT_STATE_SCAN
-                else:
-                    print(CONST.STR_DISH_POINT_STATE_UNKNOWN, evt)
-                    self._read_activity_message = CONST.STR_DISH_POINT_STATE_UNKNOWN + str(evt)
-            except Exception as except_occurred:
-                print(CONST.ERR_DISH_POINT_STATE_CB, except_occurred.message)
-                self._read_activity_message = CONST.ERR_DISH_POINT_STATE_CB + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_DISH_POINT_STATE_CB, int(tango.LogLevel.LOG_ERROR))
-        else:
-            print(CONST.ERR_ON_SUBS_DISH_POINT_ATTR, evt.errors)
-            self._read_activity_message = CONST.ERR_ON_SUBS_DISH_POINT_ATTR + str(evt.errors)
-            self.dev_logging(CONST.ERR_ON_SUBS_DISH_POINT_ATTR, int(tango.LogLevel.LOG_ERROR))
-
     def dishCapturingCallback(self, evt):
         """
         Retrieves the subscribed capturing attribute of DishMaster.
@@ -659,30 +625,20 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             katpoint_arg.insert(0, radec_value)
             katpoint_arg.insert(1, timestamp_value)
             self.convert_radec_to_azel(katpoint_arg)
-            # Invoke slew command on DishMaster with az and el as inputs
-            if self.el >= self.horizon_el  and self.el < self.ele_max_lim:
-                # To obtain positive value of azimuth coordinate
-                if self.az < 0:
-                    self.az = 360 - abs(self.az)
-                roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
-                spectrum = [0]
-                spectrum.extend(roundoff_az_el)
-                # Convert calulated AZ-El into JSON string
-                arg_out = { "pointing": {
-                    "AZ": self.az,
-                    "EL": self.el
+            # Convert calulated AZ-El into JSON string
+            arg_out = { "pointing": {
+                "AZ": self.az,
+                "EL": self.el
 
-                },
-                    "dish":{
-                        "receiverBand": receiver_band
-                    }
-
+            },
+                "dish":{
+                    "receiverBand": receiver_band
                 }
-                arg_list = json.dumps(arg_out)
-                # Send configure command to Dish Master
-                self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_CONFIGURE, str(arg_list), self.commandCallback)
-            else:
-                self._read_activity_message = CONST.STR_TARGET_NOT_OBSERVED
+
+            }
+            arg_list = json.dumps(arg_out)
+            # Send configure command to Dish Master
+            self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_CONFIGURE, str(arg_list), self.commandCallback)
 
         except ValueError as value_error:
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
