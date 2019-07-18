@@ -143,12 +143,12 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Initializes the attributes and properties of the Central Node. """
         try:
             # Initialise device state
-            self.set_state(DevState.ON)
+            self.set_state(DevState.ON) # set State=On
             # Initialise attributes
-            self._receive_addresses = 'test'
+            self._receive_addresses = ""
             self._sdp_subarray_health_state = CONST.ENUM_OK
-            self._read_activity_message = 'ok'
-            self._active_processing_block = 'test'
+            self._read_activity_message = ""
+            self._active_processing_block = ""
             # Initialise Device status
             self.set_status(CONST.STR_INIT_SUCCESS)
             # Create Device proxy for Sdp Subarray using SdpSubarrayNodeFQDN property

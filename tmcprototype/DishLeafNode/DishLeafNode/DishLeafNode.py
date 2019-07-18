@@ -349,13 +349,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         """
 
-        print ("argin", argin, type(argin))
-        radec_value = argin.replace('|', ',')
-        # RaDec as input argument
-
-        #Timestamp value if given as input argument
-        #timestamp_value = argin[1].replace('|', ' ')
-
         try:
             while self.event_track_time.is_set() is False:
                 # timestamp_value = Current system time in UTC
@@ -572,6 +565,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         excpt_count = 0
         excpt_msg = []
+        # TODO: Accept Scan argument in JSON format
         # jsonArgument = json.loads(argin)
         # scan_duration = jsonArgument['scanDuration']
         # print("Scan duration:", scan_duration)
@@ -612,6 +606,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         excpt_count = 0
         excpt_msg = []
+        # TODO: Accept EndScan argument in JSON format
         # jsonArgument = json.loads(argin)
         # timestamp = jsonArgument['timestamp']
         # print("End Scan timestamp:", timestamp)
@@ -662,9 +657,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         timestamp_value = str(datetime.datetime.utcnow())
         try:
             # Convert ra and dec to az and el
-            #radec_value = argin[0].replace('|', ' ')
             radec_value = 'radec' + ',' + str(ra_value) + ',' +str(dec_value)
-            # timestamp_value = argin[1].replace('|', ' ')
             katpoint_arg = []
             katpoint_arg.insert(0, radec_value)
             katpoint_arg.insert(1, timestamp_value)
@@ -677,11 +670,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 roundoff_az_el = [round(self.az, 2), round(self.el, 2)]
                 spectrum = [0]
                 spectrum.extend(roundoff_az_el)
-                # # Set Az-El value at Dish Master Desired Pointing attribute
-                # self._dish_proxy.desiredPointing = spectrum
-                # # Set Receiver Band Attribute of Dish Master
-                # self._dish_proxy.ConfiguredBand = receiver_band
-
+                # Convert calulated AZ-El into JSON string
                 arg_out = { "pointing": {
                     "AZ": self.az,
                     "EL": self.el
