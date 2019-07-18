@@ -19,7 +19,6 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpSubarrayLeafNode"
 sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
 # PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
@@ -233,7 +232,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
 
             # Call SDP Subarray Command asynchronously
-            print("Calling ReleaseAllResources command...")
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_RELEASE_RESOURCES,
                                                                           self.commandCallback)
 
@@ -326,9 +324,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             jsonArgument = json.loads(argin)
             processingBlockIDList = jsonArgument[CONST.STR_PROCESSINGBLOCKID_LIST]
-            print ("processingBlockIDList :", processingBlockIDList)
             # Call SDP Subarray Command asynchronously
-            print ("Calling Assign resources command...")
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ASSIGN_RESOURCES,
                                                                           list(processingBlockIDList),
                                                                           self.commandCallback)
