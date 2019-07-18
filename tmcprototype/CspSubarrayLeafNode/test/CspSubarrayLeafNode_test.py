@@ -96,7 +96,6 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
         test_input = ''
         test_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
-        print("test_input", test_input)
         res = tango_context.device.ConfigureScan(test_input)
         tango_context.device.status()
         time.sleep(1)
@@ -141,7 +140,7 @@ class TestCspSubarrayLeafNode(object):
         res = tango_context.device.ReleaseAllResources()
         tango_context.device.status()
         time.sleep(1)
-        assert CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
+        assert CONST.STR_REMOVE_ALL_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ReleaseResources
 
     def test_AssignResources(self, tango_context):
@@ -152,7 +151,7 @@ class TestCspSubarrayLeafNode(object):
         res = tango_context.device.AssignResources(test_input)
         tango_context.device.status()
         time.sleep(1)
-        assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
+        assert CONST.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_AssignResources
 
     def test_AssignResources_invalid_json(self, tango_context):
