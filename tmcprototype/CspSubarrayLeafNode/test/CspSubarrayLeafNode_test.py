@@ -140,7 +140,7 @@ class TestCspSubarrayLeafNode(object):
         res = tango_context.device.ReleaseAllResources()
         tango_context.device.status()
         time.sleep(1)
-        assert CONST.STR_REMOVE_ALL_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
+        assert CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS in tango_context.device.activityMessage and res is None
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ReleaseResources
 
     def test_AssignResources(self, tango_context):
