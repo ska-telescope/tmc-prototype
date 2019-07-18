@@ -271,7 +271,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
             # Compute Target Coordinates
             target_radec = data[0]
-            print ("target_radec:", target_radec)
             desired_target = katpoint.Target(str(target_radec))
             timestamp = katpoint.Timestamp(timestamp=data[1])
             target_apparnt_radec = katpoint.Target.apparent_radec(desired_target,
@@ -307,7 +306,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.RaDec_AzEl_Conversion = True
         except ValueError as value_err:
             print(CONST.ERR_RADEC_TO_AZEL_VAL_ERR)
-            print(value_err)
             self.RaDec_AzEl_Conversion = False
             self._read_activity_message = CONST.ERR_RADEC_TO_AZEL_VAL_ERR + str(value_err)
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL_VAL_ERR, int(tango.LogLevel.LOG_ERROR))
@@ -612,7 +610,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # print("End Scan timestamp:", timestamp)
         try:
             if type(float(argin)) == float:
-                print ("Sending end scan command...")
                 self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE,
                                                       argin, self.commandCallback)
         except ValueError as value_error:
