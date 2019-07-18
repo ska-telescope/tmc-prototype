@@ -139,7 +139,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self._read_activity_message = " "
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
-            self._csp_subarray_health_state = 0
+            self._csp_subarray_health_state = CONST.ENUM_OK
             self._opstate = CONST.ENUM_INIT
             self._delay_model = " "
             self._visdestination_address = " "
@@ -238,48 +238,40 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :param argin: The string in JSON format. The JSON contains following values:
 
-                csp:
-                    frequencyBand:
-                    fsp:
-                        fspID:
-                        functionMode:
-                        frequencySliceID:
-                        integrationTime:
-                        corrBandwidth:
-                        channelAveragingMap:
-
-
-                Example:
+            Example:
+                {
+                  "csp":
+                  {
+                    | "frequencyBand": "1",
+                    | "delayModelSubscriptionPoint": "",
+                    | "visDestinationAddressSubscriptionPoint": "",
+                    | "fsp": [
                     {
-                     "csp": {
-                      "frequencyBand": "1",
-                      "fsp": [
-                        {
-                          "fspID": "1",
-                          "functionMode": "CORR",
-                          "frequencySliceID": 1,
-                          "integrationTime": 1400,
-                          "corrBandwidth": 0,
-                          "channelAveragingMap": [
-                          ]
-                        },
-                        {
-                          "fspID": "2",
-                          "functionMode": "CORR",
-                          "frequencySliceID": 1,
-                          "integrationTime": 1400,
-                          "corrBandwidth": 0,
-                          "channelAveragingMap": [
-                            ]
-                         }
-                        ]
-                      }
-                    }
+                     | "fspID": "1",
+                     | "functionMode": "CORR",
+                     | "frequencySliceID": 1,
+                     | "integrationTime": 1400,
+                     | "corrBandwidth": 0,
+                     | "channelAveragingMap": []
+                    },
+                    {
+                     | "fspID": "2",
+                     | "functionMode": "CORR",
+                     | "frequencySliceID": 1,
+                     | "integrationTime": 1400,
+                     | "corrBandwidth": 0,
+                     | "channelAveragingMap": []
+                    | }
+                   | ]
+                  | }
+                | }
 
-        Note: from Jive, enter input as :
-        {"csp":{"frequencyBand":"1","fsp":[{"fspID":"1","functionMode":"CORR","frequencySliceID":1,
-        "integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR",
-        "frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]}}
+        Note: \n
+        from Jive, enter input as :\n
+        {"csp":{"frequencyBand":"1","delayModelSubscriptionPoint": "","visDestinationAddressSubscriptionPoint"
+        :"",,"fsp":[{"fspID":"1","functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,
+        "corrBandwidth":0,"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,
+        "integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]}}
         without white spaces
 
         :return: None.
@@ -413,12 +405,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
 
             Example:
-                {
-                "subarrayID": 1,
-                "dish": {
-                "receptorIDList": ["0001","0002"]
-                }
-                }
+                | {
+                | "subarrayID": 1,
+                | "dish": {
+                     "receptorIDList": ["0001","0002"]
+                | }
+                | }
 
         Note: From Jive, enter input as:
         {"dish":{"receptorIDList":["0001","0002"]}} without any space.

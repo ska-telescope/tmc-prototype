@@ -121,15 +121,15 @@ class CspSubarray(SKASubarray):
     def init_device(self):
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(CspSubarray.init_device) ENABLED START #
-        self._opstate = 0
+        self._opstate = 0       # Set operating state to INIT
         self._scanid = 0
         self._frequencyband = 0
         self._procmode = 0
         self._receptor = []
         self._correlations = " "
-        self._health_state = 0
+        self._health_state = 0  # Set health state to OK
         self.set_state(DevState.OFF)  # Set state = OFF
-        self._opstate = 1
+        self._opstate = 1      # Set operating state to OFF
         # PROTECTED REGION END #    //  CspSubarray.init_device
 
     def always_executed_hook(self):
@@ -217,12 +217,10 @@ class CspSubarray(SKASubarray):
     @DebugIt()
     def ConfigureScan(self, argin):
         # PROTECTED REGION ID(CspSubarray.ConfigureScan) ENABLED START #
-        #Set ObsState to CONFIGURING
-        self._obs_state = 1
+        self._obs_state = 1                 # Set ObsState to CONFIGURING
         print("ConfigureScan is invoked successfully on CspSubarray. Argin:", argin)
         time.sleep(4)
-        #Set ObsState to READY after ConfigureScan is completed
-        self._obs_state = 2
+        self._obs_state = 2                 # Set ObsState to READY
         # PROTECTED REGION END #    //  CspSubarray.ConfigureScan
 
     @command(
@@ -232,7 +230,7 @@ class CspSubarray(SKASubarray):
     def AddReceptors(self, argin):
         # PROTECTED REGION ID(CspSubarray.AddReceptors) ENABLED START #
         self.set_state(DevState.ON)  # Set state = ON
-        self._opstate = 2
+        self._opstate = 2                    # Set operating state to ON
         print("Add receptors command executed successfully on CspSubarray. Argin:", argin)
         # PROTECTED REGION END #    //  CspSubarray.AddReceptors
 
@@ -251,7 +249,7 @@ class CspSubarray(SKASubarray):
     def RemoveAllReceptors(self):
         # PROTECTED REGION ID(CspSubarray.RemoveAllReceptors) ENABLED START #
         self.set_state(DevState.OFF)  # Set state = OFF
-        self._opstate = 1
+        self._opstate = 1                   # Set operating state to OFF
         print("RemoveAllReceptors command executed successfully on CspSubarray.")
         # PROTECTED REGION END #    //  CspSubarray.RemoveAllReceptors
 
