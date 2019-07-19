@@ -88,7 +88,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
 
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_sdp/elt/subarray_1",
+        dtype='str', default_value="mid_sdp/elt/subarray_00",
         doc='FQDN of the SDP Subarray Node Tango Device Server.',
     )
 
@@ -232,6 +232,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Call SDP Subarray Command asynchronously
             print("Calling ReleaseAllResources command...")
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_RELEASE_RESOURCES,
+                                                                          '{"dummy_key": "dummy_value}"',
                                                                           self.commandCallback)
 
             print("SdpSubarrayLeafNode.ReleaseAllResources command executed successfully.")
@@ -323,11 +324,12 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             jsonArgument = json.loads(argin)
             processingBlockIDList = jsonArgument[CONST.STR_PROCESSINGBLOCKID_LIST]
+            print("argin: ", argin)
             print ("processingBlockIDList :", processingBlockIDList)
             # Call SDP Subarray Command asynchronously
             print ("Calling Assign resources command...")
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ASSIGN_RESOURCES,
-                                                                          list(processingBlockIDList),
+                                                                          argin,
                                                                           self.commandCallback)
 
             print("SdpSubarrayLeafNode.Assign Resources command executed successfully.")

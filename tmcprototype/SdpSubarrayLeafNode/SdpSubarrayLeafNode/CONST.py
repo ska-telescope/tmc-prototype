@@ -3,7 +3,7 @@
 # CMD_SET_STANDBY_MODE = "SetStandbyLPMode"
 # CMD_SET_OPERATE_MODE = "SetOperateMode"
 CMD_ASSIGN_RESOURCES = "AssignResources"
-CMD_RELEASE_RESOURCES = "ReleaseAllResources"
+CMD_RELEASE_RESOURCES = "ReleaseResources"
 #
 # CMD_CSP_MASTER_LEAF_STANDBY = "Standby"
 # CMD_CSP_MASTER_LEAF_STARTUP = "On"
@@ -64,7 +64,7 @@ STR_ASSIGN_RES_EXEC = "AssignResources command execution"
 # STR_STANDBY_EXEC = "StandByTelescope command execution"
 #
 # #PROPERTIES DEFAULT VALUES
-PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_1"
+PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_00"
 # PROP_DEF_VAL_TM_MID_SA2 = "ska_mid/tm_subarray_node/2"
 # PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
 #
