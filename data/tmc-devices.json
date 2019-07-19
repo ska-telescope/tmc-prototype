@@ -542,40 +542,6 @@
         "SdpSubarrayLeafNode": {
             "01": {
                 "SdpSubarrayLeafNode": {
-                    "ska_mid/tm_leaf_node/sdp_subarray": {
-                        "attribute_properties": {
-                            "healthState": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "sdpSubarrayHealthState": {
-                                "__root_att": [
-                                    "Not defined"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
-                            }
-                        },
-                        "properties": {
-                            "SdpSubarrayFQDN": [
-                                "mid_sdp/elt/subarray_1"
-                            ],
-                            "SkaLevel": [
-                                "1"
-                            ],
-                            "polled_attr": [
-                                "activitymessage",
-                                "1000",
-                                "healthstate",
-                                "1000"
-                            ]
-                        }
-                    },
                     "ska_mid/tm_leaf_node/sdp_subarray01": {
                         "attribute_properties": {
                             "healthState": {
@@ -584,11 +550,11 @@
                                     "1"
                                 ]
                             },
-                            "sdpSubarrayHealthState": {
-                                "__root_att": [
-                                    "mid_sdp/elt/subarray_1/healthState"
-                                ]
-                            },
+//                            "sdpSubarrayHealthState": {
+//                                "__root_att": [
+//                                    "mid_sdp/elt/subarray_00/healthState"
+//                                ]
+//                            },
                             "storageLoggingLevel": {
                                 "__value": [
                                     "5"
@@ -597,10 +563,10 @@
                         },
                         "properties": {
                             "SdpSubarrayFQDN": [
-                                "mid_sdp/elt/subarray_1"
+                                "mid_sdp/elt/subarray_00"
                             ],
                             "SkaLevel": [
-                                "1"
+                                "3"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -1134,93 +1100,93 @@
             }
         },
 
-        "SdpMaster": {
-            "01": {
-                "SdpMaster": {
-                    "mid_sdp/elt/master": {
-                        "attribute_properties": {
-                            "healthState": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
-                            }
-                        },
-                        "properties": {
-                            "polled_attr": [
-                                "healthstate",
-                                "1000"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "SdpSubarray": {
-            "01": {
-                "SdpSubarray": {
-                    "mid_sdp/elt/subarray_1": {
-                        "attribute_properties": {
-                            "adminMode": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "healthState": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "obsMode": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "obsState": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
-                            }
-                        },
-                        "properties": {
-                            "SkaLevel": [
-                                "2"
-                            ],
-                            "polled_attr": [
-                                "adminmode",
-                                "1000",
-                                "healthstate",
-                                "1000",
-                                "obsmode",
-                                "1000",
-                                "obsstate",
-                                "1000",
-                                "receiveaddresses",
-                                "1000",
-                                "activeprocessingblocks",
-                                "1000",
-                                "testmode",
-                                "2000"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
+//        "SdpMaster": {
+//            "01": {
+//                "SdpMaster": {
+//                    "mid_sdp/elt/master": {
+//                        "attribute_properties": {
+//                            "healthState": {
+//                                "abs_change": [
+//                                    "-1",
+//                                    "1"
+//                                ]
+//                            },
+//                            "storageLoggingLevel": {
+//                                "__value": [
+//                                    "5"
+//                                ]
+//                            }
+//                        },
+//                        "properties": {
+//                            "polled_attr": [
+//                                "healthstate",
+//                                "1000"
+//                            ]
+//                        }
+//                    }
+//                }
+//            }
+//        },
+//        "SdpSubarray": {
+//            "01": {
+//                "SdpSubarray": {
+//                    "mid_sdp/elt/subarray_1": {
+//                        "attribute_properties": {
+//                            "adminMode": {
+//                                "abs_change": [
+//                                    "-1",
+//                                    "1"
+//                                ]
+//                            },
+//                            "healthState": {
+//                                "abs_change": [
+//                                    "-1",
+//                                    "1"
+//                                ]
+//                            },
+//                            "obsMode": {
+//                                "abs_change": [
+//                                    "-1",
+//                                    "1"
+//                                ]
+//                            },
+//                            "obsState": {
+//                                "abs_change": [
+//                                    "-1",
+//                                    "1"
+//                                ]
+//                            },
+//                            "storageLoggingLevel": {
+//                                "__value": [
+//                                    "5"
+//                                ]
+//                            }
+//                        },
+//                        "properties": {
+//                            "SkaLevel": [
+//                                "2"
+//                            ],
+//                            "polled_attr": [
+//                                "adminmode",
+//                                "1000",
+//                                "healthstate",
+//                                "1000",
+//                                "obsmode",
+//                                "1000",
+//                                "obsstate",
+//                                "1000",
+//                                "receiveaddresses",
+//                                "1000",
+//                                "activeprocessingblocks",
+//                                "1000",
+//                                "testmode",
+//                                "2000"
+//                            ]
+//                        }
+//                    }
+//                }
+//            }
+//        },
 
         "TangoAccessControl": {
             "1": {

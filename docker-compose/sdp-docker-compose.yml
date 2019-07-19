@@ -13,38 +13,32 @@ volumes:
 
 services:
   sdpmaster:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
-    depends_on:
-    - databaseds
-    - rsyslog-tmcprototype
-    - tmc-dsconfig
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}sdpmaster
-    environment:
-    - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             /venv/bin/python /app/tmcprototype/SdpMaster/SdpMaster/SdpMaster.py 01"
-    volumes_from:
-    - rsyslog-tmcprototype:rw
-
-  sdpsubarray:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_master:latest
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
-      - tmc-dsconfig
+      - sdp-dsconfig
+    container_name: ${CONTAINER_NAME_PREFIX}sdp_master
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarray
     environment:
-      - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             /venv/bin/python /app/tmcprototype/SdpSubarray/SdpSubarray/SdpSubarray.py 01"
-    volumes_from:
-      - rsyslog-tmcprototype:rw
+    - TANGO_HOST=${TANGO_HOST}
+    stdin_open: true
+    entrypoint: ["python", "SDPMaster"]
+    command: ["1", "-v4"]
+
+  sdpsubarray:
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - sdp-dsconfig
+    container_name: ${CONTAINER_NAME_PREFIX}sdp_subarray
+    network_mode: ${NETWORK_MODE}
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    stdin_open: true
+    entrypoint: ["python", "SDPSubarray"]
+    command: ["1", "-v4"]
 
   sdp-dsconfig:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-dsconfig:latest

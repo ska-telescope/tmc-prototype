@@ -266,8 +266,8 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             tango_admin --ping-device mid_sdp/elt/subarray_1 10 &&\
-             /venv/bin/python /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 01"
+             tango_admin --ping-device mid_sdp/elt/subarray_00 10 &&\
+             /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 01"
     volumes_from:
     - rsyslog-tmcprototype:rw
 
@@ -312,7 +312,7 @@ services:
              tango_admin --ping-device mid_d0003/elt/master 10 &&\
              tango_admin --ping-device mid_d0004/elt/master 10 &&\
              tango_admin --ping-device mid-csp/elt/subarray01 10 &&\
-             tango_admin --ping-device mid_sdp/elt/subarray_1 10 &&\
+             tango_admin --ping-device mid_sdp/elt/subarray_00 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
@@ -346,7 +346,7 @@ services:
              tango_admin --ping-device mid_d0003/elt/master 10 &&\
              tango_admin --ping-device mid_d0004/elt/master 10 &&\
              tango_admin --ping-device mid-csp/elt/subarray01 10 &&\
-             tango_admin --ping-device mid_sdp/elt/subarray_1 10 &&\
+             tango_admin --ping-device mid_sdp/elt/subarray_00 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
@@ -356,23 +356,6 @@ services:
              /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa2"
     volumes_from:
     - rsyslog-tmcprototype:rw
-
-  sdpsubarray:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
-    depends_on:
-      - databaseds
-      - rsyslog-tmcprototype
-      - tmc-dsconfig
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarray
-    environment:
-      - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-             /venv/bin/python /app/tmcprototype/SdpSubarray/SdpSubarray/SdpSubarray.py 01"
-    volumes_from:
-      - rsyslog-tmcprototype:rw
 
   centralnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest

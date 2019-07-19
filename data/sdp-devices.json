@@ -1,7 +1,7 @@
 {
     "servers": {
         "SdpMaster": {
-            "01": {
+            "1": {
                 "SdpMaster": {
                     "mid_sdp/elt/master": {
                         "attribute_properties": {
@@ -28,9 +28,9 @@
             }
         },
         "SdpSubarray": {
-            "01": {
+            "1": {
                 "SdpSubarray": {
-                    "mid_sdp/elt/subarray_1": {
+                    "mid_sdp/elt/subarray_00": {
                         "attribute_properties": {
                             "adminMode": {
                                 "abs_change": [
