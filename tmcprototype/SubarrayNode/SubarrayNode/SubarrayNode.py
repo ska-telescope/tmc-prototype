@@ -120,8 +120,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
                 if CONST.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa_obs_state = self._observetion_state
+                    self._read_activity_message = CONST.STR_CSP_SUBARRAY_OBS_STATE + self._csp_sa_obs_state
                 elif CONST.PROP_DEF_VAL_TMSDP_MID_SALN in evt.attr_name:
                     self._sdp_sa_obs_state = self._observetion_state
+                    self._read_activity_message = CONST.STR_SDP_SUBARRAY_OBS_STATE + self._sdp_sa_obs_state
                 else:
                     print(CONST.EVT_UNKNOWN)
                     self._read_activity_message = CONST.EVT_UNKNOWN
@@ -993,8 +995,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
                                                 # SDP SA LN
         self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
-        self._csp_sa_obs_state = 0
-        self._sdp_sa_obs_state = 0
+        self._csp_sa_obs_state = CONST.ENUM_IDLE
+        self._sdp_sa_obs_state = CONST.ENUM_IDLE
 
 
         # Create proxy for CSP Subarray Leaf Node
@@ -1004,7 +1006,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         # Create proxy for SDP Subarray Leaf Node
         self._sdp_subarray_ln_proxy = None
-        self.create_sdp_ln_proxy()
+        result = self.create_sdp_ln_proxy()
         print("sdp proxy creation result: ", result)
 
         try:
@@ -1109,7 +1111,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         Configures the resources assinged to the Subarray.
 
-        :param argin: DevString. JSON string that includes pointing parameters of Dish - Azimuth and
+        :param argin: DevStringArray. JSON string that includes pointing parameters of Dish - Azimuth and
         Elevation Angle, CSP Configuration and SDP Configuration parameters. JSON string example is:
 
         {"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",
@@ -1133,40 +1135,71 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_msg = []
 
         try:
-            self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
-            self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN + str(
-                self._dish_leaf_node_group.get_device_list())
-            scanConfiguration = json.loads(argin[0])
+            self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin[0])
+            # self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN + str(
+            #     self._dish_leaf_node_group.get_device_list())
 
-            # TODO: FOR FUTURE IMPLEMENTATION
-            # scanID = scanConfiguration["scanID"]
-            # pointing =  scanConfiguration["pointing"]
-            # dishConfiguration1 = scanConfiguration["dish"]
-            # cspConfiguration = scanConfiguration["csp"]
-            # sdpConfiguration = scanConfiguration["sdp"]
+            if self._obs_state == CONST.ENUM_IDLE:
+                scanConfiguration = json.loads(argin[0])
 
-            # Configuration of Dish
-            dishConfiguration = scanConfiguration
-            del dishConfiguration["sdp"]
-            del dishConfiguration["csp"]
-            print("dish: ", type(json.dumps(dishConfiguration)))
-            self._scan_id = str(scanConfiguration["scanID"])
-            cmdData = tango.DeviceData()
-            cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
+                # TODO: FOR FUTURE IMPLEMENTATION
+                # scanID = scanConfiguration["scanID"]
+                # pointing =  scanConfiguration["pointing"]
+                # dishConfiguration1 = scanConfiguration["dish"]
+                # cspConfiguration = scanConfiguration["csp"]
+                # sdpConfiguration = scanConfiguration["sdp"]
 
-            # set obsState to IDLE when the configuration is started
-            self._obs_state = CONST.ENUM_IDLE
-            # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
-            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
-            # TODO: FOR FUTURE REFERENCE
-            # # set obsState to READY when the configuration is completed
-            # self._obs_state = CONST.ENUM_READY
-            self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-            self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+                self._scan_id = str(scanConfiguration["scanID"])
+                self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+                self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
 
-            #Invoke Track command on the group of Dishes assigned to the Subarray
-            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
-            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
+                # Configuration of SDP
+                sdpConfiguration = scanConfiguration
+                del sdpConfiguration["pointing"]
+                del sdpConfiguration["dish"]
+                del sdpConfiguration["csp"]
+                print("sdp: ", type(json.dumps(sdpConfiguration)))
+                cmdData = tango.DeviceData()
+                cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
+                self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
+
+                # Configuration of CSP
+                cspConfiguration = scanConfiguration
+                del cspConfiguration["pointing"]
+                del cspConfiguration["dish"]
+                del cspConfiguration["sdp"]
+                print("csp: ", type(json.dumps(cspConfiguration)))
+                cmdData = tango.DeviceData()
+                cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
+                self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
+
+                # Configuration of Dish
+                dishConfiguration = scanConfiguration
+                del dishConfiguration["sdp"]
+                del dishConfiguration["csp"]
+                print("dish: ", type(json.dumps(dishConfiguration)))
+                cmdData = tango.DeviceData()
+                cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
+                # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
+                self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
+                # Invoke Track command on the group of Dishes assigned to the Subarray
+                self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
+                self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
+
+                # TODO: FOR FUTURE REFERENCE
+                # # set obsState to READY when the configuration is completed
+                # self._obs_state = CONST.ENUM_READY
+
+        except ValueError as value_error:
+            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except KeyError as key_error:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
         except DevFailed as dev_failed:
             print(CONST.ERR_CONFIGURE_CMD_GROUP, "\n", dev_failed)
             self._read_activity_message = CONST.ERR_CONFIGURE_CMD_GROUP + str(dev_failed)
