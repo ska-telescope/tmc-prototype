@@ -121,19 +121,20 @@ class TestDishLeafNode(object):
         # tango_context.device.Configure(["Moon | moon, radec, 06: 52:09.64, 21: 13:41.6"])
         # time.sleep(2)
         # assert tango_context.device.activityMessage == CONST.STR_TARGET_NOT_OBSERVED
-
-        tango_context.device.Configure(["radec, 2:31:50.88, 89:15:51.4", '2019-02-18 11:17:00'])
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        tango_context.device.Configure(input_string)
         # tango_context.device.Configure(['1','0'])
         time.sleep(25)
         assert tango_context.device.activityMessage == (CONST.STR_CONFIGURE_SUCCESS) or \
                (CONST.STR_DISH_POINT_STATE_READY)
         # PROTECTED REGION END #    //  DishLeafNode.test_Configure
 
-    def test_Configure_invalid_arguments(self, tango_context):
-        """Test for Configure_invalid_arguments"""
-        tango_context.device.Configure(["Polaris | polaris, 2:31:50.88, 89:15:51.4", '2019-02-18 11:17:00'])
-        print(tango_context.device.activityMessage)
-        assert CONST.ERR_RADEC_TO_AZEL_VAL_ERR in tango_context.device.activityMessage
+    # def test_Configure_invalid_arguments(self, tango_context):
+    #     """Test for Configure_invalid_arguments"""
+    #     input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.Configure(input_string)
+    #     assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
     def test_Scan(self, tango_context):
         """Test for Scan"""
@@ -238,19 +239,23 @@ class TestDishLeafNode(object):
     def test_Track(self, tango_context, create_dish_proxy):
         """Test for Track"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-        tango_context.device.Track(["radec|2:31:50.91|89:15:51.4"])
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        tango_context.device.Track(input_string)
         time.sleep(60)
-        assert create_dish_proxy.pointingState == 0
+        assert (create_dish_proxy.pointingState == 1 or create_dish_proxy.pointingState == 2)
+        create_dish_proxy.SetPointingState()
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
-    def test_Track_invalid_arg(self, tango_context):
-        """Test for Track"""
-        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-        tango_context.device.Track(["radec|2:31:50.91"])
-        time.sleep(5)
-        assert CONST.ERR_RADEC_TO_AZEL_VAL_ERR in tango_context.device.activityMessage
-        tango_context.device.SetStandByLPMode()
-        # PROTECTED REGION END #    //  DishLeafNode.test_Track
+    # def test_Track_invalid_arg(self, tango_context):
+    #     """Test for Track"""
+    #     # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+    #     input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.Track(input_string)
+    #     time.sleep(5)
+    #     assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+    #     tango_context.device.SetStandByLPMode()
+    #     # PROTECTED REGION END #    //  DishLeafNode.test_Track
 
     def test_buildState(self, tango_context):
         """Test for buildState"""

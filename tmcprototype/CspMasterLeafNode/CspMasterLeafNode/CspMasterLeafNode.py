@@ -60,13 +60,13 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         if evt.err is False:
             try:
                 self._csp_cbf_health = evt.attr_value.value
-                if self._csp_cbf_health == 0:
+                if self._csp_cbf_health == CONST.ENUM_HEALTH_OK:
                     print(CONST.STR_CSP_CBF_HEALTH_OK)
                     self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_OK
-                elif self._csp_cbf_health == 1:
+                elif self._csp_cbf_health == CONST.ENUM_HEALTH_DEGRADED:
                     print(CONST.STR_CSP_CBF_HEALTH_DEGRADED)
                     self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_DEGRADED
-                elif self._csp_cbf_health == 2:
+                elif self._csp_cbf_health == CONST.ENUM_HEALTH_FAILED:
                     print(CONST.STR_CSP_CBF_HEALTH_FAILED)
                     self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_FAILED
                 else:
@@ -96,13 +96,13 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         if evt.err is False:
             try:
                 self._csp_pss_health = evt.attr_value.value
-                if self._csp_pss_health == 0:
+                if self._csp_pss_health == CONST.ENUM_HEALTH_OK:
                     print(CONST.STR_CSP_PSS_HEALTH_OK)
                     self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_OK
-                elif self._csp_pss_health == 1:
+                elif self._csp_pss_health == CONST.ENUM_HEALTH_DEGRADED:
                     print(CONST.STR_CSP_PSS_HEALTH_DEGRADED)
                     self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_DEGRADED
-                elif self._csp_pss_health == 2:
+                elif self._csp_pss_health == CONST.ENUM_HEALTH_FAILED:
                     print(CONST.STR_CSP_PSS_HEALTH_FAILED)
                     self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_FAILED
                 else:
@@ -132,13 +132,13 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         if evt.err is False:
             try:
                 self._csp_pst_health = evt.attr_value.value
-                if self._csp_pst_health == 0:
+                if self._csp_pst_health == CONST.ENUM_HEALTH_OK:
                     print(CONST.STR_CSP_PST_HEALTH_OK)
                     self._read_activity_message = CONST.STR_CSP_PST_HEALTH_OK
-                elif self._csp_pst_health == 1:
+                elif self._csp_pst_health == CONST.ENUM_HEALTH_DEGRADED:
                     print(CONST.STR_CSP_PST_HEALTH_DEGRADED)
                     self._read_activity_message = CONST.STR_CSP_PST_HEALTH_DEGRADED
-                elif self._csp_pst_health == 2:
+                elif self._csp_pst_health == CONST.ENUM_HEALTH_FAILED:
                     print(CONST.STR_CSP_PST_HEALTH_FAILED)
                     self._read_activity_message = CONST.STR_CSP_PST_HEALTH_FAILED
                 else:

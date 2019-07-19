@@ -26,6 +26,7 @@ from tango import DevState
 import pytest
 from DishMaster.DishMaster import DishMaster
 import CONST
+import json
 
 # Note:
 #
@@ -431,6 +432,42 @@ class TestDishMaster(object):
         assert all(result)
         # PROTECTED REGION END #    //  DishMaster.test_achievedPointing
 
+    def test_Configure(self, tango_context):
+        """
+        Test case to check DishMaster is successfully configured.
+        """
+        input = '{"pointing":{"AZ":5.0,"EL":10.0},"dish":{"receiverBand":1}}'
+        jsonArg = json.loads(input)
+        Azimuth = jsonArg["pointing"]["AZ"]
+        Elevation = jsonArg["pointing"]["EL"]
+        receiver_Band = jsonArg["dish"]["receiverBand"]
+        tango_context.device.Configure(input)
+        assert tango_context.device.desiredPointing[1] == Azimuth and \
+               tango_context.device.desiredPointing[2] == Elevation and \
+               tango_context.device.configuredBand == receiver_Band
+
+    def test_Configure_invalid_json(self, tango_context):
+        """
+        Negative test case to check invalid JSON argument.
+        """
+        test_input = '{"invalid_key"}'
+        result = 'a'
+        with pytest.raises(tango.DevFailed):
+            result = tango_context.device.Configure(test_input)
+        time.sleep(1)
+        assert 'a' in result
+
+    def test_Configure_key_not_found(self, tango_context):
+        """
+        Negative test to check if key is found.
+        """
+        test_input = '{"pointing":{"AZ":1.0,"EL": 1.0}}'
+        result = 'a'
+        with pytest.raises(tango.DevFailed):
+            result = tango_context.device.Configure(test_input)
+        time.sleep(1)
+        assert 'a' in result
+
     def test_Track(self, tango_context):
         """Test for Track command"""
         # Test for valid argument
@@ -438,5 +475,6 @@ class TestDishMaster(object):
         tango_context.device.SetOperateMode()
         tango_context.device.Track("0")
         time.sleep(80)
-        assert tango_context.device.pointingState == 0
+        assert (tango_context.device.pointingState == 1 or tango_context.device.pointingState == 2)
+        tango_context.device.SetPointingState()
         tango_context.device.SetStandbyLPMode()

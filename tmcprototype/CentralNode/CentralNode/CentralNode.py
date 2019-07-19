@@ -226,7 +226,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.SkaLevel = CONST.INT_SKA_LEVEL
             # Initialise Attributes
             self._health_state = CONST.ENUM_OK
-            self._admin_mode = 0
+            self._admin_mode = CONST.ENUM_ONLINE
             self._telescope_health_state = CONST.ENUM_OK
             self.subarray_health_state_map = {}
             self._dish_leaf_node_devices = []

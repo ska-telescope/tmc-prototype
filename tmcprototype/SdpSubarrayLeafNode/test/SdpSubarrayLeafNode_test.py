@@ -239,7 +239,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_receiveAddresses(self, tango_context):
         """Test for receiveAddresses"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_receiveAddresses) ENABLED START #
-        assert tango_context.device.receiveAddresses == 'test'
+        assert tango_context.device.receiveAddresses == ""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_receiveAddresses
 
     # def test_sdpSubarrayHealthState(self, tango_context):
@@ -251,11 +251,11 @@ class TestSdpSubarrayLeafNode(object):
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_activityMessage) ENABLED START #
-        assert tango_context.device.activityMessage == 'ok'
+        assert tango_context.device.activityMessage == ""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_activityMessage
 
     def test_activeProcessingBlocks(self, tango_context):
         """Test for activeProcessingBlocks"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_activeProcessingBlocks) ENABLED START #
-        assert tango_context.device.activeProcessingBlocks == 'test'
+        assert tango_context.device.activeProcessingBlocks == ""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_activeProcessingBlocks

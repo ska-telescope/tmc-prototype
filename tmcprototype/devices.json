@@ -308,6 +308,11 @@
                                     "Not defined"
                                 ]
                             },
+                            "cspSubarrayObsState": {
+                                "__root_att": [
+                                    "Not defined"
+                                ]
+                            },
                             "healthState": {
                                 "abs_change": [
                                     "-1",
@@ -396,6 +401,11 @@
                             "dishHealthState": {
                                 "__root_att": [
                                     "mid_d0001/elt/master/healthState"
+                                ]
+                            },
+                            "dishPointingState": {
+                                "__root_att": [
+                                    "mid_d0001/elt/master/pointingState"
                                 ]
                             },
                             "healthState": {
@@ -1049,6 +1059,11 @@
                                 ]
                             },
                             "sdpSubarrayHealthState": {
+                                "__root_att": [
+                                    "Not defined"
+                                ]
+                            },
+                            "sdpSubarrayObsState": {
                                 "__root_att": [
                                     "Not defined"
                                 ]

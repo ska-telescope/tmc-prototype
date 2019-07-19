@@ -29,6 +29,7 @@ from tango import DevState, EventType, DeviceProxy
 from SdpMasterLeafNode.SdpMasterLeafNode import SdpMasterLeafNode
 import CONST
 import pytest
+import time
 
 # Note:
 #
@@ -91,6 +92,7 @@ class TestSdpMasterLeafNode(object):
         """Test for On"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_On) ENABLED START #
         tango_context.device.On()
+        time.sleep(4)
         assert create_sdp_master_proxy.OperatingState == 1
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_On
 
@@ -110,6 +112,7 @@ class TestSdpMasterLeafNode(object):
         """Test for Standby"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_Standby) ENABLED START #
         tango_context.device.Standby()
+        time.sleep(4)
         assert create_sdp_master_proxy.OperatingState == 2
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Standby
 

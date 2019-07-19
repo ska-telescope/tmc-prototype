@@ -64,6 +64,7 @@ class SdpSubarray(SKASubarray):
         """
         Assigns resources to the subarray.
         """
+        self.set_state(DevState.ON)  # Set state = ON
         print("SdpSubarray.AssignResources command executed successfully.")
         return ""
 
@@ -77,6 +78,7 @@ class SdpSubarray(SKASubarray):
         """
         Releases resources from the subarray.
         """
+        self.set_state(DevState.OFF)  # Set state = OFF
         print("SdpSubarray.ReleaseResources command executed successfully.")
         return ""
 
@@ -145,7 +147,7 @@ class SdpSubarray(SKASubarray):
     def init_device(self):
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SdpSubarray.init_device) ENABLED START #
-        self.set_state(DevState.INIT)
+        self.set_state(DevState.INIT) # set state=INIT
         self.set_status(CONST.STR_SA_INIT)
         self.SkaLevel = 2  # set SKALevel to "2"
         self._admin_mode = 0  # set adminMode to "ON-LINE"
