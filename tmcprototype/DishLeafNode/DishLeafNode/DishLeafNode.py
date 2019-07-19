@@ -626,7 +626,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             katpoint_arg.insert(1, timestamp_value)
             self.convert_radec_to_azel(katpoint_arg)
             # Convert calulated AZ-El into JSON string
-            arg_out = { "pointing": {
+            arg_list = { "pointing": {
                 "AZ": self.az,
                 "EL": self.el
 
@@ -636,9 +636,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 }
 
             }
-            arg_list = json.dumps(arg_out)
+            dish_str_ip = json.dumps(arg_list)
             # Send configure command to Dish Master
-            self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_CONFIGURE, str(arg_list), self.commandCallback)
+            self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_CONFIGURE, str(dish_str_ip), self.commandCallback)
 
         except ValueError as value_error:
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)

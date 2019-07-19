@@ -14,6 +14,7 @@
 # Tango imports
 import os
 import sys
+import time
 import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed, Group
 from tango.server import run, DeviceMeta, attribute, command, device_property
@@ -54,10 +55,9 @@ class SdpSubarray(SKASubarray):
                                         DevState.STANDBY]
 
     @command(
-        dtype_in=('str',),
+        dtype_in='str',
         doc_in="List of Resources to add to subarray.",
-        dtype_out=('str',),
-        doc_out="A list of Resources added to the subarray.",
+
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -65,7 +65,7 @@ class SdpSubarray(SKASubarray):
         Assigns resources to the subarray.
         """
         self.set_state(DevState.ON)  # Set state = ON
-        print("SdpSubarray.AssignResources command executed successfully.")
+        print("SdpSubarray.AssignResources command executed successfully.", argin)
         return ""
 
     def is_AssignResources_allowed(self):
@@ -202,7 +202,10 @@ class SdpSubarray(SKASubarray):
     @DebugIt()
     def Configure(self, argin):
         # PROTECTED REGION ID(SdpSubarray.Configure) ENABLED START #
-        print("SdpSubarray.Configure command executed successfully.")
+        print("SdpSubarray.Configure command executed successfully.", argin)
+        self._obs_state = CONST.ENUM_CONFIGURING
+        time.sleep(1)
+        self._obs_state = CONST.ENUM_READY
         # PROTECTED REGION END #    //  SdpSubarray.Configure
 
 # ----------
