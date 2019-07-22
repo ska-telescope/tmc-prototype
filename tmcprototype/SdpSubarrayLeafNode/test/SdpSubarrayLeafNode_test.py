@@ -54,7 +54,7 @@ class TestSdpSubarrayLeafNode(object):
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_additionnal_import
     device = SdpSubarrayLeafNode
     properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost', 'SdpSubarrayNodeFQDN': 'mid_sdp/elt/subarray_1',
+                  'StorageLoggingTarget': 'localhost', 'SdpSubarrayNodeFQDN': 'mid_sdp/elt/subarray_00',
                   }
     empty = None  # Should be []
 
