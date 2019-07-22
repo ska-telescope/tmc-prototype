@@ -13,7 +13,7 @@ volumes:
 
 services:
   sdpmaster:
-    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_master:latest
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_master:0.2.1
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
@@ -27,7 +27,7 @@ services:
     command: ["1", "-v4"]
 
   sdpsubarray:
-    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:latest
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:0.2.1
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
