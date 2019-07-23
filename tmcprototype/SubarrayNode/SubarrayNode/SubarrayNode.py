@@ -881,6 +881,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         if evt.err is False:
             try:
                 self._dish_pointing_state = evt.attr_value.value
+                #print("self._dish_pointing_state in callback: ", self._dish_pointing_state)
                 self.dishPointingStateMap[evt.device] = self._dish_pointing_state
                 if self._dish_pointing_state == CONST.ENUM_READY:
                     print(CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_READY)

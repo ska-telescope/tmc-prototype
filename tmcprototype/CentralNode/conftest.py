@@ -62,3 +62,4 @@ def create_leafNode1_proxy():
 def create_dish_proxy():
     dish_proxy = DeviceProxy("mid_d0001/elt/master")
     return dish_proxy
+

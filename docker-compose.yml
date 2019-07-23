@@ -377,8 +377,8 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray 10 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01 10 &&\
              /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa1"
     volumes_from:
     - rsyslog-tmcprototype:rw
@@ -412,8 +412,8 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray 10 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01 10 &&\
              /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa2"
     volumes_from:
     - rsyslog-tmcprototype:rw

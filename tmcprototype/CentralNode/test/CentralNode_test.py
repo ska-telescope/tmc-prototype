@@ -121,12 +121,10 @@ class TestCentralNode(object):
         assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
-    def test_StowAntennas(self, tango_context, create_leafNode1_proxy,create_dish_proxy):
+    def test_StowAntennas(self, tango_context, create_leafNode1_proxy):
         """Test for StowAntennas"""
         # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
         argin = ["0001",]
-        # create_dish_proxy.SetPointingState()
-        # time.sleep(4)
         create_leafNode1_proxy.SetStandByLPMode()
         tango_context.device.StowAntennas(argin)
         assert tango_context.device.activityMessage == CONST.STR_STOW_CMD_ISSUED_CN
