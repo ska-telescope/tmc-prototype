@@ -57,3 +57,8 @@ def create_subarray2_proxy():
 def create_leafNode1_proxy():
     leafNode1_proxy = DeviceProxy(CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX + "0001")
     return leafNode1_proxy
+
+@pytest.fixture(scope="class")
+def create_dish_proxy():
+    dish_proxy = DeviceProxy("mid_d0001/elt/master")
+    return dish_proxy
