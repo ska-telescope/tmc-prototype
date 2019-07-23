@@ -5,8 +5,7 @@ tests.
 import importlib
 import mock
 import pytest
-
-
+from tango import DeviceProxy
 
 from tango.test_context import DeviceTestContext
 
@@ -46,3 +45,9 @@ def initialize_device(tango_context):
         Context to run a device without a database.
     """
     yield tango_context.device.Init()
+
+
+@pytest.fixture(scope="class")
+def create_dish_proxy():
+    dish_proxy = DeviceProxy("mid_d0001/elt/master")
+    return dish_proxy

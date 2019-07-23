@@ -295,51 +295,6 @@
         "CspSubarrayLeafNode": {
             "01": {
                 "CspSubarrayLeafNode": {
-                    "ska_mid/tm_leaf_node/csp_subarray": {
-                        "attribute_properties": {
-                            "adminMode": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "cspsubarrayHealthState": {
-                                "__root_att": [
-                                    "Not defined"
-                                ]
-                            },
-                            "cspSubarrayObsState": {
-                                "__root_att": [
-                                    "Not defined"
-                                ]
-                            },
-                            "healthState": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
-                            }
-                        },
-                        "properties": {
-                            "CspSubarrayPrefix": [
-                                "mid-csp/elt/subarray01"
-                            ],
-                            "SkaLevel": [
-                                "3"
-                            ],
-                            "polled_attr": [
-                                "adminmode",
-                                "1000",
-                                "healthstate",
-                                "1000"
-                            ]
-                        }
-                    },
                     "ska_mid/tm_leaf_node/csp_subarray01": {
                         "attribute_properties": {
                             "adminMode": {
@@ -351,6 +306,11 @@
                             "cspsubarrayHealthState": {
                                 "__root_att": [
                                     "mid-csp/elt/subarray01/healthState"
+                                ]
+                            },
+                            "cspSubarrayObsState": {
+                                "__root_att": [
+                                    "mid-csp/elt/subarray01/obsState"
                                 ]
                             },
                             "healthState": {
@@ -367,9 +327,6 @@
                         },
                         "properties": {
                             "CspSubarrayNodeFQDN": [
-                                "mid-csp/elt/subarray01"
-                            ],
-                            "CspSubarrayPrefix": [
                                 "mid-csp/elt/subarray01"
                             ],
                             "SkaLevel": [
@@ -449,6 +406,11 @@
                                     "mid_d0002/elt/master/healthState"
                                 ]
                             },
+                            "dishPointingState": {
+                                "__root_att": [
+                                    "mid_d0002/elt/master/pointingState"
+                                ]
+                            },
                             "healthState": {
                                 "abs_change": [
                                     "-1",
@@ -490,6 +452,11 @@
                                     "mid_d0003/elt/master/healthState"
                                 ]
                             },
+                            "dishPointingState": {
+                                "__root_att": [
+                                    "mid_d0003/elt/master/pointingState"
+                                ]
+                            },
                             "healthState": {
                                 "abs_change": [
                                     "-1",
@@ -529,6 +496,11 @@
                             "dishHealthState": {
                                 "__root_att": [
                                     "mid_d0004/elt/master/healthState"
+                                ]
+                            },
+                            "dishPointingState": {
+                                "__root_att": [
+                                    "mid_d0004/elt/master/pointingState"
                                 ]
                             },
                             "healthState": {
@@ -1050,45 +1022,6 @@
         "SdpSubarrayLeafNode": {
             "01": {
                 "SdpSubarrayLeafNode": {
-                    "ska_mid/tm_leaf_node/sdp_subarray": {
-                        "attribute_properties": {
-                            "healthState": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "sdpSubarrayHealthState": {
-                                "__root_att": [
-                                    "Not defined"
-                                ]
-                            },
-                            "sdpSubarrayObsState": {
-                                "__root_att": [
-                                    "Not defined"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
-                            }
-                        },
-                        "properties": {
-                            "SdpSubarrayFQDN": [
-                                "mid_sdp/elt/subarray_1"
-                            ],
-                            "SkaLevel": [
-                                "1"
-                            ],
-                            "polled_attr": [
-                                "activitymessage",
-                                "1000",
-                                "healthstate",
-                                "1000"
-                            ]
-                        }
-                    },
                     "ska_mid/tm_leaf_node/sdp_subarray01": {
                         "attribute_properties": {
                             "healthState": {
@@ -1100,6 +1033,11 @@
                             "sdpSubarrayHealthState": {
                                 "__root_att": [
                                     "mid_sdp/elt/subarray_1/healthState"
+                                ]
+                            },
+                            "sdpSubarrayObsState": {
+                                "__root_att": [
+                                    "mid_sdp/elt/subarray_1/obsState"
                                 ]
                             },
                             "storageLoggingLevel": {
