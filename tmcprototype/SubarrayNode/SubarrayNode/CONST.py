@@ -18,6 +18,7 @@ CMD_END_SCAN = "EndScan"
 CMD_TRACK = "Track"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
+CMD_CONFIGURESCAN = "ConfigureScan"
 
 
 #GROUPS
@@ -92,6 +93,8 @@ STR_CSP_SA_HEALTH_OK = "CSP SA health is OK."
 STR_CSP_SA_HEALTH_DEGRADED = "CSP SA health is DEGRADED."
 STR_CSP_SA_HEALTH_FAILED = "CSP SA health is FAILED."
 STR_CSP_SA_HEALTH_UNKNOWN = "CSP SA health is UNKNOWN."
+STR_CSP_SUBARRAY_OBS_STATE= "CSP Subarray obsState is:"
+STR_SDP_SUBARRAY_OBS_STATE= "SDP Subarray obsState is:"
 
 STR_CSP_SA_HEALTH_OK = "CSP SA health is OK."
 STR_CSP_SA_HEALTH_DEGRADED = "CSP SA health is DEGRADED."
@@ -162,3 +165,4 @@ STR_KEY_PB_ID_LIST = "processingBlockIdList"
 
 PROP_DEF_VAL_TMCSP_MID_SALN = "ska_mid/tm_leaf_node/csp_subarray01"
 PROP_DEF_VAL_TMSDP_MID_SALN = "ska_mid/tm_leaf_node/sdp_subarray01"
+PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
