@@ -122,7 +122,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     self._csp_sa_obs_state = self._observetion_state
                     self._read_activity_message = CONST.STR_CSP_SUBARRAY_OBS_STATE + str(
                         self._csp_sa_obs_state)
-                    print("self._csp_sa_obs_state: ", self._csp_sa_obs_state)
                 elif CONST.PROP_DEF_VAL_TMSDP_MID_SALN in evt.attr_name:
                     self._sdp_sa_obs_state = self._observetion_state
                     self._read_activity_message = CONST.STR_SDP_SUBARRAY_OBS_STATE + str(
@@ -195,10 +194,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def calculate_observation_state(self):
         pointing_state_count = 0
         for value in list(self.dishPointingStateMap.values()):
-            print("dishPointingStateMap.value: ",value)
             if value == CONST.ENUM_TRACK:
                 pointing_state_count = pointing_state_count + 1
-        print("pointing_state_count: ",pointing_state_count)
         if self._csp_sa_obs_state == CONST.ENUM_READY and self._sdp_sa_obs_state == CONST.ENUM_READY:
             if pointing_state_count == len(self.dishPointingStateMap.values()):
                 self._obs_state = CONST.ENUM_READY
@@ -217,12 +214,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         retry = 0
         proxy_created_flag = False
-        print("self.CspSubarrayLNFQDN: ", self.CspSubarrayLNFQDN)
         while retry < 3:
             try:
                 self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
-                print("CspSubarray proxy is: ", self._csp_subarray_ln_proxy)
-                print("Cspp FQDN is: ", self.CspSubarrayLNFQDN)
                 proxy_created_flag = True
                 break
             except Exception as ex:
@@ -241,8 +235,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         while retry < 3:
             try:
                 self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
-                print("SdpSubarray proxy is: ", self._sdp_subarray_ln_proxy)
-                print("Sdp FQDN is: ", self.SdpSubarrayLNFQDN)
                 proxy_created_flag = True
                 break
             except tango.DevFailed:
@@ -529,7 +521,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
             scanTimestamp = "0"
             if type(float(scanTimestamp)) == float:
-                print("Observation state:", self._obs_state)
                 assert self._obs_state != CONST.ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
                 print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list())
                 self._read_activity_message = CONST.STR_SCAN_IP_ARG + str(scanTimestamp)
@@ -1007,12 +998,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
         result = self.create_csp_ln_proxy()
-        print("csp proxy creation result: ", result)
+        # print("csp proxy creation result: ", result)
 
         # Create proxy for SDP Subarray Leaf Node
         self._sdp_subarray_ln_proxy = None
         result = self.create_sdp_ln_proxy()
-        print("sdp proxy creation result: ", result)
+        # print("sdp proxy creation result: ", result)
 
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = -1
@@ -1032,13 +1023,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.set_status(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR)
             self.dev_logging(CONST.ERR_CSP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
 
-        # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
         try:
             self.subarray_ln_health_state_map[self._sdp_subarray_ln_proxy] = -1
             # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
                                                         self.healthStateCallback, stateless=True)
-            # Subscribe sdpSubarrayObsState (forwarded attribute) of CspSubarray
+            # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
             self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
@@ -1146,7 +1136,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
             if self._obs_state == CONST.ENUM_IDLE:
                 self._scanConfiguration = json.loads(argin[0])
-                print("type of self._scanConfiguration: ", type(self._scanConfiguration))
                 # TODO: FOR FUTURE IMPLEMENTATION
                 # scanID = scanConfiguration["scanID"]
                 # pointing =  scanConfiguration["pointing"]
@@ -1160,38 +1149,36 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
                 # Configuration of SDP
                 sdpConfiguration = self._scanConfiguration.copy()
-                print("sdpConfiguration: ", sdpConfiguration)
+                # Keep configuration specific to SDP and delete configuration of other nodes
                 del sdpConfiguration["pointing"]
                 del sdpConfiguration["dish"]
                 del sdpConfiguration["csp"]
-                print("sdp: ", type(json.dumps(sdpConfiguration)))
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
-                print("Configuration of SDP done")
+                print("SDP Configuration is initiated.")
 
                 # Configuration of CSP
                 cspConfiguration = self._scanConfiguration.copy()
-                print("cspConfiguration: ", cspConfiguration)
+                # Keep configuration specific to CSP and delete configuration of other nodes
                 del cspConfiguration["pointing"]
                 del cspConfiguration["dish"]
                 del cspConfiguration["sdp"]
-                print("csp: ", type(json.dumps(cspConfiguration)))
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
                 self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
-                print("Configuration of CSP done")
+                print("CSP Configuration is initiated.")
 
                 # Configuration of Dish
                 dishConfiguration = self._scanConfiguration.copy()
+                # Keep configuration specific to DISH and delete configuration of other nodes
                 del dishConfiguration["sdp"]
                 del dishConfiguration["csp"]
-                print("dish: ", type(json.dumps(dishConfiguration)))
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
                 # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
                 self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
-                print("Configuration of Dish done")
+                print("Dish Configuration is initiated.")
                 # Invoke Track command on the group of Dishes assigned to the Subarray
                 self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
                 self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)

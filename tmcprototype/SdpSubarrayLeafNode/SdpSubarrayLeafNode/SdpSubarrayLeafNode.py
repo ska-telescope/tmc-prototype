@@ -234,8 +234,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_RELEASE_RESOURCES,
                                                                           self.commandCallback)
-
-            print("SdpSubarrayLeafNode.ReleaseAllResources command executed successfully.")
             # Update the status of command execution status in activity message
             self._read_activity_message = CONST.STR_REL_RESOURCES
         except ValueError as value_error:
@@ -328,8 +326,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ASSIGN_RESOURCES,
                                                                           str(processingBlockIDList),
                                                                           self.commandCallback)
-
-            print("SdpSubarrayLeafNode.Assign Resources command executed successfully.")
             # Update the status of command execution status in activity message
             self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
         except ValueError as value_error:
