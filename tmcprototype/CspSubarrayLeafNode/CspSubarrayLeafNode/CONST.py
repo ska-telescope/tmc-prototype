@@ -5,6 +5,7 @@ CONST file for CspSubarrayLeafNode
 CMD_ADD_RECEPTORS = "AddReceptors"
 CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
 CMD_CONFIGURESCAN = "ConfigureScan"
+CMD_STARTSCAN = "Scan"
 
 #Event messages
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
@@ -23,6 +24,8 @@ ERR_RELEASE_ALL_RESOURCES = "Error while invoking ReleaseAllResources command on
 ERR_CONFIGURESCAN_RESOURCES = "Error while invoking ConfigureScan command on CSP Subarray."
 ERR_INVALID_JSON_CONFIG_SCAN = "Invalid JSON format while invoking ConfigureScan command on CspSubarray."
 ERR_INVALID_JSON_ASSIGN_RES = "Invalid JSON format while invoking AddReceptors command on CspSubarray."
+ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarray."
+ERR_DEVICE_NOT_READY = "CspSubarray is not in ready state."
 
 #strings
 #General strings
@@ -42,12 +45,15 @@ STR_COMMAND = "Command :-> "
 STR_CMD_FAILED = "CspSubarrayLeafNode Commandfailed"
 STR_CMD_CALLBK = "CspSubarrayLeafNode Command Callback"
 STR_FALSE = "False"
+STR_STARTSCAN_SUCCESS = "Scan command is executed on CspSubarrayLeafNode."
 PROP_DEF_VAL_CSP_MID_SA1 = "mid-csp/elt/subarray01"
+STR_START_SCAN_EXEC = "StartScan command execution"
 
 STR_CSPSA_FQDN = "CspSubarrayNodeFQDN :-> "
 
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 ENUM_INIT, ENUM_OFF, ENUM_ON, ENUM_ALARM, ENUM_DISABLE, ENUM_FAULT, ENUM_UNKNOWN = list(range(0, 7))
+ENUM_IDLE, ENUM_CONFIGURING, ENUM_READY, ENUM_SCANNING = list(range(0, 4))
 
 #INTEGERS
 INT_SKA_LEVEL = 3

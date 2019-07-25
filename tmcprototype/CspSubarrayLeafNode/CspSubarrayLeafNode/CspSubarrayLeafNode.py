@@ -80,7 +80,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # Device Properties
     # -----------------
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid-csp/elt/subarray01"
+        dtype='str', default_value="tango://alpha:10000/mid-csp/elt/subarray01"
     )
 
     # ----------
@@ -316,17 +316,56 @@ class CspSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ConfigureScan
 
     @command(
-        dtype_in='str',
+    dtype_in=('str',), 
     )
     @DebugIt()
     def StartScan(self, argin):
         # PROTECTED REGION ID(CspSubarrayLeafNode.StartScan) ENABLED START #
         """
-        This command starts the scan.
+        This command invokes Scan command on CspSubarray. This command is allowed only when CspSubarray is in
+        READY state.
 
-        :param argin:
-        :return:
+        :param argin: Timestamp
+
+        :return: None.
         """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            scan_duration = argin
+            #Check if CspSubarray is in READY state
+            if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
+                #Invoke StartScan command on CspSubarray
+                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_STARTSCAN, "0",
+                                                           self.commandCallback)
+                self._read_activity_message = CONST.STR_STARTSCAN_SUCCESS
+                self.dev_logging(CONST.STR_STARTSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
+                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_STARTSCAN_RESOURCES + str(dev_failed),
+                             int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_STARTSCAN_RESOURCES + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_STARTSCAN_RESOURCES  + str(except_occurred),
+                             int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_STARTSCAN_RESOURCES  + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_START_SCAN_EXEC, tango.ErrSeverity.ERR)
+
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
     @command(
