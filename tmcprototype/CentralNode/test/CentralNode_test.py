@@ -300,15 +300,15 @@ class TestCentralNode(object):
         time.sleep(1)
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-    def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
-        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
-        tango_context.device.AssignResources(test_input)
-        time.sleep(3)
-        test_input1 = '{"subarrayID":2,"dish":{"receptorIDList":["0001"]}}'
-        result = tango_context.device.AssignResources(test_input1)
-        time.sleep(2)
-        create_subarray1_proxy.ReleaseAllResources()
-        assert result == '{"dish": {"receptorIDList_success": []}}'
+    # def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
+    #     test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+    #     tango_context.device.AssignResources(test_input)
+    #     time.sleep(3)
+    #     test_input1 = '{"subarrayID":2,"dish":{"receptorIDList":["0001"]}}'
+    #     result = tango_context.device.AssignResources(test_input1)
+    #     time.sleep(2)
+    #     create_subarray1_proxy.ReleaseAllResources()
+    #     assert result == '{"dish": {"receptorIDList_success": []}}'
 
     def test_AssignResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
