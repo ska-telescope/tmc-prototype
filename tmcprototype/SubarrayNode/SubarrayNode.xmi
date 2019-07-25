@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="SubarrayNode" pogoRevision="9.4">
-    <description description="Provides the monitoring and control interface required by users as well as &#xA;other TM Components (such as OET, Central Node) for a Subarray." title="Subarray Node" sourcePath="/home/user/projects/tmc-prototype/tmcprototype/SubarrayNode" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
+    <description description="Provides the monitoring and control interface required by users as well as &#xA;other TM Components (such as OET, Central Node) for a Subarray." title="Subarray Node" sourcePath="/home/rajiv/sp_142_TMC/tmc-prototype/tmcprototype/SubarrayNode" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
-      <inheritances classname="SKAObsDevice" sourcePath="../../../lmc-base-classes/skabase/SKAObsDevice"/>
-      <inheritances classname="SKASubarray" sourcePath="/home/user/projects/lmc-base-classes/skabase/SKASubarray"/>
+      <inheritances classname="SKAObsDevice" sourcePath="../../../../projects/lmc-base-classes/skabase/SKAObsDevice"/>
+      <inheritances classname="SKASubarray" sourcePath="/home/rajiv/projects/lmc-base-classes/skabase/SKASubarray"/>
       <identification contact="at gmail.com - jyotin.ska" author="jyotin.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
     </description>
     <deviceProperties name="CapabilityTypes" description="List of Capability types e.g. capCorr, capPss,&#xA;capPstBf, capVlbi, this will be used to dynamically&#xA;define groups for subarray.">
@@ -232,7 +232,7 @@
     </commands>
     <commands name="Configure" description="Command to configure resources (for e.g. Dish) via Leaf Node. E.g. Configuration includes setting pointing coordinates of Dish for a given observation." execMethod="configure" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="Pointing parameters of Dish - Azimuth and Elevation Angle.">
-        <type xsi:type="pogoDsl:StringArrayType"/>
+        <type xsi:type="pogoDsl:StringType"/>
       </argin>
       <argout description="">
         <type xsi:type="pogoDsl:VoidType"/>
@@ -426,7 +426,7 @@
     <states name="STANDBY" description="Equates to LOW-POWER mode. This is the initial transition from INIT if the device supports a low-power mode. The device is not fully active but is ready to operate.">
       <status abstract="false" inherited="true" concrete="true"/>
     </states>
-    <preferences docHome="./doc_html" makefileHome="/home/user/tango-9.2.5a/share/pogo/preferences"/>
+    <preferences docHome="./doc_html" makefileHome="/home/rajiv/tango-9.2.2/share/pogo/preferences"/>
     <overlodedPollPeriodObject name="adminMode" type="attribute" pollPeriod="1000"/>
     <overlodedPollPeriodObject name="centralLoggingLevel" type="attribute" pollPeriod="0"/>
     <overlodedPollPeriodObject name="configurationDelayExpected" type="attribute" pollPeriod="1000"/>

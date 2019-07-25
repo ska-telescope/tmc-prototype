@@ -193,16 +193,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             if value == CONST.ENUM_TRACK:
                 pointing_state_count = pointing_state_count + 1
 
-        if self._csp_sa_obs_state == CONST.ENUM_READY and self._sdp_sa_obs_state == CONST.ENUM_READY:
-            if pointing_state_count == len(self.dishPointingStateMap.values()):
-                self._obs_state = CONST.ENUM_READY
-            else:
-                self._obs_state = CONST.ENUM_CONFIGURING
-        elif self._csp_sa_obs_state == CONST.ENUM_CONFIGURING or \
-                self._sdp_sa_obs_state == CONST.ENUM_CONFIGURING:
-            self._obs_state = CONST.ENUM_CONFIGURING
+
+        if pointing_state_count == len(self.dishPointingStateMap.values()):
+            self._obs_state = CONST.ENUM_READY
         else:
-            pass
+            self._obs_state = CONST.ENUM_CONFIGURING
+
+
 
 
     def create_csp_ln_proxy(self):
@@ -369,7 +366,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             json_argument[CONST.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
-            argout.append(argin)
+            #argout.append(argin)
+            argout = argin
         except DevFailed as df:
             print(CONST.ERR_CSP_CMD)
             self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -671,6 +669,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         excpt_count = 0
         excpt_msg = []
+        argout = []
 
         # 1. Argument validation
         try:
@@ -727,10 +726,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             sdp_allocation_result.sort()
             argin.sort()
             dummy_sdp_resources.sort()
-            if(dish_allocation_result == argin and
-                csp_allocation_result == argin and
-                sdp_allocation_result == dummy_sdp_resources
-              ):
+            # if(dish_allocation_result == argin and
+            #     csp_allocation_result == argin and
+            #     sdp_allocation_result == dummy_sdp_resources
+            #   ):
+            if (dish_allocation_result == argin):
                 # Currently sending only dish allocation results.
                 argout = dish_allocation_result
             else:
@@ -1013,8 +1013,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
                                                         self.healthStateCallback, stateless=True)
             # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
-            self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                        self.obsStateCallback, stateless=True)
+            # self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
+            #                                             self.obsStateCallback, stateless=True)
 
             self.set_status(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
             self.dev_logging(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
@@ -1032,8 +1032,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
                                                         self.healthStateCallback, stateless=True)
             # Subscribe sdpSubarrayObsState (forwarded attribute) of CspSubarray
-            self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                        self.obsStateCallback, stateless=True)
+            # self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
+            #                                             self.obsStateCallback, stateless=True)
             self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
             self.dev_logging(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except DevFailed as dev_failed:
@@ -1100,7 +1100,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # --------
 
     @command(
-        dtype_in=('str',),
+        dtype_in='str',
         doc_in="Pointing parameters of Dish - Right ascension and Declination coordinates.",
     )
     @DebugIt()
@@ -1136,7 +1136,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
             self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN + str(
                 self._dish_leaf_node_group.get_device_list())
-            scanConfiguration = json.loads(argin[0])
+            scanConfiguration = json.loads(argin)
 
             # TODO: FOR FUTURE IMPLEMENTATION
             # scanID = scanConfiguration["scanID"]
@@ -1147,15 +1147,15 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
             # Configuration of Dish
             dishConfiguration = scanConfiguration
-            del dishConfiguration["sdp"]
-            del dishConfiguration["csp"]
+            # del dishConfiguration["sdp"]
+            # del dishConfiguration["csp"]
             print("dish: ", type(json.dumps(dishConfiguration)))
             self._scan_id = str(scanConfiguration["scanID"])
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
 
-            # set obsState to IDLE when the configuration is started
-            self._obs_state = CONST.ENUM_IDLE
+            # set obsState to CONFIGURING when the configuration is started
+            self._obs_state = CONST.ENUM_CONFIGURING
             # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
             self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
             # TODO: FOR FUTURE REFERENCE
@@ -1165,7 +1165,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
 
             #Invoke Track command on the group of Dishes assigned to the Subarray
-            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
+            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
             self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
         except DevFailed as dev_failed:
             print(CONST.ERR_CONFIGURE_CMD_GROUP, "\n", dev_failed)
