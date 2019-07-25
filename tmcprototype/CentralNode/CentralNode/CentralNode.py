@@ -616,6 +616,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         receptorIDList = []
         excpt_msg = []
         excpt_count = 0
+        argout = []
         try:
             # serialize the json
             jsonArgument = json.loads(argin)
@@ -645,12 +646,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
                 self.dev_logging(CONST.STR_ASSIGN_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
-                argout = {
-                    "dish": {
-                        "receptorIDList_success": receptorIDList
-                    }
-                }
+                argout = {"dish": {"receptorIDList_success": receptorIDList}}
             else:
+                argout = '{"dish": {"receptorIDList_success": []}}'
                 print(CONST.STR_DISH_DUPLICATE, duplicate_allocation_dish_ids)
                 self._read_activity_message = CONST.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
         except ValueError as value_error:
