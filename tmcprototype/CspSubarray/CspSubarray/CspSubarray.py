@@ -275,6 +275,15 @@ class CspSubarray(SKASubarray):
         print("Scan command: Argin on CspSubarray:", argin)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
+    @command(
+    )
+    @DebugIt()
+    def EndScan(self):
+        # PROTECTED REGION ID(CspSubarray.EndScan) ENABLED START #
+        print("EndScan command successfully invoked:")
+        # PROTECTED REGION END #    //  CspSubarray.EndScan
+
+
 # ----------
 # Run server
 # ----------
