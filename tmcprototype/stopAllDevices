@@ -9,6 +9,30 @@ echo "========================= Stopping Subarray Nodes ========================
 pkill -9 -f ./SubarrayNode/SubarrayNode/SubarrayNode.py &
 sleep 1
 
+echo "========================= Stopping CSP Subarray ========================="
+pkill -9 -f ./CspSubarray/CspSubarray/CspSubarray.py  &
+sleep 1
+
+echo "========================= Stopping CSP Subarray Leaf Node ========================="
+pkill -9 -f ./CspSubarrayLeafNode/CspSubarrayLeafNode/CspSubarrayLeafNode.py  &
+sleep 1
+
+echo "========================= Stopping SDP Subarray ========================="
+pkill -9 -f ./SdpSubarray/SdpSubarray/SdpSubarray.py  &
+sleep 1
+
+echo "========================= Stopping SDP Subarray Leaf Node ========================="
+pkill -9 -f ./SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py  &
+sleep 1
+
+echo "========================= Stopping SDP Master ========================="
+pkill -9 -f ./SdpMaster/SdpMaster/SdpMaster.py  &
+sleep 1
+
+echo "========================= Stopping SDP Master Leaf Node ========================="
+pkill -9 -f ./SdpMasterLeafNode/SdpMasterLeafNode/SdpMasterLeafNode.py  &
+sleep 1
+
 echo "========================= Stopping Dish Leaf Nodes ========================="
 pkill -9 -f ./DishLeafNode/DishLeafNode/DishLeafNode.py &
 sleep 1
