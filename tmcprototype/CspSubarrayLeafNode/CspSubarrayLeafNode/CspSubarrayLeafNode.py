@@ -80,7 +80,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # Device Properties
     # -----------------
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid-csp/elt/subarray01"
+        dtype='str', default_value="tango://dada:10000/mid-csp/elt/subarray01"
     )
 
     # ----------
@@ -378,13 +378,23 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def EndScan(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.EndScan) ENABLED START #
+        """
+        It invokes 'EndScan' command on CspSubarray. This command is allowed when CspSubarray is in SCANNING
+        state.
+
+        :return: None.
+        """
         excpt_msg = []
         excpt_count = 0
         try:
-            # Invoke RemoveAllReceptors command on CspSubarray
-            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSCAN_RECEPTORS, self.commandCallback)
-            self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
-            self.dev_logging(CONST.STR_ENDSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            if self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING:
+                # Invoke EndScan command on CspSubarray
+                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSCAN, self.commandCallback)
+                self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
+                self.dev_logging(CONST.STR_ENDSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_IN_SCAN
+                self.dev_logging(CONST.ERR_DEVICE_NOT_IN_SCAN, int(tango.LogLevel.LOG_ERROR))
 
         except DevFailed as dev_failed:
             self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
@@ -405,8 +415,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             for item in excpt_msg:
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_RELEASE_RES_EXEC, tango.ErrSeverity.ERR)
-
+                                         CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndScan
 
 

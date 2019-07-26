@@ -4,7 +4,7 @@ CONST file for CspSubarrayLeafNode
 # In/Out command constants
 CMD_ADD_RECEPTORS = "AddReceptors"
 CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
-CMD_ENDSCAN_RECEPTORS = "EndScan"
+CMD_ENDSCAN = "EndScan"
 CMD_CONFIGURESCAN = "ConfigureScan"
 CMD_STARTSCAN = "Scan"
 
@@ -28,6 +28,7 @@ ERR_INVALID_JSON_CONFIG_SCAN = "Invalid JSON format while invoking ConfigureScan
 ERR_INVALID_JSON_ASSIGN_RES = "Invalid JSON format while invoking AddReceptors command on CspSubarray."
 ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarray."
 ERR_DEVICE_NOT_READY = "CspSubarray is not in ready state."
+ERR_DEVICE_NOT_IN_SCAN = "CspSubarray is not in SCANNING state."
 
 #strings
 #General strings
@@ -36,8 +37,9 @@ STR_DISH = "dish"
 STR_ERR_MSG = "Error message is: "
 STR_ADD_RECEPTORS_SUCCESS = "Resources are assigned successfully on CspSubarray."
 STR_REMOVE_ALL_RECEPTORS_SUCCESS = "All resources assigned to CSP Subarray are removed successfully."
-STR_CONFIGURESCAN_SUCCESS = "ConfigureScan invoked successfully on CspSubarray."
-STR_ENDSCAN_SUCCESS = "EndScan invoked successfully on CspSubarray."
+STR_CONFIGURESCAN_SUCCESS = "ConfigureScan command invoked successfully on CspSubarray from " \
+                            "CspSubarrayLeafNode."
+STR_ENDSCAN_SUCCESS = "EndScan command invoked successfully on CspSubarray from CspSubarrayLeafNode."
 STR_CSPSALN_INIT_SUCCESS = "CspSubarrayLeafNode initialized successfully."
 STR_CMD_FAILED = "CspSubarrayLeafNode_CommandFailed"
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
