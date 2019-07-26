@@ -52,7 +52,6 @@ STR_FALSE = "False"
 STR_STARTSCAN_SUCCESS = "Scan command is executed on CspSubarrayLeafNode."
 PROP_DEF_VAL_CSP_MID_SA1 = "mid-csp/elt/subarray01"
 STR_START_SCAN_EXEC = "StartScan command execution"
-
 STR_CSPSA_FQDN = "CspSubarrayNodeFQDN :-> "
 
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))

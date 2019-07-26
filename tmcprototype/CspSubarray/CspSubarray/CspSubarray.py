@@ -122,7 +122,7 @@ class CspSubarray(SKASubarray):
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(CspSubarray.init_device) ENABLED START #
         self._opstate = 0       # Set operating state to INIT
-        self._obs_state = 2  # Set observation state to READY
+        self._obs_state = 0  # Set observation state to IDLE
         self._scanid = 0
         self._frequencyband = 0
         self._procmode = 0
@@ -280,6 +280,7 @@ class CspSubarray(SKASubarray):
     @DebugIt()
     def EndScan(self):
         # PROTECTED REGION ID(CspSubarray.EndScan) ENABLED START #
+        self._obs_state = 2               # Set observation state to READY
         print("EndScan command successfully invoked:")
         # PROTECTED REGION END #    //  CspSubarray.EndScan
 

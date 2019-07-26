@@ -47,7 +47,7 @@ import tango
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device")
+@pytest.mark.usefixtures("tango_context", "initialize_device", "create_cspsubarray1_proxy")
 
 class TestCspSubarrayLeafNode(object):
     """Test case for packet generation."""
@@ -94,7 +94,6 @@ class TestCspSubarrayLeafNode(object):
     def test_ConfigureScan(self, tango_context):
         """Test for ConfigureScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
-        test_input = ''
         test_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
         res = tango_context.device.ConfigureScan(test_input)
         tango_context.device.status()
@@ -113,13 +112,7 @@ class TestCspSubarrayLeafNode(object):
             tango_context.device.ConfigureScan(test_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
-    #
-    # def test_StartScan(self):
-    #     """Test for StartScan"""
-    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_StartScan) ENABLED START #
-    #     self.device.StartScan("")
-    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan
-    #
+
     def test_EndScan(self, tango_context):
         """Test for EndScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndScan) ENABLED START #
@@ -128,14 +121,39 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
-    #
+
+    def test_StartScan(self, tango_context):
+        """Test for StartScan"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_StartScan) ENABLED START #
+        test_input1 = '{"csp":{"frequencyBand":"1","delayModelSubscriptionPoint":"",' \
+                      '"visDestinationAddressSubscriptionPoint":"","fsp":[{"fspID":"1","functionMode":' \
+                      '"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,' \
+                      '"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,' \
+                      '"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]}}'
+        tango_context.device.ConfigureScan(test_input1)
+        time.sleep(2)
+        test_input2 = ['{"scanDuration": 10.0}']
+        tango_context.device.StartScan(test_input2)
+        time.sleep(1)
+        assert CONST.STR_STARTSCAN_SUCCESS in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan
+
+    def test_StartScan_Device_Not_Ready(self, tango_context, create_cspsubarray1_proxy):
+        """Test for StartScan when device is not in READY state."""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_StartScan_Device_Not_Ready) ENABLED START #
+        tango_context.device.StartScan(['{"scanDuration": 10.0}'])
+        time.sleep(1)
+        assert CONST.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan_Device_Not_Ready
+
     # def test_ReleaseResources(self, tango_context):
     # #     """Test for ReleaseResources"""
     # #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_ReleaseResources) ENABLED START #
     #     res = tango_context.device.ReleaseResources()
     #     test_res = tango_context.device.status()
     #     time.sleep(1)
-    #     assert CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is None
+    #     assert CONST.STR_RELEASE_ALL_RESOURCES_SUCCESS in tango_context.device.activityMessage and res is
+    #     None
     # #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ReleaseResources
 
     def test_ReleaseAllResources(self, tango_context):

@@ -285,7 +285,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.dev_logging(CONST.STR_CONFIGURESCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error),
+                             int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
@@ -316,23 +317,26 @@ class CspSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ConfigureScan
 
     @command(
-    dtype_in=('str',), 
+        dtype_in=('str',),
     )
     @DebugIt()
     def StartScan(self, argin):
         # PROTECTED REGION ID(CspSubarrayLeafNode.StartScan) ENABLED START #
         """
-        This command invokes Scan command on CspSubarray. This command is allowed only when CspSubarray is in
-        READY state.
+        This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
+        state.
 
-        :param argin: Timestamp
+        :param argin: JSON string consists of scanDuration
+
+        Example: in jive:{"scanDuration": 10.0}
 
         :return: None.
         """
         excpt_msg = []
         excpt_count = 0
         try:
-            scan_duration = argin
+            json_scan_duration = json.loads(argin[0])
+            scan_duration = json_scan_duration["scanDuration"]
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
                 #Invoke StartScan command on CspSubarray
@@ -493,12 +497,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             #Invoke AddReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, receptorIDList,
-                                                    self.commandCallback)
+                                                       self.commandCallback)
             self._read_activity_message = CONST.STR_ADD_RECEPTORS_SUCCESS
             self.dev_logging(CONST.STR_ADD_RECEPTORS_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error),
+                             int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
