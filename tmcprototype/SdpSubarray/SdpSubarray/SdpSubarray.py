@@ -48,6 +48,7 @@ class SdpSubarray(SKASubarray):
         Schedules a scan for execution on a subarray.
         """
         print("SdpSubarray.Scan command executed successfully.")
+        self._obs_state = CONST.ENUM_SCANNING
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """

@@ -478,8 +478,64 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def Scan(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Scan) ENABLED START #
-        """ Starts scan"""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
+        """
+        Send Scan command to SDP subarray.
+
+        :param argin: The JSON string format. The string contains following values:
+
+            Example: {"scan_duration":0}
+
+        Note: From Jive, enter input as:
+        {"scan_duration":0} without any space.
+
+        """
+        excpt_msg = []
+        excpt_count = 0
+
+        try:
+            # TODO : No use of scan_duration as Sdp Subarray does not accept any arguments.
+            jsonArgument = json.loads(argin)
+            scan_duration = jsonArgument["scan_duration"]
+            sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
+            # Check if SDP Subarray obsState is READY
+            if sdp_subarray_obs_state == CONST.ENUM_READY:
+                self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_SCAN,list(str(scan_duration)),self.commandCallback)
+                self._read_activity_message = CONST.STR_SCAN_SUCCESS
+                self.dev_logging(CONST.STR_SCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        except ValueError as value_error:
+            self.dev_logging(CONST.ERR_INVALID_JSON_SCAN + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON_SCAN + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except KeyError as key_error:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_SCAN + str(dev_failed),
+                             int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_SCAN + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_SCAN + str(except_occurred),
+                             int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_SCAN + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
+
+    # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
     @command(
     )
