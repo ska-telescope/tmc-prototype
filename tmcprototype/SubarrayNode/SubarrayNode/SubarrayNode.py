@@ -204,6 +204,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         elif self._csp_sa_obs_state == CONST.ENUM_CONFIGURING or \
                 self._sdp_sa_obs_state == CONST.ENUM_CONFIGURING:
             self._obs_state = CONST.ENUM_CONFIGURING
+        elif self._csp_sa_obs_state == CONST.ENUM_SCANNING and self._sdp_sa_obs_state == CONST.ENUM_SCANNING:
+            if pointing_state_count == len(self.dishPointingStateMap.values()):
+                self._obs_state = CONST.ENUM_SCANNING
+            else:
+                self._obs_state = CONST.ENUM_READY
         else:
             pass
 
@@ -258,7 +263,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_msg = []
         allocation_success = []
         allocation_failure = []
-
+        print("Argin Dish: ",argin)
+        print("Argin Dish type: ", type(argin))
         # Add each dish into the tango group
         for leafId in range(0, len(argin)):
             try:
@@ -361,13 +367,15 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         json_argument = {}
         argout = []
         dish = {}
-
+        print("Argin CSP: ", argin)
+        print("Argin CSP type: ", type(argin))
         try:
             dish[CONST.STR_KEY_RECEPTOR_ID_LIST] = argin
             json_argument[CONST.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
-            argout.append(argin)
+            #argout.append(argin)
+            argout = argin
         except DevFailed as df:
             print(CONST.ERR_CSP_CMD)
             self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -395,6 +403,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         argout = []
         json_argument = {}
+        print("Argin SDP: ", argin)
+        print("Argin SDP type: ", type(argin))
 
         try:
             json_argument[CONST.STR_KEY_PB_ID_LIST] = argin
@@ -504,7 +514,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Schedules a scan for execution on a subarray. Subarray transitions to
         obsState = SCANNING, when the execution of a scan starts.
 
-        :param argin: DevString. JSON string containing scan duration. JSON string example as follows:
+        :param argin: DevVarStringArray. JSON string containing scan duration. JSON string example as follows:
 
         {"scanDuration": 10.0}
 
@@ -517,19 +527,31 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         try:
             print(CONST.STR_SCAN_IP_ARG, argin)
             scanParameter = json.loads(argin[0])
-            scanDuration = str(scanParameter["scanDuration"])
 
-            scanTimestamp = "0"
-            if type(float(scanTimestamp)) == float:
-                assert self._obs_state != CONST.ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
-                print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list())
-                self._read_activity_message = CONST.STR_SCAN_IP_ARG + str(scanTimestamp)
-                self._read_activity_message = CONST.STR_GRP_DEF + str(
-                    self._dish_leaf_node_group.get_device_list())
-                # set obsState to SCANNING when the scan is started
-                self._obs_state = CONST.ENUM_SCANNING
-                self.set_status(CONST.STR_SA_SCANNING)
-                self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
+            if self._obs_state == CONST.ENUM_READY:
+                # assert self._obs_state != CONST.ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
+                # assert self._obs_state != CONST.ENUM_READY, CONST.SCAN_NOT_EXECUTED
+                self._read_activity_message = CONST.STR_SCAN_IP_ARG + argin[0]
+
+                # Invoke Scan command on SDP Subarray Leaf Node
+                cmdData = tango.DeviceData()
+                print ("Scan Parameter:", scanParameter)
+                cmdData.insert(tango.DevString, json.dumps(scanParameter))
+                self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_SCAN, cmdData)
+                print(CONST.STR_SDP_SCAN_INIT)
+                self._read_activity_message = CONST.STR_SDP_SCAN_INIT
+
+                # Invoke Scan command on CSP Subarray Leaf Node
+                cmdData = tango.DeviceData()
+                cmdData.insert(tango.DevString, json.dumps(scanParameter))
+                self._csp_subarray_ln_proxy.command_inout(CONST.CMD_START_SCAN, cmdData)
+                print(CONST.STR_CSP_SCAN_INIT)
+                self._read_activity_message = CONST.STR_CSP_SCAN_INIT
+
+                # # set obsState to SCANNING when the scan is started
+                # self._obs_state = CONST.ENUM_SCANNING
+                # self.set_status(CONST.STR_SA_SCANNING)
+                # self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
 
             #TODO: FOR FUTURE IMPLEMENTATION
             # if type(float(argin[0])) == float:
@@ -576,7 +598,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         if excpt_count > 0:
             err_msg = ' '
             for item in excpt_msg:
-                err_msg += item + "\n"
+                err_msg += str(item) + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
@@ -724,6 +746,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             sdp_allocation_result.sort()
             argin.sort()
             dummy_sdp_resources.sort()
+
             if(dish_allocation_result == argin and
                 csp_allocation_result == argin and
                 sdp_allocation_result == dummy_sdp_resources
@@ -735,6 +758,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 argout = []
 
         # return dish_allocation_result
+        print("argout on SubarrayNode: ", argout)
         return argout
 
     def is_AssignResources_allowed(self):
