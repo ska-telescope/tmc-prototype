@@ -342,7 +342,6 @@ publish to nexus:
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspMasterLeafNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpMasterLeafNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/DishMaster/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspMaster/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpMaster/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpSubarray/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpSubarrayLeafNode/dist/*
