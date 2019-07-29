@@ -19,6 +19,7 @@ ERR_SCAN = "Error while invoking Scan command on SDP Subarray."
 ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command on SDP Subarray."
 ERR_INVALID_JSON_SCAN = "Invalid JSON format while invoking Scan command on SDP Subarray."
 ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
+ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 #
 # #strings
 # #General strings
@@ -43,11 +44,13 @@ STR_CONFIG_EXEC = "Configure command execution"
 STR_SCAN_EXEC = "Scan command execution"
 STR_SCAN_SUCCESS = "Scan invoked successfully on SdpSubarray."
 
+
 #
 STR_CMD_FAILED = "SDP Subarray Leaf Node_CommandFailed"
 STR_RELEASE_RES_EXEC = "ReleaseResources command execution"
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
 STR_ENDSCAN_EXEC = "EndScan command execution"
+STR_CMD_CALLBK = "SdpSubarrayLeafNode Command Callback"
 
 # #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_1"

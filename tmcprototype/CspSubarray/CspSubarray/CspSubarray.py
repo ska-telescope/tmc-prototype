@@ -225,7 +225,6 @@ class CspSubarray(SKASubarray):
         # PROTECTED REGION ID(CspSubarray.ConfigureScan) ENABLED START #
         self._obs_state = 1                 # Set ObsState to CONFIGURING
         print("ConfigureScan is invoked successfully on CspSubarray. Argin:", argin)
-        time.sleep(4)
         self._obs_state = 2                 # Set ObsState to READY
         # PROTECTED REGION END #    //  CspSubarray.ConfigureScan
 
