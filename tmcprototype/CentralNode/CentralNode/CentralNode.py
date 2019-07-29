@@ -616,7 +616,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         receptorIDList = []
         excpt_msg = []
         excpt_count = 0
-        argout = []
         try:
             # serialize the json
             jsonArgument = json.loads(argin)

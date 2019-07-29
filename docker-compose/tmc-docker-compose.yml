@@ -223,7 +223,6 @@ services:
       - databaseds
       - rsyslog-tmcprototype
       - cspsubarray
-      - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspsubarrayleafnode
     environment:
@@ -242,7 +241,6 @@ services:
     - databaseds
     - rsyslog-tmcprototype
     - cspmaster
-    - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspmasterleafnode
     environment:
@@ -261,7 +259,6 @@ services:
     - databaseds
     - rsyslog-tmcprototype
     - sdpsubarray
-    - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}sdpsubarrayleafnode
     environment:
@@ -280,7 +277,6 @@ services:
     - databaseds
     - rsyslog-tmcprototype
     - sdpmaster
-    - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}sdpmasterleafnode
     environment:
@@ -304,7 +300,6 @@ services:
       - dishleafnode4
       - sdpsubarrayleafnode
       - cspsubarrayleafnode
-      - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}subarraynode1
     environment:
@@ -312,12 +307,18 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --ping-device mid_d0001/elt/master 10 &&\
+             tango_admin --ping-device mid_d0002/elt/master 10 &&\
+             tango_admin --ping-device mid_d0003/elt/master 10 &&\
+             tango_admin --ping-device mid_d0004/elt/master 10 &&\
+             tango_admin --ping-device mid-csp/elt/subarray01 10 &&\
+             tango_admin --ping-device mid_sdp/elt/subarray_00 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01 10 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray 10 &&\
              /venv/bin/python /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa1"
     volumes_from:
     - rsyslog-tmcprototype:rw
@@ -380,7 +381,6 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/csp_master 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master 10 &&\
              tango_admin --ping-device ska_mid/tm_subarray_node/1 10 &&\
              tango_admin --ping-device ska_mid/tm_subarray_node/2 10 &&\
@@ -437,22 +437,22 @@ services:
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
             ./app/alarmhandler-srv 01"
 
-#  sdpmaster:
-#    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
-#    depends_on:
-#    - databaseds
-#    - rsyslog-tmcprototype
-#    - tmc-dsconfig
-#    network_mode: ${NETWORK_MODE}
-#    container_name: ${CONTAINER_NAME_PREFIX}sdpmaster
-#    environment:
-#    - TANGO_HOST=${TANGO_HOST}
-#    command: >
-#      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-#             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
-#             /venv/bin/python /app/tmcprototype/SdpMaster/SdpMaster/SdpMaster.py 01"
-#    volumes_from:
-#    - rsyslog-tmcprototype:rw
+  sdpmaster:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+    - databaseds
+    - rsyslog-tmcprototype
+    - tmc-dsconfig
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}sdpmaster
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             /venv/bin/python /app/tmcprototype/SdpMaster/SdpMaster/SdpMaster.py 01"
+    volumes_from:
+    - rsyslog-tmcprototype:rw
 
 # For future use
 #  dsconfigdump:
