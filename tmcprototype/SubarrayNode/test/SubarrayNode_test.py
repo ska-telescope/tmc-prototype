@@ -120,29 +120,34 @@ class TestSubarrayNode(object):
         create_dish_proxy.SetPointingState()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
-    # def test_Scan(self, tango_context):
-    #     """Test for Scan"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-    #     with pytest.raises(tango.DevFailed):
-    #         tango_context.device.Scan("a")
-    #     assert tango_context.device.obsState != 3
-    #     tango_context.device.Scan(['{"scanDuration": 10.0}'])
-    #     assert tango_context.device.obsState == 3
-    #     # with pytest.raises(tango.DevFailed):
-    #     #     tango_context.device.Scan("0")
-    #     # assert CONST.SCAN_ALREADY_IN_PROGRESS in tango_context.device.activityMessage
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_Scan
+    def test_Scan(self, tango_context):
+        """Test for Scan"""
+        # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
+        # with pytest.raises(tango.DevFailed):
+        #     tango_context.device.Scan("a")
+        # assert tango_context.device.obsState != 3
+        tango_context.device.Scan(['{"scanDuration": 10.0}'])
+        time.sleep(5)
+        print ("Scan :tango_context.device.obsState :", tango_context.device.obsState )
+        assert tango_context.device.obsState == 3
+        # with pytest.raises(tango.DevFailed):
+        #     tango_context.device.Scan("0")
+        # assert CONST.SCAN_ALREADY_IN_PROGRESS in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
 
-    # def test_EndScan(self, tango_context):
-    #     """Test for EndScan"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
-    #     tango_context.device.EndScan()
-    #     assert tango_context.device.obsState == 2
-    #     # with pytest.raises(tango.DevFailed):
-    #     #     tango_context.device.EndScan()
-    #     # assert CONST.ERR_DUPLICATE_END_SCAN_CMD in tango_context.device.activityMessage
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
+    def test_EndScan(self, tango_context):
+        """Test for EndScan"""
+        # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
+        print("EndScan :tango_context.device.obsState :", tango_context.device.obsState)
+        tango_context.device.EndScan()
+        time.sleep(10)
+        print("EndScan :tango_context.device.obsState :", tango_context.device.obsState )
+        assert tango_context.device.obsState == 2
+        # with pytest.raises(tango.DevFailed):
+        #     tango_context.device.EndScan()
+        # assert CONST.ERR_DUPLICATE_END_SCAN_CMD in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""

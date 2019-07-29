@@ -99,6 +99,8 @@ STR_CSP_SUBARRAY_OBS_STATE= "CSP Subarray obsState is:"
 STR_SDP_SUBARRAY_OBS_STATE= "SDP Subarray obsState is:"
 STR_SDP_SCAN_INIT = "SDP Scan is initiated."
 STR_CSP_SCAN_INIT = "CSP Scan is initiated."
+STR_SDP_END_SCAN_INIT = "SDP EndScan is initiated."
+STR_CSP_END_SCAN_INIT = "CSP EndScan is initiated."
 
 STR_CSP_SA_HEALTH_OK = "CSP SA health is OK."
 STR_CSP_SA_HEALTH_DEGRADED = "CSP SA health is DEGRADED."
@@ -153,11 +155,11 @@ ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
 # healthState
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 # pointingState
-ENUM_READY, ENUM_SLEW, ENUM_TRACK, ENUM_SCAN = list(range(0, 4))
+pointingState_ENUM_READY, pointingState_ENUM_SLEW, pointingState_ENUM_TRACK, pointingState_ENUM_SCAN = list(range(0, 4))
 # adminMode
 ENUM_ONLINE, ENUM_OFFLINE, ENUM_MAINTENANCE, ENUM_NOTFITTED, ENUM_RESERVED = list(range(0, 5))
 # obsState
-ENUM_IDLE, ENUM_CONFIGURING, ENUM_READY, ENUM_SCANNING, ENUM_PAUSED, ENUM_ABORTED, ENUM_FAULT = list(range(0, 7))
+obsState_ENUM_IDLE, obsState_ENUM_CONFIGURING, obsState_ENUM_READY, obsState_ENUM_SCANNING, obsState_ENUM_PAUSED, obsState_ENUM_ABORTED, obsState_ENUM_FAULT = list(range(0, 7))
 # obsMode
 ENUM_IDLE, ENUM_IMAGING, ENUM_PULSAR_SEARCH, ENUM_PULSAR_TIMING, ENUM_DYNAMIC_SPECTRUM, ENUM_TRANSIENT_SEARCH, \
 ENUM_VLBI, ENUM_CALIBRATION = list(range(0, 8))
