@@ -80,7 +80,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # Device Properties
     # -----------------
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid-csp/elt/subarray01"
+        dtype='str', default_value="mid_csp/elt/subarray01"
     )
 
     # ----------

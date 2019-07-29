@@ -40,6 +40,9 @@
                             "CspMasterLeafNodeFQDN": [
                                 "ska_mid/tm_leaf_node/csp_master"
                             ],
+                            "SdpMasterLeafNodeFQDN": [
+                                "ska_mid/tm_leaf_node/sdp_master"
+                            ],
                             "NumDishes": [
                                 "4"
                             ],
@@ -416,46 +419,6 @@
         "CspSubarrayLeafNode": {
             "01": {
                 "CspSubarrayLeafNode": {
-                    "ska_mid/tm_leaf_node/csp_subarray": {
-                        "attribute_properties": {
-                            "adminMode": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "cspsubarrayHealthState": {
-                                "__root_att": [
-                                    "Not defined"
-                                ]
-                            },
-                            "healthState": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
-                            }
-                        },
-                        "properties": {
-                            "CspSubarrayPrefix": [
-                                "mid-csp/elt/subarray01"
-                            ],
-                            "SkaLevel": [
-                                "3"
-                            ],
-                            "polled_attr": [
-                                "adminmode",
-                                "1000",
-                                "healthstate",
-                                "1000"
-                            ]
-                        }
-                    },
                     "ska_mid/tm_leaf_node/csp_subarray01": {
                         "attribute_properties": {
                             "adminMode": {
@@ -466,7 +429,7 @@
                             },
                             "cspsubarrayHealthState": {
                                 "__root_att": [
-                                    "mid-csp/elt/subarray01/healthState"
+                                    "mid_csp/elt/subarray01/healthState"
                                 ]
                             },
                             "healthState": {
@@ -483,10 +446,10 @@
                         },
                         "properties": {
                             "CspSubarrayNodeFQDN": [
-                                "mid-csp/elt/subarray01"
+                                "mid_csp/elt/subarray01"
                             ],
                             "CspSubarrayPrefix": [
-                                "mid-csp/elt/subarray01"
+                                "mid_csp/elt/subarray01"
                             ],
                             "SkaLevel": [
                                 "3"
