@@ -96,6 +96,16 @@ class SdpSubarray(SKASubarray):
         return "True"
         # PROTECTED REGION END #    //  SKASubarray.ReleaseAllResources
 
+    @command(
+    )
+    @DebugIt()
+    def EndScan(self):
+        # PROTECTED REGION ID(SdpSubarray.EndScan) ENABLED START #
+        print("EndScan command successfully invoked:")
+        self._obs_state = CONST.ENUM_READY
+        # PROTECTED REGION END #    //  SdpSubarray.EndScan
+
+
     def is_ReleaseAllResources_allowed(self):
         return self._is_command_allowed("ReleaseResources")
 

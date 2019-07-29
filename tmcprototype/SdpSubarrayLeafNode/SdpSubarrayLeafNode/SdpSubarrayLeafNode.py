@@ -87,7 +87,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
 
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_sdp/elt/subarray_1",
+        dtype='str', default_value="tango://dada:10000/mid_sdp/elt/subarray_1",
         doc='FQDN of the SDP Subarray Node Tango Device Server.',
     )
 
@@ -542,7 +542,42 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def EndScan(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
-        """ Ends scan"""
+        """
+        It invokes 'EndScan' command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING
+        state
+
+        :return : None
+        """
+
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if self._sdp_subarray_proxy.obsState == CONST.ENUM_SCANNING:
+                self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSCAN, self.commandCallback)
+                self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
+                self.dev_logging(CONST.STR_ENDSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_IN_SCAN
+                self.dev_logging(CONST.ERR_DEVICE_NOT_IN_SCAN, int(tango.LogLevel.LOG_ERROR))
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSCAN_INVOKING_CMD + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
+
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndScan
 
     @command(
