@@ -183,7 +183,7 @@ class TestSdpSubarrayLeafNode(object):
                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
         tango_context.device.Configure(test_input)
         time.sleep(2)
-        test_input = '{"scan_duration":0}'
+        test_input = '{"scanDuration":0}'
         tango_context.device.Scan(test_input)
         time.sleep(2)
         tango_context.device.EndScan()
@@ -212,7 +212,7 @@ class TestSdpSubarrayLeafNode(object):
                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
         tango_context.device.Configure(test_input)
         time.sleep(2)
-        test_input = '{"scan_duration":0}'
+        test_input = '{"scanDuration":0}'
         tango_context.device.Scan(test_input)
         time.sleep(1)
         assert CONST.STR_SCAN_SUCCESS in tango_context.device.activityMessage

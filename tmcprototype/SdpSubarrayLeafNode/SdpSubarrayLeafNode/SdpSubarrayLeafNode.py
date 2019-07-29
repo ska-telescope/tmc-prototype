@@ -498,7 +498,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             # TODO : No use of scan_duration as Sdp Subarray does not accept any arguments.
             jsonArgument = json.loads(argin)
-            scan_duration = jsonArgument["scan_duration"]
+            scan_duration = jsonArgument["scanDuration"]
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
             # Check if SDP Subarray obsState is READY
             if sdp_subarray_obs_state == CONST.ENUM_READY:
