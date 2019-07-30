@@ -48,6 +48,7 @@ class SdpSubarray(SKASubarray):
         Schedules a scan for execution on a subarray.
         """
         print("SdpSubarray.Scan command executed successfully.")
+        self._obs_state = CONST.ENUM_SCANNING
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -94,6 +95,16 @@ class SdpSubarray(SKASubarray):
         print ("SdpSubarray.ReleaseAllResources command executed successfully.")
         return "True"
         # PROTECTED REGION END #    //  SKASubarray.ReleaseAllResources
+
+    @command(
+    )
+    @DebugIt()
+    def EndScan(self):
+        # PROTECTED REGION ID(SdpSubarray.EndScan) ENABLED START #
+        print("EndScan command successfully invoked:")
+        self._obs_state = CONST.ENUM_READY
+        # PROTECTED REGION END #    //  SdpSubarray.EndScan
+
 
     def is_ReleaseAllResources_allowed(self):
         return self._is_command_allowed("ReleaseResources")

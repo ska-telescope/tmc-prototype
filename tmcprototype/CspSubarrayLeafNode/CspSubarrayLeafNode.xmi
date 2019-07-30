@@ -80,7 +80,7 @@
     </commands>
     <commands name="StartScan" description="" execMethod="start_scan" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
-        <type xsi:type="pogoDsl:StringType"/>
+        <type xsi:type="pogoDsl:StringArrayType"/>
       </argin>
       <argout description="">
         <type xsi:type="pogoDsl:VoidType"/>
@@ -89,7 +89,7 @@
     </commands>
     <commands name="EndScan" description="" execMethod="end_scan" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
-        <type xsi:type="pogoDsl:StringType"/>
+        <type xsi:type="pogoDsl:VoidType"/>
       </argin>
       <argout description="">
         <type xsi:type="pogoDsl:VoidType"/>

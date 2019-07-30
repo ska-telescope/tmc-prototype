@@ -128,9 +128,10 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             'the SDP Subarray.',
     )
 
-    sdpSubarrayHealthState = attribute(name="sdpSubarrayHealthState", label="sdpSubarrayHealthState", forwarded=True)
+    sdpSubarrayHealthState = attribute(name="sdpSubarrayHealthState", label="sdpSubarrayHealthState",
+                                       forwarded=True)
 
-    sdpSubarrayObsState = attribute(name="sdpSubarrayObsState", label="sdpSubarrayObsState",forwarded=True)
+    sdpSubarrayObsState = attribute(name="sdpSubarrayObsState", label="sdpSubarrayObsState", forwarded=True)
 
     # ---------------
     # General methods
@@ -215,13 +216,13 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def ReleaseAllResources(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
         """
-                Release all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
-                receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-                is         invoked on the respective subarray. In this case, the receptorIDList tag is empty as all
-                the resources of the Subarray are released.
-                When releaseALL is False, ReleaseResources will be invoked on the Subarray and the resources provided
-                in receptorIDList tag, are released from Subarray. This selective release of the resources when
-                releaseALL is False, will be implemented in the later stages of the prototype.
+                Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+                receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources
+                command is invoked on the respective subarray. In this case, the receptorIDList tag is empty
+                as all the resources of the Subarray are released. When releaseALL is False, ReleaseResources
+                will be invoked on the Subarray and the resources provided in receptorIDList tag, are
+                released from Subarray. This selective release of the resources when releaseALL is False,
+                will be implemented in the later stages of the prototype.
                 :param
                     argin: None
                 :return:
@@ -253,7 +254,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
         except Exception as except_occurred:
-            self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(except_occurred), int(tango.LogLevel.
+                                                                                     LOG_ERROR))
             self._read_activity_message = CONST.ERR_RELEASE_RESOURCES + str(except_occurred)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
@@ -270,7 +272,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
 
     @command(
-    dtype_in='str', 
+        dtype_in='str',
     )
     @DebugIt()
     def ReleaseResources(self, argin):
@@ -284,8 +286,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseResources
 
     @command(
-    dtype_in='str', 
-    dtype_out='str', 
+        dtype_in='str',
+        dtype_out='str',
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -362,13 +364,13 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
     @command(
-    dtype_in='str', 
+        dtype_in='str',
     )
     @DebugIt()
     def Configure(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
-        """ When commanded in the IDLE state: configures the Subarray device by providing the SDP PB configuration
-        needed to execute the receive workflow
+        """ When commanded in the IDLE state: configures the Subarray device by providing the SDP PB
+        configuration needed to execute the receive workflow
 
             :param argin: The string in JSON format. The JSON contains following values:
 
@@ -418,9 +420,9 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         Note:
         from Jive, enter input as :
         {"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":
-        {"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChanels":372,
-        "numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":
-        "NGC6251","ra":1.0,"dec":1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},
+        {"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChanels":
+        372,"numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS",
+        "name":"NGC6251","ra":1.0,"dec":1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},
         "configureScan":{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}
 
         :return: None.
@@ -431,7 +433,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # TODO : Check if obsState == IDLE
             jsonArgument = json.loads(argin)
             configure_arg = jsonArgument["sdp"]["configure"]
-            self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_CONFIGURE, str(configure_arg), self.commandCallback)
+            self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_CONFIGURE, str(configure_arg),
+                                                          self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURE_SUCCESS
             self.dev_logging(CONST.STR_CONFIGURE_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
@@ -473,20 +476,116 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
     @command(
-    dtype_in='str',
+        dtype_in='str',
     )
     @DebugIt()
     def Scan(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Scan) ENABLED START #
-        """ Starts scan"""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
+        """
+        Invoke Scan command to SDP subarray.
+
+        :param argin: The JSON string format. The string contains following values:
+
+            Example: {"scanDuration":0}
+
+        Note: From Jive, enter input as:
+        {"scanDuration":0} without any space.
+
+        """
+        excpt_msg = []
+        excpt_count = 0
+
+        try:
+            # TODO : For Future Implementation
+            # JSON argument scan_duration is maintained for future use.
+            jsonArgument = json.loads(argin)
+            scan_duration = jsonArgument["scanDuration"]
+            sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
+            # Check if SDP Subarray obsState is READY
+            if sdp_subarray_obs_state == CONST.ENUM_READY:
+                self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_SCAN, list(str(scan_duration)),
+                                                              self.commandCallback)
+                self._read_activity_message = CONST.STR_SCAN_SUCCESS
+                self.dev_logging(CONST.STR_SCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
+                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+        except ValueError as value_error:
+            self.dev_logging(CONST.ERR_INVALID_JSON_SCAN + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_INVALID_JSON_SCAN + str(value_error)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except KeyError as key_error:
+            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_SCAN + str(dev_failed),
+                             int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_SCAN + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_SCAN + str(except_occurred),
+                             int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_SCAN + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
+
+    # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
     @command(
     )
     @DebugIt()
     def EndScan(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
-        """ Ends scan"""
+        """
+        It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING
+        state.
+
+        :return : None
+        """
+
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if self._sdp_subarray_proxy.obsState == CONST.ENUM_SCANNING:
+                self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSCAN, self.commandCallback)
+                self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
+                self.dev_logging(CONST.STR_ENDSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_IN_SCAN
+                self.dev_logging(CONST.ERR_DEVICE_NOT_IN_SCAN, int(tango.LogLevel.LOG_ERROR))
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.
+                                                                                        LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSCAN_INVOKING_CMD + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
+
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndScan
 
     @command(
