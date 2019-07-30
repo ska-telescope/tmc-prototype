@@ -196,18 +196,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         for value in list(self.dishPointingStateMap.values()):
             if value == CONST.POINTING_STATE_ENUM_TRACK:
                 pointing_state_count = pointing_state_count + 1
+        print("self.isScanning :", self.isScanning)
         if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING:
             self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
             self.isScanning = True
-        elif self.isScanning:
-            if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
-                self._obs_state = CONST.OBS_STATE_ENUM_READY
-                self.isScanning = False
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
             if pointing_state_count == len(self.dishPointingStateMap.values()):
                 self._obs_state = CONST.OBS_STATE_ENUM_READY
+            elif self.isScanning:
+                self._obs_state = CONST.OBS_STATE_ENUM_READY
+                # self.isScanning = False
             else:
                 self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
+
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING or \
                 self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
             self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
