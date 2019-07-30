@@ -326,7 +326,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
         state.
 
-        :param argin: JSON string consists of scanDuration
+        :param argin: JSON string consists of scanDuration.
 
         Example: in jive:{"scanDuration": 10.0}
 
@@ -379,7 +379,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def EndScan(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.EndScan) ENABLED START #
         """
-        It invokes 'EndScan' command on CspSubarray. This command is allowed when CspSubarray is in SCANNING
+        It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in SCANNING
         state.
 
         :return: None.

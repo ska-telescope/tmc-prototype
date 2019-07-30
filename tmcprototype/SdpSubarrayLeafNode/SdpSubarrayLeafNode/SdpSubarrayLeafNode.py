@@ -482,7 +482,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def Scan(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Scan) ENABLED START #
         """
-        Send Scan command to SDP subarray.
+        Invoke Scan command to SDP subarray.
 
         :param argin: The JSON string format. The string contains following values:
 
@@ -550,7 +550,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def EndScan(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
         """
-        It invokes 'EndScan' command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING
+        It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING
         state.
 
         :return : None

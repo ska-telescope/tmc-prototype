@@ -199,8 +199,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING:
             self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
             self.isScanning = True
-        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
-            if self.isScanning:
+        elif self.isScanning:
+            if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
                 self._obs_state = CONST.OBS_STATE_ENUM_READY
                 self.isScanning = False
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
