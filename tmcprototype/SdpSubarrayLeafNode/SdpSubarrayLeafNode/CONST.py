@@ -20,6 +20,7 @@ ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command 
 ERR_INVALID_JSON_SCAN = "Invalid JSON format while invoking Scan command on SDP Subarray."
 ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
+ERR_DEVICE_NOT_READY = "SdpSubarray is not in ready state."
 #
 # #strings
 # #General strings

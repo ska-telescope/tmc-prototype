@@ -193,29 +193,24 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     def calculate_observation_state(self):
         pointing_state_count = 0
-        print("self.dishPointingStateMap.values()",self.dishPointingStateMap.values())
         for value in list(self.dishPointingStateMap.values()):
-            if value == CONST.pointingState_ENUM_TRACK:
+            if value == CONST.POINTING_STATE_ENUM_TRACK:
                 pointing_state_count = pointing_state_count + 1
-        print("pointing_state_count",pointing_state_count)
-        if self._csp_sa_obs_state == CONST.obsState_ENUM_SCANNING and self._sdp_sa_obs_state == CONST.obsState_ENUM_SCANNING:
-            self._obs_state = CONST.obsState_ENUM_SCANNING
+        if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING:
+            self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
             self.isScanning = True
-        elif self._csp_sa_obs_state == CONST.obsState_ENUM_READY and self._sdp_sa_obs_state == CONST.obsState_ENUM_READY:
+        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
             if self.isScanning:
-                self._obs_state = CONST.obsState_ENUM_READY
+                self._obs_state = CONST.OBS_STATE_ENUM_READY
                 self.isScanning = False
-        elif self._csp_sa_obs_state == CONST.obsState_ENUM_READY and self._sdp_sa_obs_state == CONST.obsState_ENUM_READY:
+        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
             if pointing_state_count == len(self.dishPointingStateMap.values()):
-                print("ObsState READY: ", self._obs_state)
-                self._obs_state = CONST.obsState_ENUM_READY
+                self._obs_state = CONST.OBS_STATE_ENUM_READY
             else:
-                self._obs_state = CONST.obsState_ENUM_CONFIGURING
-                print("ObsState COMFIGURING IN: ", self._obs_state)
-        elif self._csp_sa_obs_state == CONST.obsState_ENUM_CONFIGURING or \
-                self._sdp_sa_obs_state == CONST.obsState_ENUM_CONFIGURING:
-            self._obs_state = CONST.obsState_ENUM_CONFIGURING
-            print("ObsState COMFIGURING OUT: ", self._obs_state)
+                self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
+        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING or \
+                self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
+            self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
 
     def create_csp_ln_proxy(self):
         """
@@ -229,7 +224,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 proxy_created_flag = True
                 break
             except Exception as ex:
-                print("exception: ", ex)
                 retry += 1
                 continue
 
@@ -267,8 +261,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_msg = []
         allocation_success = []
         allocation_failure = []
-        print("Argin Dish: ",argin)
-        print("Argin Dish type: ", type(argin))
         # Add each dish into the tango group
         for leafId in range(0, len(argin)):
             try:
@@ -315,7 +307,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # Set state = ON
                 self.set_state(DevState.ON)
                 # set obsState to "IDLE"
-                self._obs_state = CONST.obsState_ENUM_IDLE
+                self._obs_state = CONST.OBS_STATE_ENUM_IDLE
                 self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
                 self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
             except DevFailed as dev_failed:
@@ -371,14 +363,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         json_argument = {}
         argout = []
         dish = {}
-        print("Argin CSP: ", argin)
-        print("Argin CSP type: ", type(argin))
         try:
             dish[CONST.STR_KEY_RECEPTOR_ID_LIST] = argin
             json_argument[CONST.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
-            #argout.append(argin)
             argout = argin
         except DevFailed as df:
             print(CONST.ERR_CSP_CMD)
@@ -407,9 +396,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         argout = []
         json_argument = {}
-        print("Argin SDP: ", argin)
-        print("Argin SDP type: ", type(argin))
-
         try:
             json_argument[CONST.STR_KEY_PB_ID_LIST] = argin
             str_json_arg = json.dumps(json_argument)
@@ -530,16 +516,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_msg = []
         try:
             print(CONST.STR_SCAN_IP_ARG, argin)
-            #scanParameter = json.loads(argin[0])
-
-            if self._obs_state == CONST.obsState_ENUM_READY:
-                assert self._obs_state != CONST.obsState_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
-                # assert self._obs_state != CONST.obsState_ENUM_READY, CONST.SCAN_NOT_EXECUTED
+            if self._obs_state == CONST.OBS_STATE_ENUM_READY:
+                assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
                 self._read_activity_message = CONST.STR_SCAN_IP_ARG + argin[0]
 
                 # Invoke Scan command on SDP Subarray Leaf Node
                 cmdData = tango.DeviceData()
-                print ("Scan Parameter:", argin[0])
                 cmdData.insert(tango.DevString, argin[0])
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_SCAN, cmdData)
                 print(CONST.STR_SDP_SCAN_INIT)
@@ -558,7 +540,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             #TODO: FOR FUTURE IMPLEMENTATION
             # if type(float(argin[0])) == float:
             #     print("Observation state:", self._obs_state)
-            #     assert self._obs_state != CONST.obsState_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
+            #     assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
             #     print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list())
             #     self._read_activity_message = CONST.STR_SCAN_IP_ARG + str(argin)
             #     self._read_activity_message = CONST.STR_GRP_DEF + str(
@@ -567,7 +549,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             #     cmdData.insert(tango.DevString, argin[0])
             #     self._dish_leaf_node_group.command_inout(CONST.CMD_SCAN, cmdData)
             #     # set obsState to SCANNING when the scan is started
-            #     self._obs_state = CONST.obsState_ENUM_SCANNING
+            #     self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
             #     self.set_status(CONST.STR_SA_SCANNING)
             #     self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
         except AssertionError as assert_error:
@@ -622,10 +604,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_count = 0
         excpt_msg = []
         try:
-            assert self._obs_state == CONST.obsState_ENUM_SCANNING, CONST.SCAN_ALREADY_COMPLETED
-            if self._obs_state == CONST.obsState_ENUM_SCANNING:
-                #print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list())
-
+            assert self._obs_state == CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_COMPLETED
+            if self._obs_state == CONST.OBS_STATE_ENUM_SCANNING:
                 # Invoke EndScan command on SDP Subarray Leaf Node
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_END_SCAN)
                 print(CONST.STR_SDP_END_SCAN_INIT)
@@ -645,7 +625,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # cmdData.insert(tango.DevString, "0")
                 # self._dish_leaf_node_group.command_inout(CONST.CMD_END_SCAN, cmdData)
                 # set obsState to READY when the scan is ended
-                # self._obs_state = CONST.obsState_ENUM_READY
+                # self._obs_state = CONST.OBS_STATE_ENUM_READY
                 # self._scan_id = ""
                 # self.set_status(CONST.STR_SCAN_COMPLETE)
                 # self.dev_logging(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
@@ -773,7 +753,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 argout = []
 
         # return dish_allocation_result
-        print("argout on SubarrayNode: ", argout)
         return argout
 
     def is_AssignResources_allowed(self):
@@ -827,7 +806,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # It will be moved to that command.
                 self._sb_id = ""
                 self.set_state(DevState.OFF)  # Set state = OFF
-                self._obs_state = CONST.obsState_ENUM_IDLE  # set obsState to "IDLE"
+                self._obs_state = CONST.OBS_STATE_ENUM_IDLE  # set obsState to "IDLE"
 
         except AssertionError as assert_err:
             print(CONST.ERR_RELEASE_RES_CMD + str(assert_err))
@@ -911,20 +890,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         if evt.err is False:
             try:
                 self._dish_pointing_state = evt.attr_value.value
-                print("self._dish_pointing_state in callback: ", self._dish_pointing_state)
                 self.dishPointingStateMap[evt.device] = self._dish_pointing_state
-                if self._dish_pointing_state == CONST.pointingState_ENUM_READY:
+                if self._dish_pointing_state == CONST.POINTING_STATE_ENUM_READY:
                     print(CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_READY)
                     self._read_activity_message = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_READY
-                elif self._dish_pointing_state == CONST.pointingState_ENUM_SLEW:
+                elif self._dish_pointing_state == CONST.POINTING_STATE_ENUM_SLEW:
                     print(CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_SLEW)
                     self._read_activity_message = CONST.STR_POINTING_STATE + str(evt.device) + \
                                                   CONST.STR_SLEW
-                elif self._dish_pointing_state == CONST.pointingState_ENUM_TRACK:
+                elif self._dish_pointing_state == CONST.POINTING_STATE_ENUM_TRACK:
                     print(CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_TRACK)
                     self._read_activity_message = CONST.STR_POINTING_STATE + str(evt.device) + \
                                                   CONST.STR_TRACK
-                elif self._dish_pointing_state == CONST.pointingState_ENUM_SCAN:
+                elif self._dish_pointing_state == CONST.POINTING_STATE_ENUM_SCAN:
                     print(CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_SCAN)
                     self._read_activity_message = CONST.STR_POINTING_STATE + str(evt.device) + \
                                                   CONST.STR_SCAN
@@ -1012,7 +990,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.SkaLevel = 2                       # set SKALevel to "2"
         self._admin_mode = CONST.ENUM_ONLINE    # set adminMode to "ON-LINE"
         self._health_state = CONST.ENUM_OK      # set health state to "OK"
-        self._obs_state = CONST.obsState_ENUM_IDLE       # set obsState to "IDLE"
+        self._obs_state = CONST.OBS_STATE_ENUM_IDLE       # set obsState to "IDLE"
         self._obs_mode = CONST.ENUM_IDLE        # set obsMode to "IDLE"
         self._simulation_mode = False
         self._scan_id = ""
@@ -1030,20 +1008,16 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
                                                 # SDP SA LN
         self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
-        self._csp_sa_obs_state = CONST.obsState_ENUM_IDLE
-        self._sdp_sa_obs_state = CONST.obsState_ENUM_IDLE
+        self._csp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
+        self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
 
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
         result = self.create_csp_ln_proxy()
-        # print("csp proxy creation result: ", result)
-
         # Create proxy for SDP Subarray Leaf Node
         self._sdp_subarray_ln_proxy = None
         result = self.create_sdp_ln_proxy()
-        # print("sdp proxy creation result: ", result)
-
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = -1
             # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
@@ -1170,10 +1144,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         try:
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin[0])
-            # self._read_activity_message = CONST.STR_GRP_DEF_CONFIGURE_FN + str(
-            #     self._dish_leaf_node_group.get_device_list())
-
-            if self._obs_state == CONST.obsState_ENUM_IDLE:
+            if self._obs_state == CONST.OBS_STATE_ENUM_IDLE:
                 self._scanConfiguration = json.loads(argin[0])
                 # TODO: FOR FUTURE IMPLEMENTATION
                 # scanID = scanConfiguration["scanID"]
@@ -1224,7 +1195,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
                 # TODO: FOR FUTURE REFERENCE
                 # # set obsState to READY when the configuration is completed
-                # self._obs_state = CONST.obsState_ENUM_READY
+                # self._obs_state = CONST.OBS_STATE_ENUM_READY
 
         except ValueError as value_error:
             self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
@@ -1288,14 +1259,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         try:
             self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
             # set obsState to CONFIGURING when the configuration is started
-            # self._obs_state = CONST.obsState_ENUM_CONFIGURING
+            # self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
             cmd_input = []
             cmd_input.append(argin)
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevVarStringArray, cmd_input)
             self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
             # set obsState to READY when the configuration is completed
-            # self._obs_state = CONST.obsState_ENUM_READY
+            # self._obs_state = CONST.OBS_STATE_ENUM_READY
             self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             #self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self.dev_logging(CONST.STR_TRACK_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))

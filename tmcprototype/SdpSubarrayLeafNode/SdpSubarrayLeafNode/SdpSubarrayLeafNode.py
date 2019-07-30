@@ -216,7 +216,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def ReleaseAllResources(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
         """
-                Release all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+                Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
                 receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources
                 command is invoked on the respective subarray. In this case, the receptorIDList tag is empty
                 as all the resources of the Subarray are released. When releaseALL is False, ReleaseResources
@@ -486,17 +486,18 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param argin: The JSON string format. The string contains following values:
 
-            Example: {"scan_duration":0}
+            Example: {"scanDuration":0}
 
         Note: From Jive, enter input as:
-        {"scan_duration":0} without any space.
+        {"scanDuration":0} without any space.
 
         """
         excpt_msg = []
         excpt_count = 0
 
         try:
-            # TODO : No use of scan_duration as Sdp Subarray does not accept any arguments.
+            # TODO : For Future Implementation
+            # JSON argument scan_duration is maintained for future use.
             jsonArgument = json.loads(argin)
             scan_duration = jsonArgument["scanDuration"]
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
@@ -506,6 +507,9 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                               self.commandCallback)
                 self._read_activity_message = CONST.STR_SCAN_SUCCESS
                 self.dev_logging(CONST.STR_SCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
+                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
         except ValueError as value_error:
             self.dev_logging(CONST.ERR_INVALID_JSON_SCAN + str(value_error), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON_SCAN + str(value_error)
@@ -513,7 +517,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             excpt_count += 1
         except KeyError as key_error:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
@@ -548,7 +551,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
         """
         It invokes 'EndScan' command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING
-        state
+        state.
 
         :return : None
         """
