@@ -13,7 +13,7 @@
 """Release information for Python Package"""
 
 name = """tangods-tmcprototype"""
-version = "0.1.0"
+version = "0.1.1"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -22,5 +22,5 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.1.0
+release=0.1.1
 tag=tmcprototype-0.1.1
