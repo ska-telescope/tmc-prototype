@@ -66,75 +66,75 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_mocking) ENABLED START #
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_mocking
 
-    # def test_properties(self, tango_context):
-    #     # test the properties
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_properties) ENABLED START #
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_properties
-    #     pass
-    #
-    # def test_State(self, tango_context):
-    #     """Test for State"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_State) ENABLED START #
-    #     assert tango_context.device.State() == DevState.ALARM
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_State
-    #
-    # def test_Status(self, tango_context):
-    #     """Test for Status"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Status) ENABLED START #
-    #     assert tango_context.device.Status() != CONST.STR_INIT_SUCCESS
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Status
-    #
-    # def test_GetVersionInfo(self, tango_context):
-    #     """Test for GetVersionInfo"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_GetVersionInfo) ENABLED START #
-    #     # self.device.GetVersionInfo()
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_GetVersionInfo
-    #
-    # def test_Reset(self, tango_context):
-    #     """Test for Reset"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Reset) ENABLED START #
-    #     # self.device.Reset()
-    #     assert tango_context.device.Reset() == None
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Reset
-    #
-    # # def test_ReleaseResources(self, tango_context):
-    # #     """Test for ReleaseResources"""
-    # #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseResources) ENABLED START #
-    # #     self.device.ReleaseResources("")
-    # #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseResources
-    #
-    # def test_AssignResources(self, tango_context, create_sdpsubarray_proxy):
-    #     """Test for AssignResources"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
-    #     test_input = '{"processingBlockIdList": ["0001", "0002"]}'
-    #     retVal = tango_context.device.AssignResources(test_input)
-    #     assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
-    #
-    # def test_AssignResources_invalid_key(self, tango_context):
-    #     """Test for AssignResources_invalid_key"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
-    #     test_input = '{"processingBlock": ["0001", "0002"]}'
-    #     with pytest.raises(tango.DevFailed):
-    #         tango_context.device.AssignResources(test_input)
-    #     assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
-    #
-    # def test_AssignResources_invalid_format(self, tango_context):
-    #     """Test for AssignResources_invalid_format"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
-    #     test_input = '{"abc"}'
-    #     with pytest.raises(tango.DevFailed):
-    #         tango_context.device.AssignResources(test_input)
-    #     assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
-    #
-    # def test_ReleaseAllResources(self, tango_context):
-    #     """Test for ReleaseAllResources"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseAllResources) ENABLED START #
-    #     retVal = tango_context.device.ReleaseAllResources()
-    #     assert CONST.STR_REL_RESOURCES in tango_context.device.activityMessage
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseAllResources
+    def test_properties(self, tango_context):
+        # test the properties
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_properties) ENABLED START #
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_properties
+        pass
+
+    def test_State(self, tango_context):
+        """Test for State"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_State) ENABLED START #
+        assert tango_context.device.State() == DevState.ALARM
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_State
+
+    def test_Status(self, tango_context):
+        """Test for Status"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Status) ENABLED START #
+        assert tango_context.device.Status() != CONST.STR_INIT_SUCCESS
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Status
+
+    def test_GetVersionInfo(self, tango_context):
+        """Test for GetVersionInfo"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_GetVersionInfo) ENABLED START #
+        # self.device.GetVersionInfo()
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_GetVersionInfo
+
+    def test_Reset(self, tango_context):
+        """Test for Reset"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Reset) ENABLED START #
+        # self.device.Reset()
+        assert tango_context.device.Reset() == None
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Reset
+
+    # def test_ReleaseResources(self, tango_context):
+    #     """Test for ReleaseResources"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseResources) ENABLED START #
+    #     self.device.ReleaseResources("")
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseResources
+
+    def test_AssignResources(self, tango_context, create_sdpsubarray_proxy):
+        """Test for AssignResources"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+        test_input = '{"processingBlockIdList": ["0001", "0002"]}'
+        retVal = tango_context.device.AssignResources(test_input)
+        assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+
+    def test_AssignResources_invalid_key(self, tango_context):
+        """Test for AssignResources_invalid_key"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+        test_input = '{"processingBlock": ["0001", "0002"]}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(test_input)
+        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+
+    def test_AssignResources_invalid_format(self, tango_context):
+        """Test for AssignResources_invalid_format"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+        test_input = '{"abc"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(test_input)
+        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+
+    def test_ReleaseAllResources(self, tango_context):
+        """Test for ReleaseAllResources"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseAllResources) ENABLED START #
+        retVal = tango_context.device.ReleaseAllResources()
+        assert CONST.STR_REL_RESOURCES in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseAllResources
 
     def test_Configure(self, tango_context):
         """Test for Configure"""
@@ -149,9 +149,10 @@ class TestSdpSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.STR_CONFIGURE_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Configure
+
     def test_Configure_invalid_key(self, tango_context):
-        """Test for AssignResources_invalid_key"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+        """Test for Configure command with invalid_key"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Configure_invalid_key) ENABLED START #
         test_input = '{"sdp":{"":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
                      '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
@@ -164,8 +165,8 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
     def test_Configure_invalid_format(self, tango_context):
-        """Test for AssignResources_invalid_format"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+        """Test for Configure command with invalid_format"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Configure_invalid_format) ENABLED START #
         test_input = '{"abc"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
@@ -219,13 +220,6 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
 
     #
-    # def test_Scan(self, tango_context):
-    #     """Test for Scan"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan) ENABLED START #
-    #     self.device.Scan()
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
-
-    #
     # def test_EndSB(self, tango_context):
     #     """Test for EndSB"""
     #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
@@ -244,12 +238,12 @@ class TestSdpSubarrayLeafNode(object):
     #     self.device.buildState
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_buildState
 
-    # def test_versionId(self, tango_context):
-    #     """Test for versionId"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_versionId) ENABLED START #
-    #     # self.device.versionId
-    #     assert tango_context.device.versionId == "0.1.3"
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_versionId
+    def test_versionId(self, tango_context):
+        """Test for versionId"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_versionId) ENABLED START #
+        # self.device.versionId
+        assert tango_context.device.versionId == "0.1.3"
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_versionId
 
     def test_centralLoggingLevel(self, tango_context):
         """Test for centralLoggingLevel"""

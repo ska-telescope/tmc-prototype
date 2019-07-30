@@ -993,6 +993,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._obs_state = CONST.OBS_STATE_ENUM_IDLE       # set obsState to "IDLE"
         self._obs_mode = CONST.ENUM_IDLE        # set obsMode to "IDLE"
         self._simulation_mode = False
+        self.isScanning = False
         self._scan_id = ""
         self._sb_id = ""
         self._receptor_id_list = []
