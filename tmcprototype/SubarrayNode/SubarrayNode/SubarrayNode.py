@@ -1176,6 +1176,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 del cspConfiguration["pointing"]
                 del cspConfiguration["dish"]
                 del cspConfiguration["sdp"]
+                # Add delayModelSubscriptionPoint and visDestinationAddressSubscriptionPoint into
+                # cspConfiguration
+                cspConfiguration["csp"][CONST.STR_DELAY_MODEL_SUB_POINT] = "ska_mid/tm_leaf_node/csp_subarray01/delayModel"
+                cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = "mid_sdp/elt/subarray_1/receiveAddresses"
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
                 self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
