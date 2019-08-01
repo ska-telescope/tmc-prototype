@@ -56,7 +56,7 @@ class TestCspSubarrayLeafNode(object):
     device = CspSubarrayLeafNode
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspSubarrayNodeFQDN': 'mid-csp/elt/subarray01',}
+                  'CspSubarrayNodeFQDN': 'mid_csp/elt/subarray_01',}
     empty = None  # Should be []
 
     @classmethod

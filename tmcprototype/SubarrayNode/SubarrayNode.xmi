@@ -59,6 +59,16 @@
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <DefaultPropValue>ska_mid/tm_leaf_node/sdp_subarray01</DefaultPropValue>
     </deviceProperties>
+    <deviceProperties name="CspSubarrayNodeFQDN" description="This property stores the FQDN of CSP subarray Node device to which the Subarray Node is associated with.">
+      <type xsi:type="pogoDsl:StringType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>mid_csp/elt/subarray_01</DefaultPropValue>
+    </deviceProperties>
+    <deviceProperties name="SdpSubarrayNodeFQDN" description="This property stores the FQDN of SDP subarray Node device to which the Subarray Node is associated with.">
+      <type xsi:type="pogoDsl:StringType"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <DefaultPropValue>mid_sdp/elt/subarray_1</DefaultPropValue>
+    </deviceProperties>
     <commands name="Abort" description="Change obsState to ABORTED." execMethod="abort" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
