@@ -237,7 +237,7 @@
         "CspSubarray": {
             "01": {
                 "CspSubarray": {
-                    "mid-csp/elt/subarray01": {
+                    "mid_csp/elt/subarray_01": {
                         "attribute_properties": {
                             "adminMode": {
                                 "abs_change": [
@@ -305,12 +305,12 @@
                             },
                             "cspsubarrayHealthState": {
                                 "__root_att": [
-                                    "mid-csp/elt/subarray01/healthState"
+                                    "mid_csp/elt/subarray_01/healthState"
                                 ]
                             },
                             "cspSubarrayObsState": {
                                 "__root_att": [
-                                    "mid-csp/elt/subarray01/obsState"
+                                    "mid_csp/elt/subarray_01/obsState"
                                 ]
                             },
                             "healthState": {
@@ -327,7 +327,7 @@
                         },
                         "properties": {
                             "CspSubarrayNodeFQDN": [
-                                "mid-csp/elt/subarray01"
+                                "mid_csp/elt/subarray_01"
                             ],
                             "SkaLevel": [
                                 "3"
@@ -1120,6 +1120,12 @@
                             "SdpSubarrayLNFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_subarray01"
                             ],
+                            "CspSubarrayNodeFQDN": [
+                                "mid_csp/elt/subarray_01"
+                            ],
+                            "SdpSubarrayNodeFQDN": [
+                                "mid_sdp/elt/subarray_1"
+                            ],
                             "SkaLevel": [
                                 "1"
                             ],
@@ -1190,6 +1196,12 @@
                             ],
                             "SdpSubarrayLNFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_subarray01"
+                            ],
+                             "CspSubarrayNodeFQDN": [
+                                "mid_csp/elt/subarray_01"
+                            ],
+                            "SdpSubarrayNodeFQDN": [
+                                "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [
                                 "1"

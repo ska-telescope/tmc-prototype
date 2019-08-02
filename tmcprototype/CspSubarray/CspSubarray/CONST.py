@@ -52,7 +52,7 @@ STR_COMMAND = "Command :-> "
 STR_CMD_FAILED = "CspSubarrayLeafNode Commandfailed"
 STR_CMD_CALLBK = "CspSubarrayLeafNode Command Callback"
 STR_FALSE = "False"
-PROP_DEF_VAL_CSP_MID_SA1 = "mid-csp/elt/subarray01"
+PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
 
 STR_CSPSA_FQDN = "CspSubarrayNodeFQDN :-> "
 
