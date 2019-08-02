@@ -932,28 +932,28 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # -----------------
 
     DishLeafNodePrefix = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/d",
+        dtype='str', default_value=CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX,
         doc="Device name prefix for the Dish Leaf Node",
     )
 
     CspSubarrayLNFQDN = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/csp_subarray01",
+        dtype='str', default_value= CONST.PROP_DEF_VAL_TMCSP_MID_SALN,
         doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
             "Subarray Node.",
     )
 
     SdpSubarrayLNFQDN = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/sdp_subarray01",
+        dtype='str', default_value= CONST.PROP_DEF_VAL_TMSDP_MID_SALN,
         doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
             "Subarray Node.",
     )
 
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_csp/elt/subarray_01"
+        dtype='str', default_value= CONST.PROP_DEF_VAL_CSP_MID_SA1
     )
 
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_sdp/elt/subarray_1"
+        dtype='str', default_value=CONST.PROP_DEF_VAL_SDP_MID_SA1
     )
 
    
