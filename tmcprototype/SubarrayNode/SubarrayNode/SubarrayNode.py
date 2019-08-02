@@ -341,7 +341,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                          CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
         return allocation_success
 
-
     def assign_csp_resources(self, argin):
         """
         This function assigns CSP resources to CSP Subarray through CSP Subarray Leaf
@@ -376,7 +375,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # For this PI CSP Subarray Leaf Node does not return anything. So this function is
         # looping the receptor ids back.
         return argout
-
 
     def assign_sdp_resources(self, argin):
         """
