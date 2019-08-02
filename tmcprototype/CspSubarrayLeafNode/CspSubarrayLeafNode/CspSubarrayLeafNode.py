@@ -10,10 +10,16 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 #
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
-
-
+import datetime
 import sys
 import os
+import threading
+import random
+import datetime
+from threading import Event
+import calendar
+import time
+
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
 sys.path.insert(0, module_path)
@@ -32,13 +38,15 @@ import json
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
-
 class CspSubarrayLeafNode(SKABaseDevice):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
     """
     __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(CspSubarrayLeafNode.class_variable) ENABLED START #
+
+    _DELAY_UPDATE_INTERVAL = 10
+    # _stop_delay_model_event = # type: Event
 
     def commandCallback(self, event):
         """
@@ -80,7 +88,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # Device Properties
     # -----------------
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid-csp/elt/subarray01"
+        dtype='str', default_value="mid_csp/elt/subarray01"
     )
 
     # ----------
@@ -124,6 +132,72 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
+    def delay_model_calculator(self, argin):
+        """
+        This method calculates the delay model for consumption of CSP subarray.
+        This implementation is very ad hoc and require lots of modifications to calculate
+        actual delay models.
+        Current implementation generates random number for delay values. No delay
+        library is used in this code. It also considers four receptors to calculate
+        delays. Ideally, the receptor count should be based on the receptors allocated
+        to the subarray. Also, currently four frequency slices and six  bands are
+        considered for delay calculations. The values of receptors and frequency slice
+        ids are also non-standard.
+        The epoch value is the timestamp of 'now + 5 seconds'
+
+        :param argin: int.
+            The argument contains delay model update interval in seconds.
+
+        :return: None.
+        """
+        delay_update_interval = argin
+        # list of frequency slice ids
+        _fsids_list = ["fs1", "fs2", "fs3", "fs4"]
+        # list of bands
+        _bands_list = ["1", "2", "3", "4", "5", "5a"]
+        # receptor list
+        # TBD: This list should be taken from receptor_id_list attribute of subarray node
+        _receptor_list = ["r1", "r2", "r3", "r4"]
+
+        while not self._stop_delay_model_event.isSet():
+            self.dev_logging("Calculating delays.", int(tango.LogLevel.LOG_INFO))
+            delay_model_json = {}
+            delay_model = []
+            receptor_delay_model = []
+            delay_model_per_epoch = {}
+            for receptor in _receptor_list:
+                receptor_delay_object = {}
+                receptor_delay_object["receptor"] = receptor
+                receptor_specific_delay_details = []
+                for fsid in _fsids_list:
+                    fsid_delay_object = {}
+                    fsid_delay_object["fsid"] = fsid
+                    delay_coeff_array = []
+                    for band in _bands_list:
+                        delay_coeff_array.append(random.uniform(0.01, 10))  # random delay
+                    fsid_delay_object["delayCoeff"] = delay_coeff_array
+                    receptor_specific_delay_details.append(fsid_delay_object)
+                # receptor_specific_delay_details = [1, 2, 3, 4]
+                receptor_delay_object["receptorDelayDetails"] = receptor_specific_delay_details
+                receptor_delay_model.append(receptor_delay_object)
+                # print("receptor_delay_model: ", receptor_delay_model)
+            # delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
+            delay_model_per_epoch["epoch"] = (datetime.datetime.now() + datetime.timedelta(seconds=5)).timestamp()
+            print("epoch: ", delay_model_per_epoch["epoch"])
+            delay_model_per_epoch["delayDetails"] = receptor_delay_model
+            delay_model.append(delay_model_per_epoch)
+            delay_model_json["delayModel"] = delay_model
+            print("delay_model_json: ", delay_model_json)
+
+            # update the attribute
+            self.delay_model_lock.acquire()
+            self._delay_model = json.dumps(delay_model_json)
+            self.delay_model_lock.release()
+
+            # wait for timer event
+            self._stop_delay_model_event.wait(delay_update_interval)
+        print("Stop event received. Thread exit.")
+        self.dev_logging("Stop event received. Thread exit.", int(tango.LogLevel.LOG_INFO))
 
     def init_device(self):
         """
@@ -137,12 +211,29 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # create subarray Proxy
             self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
             self._read_activity_message = " "
+            self._delay_model = " "
+            self._visdestination_address = " "
+
+            ## Start thread to update delay model ##
+            # Create event
+            self._stop_delay_model_event = threading.Event()
+
+            # create lock
+            self.delay_model_lock = threading.Lock()
+
+            # create thread
+            self.dev_logging("Starting thread to calculate delay model.", int(tango.LogLevel.LOG_INFO))
+            self.delay_model_calculator_thread = threading.Thread(
+                target=self.delay_model_calculator,
+                args=[self._DELAY_UPDATE_INTERVAL],
+                daemon=False)
+            self.delay_model_calculator_thread.start()
+
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
             self._csp_subarray_health_state = CONST.ENUM_OK
             self._opstate = CONST.ENUM_INIT
-            self._delay_model = " "
-            self._visdestination_address = " "
+            self.dev_logging(CONST.STR_CSPSALN_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR_CSPSALN)
@@ -160,6 +251,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def delete_device(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
+        ## Stop thread to update delay model
+        self.dev_logging("Stopping delay model thread.", int(tango.LogLevel.LOG_INFO))
+        threading.Event.set(self._stop_delay_model)
+        self.delay_model_calculator_thread.join()
+        self.dev_logging("Exiting.", int(tango.LogLevel.LOG_INFO))
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
 
     # ------------------
