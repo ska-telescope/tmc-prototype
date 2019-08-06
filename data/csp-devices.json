@@ -149,6 +149,10 @@
                                 "commandprogress",
                                 "1000",
                                 "healthstate",
+                                "1000",
+                                "adminmode",
+                                "1000",
+                                "state",
                                 "1000"
                             ],
                             "MaxCapabilities": [
@@ -633,6 +637,26 @@
             "fsp-01": {
                 "Fsp": {
                     "mid_csp_cbf/fsp/01": {
+                        "attribute_properties": {
+                            "adminMode": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "subarrayMembership": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            }
+                        },
                         "properties": {
                             "CorrelationAddress": [
                                 "mid_csp_cbf/fsp_corr/01"
@@ -648,6 +672,19 @@
                             ],
                             "VLBIAddress": [
                                 "mid_csp_cbf/fsp_vlbi/01"
+                            ],
+                            "FspSubarray": [
+                                "mid_csp_cbf/fspSubarray/01_01"
+                                ],
+                            "polled_attr": [
+                                "state",
+                                "1000",
+                                "healthstate",
+                                "1000",
+                                "adminmode",
+                                "1000",
+                                "subarraymembership",
+                                "1000"
                             ]
                         }
                     }
