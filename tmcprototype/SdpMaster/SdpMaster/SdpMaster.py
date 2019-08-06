@@ -113,6 +113,7 @@ class SdpMaster(SKAMaster):
     def On(self):
         # PROTECTED REGION ID(SdpMaster.On) ENABLED START #
         self._operating_state = 1
+        self.set_state(DevState.ON)  # Set state = ON
         print("SdpMasterLeafNode.On command executed successfully.")
         # PROTECTED REGION END #    //  SdpMaster.On
 
@@ -122,6 +123,7 @@ class SdpMaster(SKAMaster):
     def Off(self):
         # PROTECTED REGION ID(SdpMaster.Off) ENABLED START #
         self._operating_state = 0
+        self.set_state(DevState.OFF)  # Set state = OFF
         print("SdpMasterLeafNode.Off command executed successfully.")
         # PROTECTED REGION END #    //  SdpMaster.Off
 
@@ -131,6 +133,7 @@ class SdpMaster(SKAMaster):
     def StandBy(self):
         # PROTECTED REGION ID(SdpMaster.StandBy) ENABLED START #
         self._operating_state = 2
+        self.set_state(DevState.STANDBY)  # Set state = STANDBY
         print("SdpMasterLeafNode.Standby command executed successfully.")
         # PROTECTED REGION END #    //  SdpMaster.StandBy
 
@@ -140,6 +143,7 @@ class SdpMaster(SKAMaster):
     def Disable(self):
         # PROTECTED REGION ID(SdpMaster.Disable) ENABLED START #
         self._operating_state = 5
+        self.set_state(DevState.DISABLE)  # Set state = DISABLE
         print("SdpMasterLeafNode.Disable command executed successfully.")
         # PROTECTED REGION END #    //  SdpMaster.Disable
 

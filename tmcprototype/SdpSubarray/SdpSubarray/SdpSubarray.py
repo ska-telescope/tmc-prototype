@@ -14,6 +14,7 @@
 # Tango imports
 import os
 import sys
+import time
 import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed, Group
 from tango.server import run, DeviceMeta, attribute, command, device_property
@@ -47,6 +48,7 @@ class SdpSubarray(SKASubarray):
         Schedules a scan for execution on a subarray.
         """
         print("SdpSubarray.Scan command executed successfully.")
+        self._obs_state = CONST.ENUM_SCANNING
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -54,17 +56,17 @@ class SdpSubarray(SKASubarray):
                                         DevState.STANDBY]
 
     @command(
-        dtype_in=('str',),
+        dtype_in='str',
         doc_in="List of Resources to add to subarray.",
-        dtype_out=('str',),
-        doc_out="A list of Resources added to the subarray.",
+
     )
     @DebugIt()
     def AssignResources(self, argin):
         """
         Assigns resources to the subarray.
         """
-        print("SdpSubarray.AssignResources command executed successfully.")
+        self.set_state(DevState.ON)  # Set state = ON
+        print("SdpSubarray.AssignResources command executed successfully.", argin)
         return ""
 
     def is_AssignResources_allowed(self):
@@ -77,6 +79,7 @@ class SdpSubarray(SKASubarray):
         """
         Releases resources from the subarray.
         """
+        self.set_state(DevState.OFF)  # Set state = OFF
         print("SdpSubarray.ReleaseResources command executed successfully.")
         return ""
 
@@ -92,6 +95,16 @@ class SdpSubarray(SKASubarray):
         print ("SdpSubarray.ReleaseAllResources command executed successfully.")
         return "True"
         # PROTECTED REGION END #    //  SKASubarray.ReleaseAllResources
+
+    @command(
+    )
+    @DebugIt()
+    def EndScan(self):
+        # PROTECTED REGION ID(SdpSubarray.EndScan) ENABLED START #
+        print("EndScan command successfully invoked:")
+        self._obs_state = CONST.ENUM_READY
+        # PROTECTED REGION END #    //  SdpSubarray.EndScan
+
 
     def is_ReleaseAllResources_allowed(self):
         return self._is_command_allowed("ReleaseResources")
@@ -145,7 +158,7 @@ class SdpSubarray(SKASubarray):
     def init_device(self):
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SdpSubarray.init_device) ENABLED START #
-        self.set_state(DevState.INIT)
+        self.set_state(DevState.INIT) # set state=INIT
         self.set_status(CONST.STR_SA_INIT)
         self.SkaLevel = 2  # set SKALevel to "2"
         self._admin_mode = 0  # set adminMode to "ON-LINE"
@@ -200,7 +213,10 @@ class SdpSubarray(SKASubarray):
     @DebugIt()
     def Configure(self, argin):
         # PROTECTED REGION ID(SdpSubarray.Configure) ENABLED START #
-        print("SdpSubarray.Configure command executed successfully.")
+        print("SdpSubarray.Configure command executed successfully.", argin)
+        self._obs_state = CONST.ENUM_CONFIGURING
+        time.sleep(1)
+        self._obs_state = CONST.ENUM_READY
         # PROTECTED REGION END #    //  SdpSubarray.Configure
 
 # ----------
