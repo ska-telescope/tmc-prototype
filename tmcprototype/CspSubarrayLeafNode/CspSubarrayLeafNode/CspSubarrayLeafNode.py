@@ -143,7 +143,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         to the subarray. Also, currently four frequency slices and six  bands are
         considered for delay calculations. The values of receptors and frequency slice
         ids are also non-standard.
-        The epoch value is the timestamp of 'now + 5 seconds'
+        The epoch value is the current timestamp value.
 
         :param argin: int.
             The argument contains delay model update interval in seconds.
@@ -157,7 +157,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         _bands_list = ["1", "2", "3", "4", "5", "5a"]
         # receptor list
         # TBD: This list should be taken from receptor_id_list attribute of subarray node
-        _receptor_list = ["r1", "r2", "r3", "r4"]
+        _receptor_list = ["d0001", "d0002", "d0003", "d0004"]
 
         while not self._stop_delay_model_event.isSet():
             self.dev_logging("Calculating delays.", int(tango.LogLevel.LOG_INFO))
@@ -177,13 +177,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                         delay_coeff_array.append(random.uniform(0.01, 10))  # random delay
                     fsid_delay_object["delayCoeff"] = delay_coeff_array
                     receptor_specific_delay_details.append(fsid_delay_object)
-                # receptor_specific_delay_details = [1, 2, 3, 4]
                 receptor_delay_object["receptorDelayDetails"] = receptor_specific_delay_details
                 receptor_delay_model.append(receptor_delay_object)
-                # print("receptor_delay_model: ", receptor_delay_model)
-            # delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
-            delay_model_per_epoch["epoch"] = (datetime.datetime.now() + datetime.timedelta(seconds=5)).timestamp()
-            print("epoch: ", delay_model_per_epoch["epoch"])
+            delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
+            # delay_model_per_epoch["epoch"] = (datetime.datetime.now() + datetime.timedelta(seconds=5)).timestamp()
             delay_model_per_epoch["delayDetails"] = receptor_delay_model
             delay_model.append(delay_model_per_epoch)
             delay_model_json["delayModel"] = delay_model
@@ -211,7 +208,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # create subarray Proxy
             self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
             self._read_activity_message = " "
-            self._delay_model = " "
+            self._delay_model = ""
             self._visdestination_address = " "
 
             ## Start thread to update delay model ##
