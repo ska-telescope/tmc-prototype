@@ -159,43 +159,45 @@ class CspSubarrayLeafNode(SKABaseDevice):
         # TBD: This list should be taken from receptor_id_list attribute of subarray node
         _receptor_list = ["d0001", "d0002", "d0003", "d0004"]
 
-        while not self._stop_delay_model_event.isSet() and \
-                (self.cspSubarrayObsState== 2 or self.cspSubarrayObsState==3):
-            self.dev_logging("Calculating delays.", int(tango.LogLevel.LOG_INFO))
-            delay_model_json = {}
-            delay_model = []
-            receptor_delay_model = []
-            delay_model_per_epoch = {}
-            for receptor in _receptor_list:
-                receptor_delay_object = {}
-                receptor_delay_object["receptor"] = receptor
-                receptor_specific_delay_details = []
-                for fsid in _fsids_list:
-                    fsid_delay_object = {}
-                    fsid_delay_object["fsid"] = fsid
-                    delay_coeff_array = []
-                    for band in _bands_list:
-                        delay_coeff_array.append(random.uniform(0.01, 10))  # random delay
-                    fsid_delay_object["delayCoeff"] = delay_coeff_array
-                    receptor_specific_delay_details.append(fsid_delay_object)
-                receptor_delay_object["receptorDelayDetails"] = receptor_specific_delay_details
-                receptor_delay_model.append(receptor_delay_object)
-            delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
-            # delay_model_per_epoch["epoch"] = (datetime.datetime.now() + datetime.timedelta(seconds=5)).timestamp()
-            delay_model_per_epoch["delayDetails"] = receptor_delay_model
-            delay_model.append(delay_model_per_epoch)
-            delay_model_json["delayModel"] = delay_model
-            print("delay_model_json: ", delay_model_json)
+        while not self._stop_delay_model_event.isSet():
+            if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
 
-            # update the attribute
-            self.delay_model_lock.acquire()
-            self._delay_model = json.dumps(delay_model_json)
-            self.delay_model_lock.release()
+                self.dev_logging("Calculating delays.", int(tango.LogLevel.LOG_INFO))
+                delay_model_json = {}
+                delay_model = []
+                receptor_delay_model = []
+                delay_model_per_epoch = {}
+                for receptor in _receptor_list:
+                    receptor_delay_object = {}
+                    receptor_delay_object["receptor"] = receptor
+                    receptor_specific_delay_details = []
+                    for fsid in _fsids_list:
+                        fsid_delay_object = {}
+                        fsid_delay_object["fsid"] = fsid
+                        delay_coeff_array = []
+                        for band in _bands_list:
+                            delay_coeff_array.append(random.uniform(0.01, 10))  # random delay
+                        fsid_delay_object["delayCoeff"] = delay_coeff_array
+                        receptor_specific_delay_details.append(fsid_delay_object)
+                    receptor_delay_object["receptorDelayDetails"] = receptor_specific_delay_details
+                    receptor_delay_model.append(receptor_delay_object)
+                delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
+                # delay_model_per_epoch["epoch"] = (datetime.datetime.now() + datetime.timedelta(seconds=5)).timestamp()
+                delay_model_per_epoch["delayDetails"] = receptor_delay_model
+                delay_model.append(delay_model_per_epoch)
+                delay_model_json["delayModel"] = delay_model
+                print("delay_model_json: ", delay_model_json)
 
-            # wait for timer event
-            self._stop_delay_model_event.wait(delay_update_interval)
-        print("Stop event received. Thread exit.")
-        self.dev_logging("Stop event received. Thread exit.", int(tango.LogLevel.LOG_INFO))
+                # update the attribute
+                #self.delay_model_lock.acquire()
+                #self._delay_model = "delay"
+                self._delay_model = json.dumps(delay_model_json)
+                #self.delay_model_lock.release()
+
+                # wait for timer event
+                self._stop_delay_model_event.wait(delay_update_interval)
+            print("Stop event received. Thread exit.")
+            self.dev_logging("Stop event received. Thread exit.", int(tango.LogLevel.LOG_INFO))
 
     def init_device(self):
         """
@@ -209,13 +211,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # create subarray Proxy
             self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
             self._read_activity_message = " "
-            self._delay_model = ""
+            self._delay_model = " "
             self._visdestination_address = " "
 
             ## Start thread to update delay model ##
             # Create event
             self._stop_delay_model_event = threading.Event()
-
+            #
             # create lock
             self.delay_model_lock = threading.Lock()
 
@@ -225,6 +227,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 target=self.delay_model_calculator,
                 args=[self._DELAY_UPDATE_INTERVAL],
                 daemon=False)
+            # self.delay_model_calculator_thread = threading.Thread(target=self.delay_model_calculator)
             self.delay_model_calculator_thread.start()
 
             self.set_state(DevState.ON)
@@ -251,7 +254,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """ Internal construct of TANGO. """
         ## Stop thread to update delay model
         self.dev_logging("Stopping delay model thread.", int(tango.LogLevel.LOG_INFO))
-        threading.Event.set(self._stop_delay_model)
+        self._stop_delay_model_event.set()
         self.delay_model_calculator_thread.join()
         self.dev_logging("Exiting.", int(tango.LogLevel.LOG_INFO))
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device

@@ -34,10 +34,10 @@ test:
 
 	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
-	cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspSubarray && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpSubarray && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpMasterLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpMaster && python setup.py test | tee setup_py_test.stdout
