@@ -159,7 +159,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         # TBD: This list should be taken from receptor_id_list attribute of subarray node
         _receptor_list = ["d0001", "d0002", "d0003", "d0004"]
 
-        while not self._stop_delay_model_event.isSet():
+        while not self._stop_delay_model_event.isSet() and \
+                (self.cspSubarrayObsState== 2 or self.cspSubarrayObsState==3):
             self.dev_logging("Calculating delays.", int(tango.LogLevel.LOG_INFO))
             delay_model_json = {}
             delay_model = []
