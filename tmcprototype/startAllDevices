@@ -19,6 +19,30 @@ echo "========================= Starting CSP Master Leaf Node ==================
 python3 ./CspMasterLeafNode/CspMasterLeafNode/CspMasterLeafNode.py 01 &
 sleep 1
 
+echo "========================= Starting CSP Subarray ========================="
+python3 ./CspSubarray/CspSubarray/CspSubarray.py 01 &
+sleep 1
+
+echo "========================= Starting CSP Subarray Leaf Node ========================="
+python3 ./CspSubarrayLeafNode/CspSubarrayLeafNode/CspSubarrayLeafNode.py 01 &
+sleep 1
+
+echo "========================= Starting SDP Subarray ========================="
+python3 ./SdpSubarray/SdpSubarray/SdpSubarray.py 01 &
+sleep 1
+
+echo "========================= Starting SDP Subarray Leaf Node ========================="
+python3 ./SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 01 &
+sleep 1
+
+echo "========================= Starting SDP Master ========================="
+python3 ./SdpMaster/SdpMaster/SdpMaster.py 01 &
+sleep 1
+
+echo "========================= Starting SDP Master Leaf Node ========================="
+python3 ./SdpMasterLeafNode/SdpMasterLeafNode/SdpMasterLeafNode.py 01 &
+sleep 1
+
 echo "========================= Starting Subarray Node 1 ========================="
 python3 ./SubarrayNode/SubarrayNode/SubarrayNode.py sa1 &
 

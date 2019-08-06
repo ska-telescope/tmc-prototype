@@ -17,6 +17,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --ping-device mid_csp_cbf/sub_elt/master 10 &&\
              /venv/bin/python /app/csplmc/CspMaster/CspMaster/CspMaster.py 01"
     volumes_from:
     - rsyslog-tmcprototype:rw

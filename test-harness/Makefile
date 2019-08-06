@@ -12,31 +12,32 @@ all: test
 # The following steps copy across useful output to this volume which can
 # then be extracted to form the CI summary for the test procedure.
 test:
-#	retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray1
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master
-#	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
-#	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_00
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
+	retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01
+	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master
+	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
+	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray01
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
 	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
-	cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
-	cd /app/tmcprototype/SdpSubarray && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpMasterLeafNode && python setup.py test | tee setup_py_test.stdout
-	cd /app/tmcprototype/SdpMaster && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
 	cd /app && ./code-analysis.sh | tee code_analysis.stdout
@@ -65,12 +66,6 @@ test:
         mv /app/tmcprototype/CentralNode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout; \
         mv /app/tmcprototype/CentralNode/htmlcov /build/centralnode_htmlcov; \
         mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml; \
-        mv /app/tmcprototype/SdpSubarray/setup_py_test.stdout /build/sdpsubarray_setup_py_test.stdout; \
-        mv /app/tmcprototype/SdpSubarray/htmlcov /build/sdpsubarray_htmlcov; \
-        mv /app/tmcprototype/SdpSubarray/coverage.xml /build/sdpsubarray_coverage.xml; \
-        mv /app/tmcprototype/SdpMaster/setup_py_test.stdout /build/sdpmaster_setup_py_test.stdout; \
-        mv /app/tmcprototype/SdpMaster/htmlcov /build/sdpmaster_htmlcov; \
-        mv /app/tmcprototype/SdpMaster/coverage.xml /build/sdpmaster_coverage.xml; \
         mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
     fi;
 .PHONY: all test
