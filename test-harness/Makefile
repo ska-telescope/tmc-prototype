@@ -16,12 +16,12 @@ test:
 	retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master
 	retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master
 	retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master
-	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
-	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01
 	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master
 	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master
@@ -29,12 +29,12 @@ test:
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
 	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1
-	retry --max=10 -- tango_admin --ping-device mid-csp/elt/subarray01
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
 	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
-	cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CspSubarray && python setup.py test | tee setup_py_test.stdout

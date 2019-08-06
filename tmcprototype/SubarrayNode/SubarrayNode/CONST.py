@@ -13,6 +13,7 @@ EVT_UNKNOWN = "Event from the Unknown device!"
 
 #Commands
 CMD_SCAN = "Scan"
+CMD_START_SCAN= "StartScan"
 CMD_CONFIGURE = "Configure"
 CMD_END_SCAN = "EndScan"
 CMD_TRACK = "Track"
@@ -67,9 +68,9 @@ STR_GRP_DEF_TRACK_FN = "Group devices during Track command :-> "
 
 STR_CONFIGURE_CMD_INVOKED_SA = "Configure command invoked on Subarray"
 STR_TRACK_CMD_INVOKED_SA = "Track command invoked on Subarray"
-
 SCAN_ALREADY_IN_PROGRESS = "Scan is already in progress"
 SCAN_ALREADY_COMPLETED = "Scan is already completed"
+SCAN_NOT_EXECUTED = "Scan can not be executed as Subarray.obsState is not READY."
 RESRC_ALREADY_RELEASED = "Resources are already released from Subarray"
 STR_FALSE = "False"
 STR_OK = "OK"
@@ -95,7 +96,10 @@ STR_CSP_SA_HEALTH_FAILED = "CSP SA health is FAILED."
 STR_CSP_SA_HEALTH_UNKNOWN = "CSP SA health is UNKNOWN."
 STR_CSP_SUBARRAY_OBS_STATE= "CSP Subarray obsState is:"
 STR_SDP_SUBARRAY_OBS_STATE= "SDP Subarray obsState is:"
-
+STR_SDP_SCAN_INIT = "SDP Scan is initiated."
+STR_CSP_SCAN_INIT = "CSP Scan is initiated."
+STR_SDP_END_SCAN_INIT = "SDP EndScan is initiated."
+STR_CSP_END_SCAN_INIT = "CSP EndScan is initiated."
 STR_CSP_SA_HEALTH_OK = "CSP SA health is OK."
 STR_CSP_SA_HEALTH_DEGRADED = "CSP SA health is DEGRADED."
 STR_CSP_SA_HEALTH_FAILED = "CSP SA health is FAILED."
@@ -104,6 +108,9 @@ STR_CSP_SA_LEAF_INIT_SUCCESS = "Csp Subarray Leaf Node initialized successfully.
 STR_SDP_SA_LEAF_INIT_SUCCESS = "Sdp Subarray Leaf Node initialized successfully."
 STR_HEALTH_STATE = "healthState of "
 STR_HEALTH_STATE_UNKNOWN_VAL = "CSPSubarray healthState event returned unknown value \n"
+STR_DELAY_MODEL_SUB_POINT = "delayModelSubscriptionPoint"
+STR_VIS_DESTIN_ADDR_SUB_POINT = "visDestinationAddressSubscriptionPoint"
+STR_CSP_CBFOUTLINK = "cspCbfOutlinkAddress"
 
 
 #Error messages
@@ -149,11 +156,12 @@ ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
 # healthState
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 # pointingState
-ENUM_READY, ENUM_SLEW, ENUM_TRACK, ENUM_SCAN = list(range(0, 4))
+POINTING_STATE_ENUM_READY, POINTING_STATE_ENUM_SLEW, POINTING_STATE_ENUM_TRACK, POINTING_STATE_ENUM_SCAN = list(range(0, 4))
 # adminMode
 ENUM_ONLINE, ENUM_OFFLINE, ENUM_MAINTENANCE, ENUM_NOTFITTED, ENUM_RESERVED = list(range(0, 5))
 # obsState
-ENUM_IDLE, ENUM_CONFIGURING, ENUM_READY, ENUM_SCANNING, ENUM_PAUSED, ENUM_ABORTED, ENUM_FAULT = list(range(0, 7))
+OBS_STATE_ENUM_IDLE, OBS_STATE_ENUM_CONFIGURING, OBS_STATE_ENUM_READY, OBS_STATE_ENUM_SCANNING, \
+OBS_STATE_ENUM_PAUSED, OBS_STATE_ENUM_ABORTED, OBS_STATE_ENUM_FAULT = list(range(0, 7))
 # obsMode
 ENUM_IDLE, ENUM_IMAGING, ENUM_PULSAR_SEARCH, ENUM_PULSAR_TIMING, ENUM_DYNAMIC_SPECTRUM, ENUM_TRANSIENT_SEARCH, \
 ENUM_VLBI, ENUM_CALIBRATION = list(range(0, 8))
@@ -166,3 +174,6 @@ STR_KEY_PB_ID_LIST = "processingBlockIdList"
 PROP_DEF_VAL_TMCSP_MID_SALN = "ska_mid/tm_leaf_node/csp_subarray01"
 PROP_DEF_VAL_TMSDP_MID_SALN = "ska_mid/tm_leaf_node/sdp_subarray01"
 PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
+PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
+PROP_DEF_VAL_SDP_MID_SA1 = "mid_sdp/elt/subarray_1"
+

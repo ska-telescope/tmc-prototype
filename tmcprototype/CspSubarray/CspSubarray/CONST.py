@@ -52,12 +52,13 @@ STR_COMMAND = "Command :-> "
 STR_CMD_FAILED = "CspSubarrayLeafNode Commandfailed"
 STR_CMD_CALLBK = "CspSubarrayLeafNode Command Callback"
 STR_FALSE = "False"
-PROP_DEF_VAL_CSP_MID_SA1 = "mid-csp/elt/subarray01"
+PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
 
 STR_CSPSA_FQDN = "CspSubarrayNodeFQDN :-> "
 
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 ENUM_INIT, ENUM_OFF, ENUM_ON, ENUM_ALARM, ENUM_DISABLE, ENUM_FAULT, ENUM_UNKNOWN = list(range(0, 7))
+ENUM_IDLE, ENUM_CONFIGURING, ENUM_READY, ENUM_SCANNING = list(range(0, 4))
 
 #INTEGERS
 INT_SKA_LEVEL = 3

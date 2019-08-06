@@ -122,14 +122,15 @@ class CspSubarray(SKASubarray):
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(CspSubarray.init_device) ENABLED START #
         self._opstate = 0       # Set operating state to INIT
+        self._obs_state = 0  # Set observation state to IDLE
         self._scanid = 0
         self._frequencyband = 0
         self._procmode = 0
         self._receptor = []
         self._correlations = " "
-        self._health_state = 0  # Set health state to OK
+        self._health_state = 0        # Set health state to OK
         self.set_state(DevState.OFF)  # Set state = OFF
-        self._opstate = 1      # Set operating state to OFF
+        self._opstate = 1             # Set operating state to OFF
         # PROTECTED REGION END #    //  CspSubarray.init_device
 
     def always_executed_hook(self):
@@ -145,6 +146,11 @@ class CspSubarray(SKASubarray):
     # ------------------
     # Attributes methods
     # ------------------
+
+    def read_obsState(self):
+        # PROTECTED REGION ID(CspSubarray.obsState_read) ENABLED START #
+        return self._obs_state
+        # PROTECTED REGION END #    //  CspSubarray.obsState_read
 
     def read_opState(self):
         # PROTECTED REGION ID(CspSubarray.opState_read) ENABLED START #
@@ -219,7 +225,6 @@ class CspSubarray(SKASubarray):
         # PROTECTED REGION ID(CspSubarray.ConfigureScan) ENABLED START #
         self._obs_state = 1                 # Set ObsState to CONFIGURING
         print("ConfigureScan is invoked successfully on CspSubarray. Argin:", argin)
-        time.sleep(4)
         self._obs_state = 2                 # Set ObsState to READY
         # PROTECTED REGION END #    //  CspSubarray.ConfigureScan
 
@@ -252,6 +257,32 @@ class CspSubarray(SKASubarray):
         self._opstate = 1                   # Set operating state to OFF
         print("RemoveAllReceptors command executed successfully on CspSubarray.")
         # PROTECTED REGION END #    //  CspSubarray.RemoveAllReceptors
+
+    @command(
+        dtype_in=('str',),
+    )
+    @DebugIt()
+    def Scan(self, argin):
+        # PROTECTED REGION ID(CspSubarray.StartScan) ENABLED START #
+        """
+        This command starts the scan.
+
+        :param argin:
+        :return:
+        """
+        self._obs_state = 3               # Set observation state to SCANNING
+        print("Scan command: Argin on CspSubarray:", argin)
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
+
+    @command(
+    )
+    @DebugIt()
+    def EndScan(self):
+        # PROTECTED REGION ID(CspSubarray.EndScan) ENABLED START #
+        self._obs_state = 2               # Set observation state to READY
+        print("EndScan command successfully invoked:")
+        # PROTECTED REGION END #    //  CspSubarray.EndScan
+
 
 # ----------
 # Run server
