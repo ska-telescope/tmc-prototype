@@ -15,8 +15,6 @@ import sys
 import os
 import threading
 import random
-import datetime
-from threading import Event
 import calendar
 import time
 
@@ -154,13 +152,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
         # list of frequency slice ids
         _fsids_list = ["fs1", "fs2", "fs3", "fs4"]
         # list of bands
-        _bands_list = ["1", "2", "3", "4", "5", "5a"]
+        _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
         # receptor list
         # TBD: This list should be taken from receptor_id_list attribute of subarray node
         _receptor_list = ["d0001", "d0002", "d0003", "d0004"]
 
         while not self._stop_delay_model_event.isSet():
-            if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
+            if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY
+                    or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
 
                 self.dev_logging("Calculating delays.", int(tango.LogLevel.LOG_INFO))
                 delay_model_json = {}
@@ -189,13 +188,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 print("delay_model_json: ", delay_model_json)
 
                 # update the attribute
-                #self.delay_model_lock.acquire()
-                #self._delay_model = "delay"
+                self.delay_model_lock.acquire()
                 self._delay_model = json.dumps(delay_model_json)
-                #self.delay_model_lock.release()
+                self.delay_model_lock.release()
 
                 # wait for timer event
                 self._stop_delay_model_event.wait(delay_update_interval)
+            else:
+                self._delay_model = " "
+
             print("Stop event received. Thread exit.")
             self.dev_logging("Stop event received. Thread exit.", int(tango.LogLevel.LOG_INFO))
 
@@ -227,7 +228,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 target=self.delay_model_calculator,
                 args=[self._DELAY_UPDATE_INTERVAL],
                 daemon=False)
-            # self.delay_model_calculator_thread = threading.Thread(target=self.delay_model_calculator)
             self.delay_model_calculator_thread.start()
 
             self.set_state(DevState.ON)
@@ -252,7 +252,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def delete_device(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        ## Stop thread to update delay model
+        # Stop thread to update delay model
         self.dev_logging("Stopping delay model thread.", int(tango.LogLevel.LOG_INFO))
         self._stop_delay_model_event.set()
         self.delay_model_calculator_thread.join()
