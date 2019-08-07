@@ -298,7 +298,7 @@ class TestCspSubarrayLeafNode(object):
     def test_delayModel(self, tango_context):
         """Test for delayModel"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_delayModel) ENABLED START #
-        assert tango_context.device.delayModel != " "
+        assert tango_context.device.delayModel == " "
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
 
     def test_visDestinationAddress(self, tango_context):
