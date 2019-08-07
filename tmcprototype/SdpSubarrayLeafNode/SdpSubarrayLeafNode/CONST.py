@@ -2,8 +2,9 @@
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_RESOURCES = "ReleaseResources"
 CMD_CONFIGURE = "Configure"
-CMD_SCAN = "Scan"
+CMD_SCAN = "StartScan"
 CMD_ENDSCAN = "EndScan"
+CMD_ENDSB = "EndSB"
 #
 # #Error messages
 ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes " \
