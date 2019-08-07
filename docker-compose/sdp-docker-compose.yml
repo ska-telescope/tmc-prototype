@@ -13,7 +13,7 @@ volumes:
 
 services:
   sdpmaster:
-    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_master:latest
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_master:0.2.1-2da80e2f
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
