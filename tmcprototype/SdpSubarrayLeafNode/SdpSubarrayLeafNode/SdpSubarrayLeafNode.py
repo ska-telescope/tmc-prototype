@@ -83,7 +83,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value=CONST.PROP_DEF_VAL_TM_MID_SDP_SA,
+        dtype='str', default_value="mid_sdp/elt/subarray_1",
         doc='FQDN of the SDP Subarray Node Tango Device Server.',
     )
 
@@ -366,37 +366,37 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                   "id": "realtime-20190627-0001",
                   "sbiId": "20190627-0001",
                   "workflow": {
-                   | "id": "vis_ingest",
-                   | "type": "realtime",
-                   | "version": "0.1.0"
+                    "id": "vis_ingest",
+                    "type": "realtime",
+                    "version": "0.1.0"
                   },
                   "parameters": {
-                   | "numStations": 4,
-                   | "numChanels": 372,
-                   | "numPolarisations": 4,
-                   | "freqStartHz": 0.35e9,
-                   | "freqEndHz": 1.05e9,
-                   | "fields": {
+                    "numStations": 4,
+                    "numChanels": 372,
+                    "numPolarisations": 4,
+                    "freqStartHz": 0.35e9,
+                    "freqEndHz": 1.05e9,
+                    "fields": {
                       "0": {
-                       | "system": "ICRS",
-                       | "name": "NGC6251",
-                       | "ra": 1.0,
-                       | "dec": 1.0
+                        "system": "ICRS",
+                        "name": "NGC6251",
+                        "ra": 1.0,
+                        "dec": 1.0
                       }
                     }
                   },
                   "scanParameters": {
                     "12345": {
-                     | "fieldId": 0,
-                     | "intervalMs": 1400
+                      "fieldId": 0,
+                      "intervalMs": 1400
                       }
                     }
                   },
                   "configureScan": {
                     "scanParameters": {
                       "12346": {
-                       | "fieldId": 0,
-                       | "intervalMs": 2800
+                        "fieldId": 0,
+                        "intervalMs": 2800
                       }
                     }
                   }

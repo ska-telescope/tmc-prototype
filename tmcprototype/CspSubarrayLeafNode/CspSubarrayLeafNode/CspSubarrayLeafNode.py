@@ -340,29 +340,29 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 {
                   "csp":
                   {
-                    | "frequencyBand": "1",
-                    | "delayModelSubscriptionPoint": "",
-                    | "visDestinationAddressSubscriptionPoint": "",
-                    | "fsp": [
+                     "frequencyBand": "1",
+                     "delayModelSubscriptionPoint": "",
+                     "visDestinationAddressSubscriptionPoint": "",
+                     "fsp": [
                     {
-                     | "fspID": "1",
-                     | "functionMode": "CORR",
-                     | "frequencySliceID": 1,
-                     | "integrationTime": 1400,
-                     | "corrBandwidth": 0,
-                     | "channelAveragingMap": []
+                      "fspID": "1",
+                      "functionMode": "CORR",
+                      "frequencySliceID": 1,
+                      "integrationTime": 1400,
+                      "corrBandwidth": 0,
+                      "channelAveragingMap": []
                     },
                     {
-                     | "fspID": "2",
-                     | "functionMode": "CORR",
-                     | "frequencySliceID": 1,
-                     | "integrationTime": 1400,
-                     | "corrBandwidth": 0,
-                     | "channelAveragingMap": []
-                    | }
-                   | ]
-                  | }
-                | }
+                      "fspID": "2",
+                      "functionMode": "CORR",
+                      "frequencySliceID": 1,
+                      "integrationTime": 1400,
+                      "corrBandwidth": 0,
+                      "channelAveragingMap": []
+                     }
+                    ]
+                   }
+                 }
 
         Note: \n
         from Jive, enter input as :\n
