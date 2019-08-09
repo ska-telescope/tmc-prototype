@@ -579,12 +579,12 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
 
             Example:
-                | {
-                | "subarrayID": 1,
-                | "dish": {
+                 {
+                 "subarrayID": 1,
+                 "dish": {
                      "receptorIDList": ["0001","0002"]
-                | }
-                | }
+                 }
+                 }
 
         Note: From Jive, enter input as:
         {"dish":{"receptorIDList":["0001","0002"]}} without any space.
