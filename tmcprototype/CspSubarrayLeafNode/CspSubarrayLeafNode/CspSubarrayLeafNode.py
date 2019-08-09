@@ -87,7 +87,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value= CONST.PROP_DEF_VAL_CSP_MID_SA1
+        dtype='str', default_value="mid_csp/elt/subarray_01"
     )
 
     # ----------
@@ -580,10 +580,10 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
             Example:
                  {
-                 "subarrayID": 1,
-                 "dish": {
+                   "subarrayID": 1,
+                   "dish": {
                      "receptorIDList": ["0001","0002"]
-                 }
+                   }
                  }
 
         Note: From Jive, enter input as:
