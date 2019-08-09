@@ -1176,7 +1176,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 del sdpConfiguration["csp"]
                 # Add cspCbfOutlinkAddress to SDP configuration
                 sdpConfiguration["sdp"]["configure"][CONST.STR_CSP_CBFOUTLINK] = self.CspSubarrayNodeFQDN + \
-                                                                                 "/cbfOutLink"
+                                                                                 "/cbfOutputLink"
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
@@ -1192,9 +1192,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # cspConfiguration
                 cspConfiguration["csp"][CONST.STR_DELAY_MODEL_SUB_POINT] = self.CspSubarrayLNFQDN + \
                                                                            "/delayModel"
-                # cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = self.SdpSubarrayNodeFQDN + \
-                #                                                                "/receiveAddresses"
-                cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = self.SdpSubarrayLNFQDN + \
+                cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = self.SdpSubarrayNodeFQDN + \
                                                                                "/receiveAddresses"
 
                 csp_config = cspConfiguration["csp"]
