@@ -19,6 +19,8 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpSubarrayLeafNode"
 sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
+
 # PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
@@ -26,8 +28,8 @@ from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional imports
 
-from future.utils import with_metaclass
 import CONST
+from future.utils import with_metaclass
 import json
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
@@ -80,12 +82,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # -----------------
     # Device Properties
     # -----------------
-
-
-
-
-
-
     SdpSubarrayNodeFQDN = device_property(
         dtype='str', default_value=CONST.PROP_DEF_VAL_TM_MID_SDP_SA,
         doc='FQDN of the SDP Subarray Node Tango Device Server.',
@@ -94,17 +90,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
-
     receiveAddresses = attribute(
         dtype='str',
         doc='This is a forwarded attribute from SDP Master which depicts State of the SDP.'
@@ -381,41 +366,41 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                   "id": "realtime-20190627-0001",
                   "sbiId": "20190627-0001",
                   "workflow": {
-                    "id": "vis_ingest",
-                    "type": "realtime",
-                    "version": "0.1.0"
+                   | "id": "vis_ingest",
+                   | "type": "realtime",
+                   | "version": "0.1.0"
                   },
                   "parameters": {
-                    "numStations": 4,
-                    "numChanels": 372,
-                    "numPolarisations": 4,
-                    "freqStartHz": 0.35e9,
-                    "freqEndHz": 1.05e9,
-                    "fields": {
+                   | "numStations": 4,
+                   | "numChanels": 372,
+                   | "numPolarisations": 4,
+                   | "freqStartHz": 0.35e9,
+                   | "freqEndHz": 1.05e9,
+                   | "fields": {
                       "0": {
-                        "system": "ICRS",
-                        "name": "NGC6251",
-                        "ra": 1.0,
-                        "dec": 1.0
+                       | "system": "ICRS",
+                       | "name": "NGC6251",
+                       | "ra": 1.0,
+                       | "dec": 1.0
                       }
                     }
                   },
                   "scanParameters": {
                     "12345": {
-                      "fieldId": 0,
-                      "intervalMs": 1400
+                     | "fieldId": 0,
+                     | "intervalMs": 1400
+                      }
+                    }
+                  },
+                  "configureScan": {
+                    "scanParameters": {
+                      "12346": {
+                       | "fieldId": 0,
+                       | "intervalMs": 2800
+                      }
                     }
                   }
-                },
-                "configureScan": {
-                  "scanParameters": {
-                    "12346": {
-                      "fieldId": 0,
-                      "intervalMs": 2800
-                    }
-                  }
-                }
-              }
+               }
             }
         Note:
         from Jive, enter input as :
@@ -470,8 +455,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_CONFIG_EXEC, tango.ErrSeverity.ERR)
-
-
 
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 

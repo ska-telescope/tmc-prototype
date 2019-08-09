@@ -30,17 +30,18 @@ from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
+from future.utils import with_metaclass
 import CONST
 import json
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
-class CspSubarrayLeafNode(SKABaseDevice):
+class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
     """
-    __metaclass__ = DeviceMeta
+    #__metaclass__ = DeviceMeta
     # PROTECTED REGION ID(CspSubarrayLeafNode.class_variable) ENABLED START #
 
     _DELAY_UPDATE_INTERVAL = 10
@@ -333,7 +334,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         invokes ConfigureScan command on CspSubarray with configuration capabilities in JSON string as an
         input argument.
 
-            :param argin: The string in JSON format. The JSON contains following values:
+        :param argin: The string in JSON format. The JSON contains following values:
 
             Example:
                 {
