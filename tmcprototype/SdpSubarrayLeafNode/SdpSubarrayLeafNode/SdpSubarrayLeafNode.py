@@ -437,6 +437,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             sdp_arg = jsonArgument["sdp"]
             sdpConfiguration = sdp_arg.copy()
             del sdpConfiguration["configureScan"]
+            print ("sdpConfiguration :", sdpConfiguration)
             # configure_arg = jsonArgument["sdp"]["configure"]
             self.dev_logging(sdpConfiguration, int(tango.LogLevel.LOG_INFO))
             self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_CONFIGURE, json.dumps(sdpConfiguration),
@@ -601,35 +602,35 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ This command invokes EndSB command on SDP subarray to
          end the current Scheduling block"""
         # TODO: For future use
-        # excpt_msg = []
-        # excpt_count = 0
-        # try:
-        #     if self._sdp_subarray_proxy.obsState == CONST.ENUM_READY:
-        #         self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
-        #         self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
-        #         self.dev_logging(CONST.STR_ENDSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
-        #     else:
-        #         self._read_activity_message = CONST.ERR_DEVICE_NOT_IN_SCAN
-        #         self.dev_logging(CONST.ERR_DEVICE_NOT_IN_SCAN, int(tango.LogLevel.LOG_ERROR))
-        # except DevFailed as dev_failed:
-        #     self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
-        #     self._read_activity_message = CONST.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
-        #     excpt_msg.append(self._read_activity_message)
-        #     excpt_count += 1
-        # except Exception as except_occurred:
-        #     self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.
-        #                                                                                 LOG_ERROR))
-        #     self._read_activity_message = CONST.ERR_ENDSCAN_INVOKING_CMD + str(except_occurred)
-        #     excpt_msg.append(self._read_activity_message)
-        #     excpt_count += 1
-        #
-        # # throw exception:
-        # if excpt_count > 0:
-        #     err_msg = ' '
-        #     for item in excpt_msg:
-        #         err_msg += item + "\n"
-        #     tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-        #                                  CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if self._sdp_subarray_proxy.obsState == CONST.ENUM_READY:
+                self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
+                self._read_activity_message = CONST.STR_ENDSB_SUCCESS
+                self.dev_logging(CONST.STR_ENDSB_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
+                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.
+                                                                                        LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ENDSB_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 
