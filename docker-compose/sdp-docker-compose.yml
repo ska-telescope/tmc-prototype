@@ -27,7 +27,7 @@ services:
     command: ["1", "-v4"]
 
   sdpsubarray:
-    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:latest
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:0.5.6-e942a23e
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
