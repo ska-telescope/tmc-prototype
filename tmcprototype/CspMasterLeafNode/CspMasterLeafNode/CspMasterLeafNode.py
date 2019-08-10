@@ -326,6 +326,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
         """
         self._csp_proxy.command_inout_asynch(CONST.CMD_ON, argin, self.commandCallback)
+        # self._csp_proxy.command_inout_asynch(CONST.CMD_ON, self.commandCallback)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.On
 

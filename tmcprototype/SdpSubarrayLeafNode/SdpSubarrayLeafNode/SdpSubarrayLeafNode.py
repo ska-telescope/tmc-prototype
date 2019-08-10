@@ -95,18 +95,9 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Attributes
     # ----------
 
-
-
-
-
-
-
-
-
-
-
     receiveAddresses = attribute(
         dtype='str',
+        access=AttrWriteType.READ_WRITE,
         doc='This is a forwarded attribute from SDP Master which depicts State of the SDP.'
     )
 
@@ -182,6 +173,12 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         return self._receive_addresses
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
 
+    def write_receiveAddresses(self, value):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.receiveAddresses_read) ENABLED START #
+        """ Sets the Receive Addresses."""
+        self._receive_addresses = value
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
+
     def read_sdpSubarrayHealthState(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.sdpSubarrayHealthState_read) ENABLED START #
         """ Returns SDP Subarray Health State"""
@@ -232,9 +229,14 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         try:
 
+            # TODO: Temporary arrangement to make ReleaseAllResources working on SDP subarray
+            self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
+
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_RELEASE_RESOURCES,
+                                                                          '{"dummy_key": "dummy_value}"',
                                                                           self.commandCallback)
+
             # Update the status of command execution status in activity message
             self._read_activity_message = CONST.STR_REL_RESOURCES
         except ValueError as value_error:
@@ -326,8 +328,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             processingBlockIDList = jsonArgument[CONST.STR_PROCESSINGBLOCKID_LIST]
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ASSIGN_RESOURCES,
-                                                                          str(processingBlockIDList),
-                                                                          self.commandCallback)
+                                                                          argin, self.commandCallback)
             # Update the status of command execution status in activity message
             self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
         except ValueError as value_error:
@@ -432,8 +433,13 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             # TODO : Check if obsState == IDLE
             jsonArgument = json.loads(argin)
-            configure_arg = jsonArgument["sdp"]["configure"]
-            self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_CONFIGURE, str(configure_arg),
+            sdp_arg = jsonArgument["sdp"]
+            sdpConfiguration = sdp_arg.copy()
+            del sdpConfiguration["configureScan"]
+            print ("sdpConfiguration :", sdpConfiguration)
+            # configure_arg = jsonArgument["sdp"]["configure"]
+            self.dev_logging(sdpConfiguration, int(tango.LogLevel.LOG_INFO))
+            self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                           self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURE_SUCCESS
             self.dev_logging(CONST.STR_CONFIGURE_SUCCESS, int(tango.LogLevel.LOG_INFO))
@@ -503,8 +509,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
             # Check if SDP Subarray obsState is READY
             if sdp_subarray_obs_state == CONST.ENUM_READY:
-                self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_SCAN, list(str(scan_duration)),
-                                                              self.commandCallback)
+                self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_SCAN, self.commandCallback)
                 self._read_activity_message = CONST.STR_SCAN_SUCCESS
                 self.dev_logging(CONST.STR_SCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:
@@ -593,7 +598,39 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def EndSB(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
-        """ Ends Scheduling block"""
+        """ This command invokes EndSB command on SDP subarray to
+         end the current Scheduling block"""
+        # TODO: For future use
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if self._sdp_subarray_proxy.obsState == CONST.ENUM_READY:
+                self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
+                self._read_activity_message = CONST.STR_ENDSB_SUCCESS
+                self.dev_logging(CONST.STR_ENDSB_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
+                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.
+                                                                                        LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ENDSB_EXEC, tango.ErrSeverity.ERR)
+
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 
     @command(

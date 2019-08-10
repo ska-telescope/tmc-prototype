@@ -283,6 +283,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
             self.dev_logging(CONST.STR_CONFIGURESCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.dev_logging(argin, int(tango.LogLevel.LOG_DEBUG))
 
         except ValueError as value_error:
             self.dev_logging(CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error),

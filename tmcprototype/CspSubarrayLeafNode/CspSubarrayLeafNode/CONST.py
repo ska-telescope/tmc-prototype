@@ -52,7 +52,7 @@ STR_CMD_FAILED = "CspSubarrayLeafNode Commandfailed"
 STR_CMD_CALLBK = "CspSubarrayLeafNode Command Callback"
 STR_FALSE = "False"
 STR_STARTSCAN_SUCCESS = "Scan command is executed successfully."
-PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
+PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray01"
 STR_START_SCAN_EXEC = "StartScan command execution"
 STR_CSPSA_FQDN = "CspSubarrayNodeFQDN :-> "
 

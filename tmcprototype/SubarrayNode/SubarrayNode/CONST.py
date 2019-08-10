@@ -174,6 +174,6 @@ STR_KEY_PB_ID_LIST = "processingBlockIdList"
 PROP_DEF_VAL_TMCSP_MID_SALN = "ska_mid/tm_leaf_node/csp_subarray01"
 PROP_DEF_VAL_TMSDP_MID_SALN = "ska_mid/tm_leaf_node/sdp_subarray01"
 PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
-PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
+PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray01"
 PROP_DEF_VAL_SDP_MID_SA1 = "mid_sdp/elt/subarray_1"
 

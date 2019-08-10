@@ -1122,7 +1122,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # --------
 
     @command(
-        dtype_in=('str',),
+        dtype_in='str',
         doc_in="Pointing parameters of Dish - Right ascension and Declination coordinates.",
     )
     @DebugIt()
@@ -1154,9 +1154,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_count = 0
         excpt_msg = []
         try:
-            self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin[0])
+
+            self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
             if self._obs_state == CONST.OBS_STATE_ENUM_IDLE:
-                self._scanConfiguration = json.loads(argin[0])
+                self._scanConfiguration = json.loads(argin)
                 # TODO: FOR FUTURE IMPLEMENTATION
                 # scanID = scanConfiguration["scanID"]
                 # pointing =  scanConfiguration["pointing"]
@@ -1176,7 +1177,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 del sdpConfiguration["csp"]
                 # Add cspCbfOutlinkAddress to SDP configuration
                 sdpConfiguration["sdp"]["configure"][CONST.STR_CSP_CBFOUTLINK] = self.CspSubarrayNodeFQDN + \
-                                                                                 "/cbfOutLink"
+                                                                                 "/cbfOutputLink"
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
@@ -1194,8 +1195,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                                            "/delayModel"
                 cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = self.SdpSubarrayNodeFQDN + \
                                                                                "/receiveAddresses"
+
+                csp_config = cspConfiguration["csp"]
+                csp_config["scanID"] = self._scan_id
+
                 cmdData = tango.DeviceData()
-                cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
+                cmdData.insert(tango.DevString, json.dumps(csp_config))
                 self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
                 print("CSP Configuration is initiated.")
 

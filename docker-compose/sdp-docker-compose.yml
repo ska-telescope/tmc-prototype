@@ -1,0 +1,56 @@
+#
+# Docker compose file for setting up SDP devices in CI environment.
+# The current setup provides one container each for SDP Master and SDP Subarray device.
+# Defines:
+#   - sdpmaster: SDP Master device service
+#   - sdpsubarray: SDP Subarray device service
+# Requires:
+#   - tango-docker-compose.yml
+
+version: '2'
+volumes:
+  tangodb: {}
+
+services:
+  sdpmaster:
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_master:0.2.1-2da80e2f
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - sdp-dsconfig
+    container_name: ${CONTAINER_NAME_PREFIX}sdp_master
+    network_mode: ${NETWORK_MODE}
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    stdin_open: true
+    entrypoint: ["python", "SDPMaster"]
+    command: ["1", "-v4"]
+
+  sdpsubarray:
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - sdp-dsconfig
+    container_name: ${CONTAINER_NAME_PREFIX}sdp_subarray
+    network_mode: ${NETWORK_MODE}
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    stdin_open: true
+    entrypoint: ["python", "SDPSubarray"]
+    command: ["1", "-v4"]
+
+  sdp-dsconfig:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-dsconfig:latest
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}sdp-dsconfig
+    depends_on:
+      - databaseds
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             json2tango -w -a -u /tmc-prototype/data/sdp-devices.json &&
+             sleep infinity"
+    volumes:
+      - ..:/tmc-prototype
