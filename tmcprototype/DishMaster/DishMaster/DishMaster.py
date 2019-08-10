@@ -1069,13 +1069,13 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     @command(
     )
     @DebugIt()
-    def SetPointingState(self):
-        # PROTECTED REGION ID(DishMaster.SetPointingState) ENABLED START #
+    def StopTrack(self):
+        # PROTECTED REGION ID(DishMaster.StopTrack) ENABLED START #
         """
         This command is created only for making pointingState = 0 in Track command.
         """
         self._pointing_state = 0
-        # PROTECTED REGION END #    //  DishMaster.SetPointingState
+        # PROTECTED REGION END #    //  DishMaster.StopTrack
 
 # ----------
 # Run server

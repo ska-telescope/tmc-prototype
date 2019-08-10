@@ -24,43 +24,6 @@ volumes:
   tangodb: {}
 
 services:
-  tangodb:
-    image: nexus.engageska-portugal.pt/ska-docker/tango-db:latest
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}tangodb
-    depends_on:
-      - rsyslog-tmcprototype
-    environment:
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_DATABASE=tango
-      - MYSQL_USER=tango
-      - MYSQL_PASSWORD=tango
-    volumes:
-      - tangodb:/var/lib/mysql
-
-  databaseds:
-    image: nexus.engageska-portugal.pt/ska-docker/tango-cpp:latest
-    depends_on:
-      - tangodb
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}databaseds
-    environment:
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_DATABASE=tango
-      - MYSQL_USER=tango
-      - MYSQL_PASSWORD=tango
-      - TANGO_HOST=${TANGO_HOST}
-    entrypoint:
-      - /usr/local/bin/wait-for-it.sh
-      - ${MYSQL_HOST}
-      - --timeout=30
-      - --strict
-      - --
-      - /usr/local/bin/DataBaseds
-      - "2"
-      - -ORBendPoint
-      - giop:tcp::10000
-
   tmclogger:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/lmcbaseclasses:latest
     depends_on:
