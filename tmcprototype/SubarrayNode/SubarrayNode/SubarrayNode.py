@@ -17,12 +17,15 @@ from __future__ import absolute_import
 
 import os
 import sys
+
+# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
+file_path = os.path.dirname(os.path.abspath(__file__))
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
+sys.path.insert(0, module_path)
+
 import random
 import string
-# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
-
 from concurrent.futures import ThreadPoolExecutor
-import threading
 import json
 
 # Tango imports
@@ -30,15 +33,10 @@ import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from future.utils import with_metaclass
-from skabase.SKASubarray.SKASubarray import SKASubarray
 
 # Additional import
 import CONST
-
-
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
-sys.path.insert(0, module_path)
+from skabase.SKASubarray.SKASubarray import SKASubarray
 
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
@@ -343,15 +341,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                          CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
         return allocation_success
 
-
     def assign_csp_resources(self, argin):
         """
         This function assigns CSP resources to CSP Subarray through CSP Subarray Leaf
         Node.
 
         :param argin: List of strings
-            Contains the list of strings that has the resources ids. Currently this list
-             contains only receptor ids.
+            Contains the list of strings that has the resources ids. Currently this list contains only receptor ids.
 
         :return: List of strings.
             Returns the list of successfully assigned resources. Currently the
@@ -377,7 +373,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # For this PI CSP Subarray Leaf Node does not return anything. So this function is
         # looping the receptor ids back.
         return argout
-
 
     def assign_sdp_resources(self, argin):
         """
@@ -931,28 +926,28 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # -----------------
 
     DishLeafNodePrefix = device_property(
-        dtype='str', default_value=CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX,
+        dtype='str', default_value="ska_mid/tm_leaf_node/d",
         doc="Device name prefix for the Dish Leaf Node",
     )
 
     CspSubarrayLNFQDN = device_property(
-        dtype='str', default_value= CONST.PROP_DEF_VAL_TMCSP_MID_SALN,
+        dtype='str', default_value="ska_mid/tm_leaf_node/csp_subarray01",
         doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
             "Subarray Node.",
     )
 
     SdpSubarrayLNFQDN = device_property(
-        dtype='str', default_value= CONST.PROP_DEF_VAL_TMSDP_MID_SALN,
+        dtype='str', default_value="ska_mid/tm_leaf_node/sdp_subarray01",
         doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
             "Subarray Node.",
     )
 
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value= CONST.PROP_DEF_VAL_CSP_MID_SA1
+        dtype='str', default_value= "mid_csp/elt/subarray_01"
     )
 
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value=CONST.PROP_DEF_VAL_SDP_MID_SA1
+        dtype='str', default_value="mid_sdp/elt/subarray_1"
     )
 
    

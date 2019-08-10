@@ -79,6 +79,12 @@ class TestCspSubarrayLeafNode(object):
         assert tango_context.device.Status() != CONST.STR_CSPSALN_INIT_SUCCESS
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Status
 
+    def test_delayModel(self, tango_context):
+        """Test for delayModel"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_delayModel) ENABLED START #
+        assert tango_context.device.delayModel == " "
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
+
     def test_GetVersionInfo(self, create_cspsubarray1_proxy):
         """Test for GetVersionInfo"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_GetVersionInfo) ENABLED START #
@@ -294,12 +300,6 @@ class TestCspSubarrayLeafNode(object):
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_state) ENABLED START #
     #     self.device.state
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_state
-
-    def test_delayModel(self, tango_context):
-        """Test for delayModel"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_delayModel) ENABLED START #
-        assert tango_context.device.delayModel == " "
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
 
     def test_visDestinationAddress(self, tango_context):
         """Test for visDestinationAddress"""

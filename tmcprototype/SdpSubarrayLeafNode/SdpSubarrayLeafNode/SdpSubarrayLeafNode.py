@@ -19,6 +19,8 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpSubarrayLeafNode"
 sys.path.insert(0, module_path)
+print("sys.path: ", sys.path)
+
 # PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
@@ -26,8 +28,8 @@ from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional imports
 
-from future.utils import with_metaclass
 import CONST
+from future.utils import with_metaclass
 import json
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
@@ -80,21 +82,14 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # -----------------
     # Device Properties
     # -----------------
-
-
-
-
-
-
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value=CONST.PROP_DEF_VAL_TM_MID_SDP_SA,
+        dtype='str', default_value="mid_sdp/elt/subarray_1",
         doc='FQDN of the SDP Subarray Node Tango Device Server.',
     )
 
     # ----------
     # Attributes
     # ----------
-
     receiveAddresses = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
@@ -405,18 +400,18 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     "12345": {
                       "fieldId": 0,
                       "intervalMs": 1400
+                      }
+                    }
+                  },
+                  "configureScan": {
+                    "scanParameters": {
+                      "12346": {
+                        "fieldId": 0,
+                        "intervalMs": 2800
+                      }
                     }
                   }
-                },
-                "configureScan": {
-                  "scanParameters": {
-                    "12346": {
-                      "fieldId": 0,
-                      "intervalMs": 2800
-                    }
-                  }
-                }
-              }
+               }
             }
         Note:
         from Jive, enter input as :
@@ -476,8 +471,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_CONFIG_EXEC, tango.ErrSeverity.ERR)
-
-
 
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
