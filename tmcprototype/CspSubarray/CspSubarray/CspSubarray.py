@@ -48,32 +48,9 @@ class CspSubarray(SKASubarray):
     # Device Properties
     # -----------------
 
-
-
-
-
-
-
-
-
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     opState = attribute(
         dtype='DevEnum',
@@ -100,8 +77,6 @@ class CspSubarray(SKASubarray):
     correlation = attribute(
         dtype='str',
     )
-
-
 
     receptors = attribute(
         dtype=('str',),
@@ -212,7 +187,6 @@ class CspSubarray(SKASubarray):
         return [[0.0]]
         # PROTECTED REGION END #    //  CspSubarray.correlationDigitalBandpassCorrectionCoefficients_read
 
-
     # --------
     # Commands
     # --------
@@ -282,6 +256,15 @@ class CspSubarray(SKASubarray):
         self._obs_state = 2               # Set observation state to READY
         print("EndScan command successfully invoked:")
         # PROTECTED REGION END #    //  CspSubarray.EndScan
+
+    @command(
+    )
+    @DebugIt()
+    def EndSB(self):
+        # PROTECTED REGION ID(CspSubarray.EndSB) ENABLED START #
+        self._obs_state = 0               # Set observation state to IDLE
+        print("EndSB command is successfully invoked on CSP Subarray.")
+        # PROTECTED REGION END #    //  CspSubarray.EndSB
 
 
 # ----------

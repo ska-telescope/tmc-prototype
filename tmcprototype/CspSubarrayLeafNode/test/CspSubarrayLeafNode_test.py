@@ -225,6 +225,24 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
+    # def test_EndSB(self, tango_context, create_cspsubarray1_proxy):
+    #     """Test for EndSB command."""
+    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndSB) ENABLED START #
+    #     create_cspsubarray1_proxy.opState = CONST.ENUM_READY
+    #     time.sleep(2)
+    #     tango_context.device.EndSB()
+    #     time.sleep(2)
+    #     assert create_cspsubarray1_proxy.opState == CONST.ENUM_IDLE
+    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
+    #
+    # def test_EndSB_device_not_ready(self, tango_context, create_cspsubarray1_proxy):
+    #     """Test for EndSB when CSP Subarray is not in Ready state command."""
+    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndSB) ENABLED START #
+    #     tango_context.device.EndSB()
+    #     time.sleep(2)
+    #     assert create_cspsubarray1_proxy.activityMessage == CONST.ERR_DEVICE_NOT_READY
+    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
+
     def test_buildState(self, tango_context):
         """Test for buildState"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_buildState) ENABLED START #
