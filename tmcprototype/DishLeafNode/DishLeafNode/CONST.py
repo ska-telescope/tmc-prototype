@@ -20,6 +20,7 @@ CMD_DISH_CONFIGURE = 'Configure'
 CMD_STOP_CAPTURE = "StopCapture"
 CMD_START_CAPTURE = "StartCapture"
 CMD_TRACK = "Track"
+CMD_STOP_TRACK = "StopTrack"
 
 #string constants
 STR_DISH_STANDBYLP_MODE = "Dish is in STANDBY-LP mode."

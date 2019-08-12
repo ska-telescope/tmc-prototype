@@ -477,4 +477,10 @@ class TestDishMaster(object):
         time.sleep(80)
         assert (tango_context.device.pointingState == 1 or tango_context.device.pointingState == 2)
         tango_context.device.StopTrack()
+
+    def test_StopTrack(self, tango_context):
+        """Test for StopTrack command"""
+        # Test for valid argument
+        tango_context.device.StopTrack()
+        assert (tango_context.device.pointingState == 0)
         tango_context.device.SetStandbyLPMode()

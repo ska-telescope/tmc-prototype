@@ -826,8 +826,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             dec_value = (jsonArgument["pointing"]["target"]["dec"])
             radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
             self.event_track_time.clear()
-            self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, CONST.THREAD_TRACK)
-            self.tracking_time_thread1.start()
+            # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, CONST.THREAD_TRACK)
+            # self.tracking_time_thread1.start()
             # Pass string argument in track_thread in brackets
             self.track_thread1 = threading.Thread(None, self.track_thread, CONST.THREAD_TRACK, args=(radec_value,))
             self.track_thread1.start()
@@ -844,6 +844,24 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             excpt_msg.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             excpt_count += 1
         # PROTECTED REGION END #    //  DishLeafNode.Track
+
+
+    @command(
+    )
+    @DebugIt()
+    def StopTrack(self):
+        # PROTECTED REGION ID(DishLeafNode.StopTrack) ENABLED START #
+        """
+         Invokes StopTrack command on the DishMaster.
+
+        :param argin: DevVoid
+
+        :return: None
+
+        """
+        self.event_track_time.set()
+        self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_TRACK, self.commandCallback)
+        # PROTECTED REGION END #    //  DishLeafNode.StopTrack
 
 # ----------
 # Run server

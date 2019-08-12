@@ -1074,7 +1074,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """
         This command is created only for making pointingState = 0 in Track command.
         """
-        self._pointing_state = 0
+        if (self._pointing_state == 1 or self._pointing_state == 2):
+            self._pointing_state = 0
         # PROTECTED REGION END #    //  DishMaster.StopTrack
 
 # ----------

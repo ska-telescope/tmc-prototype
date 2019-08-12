@@ -237,16 +237,6 @@ class TestDishLeafNode(object):
     #     assert CONST.ERR_EXE_SLEW_CMD in tango_context.device.activityMessage
     #     # PROTECTED REGION END #    //  DishLeafNode.test_Slew
 
-    def test_Track(self, tango_context, create_dish_proxy):
-        """Test for Track"""
-        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
-        tango_context.device.Track(input_string)
-        time.sleep(60)
-        assert (create_dish_proxy.pointingState == 1 or create_dish_proxy.pointingState == 2)
-        create_dish_proxy.StopTrack()
-        # PROTECTED REGION END #    //  DishLeafNode.Track
-
     # def test_Track_invalid_arg(self, tango_context):
     #     """Test for Track"""
     #     # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
@@ -257,6 +247,24 @@ class TestDishLeafNode(object):
     #     assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
     #     tango_context.device.SetStandByLPMode()
     #     # PROTECTED REGION END #    //  DishLeafNode.test_Track
+
+    def test_Track(self, tango_context, create_dish_proxy):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        tango_context.device.Track(input_string)
+        time.sleep(60)
+        assert (create_dish_proxy.pointingState == 1 or create_dish_proxy.pointingState == 2)
+        create_dish_proxy.StopTrack()
+        # PROTECTED REGION END #    //  DishLeafNode.Track
+
+    def test_StopTrack(self, tango_context, create_dish_proxy):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        tango_context.device.StopTrack()
+        time.sleep(4)
+        assert (create_dish_proxy.pointingState == 0)
+        # PROTECTED REGION END #    //  DishLeafNode.Track
 
     def test_buildState(self, tango_context):
         """Test for buildState"""
