@@ -483,4 +483,4 @@ class TestDishMaster(object):
         # Test for valid argument
         tango_context.device.StopTrack()
         assert (tango_context.device.pointingState == 0)
-        tango_context.device.SetStandbyLPMode()
+        #tango_context.device.SetStandbyLPMode()

@@ -261,8 +261,10 @@ class TestDishLeafNode(object):
     def test_StopTrack(self, tango_context, create_dish_proxy):
         """Test for Track"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        print("Before: ",create_dish_proxy.pointingState)
         tango_context.device.StopTrack()
-        time.sleep(4)
+        time.sleep(10)
+        print("After: ", create_dish_proxy.pointingState)
         assert (create_dish_proxy.pointingState == 0)
         # PROTECTED REGION END #    //  DishLeafNode.Track
 

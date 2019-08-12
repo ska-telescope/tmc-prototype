@@ -1317,6 +1317,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             if self._obs_state == CONST.OBS_STATE_ENUM_READY:
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
                 self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
+                self._dish_leaf_node_group.command_inout(CONST.CMD_STOP_TRACK)
                 self._read_activity_message = CONST.STR_ENDSB_SUCCESS
                 self.dev_logging(CONST.STR_ENDSB_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:

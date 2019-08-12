@@ -843,6 +843,14 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
             excpt_msg.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
 
@@ -859,8 +867,32 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        self.event_track_time.set()
-        self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_TRACK, self.commandCallback)
+        excpt_count = 0
+        excpt_msg = []
+        try:
+            self.event_track_time.set()
+            self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_TRACK, self.commandCallback)
+
+        except DevFailed as dev_failed:
+            self._read_activity_message = CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)
+            self.dev_logging(CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed))
+
+        except Exception as except_occurred:
+            print(CONST.ERR_EXE_STOP_TRACK_CMD, except_occurred)
+            self._read_activity_message = CONST.ERR_EXE_STOP_TRACK_CMD + str(except_occurred)
+            self.dev_logging(CONST.ERR_EXE_STOP_TRACK_CMD, int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # Throw Exception
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_STOPTRACK_EXEC, tango.ErrSeverity.ERR)
+
         # PROTECTED REGION END #    //  DishLeafNode.StopTrack
 
 # ----------

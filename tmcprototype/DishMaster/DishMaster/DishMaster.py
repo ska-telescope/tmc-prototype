@@ -1074,8 +1074,30 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """
         This command is created only for making pointingState = 0 in Track command.
         """
-        if (self._pointing_state == 1 or self._pointing_state == 2):
-            self._pointing_state = 0
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if (self._pointing_state == 1 or self._pointing_state == 2):
+                self._pointing_state = 0
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_CONFIG_DM + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_CONFIG_DM + str(dev_failed))
+
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_CONFIG_DM + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            excpt_msg.append(CONST.ERR_CONFIG_DM + str(except_occurred))
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
+
+
+
         # PROTECTED REGION END #    //  DishMaster.StopTrack
 
 # ----------
