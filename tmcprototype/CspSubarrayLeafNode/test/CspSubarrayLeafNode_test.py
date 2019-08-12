@@ -70,7 +70,7 @@ class TestCspSubarrayLeafNode(object):
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_activityMessage) ENABLED START #
-        assert tango_context.device.activityMessage == " "
+        assert tango_context.device.activityMessage != " "
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_activityMessage
         
     def test_State(self, tango_context):
