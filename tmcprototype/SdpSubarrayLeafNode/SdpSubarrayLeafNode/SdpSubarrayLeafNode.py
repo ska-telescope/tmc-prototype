@@ -430,7 +430,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             jsonArgument = json.loads(argin)
             sdp_arg = jsonArgument["sdp"]
             sdpConfiguration = sdp_arg.copy()
-            del sdpConfiguration["configureScan"]
+            if "configureScan" in sdpConfiguration:
+                del sdpConfiguration["configureScan"]
             print ("sdpConfiguration :", sdpConfiguration)
             # configure_arg = jsonArgument["sdp"]["configure"]
             self.dev_logging(sdpConfiguration, int(tango.LogLevel.LOG_INFO))

@@ -17,7 +17,8 @@ from __future__ import absolute_import
 
 import os
 import sys
-
+import time
+import threading
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
@@ -509,6 +510,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         excpt_count = 0
         excpt_msg = []
+        json_scan_duration = json.loads(argin[0])
+        self.scan_duration = int(json_scan_duration['scanDuration'])
         try:
             print(CONST.STR_SCAN_IP_ARG, argin)
             if self._obs_state == CONST.OBS_STATE_ENUM_READY:
@@ -531,6 +534,16 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
                 self.set_status(CONST.STR_SA_SCANNING)
                 self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
+                self._read_activity_message = CONST.STR_SCAN_SUCCESS
+
+            self.end_scan_thread = threading.Thread(None, self.waitToEndScan, "SubarrayNode")
+            self.end_scan_thread.start()
+            # with excpt_count is 0 and ThreadPoolExecutor(1) as executor:
+            #     status = executor.submit(self.waitToEndScan, scan_duration)
+            #     if status:
+            #         # call endScan command
+            #         print ("Sending end scan command...")
+            #         self.EndScan()
 
             #TODO: FOR FUTURE IMPLEMENTATION
             # if type(float(argin[0])) == float:
@@ -581,6 +594,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
+    def waitToEndScan(self):
+        time.sleep(self.scan_duration)
+        print("Sending end scan command...")
+        self.EndScan()
+
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
@@ -614,6 +632,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._scan_id = ""
                 self.set_status(CONST.STR_SCAN_COMPLETE)
                 self.dev_logging(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
+                self._read_activity_message = CONST.STR_END_SCAN_SUCCESS
 
                 # TODO: FOR FUTURE IMPLEMENTATION
                 # cmdData = tango.DeviceData()
@@ -943,7 +962,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
 
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value= "mid_csp/elt/subarray_01"
+        dtype='str', default_value= "mid_csp/elt/subarray01"
     )
 
     SdpSubarrayNodeFQDN = device_property(
@@ -1243,6 +1262,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         # Invoke Track command on the group of Dishes assigned to the Subarray
                         self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
                         self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
+                        self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
                     else:
                         msg = "Dish configuration must be given. Aborting Dish configuration."
                         # this is a fatal error

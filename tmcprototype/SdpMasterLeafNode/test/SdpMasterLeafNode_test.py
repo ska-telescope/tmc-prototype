@@ -113,7 +113,7 @@ class TestSdpMasterLeafNode(object):
         # PROTECTED REGION ID(SdpMasterLeafNode.test_Standby) ENABLED START #
         tango_context.device.Standby()
         time.sleep(4)
-        assert create_sdp_master_proxy.OperatingState == 2
+        assert create_sdp_master_proxy.OperatingState == 3
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Standby
 
     def test_buildState(self, tango_context):
