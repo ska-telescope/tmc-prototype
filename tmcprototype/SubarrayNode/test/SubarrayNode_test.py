@@ -156,6 +156,22 @@ class TestSubarrayNode(object):
     #     # assert CONST.ERR_DUPLICATE_END_SCAN_CMD in tango_context.device.activityMessage
     #     # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
+    # def test_EndSB(self, tango_context):
+    #     """Test for EndSB command."""
+    #     # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
+    #     tango_context.device.EndSB()
+    #     time.sleep(2)
+    #     assert tango_context.device.ObsState == CONST.OBS_STATE_ENUM_IDLE
+    #     # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
+
+    def test_EndSB_device_not_ready(self, tango_context):
+        """Test for EndSB when SubarrayNode is not in Ready state command."""
+        # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
+        tango_context.device.EndSB()
+        time.sleep(2)
+        assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
+
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
@@ -250,6 +266,12 @@ class TestSubarrayNode(object):
         tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
         assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  SubarrayNode.test_elementLoggingLevel
+
+    # def test_healthState(self, tango_context):
+    #     """Test for healthState"""
+    #     # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
+    #     assert tango_context.device.healthState == 1
+    #     # PROTECTED REGION END #    //  SubarrayNode.test_healthState
 
     def test_obsMode(self, tango_context):
         """Test for obsMode"""

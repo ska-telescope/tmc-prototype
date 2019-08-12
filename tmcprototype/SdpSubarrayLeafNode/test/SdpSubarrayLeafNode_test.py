@@ -193,6 +193,22 @@ class TestSdpSubarrayLeafNode(object):
     #     assert CONST.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndScan
 
+    # def test_EndSB(self, tango_context, create_sdpsubarray_proxy):
+    #     """Test for EndSB command."""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
+    #     tango_context.device.EndSB()
+    #     time.sleep(2)
+    #     assert create_sdpsubarray_proxy.ObsState == CONST.ENUM_IDLE
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
+
+    def test_EndSB_device_not_ready(self, tango_context):
+        """Test for EndSB when SDP Subarray is not in Ready state command."""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
+        tango_context.device.EndSB()
+        time.sleep(2)
+        assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
+
     def test_EndScan_Invalid_State(self, tango_context):
         """Test for  Invalid EndScan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndScan_Invalid_State) ENABLED START #
