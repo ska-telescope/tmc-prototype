@@ -211,6 +211,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
             self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
 
+        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
+            self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+
     def create_csp_ln_proxy(self):
         """
         Creates proxy of CSP Subarray Leaf Node.
@@ -491,7 +494,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
 
     @command(
-        dtype_in=('str',),
+        dtype_in='str',
         doc_in="Execute Scan on the Subarray",
     )
     @DebugIt()
@@ -510,24 +513,26 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         excpt_count = 0
         excpt_msg = []
-        json_scan_duration = json.loads(argin[0])
+        json_scan_duration = json.loads(argin)
         self.scan_duration = int(json_scan_duration['scanDuration'])
         try:
             print(CONST.STR_SCAN_IP_ARG, argin)
             if self._obs_state == CONST.OBS_STATE_ENUM_READY:
                 assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
-                self._read_activity_message = CONST.STR_SCAN_IP_ARG + argin[0]
+                self._read_activity_message = CONST.STR_SCAN_IP_ARG + argin
 
                 # Invoke Scan command on SDP Subarray Leaf Node
                 cmdData = tango.DeviceData()
-                cmdData.insert(tango.DevString, argin[0])
+                cmdData.insert(tango.DevString, argin)
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_SCAN, cmdData)
                 print(CONST.STR_SDP_SCAN_INIT)
                 self._read_activity_message = CONST.STR_SDP_SCAN_INIT
 
                 # Invoke Scan command on CSP Subarray Leaf Node
+                csp_argin = []
+                csp_argin.append(argin)
                 cmdData = tango.DeviceData()
-                cmdData.insert(tango.DevVarStringArray, argin)
+                cmdData.insert(tango.DevVarStringArray, csp_argin)
                 self._csp_subarray_ln_proxy.command_inout(CONST.CMD_START_SCAN, cmdData)
                 print(CONST.STR_CSP_SCAN_INIT)
                 self._read_activity_message = CONST.STR_CSP_SCAN_INIT
@@ -1317,6 +1322,49 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
                                         DevState.STANDBY]
         # PROTECTED REGION END #    //  SubarrayNode.is_Configure_allowed
+
+    @command(
+    )
+    @DebugIt()
+    def EndSB(self):
+        # PROTECTED REGION ID(SubarrayNode.EndSB) ENABLED START #
+        """
+        This command invokes EndSB command on CSP Subarray Leaf Node and SDP Subarray Leaf Node.
+
+        :return: None.
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if self._obs_state == CONST.OBS_STATE_ENUM_READY:
+                self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
+                self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
+                self._dish_leaf_node_group.command_inout(CONST.CMD_STOP_TRACK)
+                self._read_activity_message = CONST.STR_ENDSB_SUCCESS
+                self.dev_logging(CONST.STR_ENDSB_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
+                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.
+                                                                                      LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ENDSB_EXEC, tango.ErrSeverity.ERR)
+        # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
     @command(
         dtype_in='str',

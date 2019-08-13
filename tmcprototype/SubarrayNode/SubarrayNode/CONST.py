@@ -17,9 +17,11 @@ CMD_START_SCAN= "StartScan"
 CMD_CONFIGURE = "Configure"
 CMD_END_SCAN = "EndScan"
 CMD_TRACK = "Track"
+CMD_STOP_TRACK = "StopTrack"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 CMD_CONFIGURESCAN = "ConfigureScan"
+CMD_ENDSB = "EndSB"
 
 
 #GROUPS
@@ -113,6 +115,8 @@ STR_HEALTH_STATE_UNKNOWN_VAL = "CSPSubarray healthState event returned unknown v
 STR_DELAY_MODEL_SUB_POINT = "delayModelSubscriptionPoint"
 STR_VIS_DESTIN_ADDR_SUB_POINT = "visDestinationAddressSubscriptionPoint"
 STR_CSP_CBFOUTLINK = "cspCbfOutlinkAddress"
+STR_ENDSB_SUCCESS = "EndSB command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node."
+STR_ENDSB_EXEC = "EndSB command execution."
 
 
 #Error messages
@@ -144,6 +148,8 @@ ERR_CSP_SA_LEAF_INIT = "Error occured in Csp Subarray Leaf Node initialization "
 ERR_CSPSDP_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting CSP/SDP Subarray healthState"
 ERR_SUBSR_CSPSDPSA_HEALTH_STATE = "Error in subscribing CSP/SDP Subarray healthState on respective " \
                                   "LeafNodes. \n"
+ERR_DEVICE_NOT_READY = "Subarray Node is not in Ready observation state."
+ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on Subarray Node."
 
 
 ERR_CSPSDP_SUBARRAY_OBS_STATE = "Key Error occurred while setting CSP/SDP Subarray obsState"

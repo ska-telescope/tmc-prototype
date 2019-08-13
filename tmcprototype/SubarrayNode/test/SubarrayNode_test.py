@@ -99,6 +99,12 @@ class TestSubarrayNode(object):
         assert tango_context.device.State() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_State
 
+    def test_healthState(self, tango_context):
+        """Test for healthState"""
+        # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
+        assert tango_context.device.healthState == 1
+        # PROTECTED REGION END #    //  SubarrayNode.test_healthState
+
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
@@ -112,12 +118,13 @@ class TestSubarrayNode(object):
     # def test_Configure(self, tango_context, create_dish_proxy):
     #     """Test for Configure"""
     #     # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
-    #     tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChannels":372,"numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":"2:31:50.91","dec":"89:15:51.4"}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan":{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}')
+    #     tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","delayModelSubscriptionPoint":"","visDestinationAddressSubscriptionPoint":"","fsp":[{"fspID":"1","functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]},"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":"2:31:50.91","dec":"89:15:51.4"}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan":{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}')
+    #
     #     time.sleep(60)
     #     print("Subarray obsState:",tango_context.device.obsState)
-    #     assert tango_context.device.obsState == 1
+    #     assert tango_context.device.obsState == 2
     #     time.sleep(45)
-    #     create_dish_proxy.SetPointingState()
+    #     create_dish_proxy.StopTrack()
     #     # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
     # def test_Scan(self, tango_context):
@@ -136,6 +143,7 @@ class TestSubarrayNode(object):
     #     # assert CONST.SCAN_ALREADY_IN_PROGRESS in tango_context.device.activityMessage
     #     # PROTECTED REGION END #    //  SubarrayNode.test_Scan
     #
+
     # def test_EndScan(self, tango_context):
     #     """Test for EndScan"""
     #     # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
@@ -149,6 +157,23 @@ class TestSubarrayNode(object):
     #     #     tango_context.device.EndScan()
     #     # assert CONST.ERR_DUPLICATE_END_SCAN_CMD in tango_context.device.activityMessage
     #     # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
+
+    # def test_EndSB(self, tango_context):
+    #     """Test for EndSB command."""
+    #     # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
+    #     tango_context.device.EndSB()
+    #     time.sleep(2)
+    #     assert tango_context.device.ObsState == CONST.OBS_STATE_ENUM_IDLE
+    #     # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
+
+    def test_EndSB_device_not_ready(self, tango_context):
+        """Test for EndSB when SubarrayNode is not in Ready state command."""
+        # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
+        tango_context.device.EndSB()
+        time.sleep(2)
+        assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
+
 
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""
@@ -250,6 +275,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
         assert tango_context.device.healthState == 1
         # PROTECTED REGION END #    //  SubarrayNode.test_healthState
+
 
     def test_obsMode(self, tango_context):
         """Test for obsMode"""

@@ -209,7 +209,7 @@ class TestCentralNode(object):
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(CentralNode.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == 1
+        assert tango_context.device.healthState == 0
         # PROTECTED REGION END #    //  CentralNode.test_healthState
 
     def test_adminMode(self, tango_context):
@@ -269,8 +269,11 @@ class TestCentralNode(object):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
         retVal = json.loads(tango_context.device.AssignResources(test_input))
         time.sleep(3)
+        print("Before: ", create_subarray1_proxy.receptorIDList)
         result = create_subarray1_proxy.receptorIDList
+        print("In between: ", create_subarray1_proxy.receptorIDList)
         create_subarray1_proxy.ReleaseAllResources()
+        print("After: ", create_subarray1_proxy.receptorIDList)
         assert result == (1, )
 
     def test_ReleaseResources(self, tango_context, create_subarray1_proxy):

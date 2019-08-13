@@ -53,37 +53,37 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         if evt.err is False:
             try:
-                self._health_state = evt.attr_value.value
+                health_state = evt.attr_value.value
                 if CONST.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
-                    self._subarray1_health_state = self._health_state
-                    self.subarray_health_state_map[evt.device] = self._health_state
+                    self._subarray1_health_state = health_state
+                    self.subarray_health_state_map[evt.device] = health_state
                 elif CONST.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
-                    self._subarray2_health_state = self._health_state
-                    self.subarray_health_state_map[evt.device] = self._health_state
+                    self._subarray2_health_state = health_state
+                    self.subarray_health_state_map[evt.device] = health_state
                 elif self.CspMasterLeafNodeFQDN in evt.attr_name:
-                    self._csp_master_leaf_health = self._health_state
+                    self._csp_master_leaf_health = health_state
                 elif self.SdpMasterLeafNodeFQDN in evt.attr_name:
-                    self._sdp_master_leaf_health = self._health_state
+                    self._sdp_master_leaf_health = health_state
                 else:
                     print(CONST.EVT_UNKNOWN)
                     self._read_activity_message = CONST.EVT_UNKNOWN
 
-                if self._health_state == CONST.ENUM_OK:
+                if health_state == CONST.ENUM_OK:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_OK)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_OK
-                elif self._health_state == CONST.ENUM_DEGRADED:
+                elif health_state == CONST.ENUM_DEGRADED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_DEGRADED)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_DEGRADED
-                elif self._health_state == CONST.ENUM_FAILED:
+                elif health_state == CONST.ENUM_FAILED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_FAILED)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                                                                                ) + CONST.STR_FAILED
-                elif self._health_state == CONST.ENUM_UNKNOWN:
+                elif health_state == CONST.ENUM_UNKNOWN:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_UNKNOWN)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(
@@ -462,7 +462,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 excpt_msg.append(self._read_activity_message)
                 excpt_count += 1
         try:
-            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY, CONST.STR_CSP_CBF_DEV_NAME)
+            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY, [])
         except DevFailed as dev_failed:
             print(CONST.ERR_EXE_STANDBY_CMD, self.CspMasterLeafNodeFQDN)
             self._read_activity_message = CONST.ERR_EXE_STANDBY_CMD + str(self.CspMasterLeafNodeFQDN)

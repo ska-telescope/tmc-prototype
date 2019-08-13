@@ -93,7 +93,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [pylint](https://pypi.org/project/pylint/)
 * rsyslog
 * [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) (for running the prototype in a containerised environment)
-* [Kubernetes (K8s)]([https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/))
+* [Kubernetes (K8s)](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
 
 # 3: Installing, configuring and running the prototype (non-containerised environment)
 
@@ -328,5 +328,5 @@ In order to test the entire prototype, execute:
 * [TMC Prototype (Stage II) Design Document](https://docs.google.com/document/d/1DaLCQZ79yMlGYm2GPE03KpQ80kzjb1f98bWhgV_2Rpo/edit?usp=sharing)
 * [ReadTheDocs](https://developer.skatelescope.org/projects/tmc-prototype/en/master/)
 * [TMC Prototype Learnings](https://docs.google.com/document/d/1DMhb_6NM0oaZMhSwEE79_B-MwycwzuH-RJsuOd5Zjlw/edit?usp=sharing)
-* [System Demo #2 (Recording)]([https://www.dropbox.com/sh/ecqqky7ze5oaehm/AACBPF95iub58Y_OIIT-V4XZa?dl=0](https://www.dropbox.com/sh/ecqqky7ze5oaehm/AACBPF95iub58Y_OIIT-V4XZa?dl=0))
+* [System Demo #2 (Recording)](https://www.dropbox.com/sh/ecqqky7ze5oaehm/AACBPF95iub58Y_OIIT-V4XZa?dl=0)
 * [System Demo #2 (PPT)](https://drive.google.com/file/d/1pv8B3HDvNlUR3fd69_urpALWF7wwmlKG/view?usp=sharing)

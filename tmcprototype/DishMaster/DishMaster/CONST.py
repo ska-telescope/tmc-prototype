@@ -49,6 +49,6 @@ ERR_EXE_STOP_CAPTURE_CMD = "Error in executing StopCapture Command on Dish"
 ERR_EXE_SLEW_CMD = "Error in executing Slew Command on Dish"
 ERR_INVALID_JSON = "Invalid JSON format."
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found."
-ERR_CONFIG_DM = "Error occured while Dish Master."
+ERR_CONFIG_DM = "Error occured in Dish Master."
 
 THREAD_TRACK = "DishMaster"
