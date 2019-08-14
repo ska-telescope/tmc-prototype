@@ -1211,6 +1211,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                 # for sdp_config_array_item in sdpConfiguration["sdp"]["configure"]:
                                 #     sdp_config_array_item[CONST.STR_CSP_CBFOUTLINK] \
                                 #         = self.CspSubarrayNodeFQDN + "/cbfOutputLink"
+                                # Zeroth index fix
+                                sdp = sdpConfiguration["sdp"]["configure"][0]
+                                sdpConfiguration["sdp"]["configure"] = sdp
                                 sdpConfiguration["sdp"]["configure"][CONST.STR_CSP_CBFOUTLINK] \
                                     = self.CspSubarrayNodeFQDN + "/cbfOutputLink"
                                 print("sdpConfiguration: ", sdpConfiguration)

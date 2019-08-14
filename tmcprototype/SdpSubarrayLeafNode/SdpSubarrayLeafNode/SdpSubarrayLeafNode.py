@@ -223,10 +223,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         excpt_count = 0
 
         try:
-
-            # TODO: Temporary arrangement to make ReleaseAllResources working on SDP subarray
-            self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
-
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_RELEASE_RESOURCES,
                                                                           '{"dummy_key": "dummy_value}"',
