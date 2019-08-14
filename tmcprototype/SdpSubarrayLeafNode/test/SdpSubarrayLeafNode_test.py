@@ -84,12 +84,6 @@ class TestSdpSubarrayLeafNode(object):
         assert tango_context.device.Status() != CONST.STR_INIT_SUCCESS
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Status
 
-    def test_GetVersionInfo(self, tango_context):
-        """Test for GetVersionInfo"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_GetVersionInfo) ENABLED START #
-        # self.device.GetVersionInfo()
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_GetVersionInfo
-
     def test_Reset(self, tango_context):
         """Test for Reset"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Reset) ENABLED START #
@@ -97,6 +91,7 @@ class TestSdpSubarrayLeafNode(object):
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Reset
 
+    # TODO: Test to be fixed
     # def test_ReleaseResources(self, tango_context):
     #     """Test for ReleaseResources"""
     #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseResources) ENABLED START #
@@ -196,7 +191,7 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndScan
 
-
+    # TODO: Tests to be fixed
     # def test_EndSB(self, tango_context, create_sdpsubarray_proxy):
     #     """Test for EndSB command."""
     #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
@@ -239,18 +234,6 @@ class TestSdpSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.STR_SCAN_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
-    #
-    # def test_Abort(self, tango_context):
-    #     """Test for Abort"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Abort) ENABLED START #
-    #     self.device.Abort()
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Abort
-
-    # def test_buildState(self, tango_context):
-    #     """Test for buildState"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_buildState) ENABLED START #
-    #     self.device.buildState
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
@@ -322,6 +305,7 @@ class TestSdpSubarrayLeafNode(object):
         assert tango_context.device.receiveAddresses == ""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_receiveAddresses
 
+    # TODO: Test to be fixed
     # def test_sdpSubarrayHealthState(self, tango_context):
     #     """Test for sdpSubarrayHealthState"""
     #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_sdpSubarrayHealthState) ENABLED START #

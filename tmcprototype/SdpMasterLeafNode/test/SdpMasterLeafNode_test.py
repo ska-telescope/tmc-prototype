@@ -96,6 +96,7 @@ class TestSdpMasterLeafNode(object):
         assert create_sdp_master_proxy.OperatingState == 1
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_On
 
+    # TODO: Tests to be fixed
     #def test_Off(self, tango_context):
         """Test for Off"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_Off) ENABLED START #

@@ -826,6 +826,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             dec_value = (jsonArgument["pointing"]["target"]["dec"])
             radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
             self.event_track_time.clear()
+            #TODO: For future reference
             # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, CONST.THREAD_TRACK)
             # self.tracking_time_thread1.start()
             # Pass string argument in track_thread in brackets

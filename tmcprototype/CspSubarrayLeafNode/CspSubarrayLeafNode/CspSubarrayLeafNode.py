@@ -198,8 +198,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             else:
                 self._delay_model = " "
 
-            print("Stop event received. Thread exit.")
-            self.dev_logging("Stop event received. Thread exit.", int(tango.LogLevel.LOG_INFO))
+        print("Stop event received. Thread exit.")
+        self.dev_logging("Stop event received. Thread exit.", int(tango.LogLevel.LOG_INFO))
 
     def init_device(self):
         """

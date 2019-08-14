@@ -211,9 +211,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
             self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
 
+        # elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
+        #     self._obs_state = CONST.OBS_STATE_ENUM_IDLE
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
-            self._obs_state = CONST.OBS_STATE_ENUM_IDLE
-
+            if pointing_state_count == len(self.dishPointingStateMap.values()):
+                self._obs_state = CONST.OBS_STATE_ENUM_READY
+            else:
+                self._obs_state = CONST.OBS_STATE_ENUM_IDLE
     def create_csp_ln_proxy(self):
         """
         Creates proxy of CSP Subarray Leaf Node.
@@ -543,6 +547,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
             self.end_scan_thread = threading.Thread(None, self.waitToEndScan, "SubarrayNode")
             self.end_scan_thread.start()
+            # TODO: FOR FUTURE IMPLEMENTATION
             # with excpt_count is 0 and ThreadPoolExecutor(1) as executor:
             #     status = executor.submit(self.waitToEndScan, scan_duration)
             #     if status:
@@ -1202,19 +1207,31 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         # Check if 'sdp' is not empty
                         if sdpConfiguration["sdp"]:
                             # Add cspCbfOutlinkAddress to SDP configuration
-                            sdpConfiguration["sdp"]["configure"][CONST.STR_CSP_CBFOUTLINK] = self.CspSubarrayNodeFQDN + \
-                                                                                             "/cbfOutputLink"
-                            cmdData = tango.DeviceData()
-                            cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
-                            self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
-                            print("SDP Configuration is initiated.")
+                            if "configure" in sdpConfiguration["sdp"]:
+                                # for sdp_config_array_item in sdpConfiguration["sdp"]["configure"]:
+                                #     sdp_config_array_item[CONST.STR_CSP_CBFOUTLINK] \
+                                #         = self.CspSubarrayNodeFQDN + "/cbfOutputLink"
+                                sdpConfiguration["sdp"]["configure"][CONST.STR_CSP_CBFOUTLINK] \
+                                    = self.CspSubarrayNodeFQDN + "/cbfOutputLink"
+                                print("sdpConfiguration: ", sdpConfiguration)
+                                cmdData = tango.DeviceData()
+                                cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
+                                self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
+                                print("SDP Configuration is initiated.")
+                            else:
+                                msg = 'SDP Subarray reconfiguration command is not invoked.'
+                                self._read_activity_message = msg
+                                print(msg)
+
                         else:
                             msg = 'SDP configuration is empty. Aborting SDP configuration.'
+                            self._read_activity_message = msg
                             print (msg)
                     else:
                         msg = "'sdp' must be given. Aborting SDP configuration."
                         # this is a fatal error
                         print (msg)
+                        self._read_activity_message = msg
                         self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
 
                     if "csp" in self._scanConfiguration:
@@ -1244,11 +1261,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                             print("CSP Configuration is initiated.")
                         else:
                             msg = "CSP configuration is empty. Aborting CSP configuration."
+                            self._read_activity_message = msg
                             print (msg)
                     else:
                         msg = "'csp' must be given. Aborting CSP configuration."
                         # this is a fatal error
                         print (msg)
+                        self._read_activity_message = msg
                         self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
 
                     if "pointing" in self._scanConfiguration and "dish" in self._scanConfiguration:
@@ -1271,6 +1290,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     else:
                         msg = "Dish configuration must be given. Aborting Dish configuration."
                         # this is a fatal error
+                        self._read_activity_message = msg
                         print (msg)
                         self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
                     # TODO: FOR FUTURE REFERENCE
@@ -1279,6 +1299,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 else:
                     err_msg = ' '
                     msg = "'scanID' must be given. Aborting configuration."
+                    self._read_activity_message = msg
                     # this is a fatal error
                     self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
                     tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,

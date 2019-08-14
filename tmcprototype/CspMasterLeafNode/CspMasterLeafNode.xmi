@@ -28,7 +28,7 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <DefaultPropValue>localhost</DefaultPropValue>
     </deviceProperties>
-    <deviceProperties name="CspMasterFQDN" description="FQDN of the CSP Master TANGO Device Server. Value of this property &#x2192; tango://mid_csp-tango:10000/mid_csp/elt/master">
+    <deviceProperties name="CspMasterFQDN" description="FQDN of the CSP Master TANGO Device Server. Value of this property &#x2192; mid_csp/elt/master">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <DefaultPropValue>mid_csp/elt/master</DefaultPropValue>

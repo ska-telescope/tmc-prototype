@@ -75,21 +75,6 @@ class TestDishLeafNode(object):
         assert tango_context.device.Status() != CONST.STR_DISH_INIT_SUCCESS
         # PROTECTED REGION END #    //  DishLeafNode.test_Status
 
-    def test_GetMetrics(self, tango_context):
-        """Test for GetMetrics"""
-        # PROTECTED REGION ID(DishLeafNode.test_GetMetrics) ENABLED START #
-        # PROTECTED REGION END #    //  DishLeafNode.test_GetMetrics
-
-    def test_ToJson(self, tango_context):
-        """Test for ToJson"""
-        # PROTECTED REGION ID(DishLeafNode.test_ToJson) ENABLED START #
-        # PROTECTED REGION END #    //  DishLeafNode.test_ToJson
-
-    def test_GetVersionInfo(self, tango_context):
-        """Test for GetVersionInfo"""
-        # PROTECTED REGION ID(DishLeafNode.test_GetVersionInfo) ENABLED START #
-        # PROTECTED REGION END #    //  DishLeafNode.test_GetVersionInfo
-
     def test_Reset(self, tango_context): #, dishmaster_context):
         """Test for Reset"""
         # PROTECTED REGION ID(DishLeafNode.test_Reset) ENABLED START #
@@ -130,6 +115,7 @@ class TestDishLeafNode(object):
                (CONST.STR_DISH_POINT_STATE_READY)
         # PROTECTED REGION END #    //  DishLeafNode.test_Configure
 
+    # TODO: Test for Configure
     # def test_Configure_invalid_arguments(self, tango_context):
     #     """Test for Configure_invalid_arguments"""
     #     input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
@@ -207,6 +193,7 @@ class TestDishLeafNode(object):
                (CONST.STR_DISH_STANDBYFP_MODE)
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStandbyFPMode
 
+    # TODO: Tests to be fixed
     # def test_SetStowMode(self, tango_context):
     #     """Test for SetStowMode"""
     #     # PROTECTED REGION ID(DishLeafNode.test_SetStowMode) ENABLED START #
@@ -346,6 +333,7 @@ class TestDishLeafNode(object):
         assert tango_context.device.activityMessage == CONST.STR_OK
         # PROTECTED REGION END #    //  DishLeafNode.test_activityMessage
 
+    # TODO: Tests to be fixed
     # def test_dishMode_change_event(self, tango_context, create_dish_proxy):
     #     """Test for dishMode_change_event"""
     #     tango_context.device.SetOperateMode()

@@ -115,6 +115,7 @@ class TestSubarrayNode(object):
         assert tango_context.device.obsState == 0
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
+    # TODO: Tests to be fixed
     # def test_Configure(self, tango_context, create_dish_proxy):
     #     """Test for Configure"""
     #     # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #

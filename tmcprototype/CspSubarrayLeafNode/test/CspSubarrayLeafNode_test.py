@@ -67,6 +67,7 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_mocking) ENABLED START #
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_mocking
 
+    # TODO: Test case for activityMessage
     # def test_activityMessage(self, tango_context):
     #     """Test for activityMessage"""
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_activityMessage) ENABLED START #
@@ -103,6 +104,7 @@ class TestCspSubarrayLeafNode(object):
         #create_cspsubarray1_proxy.device.Reset() is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Reset
 
+    #TODO: Test for ConfigureScan
     # def test_ConfigureScan(self, tango_context):
     #     """Test for ConfigureScan"""
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
@@ -130,6 +132,7 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
 
+    # TODO: Test for EndScan and EndSB
     # def test_EndScan(self, tango_context):
     #     """Test for EndScan"""
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndScan) ENABLED START #
@@ -168,6 +171,7 @@ class TestCspSubarrayLeafNode(object):
                and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
 
+    # TODO: Test for StartScan
     # def test_StartScan(self, tango_context):
     #     """Test for StartScan"""
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_StartScan) ENABLED START #
@@ -317,6 +321,7 @@ class TestCspSubarrayLeafNode(object):
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_testMode
 
+    # TODO: Test for State
     # def test_state(self):
     #     """Test for state"""
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_state) ENABLED START #
@@ -328,12 +333,6 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_visDestinationAddress) ENABLED START #
         assert tango_context.device.visDestinationAddress == " "
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_visDestinationAddress
-
-    def test_versionInfo(self):
-        """Test for versionInfo"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_versionInfo) ENABLED START #
-        #self.device.versionInfo
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_versionInfo
 
     def test_opState(self, tango_context):
         """Test for opState"""

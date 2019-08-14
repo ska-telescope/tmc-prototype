@@ -138,10 +138,10 @@ ifneq ($(NETWORK_MODE),host)
 endif
 	$(DOCKER_COMPOSE_ARGS) docker-compose \
 	-f docker-compose/tango-docker-compose.yml \
-	-f docker-compose/tmc-docker-compose.yml \
 	-f docker-compose/csplmc-docker-compose.yml \
 	-f docker-compose/cspcbfmcs-docker-compose.yml \
 	-f docker-compose/sdp-docker-compose.yml \
+	-f docker-compose/tmc-docker-compose.yml \
 	up -d
 
 piplock: build  ## overwrite Pipfile.lock with the image version
@@ -156,10 +156,10 @@ down:  ## stop develop/test environment and any interactive session
 	docker ps | grep $(CONTAINER_NAME_PREFIX)dev && docker stop $(PROJECT)-dev || true
 	$(DOCKER_COMPOSE_ARGS) docker-compose \
 	-f docker-compose/tango-docker-compose.yml \
-	-f docker-compose/tmc-docker-compose.yml \
 	-f docker-compose/csplmc-docker-compose.yml \
 	-f docker-compose/cspcbfmcs-docker-compose.yml \
 	-f docker-compose/sdp-docker-compose.yml \
+	-f docker-compose/tmc-docker-compose.yml \
 	 down
 ifneq ($(NETWORK_MODE),host)
 	docker network inspect $(NETWORK_MODE) &> /dev/null && ([ $$? -eq 0 ] && docker network rm $(NETWORK_MODE)) || true

@@ -60,11 +60,6 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_mocking) ENABLED START #
         # PROTECTED REGION END #    //  DishMaster.test_mocking
 
-    def test_properties(self, tango_context):
-        """Test for Properties"""
-        # PROTECTED REGION ID(DishMaster.test_properties) ENABLED START #
-        # PROTECTED REGION END #    //  DishMaster.test_properties
-
     def test_State(self, tango_context):
         """Test for State"""
         # PROTECTED REGION ID(DishMaster.test_State) ENABLED START #
@@ -76,26 +71,6 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_Status) ENABLED START #
         assert tango_context.device.Status() == CONST.STR_DISH_INIT_SUCCESS
         # PROTECTED REGION END #    //  DishMaster.test_Status
-
-    def test_GetMetrics(self, tango_context):
-        """Test for GetMetrics"""
-        # PROTECTED REGION ID(DishMaster.test_GetMetrics) ENABLED START #
-        # PROTECTED REGION END #    //  DishMaster.test_GetMetrics
-
-    def test_ToJson(self, tango_context):
-        """Test for ToJson"""
-        # PROTECTED REGION ID(DishMaster.test_ToJson) ENABLED START #
-        # PROTECTED REGION END #    //  DishMaster.test_ToJson
-
-    def test_GetVersionInfo(self, tango_context):
-        """Test for GetVersionInfo"""
-        # PROTECTED REGION ID(DishMaster.test_GetVersionInfo) ENABLED START #
-        # PROTECTED REGION END #    //  DishMaster.test_GetVersionInfo
-
-    def test_isCapabilityAchievable(self, tango_context):
-        """Test for isCapabilityAchievable"""
-        # PROTECTED REGION ID(DishMaster.test_isCapabilityAchievable) ENABLED START #
-        # PROTECTED REGION END #    //  DishMaster.test_isCapabilityAchievable
 
     def test_Reset(self, tango_context):
         """Test for Reset"""
