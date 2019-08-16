@@ -7,6 +7,7 @@ CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
 CMD_ENDSCAN = "EndScan"
 CMD_CONFIGURESCAN = "ConfigureScan"
 CMD_STARTSCAN = "Scan"
+CMD_ENDSB = "EndSB"
 
 #Event messages
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
@@ -29,6 +30,7 @@ ERR_INVALID_JSON_ASSIGN_RES = "Invalid JSON format while invoking AddReceptors c
 ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarray."
 ERR_DEVICE_NOT_READY = "Csp subarray is not in ready state."
 ERR_DEVICE_NOT_IN_SCAN = "CspSubarray is not in SCANNING state."
+ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on CSP Subarray."
 
 #strings
 #General strings
@@ -52,9 +54,11 @@ STR_CMD_FAILED = "CspSubarrayLeafNode Commandfailed"
 STR_CMD_CALLBK = "CspSubarrayLeafNode Command Callback"
 STR_FALSE = "False"
 STR_STARTSCAN_SUCCESS = "Scan command is executed successfully."
-PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
+PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray01"
 STR_START_SCAN_EXEC = "StartScan command execution"
 STR_CSPSA_FQDN = "CspSubarrayNodeFQDN :-> "
+STR_ENDSB_SUCCESS = "EndSB command is invoked successfully on CspSubarray."
+STR_ENDSB_EXEC = "EndSB command execution"
 
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 ENUM_INIT, ENUM_OFF, ENUM_ON, ENUM_ALARM, ENUM_DISABLE, ENUM_FAULT, ENUM_UNKNOWN = list(range(0, 7))

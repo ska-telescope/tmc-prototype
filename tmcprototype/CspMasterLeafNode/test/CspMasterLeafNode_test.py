@@ -91,6 +91,7 @@ class TestCspMasterLeafNode(object):
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_Reset
 
+    #TODO: Test case for On Command
     # def test_On(self, tango_context):
     #     """Test for On"""
     #     # PROTECTED REGION ID(CspMasterLeafNode.test_On) ENABLED START #

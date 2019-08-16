@@ -115,31 +115,9 @@ class SdpSubarray(SKASubarray):
     # Device Properties
     # -----------------
 
-
-
-
-
-
-
-
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     ReceiveAddresses = attribute(
         dtype='str',
@@ -148,8 +126,6 @@ class SdpSubarray(SKASubarray):
     ActiveProcessingBlocks = attribute(
         dtype='str',
     )
-
-
 
     # ---------------
     # General methods
@@ -202,7 +178,6 @@ class SdpSubarray(SKASubarray):
         return self._health_state
         # PROTECTED REGION END #    //  CspSubarray.opState_read
 
-
     # --------
     # Commands
     # --------
@@ -219,6 +194,14 @@ class SdpSubarray(SKASubarray):
         self._obs_state = CONST.ENUM_READY
         # PROTECTED REGION END #    //  SdpSubarray.Configure
 
+    @command(
+    )
+    @DebugIt()
+    def EndSB(self):
+        # PROTECTED REGION ID(SdpSubarray.EndSB) ENABLED START #
+        self._obs_state = 0               # Set observation state to IDLE
+        print("EndSB command is successfully invoked on SDP Subarray.")
+        # PROTECTED REGION END #    //  SdpSubarray.EndSB
 # ----------
 # Run server
 # ----------

@@ -75,21 +75,6 @@ class TestDishLeafNode(object):
         assert tango_context.device.Status() != CONST.STR_DISH_INIT_SUCCESS
         # PROTECTED REGION END #    //  DishLeafNode.test_Status
 
-    def test_GetMetrics(self, tango_context):
-        """Test for GetMetrics"""
-        # PROTECTED REGION ID(DishLeafNode.test_GetMetrics) ENABLED START #
-        # PROTECTED REGION END #    //  DishLeafNode.test_GetMetrics
-
-    def test_ToJson(self, tango_context):
-        """Test for ToJson"""
-        # PROTECTED REGION ID(DishLeafNode.test_ToJson) ENABLED START #
-        # PROTECTED REGION END #    //  DishLeafNode.test_ToJson
-
-    def test_GetVersionInfo(self, tango_context):
-        """Test for GetVersionInfo"""
-        # PROTECTED REGION ID(DishLeafNode.test_GetVersionInfo) ENABLED START #
-        # PROTECTED REGION END #    //  DishLeafNode.test_GetVersionInfo
-
     def test_Reset(self, tango_context): #, dishmaster_context):
         """Test for Reset"""
         # PROTECTED REGION ID(DishLeafNode.test_Reset) ENABLED START #
@@ -118,18 +103,14 @@ class TestDishLeafNode(object):
     def test_Configure(self, tango_context):
         """Test for Configure"""
         # PROTECTED REGION ID(DishLeafNode.test_Configure) ENABLED START #
-
-        # tango_context.device.Configure(["Moon | moon, radec, 06: 52:09.64, 21: 13:41.6"])
-        # time.sleep(2)
-        # assert tango_context.device.activityMessage == CONST.STR_TARGET_NOT_OBSERVED
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
         tango_context.device.Configure(input_string)
-        # tango_context.device.Configure(['1','0'])
         time.sleep(25)
         assert tango_context.device.activityMessage == (CONST.STR_CONFIGURE_SUCCESS) or \
                (CONST.STR_DISH_POINT_STATE_READY)
         # PROTECTED REGION END #    //  DishLeafNode.test_Configure
 
+    # TODO: Test for Configure
     # def test_Configure_invalid_arguments(self, tango_context):
     #     """Test for Configure_invalid_arguments"""
     #     input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
@@ -207,6 +188,7 @@ class TestDishLeafNode(object):
                (CONST.STR_DISH_STANDBYFP_MODE)
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStandbyFPMode
 
+    # TODO: Tests to be fixed
     # def test_SetStowMode(self, tango_context):
     #     """Test for SetStowMode"""
     #     # PROTECTED REGION ID(DishLeafNode.test_SetStowMode) ENABLED START #
@@ -237,16 +219,6 @@ class TestDishLeafNode(object):
     #     assert CONST.ERR_EXE_SLEW_CMD in tango_context.device.activityMessage
     #     # PROTECTED REGION END #    //  DishLeafNode.test_Slew
 
-    def test_Track(self, tango_context, create_dish_proxy):
-        """Test for Track"""
-        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
-        tango_context.device.Track(input_string)
-        time.sleep(60)
-        assert (create_dish_proxy.pointingState == 1 or create_dish_proxy.pointingState == 2)
-        create_dish_proxy.SetPointingState()
-        # PROTECTED REGION END #    //  DishLeafNode.Track
-
     # def test_Track_invalid_arg(self, tango_context):
     #     """Test for Track"""
     #     # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
@@ -257,6 +229,26 @@ class TestDishLeafNode(object):
     #     assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
     #     tango_context.device.SetStandByLPMode()
     #     # PROTECTED REGION END #    //  DishLeafNode.test_Track
+
+    def test_Track(self, tango_context, create_dish_proxy):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        tango_context.device.Track(input_string)
+        time.sleep(60)
+        assert (create_dish_proxy.pointingState == 1 or create_dish_proxy.pointingState == 2)
+        create_dish_proxy.StopTrack()
+        # PROTECTED REGION END #    //  DishLeafNode.Track
+
+    def test_StopTrack(self, tango_context, create_dish_proxy):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        print("Before: ",create_dish_proxy.pointingState)
+        tango_context.device.StopTrack()
+        time.sleep(10)
+        print("After: ", create_dish_proxy.pointingState)
+        assert (create_dish_proxy.pointingState == 0)
+        # PROTECTED REGION END #    //  DishLeafNode.Track
 
     def test_buildState(self, tango_context):
         """Test for buildState"""
@@ -336,6 +328,7 @@ class TestDishLeafNode(object):
         assert tango_context.device.activityMessage == CONST.STR_OK
         # PROTECTED REGION END #    //  DishLeafNode.test_activityMessage
 
+    # TODO: Tests to be fixed
     # def test_dishMode_change_event(self, tango_context, create_dish_proxy):
     #     """Test for dishMode_change_event"""
     #     tango_context.device.SetOperateMode()

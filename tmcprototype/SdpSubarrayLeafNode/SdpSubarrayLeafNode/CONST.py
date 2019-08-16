@@ -2,8 +2,10 @@
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_RESOURCES = "ReleaseResources"
 CMD_CONFIGURE = "Configure"
-CMD_SCAN = "Scan"
+CMD_SCAN = "StartScan"
 CMD_ENDSCAN = "EndScan"
+CMD_ENDSB = "EndSB"
+
 #
 # #Error messages
 ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes " \
@@ -12,6 +14,7 @@ ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 ERR_RELEASE_RESOURCES_CMD = "Error occured while releasing resources "
 ERR_ENDSCAN_INVOKING_CMD = "Error while invoking EndScan command on SDP Subarray."
+ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on SDP Subarray."
 ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the SDP Subarray \n"
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 ERR_CONFIGURE = "Error while invoking Configure command on SDP Subarray."
@@ -41,6 +44,7 @@ STR_ALL_RES_NOT_REL = "All the resources are not released"
 STR_LIST_RES_NOT_REL = "List of the resources that are not released:"
 STR_CONFIGURE_SUCCESS = "Configure invoked successfully on SdpSubarray."
 STR_ENDSCAN_SUCCESS = "EndScan invoked successfully on SdpSubarray."
+STR_ENDSB_SUCCESS = "EndSB invoked successfully on SdpSubarray."
 STR_CONFIG_EXEC = "Configure command execution"
 STR_SCAN_EXEC = "Scan command execution"
 STR_SCAN_SUCCESS = "Scan invoked successfully on SdpSubarray."
@@ -51,6 +55,7 @@ STR_CMD_FAILED = "SDP Subarray Leaf Node_CommandFailed"
 STR_RELEASE_RES_EXEC = "ReleaseResources command execution"
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
 STR_ENDSCAN_EXEC = "EndScan command execution"
+STR_ENDSB_EXEC = "EndSB command execution"
 STR_CMD_CALLBK = "SdpSubarrayLeafNode Command Callback"
 
 # #PROPERTIES DEFAULT VALUES

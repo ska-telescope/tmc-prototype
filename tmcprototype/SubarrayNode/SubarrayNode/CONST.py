@@ -17,9 +17,11 @@ CMD_START_SCAN= "StartScan"
 CMD_CONFIGURE = "Configure"
 CMD_END_SCAN = "EndScan"
 CMD_TRACK = "Track"
+CMD_STOP_TRACK = "StopTrack"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 CMD_CONFIGURESCAN = "ConfigureScan"
+CMD_ENDSB = "EndSB"
 
 
 #GROUPS
@@ -106,11 +108,15 @@ STR_CSP_SA_HEALTH_FAILED = "CSP SA health is FAILED."
 STR_CSP_SA_HEALTH_UNKNOWN = "CSP SA health is UNKNOWN."
 STR_CSP_SA_LEAF_INIT_SUCCESS = "Csp Subarray Leaf Node initialized successfully."
 STR_SDP_SA_LEAF_INIT_SUCCESS = "Sdp Subarray Leaf Node initialized successfully."
+STR_SCAN_SUCCESS = "Scan command is executed successfully."
+STR_END_SCAN_SUCCESS = "EndScan command is executed successfully."
 STR_HEALTH_STATE = "healthState of "
 STR_HEALTH_STATE_UNKNOWN_VAL = "CSPSubarray healthState event returned unknown value \n"
 STR_DELAY_MODEL_SUB_POINT = "delayModelSubscriptionPoint"
 STR_VIS_DESTIN_ADDR_SUB_POINT = "visDestinationAddressSubscriptionPoint"
 STR_CSP_CBFOUTLINK = "cspCbfOutlinkAddress"
+STR_ENDSB_SUCCESS = "EndSB command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node."
+STR_ENDSB_EXEC = "EndSB command execution."
 
 
 #Error messages
@@ -142,6 +148,8 @@ ERR_CSP_SA_LEAF_INIT = "Error occured in Csp Subarray Leaf Node initialization "
 ERR_CSPSDP_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting CSP/SDP Subarray healthState"
 ERR_SUBSR_CSPSDPSA_HEALTH_STATE = "Error in subscribing CSP/SDP Subarray healthState on respective " \
                                   "LeafNodes. \n"
+ERR_DEVICE_NOT_READY = "Subarray Node is not in Ready observation state."
+ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on Subarray Node."
 
 
 ERR_CSPSDP_SUBARRAY_OBS_STATE = "Key Error occurred while setting CSP/SDP Subarray obsState"
@@ -174,6 +182,6 @@ STR_KEY_PB_ID_LIST = "processingBlockIdList"
 PROP_DEF_VAL_TMCSP_MID_SALN = "ska_mid/tm_leaf_node/csp_subarray01"
 PROP_DEF_VAL_TMSDP_MID_SALN = "ska_mid/tm_leaf_node/sdp_subarray01"
 PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
-PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
+PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray01"
 PROP_DEF_VAL_SDP_MID_SA1 = "mid_sdp/elt/subarray_1"
 

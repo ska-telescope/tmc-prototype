@@ -96,6 +96,7 @@ class TestSdpMasterLeafNode(object):
         assert create_sdp_master_proxy.OperatingState == 1
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_On
 
+    # TODO: Tests to be fixed
     #def test_Off(self, tango_context):
         """Test for Off"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_Off) ENABLED START #
@@ -113,7 +114,7 @@ class TestSdpMasterLeafNode(object):
         # PROTECTED REGION ID(SdpMasterLeafNode.test_Standby) ENABLED START #
         tango_context.device.Standby()
         time.sleep(4)
-        assert create_sdp_master_proxy.OperatingState == 2
+        assert create_sdp_master_proxy.OperatingState == 3
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Standby
 
     def test_buildState(self, tango_context):

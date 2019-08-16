@@ -111,7 +111,7 @@ make = tar -c test-harness/ | \
 	   docker run -i --rm --network=$(NETWORK_MODE) \
 	   -e TANGO_HOST=$(TANGO_HOST) \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   --volumes-from=$(CONTAINER_NAME_PREFIX)rsyslog-tmcprototype:rw \
+	   --volumes-from=$(CONTAINER_NAME_PREFIX)rsyslog:rw \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "sudo chown -R tango:tango /build && \
 	   tar x --strip-components 1 --warning=all && \
@@ -136,7 +136,13 @@ up: build  ## start develop/test environment
 ifneq ($(NETWORK_MODE),host)
 	docker network inspect $(NETWORK_MODE) &> /dev/null || ([ $$? -ne 0 ] && docker network create $(NETWORK_MODE))
 endif
-	$(DOCKER_COMPOSE_ARGS) docker-compose up -d
+	$(DOCKER_COMPOSE_ARGS) docker-compose \
+	-f docker-compose/tango-docker-compose.yml \
+	-f docker-compose/csplmc-docker-compose.yml \
+	-f docker-compose/cspcbfmcs-docker-compose.yml \
+	-f docker-compose/sdp-docker-compose.yml \
+	-f docker-compose/tmc-docker-compose.yml \
+	up -d
 
 piplock: build  ## overwrite Pipfile.lock with the image version
 	docker run $(IMAGE_TO_TEST) cat /app/Pipfile.lock > $(CURDIR)/Pipfile.lock
@@ -145,11 +151,16 @@ interactive: up
 interactive:  ## start an interactive session using the project image (caution: R/W mounts source directory to /app)
 	docker run --rm -it -p 3000:3000 --name=$(CONTAINER_NAME_PREFIX)dev -e TANGO_HOST=$(TANGO_HOST) --network=$(NETWORK_MODE) \
 	       -v $(CURDIR):/app --volumes-from=$(CONTAINER_NAME_PREFIX)rsyslog-tmcprototype:rw nexus.engageska-portugal.pt/ska-docker/tango-java:latest /bin/bash
-#          -v $(CURDIR):/app --volumes-from=$(CONTAINER_NAME_PREFIX)rsyslog-tmcprototype:rw $(IMAGE_TO_TEST) /bin/bash
 
 down:  ## stop develop/test environment and any interactive session
 	docker ps | grep $(CONTAINER_NAME_PREFIX)dev && docker stop $(PROJECT)-dev || true
-	$(DOCKER_COMPOSE_ARGS) docker-compose down
+	$(DOCKER_COMPOSE_ARGS) docker-compose \
+	-f docker-compose/tango-docker-compose.yml \
+	-f docker-compose/csplmc-docker-compose.yml \
+	-f docker-compose/cspcbfmcs-docker-compose.yml \
+	-f docker-compose/sdp-docker-compose.yml \
+	-f docker-compose/tmc-docker-compose.yml \
+	 down
 ifneq ($(NETWORK_MODE),host)
 	docker network inspect $(NETWORK_MODE) &> /dev/null && ([ $$? -eq 0 ] && docker network rm $(NETWORK_MODE)) || true
 endif

@@ -47,7 +47,7 @@ from mock import MagicMock
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device")
+@pytest.mark.usefixtures("tango_context", "initialize_device", "create_sdpsubarray_proxy")
 class TestSdpSubarrayLeafNode(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_additionnal_import) ENABLED START #
@@ -84,12 +84,6 @@ class TestSdpSubarrayLeafNode(object):
         assert tango_context.device.Status() != CONST.STR_INIT_SUCCESS
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Status
 
-    def test_GetVersionInfo(self, tango_context):
-        """Test for GetVersionInfo"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_GetVersionInfo) ENABLED START #
-        # self.device.GetVersionInfo()
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_GetVersionInfo
-
     def test_Reset(self, tango_context):
         """Test for Reset"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Reset) ENABLED START #
@@ -97,6 +91,7 @@ class TestSdpSubarrayLeafNode(object):
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Reset
 
+    # TODO: Test to be fixed
     # def test_ReleaseResources(self, tango_context):
     #     """Test for ReleaseResources"""
     #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseResources) ENABLED START #
@@ -136,9 +131,11 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.STR_REL_RESOURCES in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseAllResources
 
-    def test_Configure(self, tango_context):
+    def test_Configure(self, tango_context, create_sdpsubarray_proxy):
         """Test for Configure"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Configure) ENABLED START #
+        create_sdpsubarray_proxy.toggleReadCbfOutLink = False
+        time.sleep(2)
         test_input = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
                      '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
@@ -153,7 +150,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_Configure_invalid_key(self, tango_context):
         """Test for Configure command with invalid_key"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Configure_invalid_key) ENABLED START #
-        test_input = '{"sdp":{"":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
+        test_input = '{"":{"":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
                      '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
                      '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
@@ -173,25 +170,44 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
-    def test_EndScan(self, tango_context):
+    def test_EndScan(self, tango_context, create_sdpsubarray_proxy):
         """Test for EndScan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndScan) ENABLED START #
-        test_input = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001"' \
-                     ',"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
-                     '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
-                     '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
-                     ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
-                     ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
-        tango_context.device.Configure(test_input)
-        time.sleep(2)
-        test_input = '{"scanDuration":0}'
-        tango_context.device.Scan(test_input)
+        create_sdpsubarray_proxy.obsState = CONST.ENUM_SCANNING
+        # test_input = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001"' \
+        #              ',"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
+        #              '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
+        #              '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
+        #              ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
+        #              ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
+        # tango_context.device.Configure(test_input)
+        # time.sleep(2)
+        # test_input = '{"scanDuration":0}'
+        # tango_context.device.Scan(test_input)
         time.sleep(2)
         tango_context.device.EndScan()
         tango_context.device.status()
         time.sleep(2)
         assert CONST.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndScan
+
+    # TODO: Tests to be fixed
+    # def test_EndSB(self, tango_context, create_sdpsubarray_proxy):
+    #     """Test for EndSB command."""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
+    #     tango_context.device.EndSB()
+    #     time.sleep(2)
+    #     assert create_sdpsubarray_proxy.ObsState == CONST.ENUM_IDLE
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
+
+    # def test_EndSB_device_not_ready(self, tango_context):
+    #     """Test for EndSB when SDP Subarray is not in Ready state command."""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
+    #     tango_context.device.EndSB()
+    #     time.sleep(2)
+    #     assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
+
 
     def test_EndScan_Invalid_State(self, tango_context):
         """Test for  Invalid EndScan"""
@@ -201,10 +217,10 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndScan
 
-
-    def test_Scan(self, tango_context):
+    def test_Scan(self, tango_context, create_sdpsubarray_proxy):
         """Test for Scan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan) ENABLED START #
+        create_sdpsubarray_proxy.obsState = CONST.ENUM_READY
         test_input = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
                      '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
@@ -218,25 +234,6 @@ class TestSdpSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.STR_SCAN_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
-
-    #
-    # def test_EndSB(self, tango_context):
-    #     """Test for EndSB"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
-    #     self.device.EndSB()
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
-    #
-    # def test_Abort(self, tango_context):
-    #     """Test for Abort"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Abort) ENABLED START #
-    #     self.device.Abort()
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Abort
-
-    # def test_buildState(self, tango_context):
-    #     """Test for buildState"""
-    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_buildState) ENABLED START #
-    #     self.device.buildState
-    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
@@ -308,6 +305,7 @@ class TestSdpSubarrayLeafNode(object):
         assert tango_context.device.receiveAddresses == ""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_receiveAddresses
 
+    # TODO: Test to be fixed
     # def test_sdpSubarrayHealthState(self, tango_context):
     #     """Test for sdpSubarrayHealthState"""
     #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_sdpSubarrayHealthState) ENABLED START #

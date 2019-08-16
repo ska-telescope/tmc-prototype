@@ -10,10 +10,14 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 #
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
-
-
+import datetime
 import sys
 import os
+import threading
+import random
+import calendar
+import time
+
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
 sys.path.insert(0, module_path)
@@ -26,19 +30,21 @@ from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
+from future.utils import with_metaclass
 import CONST
 import json
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
-
-class CspSubarrayLeafNode(SKABaseDevice):
+class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
     """
-    __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(CspSubarrayLeafNode.class_variable) ENABLED START #
+
+    _DELAY_UPDATE_INTERVAL = 10
+    # _stop_delay_model_event = # type: Event
 
     def commandCallback(self, event):
         """
@@ -80,7 +86,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # Device Properties
     # -----------------
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value= CONST.PROP_DEF_VAL_CSP_MID_SA1
+        dtype='str', default_value="mid_csp/elt/subarray01"
     )
 
     # ----------
@@ -124,6 +130,74 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
+    def delay_model_calculator(self, argin):
+        """
+        This method calculates the delay model for consumption of CSP subarray.
+        This implementation is very ad hoc and require lots of modifications to calculate
+        actual delay models.
+        Current implementation generates random number for delay values. No delay
+        library is used in this code. It also considers four receptors to calculate
+        delays. Ideally, the receptor count should be based on the receptors allocated
+        to the subarray. Also, currently four frequency slices and six  bands are
+        considered for delay calculations. The values of receptors and frequency slice
+        ids are also non-standard.
+        The epoch value is the current timestamp value.
+
+        :param argin: int.
+            The argument contains delay model update interval in seconds.
+
+        :return: None.
+        """
+        delay_update_interval = argin
+        # list of frequency slice ids
+        _fsids_list = ["fs1", "fs2", "fs3", "fs4"]
+        # list of bands
+        _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
+        # receptor list
+        # TBD: This list should be taken from receptor_id_list attribute of subarray node
+        _receptor_list = ["d0001", "d0002", "d0003", "d0004"]
+
+        while not self._stop_delay_model_event.isSet():
+            if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY
+                    or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
+
+                self.dev_logging("Calculating delays.", int(tango.LogLevel.LOG_INFO))
+                delay_model_json = {}
+                delay_model = []
+                receptor_delay_model = []
+                delay_model_per_epoch = {}
+                for receptor in _receptor_list:
+                    receptor_delay_object = {}
+                    receptor_delay_object["receptor"] = receptor
+                    receptor_specific_delay_details = []
+                    for fsid in _fsids_list:
+                        fsid_delay_object = {}
+                        fsid_delay_object["fsid"] = fsid
+                        delay_coeff_array = []
+                        for band in _bands_list:
+                            delay_coeff_array.append(random.uniform(0.01, 10))  # random delay
+                        fsid_delay_object["delayCoeff"] = delay_coeff_array
+                        receptor_specific_delay_details.append(fsid_delay_object)
+                    receptor_delay_object["receptorDelayDetails"] = receptor_specific_delay_details
+                    receptor_delay_model.append(receptor_delay_object)
+                delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
+                delay_model_per_epoch["delayDetails"] = receptor_delay_model
+                delay_model.append(delay_model_per_epoch)
+                delay_model_json["delayModel"] = delay_model
+                print("delay_model_json: ", delay_model_json)
+
+                # update the attribute
+                self.delay_model_lock.acquire()
+                self._delay_model = json.dumps(delay_model_json)
+                self.delay_model_lock.release()
+
+                # wait for timer event
+                self._stop_delay_model_event.wait(delay_update_interval)
+            else:
+                self._delay_model = " "
+
+        print("Stop event received. Thread exit.")
+        self.dev_logging("Stop event received. Thread exit.", int(tango.LogLevel.LOG_INFO))
 
     def init_device(self):
         """
@@ -137,12 +211,29 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # create subarray Proxy
             self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
             self._read_activity_message = " "
+            self._delay_model = " "
+            self._visdestination_address = " "
+
+            ## Start thread to update delay model ##
+            # Create event
+            self._stop_delay_model_event = threading.Event()
+            #
+            # create lock
+            self.delay_model_lock = threading.Lock()
+
+            # create thread
+            self.dev_logging("Starting thread to calculate delay model.", int(tango.LogLevel.LOG_INFO))
+            self.delay_model_calculator_thread = threading.Thread(
+                target=self.delay_model_calculator,
+                args=[self._DELAY_UPDATE_INTERVAL],
+                daemon=False)
+            self.delay_model_calculator_thread.start()
+
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
             self._csp_subarray_health_state = CONST.ENUM_OK
             self._opstate = CONST.ENUM_INIT
-            self._delay_model = " "
-            self._visdestination_address = " "
+            self.dev_logging(CONST.STR_CSPSALN_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR_CSPSALN)
@@ -160,6 +251,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def delete_device(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
+        # Stop thread to update delay model
+        self.dev_logging("Stopping delay model thread.", int(tango.LogLevel.LOG_INFO))
+        self._stop_delay_model_event.set()
+        self.delay_model_calculator_thread.join()
+        self.dev_logging("Exiting.", int(tango.LogLevel.LOG_INFO))
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
 
     # ------------------
@@ -236,35 +332,35 @@ class CspSubarrayLeafNode(SKABaseDevice):
         invokes ConfigureScan command on CspSubarray with configuration capabilities in JSON string as an
         input argument.
 
-            :param argin: The string in JSON format. The JSON contains following values:
+        :param argin: The string in JSON format. The JSON contains following values:
 
             Example:
                 {
                   "csp":
                   {
-                    | "frequencyBand": "1",
-                    | "delayModelSubscriptionPoint": "",
-                    | "visDestinationAddressSubscriptionPoint": "",
-                    | "fsp": [
+                     "frequencyBand": "1",
+                     "delayModelSubscriptionPoint": "",
+                     "visDestinationAddressSubscriptionPoint": "",
+                     "fsp": [
                     {
-                     | "fspID": "1",
-                     | "functionMode": "CORR",
-                     | "frequencySliceID": 1,
-                     | "integrationTime": 1400,
-                     | "corrBandwidth": 0,
-                     | "channelAveragingMap": []
+                      "fspID": "1",
+                      "functionMode": "CORR",
+                      "frequencySliceID": 1,
+                      "integrationTime": 1400,
+                      "corrBandwidth": 0,
+                      "channelAveragingMap": []
                     },
                     {
-                     | "fspID": "2",
-                     | "functionMode": "CORR",
-                     | "frequencySliceID": 1,
-                     | "integrationTime": 1400,
-                     | "corrBandwidth": 0,
-                     | "channelAveragingMap": []
-                    | }
-                   | ]
-                  | }
-                | }
+                      "fspID": "2",
+                      "functionMode": "CORR",
+                      "frequencySliceID": 1,
+                      "integrationTime": 1400,
+                      "corrBandwidth": 0,
+                      "channelAveragingMap": []
+                     }
+                    ]
+                   }
+                 }
 
         Note: \n
         from Jive, enter input as :\n
@@ -283,6 +379,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
             self.dev_logging(CONST.STR_CONFIGURESCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.dev_logging(argin, int(tango.LogLevel.LOG_DEBUG))
 
         except ValueError as value_error:
             self.dev_logging(CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error),
@@ -326,7 +423,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
         state.
 
-        :param argin: JSON string consists of scanDuration.
+        :param argin: JSON string consists of scanDuration (int).
 
         Example: in jive:{"scanDuration": 10.0}
 
@@ -340,8 +437,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
                 #Invoke StartScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_STARTSCAN, "0",
-                                                           self.commandCallback)
+                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_STARTSCAN, "0", self.commandCallback)
                 self._read_activity_message = CONST.STR_STARTSCAN_SUCCESS
                 self.dev_logging(CONST.STR_STARTSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:
@@ -369,7 +465,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_START_SCAN_EXEC, tango.ErrSeverity.ERR)
-
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
 
@@ -417,7 +512,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndScan
-
 
     @command(
     )
@@ -481,12 +575,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
 
             Example:
-                | {
-                | "subarrayID": 1,
-                | "dish": {
+                 {
+                   "subarrayID": 1,
+                   "dish": {
                      "receptorIDList": ["0001","0002"]
-                | }
-                | }
+                   }
+                 }
 
         Note: From Jive, enter input as:
         {"dish":{"receptorIDList":["0001","0002"]}} without any space.
@@ -543,6 +637,48 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                          CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
+
+    @command(
+    )
+    @DebugIt()
+    def EndSB(self):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.EndSB) ENABLED START #
+        """
+        This command invokes EndSB command on CSP Subarray in order to end current scheduling block.
+
+        :return: None.
+
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
+                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
+                self._read_activity_message = CONST.STR_ENDSB_SUCCESS
+                self.dev_logging(CONST.STR_ENDSB_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            else:
+                self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
+                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+        except DevFailed as dev_failed:
+            self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+        except Exception as except_occurred:
+            self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.
+                                                                                      LOG_ERROR))
+            self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred)
+            excpt_msg.append(self._read_activity_message)
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+                                         CONST.STR_ENDSB_EXEC, tango.ErrSeverity.ERR)
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndSB
 
 # ----------
 # Run server
