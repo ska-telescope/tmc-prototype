@@ -205,7 +205,7 @@ Define and configure SKALogger TANGO Device server as specified in the given scr
 
 ### 3.5: GUI
 
-The GUI is an optional component not contained in the TMC prototype repository. The GUI is created using Webjive and configured for the TMC devices.
+The GUI is an optional component not contained in the TMC prototype repository. The GUI is created using Webjive and configured for the TMC devices. See [Webjive Project](https://github.com/ska-telescope/ska-engineering-ui-compose-utils). 
 
 # 4: Unit and Integration Testing
 The hierarchy of TANGO devices are as follows:
@@ -328,5 +328,6 @@ In order to test the entire prototype, execute:
 * [TMC Prototype (Stage II) Design Document](https://docs.google.com/document/d/1DaLCQZ79yMlGYm2GPE03KpQ80kzjb1f98bWhgV_2Rpo/edit?usp=sharing)
 * [ReadTheDocs](https://developer.skatelescope.org/projects/tmc-prototype/en/master/)
 * [TMC Prototype Learnings](https://docs.google.com/document/d/1DMhb_6NM0oaZMhSwEE79_B-MwycwzuH-RJsuOd5Zjlw/edit?usp=sharing)
+* [TMC Stage I Prototype Demo](https://replay.skatelescope.org/replay/showRecordingExternal.html?key=3Na630an0coGgdK)
 * [System Demo #2 (Recording)](https://www.dropbox.com/sh/ecqqky7ze5oaehm/AACBPF95iub58Y_OIIT-V4XZa?dl=0)
 * [System Demo #2 (PPT)](https://drive.google.com/file/d/1pv8B3HDvNlUR3fd69_urpALWF7wwmlKG/view?usp=sharing)

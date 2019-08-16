@@ -103,13 +103,8 @@ class TestDishLeafNode(object):
     def test_Configure(self, tango_context):
         """Test for Configure"""
         # PROTECTED REGION ID(DishLeafNode.test_Configure) ENABLED START #
-
-        # tango_context.device.Configure(["Moon | moon, radec, 06: 52:09.64, 21: 13:41.6"])
-        # time.sleep(2)
-        # assert tango_context.device.activityMessage == CONST.STR_TARGET_NOT_OBSERVED
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
         tango_context.device.Configure(input_string)
-        # tango_context.device.Configure(['1','0'])
         time.sleep(25)
         assert tango_context.device.activityMessage == (CONST.STR_CONFIGURE_SUCCESS) or \
                (CONST.STR_DISH_POINT_STATE_READY)

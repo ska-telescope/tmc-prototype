@@ -108,12 +108,12 @@ class TestCspSubarrayLeafNode(object):
     # def test_ConfigureScan(self, tango_context):
     #     """Test for ConfigureScan"""
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
-    #     test_input = '{"csp":{"frequencyBand":"1","delayModelSubscriptionPoint":"",' \
+    #     configurescan_input = '{"csp":{"frequencyBand":"1","delayModelSubscriptionPoint":"",' \
     #                  '"visDestinationAddressSubscriptionPoint":"","fsp":[{"fspID":"1","functionMode":' \
     #                  '"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,' \
     #                  '"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,' \
     #                  '"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]}}'
-    #     res = tango_context.device.ConfigureScan(test_input)
+    #     res = tango_context.device.ConfigureScan(configurescan_input)
     #     tango_context.device.status()
     #     time.sleep(1)
     #     assert CONST.STR_CONFIGURESCAN_SUCCESS in tango_context.device.activityMessage \
@@ -126,9 +126,9 @@ class TestCspSubarrayLeafNode(object):
         :param tango_context:
         :return:
         """
-        test_input = '{"invalid_key"}'
+        configurescan_input = '{"invalid_key"}'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ConfigureScan(test_input)
+            tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
 
@@ -136,15 +136,15 @@ class TestCspSubarrayLeafNode(object):
     # def test_EndScan(self, tango_context):
     #     """Test for EndScan"""
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndScan) ENABLED START #
-    #     test_input1 = '{"csp":{"frequencyBand":"1","delayModelSubscriptionPoint":"",' \
+    #     configurescan_input = '{"csp":{"frequencyBand":"1","delayModelSubscriptionPoint":"",' \
     #                  '"visDestinationAddressSubscriptionPoint":"","fsp":[{"fspID":"1","functionMode":' \
     #                  '"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,' \
     #                  '"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,' \
     #                  '"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]}}'
-    #     tango_context.device.ConfigureScan(test_input1)
+    #     tango_context.device.ConfigureScan(configurescan_input)
     #     time.sleep(3)
-    #     test_input2 = ['{"scanDuration": 10.0}']
-    #     tango_context.device.StartScan(test_input2)
+    #     endscan_input = ['{"scanDuration": 10.0}']
+    #     tango_context.device.StartScan(endscan_input)
     #     time.sleep(2)
     #     res = tango_context.device.EndScan()
     #     tango_context.device.status()
@@ -175,15 +175,15 @@ class TestCspSubarrayLeafNode(object):
     # def test_StartScan(self, tango_context):
     #     """Test for StartScan"""
     #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_StartScan) ENABLED START #
-    #     test_input1 = '{"csp":{"frequencyBand":"1","delayModelSubscriptionPoint":"",' \
+    #     configurescan_input = '{"csp":{"frequencyBand":"1","delayModelSubscriptionPoint":"",' \
     #                   '"visDestinationAddressSubscriptionPoint":"","fsp":[{"fspID":"1","functionMode":' \
     #                   '"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,' \
     #                   '"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,' \
     #                   '"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]}}'
-    #     tango_context.device.ConfigureScan(test_input1)
+    #     tango_context.device.ConfigureScan(configurescan_input)
     #     time.sleep(2)
-    #     test_input2 = ['{"scanDuration": 10.0}']
-    #     tango_context.device.StartScan(test_input2)
+    #     startscan_input = ['{"scanDuration": 10.0}']
+    #     tango_context.device.StartScan(startscan_input)
     #     time.sleep(1)
     #     assert CONST.STR_STARTSCAN_SUCCESS in tango_context.device.activityMessage
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan
@@ -209,9 +209,9 @@ class TestCspSubarrayLeafNode(object):
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_AssignResources) ENABLED START #
-        test_input = []
-        test_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
-        res = tango_context.device.AssignResources(test_input)
+        assignresources_input = []
+        assignresources_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
+        res = tango_context.device.AssignResources(assignresources_input)
         tango_context.device.status()
         time.sleep(1)
         assert CONST.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
@@ -224,9 +224,9 @@ class TestCspSubarrayLeafNode(object):
         :param tango_context:
         :return:
         """
-        test_input = '{"invalid_key"}'
+        assignresources_input = '{"invalid_key"}'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
+            tango_context.device.AssignResources(assignresources_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
 
@@ -236,10 +236,10 @@ class TestCspSubarrayLeafNode(object):
         :param tango_context:
         :return:
         """
-        test_input = []
-        test_input.append('{"dis":{"receptorIDList":["0001","0002"]}}')
+        assignresources_input = []
+        assignresources_input.append('{"dis":{"receptorIDList":["0001","0002"]}}')
         with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
+            tango_context.device.AssignResources(assignresources_input)
         time.sleep(1)
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 

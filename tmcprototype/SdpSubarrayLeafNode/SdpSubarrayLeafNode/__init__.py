@@ -8,7 +8,6 @@
 # See LICENSE.txt for more info.
 
 """
-
 SdpSubarrayLeafNode
 """
 

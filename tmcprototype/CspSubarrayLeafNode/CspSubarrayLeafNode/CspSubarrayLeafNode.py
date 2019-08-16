@@ -41,7 +41,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
     """
-    #__metaclass__ = DeviceMeta
     # PROTECTED REGION ID(CspSubarrayLeafNode.class_variable) ENABLED START #
 
     _DELAY_UPDATE_INTERVAL = 10
@@ -182,7 +181,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     receptor_delay_object["receptorDelayDetails"] = receptor_specific_delay_details
                     receptor_delay_model.append(receptor_delay_object)
                 delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
-                # delay_model_per_epoch["epoch"] = (datetime.datetime.now() + datetime.timedelta(seconds=5)).timestamp()
                 delay_model_per_epoch["delayDetails"] = receptor_delay_model
                 delay_model.append(delay_model_per_epoch)
                 delay_model_json["delayModel"] = delay_model
@@ -425,7 +423,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
         state.
 
-        :param argin: JSON string consists of scanDuration.
+        :param argin: JSON string consists of scanDuration (int).
 
         Example: in jive:{"scanDuration": 10.0}
 
@@ -439,8 +437,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
                 #Invoke StartScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_STARTSCAN, "0",
-                                                           self.commandCallback)
+                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_STARTSCAN, "0", self.commandCallback)
                 self._read_activity_message = CONST.STR_STARTSCAN_SUCCESS
                 self.dev_logging(CONST.STR_STARTSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
             else:
@@ -468,7 +465,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_START_SCAN_EXEC, tango.ErrSeverity.ERR)
-
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
 
@@ -516,7 +512,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndScan
-
 
     @command(
     )

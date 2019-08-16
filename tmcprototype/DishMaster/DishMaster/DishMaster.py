@@ -1002,12 +1002,12 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
 
     def is_Track_allowed(self):
-        # PROTECTED REGION ID(DishMaster.is_SetMaintenanceMode_allowed) ENABLED START #
+        # PROTECTED REGION ID(DishMaster.is_Track_allowed) ENABLED START #
         """ Checks if the Track is allowed in the current pointing state of DishMaster. Ignore the TRACK
         command while Dish is slewing."""
         return self._pointing_state not in [1]
 
-    # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
+    # PROTECTED REGION END #    //  DishMaster.is_Track_allowed
 
     @command(
         dtype_in='str',
@@ -1018,12 +1018,24 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.ConfigureScan) ENABLED START #
         """
         Configures the pointing parameters of the dish.
-        Input from jive: {"pointing":{"AZ":1.0,"EL": 1.0},"dish":{"receiverBand":"1"}}
 
-        :param argin: DevString. JSON string consists of Azimuth(deg:min:sec), Elevation(deg:min:sec) and
-                        reciverBand.
+        :param argin: DevString. JSON string consists of Azimuth(decimal degrees), Elevation(decimal degrees)
+                and receiverBand.
+
+            Example:
+                {
+                    "pointing":  {
+                          "AZ": 1.0,
+                          "EL": 1.0
+                    },
+                    "dish":{
+                      "receiverBand":"1"
+                    }
+                }
 
         :return: None.
+
+        Input from jive: {"pointing":{"AZ":1.0,"EL":1.0},"dish":{"receiverBand":"1"}} without any space.
         """
         excpt_msg = []
         excpt_count = 0

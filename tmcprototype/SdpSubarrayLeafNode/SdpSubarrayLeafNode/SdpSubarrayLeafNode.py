@@ -429,7 +429,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if "configureScan" in sdpConfiguration:
                 del sdpConfiguration["configureScan"]
             print ("sdpConfiguration :", sdpConfiguration)
-            # configure_arg = jsonArgument["sdp"]["configure"]
             self.dev_logging(sdpConfiguration, int(tango.LogLevel.LOG_INFO))
             self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                           self.commandCallback)
