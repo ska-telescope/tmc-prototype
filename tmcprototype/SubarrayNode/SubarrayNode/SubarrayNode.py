@@ -1194,6 +1194,45 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
                     self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
 
+                    print("Configuring CSP")
+                    if "csp" in self._scanConfiguration:
+                        # Configuration of CSP
+                        cspConfiguration = self._scanConfiguration.copy()
+                        # Keep configuration specific to CSP and delete configuration of other nodes
+                        if "pointing" in cspConfiguration:
+                            del cspConfiguration["pointing"]
+                        if "dish" in cspConfiguration:
+                            del cspConfiguration["dish"]
+                        if "sdp" in self._scanConfiguration:
+                            del cspConfiguration["sdp"]
+                        if cspConfiguration["csp"]:
+                            # Add delayModelSubscriptionPoint and visDestinationAddressSubscriptionPoint into
+                            # cspConfiguration
+                            cspConfiguration["csp"][CONST.STR_DELAY_MODEL_SUB_POINT] = self.CspSubarrayLNFQDN + \
+                                                                                       "/delayModel"
+                            cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = self.SdpSubarrayNodeFQDN + \
+                                                                                           "/receiveAddresses"
+
+                            csp_config = cspConfiguration["csp"]
+                            csp_config["scanID"] = self._scan_id
+
+                            cmdData = tango.DeviceData()
+                            cmdData.insert(tango.DevString, json.dumps(csp_config))
+                            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
+                            print("CSP Configuration is initiated.")
+                        else:
+                            msg = "CSP configuration is empty. Aborting CSP configuration."
+                            self._read_activity_message = msg
+                            print (msg)
+                    else:
+                        msg = "'csp' must be given. Aborting CSP configuration."
+                        # this is a fatal error
+                        print (msg)
+                        self._read_activity_message = msg
+                        self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
+
+                    time.sleep(1)
+
                     # Configuration of SDP
                     if "sdp" in self._scanConfiguration:
                         sdpConfiguration = self._scanConfiguration.copy()
@@ -1229,47 +1268,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         else:
                             msg = 'SDP configuration is empty. Aborting SDP configuration.'
                             self._read_activity_message = msg
-                            print (msg)
+                            print(msg)
                     else:
                         msg = "'sdp' must be given. Aborting SDP configuration."
                         # this is a fatal error
-                        print (msg)
-                        self._read_activity_message = msg
-                        self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
-
-                    if "csp" in self._scanConfiguration:
-                        # Configuration of CSP
-                        cspConfiguration = self._scanConfiguration.copy()
-                        # Keep configuration specific to CSP and delete configuration of other nodes
-                        if "pointing" in sdpConfiguration:
-                            del sdpConfiguration["pointing"]
-                        if "dish" in sdpConfiguration:
-                            del sdpConfiguration["dish"]
-                        if "sdp" in self._scanConfiguration:
-                            del cspConfiguration["sdp"]
-                        if cspConfiguration["csp"]:
-                            # Add delayModelSubscriptionPoint and visDestinationAddressSubscriptionPoint into
-                            # cspConfiguration
-                            cspConfiguration["csp"][CONST.STR_DELAY_MODEL_SUB_POINT] = self.CspSubarrayLNFQDN + \
-                                                                                       "/delayModel"
-                            cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = self.SdpSubarrayNodeFQDN + \
-                                                                                           "/receiveAddresses"
-
-                            csp_config = cspConfiguration["csp"]
-                            csp_config["scanID"] = self._scan_id
-
-                            cmdData = tango.DeviceData()
-                            cmdData.insert(tango.DevString, json.dumps(csp_config))
-                            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
-                            print("CSP Configuration is initiated.")
-                        else:
-                            msg = "CSP configuration is empty. Aborting CSP configuration."
-                            self._read_activity_message = msg
-                            print (msg)
-                    else:
-                        msg = "'csp' must be given. Aborting CSP configuration."
-                        # this is a fatal error
-                        print (msg)
+                        print(msg)
                         self._read_activity_message = msg
                         self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
 
