@@ -423,6 +423,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         excpt_count = 0
         try:
             # TODO : Check if obsState == IDLE
+            # Set toggleReadCbfOutLink to false to skip CbfOutLink validation
+            self._sdp_subarray_proxy.toggleReadCbfOutLink = False
             jsonArgument = json.loads(argin)
             sdp_arg = jsonArgument["sdp"]
             sdpConfiguration = sdp_arg.copy()
