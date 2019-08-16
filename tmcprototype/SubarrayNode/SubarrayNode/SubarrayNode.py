@@ -1231,7 +1231,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         self._read_activity_message = msg
                         self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
 
-                    time.sleep(1)
+                    time.sleep(2)
 
                     # Configuration of SDP
                     if "sdp" in self._scanConfiguration:
