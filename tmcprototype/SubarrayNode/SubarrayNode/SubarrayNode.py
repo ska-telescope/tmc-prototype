@@ -191,15 +191,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._health_state = CONST.ENUM_UNKNOWN
 
     def calculate_observation_state(self):
-        pointing_state_count = 0
+        pointing_state_count_track = 0
+        pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
             if value == CONST.POINTING_STATE_ENUM_TRACK:
-                pointing_state_count = pointing_state_count + 1
+                pointing_state_count = pointing_state_count_track + 1
+            elif value == CONST.POINTING_STATE_ENUM_SLEW:
+                pointing_state_count_slew = pointing_state_count_slew + 1
+
         if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING:
             self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
             self.isScanning = True
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
-            if pointing_state_count == len(self.dishPointingStateMap.values()):
+            if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 self._obs_state = CONST.OBS_STATE_ENUM_READY
             elif self.isScanning:
                 self._obs_state = CONST.OBS_STATE_ENUM_READY
@@ -214,10 +218,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
         #     self._obs_state = CONST.OBS_STATE_ENUM_IDLE
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
-            if pointing_state_count == len(self.dishPointingStateMap.values()):
-                self._obs_state = CONST.OBS_STATE_ENUM_READY
-            else:
-                self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+            if len(self.dishPointingStateMap.values()) != 0:
+                if pointing_state_count_track == len(self.dishPointingStateMap.values()):
+                    self._obs_state = CONST.OBS_STATE_ENUM_READY
+                elif pointing_state_count_slew != 0:
+                    self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
+                else:
+                    self._obs_state = CONST.OBS_STATE_ENUM_IDLE
     def create_csp_ln_proxy(self):
         """
         Creates proxy of CSP Subarray Leaf Node.
@@ -1157,17 +1164,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :param argin: DevStringArray. JSON string that includes pointing parameters of Dish - Azimuth and
         Elevation Angle, CSP Configuration and SDP Configuration parameters. JSON string example is:
 
-        {"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",
-        "dec":"89:15:51.4"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1",
-        "delayModelSubscriptionPoint":"","visDestinationAddressSubscriptionPoint":"",
-        "fsp":[{"fspID":"1","functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,
-        "corrBandwidth":0,"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,
-        "integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]},"sdp":{"configure":
-        {"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest",
-        "type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChanels":372,
+        {"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"M51","RA":"13:29:52.698",
+        "dec":"+47:11:42.93"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,
+        "functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},"sdp":{
+        "configure":[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest",
+        "type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChannels":372,
         "numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS",
-        "name":"NGC6251","ra":"2:31:50.91","dec":"89:15:51.4"}}},"scanParameters":{"12345":{"fieldId":0,
-        "intervalMs":1400}}},"configureScan":{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}
+        "name":"M51","ra":3.5337607188635975,"dec":0.8237126492459581}}},"scanParameters":{"12345":{
+        "fieldId":0,"intervalMs":1400}}}]}}
 
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
