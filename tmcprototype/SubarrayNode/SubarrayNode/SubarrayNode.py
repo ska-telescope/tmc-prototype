@@ -195,7 +195,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
             if value == CONST.POINTING_STATE_ENUM_TRACK:
-                pointing_state_count = pointing_state_count_track + 1
+                pointing_state_count_track = pointing_state_count_track + 1
             elif value == CONST.POINTING_STATE_ENUM_SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
 
@@ -1181,7 +1181,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_count = 0
         excpt_msg = []
         try:
-
+            self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
             if self._obs_state == CONST.OBS_STATE_ENUM_IDLE:
                 self._scanConfiguration = json.loads(argin)
@@ -1373,6 +1373,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._dish_leaf_node_group.command_inout(CONST.CMD_STOP_TRACK)
                 self._read_activity_message = CONST.STR_ENDSB_SUCCESS
                 self.dev_logging(CONST.STR_ENDSB_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.set_status(CONST.STR_ENDSB_SUCCESS)
             else:
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
                 self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
