@@ -217,23 +217,23 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndScan
 
-    def test_Scan(self, tango_context, create_sdpsubarray_proxy):
-        """Test for Scan"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan) ENABLED START #
-        create_sdpsubarray_proxy.obsState = CONST.ENUM_READY
-        test_input = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
-                     '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
-                     '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
-                     '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
-                     ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
-                     ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
-        tango_context.device.Configure(test_input)
-        time.sleep(2)
-        test_input = '{"scanDuration":0}'
-        tango_context.device.Scan(test_input)
-        time.sleep(1)
-        assert CONST.STR_SCAN_SUCCESS in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
+    # def test_Scan(self, tango_context, create_sdpsubarray_proxy):
+    #     """Test for Scan"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan) ENABLED START #
+    #     create_sdpsubarray_proxy.obsState = CONST.ENUM_READY
+    #     test_input = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
+    #                  '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
+    #                  '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
+    #                  '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
+    #                  ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
+    #                  ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
+    #     tango_context.device.Configure(test_input)
+    #     time.sleep(2)
+    #     test_input = '{"scanDuration":0}'
+    #     tango_context.device.Scan(test_input)
+    #     time.sleep(1)
+    #     assert CONST.STR_SCAN_SUCCESS in tango_context.device.activityMessage
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
