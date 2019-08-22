@@ -201,15 +201,15 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING:
             self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
-            self.isScanning = True
+            # self.isScanning = True
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 self._obs_state = CONST.OBS_STATE_ENUM_READY
-            elif self.isScanning:
-                self._obs_state = CONST.OBS_STATE_ENUM_READY
-                # self.isScanning = False
-            else:
-                self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
+            # elif self.isScanning:
+            #     self._obs_state = CONST.OBS_STATE_ENUM_READY
+            #     # self.isScanning = False
+            # else:
+            #     self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
 
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING or \
                 self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
@@ -1367,6 +1367,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_msg = []
         excpt_count = 0
         try:
+            print("EndSB invoked on SubarrayNode.")
             if self._obs_state == CONST.OBS_STATE_ENUM_READY:
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
                 self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
