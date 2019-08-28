@@ -5,6 +5,34 @@ Change Log
 All notable changes to this project will be documented in this file.
 This project adheres to `Semantic Versioning <http://semver.org/>`_.
 
+[0.1.2]
+************
+
+Release of feature SP-354
+-----
+
+* Accept configuration as strings (JSON) from OET for following commands:
+    * AssignResources
+    * ReleaseResources
+* Accept Dish, CSP and SDP configuration as JSON string from OET
+* Configure Dishes, CSP subarray and SDP subarray
+* Accept Scan command with time (in seconds) from OET and perform simple scan for the duration
+* Accept EndSB command from OET
+* Calculate dummy delay models and provide them to CSP subarray periodically
+
+
+[0.1.1]
+************
+
+Release for SP-142 demo
+-----
+
+* Accept configuration as strings (JSON) from OET for following commands:
+    * AssignResources
+    * ReleaseResources
+* Accept Dish configuration as JSON string from OET
+
+
 [0.1.0]
 ************
 
