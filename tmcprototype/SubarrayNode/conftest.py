@@ -27,9 +27,14 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format(package_name, module_name))
     # klass = getattr(module, class_name)
-    properties = {'CspSubarrayLNFQDN': 'ska_mid/tm_leaf_node/csp_subarray01', 'SdpSubarrayLNFQDN': 'ska_mid/tm_leaf_node/sdp_subarray01',}
+    #properties = {'CspSubarrayLNFQDN': 'ska_mid/tm_leaf_node/csp_subarray01', 'SdpSubarrayLNFQDN': 'ska_mid/tm_leaf_node/sdp_subarray01','CspSubarrayNodeFQDN': 'mid_csp/elt/subarray01'}
     module = importlib.import_module("{}.{}".format("SubarrayNode", "SubarrayNode"))
     klass = getattr(module, "SubarrayNode")
+    properties = {'DishLeafNodePrefix':'ska_mid/tm_leaf_node/d',
+                  'SdpSubarrayLNFQDN': 'ska_mid/tm_leaf_node/sdp_subarray01',
+                  #'CspSubarrayLNFQDN': 'ska_mid/tm_leaf_node/csp_subarray01',
+                  'CspSubarrayNodeFQDN': 'mid_csp/elt/subarray01',
+                  'SdpSubarrayNodeFQDN': 'mid_sdp/elt/subarray_1'}
     tango_context = DeviceTestContext(klass, properties=properties)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)

@@ -967,28 +967,28 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # -----------------
 
     DishLeafNodePrefix = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/d",
+        dtype='str', #default_value="ska_mid/tm_leaf_node/d",
         doc="Device name prefix for the Dish Leaf Node",
     )
 
     CspSubarrayLNFQDN = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/csp_subarray01",
+        dtype='str', #default_value="ska_mid/tm_leaf_node/csp_subarray01",
         doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
             "Subarray Node.",
     )
 
     SdpSubarrayLNFQDN = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/sdp_subarray01",
+        dtype='str', #default_value="ska_mid/tm_leaf_node/sdp_subarray01",
         doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
             "Subarray Node.",
     )
 
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value= "mid_csp/elt/subarray01"
+        dtype='str', #default_value= "mid_csp/elt/subarray01"
     )
 
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_sdp/elt/subarray_1"
+        dtype='str', #default_value="mid_sdp/elt/subarray_1"
     )
 
    
@@ -1057,6 +1057,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
         self._csp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
         self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
+
+        print("DishLeafNodePrefix", self.DishLeafNodePrefix)
+        print("CSP Subarray FQDN:", self.CspSubarrayNodeFQDN)
+        print("CSP Subarray Leaf Node FQDN:", self.CspSubarrayLNFQDN)
+        print("SDP Subarray FQDN:", self.SdpSubarrayNodeFQDN)
+        print("SDP Subarray Leaf Node FQDN:", self.SdpSubarrayLNFQDN)
 
 
         # Create proxy for CSP Subarray Leaf Node

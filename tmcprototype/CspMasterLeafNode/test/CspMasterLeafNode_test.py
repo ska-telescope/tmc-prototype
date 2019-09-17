@@ -49,7 +49,7 @@ class TestCspMasterLeafNode(object):
     device = CspMasterLeafNode
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspMasterFQDN': 'mid_csp/elt/master',
+                  'CspMasterFQDN': 'abc',
                   }
     empty = None  # Should be []
 
