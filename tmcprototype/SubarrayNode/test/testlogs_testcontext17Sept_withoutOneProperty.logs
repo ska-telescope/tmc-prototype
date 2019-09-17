@@ -1,0 +1,3061 @@
+============================= test session starts ==============================
+platform linux -- Python 3.5.2, pytest-4.3.0, py-1.7.0, pluggy-0.8.1
+rootdir: /home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode, inifile: setup.cfg
+plugins: xdist-1.26.1, pylint-0.14.0, metadata-1.8.0, json-report-1.0.2, html-1.20.0, forked-1.0.1, cov-2.6.1
+collected 33 items
+
+test/SubarrayNode_test.py EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE              [100%]
+
+==================================== ERRORS ====================================
+______________ ERROR at setup of TestSubarrayNode.test_properties ______________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+request = <SubRequest 'tango_context' for <Function test_properties>>
+
+    @pytest.fixture(scope="class")
+    def tango_context(request):
+        """Creates and returns a TANGO DeviceTestContext object.
+    
+        Parameters
+        ----------
+        request: _pytest.fixtures.SubRequest
+            A request object gives access to the requesting test context.
+        """
+        # TODO: package_name and class_name can be used in future
+        # fq_test_class_name = request.cls.__module__
+        # fq_test_class_name_details = fq_test_class_name.split(".")
+        # package_name = fq_test_class_name_details[1]
+        # class_name = module_name = fq_test_class_name_details[1]
+        # module = importlib.import_module("{}.{}".format(package_name, module_name))
+        # klass = getattr(module, class_name)
+        #properties = {'CspSubarrayLNFQDN': 'ska_mid/tm_leaf_node/csp_subarray01', 'SdpSubarrayLNFQDN': 'ska_mid/tm_leaf_node/sdp_subarray01','CspSubarrayNodeFQDN': 'mid_csp/elt/subarray01'}
+        module = importlib.import_module("{}.{}".format("SubarrayNode", "SubarrayNode"))
+        klass = getattr(module, "SubarrayNode")
+        properties = {'DishLeafNodePrefix':'ska_mid/tm_leaf_node/d',
+                      'SdpSubarrayLNFQDN': 'ska_mid/tm_leaf_node/sdp_subarray01',
+                      #'CspSubarrayLNFQDN': 'ska_mid/tm_leaf_node/csp_subarray01',
+                      'CspSubarrayNodeFQDN': 'mid_csp/elt/subarray01',
+                      'SdpSubarrayNodeFQDN': 'mid_sdp/elt/subarray_1'}
+        tango_context = DeviceTestContext(klass, properties=properties)
+>       tango_context.start()
+
+conftest.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+---------------------------- Captured stdout setup -----------------------------
+DishLeafNodePrefix ska_mid/tm_leaf_node/d
+CSP Subarray FQDN: mid_csp/elt/subarray01
+CSP Subarray Leaf Node FQDN: None
+SDP Subarray FQDN: mid_sdp/elt/subarray_1
+SDP Subarray Leaf Node FQDN: ska_mid/tm_leaf_node/sdp_subarray01
+---------------------------- Captured stderr setup -----------------------------
+Can't create notifd event supplier. Notifd event not available
+________________ ERROR at setup of TestSubarrayNode.test_Abort _________________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_ConfigureCapability __________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+______ ERROR at setup of TestSubarrayNode.test_DeconfigureAllCapabilities ______
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+________ ERROR at setup of TestSubarrayNode.test_DeconfigureCapability _________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_Status ________________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_State _________________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+___________ ERROR at setup of TestSubarrayNode.test_AssignResources ____________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+________ ERROR at setup of TestSubarrayNode.test_EndSB_device_not_ready ________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_ReleaseAllResources __________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+___________ ERROR at setup of TestSubarrayNode.test_ReleaseResources ___________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_Reset _________________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_Resume ________________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+____________ ERROR at setup of TestSubarrayNode.test_activationTime ____________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+______________ ERROR at setup of TestSubarrayNode.test_adminMode _______________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+______________ ERROR at setup of TestSubarrayNode.test_buildState ______________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_centralLoggingLevel __________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+______ ERROR at setup of TestSubarrayNode.test_configurationDelayExpected ______
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+________ ERROR at setup of TestSubarrayNode.test_configurationProgress _________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_____________ ERROR at setup of TestSubarrayNode.test_controlMode ______________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_elementLoggingLevel __________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_____________ ERROR at setup of TestSubarrayNode.test_healthState ______________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_______________ ERROR at setup of TestSubarrayNode.test_obsMode ________________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_______________ ERROR at setup of TestSubarrayNode.test_obsState _______________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+____________ ERROR at setup of TestSubarrayNode.test_simulationMode ____________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_storageLoggingLevel __________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_______________ ERROR at setup of TestSubarrayNode.test_testMode _______________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+______________ ERROR at setup of TestSubarrayNode.test_versionId _______________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_scanID ________________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+_________________ ERROR at setup of TestSubarrayNode.test_sbID _________________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+___________ ERROR at setup of TestSubarrayNode.test_activityMessage ____________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+________ ERROR at setup of TestSubarrayNode.test_configuredCapabilities ________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+____________ ERROR at setup of TestSubarrayNode.test_receptorIDList ____________
+
+self = <tango.test_context.DeviceTestContext object at 0x7ff360ab9550>
+
+    def connect(self):
+        try:
+            args = self.queue.get(timeout=self.timeout)
+        except queue.Empty:
+            if self.thread.is_alive():
+                raise RuntimeError(
+                    'The server appears to be stuck at initialization. '
+                    'Check stdout/stderr for more information.')
+            elif hasattr(self.thread, 'exitcode'):
+                raise RuntimeError(
+                    'The server process stopped with exitcode {}. '
+                    'Check stdout/stderr for more information.'
+                    ''.format(self.thread.exitcode))
+            else:
+                raise RuntimeError(
+                    'The server stopped without reporting. '
+                    'Check stdout/stderr for more information.')
+        try:
+>           self.host, self.port = args
+E           ValueError: too many values to unpack (expected 2)
+
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:247: ValueError
+
+During handling of the above exception, another exception occurred:
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:39: in tango_context
+    tango_context.start()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:226: in start
+    self.connect()
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:249: in connect
+    six.reraise(*args)
+../../../../.local/lib/python3.5/site-packages/six.py:693: in reraise
+    raise value
+/usr/local/lib/python3.5/dist-packages/tango/test_context.py:166: in target
+    runserver(post_init_callback=self.post_init, raises=True)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:662: in run_server
+    return run((cls,), args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1490: in run
+    return server_run()
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1350: in __server_run
+    worker.run(tango_loop, wait=True)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def tango_loop():
+        log.debug("server loop started")
+        _add_classes(util, classes)
+>       util.server_init()
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = AttributeError: 'NoneType' object has no attribute 'subscribe_event'
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 568, in __DeviceClass__device_factory
+E           device = self._new_device(deviceImplClass, klass, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_class.py", line 547, in __DeviceClass__new_device
+E           return klass(dev_class, dev_name)
+E         File "/usr/local/lib/python3.5/dist-packages/skabase/SKAObsDevice/SKAObsDevice.py", line 41, in __init__
+E           super(SKAObsDevice, self).__init__(*args, **kwargs)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 573, in __init__
+E           self.init_device()
+E         File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1077, in init_device
+E           self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/server.py:1344: DevFailed
+=============================== warnings summary ===============================
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+  /usr/local/lib/python3.5/dist-packages/tango/server.py:115: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() instead
+    read_args = inspect.getargspec(read_method)
+
+test/SubarrayNode_test.py::TestSubarrayNode::test_properties
+test/SubarrayNode_test.py::TestSubarrayNode::test_Abort
+test/SubarrayNode_test.py::TestSubarrayNode::test_ConfigureCapability
+test/SubarrayNode_test.py::TestSubarrayNode::test_DeconfigureAllCapabilities
+test/SubarrayNode_test.py::TestSubarrayNode::test_DeconfigureCapability
+test/SubarrayNode_test.py::TestSubarrayNode::test_Status
+test/SubarrayNode_test.py::TestSubarrayNode::test_State
+test/SubarrayNode_test.py::TestSubarrayNode::test_AssignResources
+test/SubarrayNode_test.py::TestSubarrayNode::test_EndSB_device_not_ready
+test/SubarrayNode_test.py::TestSubarrayNode::test_ReleaseAllResources
+test/SubarrayNode_test.py::TestSubarrayNode::test_ReleaseResources
+test/SubarrayNode_test.py::TestSubarrayNode::test_Reset
+test/SubarrayNode_test.py::TestSubarrayNode::test_Resume
+test/SubarrayNode_test.py::TestSubarrayNode::test_activationTime
+test/SubarrayNode_test.py::TestSubarrayNode::test_adminMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_buildState
+test/SubarrayNode_test.py::TestSubarrayNode::test_centralLoggingLevel
+test/SubarrayNode_test.py::TestSubarrayNode::test_configurationDelayExpected
+test/SubarrayNode_test.py::TestSubarrayNode::test_configurationProgress
+test/SubarrayNode_test.py::TestSubarrayNode::test_controlMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_elementLoggingLevel
+test/SubarrayNode_test.py::TestSubarrayNode::test_healthState
+test/SubarrayNode_test.py::TestSubarrayNode::test_obsMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_obsState
+test/SubarrayNode_test.py::TestSubarrayNode::test_simulationMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_storageLoggingLevel
+test/SubarrayNode_test.py::TestSubarrayNode::test_testMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_versionId
+test/SubarrayNode_test.py::TestSubarrayNode::test_scanID
+test/SubarrayNode_test.py::TestSubarrayNode::test_sbID
+test/SubarrayNode_test.py::TestSubarrayNode::test_activityMessage
+test/SubarrayNode_test.py::TestSubarrayNode::test_configuredCapabilities
+test/SubarrayNode_test.py::TestSubarrayNode::test_receptorIDList
+  /usr/local/lib/python3.5/dist-packages/pytest_jsonreport/plugin.py:146: UserWarning: Argument(s) ('config',) which are declared in the hookspec can not be found in this hook call
+    outcome = self._config.hook.pytest_report_teststatus(report=report)[0]
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+--------------------------------- JSON report ----------------------------------
+JSON report written to: htmlcov/report.json (264411 bytes)
+
+----------- coverage: platform linux, python 3.5.2-final-0 -----------
+Name                           Stmts   Miss Branch BrPart  Cover
+----------------------------------------------------------------
+SubarrayNode/CONST.py            151      0      0      0   100%
+SubarrayNode/SubarrayNode.py     828    697    230      2    13%
+SubarrayNode/__init__.py           7      0      0      0   100%
+SubarrayNode/__main__.py           4      4      0      0     0%
+SubarrayNode/release.py           10      0      0      0   100%
+----------------------------------------------------------------
+TOTAL                           1000    701    230      2    25%
+Coverage HTML written to dir htmlcov
+Coverage XML written to file coverage.xml
+
+==================== 95 warnings, 33 error in 5.77 seconds =====================
+1568704429 [140683273381632] DEBUG test/nodb/subarraynode Groups definitions: None
+1568704429 [140683273381632] INFO test/nodb/subarraynode No Groups loaded for device: test/nodb/subarraynode

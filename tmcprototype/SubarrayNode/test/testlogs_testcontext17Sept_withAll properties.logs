@@ -1,0 +1,2775 @@
+============================= test session starts ==============================
+platform linux -- Python 3.5.2, pytest-4.3.0, py-1.7.0, pluggy-0.8.1
+rootdir: /home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode, inifile: setup.cfg
+plugins: xdist-1.26.1, pylint-0.14.0, metadata-1.8.0, json-report-1.0.2, html-1.20.0, forked-1.0.1, cov-2.6.1
+collected 33 items
+
+test/SubarrayNode_test.py EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE              [100%]
+
+==================================== ERRORS ====================================
+______________ ERROR at setup of TestSubarrayNode.test_properties ______________
+
+tango_context = <tango.test_context.DeviceTestContext object at 0x7f4f9d729550>
+
+    @pytest.fixture(scope="class")
+    def initialize_device(tango_context):
+        """Re-initializes the device.
+    
+        Parameters
+        ----------
+        tango_context: tango.test_context.DeviceTestContext
+            Context to run a device without a database.
+        """
+>       yield tango_context.device.Init()
+
+conftest.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+---------------------------- Captured stdout setup -----------------------------
+DishLeafNodePrefix ska_mid/tm_leaf_node/d
+CSP Subarray FQDN: mid_csp/elt/subarray01
+CSP Subarray Leaf Node FQDN: ska_mid/tm_leaf_node/csp_subarray01
+SDP Subarray FQDN: mid_sdp/elt/subarray_1
+SDP Subarray Leaf Node FQDN: ska_mid/tm_leaf_node/sdp_subarray01
+Error in subscribing CSP/SDP Subarray healthState on respective LeafNodes. 
+ EventData[
+     attr_name = 'tango://:/ska_mid/tm_leaf_node/csp_subarray01/cspsubarrayHealthState'
+    attr_value = None
+        device = Device(ska_mid/tm_leaf_node/csp_subarray01)
+           err = True
+        errors = (DevError(desc = "Can't subscribe to event for device tango://:/ska_mid/tm_leaf_node/csp_subarray01\nCheck that device server is running...", origin = 'EventConsumer::connect_event()', reason = 'API_CantConnectToDevice', severity = tango._tango.ErrSeverity.ERR),)
+         event = 'change'
+reception_date = TimeVal(tv_nsec = 0, tv_sec = 1568704344, tv_usec = 55211)]
+
+devLogMsg is:  Error in subscribing CSP/SDP Subarray healthState on respective LeafNodes. 
+
+Error in subscribing CSP/SDP Subarray obsState on respective LeafNodes. 
+ EventData[
+     attr_name = 'tango://:/ska_mid/tm_leaf_node/csp_subarray01/cspSubarrayObsState'
+    attr_value = None
+        device = Device(ska_mid/tm_leaf_node/csp_subarray01)
+           err = True
+        errors = (DevError(desc = "Can't subscribe to event for device tango://:/ska_mid/tm_leaf_node/csp_subarray01\nCheck that device server is running...", origin = 'EventConsumer::connect_event()', reason = 'API_CantConnectToDevice', severity = tango._tango.ErrSeverity.ERR),)
+         event = 'change'
+reception_date = TimeVal(tv_nsec = 0, tv_sec = 1568704344, tv_usec = 57046)]
+
+devLogMsg is:  Error in subscribing CSP/SDP Subarray obsState on respective LeafNodes. 
+
+devLogMsg is:  Csp Subarray Leaf Node initialized successfully.
+Error in subscribing CSP/SDP Subarray healthState on respective LeafNodes. 
+ EventData[
+     attr_name = 'tango://:/ska_mid/tm_leaf_node/sdp_subarray01/sdpSubarrayHealthState'
+    attr_value = None
+        device = Device(ska_mid/tm_leaf_node/sdp_subarray01)
+           err = True
+        errors = (DevError(desc = "Can't subscribe to event for device tango://:/ska_mid/tm_leaf_node/sdp_subarray01\nCheck that device server is running...", origin = 'EventConsumer::connect_event()', reason = 'API_CantConnectToDevice', severity = tango._tango.ErrSeverity.ERR),)
+         event = 'change'
+reception_date = TimeVal(tv_nsec = 0, tv_sec = 1568704344, tv_usec = 58424)]
+
+devLogMsg is:  Error in subscribing CSP/SDP Subarray healthState on respective LeafNodes. 
+
+Error in subscribing CSP/SDP Subarray obsState on respective LeafNodes. 
+ EventData[
+     attr_name = 'tango://:/ska_mid/tm_leaf_node/sdp_subarray01/sdpSubarrayObsState'
+    attr_value = None
+        device = Device(ska_mid/tm_leaf_node/sdp_subarray01)
+           err = True
+        errors = (DevError(desc = "Can't subscribe to event for device tango://:/ska_mid/tm_leaf_node/sdp_subarray01\nCheck that device server is running...", origin = 'EventConsumer::connect_event()', reason = 'API_CantConnectToDevice', severity = tango._tango.ErrSeverity.ERR),)
+         event = 'change'
+reception_date = TimeVal(tv_nsec = 0, tv_sec = 1568704344, tv_usec = 59758)]
+
+devLogMsg is:  Error in subscribing CSP/SDP Subarray obsState on respective LeafNodes. 
+
+devLogMsg is:  Sdp Subarray Leaf Node initialized successfully.
+devLogMsg is:  Subarray node is initialized successfully.
+Ready to accept request
+DishLeafNodePrefix None
+CSP Subarray FQDN: None
+CSP Subarray Leaf Node FQDN: None
+SDP Subarray FQDN: None
+SDP Subarray Leaf Node FQDN: None
+---------------------------- Captured stderr setup -----------------------------
+Can't create notifd event supplier. Notifd event not available
+omniORB: Error: the application attempted to invoke an operation on a nil reference.
+________________ ERROR at setup of TestSubarrayNode.test_Abort _________________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_ConfigureCapability __________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+______ ERROR at setup of TestSubarrayNode.test_DeconfigureAllCapabilities ______
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+________ ERROR at setup of TestSubarrayNode.test_DeconfigureCapability _________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_Status ________________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_State _________________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+___________ ERROR at setup of TestSubarrayNode.test_AssignResources ____________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+________ ERROR at setup of TestSubarrayNode.test_EndSB_device_not_ready ________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_ReleaseAllResources __________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+___________ ERROR at setup of TestSubarrayNode.test_ReleaseResources ___________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_Reset _________________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_Resume ________________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+____________ ERROR at setup of TestSubarrayNode.test_activationTime ____________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+______________ ERROR at setup of TestSubarrayNode.test_adminMode _______________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+______________ ERROR at setup of TestSubarrayNode.test_buildState ______________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_centralLoggingLevel __________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+______ ERROR at setup of TestSubarrayNode.test_configurationDelayExpected ______
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+________ ERROR at setup of TestSubarrayNode.test_configurationProgress _________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_____________ ERROR at setup of TestSubarrayNode.test_controlMode ______________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_elementLoggingLevel __________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_____________ ERROR at setup of TestSubarrayNode.test_healthState ______________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_______________ ERROR at setup of TestSubarrayNode.test_obsMode ________________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_______________ ERROR at setup of TestSubarrayNode.test_obsState _______________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+____________ ERROR at setup of TestSubarrayNode.test_simulationMode ____________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_________ ERROR at setup of TestSubarrayNode.test_storageLoggingLevel __________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_______________ ERROR at setup of TestSubarrayNode.test_testMode _______________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+______________ ERROR at setup of TestSubarrayNode.test_versionId _______________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+________________ ERROR at setup of TestSubarrayNode.test_scanID ________________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+_________________ ERROR at setup of TestSubarrayNode.test_sbID _________________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+___________ ERROR at setup of TestSubarrayNode.test_activityMessage ____________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+________ ERROR at setup of TestSubarrayNode.test_configuredCapabilities ________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+____________ ERROR at setup of TestSubarrayNode.test_receptorIDList ____________
+
+tp = <class 'PyTango.DevFailed'>, value = None, tb = None
+
+    def reraise(tp, value, tb=None):
+        try:
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+>               raise value.with_traceback(tb)
+
+../../../../.local/lib/python3.5/site-packages/six.py:692: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:53: in initialize_device
+    yield tango_context.device.Init()
+/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py:239: in f
+    return dp.command_inout(name, *args, **kwds)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:195: in greener
+    return executor.run(fn, args, kwargs, wait=wait, timeout=timeout)
+/usr/local/lib/python3.5/dist-packages/tango/green.py:109: in run
+    return fn(*args, **kwargs)
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:104: in __Connection__command_inout
+    r = Connection.command_inout_raw(self, name, *args, **kwds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = SubarrayNode(test/nodb/subarraynode), cmd_name = 'Init', cmd_param = None
+
+    def __Connection__command_inout_raw(self, cmd_name, cmd_param=None):
+        """
+        command_inout_raw( self, cmd_name, cmd_param=None) -> DeviceData
+    
+                Execute a command on a device.
+    
+            Parameters :
+                    - cmd_name  : (str) Command name.
+                    - cmd_param : (any) It should be a value of the type expected by the
+                                  command or a DeviceData object with this value inserted.
+                                  It can be ommited if the command should not get any argument.
+            Return     : A DeviceData object.
+    
+            Throws     : ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+        """
+        param = __get_command_inout_param(self, cmd_name, cmd_param)
+>       return self.__command_inout(cmd_name, param)
+E       PyTango.DevFailed: DevFailed[
+E       DevError[
+E           desc = RuntimeError: basic_string::_M_construct null not valid
+E                  
+E         origin =   File "/usr/local/lib/python3.5/dist-packages/tango/server.py", line 362, in init_device
+E           return get_worker().execute(init_device_orig, self)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/green.py", line 98, in execute
+E           return fn(*args, **kwargs)
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 1073, in init_device
+E           result = self.create_sdp_ln_proxy()
+E         File "/home/apurva/projects/tmc-prototype/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py", line 247, in create_sdp_ln_proxy
+E           self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+E         File "/usr/local/lib/python3.5/dist-packages/tango/device_proxy.py", line 171, in __DeviceProxy__init__
+E           return DeviceProxy.__init_orig__(self, *args, **kwargs)
+E       
+E         reason = PyDs_PythonError
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Init command failed!!
+E                  HINT: RESTART device with the Restart command of the device server adm. device
+E                  Device server adm. device name = dserver/SubarrayNode/SubarrayNode
+E         origin = DevInitCmd::execute()
+E         reason = API_InitThrowsException
+E       severity = ERR]
+E       
+E       DevError[
+E           desc = Failed to execute command_inout on device test/nodb/subarraynode, command Init
+E         origin = Connection::command_inout()
+E         reason = API_CommandFailed
+E       severity = ERR]
+E       ]
+
+/usr/local/lib/python3.5/dist-packages/tango/connection.py:133: DevFailed
+=============================== warnings summary ===============================
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+/usr/local/lib/python3.5/dist-packages/tango/server.py:115
+  /usr/local/lib/python3.5/dist-packages/tango/server.py:115: DeprecationWarning: inspect.getargspec() is deprecated, use inspect.signature() instead
+    read_args = inspect.getargspec(read_method)
+
+test/SubarrayNode_test.py::TestSubarrayNode::test_properties
+test/SubarrayNode_test.py::TestSubarrayNode::test_Abort
+test/SubarrayNode_test.py::TestSubarrayNode::test_ConfigureCapability
+test/SubarrayNode_test.py::TestSubarrayNode::test_DeconfigureAllCapabilities
+test/SubarrayNode_test.py::TestSubarrayNode::test_DeconfigureCapability
+test/SubarrayNode_test.py::TestSubarrayNode::test_Status
+test/SubarrayNode_test.py::TestSubarrayNode::test_State
+test/SubarrayNode_test.py::TestSubarrayNode::test_AssignResources
+test/SubarrayNode_test.py::TestSubarrayNode::test_EndSB_device_not_ready
+test/SubarrayNode_test.py::TestSubarrayNode::test_ReleaseAllResources
+test/SubarrayNode_test.py::TestSubarrayNode::test_ReleaseResources
+test/SubarrayNode_test.py::TestSubarrayNode::test_Reset
+test/SubarrayNode_test.py::TestSubarrayNode::test_Resume
+test/SubarrayNode_test.py::TestSubarrayNode::test_activationTime
+test/SubarrayNode_test.py::TestSubarrayNode::test_adminMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_buildState
+test/SubarrayNode_test.py::TestSubarrayNode::test_centralLoggingLevel
+test/SubarrayNode_test.py::TestSubarrayNode::test_configurationDelayExpected
+test/SubarrayNode_test.py::TestSubarrayNode::test_configurationProgress
+test/SubarrayNode_test.py::TestSubarrayNode::test_controlMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_elementLoggingLevel
+test/SubarrayNode_test.py::TestSubarrayNode::test_healthState
+test/SubarrayNode_test.py::TestSubarrayNode::test_obsMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_obsState
+test/SubarrayNode_test.py::TestSubarrayNode::test_simulationMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_storageLoggingLevel
+test/SubarrayNode_test.py::TestSubarrayNode::test_testMode
+test/SubarrayNode_test.py::TestSubarrayNode::test_versionId
+test/SubarrayNode_test.py::TestSubarrayNode::test_scanID
+test/SubarrayNode_test.py::TestSubarrayNode::test_sbID
+test/SubarrayNode_test.py::TestSubarrayNode::test_activityMessage
+test/SubarrayNode_test.py::TestSubarrayNode::test_configuredCapabilities
+test/SubarrayNode_test.py::TestSubarrayNode::test_receptorIDList
+  /usr/local/lib/python3.5/dist-packages/pytest_jsonreport/plugin.py:146: UserWarning: Argument(s) ('config',) which are declared in the hookspec can not be found in this hook call
+    outcome = self._config.hook.pytest_report_teststatus(report=report)[0]
+
+-- Docs: https://docs.pytest.org/en/latest/warnings.html
+--------------------------------- JSON report ----------------------------------
+JSON report written to: htmlcov/report.json (247388 bytes)
+
+----------- coverage: platform linux, python 3.5.2-final-0 -----------
+Name                           Stmts   Miss Branch BrPart  Cover
+----------------------------------------------------------------
+SubarrayNode/CONST.py            151      0      0      0   100%
+SubarrayNode/SubarrayNode.py     828    679    230      5    15%
+SubarrayNode/__init__.py           7      0      0      0   100%
+SubarrayNode/__main__.py           4      4      0      0     0%
+SubarrayNode/release.py           10      0      0      0   100%
+----------------------------------------------------------------
+TOTAL                           1000    683    230      5    26%
+Coverage HTML written to dir htmlcov
+Coverage XML written to file coverage.xml
+
+==================== 95 warnings, 33 error in 3.17 seconds =====================
+1568704344 [139979918399232] DEBUG test/nodb/subarraynode Groups definitions: None
+1568704344 [139979918399232] INFO test/nodb/subarraynode No Groups loaded for device: test/nodb/subarraynode
+1568704344 [139979527272192] DEBUG test/nodb/subarraynode Groups definitions: None
+1568704344 [139979527272192] INFO test/nodb/subarraynode No Groups loaded for device: tango://ncra-Latitude-3470:33510/test/nodb/subarraynode#dbase=no
