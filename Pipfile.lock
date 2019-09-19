@@ -184,7 +184,7 @@
                 "sha256:e6ea3e186e39ea82459031a29719eeb84e2a3ef2b9d1e49201727ce96f8a341a"
             ],
             "index": "pypi",
-            "version": "==9.2.5"
+            "version": "==9.3.1"
         },
         "pyyaml": {
             "hashes": [

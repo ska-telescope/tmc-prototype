@@ -1,5 +1,5 @@
-FROM nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.1.0 AS buildenv
-FROM nexus.engageska-portugal.pt/ska-docker/ska-python-runtime:0.1.0 AS runtime
+FROM nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest AS buildenv
+FROM nexus.engageska-portugal.pt/ska-docker/ska-python-runtime:latest AS runtime
 
 # create ipython profile to so that itango doesn't fail if ipython hasn't run yet
 RUN ipython profile create
