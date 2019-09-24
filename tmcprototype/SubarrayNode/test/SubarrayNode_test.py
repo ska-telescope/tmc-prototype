@@ -167,13 +167,14 @@ class TestSubarrayNode(object):
     #     assert tango_context.device.ObsState == CONST.OBS_STATE_ENUM_IDLE
     #     # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 
-    # def test_EndSB_device_not_ready(self, tango_context):
-    #     """Test for EndSB when SubarrayNode is not in Ready state command."""
-    #     # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
-    #     tango_context.device.EndSB()
-    #     time.sleep(2)
-    #     assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
-    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
+    def test_EndSB_device_not_ready(self, tango_context):
+        """Test for EndSB when SubarrayNode is not in Ready state command."""
+        # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
+        tango_context.device.EndSB()
+        time.sleep(2)
+        assert tango_context.device.ObsState != CONST.OBS_STATE_ENUM_READY
+        # assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
 
 
     def test_ReleaseAllResources(self, tango_context):
