@@ -39,7 +39,7 @@ setup(name=name,
       long_description=long_description,
       url='www.tango-controls.org',
       platforms="All Platforms",
-      install_requires=['pytango==9.2.5', 'mock', 'katpoint'],
+      install_requires=['pytango==9.3.1', 'mock', 'katpoint'],
       # test_suite='test',
       setup_requires=[
           # dependency for `python setup.py test`
