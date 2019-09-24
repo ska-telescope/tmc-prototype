@@ -86,7 +86,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_csp/elt/subarray01"
+        dtype='str',
     )
 
     # ----------
@@ -593,7 +593,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
             receptorIDList = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
-
+            print ("Assign Resources command called", receptorIDList)
             #convert receptorIDList from list of string to list of int
             for i in range(0, len(receptorIDList)):
                 receptorIDList[i] = int(receptorIDList[i])

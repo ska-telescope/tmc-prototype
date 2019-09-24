@@ -372,6 +372,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             dish[CONST.STR_KEY_RECEPTOR_ID_LIST] = argin
             json_argument[CONST.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
+            print ("Assign resporces command called", arg_list)
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
             argout = argin
         except DevFailed as df:
@@ -972,7 +973,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
 
     CspSubarrayLNFQDN = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/csp_subarray01",
+        dtype='str',
         doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
             "Subarray Node.",
     )
@@ -984,7 +985,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
 
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value= "mid_csp/elt/subarray01"
+        dtype='str'
     )
 
     SdpSubarrayNodeFQDN = device_property(

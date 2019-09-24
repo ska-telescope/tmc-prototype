@@ -42,6 +42,24 @@ services:
              retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
              /venv/bin/python /app/tangods/CbfSubarray/CbfSubarrayMulti/CbfSubarrayMulti.py cbfSubarray-01"
 
+  cbfsubarray02:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}cbfsubarray02
+    depends_on:
+    - csp-dsconfig
+    - vcc001
+    - vcc002
+    - vcc003
+    - vcc004
+    - cbfmaster
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
+             /venv/bin/python /app/tangods/CbfSubarray/CbfSubarrayMulti/CbfSubarrayMulti.py cbfSubarray-02"
+
   vcc001:
       image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.0
       network_mode: ${NETWORK_MODE}
