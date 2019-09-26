@@ -979,7 +979,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
 
     SdpSubarrayLNFQDN = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/sdp_subarray01",
+        dtype='str',
         doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
             "Subarray Node.",
     )
@@ -989,7 +989,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
 
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_sdp/elt/subarray_1"
+        dtype='str'
     )
 
    

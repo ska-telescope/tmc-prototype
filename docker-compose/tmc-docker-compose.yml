@@ -237,15 +237,15 @@ services:
     volumes_from:
     - rsyslog-tmcprototype:rw
 
-  sdpsubarrayleafnode:
+  sdpsubarrayleafnode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
     - databaseds
     - rsyslog-tmcprototype
-    - sdpsubarray
+    - sdpsubarray1
     - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarrayleafnode
+    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarrayleafnode1
     environment:
     - TANGO_HOST=${TANGO_HOST}
     command: >
@@ -253,6 +253,25 @@ services:
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
              tango_admin --ping-device mid_sdp/elt/subarray_1 10 &&\
              /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 01 v5"
+    volumes_from:
+    - rsyslog-tmcprototype:rw
+
+  sdpsubarrayleafnode2:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+    - databaseds
+    - rsyslog-tmcprototype
+    - sdpsubarray2
+    - tmc-dsconfig
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarrayleafnode2
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --ping-device mid_sdp/elt/subarray_2 10 &&\
+             /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 02 v5"
     volumes_from:
     - rsyslog-tmcprototype:rw
 
@@ -284,9 +303,8 @@ services:
       - dishleafnode2
       - dishleafnode3
       - dishleafnode4
-      - sdpsubarrayleafnode
+      - sdpsubarrayleafnode1
       - cspsubarrayleafnode1
-      - cspsubarrayleafnode2
       - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}subarraynode1
@@ -315,8 +333,7 @@ services:
       - dishleafnode2
       - dishleafnode3
       - dishleafnode4
-      - sdpsubarrayleafnode
-      - cspsubarrayleafnode1
+      - sdpsubarrayleafnode2
       - cspsubarrayleafnode2
       - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
@@ -330,8 +347,8 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01 10 &&\
-             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray02 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray02 10 &&\
              /venv/bin/python -u /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa2 v5"
     volumes_from:
     - rsyslog-tmcprototype:rw

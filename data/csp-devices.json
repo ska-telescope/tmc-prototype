@@ -580,7 +580,8 @@
                                 "mid_csp_cbf/fsp_vlbi/01"
                             ],
                             "FspSubarray": [
-                                "mid_csp_cbf/fspSubarray/01_01"
+                                "mid_csp_cbf/fspSubarray/01_01",
+                                "mid_csp_cbf/fspsubarray/01_02"
                             ],
                             "polled_attr": [
                                 "adminmode",

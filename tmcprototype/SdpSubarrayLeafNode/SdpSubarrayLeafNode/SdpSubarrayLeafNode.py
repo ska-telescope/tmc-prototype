@@ -83,7 +83,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_sdp/elt/subarray_1",
+        dtype='str',
         doc='FQDN of the SDP Subarray Node Tango Device Server.',
     )
 

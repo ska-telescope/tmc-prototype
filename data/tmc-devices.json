@@ -195,13 +195,13 @@
                                 "ska_mid/tm_leaf_node/d"
                             ],
                             "SdpSubarrayLNFQDN": [
-                                "ska_mid/tm_leaf_node/sdp_subarray01"
+                                "ska_mid/tm_leaf_node/sdp_subarray02"
                             ],
                             "CspSubarrayNodeFQDN": [
                                 "mid_csp/elt/subarray_02"
                             ],
                             "SdpSubarrayNodeFQDN": [
-                                "mid_sdp/elt/subarray_1"
+                                "mid_sdp/elt/subarray_2"
                             ],
                             "SkaLevel": [
                                 "1"
@@ -617,8 +617,53 @@
                             }
                         },
                         "properties": {
-                            "SdpSubarrayFQDN": [
+                            "SdpSubarrayNodeFQDN": [
                                 "mid_sdp/elt/subarray_1"
+                            ],
+                            "SkaLevel": [
+                                "3"
+                            ],
+                            "polled_attr": [
+                                "activitymessage",
+                                "1000",
+                                "healthstate",
+                                "1000",
+                                "receiveAddresses",
+                                "1000"
+                            ]
+                        }
+                    }
+                }
+            },
+            "02": {
+                "SdpSubarrayLeafNode": {
+                    "ska_mid/tm_leaf_node/sdp_subarray02": {
+                        "attribute_properties": {
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "sdpSubarrayHealthState": {
+                                "__root_att": [
+                                    "mid_sdp/elt/subarray_2/healthState"
+                                ]
+                            },
+                            "sdpSubarrayObsState": {
+                                "__root_att": [
+                                    "mid_sdp/elt/subarray_2/obsState"
+                                ]
+                            },
+                            "storageLoggingLevel": {
+                                "__value": [
+                                    "5"
+                                ]
+                            }
+                        },
+                        "properties": {
+                            "SdpSubarrayNodeFQDN": [
+                                "mid_sdp/elt/subarray_2"
                             ],
                             "SkaLevel": [
                                 "3"
