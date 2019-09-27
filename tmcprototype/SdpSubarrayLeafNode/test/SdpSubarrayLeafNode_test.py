@@ -32,6 +32,8 @@ import json
 # Imports
 from time import sleep
 from mock import MagicMock
+
+
 # from PyTango import DevFailed, DevState
 # from devicetest import DeviceTestCase, main
 
@@ -47,7 +49,7 @@ from mock import MagicMock
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device", "create_sdpsubarray_proxy")
+@pytest.mark.usefixtures("tango_context", "create_sdpsubarray_proxy")
 class TestSdpSubarrayLeafNode(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_additionnal_import) ENABLED START #
@@ -208,7 +210,6 @@ class TestSdpSubarrayLeafNode(object):
     #     assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
 
-
     def test_EndScan_Invalid_State(self, tango_context):
         """Test for  Invalid EndScan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndScan_Invalid_State) ENABLED START #
@@ -312,11 +313,11 @@ class TestSdpSubarrayLeafNode(object):
     #     assert tango_context.device.sdpSubarrayHealthState == CONST.ENUM_OK
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_sdpSubarrayHealthState
 
-    def test_activityMessage(self, tango_context):
-        """Test for activityMessage"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_activityMessage) ENABLED START #
-        assert tango_context.device.activityMessage == ""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_activityMessage
+    # def test_activityMessage(self, tango_context):
+    #     """Test for activityMessage"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_activityMessage) ENABLED START #
+    #     assert tango_context.device.activityMessage == ""
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_activityMessage
 
     def test_activeProcessingBlocks(self, tango_context):
         """Test for activeProcessingBlocks"""

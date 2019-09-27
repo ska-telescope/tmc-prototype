@@ -47,7 +47,7 @@ import tango
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device", "create_cspsubarray1_proxy")
+@pytest.mark.usefixtures("tango_context", "create_cspsubarray1_proxy")
 
 class TestCspSubarrayLeafNode(object):
     """Test case for packet generation."""

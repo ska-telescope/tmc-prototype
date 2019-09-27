@@ -199,7 +199,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     CspMasterFQDN = device_property(
-        dtype='str', default_value="mid_csp/elt/master",
+        dtype='str'
     )
 
     # ----------

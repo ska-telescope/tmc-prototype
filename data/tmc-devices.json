@@ -43,6 +43,12 @@
                             "SdpMasterLeafNodeFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_master"
                             ],
+                            "DishLeafNodePrefix": [
+                                "ska_mid/tm_leaf_node/d"
+                            ],
+                            "TMMidSubarrayNodes": [
+                                "ska_mid/tm_subarray_node/1", "ska_mid/tm_subarray_node/2"
+                            ],
                             "NumDishes": [
                                 "4"
                             ],
@@ -566,7 +572,7 @@
                             }
                         },
                         "properties": {
-                            "SdpSubarrayFQDN": [
+                            "SdpSubarrayNodeFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [

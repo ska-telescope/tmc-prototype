@@ -40,19 +40,13 @@ import json
 # Look at devicetest examples for more advanced testing
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device")
+@pytest.mark.usefixtures("tango_context")
 
 class TestCentralNode(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(CentralNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  CentralNode.test_additionnal_import
     device = CentralNode
-    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
-                  'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost', 'CentralAlarmHandler': '', 'TMAlarmHandler': '',
-                  'TMMidSubarrayNodes': 'ska_mid/tm_subarray_node/1', 'NumDishes': '4',
-                  'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
-                  }
     empty = None  # Should be []
 
     @classmethod
@@ -253,12 +247,12 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_subarray1HealthState) ENABLED START #
         assert tango_context.device.subarray1HealthState == 1
         # PROTECTED REGION END #    //  CentralNode.test_subarray1HealthState
-
-    def test_subarray2HealthState(self, tango_context):
-        """Test for subarray2HealthState"""
-        # PROTECTED REGION ID(CentralNode.test_subarray2HealthState) ENABLED START #
-        assert tango_context.device.subarray2HealthState == 1
-        # PROTECTED REGION END #    //  CentralNode.test_subarray2HealthState
+    #
+    # def test_subarray2HealthState(self, tango_context):
+    #     """Test for subarray2HealthState"""
+    #     # PROTECTED REGION ID(CentralNode.test_subarray2HealthState) ENABLED START #
+    #     assert tango_context.device.subarray2HealthState == 1
+    #     # PROTECTED REGION END #    //  CentralNode.test_subarray2HealthState
 
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
@@ -276,18 +270,18 @@ class TestCentralNode(object):
         print("After: ", create_subarray1_proxy.receptorIDList)
         assert result == (1, )
 
-    def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
-        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0002"]}}'
-        with pytest.raises(tango.DevFailed) :
-            tango_context.device.AssignResources(test_input)
-        time.sleep(3)
-        test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-        with pytest.raises(tango.DevFailed) :
-            retVal = json.loads(tango_context.device.ReleaseResources(test_input))
-            assert retVal["receptorIDList"] == []
-        time.sleep(3)
-        result = create_subarray1_proxy.receptorIDList
-        assert result == None
+    # def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
+    #     test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0002"]}}'
+    #     with pytest.raises(tango.DevFailed) :
+    #         tango_context.device.AssignResources(test_input)
+    #     time.sleep(3)
+    #     test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+    #     with pytest.raises(tango.DevFailed) :
+    #         retVal = json.loads(tango_context.device.ReleaseResources(test_input))
+    #         assert retVal["receptorIDList"] == []
+    #     time.sleep(3)
+    #     result = create_subarray1_proxy.receptorIDList
+    #     assert result == None
 
     def test_ReleaseResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
@@ -303,15 +297,15 @@ class TestCentralNode(object):
         time.sleep(1)
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-    def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
-        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
-        tango_context.device.AssignResources(test_input)
-        time.sleep(3)
-        test_input1 = '{"subarrayID":2,"dish":{"receptorIDList":["0001"]}}'
-        result = tango_context.device.AssignResources(test_input1)
-        time.sleep(2)
-        create_subarray1_proxy.ReleaseAllResources()
-        assert result == '{"dish": {"receptorIDList_success": []}}'
+    # def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
+    #     test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+    #     tango_context.device.AssignResources(test_input)
+    #     time.sleep(3)
+    #     test_input1 = '{"subarrayID":2,"dish":{"receptorIDList":["0001"]}}'
+    #     result = tango_context.device.AssignResources(test_input1)
+    #     time.sleep(2)
+    #     create_subarray1_proxy.ReleaseAllResources()
+    #     assert result == '{"dish": {"receptorIDList_success": []}}'
 
     def test_AssignResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
@@ -329,14 +323,14 @@ class TestCentralNode(object):
         time.sleep(1)
         assert 'a' in result
 
-    def test_subarray1_health_change_event(self, tango_context, create_subarray1_proxy):
-        eid = create_subarray1_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE, EventType.CHANGE_EVENT,
-                                                     CentralNode.healthStateCallback)
-        assert CONST.STR_HEALTH_STATE in tango_context.device.activityMessage
-        create_subarray1_proxy.unsubscribe_event(eid)
-
-    def test_subarray2_health_change_event(self, tango_context, create_subarray2_proxy):
-        eid = create_subarray2_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE, EventType.CHANGE_EVENT,
-                                                     CentralNode.healthStateCallback)
-        assert CONST.STR_HEALTH_STATE in tango_context.device.activityMessage
-        create_subarray2_proxy.unsubscribe_event(eid)
+    # def test_subarray1_health_change_event(self, tango_context, create_subarray1_proxy):
+    #     eid = create_subarray1_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE, EventType.CHANGE_EVENT,
+    #                                                  CentralNode.healthStateCallback)
+    #     assert CONST.STR_HEALTH_STATE in tango_context.device.activityMessage
+    #     create_subarray1_proxy.unsubscribe_event(eid)
+    #
+    # def test_subarray2_health_change_event(self, tango_context, create_subarray2_proxy):
+    #     eid = create_subarray2_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE, EventType.CHANGE_EVENT,
+    #                                                  CentralNode.healthStateCallback)
+    #     assert CONST.STR_HEALTH_STATE in tango_context.device.activityMessage
+    #     create_subarray2_proxy.unsubscribe_event(eid)

@@ -86,7 +86,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_csp/elt/subarray01"
+        dtype='str',
     )
 
     # ----------

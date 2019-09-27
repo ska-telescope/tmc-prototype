@@ -83,8 +83,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # Device Properties
     # -----------------
     SdpSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_sdp/elt/subarray_1",
-        doc='FQDN of the SDP Subarray Node Tango Device Server.',
+        dtype='str', doc='FQDN of the SDP Subarray Node Tango Device Server.'
     )
 
     # ----------
@@ -138,6 +137,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Initialise Device status
             self.set_status(CONST.STR_INIT_SUCCESS)
             # Create Device proxy for Sdp Subarray using SdpSubarrayNodeFQDN property
+            print("FQDN:", self.SdpSubarrayNodeFQDN)
             self._sdp_subarray_proxy = DeviceProxy(self.SdpSubarrayNodeFQDN)
         except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR_CN)

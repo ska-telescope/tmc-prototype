@@ -40,7 +40,7 @@ import time
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device")
+@pytest.mark.usefixtures("tango_context")
 
 class TestCspMasterLeafNode(object):
     """Test case for packet generation."""
@@ -49,7 +49,7 @@ class TestCspMasterLeafNode(object):
     device = CspMasterLeafNode
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspMasterFQDN': 'mid_csp/elt/master',
+                  'CspMasterFQDN': 'mid_csp/elt/master'
                   }
     empty = None  # Should be []
 
