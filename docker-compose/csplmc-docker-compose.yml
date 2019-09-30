@@ -4,7 +4,7 @@ volumes:
 
 services:
   cspmaster:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.1.2
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.1.4
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspmaster
     depends_on:
@@ -23,7 +23,7 @@ services:
     - rsyslog-tmcprototype:rw
 
   cspsubarray:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.1.2
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.1.4
     depends_on:
     - databaseds
     - rsyslog-tmcprototype
