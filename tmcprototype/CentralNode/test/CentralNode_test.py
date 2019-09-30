@@ -239,13 +239,13 @@ class TestCentralNode(object):
     def test_telescopeHealthState(self, tango_context):
         """Test for telescopeHealthState"""
         # PROTECTED REGION ID(CentralNode.test_telescopeHealthState) ENABLED START #
-        assert tango_context.device.telescopeHealthState == 1
+        assert tango_context.device.telescopeHealthState == 3
         # PROTECTED REGION END #    //  CentralNode.test_telescopeHealthState
 
     def test_subarray1HealthState(self, tango_context):
         """Test for subarray1HealthState"""
         # PROTECTED REGION ID(CentralNode.test_subarray1HealthState) ENABLED START #
-        assert tango_context.device.subarray1HealthState == 1
+        assert tango_context.device.subarray1HealthState == 3
         # PROTECTED REGION END #    //  CentralNode.test_subarray1HealthState
     #
     # def test_subarray2HealthState(self, tango_context):
@@ -259,16 +259,16 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_activityMessage) ENABLED START #
         # PROTECTED REGION END #    //  CentralNode.test_activityMessage
 
-    def test_AssignResources(self, tango_context, create_subarray1_proxy):
-        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
-        retVal = json.loads(tango_context.device.AssignResources(test_input))
-        time.sleep(3)
-        print("Before: ", create_subarray1_proxy.receptorIDList)
-        result = create_subarray1_proxy.receptorIDList
-        print("In between: ", create_subarray1_proxy.receptorIDList)
-        create_subarray1_proxy.ReleaseAllResources()
-        print("After: ", create_subarray1_proxy.receptorIDList)
-        assert result == (1, )
+    # def test_AssignResources(self, tango_context, create_subarray1_proxy):
+    #     test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+    #     retVal = json.loads(tango_context.device.AssignResources(test_input))
+    #     time.sleep(3)
+    #     print("Before: ", create_subarray1_proxy.receptorIDList)
+    #     result = create_subarray1_proxy.receptorIDList
+    #     print("In between: ", create_subarray1_proxy.receptorIDList)
+    #     create_subarray1_proxy.ReleaseAllResources()
+    #     print("After: ", create_subarray1_proxy.receptorIDList)
+    #     assert result == (1, )
 
     # def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
     #     test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0002"]}}'
