@@ -272,11 +272,11 @@ class TestSubarrayNode(object):
         assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  SubarrayNode.test_elementLoggingLevel
 
-    def test_healthState(self, tango_context):
-        """Test for healthState"""
-        # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == 1
-        # PROTECTED REGION END #    //  SubarrayNode.test_healthState
+    # def test_healthState(self, tango_context):
+    #     """Test for healthState"""
+    #     # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
+    #     assert tango_context.device.healthState == 1
+    #     # PROTECTED REGION END #    //  SubarrayNode.test_healthState
 
 
     def test_obsMode(self, tango_context):
