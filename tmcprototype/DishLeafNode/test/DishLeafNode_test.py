@@ -240,15 +240,15 @@ class TestDishLeafNode(object):
         create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
-    # def test_StopTrack(self, tango_context, create_dish_proxy):
-    #     """Test for Track"""
-    #     # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-    #     print("Before: ",create_dish_proxy.pointingState)
-    #     tango_context.device.StopTrack()
-    #     time.sleep(10)
-    #     print("After: ", create_dish_proxy.pointingState)
-    #     assert (create_dish_proxy.pointingState == 0)
-    #     # PROTECTED REGION END #    //  DishLeafNode.Track
+    def test_StopTrack(self, tango_context, create_dish_proxy):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        print("Before: ",create_dish_proxy.pointingState)
+        tango_context.device.StopTrack()
+        time.sleep(10)
+        print("After: ", create_dish_proxy.pointingState)
+        assert (create_dish_proxy.pointingState == 0)
+        # PROTECTED REGION END #    //  DishLeafNode.Track
 
     def test_buildState(self, tango_context):
         """Test for buildState"""
