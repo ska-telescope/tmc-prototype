@@ -43,6 +43,12 @@
                             "SdpMasterLeafNodeFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_master"
                             ],
+                            "DishLeafNodePrefix": [
+                                "ska_mid/tm_leaf_node/d"
+                            ],
+                            "TMMidSubarrayNodes": [
+                                "ska_mid/tm_subarray_node/1", "ska_mid/tm_subarray_node/2"
+                            ],
                             "NumDishes": [
                                 "4"
                             ],
@@ -120,10 +126,10 @@
                             "SdpSubarrayLNFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_subarray01"
                             ],
-                            "CspSubarrayNodeFQDN": [
+                            "CspSubarrayFQDN": [
                                 "mid_csp/elt/subarray01"
                             ],
-                            "SdpSubarrayNodeFQDN": [
+                            "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [
@@ -197,10 +203,10 @@
                             "SdpSubarrayLNFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_subarray01"
                             ],
-                            "CspSubarrayNodeFQDN": [
+                            "CspSubarrayFQDN": [
                                 "mid_csp/elt/subarray01"
                             ],
-                            "SdpSubarrayNodeFQDN": [
+                            "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [
@@ -482,7 +488,7 @@
                             }
                         },
                         "properties": {
-                            "CspSubarrayNodeFQDN": [
+                            "CspSubarrayFQDN": [
                                 "mid_csp/elt/subarray01"
                             ],
                             "SkaLevel": [

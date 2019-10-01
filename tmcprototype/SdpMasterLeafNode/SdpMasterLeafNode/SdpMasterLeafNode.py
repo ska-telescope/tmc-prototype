@@ -89,7 +89,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # -----------------
 
     SdpMasterFQDN = device_property(
-        dtype='str', default_value="mid_sdp/elt/master"
+        dtype='str'
     )
 
     # ----------

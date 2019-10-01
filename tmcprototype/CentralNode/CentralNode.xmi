@@ -46,8 +46,6 @@
     <deviceProperties name="TMMidSubarrayNodes" description="List of TM_Mid Subarray TANGO Device Names.">
       <type xsi:type="pogoDsl:StringVectorType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_subarray_node/1</DefaultPropValue>
-      <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_subarray_node/2</DefaultPropValue>
     </deviceProperties>
     <deviceProperties name="NumDishes" description="Number of dishes commissioned.">
       <type xsi:type="pogoDsl:UIntType"/>
@@ -57,17 +55,14 @@
     <deviceProperties name="DishLeafNodePrefix" description="Prefix used to obtain list of dish leaf node devices deployed from the TANGO database.">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>tango://apurva-pc:10000/ska_mid/tm_leaf_node/d</DefaultPropValue>
     </deviceProperties>
     <deviceProperties name="CspMasterLeafNodeFQDN" description="FQDN of the CSP Master Leaf Node">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>ska_mid/tm_leaf_node/csp_master</DefaultPropValue>
     </deviceProperties>
     <deviceProperties name="SdpMasterLeafNodeFQDN" description="FQDN of SDP Master Leaf Node">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>ska_mid/tm_leaf_node/sdp_master</DefaultPropValue>
     </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="none">

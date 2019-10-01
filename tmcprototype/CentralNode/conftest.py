@@ -26,7 +26,15 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     module = importlib.import_module("{}.{}".format("CentralNode", "CentralNode"))
     klass = getattr(module, "CentralNode")
-    tango_context = DeviceTestContext(klass)
+    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
+                  'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
+                  'StorageLoggingTarget': 'localhost', 'CentralAlarmHandler': '', 'TMAlarmHandler': '',
+                  'TMMidSubarrayNodes': 'ska_mid/tm_subarray_node/1', 'NumDishes': '4',
+                  'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
+                  'CspMasterLeafNodeFQDN': 'ska_mid/tm_leaf_node/csp_master',
+                  'SdpMasterLeafNodeFQDN': 'ska_mid/tm_leaf_node/sdp_master'
+                  }
+    tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context

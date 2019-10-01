@@ -85,8 +85,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # -----------------
     # Device Properties
     # -----------------
-    CspSubarrayNodeFQDN = device_property(
-        dtype='str', default_value="mid_csp/elt/subarray01"
+    CspSubarrayFQDN = device_property(
+        dtype='str',
     )
 
     # ----------
@@ -209,7 +209,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             self._state = 0
             # create subarray Proxy
-            self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
+            self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             self._read_activity_message = " "
             self._delay_model = " "
             self._visdestination_address = " "
