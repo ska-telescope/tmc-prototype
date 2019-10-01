@@ -28,7 +28,7 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <DefaultPropValue>localhost</DefaultPropValue>
     </deviceProperties>
-    <deviceProperties name="CspSubarrayNodeFQDN" description="FQDN of the CSP Subarray Node Tango Device Server.">
+    <deviceProperties name="CspSubarrayFQDN" description="FQDN of the CSP Subarray Tango Device Server.">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </deviceProperties>

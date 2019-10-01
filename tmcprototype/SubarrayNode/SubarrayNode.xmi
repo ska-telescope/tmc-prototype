@@ -56,11 +56,11 @@
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </deviceProperties>
-    <deviceProperties name="CspSubarrayNodeFQDN" description="This property stores the FQDN of CSP subarray Node device to which the Subarray Node is associated with.">
+    <deviceProperties name="CspSubarrayFQDN" description="This property stores the FQDN of CSP subarray device to which the Subarray Node is associated with.">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </deviceProperties>
-    <deviceProperties name="SdpSubarrayNodeFQDN" description="This property stores the FQDN of SDP subarray Node device to which the Subarray Node is associated with.">
+    <deviceProperties name="SdpSubarrayFQDN" description="This property stores the FQDN of SDP subarray device to which the Subarray Node is associated with.">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </deviceProperties>

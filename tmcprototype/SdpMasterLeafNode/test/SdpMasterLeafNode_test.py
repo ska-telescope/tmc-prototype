@@ -52,7 +52,7 @@ class TestSdpMasterLeafNode(object):
     device = SdpMasterLeafNode
     properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'SdpMasterFQDN': "mid-sdp/elt/master"
+                  'SdpMasterFQDN': 'mid-sdp/elt/master'
                   }
     empty = None  # Should be []
 

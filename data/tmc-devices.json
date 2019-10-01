@@ -126,10 +126,10 @@
                             "SdpSubarrayLNFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_subarray01"
                             ],
-                            "CspSubarrayNodeFQDN": [
+                            "CspSubarrayFQDN": [
                                 "mid_csp/elt/subarray01"
                             ],
-                            "SdpSubarrayNodeFQDN": [
+                            "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [
@@ -203,10 +203,10 @@
                             "SdpSubarrayLNFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_subarray01"
                             ],
-                            "CspSubarrayNodeFQDN": [
+                            "CspSubarrayFQDN": [
                                 "mid_csp/elt/subarray01"
                             ],
-                            "SdpSubarrayNodeFQDN": [
+                            "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [
@@ -488,7 +488,7 @@
                             }
                         },
                         "properties": {
-                            "CspSubarrayNodeFQDN": [
+                            "CspSubarrayFQDN": [
                                 "mid_csp/elt/subarray01"
                             ],
                             "SkaLevel": [
@@ -572,7 +572,7 @@
                             }
                         },
                         "properties": {
-                            "SdpSubarrayNodeFQDN": [
+                            "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [

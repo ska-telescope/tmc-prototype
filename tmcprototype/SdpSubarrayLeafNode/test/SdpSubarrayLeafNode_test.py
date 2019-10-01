@@ -27,18 +27,9 @@ from tango import DevState, EventType, DeviceProxy
 from SdpSubarrayLeafNode.SdpSubarrayLeafNode import SdpSubarrayLeafNode
 import CONST
 import pytest
-import json
 
-# Imports
-from time import sleep
-from mock import MagicMock
-
-
-# from PyTango import DevFailed, DevState
-# from devicetest import DeviceTestCase, main
 
 # Note:
-#
 # Since the device uses an inner thread, it is necessary to
 # wait during the tests in order the let the device update itself.
 # Hence, the sleep calls have to be secured enough not to produce
@@ -56,7 +47,7 @@ class TestSdpSubarrayLeafNode(object):
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_additionnal_import
     device = SdpSubarrayLeafNode
     properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost', 'SdpSubarrayNodeFQDN': 'mid_sdp/elt/subarray_1',
+                  'StorageLoggingTarget': 'localhost', 'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_1',
                   }
     empty = None  # Should be []
 
