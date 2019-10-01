@@ -26,6 +26,7 @@ services:
     entrypoint: ["python", "SDPMaster"]
     command: ["1", "-v4"]
 
+
   sdpsubarray1:
     image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:0.5.16
     depends_on:

@@ -47,7 +47,7 @@ import tango
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device", "create_cspsubarray1_proxy")
+@pytest.mark.usefixtures("tango_context", "create_cspsubarray1_proxy")
 
 class TestCspSubarrayLeafNode(object):
     """Test case for packet generation."""
@@ -56,7 +56,7 @@ class TestCspSubarrayLeafNode(object):
     device = CspSubarrayLeafNode
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspSubarrayNodeFQDN': 'mid_csp/elt/subarray_01',}
+                  'CspSubarrayFQDN': 'mid_csp/elt/subarray_01',}
     empty = None  # Should be []
 
     @classmethod

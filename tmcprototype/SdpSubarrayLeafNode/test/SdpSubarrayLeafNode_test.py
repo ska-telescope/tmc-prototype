@@ -27,16 +27,9 @@ from tango import DevState, EventType, DeviceProxy
 from SdpSubarrayLeafNode.SdpSubarrayLeafNode import SdpSubarrayLeafNode
 import CONST
 import pytest
-import json
 
-# Imports
-from time import sleep
-from mock import MagicMock
-# from PyTango import DevFailed, DevState
-# from devicetest import DeviceTestCase, main
 
 # Note:
-#
 # Since the device uses an inner thread, it is necessary to
 # wait during the tests in order the let the device update itself.
 # Hence, the sleep calls have to be secured enough not to produce
@@ -47,14 +40,14 @@ from mock import MagicMock
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device", "create_sdpsubarray_proxy")
+@pytest.mark.usefixtures("tango_context", "create_sdpsubarray_proxy")
 class TestSdpSubarrayLeafNode(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_additionnal_import
     device = SdpSubarrayLeafNode
     properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost', 'SdpSubarrayNodeFQDN': 'mid_sdp/elt/subarray_1',
+                  'StorageLoggingTarget': 'localhost', 'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_1',
                   }
     empty = None  # Should be []
 
@@ -208,7 +201,6 @@ class TestSdpSubarrayLeafNode(object):
     #     assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
 
-
     def test_EndScan_Invalid_State(self, tango_context):
         """Test for  Invalid EndScan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndScan_Invalid_State) ENABLED START #
@@ -312,11 +304,11 @@ class TestSdpSubarrayLeafNode(object):
     #     assert tango_context.device.sdpSubarrayHealthState == CONST.ENUM_OK
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_sdpSubarrayHealthState
 
-    def test_activityMessage(self, tango_context):
-        """Test for activityMessage"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_activityMessage) ENABLED START #
-        assert tango_context.device.activityMessage == ""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_activityMessage
+    # def test_activityMessage(self, tango_context):
+    #     """Test for activityMessage"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_activityMessage) ENABLED START #
+    #     assert tango_context.device.activityMessage == ""
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_activityMessage
 
     def test_activeProcessingBlocks(self, tango_context):
         """Test for activeProcessingBlocks"""

@@ -85,7 +85,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # -----------------
     # Device Properties
     # -----------------
-    CspSubarrayNodeFQDN = device_property(
+    CspSubarrayFQDN = device_property(
         dtype='str',
     )
 
@@ -209,8 +209,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             self._state = 0
             # create subarray Proxy
-            print ("self.CspSubarrayNodeFQDN :", self.CspSubarrayNodeFQDN)
-            self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayNodeFQDN)
+            self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             self._read_activity_message = " "
             self._delay_model = " "
             self._visdestination_address = " "
@@ -594,7 +593,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
             receptorIDList = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
-            print ("Assign Resources command called", receptorIDList)
             #convert receptorIDList from list of string to list of int
             for i in range(0, len(receptorIDList)):
                 receptorIDList[i] = int(receptorIDList[i])

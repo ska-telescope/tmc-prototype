@@ -39,7 +39,7 @@ import json
 # Look at devicetest examples for more advanced testing
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device")
+@pytest.mark.usefixtures("tango_context")
 
 class TestDishMaster(object):
     """Test case for packet generation."""

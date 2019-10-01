@@ -43,6 +43,12 @@
                             "SdpMasterLeafNodeFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_master"
                             ],
+                            "DishLeafNodePrefix": [
+                                "ska_mid/tm_leaf_node/d"
+                            ],
+                            "TMMidSubarrayNodes": [
+                                "ska_mid/tm_subarray_node/1", "ska_mid/tm_subarray_node/2"
+                            ],
                             "NumDishes": [
                                 "4"
                             ],
@@ -120,10 +126,9 @@
                             "SdpSubarrayLNFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_subarray01"
                             ],
-                            "CspSubarrayNodeFQDN": [
-                                "mid_csp/elt/subarray_01"
-                            ],
-                            "SdpSubarrayNodeFQDN": [
+                            "CspSubarrayFQDN": [
+                                "mid_csp/elt/subarray_01"],
+                            "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [
@@ -197,10 +202,10 @@
                             "SdpSubarrayLNFQDN": [
                                 "ska_mid/tm_leaf_node/sdp_subarray02"
                             ],
-                            "CspSubarrayNodeFQDN": [
+                            "CspSubarrayFQDN": [
                                 "mid_csp/elt/subarray_02"
                             ],
-                            "SdpSubarrayNodeFQDN": [
+                            "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_2"
                             ],
                             "SkaLevel": [
@@ -482,7 +487,7 @@
                             }
                         },
                         "properties": {
-                            "CspSubarrayNodeFQDN": [
+                            "CspSubarrayFQDN": [
                                 "mid_csp/elt/subarray_01"
                             ],
                             "SkaLevel": [
@@ -533,9 +538,8 @@
                             }
                         },
                         "properties": {
-                            "CspSubarrayNodeFQDN": [
-                                "mid_csp/elt/subarray_02"
-                            ],
+                            "CspSubarrayFQDN": [
+                                "mid_csp/elt/subarray_02"],
                             "SkaLevel": [
                                 "3"
                             ],
@@ -617,7 +621,7 @@
                             }
                         },
                         "properties": {
-                            "SdpSubarrayNodeFQDN": [
+                            "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [
@@ -662,7 +666,7 @@
                             }
                         },
                         "properties": {
-                            "SdpSubarrayNodeFQDN": [
+                            "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_2"
                             ],
                             "SkaLevel": [

@@ -56,7 +56,7 @@ STR_FALSE = "False"
 STR_STARTSCAN_SUCCESS = "Scan command is executed successfully."
 PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
 STR_START_SCAN_EXEC = "StartScan command execution"
-STR_CSPSA_FQDN = "CspSubarrayNodeFQDN :-> "
+STR_CSPSA_FQDN = "CspSubarrayFQDN :-> "
 STR_ENDSB_SUCCESS = "EndSB command is invoked successfully on CspSubarray."
 STR_ENDSB_EXEC = "EndSB command execution"
 

@@ -160,8 +160,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     TMMidSubarrayNodes = device_property(
-        dtype=('str',), default_value=[CONST.PROP_DEF_VAL_TM_MID_SA1, CONST.PROP_DEF_VAL_TM_MID_SA2],
-        doc="List of TM Mid Subarray Node devices",
+        dtype=('str',), doc="List of TM Mid Subarray Node devices",
     )
 
     NumDishes = device_property(
@@ -170,16 +169,15 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     DishLeafNodePrefix = device_property(
-        dtype='str', default_value=CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX,
-        doc="Device name prefix for Dish Leaf Node",
+        dtype='str', doc="Device name prefix for Dish Leaf Node"
     )
 
     CspMasterLeafNodeFQDN = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/csp_master"
+        dtype='str'
     )
 
     SdpMasterLeafNodeFQDN = device_property(
-        dtype='str', default_value="ska_mid/tm_leaf_node/sdp_master"
+        dtype='str'
     )
 
     # ----------
@@ -260,6 +258,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         for dish in range(1, (self.NumDishes+1)):
 
             # Update self._dish_leaf_node_devices variable
+            print("DishLeafNodePrefix:", self.DishLeafNodePrefix)
             self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
 
             # Initialize self.subarray_allocation variable to indicate availability of the dishes

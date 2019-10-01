@@ -38,7 +38,7 @@ import CONST
 # Look at devicetest examples for more advanced testing
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "initialize_device", "create_dish_proxy")
+@pytest.mark.usefixtures("tango_context", "create_dish_proxy")
 
 class TestDishLeafNode(object):
     """Test case for packet generation."""
