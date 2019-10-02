@@ -593,7 +593,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
             receptorIDList = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
-
             #convert receptorIDList from list of string to list of int
             for i in range(0, len(receptorIDList)):
                 receptorIDList[i] = int(receptorIDList[i])

@@ -21,26 +21,44 @@ services:
     container_name: ${CONTAINER_NAME_PREFIX}sdp_master
     network_mode: ${NETWORK_MODE}
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     stdin_open: true
     entrypoint: ["python", "SDPMaster"]
     command: ["1", "-v4"]
 
-  sdpsubarray:
+  sdpsubarray1:
     image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:0.5.16
     depends_on:
       - databaseds
       - rsyslog-tmcprototype
       - sdp-dsconfig
-    container_name: ${CONTAINER_NAME_PREFIX}sdp_subarray
+    container_name: ${CONTAINER_NAME_PREFIX}sdp_subarray1
     network_mode: ${NETWORK_MODE}
     environment:
-    - TANGO_HOST=${TANGO_HOST}
-    - TOGGLE_CONFIG_DB=0
-    - TOGGLE_CBF_OUTPUT_LINK=0
+      - TANGO_HOST=${TANGO_HOST}
+      - TOGGLE_CONFIG_DB=0
+      - TOGGLE_CBF_OUTPUT_LINK=0
+      - TOGGLE_AUTO_REGISTER=0
     stdin_open: true
     entrypoint: ["python", "SDPSubarray"]
     command: ["1", "-v4"]
+
+  sdpsubarray2:
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:0.5.16
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - sdp-dsconfig
+    container_name: ${CONTAINER_NAME_PREFIX}sdp_subarray2
+    network_mode: ${NETWORK_MODE}
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+      - TOGGLE_CONFIG_DB=0
+      - TOGGLE_CBF_OUTPUT_LINK=0
+      - TOGGLE_AUTO_REGISTER=0
+    stdin_open: true
+    entrypoint: ["python", "SDPSubarray"]
+    command: ["2", "-v4"]
 
   sdp-dsconfig:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-dsconfig:latest

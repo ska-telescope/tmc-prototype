@@ -971,6 +971,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
 
     CspSubarrayLNFQDN = device_property(
+
         dtype='str', doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
             "Subarray Node.",
     )

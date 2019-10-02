@@ -25,6 +25,7 @@ services:
       - MYSQL_PASSWORD=tango
     volumes:
       - tangodb:/var/lib/mysql
+    restart: on-failure
 
   databaseds:
     image: nexus.engageska-portugal.pt/ska-docker/tango-cpp:latest
@@ -48,3 +49,4 @@ services:
       - "2"
       - -ORBendPoint
       - giop:tcp::10000
+    restart: on-failure
