@@ -612,13 +612,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         excpt_count = 0
         excpt_msg = []
-        jsonArgument = json.loads(argin)
-        ra_value = (jsonArgument["pointing"]["target"]["RA"])
-        dec_value = (jsonArgument["pointing"]["target"]["dec"])
-        receiver_band = int(jsonArgument["dish"]["receiverBand"])
-        # timestamp_value = Current system time in UTC
-        timestamp_value = str(datetime.datetime.utcnow())
         try:
+            jsonArgument = json.loads(argin)
+            ra_value = (jsonArgument["pointing"]["target"]["RA"])
+            dec_value = (jsonArgument["pointing"]["target"]["dec"])
+            receiver_band = int(jsonArgument["dish"]["receiverBand"])
+            # timestamp_value = Current system time in UTC
+            timestamp_value = str(datetime.datetime.utcnow())
             # Convert ra and dec to az and el
             radec_value = 'radec' + ',' + str(ra_value) + ',' +str(dec_value)
             katpoint_arg = []

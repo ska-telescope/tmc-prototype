@@ -8,68 +8,67 @@ services:
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspmaster
     depends_on:
-    - databaseds
-    - cbfmaster
-    - rsyslog-tmcprototype
-    - csp-dsconfig
+      - databaseds
+      - cbfmaster
+      - rsyslog-tmcprototype
+      - csp-dsconfig
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
              tango_admin --ping-device mid_csp_cbf/sub_elt/master 10 &&\
              /venv/bin/python /app/csplmc/CspMaster/CspMaster/CspMaster.py csp"
     volumes_from:
-    - rsyslog-tmcprototype:rw
-
+      - rsyslog-tmcprototype:rw
 
   cspsubarray1:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.1.4
     depends_on:
-    - databaseds
-    - rsyslog-tmcprototype
-    - csp-dsconfig
-    - cspmaster
+      - databaseds
+      - rsyslog-tmcprototype
+      - csp-dsconfig
+      - cspmaster
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspsubarray1
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
              /venv/bin/python /app/csplmc/CspSubarray/CspSubarray/CspSubarray.py sub1"
     volumes_from:
-    - rsyslog-tmcprototype:rw
+      - rsyslog-tmcprototype:rw
 
   cspsubarray2:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.1.4
     depends_on:
-    - databaseds
-    - rsyslog-tmcprototype
-    - csp-dsconfig
-    - cspmaster
+      - databaseds
+      - rsyslog-tmcprototype
+      - csp-dsconfig
+      - cspmaster
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspsubarray2
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
              /venv/bin/python /app/csplmc/CspSubarray/CspSubarray/CspSubarray.py sub2"
     volumes_from:
-    - rsyslog-tmcprototype:rw
+      - rsyslog-tmcprototype:rw
 
   csp-dsconfig:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-dsconfig:latest
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}csp-dsconfig
     depends_on:
-    - databaseds
+      - databaseds
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              json2tango -w -a -u /tmc-prototype/data/csp-devices.json &&
              sleep infinity"
     volumes:
-    - ..:/tmc-prototype
+      - ..:/tmc-prototype

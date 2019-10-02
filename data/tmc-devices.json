@@ -132,7 +132,7 @@
                                 "mid_sdp/elt/subarray_1"
                             ],
                             "SkaLevel": [
-                                "1"
+                                "2"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -186,6 +186,11 @@
                                     "1"
                                 ]
                             },
+                            "simulationMode": {
+                                "__value": [
+                                    "true"
+                                ]
+                            },
                             "storageLoggingLevel": {
                                 "__value": [
                                     "5"
@@ -209,7 +214,7 @@
                                 "mid_sdp/elt/subarray_2"
                             ],
                             "SkaLevel": [
-                                "1"
+                                "2"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -262,7 +267,7 @@
                                 "mid_d0001/elt/master"
                             ],
                             "SkaLevel": [
-                                "1"
+                                "3"
                             ],
                             "TrackDuration": [
                                 "1"
@@ -308,7 +313,7 @@
                                 "mid_d0002/elt/master"
                             ],
                             "SkaLevel": [
-                                "1"
+                                "3"
                             ],
                             "TrackDuration": [
                                 "1"
@@ -354,7 +359,7 @@
                                 "mid_d0003/elt/master"
                             ],
                             "SkaLevel": [
-                                "1"
+                                "3"
                             ],
                             "TrackDuration": [
                                 "1"
@@ -400,7 +405,7 @@
                                 "mid_d0004/elt/master"
                             ],
                             "SkaLevel": [
-                                "1"
+                                "3"
                             ],
                             "TrackDuration": [
                                 "1"

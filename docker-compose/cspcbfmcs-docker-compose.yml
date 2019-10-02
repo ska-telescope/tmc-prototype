@@ -8,14 +8,14 @@ services:
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cbfmaster
     depends_on:
-    - databaseds
-    - csp-dsconfig
-    - vcc001
-    - vcc002
-    - vcc003
-    - vcc004
+      - databaseds
+      - csp-dsconfig
+      - vcc001
+      - vcc002
+      - vcc003
+      - vcc004
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
              retry --max=5 -- tango_admin --ping-device mid_csp_cbf/vcc/001 &&\
@@ -29,14 +29,14 @@ services:
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cbfsubarray01
     depends_on:
-    - csp-dsconfig
-    - vcc001
-    - vcc002
-    - vcc003
-    - vcc004
-    - cbfmaster
+      - csp-dsconfig
+      - vcc001
+      - vcc002
+      - vcc003
+      - vcc004
+      - cbfmaster
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
              retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
@@ -47,84 +47,84 @@ services:
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cbfsubarray02
     depends_on:
-    - csp-dsconfig
-    - vcc001
-    - vcc002
-    - vcc003
-    - vcc004
-    - cbfmaster
+      - csp-dsconfig
+      - vcc001
+      - vcc002
+      - vcc003
+      - vcc004
+      - cbfmaster
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
              retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
              /venv/bin/python /app/tangods/CbfSubarray/CbfSubarrayMulti/CbfSubarrayMulti.py cbfSubarray-02"
 
   vcc001:
-      image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.2
-      network_mode: ${NETWORK_MODE}
-      container_name: ${CONTAINER_NAME_PREFIX}vcc001
-      depends_on:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.2
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}vcc001
+    depends_on:
       - databaseds
       - csp-dsconfig
-      environment:
+    environment:
       - TANGO_HOST=${TANGO_HOST}
-      command: >
-        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
-               /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-001"
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-001"
 
   vcc002:
-      image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.2
-      network_mode: ${NETWORK_MODE}
-      container_name: ${CONTAINER_NAME_PREFIX}vcc002
-      depends_on:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.2
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}vcc002
+    depends_on:
       - databaseds
       - csp-dsconfig
-      environment:
+    environment:
       - TANGO_HOST=${TANGO_HOST}
-      command: >
-        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
-               /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-002"
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-002"
 
   vcc003:
-      image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.2
-      network_mode: ${NETWORK_MODE}
-      container_name: ${CONTAINER_NAME_PREFIX}vcc003
-      depends_on:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.2
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}vcc003
+    depends_on:
       - databaseds
       - csp-dsconfig
-      environment:
+    environment:
       - TANGO_HOST=${TANGO_HOST}
-      command: >
-        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
-               /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-003"
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-003"
 
   vcc004:
-      image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.2
-      network_mode: ${NETWORK_MODE}
-      container_name: ${CONTAINER_NAME_PREFIX}vcc004
-      depends_on:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.2
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}vcc004
+    depends_on:
       - databaseds
       - csp-dsconfig
-      environment:
+    environment:
       - TANGO_HOST=${TANGO_HOST}
-      command: >
-        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
-               /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-004"
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-004"
 
   fsp01:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.1.2
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}fsp01
     depends_on:
-    - vcc001
-    - vcc002
-    - vcc003
-    - vcc004
-    - databaseds
-    - csp-dsconfig
+      - vcc001
+      - vcc002
+      - vcc003
+      - vcc004
+      - databaseds
+      - csp-dsconfig
     environment:
-    - TANGO_HOST=${TANGO_HOST}
+      - TANGO_HOST=${TANGO_HOST}
     command: >
        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
               /venv/bin/python /app/tangods/Fsp/FspMulti/FspMulti.py fsp-01"

@@ -96,7 +96,7 @@
                                 "adminmode",
                                 "1000",
                                 "state",
-				"1000",
+				                "1000",
                                 "csppststate",
                                 "1000",
                                 "cspcbfstate",
@@ -439,8 +439,8 @@
                                 "1000",
                                 "scanid",
                                 "1000",
-				"outputLinksDistribution",
-				"1000"
+				                "outputLinksDistribution",
+                                "1000"
                             ]
                         }
                     }
