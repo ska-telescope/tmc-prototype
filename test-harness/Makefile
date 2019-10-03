@@ -34,15 +34,15 @@ test:
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
-    cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
-    cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
-    cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
-    cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
-    cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
-    cd /app/tmcprototype/SdpMasterLeafNode && python setup.py test | tee setup_py_test.stdout
-    cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
-    cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
-    cd /app && ./code-analysis.sh | tee code_analysis.stdout
+	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/SdpMasterLeafNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
+	cd /app && ./code-analysis.sh | tee code_analysis.stdout
 	if [ -d /build ]; then \
         mv /app/tmcprototype/DishMaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
         mv /app/tmcprototype/DishMaster/htmlcov /build/dishmaster_htmlcov; \
