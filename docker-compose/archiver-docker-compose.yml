@@ -1,0 +1,126 @@
+#
+# Docker compose file for TANGO database and database device server
+#
+# Defines:
+#   - cassandra-load-keyspace:: Container to load HDB++ schema in cassandra
+#   - hdbpp-es: HDB++ Event subscriber
+#   - hdbpp-cm: HDB++ Configuration Manager
+#   - configurehdbpp: Container to configure the HDB++ Archiver
+#   - tangotest: Tango test device
+#   - dsconfig: DSConfig device to configure tango database
+#
+# Requires:
+#   - tango
+#   - cassandra
+#
+version: '2.2'
+
+volumes:
+  archiverdb: {}
+
+services:
+  hdbpp-es:
+      image: nexus.engageska-portugal.pt/tango-example/archiver:latest
+      network_mode: ${NETWORK_MODE}
+      container_name: ${CONTAINER_NAME_PREFIX}hdbpp-es
+      depends_on:
+        - databaseds
+        - archiver-dsconfig
+        - maria-db
+      environment:
+        - TANGO_HOST=${TANGO_HOST}
+        - HdbManager=archiving/hdbpp/confmanager01
+        #- HDB_TYPE=timescaledb
+        #- HDB_NAME=hdb
+      command: >
+        /bin/bash -c "
+          echo HELLO!!!;
+          sleep 20;
+          wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+               hdbppes-srv 01"
+
+  hdbpp-cm:
+      image: nexus.engageska-portugal.pt/tango-example/archiver:latest
+      network_mode: ${NETWORK_MODE}
+      container_name: ${CONTAINER_NAME_PREFIX}hdbpp-cm
+      depends_on:
+        - databaseds
+        - archiver-dsconfig
+        - maria-db
+      environment:
+        - TANGO_HOST=${TANGO_HOST}
+        - HdbManager=archiving/hdbpp/confmanager01
+        #- HDB_TYPE=timescaledb
+        #- HDB_NAME=hdb
+      command: >
+        /bin/bash -c "
+          echo HELLO!!!;
+          sleep 20;
+          wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+               hdbppcm-srv 01"
+
+  configurehdbpp:
+      image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.1.0
+      network_mode: ${NETWORK_MODE}
+      container_name: ${CONTAINER_NAME_PREFIX}configurehdbpp
+      depends_on:
+        - databaseds
+        - archiver-dsconfig
+        - maria-db
+        - hdbpp-es
+        - hdbpp-cm
+      environment:
+        - TANGO_HOST=${TANGO_HOST}
+      volumes:
+        - ./scripts/configure_hdbpp.py:/configure_hdbpp.py
+        - ./data/attribute_fqdn.txt:/attribute_fqdn.txt
+      command: >
+        /bin/bash -c "
+           echo HELLO!!!;
+           sleep 25;
+           wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo chmod 777 /configure_hdbpp.py;
+             /venv/bin/python /configure_hdbpp.py v4"
+
+  archiver-dsconfig:
+    image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
+    container_name: ${CONTAINER_NAME_PREFIX}dsconfig
+    network_mode: ${NETWORK_MODE}
+    depends_on:
+      - databaseds
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             json2tango -w -a -u /tango-example/data/archiver-devices.json &&
+             sleep infinity"
+    volumes:
+      - .:/tango-example
+
+  maria-db:
+    image: nexus.engageska-portugal.pt/tango-example/archiver:latest
+    container_name: archiver-maria-db
+    network_mode: ${NETWORK_MODE}
+    depends_on:
+      - databaseds
+    environment:
+      #- MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=hdbpp
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+      - TANGO_HOST=${TANGO_HOST}
+    volumes:
+      - archiverdb:/var/lib/mysql
+    restart: on-failure
+
+#  timescaledb:
+#      image: timescale/timescaledb:latest-pg11
+#      network_mode: ${NETWORK_MODE}
+#      container_name: timescaledb
+#      ports:
+#        - "5432:5432"
+#      volumes:
+#        - ./out/timescaledb_data:/var/lib/postgresql/data
+#        - ./data/timescaledb_schema/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+#        - ./data/timescaledb_schema/cluster.sql:/docker-entrypoint-initdb.d/cluster.sql
+#        - ./data/timescaledb_schema/users.sql:/docker-entrypoint-initdb.d/users.sql
