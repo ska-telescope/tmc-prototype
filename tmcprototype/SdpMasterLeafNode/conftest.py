@@ -25,7 +25,11 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     module = importlib.import_module("{}.{}".format("SdpMasterLeafNode", "SdpMasterLeafNode"))
     klass = getattr(module, "SdpMasterLeafNode")
-    tango_context = DeviceTestContext(klass)
+    properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
+                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+                  'SdpMasterFQDN': 'mid_sdp/elt/master',
+                  }
+    tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context
