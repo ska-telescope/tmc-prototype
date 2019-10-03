@@ -64,30 +64,30 @@ class TestSdpMasterLeafNode(object):
         # PROTECTED REGION ID(SdpMasterLeafNode.test_mocking) ENABLED START #
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_mocking
 
-    # def test_State(self, tango_context):
-    #     # PROTECTED REGION ID(SdpMasterLeafNode.test_State) ENABLED START #
-    #     """Test for State"""
-    #     assert tango_context.device.State() == DevState.ALARM
-    #     # PROTECTED REGION END #    //  SdpMasterLeafNode.test_State
-    #
-    # def test_Status(self, tango_context):
-    #     """Test for Status"""
-    #     # PROTECTED REGION ID(SdpMasterLeafNode.test_Status) ENABLED START #
-    #     assert tango_context.device.Status() != CONST.STR_INIT_SUCCESS
-    #     # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Status
+    def test_State(self, tango_context):
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_State) ENABLED START #
+        """Test for State"""
+        assert tango_context.device.State() == DevState.ALARM
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_State
 
-    # def test_GetVersionInfo(self, tango_context):
-    #     """Test for GetVersionInfo"""
-    #     # PROTECTED REGION ID(SdpMasterLeafNode.test_GetVersionInfo) ENABLED START #
-    #     assert tango_context.device.GetVersionInfo()
-    #     # PROTECTED REGION END #    //  SdpMasterLeafNode.test_GetVersionInfo
-    #
-    # def test_Reset(self, tango_context):
-    #     """Test for Reset"""
-    #     # PROTECTED REGION ID(SdpMasterLeafNode.test_Reset) ENABLED START #
-    #     assert tango_context.device.Reset() == None
-    #     # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Reset
-    #
+    def test_Status(self, tango_context):
+        """Test for Status"""
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_Status) ENABLED START #
+        assert tango_context.device.Status() in CONST.STR_INIT_SUCCESS
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Status
+
+    def test_GetVersionInfo(self, tango_context):
+        """Test for GetVersionInfo"""
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_GetVersionInfo) ENABLED START #
+        assert tango_context.device.GetVersionInfo()
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_GetVersionInfo
+
+    def test_Reset(self, tango_context):
+        """Test for Reset"""
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_Reset) ENABLED START #
+        assert tango_context.device.Reset() == None
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Reset
+
     # def test_On(self, tango_context, create_sdp_master_proxy):
     #     """Test for On"""
     #     # PROTECTED REGION ID(SdpMasterLeafNode.test_On) ENABLED START #
