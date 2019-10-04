@@ -13,7 +13,7 @@
 #   - tango
 #   - cassandra
 #
-version: '2.2'
+version: '2'
 
 volumes:
   archiverdb: {}
@@ -72,30 +72,34 @@ services:
       environment:
         - TANGO_HOST=${TANGO_HOST}
       volumes:
-        - ./scripts/configure_hdbpp.py:/configure_hdbpp.py
-        - ./data/attribute_fqdn.txt:/attribute_fqdn.txt
+        - ../tmcprototype/configure_hdbpp.py:/configure_hdbpp.py
+        - ../data/attribute_fqdn.txt:/attribute_fqdn.txt
       command: >
         /bin/bash -c "
            echo HELLO!!!;
            sleep 25;
            wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo chmod 777 /configure_hdbpp.py;
-             /venv/bin/python /configure_hdbpp.py v4"
+             /venv/bin/python /configure_hdbpp.py \
+              --cm=tango://tmcprototype-1234-databaseds:10000/archiving/hdbpp/confmanager01 \
+              --es=tango://tmcprototype-1234-databaseds:10000/archiving/hdbpp/eventsubscriber01 \
+              --attrfile=/attribute_fqdn.txt \
+              v4"
 
   archiver-dsconfig:
     image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
-    container_name: ${CONTAINER_NAME_PREFIX}dsconfig
+    container_name: ${CONTAINER_NAME_PREFIX}archiver-dsconfig
     network_mode: ${NETWORK_MODE}
     depends_on:
       - databaseds
     environment:
       - TANGO_HOST=${TANGO_HOST}
+    volumes:
+      - ..:/tmc-prototype
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             json2tango -w -a -u /tango-example/data/archiver-devices.json &&
+             json2tango -w -a -u /tmc-prototype/data/archiver-devices.json &&
              sleep infinity"
-    volumes:
-      - .:/tango-example
 
   maria-db:
     image: nexus.engageska-portugal.pt/tango-example/archiver:latest
