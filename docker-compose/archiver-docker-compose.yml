@@ -33,11 +33,13 @@ services:
         #- HDB_TYPE=timescaledb
         #- HDB_NAME=hdb
       command: >
-        /bin/bash -c "
-          echo HELLO!!!;
-          sleep 20;
-          wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-               hdbppes-srv 01"
+        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+                    find . -iname hdbppes-srv && ./usr/local/bin/hdbppes-srv 01 v5"
+#        /bin/bash -c "
+#          echo HELLO!!!;
+#          sleep 20;
+#          wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#               hdbppes-srv 01"
 
   hdbpp-cm:
       image: nexus.engageska-portugal.pt/tango-example/archiver:latest
@@ -53,11 +55,13 @@ services:
         #- HDB_TYPE=timescaledb
         #- HDB_NAME=hdb
       command: >
-        /bin/bash -c "
-          echo HELLO!!!;
-          sleep 20;
-          wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-               hdbppcm-srv 01"
+        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+                            find . -iname hdbppcm-srv && ./usr/local/bin/hdbppcm-srv 01 v5"
+#        /bin/bash -c "
+#          echo HELLO!!!;
+#          sleep 20;
+#          wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#               hdbppcm-srv 01"
 
   configurehdbpp:
       image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.1.0
