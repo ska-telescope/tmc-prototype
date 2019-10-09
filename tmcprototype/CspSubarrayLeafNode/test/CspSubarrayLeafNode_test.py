@@ -172,9 +172,9 @@ class TestCspSubarrayLeafNode(object):
                               '"corrBandwidth": 0}],"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
                               '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", "scanID": "123"}'
         tango_context.device.ConfigureScan(configurescan_input)
-        time.sleep(2)
+        time.sleep(5)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId": 123, "totalChannels": 0, "receiveAddresses": [{"fspId": 1, "hosts": []}]}')
-        time.sleep(2)
+        time.sleep(5)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == CONST.ENUM_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
@@ -228,11 +228,12 @@ class TestCspSubarrayLeafNode(object):
         assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
 
-    def test_ReleaseAllResources(self, tango_context):
+    def test_ReleaseAllResources(self, tango_context, create_cspsubarray1_proxy):
         """Test for ReleaseResources"""
         res = tango_context.device.ReleaseAllResources()
         tango_context.device.status()
         time.sleep(1)
+        assert create_cspsubarray1_proxy.state() == DevState.OFF
         assert CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
                and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ReleaseResources
