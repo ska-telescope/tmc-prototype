@@ -231,10 +231,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._leaf_device_proxy = []
             self.subarray_FQDN_dict = {}
             self._subarray_allocation = {}
-            self._sdp_master_leaf_health = 3
-            self._csp_master_leaf_health = 3
-            self._subarray1_health_state = 3
-            self._subarray2_health_state = 3
             self.set_status(CONST.STR_INIT_SUCCESS)
         except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR_CN)

@@ -99,21 +99,21 @@ class TestSubarrayNode(object):
         assert tango_context.device.State() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_State
 
-    # def test_healthState(self, tango_context):
-    #     """Test for healthState"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
-    #     assert tango_context.device.healthState == 1
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_healthState
+    def test_healthState(self, tango_context):
+        """Test for healthState"""
+        # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
+        assert tango_context.device.healthState == 1
+        # PROTECTED REGION END #    //  SubarrayNode.test_healthState
 
-    # def test_AssignResources(self, tango_context):
-    #     """Test for AssignResources"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-    #     receptor_list = ["0001"]
-    #     tango_context.device.AssignResources(receptor_list)
-    #     assert tango_context.device.State() == DevState.ON
-    #     assert len(tango_context.device.receptorIDList) == 1
-    #     assert tango_context.device.obsState == 0
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
+    def test_AssignResources(self, tango_context):
+        """Test for AssignResources"""
+        # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
+        receptor_list = ['0001']
+        tango_context.device.AssignResources(receptor_list)
+        assert tango_context.device.State() == DevState.ON
+        assert len(tango_context.device.receptorIDList) == 1
+        assert tango_context.device.obsState == 0
+        # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
     # TODO: Tests to be fixed
     # def test_Configure(self, tango_context, create_dish_proxy):
