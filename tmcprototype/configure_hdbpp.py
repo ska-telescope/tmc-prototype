@@ -14,8 +14,6 @@ def cm_configure_attributes():
         attribute_list = json.load(attrib_list_file)
         for attribute in attribute_list:
             total_attrib_count += 1
-            print("Attribute to archive: ", attribute)
-
             ## Set appropriate CM attributes
             try:
                 # SetAttributeName
@@ -42,7 +40,6 @@ def cm_configure_attributes():
                 conf_manager_proxy.command_inout("AttributeAdd")
             except DevFailed as df:
                 str_df = str(df)
-                print("add attribute exception: ", str_df)
                 if "reason = Already archived" in str_df:
                     start_archiving(attribute)
                 else:
@@ -83,10 +80,6 @@ for opt, arg in opts:
         evt_subscriber_device_fqdn = arg
     elif  opt in ("-a", "--attrfile"):
         attr_list_file = arg
-
-print("conf_manager_device_fqdn: ", conf_manager_device_fqdn)
-print("evt_subscriber_device_fqdn: ", evt_subscriber_device_fqdn)
-print("attr_list_file: ", attr_list_file)
 
 try:
     # create device proxies

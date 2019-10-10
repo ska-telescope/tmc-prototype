@@ -1,17 +1,16 @@
 #
-# Docker compose file for TANGO database and database device server
+# Archiver docker compose file for HDB++ and MariaDB
 #
 # Defines:
-#   - cassandra-load-keyspace:: Container to load HDB++ schema in cassandra
 #   - hdbpp-es: HDB++ Event subscriber
 #   - hdbpp-cm: HDB++ Configuration Manager
 #   - configurehdbpp: Container to configure the HDB++ Archiver
-#   - tangotest: Tango test device
-#   - dsconfig: DSConfig device to configure tango database
-#
+#   - archiver-dsconfig: archiver Dsconfig device to configure HDB++ devices (Event Subscriber and Configuration Manager TANGO devices) in tango database
+#   - maria-db: MariaDB container
+
 # Requires:
 #   - tango
-#   - cassandra
+#   - MariaDB
 #
 version: '2'
 
@@ -30,11 +29,13 @@ services:
       environment:
         - TANGO_HOST=${TANGO_HOST}
         - HdbManager=archiving/hdbpp/confmanager01
+        # TODO: FOR FUTURE REFERENCE
         #- HDB_TYPE=timescaledb
         #- HDB_NAME=hdb
       command: >
         sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
                     find . -iname hdbppes-srv && ./usr/local/bin/hdbppes-srv 01 v5"
+# TODO: FOR FUTURE REFERENCE
 #        /bin/bash -c "
 #          echo HELLO!!!;
 #          sleep 20;
@@ -52,11 +53,13 @@ services:
       environment:
         - TANGO_HOST=${TANGO_HOST}
         - HdbManager=archiving/hdbpp/confmanager01
+        # TODO: FOR FUTURE REFERENCE
         #- HDB_TYPE=timescaledb
         #- HDB_NAME=hdb
       command: >
         sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
                             find . -iname hdbppcm-srv && ./usr/local/bin/hdbppcm-srv 01 v5"
+# TODO: FOR FUTURE REFERENCE
 #        /bin/bash -c "
 #          echo HELLO!!!;
 #          sleep 20;
@@ -80,7 +83,6 @@ services:
         - ../data/attribute_fqdn.txt:/attribute_fqdn.txt
       command: >
         /bin/bash -c "
-           echo HELLO!!!;
            sleep 25;
            wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo chmod 777 /configure_hdbpp.py;
@@ -112,15 +114,17 @@ services:
     depends_on:
       - databaseds
     environment:
-      #- MYSQL_ROOT_PASSWORD=secret
       - MYSQL_DATABASE=hdbpp
       - MYSQL_USER=tango
       - MYSQL_PASSWORD=tango
       - TANGO_HOST=${TANGO_HOST}
+      # TODO: FOR FUTURE REFERENCE
+      #- MYSQL_ROOT_PASSWORD=secret
     volumes:
       - archiverdb:/var/lib/mysql
     restart: on-failure
 
+# TODO: FOR FUTURE REFERENCE
 #  timescaledb:
 #      image: timescale/timescaledb:latest-pg11
 #      network_mode: ${NETWORK_MODE}
