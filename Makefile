@@ -142,6 +142,8 @@ endif
 	-f docker-compose/cspcbfmcs-docker-compose.yml \
 	-f docker-compose/sdp-docker-compose.yml \
 	-f docker-compose/tmc-docker-compose.yml \
+	-f docker-compose/archiver-docker-compose.yml \
+	-f docker-compose/jive.yml \
 	up -d
 
 piplock: build  ## overwrite Pipfile.lock with the image version
@@ -160,6 +162,8 @@ down:  ## stop develop/test environment and any interactive session
 	-f docker-compose/cspcbfmcs-docker-compose.yml \
 	-f docker-compose/sdp-docker-compose.yml \
 	-f docker-compose/tmc-docker-compose.yml \
+	-f docker-compose/archiver-docker-compose.yml \
+	-f docker-compose/jive.yml \
 	 down
 ifneq ($(NETWORK_MODE),host)
 	docker network inspect $(NETWORK_MODE) &> /dev/null && ([ $$? -eq 0 ] && docker network rm $(NETWORK_MODE)) || true

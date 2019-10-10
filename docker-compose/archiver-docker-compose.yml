@@ -1,0 +1,138 @@
+#
+# Archiver docker compose file for HDB++ and MariaDB
+#
+# Defines:
+#   - hdbpp-es: HDB++ Event subscriber
+#   - hdbpp-cm: HDB++ Configuration Manager
+#   - configurehdbpp: Container to configure the HDB++ Archiver
+#   - archiver-dsconfig: archiver Dsconfig device to configure HDB++ devices (Event Subscriber and Configuration Manager TANGO devices) in tango database
+#   - maria-db: MariaDB container
+
+# Requires:
+#   - tango
+#   - MariaDB
+#
+version: '2'
+
+volumes:
+  archiverdb: {}
+
+services:
+  hdbpp-es:
+      image: nexus.engageska-portugal.pt/tango-example/archiver:latest
+      network_mode: ${NETWORK_MODE}
+      container_name: ${CONTAINER_NAME_PREFIX}hdbpp-es
+      depends_on:
+        - databaseds
+        - archiver-dsconfig
+        - maria-db
+      environment:
+        - TANGO_HOST=${TANGO_HOST}
+        - HdbManager=archiving/hdbpp/confmanager01
+        # TODO: FOR FUTURE REFERENCE
+        #- HDB_TYPE=timescaledb
+        #- HDB_NAME=hdb
+      command: >
+        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+                    find . -iname hdbppes-srv && ./usr/local/bin/hdbppes-srv 01 v5"
+# TODO: FOR FUTURE REFERENCE
+#        /bin/bash -c "
+#          echo HELLO!!!;
+#          sleep 20;
+#          wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#               hdbppes-srv 01"
+
+  hdbpp-cm:
+      image: nexus.engageska-portugal.pt/tango-example/archiver:latest
+      network_mode: ${NETWORK_MODE}
+      container_name: ${CONTAINER_NAME_PREFIX}hdbpp-cm
+      depends_on:
+        - databaseds
+        - archiver-dsconfig
+        - maria-db
+      environment:
+        - TANGO_HOST=${TANGO_HOST}
+        - HdbManager=archiving/hdbpp/confmanager01
+        # TODO: FOR FUTURE REFERENCE
+        #- HDB_TYPE=timescaledb
+        #- HDB_NAME=hdb
+      command: >
+        sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+                            find . -iname hdbppcm-srv && ./usr/local/bin/hdbppcm-srv 01 v5"
+# TODO: FOR FUTURE REFERENCE
+#        /bin/bash -c "
+#          echo HELLO!!!;
+#          sleep 20;
+#          wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#               hdbppcm-srv 01"
+
+  configurehdbpp:
+      image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.1.0
+      network_mode: ${NETWORK_MODE}
+      container_name: ${CONTAINER_NAME_PREFIX}configurehdbpp
+      depends_on:
+        - databaseds
+        - archiver-dsconfig
+        - maria-db
+        - hdbpp-es
+        - hdbpp-cm
+      environment:
+        - TANGO_HOST=${TANGO_HOST}
+      volumes:
+        - ../tmcprototype/configure_hdbpp.py:/configure_hdbpp.py
+        - ../data/attribute_fqdn.txt:/attribute_fqdn.txt
+      command: >
+        /bin/bash -c "
+           sleep 25;
+           wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo chmod 777 /configure_hdbpp.py;
+             /venv/bin/python /configure_hdbpp.py \
+              --cm=tango://tmcprototype-1234-databaseds:10000/archiving/hdbpp/confmanager01 \
+              --es=tango://tmcprototype-1234-databaseds:10000/archiving/hdbpp/eventsubscriber01 \
+              --attrfile=/attribute_fqdn.txt \
+              v4"
+
+  archiver-dsconfig:
+    image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
+    container_name: ${CONTAINER_NAME_PREFIX}archiver-dsconfig
+    network_mode: ${NETWORK_MODE}
+    depends_on:
+      - databaseds
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    volumes:
+      - ..:/tmc-prototype
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             json2tango -w -a -u /tmc-prototype/data/archiver-devices.json &&
+             sleep infinity"
+
+  maria-db:
+    image: nexus.engageska-portugal.pt/tango-example/archiver:latest
+    container_name: archiver-maria-db
+    network_mode: ${NETWORK_MODE}
+    depends_on:
+      - databaseds
+    environment:
+      - MYSQL_DATABASE=hdbpp
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+      - TANGO_HOST=${TANGO_HOST}
+      # TODO: FOR FUTURE REFERENCE
+      #- MYSQL_ROOT_PASSWORD=secret
+    volumes:
+      - archiverdb:/var/lib/mysql
+    restart: on-failure
+
+# TODO: FOR FUTURE REFERENCE
+#  timescaledb:
+#      image: timescale/timescaledb:latest-pg11
+#      network_mode: ${NETWORK_MODE}
+#      container_name: timescaledb
+#      ports:
+#        - "5432:5432"
+#      volumes:
+#        - ./out/timescaledb_data:/var/lib/postgresql/data
+#        - ./data/timescaledb_schema/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+#        - ./data/timescaledb_schema/cluster.sql:/docker-entrypoint-initdb.d/cluster.sql
+#        - ./data/timescaledb_schema/users.sql:/docker-entrypoint-initdb.d/users.sql

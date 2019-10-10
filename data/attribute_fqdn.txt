@@ -1,0 +1,16 @@
+[
+"tango://tmcprototype-1234-databaseds:10000/mid_d0001/elt/master/WindSpeed",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0001/elt/master/achievedPointing",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0001/elt/master/desiredPointing",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0002/elt/master/WindSpeed",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0002/elt/master/achievedPointing",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0002/elt/master/desiredPointing",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0003/elt/master/WindSpeed",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0003/elt/master/achievedPointing",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0003/elt/master/desiredPointing",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0004/elt/master/WindSpeed",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0004/elt/master/achievedPointing",
+"tango://tmcprototype-1234-databaseds:10000/mid_d0004/elt/master/desiredPointing",
+"tango://tmcprototype-1234-databaseds:10000/ska_mid/tm_subarray_node/1/receptorIDList",
+"tango://tmcprototype-1234-databaseds:10000/ska_mid/tm_subarray_node/2/receptorIDList"
+]
