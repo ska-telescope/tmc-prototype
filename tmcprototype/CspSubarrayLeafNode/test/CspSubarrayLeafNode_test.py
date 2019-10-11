@@ -172,9 +172,9 @@ class TestCspSubarrayLeafNode(object):
                               '"corrBandwidth": 0}],"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
                               '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", "scanID": "123"}'
         tango_context.device.ConfigureScan(configurescan_input)
-        time.sleep(5)
+        time.sleep(10)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId": 123, "totalChannels": 0, "receiveAddresses": [{"fspId": 1, "hosts": []}]}')
-        time.sleep(5)
+        time.sleep(30)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == CONST.ENUM_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
