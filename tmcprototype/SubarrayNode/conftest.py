@@ -27,7 +27,11 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format(package_name, module_name))
     # klass = getattr(module, class_name)
-    properties = {'CspSubarrayLNFQDN': 'ska_mid/tm_leaf_node/csp_subarray01', 'SdpSubarrayLNFQDN': 'ska_mid/tm_leaf_node/sdp_subarray01',}
+    properties = {'CspSubarrayLNFQDN': 'ska_mid/tm_leaf_node/csp_subarray01',
+                  'SdpSubarrayLNFQDN': 'ska_mid/tm_leaf_node/sdp_subarray01',
+                  'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
+                  'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_1',
+                  'CspSubarrayFQDN': 'mid_csp/elt/subarray_01'}
     module = importlib.import_module("{}.{}".format("SubarrayNode", "SubarrayNode"))
     klass = getattr(module, "SubarrayNode")
     tango_context = DeviceTestContext(klass, properties=properties)

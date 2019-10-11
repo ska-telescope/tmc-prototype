@@ -145,16 +145,12 @@ class TestCentralNode(object):
     def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-        dish = DeviceProxy("mid_d0001/elt/master")
         create_leafNode1_proxy.EndScan("0")
-        # while dish.dishMode is not 6:
-        #     print("dish.achievedPointing: ", dish.achievedPointing)
-            #time.sleep(1)
-        time.sleep(8)
+        time.sleep(60)
         create_leafNode1_proxy.SetStandByLPMode()
-        time.sleep(4)
+        time.sleep(10)
         tango_context.device.StartUpTelescope()
-        time.sleep(4)
+        time.sleep(10)
         assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
@@ -273,7 +269,7 @@ class TestCentralNode(object):
     def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
         time.sleep(2)
-        with pytest.raises(tango.DevFailed) :
+        with pytest.raises(tango.DevFailed):
             retVal = json.loads(tango_context.device.ReleaseResources(test_input))
             assert retVal["receptorIDList"] == []
         time.sleep(3)
@@ -282,14 +278,14 @@ class TestCentralNode(object):
 
     def test_ReleaseResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
-        with pytest.raises(tango.DevFailed) :
+        with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseResources(test_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
 
     def test_ReleaseResources_key_not_found(self, tango_context):
         test_input = '{"releaseALL":true,"receptorIDList":[]}'
-        with pytest.raises(tango.DevFailed) :
+        with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseResources(test_input)
         time.sleep(1)
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage

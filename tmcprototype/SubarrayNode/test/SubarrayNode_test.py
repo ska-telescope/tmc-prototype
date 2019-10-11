@@ -115,57 +115,52 @@ class TestSubarrayNode(object):
         assert tango_context.device.obsState == 0
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
-    # TODO: Tests to be fixed
-    # def test_Configure(self, tango_context, create_dish_proxy):
-    #     """Test for Configure"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
-    #     tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","delayModelSubscriptionPoint":"","visDestinationAddressSubscriptionPoint":"","fsp":[{"fspID":"1","functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]},"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":"2:31:50.91","dec":"89:15:51.4"}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan":{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}')
-    #
-    #     time.sleep(60)
-    #     print("Subarray obsState:",tango_context.device.obsState)
-    #     assert tango_context.device.obsState == 2
-    #     time.sleep(45)
-    #     create_dish_proxy.StopTrack()
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_Configure
+    def test_Configure(self, tango_context, create_dish_proxy):
+        """Test for Configure"""
+        # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
+        time.sleep(5)
+        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                       '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                       '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                       '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                       '"corrBandwidth":0}]},"sdp":{"configure":'
+                                       '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                       '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                       '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                       '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                       '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                       '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                       '{"fieldId":0,"intervalMs":1400}}}]}}')
+        time.sleep(65)
+        assert tango_context.device.obsState == 2
+        time.sleep(45)
+        create_dish_proxy.StopTrack()
+        # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
-    # def test_Scan(self, tango_context):
-    #     """Test for Scan"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-    #     # with pytest.raises(tango.DevFailed):
-    #     #     tango_context.device.Scan("a")
-    #     # assert tango_context.device.obsState != 3
-    #     tango_context.obsState = CONST.OBS_STATE_ENUM_READY
-    #     tango_context.device.Scan(['{"scanDuration": 10.0}'])
-    #     time.sleep(5)
-    #     print ("Scan :tango_context.device.obsState :", tango_context.device.obsState )
-    #     assert tango_context.device.obsState == 3
-    #     # with pytest.raises(tango.DevFailed):
-    #     #     tango_context.device.Scan("0")
-    #     # assert CONST.SCAN_ALREADY_IN_PROGRESS in tango_context.device.activityMessage
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_Scan
-    #
+    def test_Scan(self, tango_context):
+        """Test for Scan"""
+        # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
+        tango_context.device.Scan('{"scanDuration": 10.0}')
+        time.sleep(5)
+        assert tango_context.device.obsState == 3
+        # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
-    # def test_EndScan(self, tango_context):
-    #     """Test for EndScan"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
-    #     tango_context.obsState = CONST.OBS_STATE_ENUM_SCANNING
-    #     print("EndScan :tango_context.device.obsState :", tango_context.device.obsState)
-    #     tango_context.device.EndScan()
-    #     time.sleep(10)
-    #     print("EndScan :tango_context.device.obsState :", tango_context.device.obsState )
-    #     assert tango_context.device.obsState == 2
-    #     # with pytest.raises(tango.DevFailed):
-    #     #     tango_context.device.EndScan()
-    #     # assert CONST.ERR_DUPLICATE_END_SCAN_CMD in tango_context.device.activityMessage
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
+    def test_EndScan(self, tango_context):
+        """Test for EndScan"""
+        # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
+        #tango_context.obsState = CONST.OBS_STATE_ENUM_SCANNING
+        tango_context.device.EndScan()
+        time.sleep(10)
+        assert tango_context.device.obsState == 2
+        # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
-    # def test_EndSB(self, tango_context):
-    #     """Test for EndSB command."""
-    #     # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
-    #     tango_context.device.EndSB()
-    #     time.sleep(2)
-    #     assert tango_context.device.ObsState == CONST.OBS_STATE_ENUM_IDLE
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
+    def test_EndSB(self, tango_context):
+        """Test for EndSB command."""
+        # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
+        tango_context.device.EndSB()
+        time.sleep(2)
+        assert tango_context.device.ObsState == CONST.OBS_STATE_ENUM_IDLE
+        # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 
     def test_EndSB_device_not_ready(self, tango_context):
         """Test for EndSB when SubarrayNode is not in Ready state command."""
@@ -176,17 +171,16 @@ class TestSubarrayNode(object):
         # assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
 
-
-    # def test_ReleaseAllResources(self, tango_context):
-    #     """Test for ReleaseAllResources"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
-    #     tango_context.device.ReleaseAllResources()
-    #     assert tango_context.device.obsState == 0
-    #     assert tango_context.device.State() == DevState.OFF
-    #     with pytest.raises(tango.DevFailed):
-    #         tango_context.device.ReleaseAllResources()
-    #     assert CONST.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
+    def test_ReleaseAllResources(self, tango_context):
+        """Test for ReleaseAllResources"""
+        # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
+        tango_context.device.ReleaseAllResources()
+        assert tango_context.device.obsState == 0
+        assert tango_context.device.State() == DevState.OFF
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseAllResources()
+        assert CONST.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
 
     def test_ReleaseResources(self, tango_context):
         """Test for ReleaseResources"""
@@ -203,21 +197,6 @@ class TestSubarrayNode(object):
         """Test for Resume"""
         # PROTECTED REGION ID(SubarrayNode.test_Resume) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_Resume
-
-    # TODO: For Reference
-    # def test_Configure(self, tango_context):
-    #     """Test for Configure"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
-    #     tango_context.device.Configure(["Polaris | polaris, radec, 02:31:50.88, 89:15:51.4",
-    #                                     '2019-02-18 11:17:00'])
-    #     assert tango_context.device.obsState == 2
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_Configure
-    # def test_Track(self, tango_context):
-    #     """Test for Track"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_Track) ENABLED START #
-    #     tango_context.device.Track("radec|2:31:50.91|89:15:51.4")
-    #     assert tango_context.device.obsState == 0
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_Track
 
     def test_activationTime(self, tango_context):
         """Test for activationTime"""
@@ -271,13 +250,6 @@ class TestSubarrayNode(object):
         tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
         assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
         # PROTECTED REGION END #    //  SubarrayNode.test_elementLoggingLevel
-
-    # def test_healthState(self, tango_context):
-    #     """Test for healthState"""
-    #     # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
-    #     assert tango_context.device.healthState == 1
-    #     # PROTECTED REGION END #    //  SubarrayNode.test_healthState
-
 
     def test_obsMode(self, tango_context):
         """Test for obsMode"""
