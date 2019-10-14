@@ -167,7 +167,6 @@ class TestCspSubarrayLeafNode(object):
     def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
         """Test for ConfigureScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
-        time.sleep(5)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Test')
         print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
         configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
@@ -177,10 +176,13 @@ class TestCspSubarrayLeafNode(object):
                               '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
         print ("CSP Subarray state:",create_cspsubarray1_proxy.State())
         tango_context.device.ConfigureScan(configurescan_input)
-        time.sleep(10)
+        time.sleep(2)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
+        print("After create_sdpsubarrayln1_proxy receive address:",
+              create_sdpsubarrayln1_proxy.receiveAddresses)
+
         time.sleep(60)
         print("CBF OUTPUT LINK:",create_cspsubarray1_proxy.cbfOutPutLink)
         print("cbfSubarrayObsState:",create_cspsubarray1_proxy.cbfSubarrayObsState)
