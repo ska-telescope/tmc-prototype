@@ -374,7 +374,9 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         excpt_msg = []
         excpt_count = 0
+        print("Argin:", argin)
         try:
+            print("Argin:", argin)
             json.loads(argin)
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
