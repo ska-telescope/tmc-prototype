@@ -168,7 +168,7 @@ class TestCspSubarrayLeafNode(object):
         """Test for ConfigureScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
         time.sleep(5)
-        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Null')
+        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Test')
         print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
         configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
                               '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
@@ -182,6 +182,8 @@ class TestCspSubarrayLeafNode(object):
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
         time.sleep(60)
+        print("CBF OUTPUT LINK:",create_cspsubarray1_proxy.cbfOutPutLink)
+        print("cbfSubarrayObsState:",create_cspsubarray1_proxy.cbfSubarrayObsState)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == CONST.ENUM_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
