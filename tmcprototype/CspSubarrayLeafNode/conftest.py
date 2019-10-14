@@ -61,3 +61,8 @@ def create_cspsubarray1_proxy():
 def create_sdpsubarrayln1_proxy():
     sdpsubarrayln1_proxy = DeviceProxy("ska_mid/tm_leaf_node/sdp_subarray01")
     return sdpsubarrayln1_proxy
+
+@pytest.fixture(scope="class")
+def create_cbfsubarray1_proxy():
+    cbfsubarray1_proxy = DeviceProxy("mid_csp_cbf/sub_elt/subarray_01")
+    return cbfsubarray1_proxy

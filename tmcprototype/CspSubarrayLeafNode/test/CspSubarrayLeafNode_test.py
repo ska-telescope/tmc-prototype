@@ -176,6 +176,8 @@ class TestCspSubarrayLeafNode(object):
                               ',"visDestinationAddressSubscriptionPoint":' \
                               '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
         print ("CSP Subarray state:",create_cspsubarray1_proxy.State())
+        print("Input string:", configurescan_input)
+        time.sleep(5)
         tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(100)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
