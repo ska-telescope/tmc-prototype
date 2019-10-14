@@ -47,7 +47,7 @@ import tango
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_cspsubarray1_proxy", "create_sdpsubarrayln1_proxy")
+@pytest.mark.usefixtures("tango_context", "create_cspsubarray1_proxy", "create_sdpsubarrayln1_proxy", "create_cbfsubarray1_proxy")
 
 class TestCspSubarrayLeafNode(object):
     """Test case for packet generation."""
@@ -164,7 +164,7 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
 
-    def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
+    def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy, create_cbfsubarray1_proxy):
         """Test for ConfigureScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Test')
@@ -177,7 +177,7 @@ class TestCspSubarrayLeafNode(object):
                               '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
         print ("CSP Subarray state:",create_cspsubarray1_proxy.State())
         tango_context.device.ConfigureScan(configurescan_input)
-        time.sleep(60)
+        time.sleep(100)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
@@ -185,9 +185,12 @@ class TestCspSubarrayLeafNode(object):
         print("After create_sdpsubarrayln1_proxy receive address:",
               create_sdpsubarrayln1_proxy.receiveAddresses)
 
-        time.sleep(20)
+        time.sleep(30)
         print("CBF OUTPUT LINK:",create_cspsubarray1_proxy.cbfOutPutLink)
         print("cbfSubarrayObsState:",create_cspsubarray1_proxy.cbfSubarrayObsState)
+        print("cbf obsOtate:", create_cbfsubarray1_proxy.obsState)
+        print("cbf state:", create_cbfsubarray1_proxy.State())
+
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == CONST.ENUM_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
