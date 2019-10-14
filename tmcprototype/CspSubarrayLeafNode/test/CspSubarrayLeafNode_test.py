@@ -169,12 +169,16 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
         time.sleep(10)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','None')
-        configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400,' \
-                              '"corrBandwidth": 0}],"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
-                              '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", "scanID": "123"}'
+        configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR",' \
+                              ' "frequencySliceID": 1, "integrationTime": 1400,"corrBandwidth": 0}],' \
+                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/' \
+                              'delayModel","visDestinationAddressSubscriptionPoint": ' \
+                              '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", "scanID": "123"}'
         tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(20)
-        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId": 123, "totalChannels": 0, "receiveAddresses": [{"fspId": 1, "hosts": []}]}')
+        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId": 123, "totalChannels": 0,'
+                                                                        ' "receiveAddresses": [{"fspId": 1,'
+                                                                        ' "hosts": []}]}')
         time.sleep(80)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == CONST.ENUM_READY
