@@ -167,14 +167,15 @@ class TestCspSubarrayLeafNode(object):
     def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
         """Test for ConfigureScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
-        create_cspsubarray1_proxy.state = DevState.ON
         time.sleep(5)
-        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','None')
+        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Null')
+        print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
         configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
                               '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
                               '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
                               ',"visDestinationAddressSubscriptionPoint":' \
                               '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
+        print ("CSP Subarray state:",create_cspsubarray1_proxy.State())
         tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(10)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
