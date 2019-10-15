@@ -115,10 +115,11 @@ class TestSubarrayNode(object):
         assert tango_context.device.obsState == 0
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
-    def test_Configure(self, tango_context, create_dish_proxy):
+    def test_Configure(self, tango_context, create_dish_proxy, create_cbfsubarray1_proxy):
         """Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
-        time.sleep(10)
+        time.sleep(15)
+        print("Receptor IDs on CBF Subarray:", create_cbfsubarray1_proxy.receptors)
         tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
                                        '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
                                        '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
