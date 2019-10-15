@@ -168,27 +168,27 @@ class TestCspSubarrayLeafNode(object):
         """Test for ConfigureScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Test')
-        time.sleep(10)
+        time.sleep(2)
         print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
         # configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
         #                       '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
         #                       '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
         #                       ',"visDestinationAddressSubscriptionPoint":' \
         #                       '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
-        configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", "scanID": "123"}'
+        configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", "scanID": "1"}'
         print ("CSP Subarray state:",create_cspsubarray1_proxy.State())
         print("Input string:", configurescan_input)
-        time.sleep(5)
+        time.sleep(2)
         tango_context.device.ConfigureScan(configurescan_input)
-        time.sleep(100)
-        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
+        time.sleep(10)
+        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":1,"totalChannels":0,'
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
-        time.sleep(60)
+        time.sleep(10)
         print("After create_sdpsubarrayln1_proxy receive address:",
               create_sdpsubarrayln1_proxy.receiveAddresses)
 
-        time.sleep(60)
+        time.sleep(10)
 
         print("CBF OUTPUT LINK:",create_cspsubarray1_proxy.cbfOutPutLink)
         print("cbfSubarrayObsState:",create_cspsubarray1_proxy.cbfSubarrayObsState)
@@ -200,6 +200,7 @@ class TestCspSubarrayLeafNode(object):
         print("FrequencyBand:", create_cbfsubarray1_proxy.frequencyBand)
         print("Receptor list on cbfSubarray:", create_cbfsubarray1_proxy.receptors)
         print("Receptor list on CspSubarray:", create_cspsubarray1_proxy.receptors)
+        print("outputLinksDistribution:", create_cbfsubarray1_proxy.outputLinksDistribution)
         create_vcc1_proxy.ping()
         print("VCC State on cbfSubarray:", create_cbfsubarray1_proxy.vccState)
 
