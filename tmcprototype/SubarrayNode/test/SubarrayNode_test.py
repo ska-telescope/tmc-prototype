@@ -118,7 +118,7 @@ class TestSubarrayNode(object):
     def test_Configure(self, tango_context, create_dish_proxy):
         """Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
-        time.sleep(5)
+        time.sleep(10)
         tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
                                        '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
                                        '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
@@ -169,7 +169,7 @@ class TestSubarrayNode(object):
         time.sleep(2)
         assert tango_context.device.ObsState != CONST.OBS_STATE_ENUM_READY
         # assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
+        # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""

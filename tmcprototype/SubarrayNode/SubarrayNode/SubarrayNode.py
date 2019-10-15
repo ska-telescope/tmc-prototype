@@ -1224,7 +1224,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                             cmdData = tango.DeviceData()
                             cmdData.insert(tango.DevString, json.dumps(csp_config))
                             print ("Proxy for CSP SA LN Proxy:", self._csp_subarray_ln_proxy)
-                            print ("CSP SA LN status:", self._csp_subarray_ln_proxy.ping())
 
                             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
                             print("CSP Configuration is initiated.")
