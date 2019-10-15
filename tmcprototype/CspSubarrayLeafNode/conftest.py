@@ -32,7 +32,6 @@ def tango_context(request):
     klass = getattr(module, "CspSubarrayLeafNode")
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-
                   'CspSubarrayFQDN': 'mid_csp/elt/subarray_01',
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process=False)
@@ -41,7 +40,7 @@ def tango_context(request):
     yield tango_context
     tango_context.stop()
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def initialize_device(tango_context):
     """Re-initializes the device.
 
