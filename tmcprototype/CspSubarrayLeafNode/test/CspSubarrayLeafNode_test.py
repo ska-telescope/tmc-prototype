@@ -130,7 +130,7 @@ class TestCspSubarrayLeafNode(object):
         assert create_cspsubarray1_proxy.state() == DevState.OFF
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-    def test_AssignResources(self, tango_context,  create_cspsubarray1_proxy):
+    def test_AssignResources(self, tango_context,  create_cspsubarray1_proxy, create_cbfsubarray1_proxy):
         """Test for AssignResources"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_AssignResources) ENABLED START #
         assignresources_input = []
@@ -141,6 +141,9 @@ class TestCspSubarrayLeafNode(object):
         assert create_cspsubarray1_proxy.state() == DevState.ON
         assert CONST.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
                and res is None
+        print("Receptor list on cbfSubarray:", create_cbfsubarray1_proxy.receptors)
+        print("Receptor list on CspSubarray:", create_cspsubarray1_proxy.receptors)
+        assert create_cbfsubarray1_proxy.receptors == ['0001']
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_AssignResources
 
     def test_StartScan_Device_Not_Ready(self, tango_context):
