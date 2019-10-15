@@ -187,18 +187,19 @@ class TestCspSubarrayLeafNode(object):
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
-        time.sleep(10)
+        time.sleep(60)
         print("After create_sdpsubarrayln1_proxy receive address:",
               create_sdpsubarrayln1_proxy.receiveAddresses)
 
-        time.sleep(30)
+        time.sleep(60)
         print("CBF OUTPUT LINK:",create_cspsubarray1_proxy.cbfOutPutLink)
         print("cbfSubarrayObsState:",create_cspsubarray1_proxy.cbfSubarrayObsState)
         print("cbf obsOtate:", create_cbfsubarray1_proxy.obsState)
         print("cbf state:", create_cbfsubarray1_proxy.State())
 
         obs_state = create_cspsubarray1_proxy.obsState
-        assert obs_state == CONST.ENUM_READY
+        print("CspSA ObsState:", obs_state)
+        assert create_cspsubarray1_proxy.obsState == CONST.ENUM_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
 
     def test_StartScan(self, tango_context, create_cspsubarray1_proxy):
