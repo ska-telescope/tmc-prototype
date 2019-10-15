@@ -47,7 +47,7 @@ import tango
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_cspsubarray1_proxy", "create_sdpsubarrayln1_proxy", "create_cbfsubarray1_proxy")
+@pytest.mark.usefixtures("tango_context", "create_cspsubarray1_proxy", "create_sdpsubarrayln1_proxy", "create_cbfsubarray1_proxy","create_vcc1_proxy", "create_fsp1_proxy")
 
 class TestCspSubarrayLeafNode(object):
     """Test case for packet generation."""
@@ -141,9 +141,6 @@ class TestCspSubarrayLeafNode(object):
         assert create_cspsubarray1_proxy.state() == DevState.ON
         assert CONST.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
                and res is None
-        print("Receptor list on cbfSubarray:", create_cbfsubarray1_proxy.receptors)
-        print("Receptor list on CspSubarray:", create_cspsubarray1_proxy.receptors)
-        assert create_cbfsubarray1_proxy.receptors == ['0001']
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_AssignResources
 
     def test_StartScan_Device_Not_Ready(self, tango_context):
@@ -167,7 +164,7 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
 
-    def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy, create_cbfsubarray1_proxy):
+    def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy, create_cbfsubarray1_proxy, create_vcc1_proxy, create_fsp1_proxy):
         """Test for ConfigureScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Test')
@@ -192,13 +189,22 @@ class TestCspSubarrayLeafNode(object):
               create_sdpsubarrayln1_proxy.receiveAddresses)
 
         time.sleep(60)
+
         print("CBF OUTPUT LINK:",create_cspsubarray1_proxy.cbfOutPutLink)
         print("cbfSubarrayObsState:",create_cspsubarray1_proxy.cbfSubarrayObsState)
         print("cbf obsOtate:", create_cbfsubarray1_proxy.obsState)
         print("cbf state:", create_cbfsubarray1_proxy.State())
 
-        obs_state = create_cspsubarray1_proxy.obsState
-        print("CspSA ObsState:", obs_state)
+        print("ScanID on cspSA:", create_cspsubarray1_proxy.scanID)
+        print("ScanID on cbfSA:", create_cbfsubarray1_proxy.scanID)
+        print("FrequencyBand:", create_cbfsubarray1_proxy.frequencyBand)
+        print("Receptor list on cbfSubarray:", create_cbfsubarray1_proxy.receptors)
+        print("Receptor list on CspSubarray:", create_cspsubarray1_proxy.receptors)
+        create_vcc1_proxy.ping()
+        print("VCC State on cbfSubarray:", create_cbfsubarray1_proxy.vccState)
+
+        create_fsp1_proxy.ping()
+
         assert create_cspsubarray1_proxy.obsState == CONST.ENUM_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
 

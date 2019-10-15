@@ -7,6 +7,7 @@ from __future__ import absolute_import
 import importlib
 import mock
 import pytest
+import tango
 
 
 from tango import DeviceProxy, DevFailed
@@ -65,3 +66,13 @@ def create_sdpsubarrayln1_proxy():
 def create_cbfsubarray1_proxy():
     cbfsubarray1_proxy = DeviceProxy("mid_csp_cbf/sub_elt/subarray_01")
     return cbfsubarray1_proxy
+
+@pytest.fixture(scope="class")
+def create_vcc1_proxy():
+    vcc1_proxy = DeviceProxy("mid_csp_cbf/vcc/001")
+    return vcc1_proxy
+
+@pytest.fixture(scope="class")
+def create_fsp1_proxy():
+    fsp1_proxy = DeviceProxy("mid_csp_cbf/fsp/01")
+    return fsp1_proxy
