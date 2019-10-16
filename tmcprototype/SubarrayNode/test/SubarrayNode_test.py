@@ -114,9 +114,6 @@ class TestSubarrayNode(object):
         assert tango_context.device.State() == DevState.ON
         assert len(tango_context.device.receptorIDList) == 1
         assert tango_context.device.obsState == 0
-        print("Receptor IDs on CSP Subarray:", create_cspsubarray1_proxy.receptors)
-        print("Receptor IDs on CBF Subarray:", create_cbfsubarray1_proxy.receptors)
-        assert create_cbfsubarray1_proxy.receptors == ['0001']
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
     def test_Configure(self, tango_context, create_dish_proxy):
