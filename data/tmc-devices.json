@@ -493,8 +493,7 @@
                         },
                         "properties": {
                             "CspSubarrayFQDN": [
-                                "mid_csp/elt/subarray_01"
-                            ],
+                                "mid_csp/elt/subarray_01"],
                             "SkaLevel": [
                                 "3"
                             ],

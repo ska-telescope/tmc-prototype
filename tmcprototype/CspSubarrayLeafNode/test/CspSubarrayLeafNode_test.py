@@ -172,7 +172,7 @@ class TestCspSubarrayLeafNode(object):
         print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
         configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
                               '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
-                              '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
+                              '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray02/delayModel"' \
                               ',"visDestinationAddressSubscriptionPoint":' \
                               '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
         #configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", "scanID": "1"}'
