@@ -164,72 +164,72 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
 
-    def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy, create_cbfsubarray1_proxy, create_vcc1_proxy, create_fsp1_proxy):
-        """Test for ConfigureScan"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
-        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Test')
-        time.sleep(2)
-        print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
-        # configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
-        #                       '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
-        #                       '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
-        #                       ',"visDestinationAddressSubscriptionPoint":' \
-        #                       '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
-        configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", "scanID": "1"}'
-        print ("CSP Subarray state:",create_cspsubarray1_proxy.State())
-        print("Input string:", configurescan_input)
-        time.sleep(2)
-        tango_context.device.ConfigureScan(configurescan_input)
-        time.sleep(10)
-        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":1,"totalChannels":0,'
-                                                                        '"receiveAddresses":'
-                                                                        '[{"fspId":1,"hosts":[]}]}')
-        time.sleep(10)
-        print("After create_sdpsubarrayln1_proxy receive address:",
-              create_sdpsubarrayln1_proxy.receiveAddresses)
-
-        time.sleep(10)
-
-        print("CBF OUTPUT LINK:",create_cspsubarray1_proxy.cbfOutPutLink)
-        print("cbfSubarrayObsState:",create_cspsubarray1_proxy.cbfSubarrayObsState)
-        print("cbf obsOtate:", create_cbfsubarray1_proxy.obsState)
-        print("cbf state:", create_cbfsubarray1_proxy.State())
-
-        print("ScanID on cspSA:", create_cspsubarray1_proxy.scanID)
-        print("ScanID on cbfSA:", create_cbfsubarray1_proxy.scanID)
-        print("FrequencyBand:", create_cbfsubarray1_proxy.frequencyBand)
-        print("Receptor list on cbfSubarray:", create_cbfsubarray1_proxy.receptors)
-        print("Receptor list on CspSubarray:", create_cspsubarray1_proxy.receptors)
-        print("outputLinksDistribution:", create_cbfsubarray1_proxy.outputLinksDistribution)
-        create_vcc1_proxy.ping()
-        print("VCC State on cbfSubarray:", create_cbfsubarray1_proxy.vccState)
-
-        create_fsp1_proxy.ping()
-
-        assert create_cspsubarray1_proxy.obsState == CONST.ENUM_READY
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
-
-    def test_StartScan(self, tango_context, create_cspsubarray1_proxy):
-        """Test for StartScan"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_StartScan) ENABLED START #
-        startscan_input = ['{"scanDuration": 10.0}']
-        tango_context.device.StartScan(startscan_input)
-        time.sleep(2)
-        obs_state = create_cspsubarray1_proxy.obsState
-        assert obs_state == CONST.ENUM_SCANNING
-        # assert CONST.STR_STARTSCAN_SUCCESS in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan
-
-    def test_EndScan(self, tango_context, create_cspsubarray1_proxy):
-        """Test for EndScan"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndScan) ENABLED START #
-        tango_context.device.EndScan()
-        time.sleep(2)
-        obs_state = create_cspsubarray1_proxy.obsState
-        assert obs_state == CONST.ENUM_READY
-        # assert CONST.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage \
-        #        and res is None
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
+    # def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy, create_cbfsubarray1_proxy, create_vcc1_proxy, create_fsp1_proxy):
+    #     """Test for ConfigureScan"""
+    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
+    #     create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Test')
+    #     time.sleep(2)
+    #     print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
+    #     # configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
+    #     #                       '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
+    #     #                       '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
+    #     #                       ',"visDestinationAddressSubscriptionPoint":' \
+    #     #                       '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
+    #     configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", "scanID": "1"}'
+    #     print ("CSP Subarray state:",create_cspsubarray1_proxy.State())
+    #     print("Input string:", configurescan_input)
+    #     time.sleep(2)
+    #     tango_context.device.ConfigureScan(configurescan_input)
+    #     time.sleep(10)
+    #     create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":1,"totalChannels":0,'
+    #                                                                     '"receiveAddresses":'
+    #                                                                     '[{"fspId":1,"hosts":[]}]}')
+    #     time.sleep(10)
+    #     print("After create_sdpsubarrayln1_proxy receive address:",
+    #           create_sdpsubarrayln1_proxy.receiveAddresses)
+    #
+    #     time.sleep(10)
+    #
+    #     print("CBF OUTPUT LINK:",create_cspsubarray1_proxy.cbfOutPutLink)
+    #     print("cbfSubarrayObsState:",create_cspsubarray1_proxy.cbfSubarrayObsState)
+    #     print("cbf obsOtate:", create_cbfsubarray1_proxy.obsState)
+    #     print("cbf state:", create_cbfsubarray1_proxy.State())
+    #
+    #     print("ScanID on cspSA:", create_cspsubarray1_proxy.scanID)
+    #     print("ScanID on cbfSA:", create_cbfsubarray1_proxy.scanID)
+    #     print("FrequencyBand:", create_cbfsubarray1_proxy.frequencyBand)
+    #     print("Receptor list on cbfSubarray:", create_cbfsubarray1_proxy.receptors)
+    #     print("Receptor list on CspSubarray:", create_cspsubarray1_proxy.receptors)
+    #     print("outputLinksDistribution:", create_cbfsubarray1_proxy.outputLinksDistribution)
+    #     create_vcc1_proxy.ping()
+    #     print("VCC State on cbfSubarray:", create_cbfsubarray1_proxy.vccState)
+    #
+    #     create_fsp1_proxy.ping()
+    #
+    #     assert create_cspsubarray1_proxy.obsState == CONST.ENUM_READY
+    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
+    #
+    # def test_StartScan(self, tango_context, create_cspsubarray1_proxy):
+    #     """Test for StartScan"""
+    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_StartScan) ENABLED START #
+    #     startscan_input = ['{"scanDuration": 10.0}']
+    #     tango_context.device.StartScan(startscan_input)
+    #     time.sleep(2)
+    #     obs_state = create_cspsubarray1_proxy.obsState
+    #     assert obs_state == CONST.ENUM_SCANNING
+    #     # assert CONST.STR_STARTSCAN_SUCCESS in tango_context.device.activityMessage
+    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan
+    #
+    # def test_EndScan(self, tango_context, create_cspsubarray1_proxy):
+    #     """Test for EndScan"""
+    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndScan) ENABLED START #
+    #     tango_context.device.EndScan()
+    #     time.sleep(2)
+    #     obs_state = create_cspsubarray1_proxy.obsState
+    #     assert obs_state == CONST.ENUM_READY
+    #     # assert CONST.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage \
+    #     #        and res is None
+    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
 
     def test_EndSB(self, tango_context, create_cspsubarray1_proxy):
         """Test for EndSB command."""
