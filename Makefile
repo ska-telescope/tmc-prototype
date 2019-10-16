@@ -126,7 +126,9 @@ test: build up ## test the application
 	  rm -fr build; \
 	  docker cp $(BUILD):/build .; \
 	  docker rm -f -v $(BUILD); \
-	  docker-compose logs; \
+	  docker-compose/tmc-docker-compose logs; \
+	  docker-compose/csplmc-docker-compose logs; \
+	  docker-compose/cspcbfmcs-docker-compose; \
 	  $(MAKE) down; \
 	  exit $$status
 

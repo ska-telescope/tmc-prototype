@@ -170,18 +170,18 @@ class TestCspSubarrayLeafNode(object):
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Test')
         time.sleep(2)
         print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
-        # configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
-        #                       '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
-        #                       '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
-        #                       ',"visDestinationAddressSubscriptionPoint":' \
-        #                       '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
-        configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", "scanID": "1"}'
+        configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
+                              '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
+                              '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
+                              ',"visDestinationAddressSubscriptionPoint":' \
+                              '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
+        #configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", "scanID": "1"}'
         print ("CSP Subarray state:",create_cspsubarray1_proxy.State())
         print("Input string:", configurescan_input)
         time.sleep(2)
         tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(10)
-        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":1,"totalChannels":0,'
+        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
         time.sleep(10)

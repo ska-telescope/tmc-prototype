@@ -17,10 +17,10 @@ test:
 #	retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master
 #	retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master
 #	retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master
-	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
-	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
-	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01
-	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_01
+#	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
+#	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
+#	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01
+#	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_01
 #	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master
 #	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
 #	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1
@@ -30,7 +30,7 @@ test:
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master
-	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_master
+#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_master
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
