@@ -40,7 +40,7 @@ import time
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context")
+@pytest.mark.usefixtures("tango_context", "create_cbfsubarray1_proxy", "create_cspsubarray1_proxy")
 
 class TestSubarrayNode(object):
     """Test case for packet generation."""
@@ -105,14 +105,16 @@ class TestSubarrayNode(object):
         assert tango_context.device.healthState == 1
         # PROTECTED REGION END #    //  SubarrayNode.test_healthState
 
-    def test_AssignResources(self, tango_context, create_cbfsubarray1_proxy):
+    def test_AssignResources(self, tango_context, create_cbfsubarray1_proxy, create_cspsubarray1_proxy):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         receptor_list = ['0001']
         tango_context.device.AssignResources(receptor_list)
+        time.sleep(10)
         assert tango_context.device.State() == DevState.ON
         assert len(tango_context.device.receptorIDList) == 1
         assert tango_context.device.obsState == 0
+        print("Receptor IDs on CSP Subarray:", create_cspsubarray1_proxy.receptors)
         print("Receptor IDs on CBF Subarray:", create_cbfsubarray1_proxy.receptors)
         assert create_cbfsubarray1_proxy.receptors == ['0001']
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
