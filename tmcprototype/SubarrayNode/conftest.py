@@ -31,7 +31,7 @@ def tango_context(request):
                   'SdpSubarrayLNFQDN': 'ska_mid/tm_leaf_node/sdp_subarray01',
                   'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
                   'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_1',
-                  'CspSubarrayFQDN': 'mid_csp/elt/subarray_01'}
+                  'CspSubarrayFQDN': 'mid_csp/elt/subarray_02'}
     module = importlib.import_module("{}.{}".format("SubarrayNode", "SubarrayNode"))
     klass = getattr(module, "SubarrayNode")
     tango_context = DeviceTestContext(klass, properties=properties)
@@ -58,10 +58,10 @@ def create_dish_proxy():
 
 @pytest.fixture(scope="class")
 def create_cbfsubarray1_proxy():
-    cbfsubarray1_proxy = DeviceProxy("mid_csp_cbf/sub_elt/subarray_01")
+    cbfsubarray1_proxy = DeviceProxy("mid_csp_cbf/sub_elt/subarray_02")
     return cbfsubarray1_proxy
 
 @pytest.fixture(scope="class")
 def create_cspsubarray1_proxy():
-    cspsubarray1_proxy = DeviceProxy("mid_csp/elt/subarray_01")
+    cspsubarray1_proxy = DeviceProxy("mid_csp/elt/subarray_02")
     return cspsubarray1_proxy
