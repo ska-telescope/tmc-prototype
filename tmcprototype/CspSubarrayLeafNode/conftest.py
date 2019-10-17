@@ -33,7 +33,7 @@ def tango_context(request):
     klass = getattr(module, "CspSubarrayLeafNode")
     properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
                   'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'CspSubarrayFQDN': 'mid_csp/elt/subarray_02'
+                  'CspSubarrayFQDN': 'mid_csp/elt/subarray_01'
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
@@ -54,7 +54,7 @@ def initialize_device(tango_context):
 
 @pytest.fixture(scope="class")
 def create_cspsubarray2_proxy():
-    cspsubarray2_proxy = DeviceProxy("mid_csp/elt/subarray_02")
+    cspsubarray2_proxy = DeviceProxy("mid_csp/elt/subarray_01")
     return cspsubarray2_proxy
 
 @pytest.fixture(scope="class")
