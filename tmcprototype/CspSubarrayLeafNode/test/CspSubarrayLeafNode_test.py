@@ -130,18 +130,18 @@ class TestCspSubarrayLeafNode(object):
         assert create_cspsubarray2_proxy.state() == DevState.OFF
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-    def test_AssignResources(self, tango_context,  create_cspsubarray2_proxy):
-        """Test for AssignResources"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_AssignResources) ENABLED START #
-        assignresources_input = []
-        assignresources_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
-        res = tango_context.device.AssignResources(assignresources_input)
-        tango_context.device.status()
-        time.sleep(1)
-        assert create_cspsubarray2_proxy.state() == DevState.ON
-        assert CONST.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
-               and res is None
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_AssignResources
+    # def test_AssignResources(self, tango_context,  create_cspsubarray2_proxy):
+    #     """Test for AssignResources"""
+    #     # PROTECTED REGION ID(CspSubarrayLeafNode.test_AssignResources) ENABLED START #
+    #     assignresources_input = []
+    #     assignresources_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
+    #     res = tango_context.device.AssignResources(assignresources_input)
+    #     tango_context.device.status()
+    #     time.sleep(1)
+    #     assert create_cspsubarray2_proxy.state() == DevState.ON
+    #     assert CONST.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
+    #            and res is None
+    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_AssignResources
 
     def test_StartScan_Device_Not_Ready(self, tango_context):
         """Test for StartScan when device is not in READY state."""
@@ -167,6 +167,10 @@ class TestCspSubarrayLeafNode(object):
     def test_ConfigureScan(self, tango_context, create_cspsubarray2_proxy, create_sdpsubarrayln1_proxy, create_cbfsubarray1_proxy, create_vcc1_proxy, create_fsp1_proxy):
         """Test for ConfigureScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
+
+        assignresources_input = []
+        assignresources_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
+
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Test')
         time.sleep(2)
         print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
