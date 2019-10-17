@@ -53,9 +53,9 @@ def initialize_device(tango_context):
     yield tango_context.device.Init()
 
 @pytest.fixture(scope="class")
-def create_cspsubarray2_proxy():
-    cspsubarray2_proxy = DeviceProxy("mid_csp/elt/subarray_01")
-    return cspsubarray2_proxy
+def create_cspsubarray1_proxy():
+    cspsubarray1_proxy = DeviceProxy("mid_csp/elt/subarray_01")
+    return cspsubarray1_proxy
 
 @pytest.fixture(scope="class")
 def create_sdpsubarrayln1_proxy():
