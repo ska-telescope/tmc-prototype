@@ -145,10 +145,10 @@ class TestCentralNode(object):
     def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-        create_leafNode1_proxy.EndScan("0")
-        time.sleep(60)
-        create_leafNode1_proxy.SetStandByLPMode()
-        time.sleep(10)
+        # create_leafNode1_proxy.EndScan("0")
+        # time.sleep(60)
+        # create_leafNode1_proxy.SetStandByLPMode()
+        # time.sleep(10)
         tango_context.device.StartUpTelescope()
         time.sleep(10)
         assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
