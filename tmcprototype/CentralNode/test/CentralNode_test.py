@@ -262,15 +262,15 @@ class TestCentralNode(object):
         time.sleep(1)
         assert 'a' in result
 
-    # def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
-    #     test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-    #     time.sleep(2)
-    #     with pytest.raises(tango.DevFailed):
-    #         retVal = json.loads(tango_context.device.ReleaseResources(test_input))
-    #         assert retVal["receptorIDList"] == []
-    #     time.sleep(3)
-    #     result = create_subarray1_proxy.receptorIDList
-    #     assert result == None
+    def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
+        test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        time.sleep(2)
+        with pytest.raises(tango.DevFailed):
+            retVal = json.loads(tango_context.device.ReleaseResources(test_input))
+            assert retVal["receptorIDList"] == []
+        time.sleep(3)
+        result = create_subarray1_proxy.receptorIDList
+        assert result == None
 
     def test_ReleaseResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
