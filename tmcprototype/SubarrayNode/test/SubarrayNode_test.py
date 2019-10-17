@@ -134,8 +134,8 @@ class TestSubarrayNode(object):
         time.sleep(100)
         print ("Dish Pointing State", create_dish_proxy.pointingState)
         print ("CSP subarray obsState:", create_cspsubarray1_proxy.obsState)
-        assert tango_context.device.obsState == 2
         time.sleep(45)
+        assert tango_context.device.obsState == 2
         create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
