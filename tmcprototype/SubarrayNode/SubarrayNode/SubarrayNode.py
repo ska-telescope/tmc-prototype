@@ -369,11 +369,16 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         argout = []
         dish = {}
         try:
+            print ("CSP Assign resource input:",argin )
             dish[CONST.STR_KEY_RECEPTOR_ID_LIST] = argin
+            print ("dish:", dish)
             json_argument[CONST.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
+            print ("ArgList:", arg_list)
+            print ("self._csp_subarray_ln_proxy :", self._csp_subarray_ln_proxy)
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
             argout = argin
+            print ("ArgOut:", argout)
         except DevFailed as df:
             print(CONST.ERR_CSP_CMD)
             self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
@@ -787,7 +792,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             else:
                 #TODO: Need to add code to revert allocated resources
                 argout = []
-
         # return dish_allocation_result
         return argout
 
@@ -1224,6 +1228,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
                             cmdData = tango.DeviceData()
                             cmdData.insert(tango.DevString, json.dumps(csp_config))
+                            print ("Proxy for CSP SA LN Proxy:", self._csp_subarray_ln_proxy)
+
                             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
                             print("CSP Configuration is initiated.")
                         else:

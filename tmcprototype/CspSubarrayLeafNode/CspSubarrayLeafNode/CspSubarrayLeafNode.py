@@ -209,6 +209,9 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             self._state = 0
             # create subarray Proxy
+            print("CspSubarrayFQDN in CspSALN.py: ", self.CspSubarrayFQDN)
+            if self.CspSubarrayFQDN == None:
+                self.CspSubarrayFQDN = "mid_csp/elt/subarray_01"
             self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             self._read_activity_message = " "
             self._delay_model = " "
@@ -374,7 +377,9 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         excpt_msg = []
         excpt_count = 0
+        print("Argin:", argin)
         try:
+            print("Argin:", argin)
             json.loads(argin)
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
@@ -589,6 +594,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         excpt_msg = []
         excpt_count = 0
+        print("Argin in AssignResources of CspSubarrayLeafNode:", argin)
         try:
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])

@@ -126,6 +126,7 @@ test: build up ## test the application
 	  rm -fr build; \
 	  docker cp $(BUILD):/build .; \
 	  docker rm -f -v $(BUILD); \
+      docker-compose -f docker-compose/tango-docker-compose.yml -f docker-compose/csplmc-docker-compose.yml -f docker-compose/cspcbfmcs-docker-compose.yml -f docker-compose/sdp-docker-compose.yml -f docker-compose/tmc-docker-compose.yml logs; \
 	  $(MAKE) down; \
 	  exit $$status
 
