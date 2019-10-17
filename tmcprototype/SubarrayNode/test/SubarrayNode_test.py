@@ -131,10 +131,9 @@ class TestSubarrayNode(object):
                                        '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
                                        '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                        '{"fieldId":0,"intervalMs":1400}}}]}}')
-        time.sleep(100)
+        time.sleep(65)
         print ("Dish Pointing State", create_dish_proxy.pointingState)
         print ("CSP subarray obsState:", create_cspsubarray1_proxy.obsState)
-        time.sleep(45)
         assert tango_context.device.obsState == 2
         create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
