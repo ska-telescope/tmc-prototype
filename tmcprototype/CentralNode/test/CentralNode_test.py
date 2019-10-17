@@ -96,6 +96,25 @@ class TestCentralNode(object):
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  CentralNode.test_Reset
 
+    def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
+        """Test for StartUpTelescope"""
+        # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
+        # create_leafNode1_proxy.EndScan("0")
+        # time.sleep(60)
+        # create_leafNode1_proxy.SetStandByLPMode()
+        # time.sleep(10)
+        tango_context.device.StartUpTelescope()
+        time.sleep(10)
+        assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
+        # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
+
+    def test_StartUpTelescope_Negative(self, tango_context):
+        """Test for StartUpTelescope"""
+        # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
+        tango_context.device.StartUpTelescope()
+        assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
+
     def test_StowAntennas_invalid_argument(self, tango_context):
         """Test for StowAntennas"""
         # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
@@ -141,25 +160,6 @@ class TestCentralNode(object):
         tango_context.device.StandByTelescope()
         assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
-
-    def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
-        """Test for StartUpTelescope"""
-        # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-        # create_leafNode1_proxy.EndScan("0")
-        # time.sleep(60)
-        # create_leafNode1_proxy.SetStandByLPMode()
-        # time.sleep(10)
-        tango_context.device.StartUpTelescope()
-        time.sleep(10)
-        assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
-        # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
-
-    def test_StartUpTelescope_Negative(self, tango_context):
-        """Test for StartUpTelescope"""
-        # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-        tango_context.device.StartUpTelescope()
-        assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
     def test_buildState(self, tango_context):
         """Test for buildState"""
