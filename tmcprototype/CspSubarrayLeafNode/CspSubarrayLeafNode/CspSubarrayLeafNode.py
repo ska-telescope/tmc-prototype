@@ -210,6 +210,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._state = 0
             # create subarray Proxy
             print("CspSubarrayFQDN in CspSALN.py: ", self.CspSubarrayFQDN)
+            if self.CspSubarrayFQDN == None:
+                self.CspSubarrayFQDN = "mid_csp/elt/subarray_01"
             self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             self._read_activity_message = " "
             self._delay_model = " "
