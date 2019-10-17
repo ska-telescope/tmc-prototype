@@ -209,11 +209,11 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             self._state = 0
             # create subarray Proxy
-            try:
-                print("CspSubarrayFQDN in CspSALN.py: ", self.CspSubarrayFQDN)
-                self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
-            except:
-                print("Failed to create device proxy.")
+            #try:
+            print("CspSubarrayFQDN in CspSALN.py: ", self.CspSubarrayFQDN)
+            self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
+            #except:
+            #    print("Failed to create device proxy.")
             self._read_activity_message = " "
             self._delay_model = " "
             self._visdestination_address = " "
