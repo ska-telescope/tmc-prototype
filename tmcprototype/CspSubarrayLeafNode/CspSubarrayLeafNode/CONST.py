@@ -31,6 +31,7 @@ ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarra
 ERR_DEVICE_NOT_READY = "Csp subarray is not in ready state."
 ERR_DEVICE_NOT_IN_SCAN = "CspSubarray is not in SCANNING state."
 ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on CSP Subarray."
+ERR_IN_CREATE_PROXY_CSPSA = "Error in creating proxy of the CSP Subarray device."
 
 #strings
 #General strings
