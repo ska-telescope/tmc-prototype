@@ -592,7 +592,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         excpt_msg = []
         excpt_count = 0
-        print("Argin in AssignResources of CspSubarrayLeafNode:", argin)
         try:
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])

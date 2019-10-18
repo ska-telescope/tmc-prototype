@@ -369,16 +369,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         argout = []
         dish = {}
         try:
-            print ("CSP Assign resource input:",argin )
             dish[CONST.STR_KEY_RECEPTOR_ID_LIST] = argin
-            print ("dish:", dish)
             json_argument[CONST.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
-            print ("ArgList:", arg_list)
-            print ("self._csp_subarray_ln_proxy :", self._csp_subarray_ln_proxy)
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
             argout = argin
-            print ("ArgOut:", argout)
         except DevFailed as df:
             print(CONST.ERR_CSP_CMD)
             self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))

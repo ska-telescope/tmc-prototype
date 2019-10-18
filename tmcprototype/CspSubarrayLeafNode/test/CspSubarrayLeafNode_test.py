@@ -163,13 +163,13 @@ class TestCspSubarrayLeafNode(object):
             tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
+        assert tango_context.device.obsState != CONST.ENUM_READY
 
     def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
         """Test for ConfigureScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Null')
         time.sleep(2)
-        print ("Before create_sdpsubarrayln1_proxy receive address:", create_sdpsubarrayln1_proxy.receiveAddresses)
         configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
                               '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
                               '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
@@ -216,7 +216,7 @@ class TestCspSubarrayLeafNode(object):
         assert obs_state == CONST.ENUM_IDLE
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
 
-    def test_EndScan_Invalide_state(self, tango_context):
+    def test_EndScan_Invalid_state(self, tango_context):
         """Test for  Invalid EndScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndScan) ENABLED START #
         time.sleep(1)

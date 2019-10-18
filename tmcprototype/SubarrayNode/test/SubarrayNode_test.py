@@ -113,7 +113,7 @@ class TestSubarrayNode(object):
         time.sleep(10)
         assert tango_context.device.State() == DevState.ON
         assert len(tango_context.device.receptorIDList) == 1
-        assert tango_context.device.obsState == 0
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
     def test_Configure(self, tango_context, create_dish_proxy):
@@ -132,7 +132,7 @@ class TestSubarrayNode(object):
                                        '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                        '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(65)
-        assert tango_context.device.obsState == 2
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
         create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
@@ -141,7 +141,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
         tango_context.device.Scan('{"scanDuration": 10.0}')
         time.sleep(5)
-        assert tango_context.device.obsState == 3
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
     def test_EndScan(self, tango_context):
@@ -150,7 +150,7 @@ class TestSubarrayNode(object):
         #tango_context.obsState = CONST.OBS_STATE_ENUM_SCANNING
         tango_context.device.EndScan()
         time.sleep(10)
-        assert tango_context.device.obsState == 2
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
     def test_EndSB(self, tango_context):
@@ -174,7 +174,7 @@ class TestSubarrayNode(object):
         """Test for ReleaseAllResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
         tango_context.device.ReleaseAllResources()
-        assert tango_context.device.obsState == 0
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
         assert tango_context.device.State() == DevState.OFF
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseAllResources()
@@ -259,7 +259,7 @@ class TestSubarrayNode(object):
     def test_obsState(self, tango_context):
         """Test for obsState"""
         # PROTECTED REGION ID(SubarrayNode.test_obsState) ENABLED START #
-        assert tango_context.device.obsState == 0
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_obsState
 
     def test_simulationMode(self, tango_context):

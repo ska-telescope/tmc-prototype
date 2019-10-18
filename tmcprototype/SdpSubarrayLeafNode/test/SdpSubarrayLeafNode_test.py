@@ -142,7 +142,7 @@ class TestSdpSubarrayLeafNode(object):
                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
         tango_context.device.Configure(test_input)
         time.sleep(1)
-        assert create_sdpsubarray_proxy.obsState in [CONST.ENUM_CONFIGURING,CONST.ENUM_READY]
+        assert create_sdpsubarray_proxy.obsState in CONST.ENUM_READY
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Configure
 
     def test_Configure_invalid_key(self, tango_context):
