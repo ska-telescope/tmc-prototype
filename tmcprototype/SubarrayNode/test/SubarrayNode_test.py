@@ -40,7 +40,7 @@ import time
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_cbfsubarray1_proxy", "create_cspsubarray1_proxy")
+@pytest.mark.usefixtures("tango_context", "create_dish_proxy")
 
 class TestSubarrayNode(object):
     """Test case for packet generation."""
@@ -105,7 +105,7 @@ class TestSubarrayNode(object):
         assert tango_context.device.healthState == 1
         # PROTECTED REGION END #    //  SubarrayNode.test_healthState
 
-    def test_AssignResources(self, tango_context, create_cbfsubarray1_proxy, create_cspsubarray1_proxy):
+    def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         receptor_list = ['0001']
@@ -116,7 +116,7 @@ class TestSubarrayNode(object):
         assert tango_context.device.obsState == 0
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
-    def test_Configure(self, tango_context, create_dish_proxy, create_cspsubarray1_proxy):
+    def test_Configure(self, tango_context, create_dish_proxy):
         """Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
         tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
@@ -132,8 +132,6 @@ class TestSubarrayNode(object):
                                        '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                        '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(65)
-        print ("Dish Pointing State", create_dish_proxy.pointingState)
-        print ("CSP subarray obsState:", create_cspsubarray1_proxy.obsState)
         assert tango_context.device.obsState == 2
         create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure

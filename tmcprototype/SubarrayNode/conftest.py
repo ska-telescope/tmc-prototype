@@ -55,13 +55,3 @@ def initialize_device(tango_context):
 def create_dish_proxy():
     dish_proxy = DeviceProxy("mid_d0001/elt/master")
     return dish_proxy
-
-@pytest.fixture(scope="class")
-def create_cbfsubarray1_proxy():
-    cbfsubarray1_proxy = DeviceProxy("mid_csp_cbf/sub_elt/subarray_01")
-    return cbfsubarray1_proxy
-
-@pytest.fixture(scope="class")
-def create_cspsubarray1_proxy():
-    cspsubarray1_proxy = DeviceProxy("mid_csp/elt/subarray_01")
-    return cspsubarray1_proxy
