@@ -152,7 +152,7 @@ class TestCspSubarrayLeafNode(object):
         assert CONST.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan_Device_Not_Ready
 
-    def test_ConfigureScan_invalid_json(self, tango_context):
+    def test_ConfigureScan_invalid_json(self, tango_context, create_cspsubarray1_proxy):
         """
         Test case to check invalid JSON format (Negative test case)
         :param tango_context:
@@ -163,7 +163,7 @@ class TestCspSubarrayLeafNode(object):
             tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
-        assert tango_context.device.obsState != CONST.ENUM_READY
+        assert create_cspsubarray1_proxy.obsState is not CONST.ENUM_READY
 
     def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
         """Test for ConfigureScan"""
