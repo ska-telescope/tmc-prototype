@@ -124,6 +124,34 @@ services:
       - archiverdb:/var/lib/mysql
     restart: on-failure
 
+  hdbpp-viewer:
+    image: nexus.engageska-portugal.pt/tango-example/hdbpp-viewer:latest
+    container_name: ${CONTAINER_NAME_PREFIX}hdbpp-viewer
+    network_mode: ${NETWORK_MODE}
+    depends_on:
+      - databaseds
+      - maria-db
+      - hdbpp-es
+      - hdbpp-cm
+    volumes:
+      - ${XAUTHORITY_MOUNT}
+    environment:
+      - XAUTHORITY=${XAUTHORITY}
+      - DISPLAY=${DISPLAY}
+      - TANGO_HOST=${TANGO_HOST}
+      - HDB_TYPE=mysql
+      - HDB_MYSQL_HOST=archiver-maria-db
+      - HDB_MYSQL_PORT=3307
+      - HDB_USER=tango
+      - HDB_PASSWORD=tango
+      - HDB_NAME=hdbpp
+    entrypoint:
+      - wait-for-it.sh
+      - ${TANGO_HOST}
+      - --timeout=30
+      - --strict
+      - --
+      - ./hdbpp_viewer/configure_hdbppViewer
 # TODO: FOR FUTURE REFERENCE
 #  timescaledb:
 #      image: timescale/timescaledb:latest-pg11
