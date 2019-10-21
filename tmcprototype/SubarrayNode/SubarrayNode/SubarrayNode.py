@@ -1264,6 +1264,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                 print("sdpConfiguration: ", sdpConfiguration)
                                 cmdData = tango.DeviceData()
                                 cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
+
+                                print("SDP SALN PROXY:", self._sdp_subarray_ln_proxy)
+
                                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
                                 print("SDP Configuration is initiated.")
                             else:
@@ -1293,6 +1296,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         cmdData = tango.DeviceData()
                         cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
                         # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
+
+                        print("_dish_leaf_node_group:", self._dish_leaf_node_group)
+
                         self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
                         print("Dish Configuration is initiated.")
                         # Invoke Track command on the group of Dishes assigned to the Subarray

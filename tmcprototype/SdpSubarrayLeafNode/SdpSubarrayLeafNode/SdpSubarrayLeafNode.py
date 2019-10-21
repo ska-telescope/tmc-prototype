@@ -421,6 +421,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         excpt_msg = []
         excpt_count = 0
         try:
+            print("SDP SA FQDN in LN:", self._sdp_subarray_proxy)
             # TODO : Check if obsState == IDLE
             # TODO : For future reference set toggleReadCbfOutLink to false to skip CbfOutLink validation
             # self._sdp_subarray_proxy.toggleReadCbfOutLink = False
