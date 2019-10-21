@@ -125,7 +125,7 @@ services:
     restart: on-failure
 
   hdbpp-viewer:
-    image: hdbpp-viewer:latest
+    image: nexus.engageska-portugal.pt/tango-example/hdbpp-viewer:latest
     container_name: ${CONTAINER_NAME_PREFIX}hdbpp-viewer
     network_mode: ${NETWORK_MODE}
     depends_on:
