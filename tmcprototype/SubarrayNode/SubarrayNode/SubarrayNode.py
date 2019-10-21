@@ -787,7 +787,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             else:
                 #TODO: Need to add code to revert allocated resources
                 argout = []
-
         # return dish_allocation_result
         return argout
 
@@ -1224,6 +1223,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
                             cmdData = tango.DeviceData()
                             cmdData.insert(tango.DevString, json.dumps(csp_config))
+
                             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
                             print("CSP Configuration is initiated.")
                         else:
