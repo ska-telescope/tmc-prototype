@@ -383,7 +383,7 @@ services:
       - rsyslog-tmcprototype:rw
 
   rsyslog-tmcprototype:
-    image: jumanjiman/rsyslog
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/rsyslog:latest
     container_name: ${CONTAINER_NAME_PREFIX}rsyslog
     network_mode: ${NETWORK_MODE}
 
