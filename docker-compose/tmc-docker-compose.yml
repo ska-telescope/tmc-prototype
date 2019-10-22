@@ -383,7 +383,8 @@ services:
       - rsyslog-tmcprototype:rw
 
   rsyslog-tmcprototype:
-    image: jumanjiman/rsyslog
+#    image: jumanjiman/rsyslog
+    image: https://hub.docker.com/r/jumanjiman/rsyslog
     container_name: ${CONTAINER_NAME_PREFIX}rsyslog
     network_mode: ${NETWORK_MODE}
 
