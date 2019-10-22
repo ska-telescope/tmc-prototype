@@ -318,6 +318,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         max_dim_x=2,
     )
 
+    toggleFault = attribute(
+        dtype='bool',
+        access=AttrWriteType.READ_WRITE,
+    )
+
     # ---------------
     # General methods
     # ---------------
@@ -360,8 +365,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self._scan_delta_t = 0
             self._azeloffset = [0, 0]
             self._azimuthoverwrap = False
+            self._toggle_fault = False
             self.set_status(CONST.STR_DISH_INIT_SUCCESS)
             self.dev_logging(CONST.STR_DISH_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.device_name = str(self.get_name())
         except Exception as except_occured:
             print(CONST.ERR_INIT_PROP_ATTR_DISH, self.ReceptorNumber)
             self.dev_logging(CONST.ERR_INIT_PROP_ATTR_DISH, int(tango.LogLevel.LOG_ERROR))
@@ -526,6 +533,17 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         return self._azeloffset
         # PROTECTED REGION END #    //  DishMaster.AzElOffset_read
 
+    def read_toggleFault(self):
+        # PROTECTED REGION ID(DishMaster.toggleFault_read) ENABLED START #
+        return self._toggle_fault
+        # PROTECTED REGION END #    //  DishMaster.toggleFault_read
+
+
+    def write_toggleFault(self, value):
+        # PROTECTED REGION ID(DishMaster.toggleFault_write) ENABLED START #
+        self._toggle_fault = value
+
+        # PROTECTED REGION END #    //  DishMaster.toggleFault_write
 
     # --------
     # Commands
@@ -985,6 +1003,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                float(actual_el_lim) <= self.preconfig_el_lim) is True:
             #if dish is within the preconfigured limit then dish will slew slowly (TRACK).
                 self._pointing_state = 2                    # Set pointingState to TRACK Mode
+                # Inject fault in DishMaster1 if toggle_fault is enabled as a part of Subarray Isolation
+                if self._toggle_fault and 'd0001' in self.device_name:
+                    # Set PointingState to SCAN to inject fault in DishMaster
+                    self._pointing_state = 3
                 self._achieved_pointing[1] = self._desired_pointing[1]
                 self._achieved_pointing[2] = self._desired_pointing[2]
                 print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
