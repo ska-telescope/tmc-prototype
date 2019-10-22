@@ -430,10 +430,10 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if "configureScan" in sdpConfiguration:
                 del sdpConfiguration["configureScan"]
             print ("sdpConfiguration :", sdpConfiguration)
-            self.dev_logging(sdpConfiguration, int(tango.LogLevel.LOG_INFO))
             self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                           self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURE_SUCCESS
+            self.dev_logging(str(sdpConfiguration), int(tango.LogLevel.LOG_DEBUG))
             self.dev_logging(CONST.STR_CONFIGURE_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except ValueError as value_error:

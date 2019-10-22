@@ -388,35 +388,34 @@ services:
     network_mode: ${NETWORK_MODE}
 
 # Required for future use
-#  configurelogger:
-#    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
-#    depends_on:
-#      - tmclogger
-#      - dishmaster1
-#      - dishmaster2
-#      - dishmaster3
-#      - dishmaster4
-#      - sdpmaster
-#      - cspsubarray
-#      - sdpsubarray
-#      - dishleafnode1
-#      - dishleafnode2
-#      - dishleafnode3
-#      - dishleafnode4
-#      - cspmasterleafnode
-#      - sdpmasterleafnode
-#      - subarraynode1
-#      - subarraynode2
-#      - sdpsubarrayleafnode
-#      - cspsubarrayleafnode
-#      - centralnode
-#    network_mode: ${NETWORK_MODE}
-#    container_name: ${CONTAINER_NAME_PREFIX}configurelogger
-#    environment:
-#    - TANGO_HOST=${TANGO_HOST}
-#    command: >
-#      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-#            /venv/bin/python /app/tmcprototype/configure_logging.py"
+  configurelogger:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - tmclogger
+      - dishmaster1
+      - dishmaster2
+      - dishmaster3
+      - dishmaster4
+      - dishleafnode1
+      - dishleafnode2
+      - dishleafnode3
+      - dishleafnode4
+      - cspmasterleafnode
+      - sdpmasterleafnode
+      - subarraynode1
+      - subarraynode2
+      - sdpsubarrayleafnode1
+      - cspsubarrayleafnode1
+      - sdpsubarrayleafnode2
+      - cspsubarrayleafnode2
+      - centralnode
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}configurelogger
+    environment:
+    - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+            /venv/bin/python /app/tmcprototype/configure_logging.py"
 
   tm-alarmhandler:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmalarmhandler
