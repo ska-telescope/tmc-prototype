@@ -538,11 +538,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         return self._toggle_fault
         # PROTECTED REGION END #    //  DishMaster.toggleFault_read
 
-
     def write_toggleFault(self, value):
         # PROTECTED REGION ID(DishMaster.toggleFault_write) ENABLED START #
         self._toggle_fault = value
-
         # PROTECTED REGION END #    //  DishMaster.toggleFault_write
 
     # --------
