@@ -218,6 +218,25 @@ services:
     volumes_from:
       - rsyslog-tmcprototype:rw
 
+  cspsubarrayleafnode3:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - cspsubarray3
+      - tmc-dsconfig
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}cspsubarrayleafnode3
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --ping-device mid_csp/elt/subarray_03 10 &&\
+             /venv/bin/python -u /app/tmcprototype/CspSubarrayLeafNode/CspSubarrayLeafNode/CspSubarrayLeafNode.py 03 v5"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
+
   cspmasterleafnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
@@ -272,6 +291,25 @@ services:
              sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
              tango_admin --ping-device mid_sdp/elt/subarray_2 10 &&\
              /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 02 v5"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
+
+  sdpsubarrayleafnode3:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - sdpsubarray3
+      - tmc-dsconfig
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}sdpsubarrayleafnode3
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --ping-device mid_sdp/elt/subarray_3 10 &&\
+             /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 03 v5"
     volumes_from:
       - rsyslog-tmcprototype:rw
 
@@ -353,6 +391,35 @@ services:
     volumes_from:
       - rsyslog-tmcprototype:rw
 
+  subarraynode3:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
+    depends_on:
+      - databaseds
+      - rsyslog-tmcprototype
+      - dishleafnode1
+      - dishleafnode2
+      - dishleafnode3
+      - dishleafnode4
+      - sdpsubarrayleafnode3
+      - cspsubarrayleafnode3
+      - tmc-dsconfig
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}subarraynode3
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             sudo ln -sf /var/run/rsyslog/dev/log /dev/log &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/d0002 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/d0003 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray03 10 &&\
+             tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray03 10 &&\
+             /venv/bin/python -u /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa3 v5"
+    volumes_from:
+      - rsyslog-tmcprototype:rw
+
   centralnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
@@ -360,6 +427,7 @@ services:
       - rsyslog-tmcprototype
       - subarraynode1
       - subarraynode2
+      - subarraynode3
       - cspmasterleafnode
       - sdpmasterleafnode
       - tmc-dsconfig
@@ -378,6 +446,7 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master 10 &&\
              tango_admin --ping-device ska_mid/tm_subarray_node/1 10 &&\
              tango_admin --ping-device ska_mid/tm_subarray_node/2 10 &&\
+             tango_admin --ping-device ska_mid/tm_subarray_node/3 10 &&\
              /venv/bin/python -u /app/tmcprototype/CentralNode/CentralNode/CentralNode.py 01 v5"
     volumes_from:
       - rsyslog-tmcprototype:rw
