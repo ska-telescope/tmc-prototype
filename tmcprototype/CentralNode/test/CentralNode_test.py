@@ -96,13 +96,13 @@ class TestCentralNode(object):
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  CentralNode.test_Reset
 
-    def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
-        """Test for StartUpTelescope"""
-        # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-        tango_context.device.StartUpTelescope()
-        time.sleep(10)
-        assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
-        # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
+    # def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
+    #     """Test for StartUpTelescope"""
+    #     # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
+    #     tango_context.device.StartUpTelescope()
+    #     time.sleep(10)
+    #     assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
+    #     # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
     def test_StartUpTelescope_Negative(self, tango_context):
         """Test for StartUpTelescope"""
