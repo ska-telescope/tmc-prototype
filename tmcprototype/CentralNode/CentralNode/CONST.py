@@ -68,6 +68,7 @@ STR_STANDBY_EXEC = "StandByTelescope command execution"
 #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SA1 = "ska_mid/tm_subarray_node/1"
 PROP_DEF_VAL_TM_MID_SA2 = "ska_mid/tm_subarray_node/2"
+PROP_DEF_VAL_TM_MID_SA3 = "ska_mid/tm_subarray_node/3"
 PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
 
 GET_DEVICE_LIST_TANGO_DB = "ska_mid/tm_leaf_node/d000*"

@@ -60,6 +60,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 elif CONST.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
                     self._subarray2_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
+                elif CONST.PROP_DEF_VAL_TM_MID_SA3 in evt.attr_name:
+                    self._subarray3_health_state = health_state
+                    self.subarray_health_state_map[evt.device] = health_state
                 elif self.CspMasterLeafNodeFQDN in evt.attr_name:
                     self._csp_master_leaf_health = health_state
                 elif self.SdpMasterLeafNodeFQDN in evt.attr_name:
@@ -201,6 +204,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
         doc="Health state of Subarray2",
     )
+    subarray3HealthState = attribute(
+        dtype='DevEnum',
+        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
+    )
 
     activityMessage = attribute(
         dtype='str',
@@ -219,6 +226,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             SKABaseDevice.init_device(self)
             self._subarray1_health_state = CONST.ENUM_OK
             self._subarray2_health_state = CONST.ENUM_OK
+            self._subarray3_health_state = CONST.ENUM_OK
             self.set_state(DevState.ON)
             # Initialise Properties
             self.SkaLevel = CONST.INT_SKA_LEVEL
@@ -354,6 +362,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Returns Subarray2 health state. """
         return self._subarray2_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray2_healthstate_read
+
+    def read_subarray3HealthState(self):
+        # PROTECTED REGION ID(CentralNode.subarray3HealthState_read) ENABLED START #
+        """ Returns Subarray3 health state. """
+        return self._subarray3_health_state
+        # PROTECTED REGION END #    //  CentralNode.subarray3HealthState_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
