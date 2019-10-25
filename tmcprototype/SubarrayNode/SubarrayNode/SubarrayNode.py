@@ -611,10 +611,21 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
+    # def waitToEndScan(self):
+    #     time.sleep(self.scan_duration)
+    #     print("Sending end scan command...")
+    #     self.EndScan()
+
     def waitToEndScan(self):
-        time.sleep(self.scan_duration)
-        print("Sending end scan command...")
-        self.EndScan()
+        scanning_time = 0.0
+        while scanning_time < self.scan_duration:
+            if self._endscan_stop == True:
+                print("Sending end scan command...")
+                self.EndScan()
+                break
+            else:
+                time.sleep(1)
+                scanning_time += 1
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -633,6 +644,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         excpt_count = 0
         excpt_msg = []
+        self._endscan_stop = True
         try:
             assert self._obs_state == CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_COMPLETED
             if self._obs_state == CONST.OBS_STATE_ENUM_SCANNING:
@@ -1054,6 +1066,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
         self._csp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
         self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
+        self._endscan_stop = False
 
 
         # Create proxy for CSP Subarray Leaf Node
