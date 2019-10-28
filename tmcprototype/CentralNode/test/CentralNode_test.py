@@ -40,7 +40,7 @@ import json
 # Look at devicetest examples for more advanced testing
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_subarray1_proxy", "create_leafNode1_proxy", "create_dish_proxy")
+@pytest.mark.usefixtures("tango_context", "initialize_device", "create_subarray1_proxy", "create_leafNode1_proxy", "create_dish_proxy")
 
 class TestCentralNode(object):
     """Test case for packet generation."""

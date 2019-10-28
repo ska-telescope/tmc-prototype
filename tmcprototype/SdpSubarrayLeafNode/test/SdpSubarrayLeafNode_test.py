@@ -40,7 +40,7 @@ import pytest
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_sdpsubarray_proxy")
+@pytest.mark.usefixtures("tango_context", "initialize_device", "create_sdpsubarray_proxy")
 class TestSdpSubarrayLeafNode(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_additionnal_import) ENABLED START #

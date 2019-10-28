@@ -43,7 +43,7 @@ import time
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context")
+@pytest.mark.usefixtures("tango_context", "initialize_device")
 
 class TestSdpMasterLeafNode(object):
     """Test case for packet generation."""
