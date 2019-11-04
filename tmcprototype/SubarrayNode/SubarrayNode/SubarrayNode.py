@@ -611,18 +611,17 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
-    # def waitToEndScan(self):
-    #     time.sleep(self.scan_duration)
-    #     print("Sending end scan command...")
-    #     self.EndScan()
-
     def waitToEndScan(self):
         scanning_time = 0.0
-        while scanning_time < self.scan_duration:
+        while scanning_time <= self.scan_duration:
+            # Stop thread, if EndScan command is invoked manually
             if self._endscan_stop == True:
-                print("Sending end scan command...")
+                break
+            # Stop thread, if scan duration is commpleted and EndScan is not invoked manually.
+            elif self._endscan_stop == False and scanning_time == self.scan_duration:
                 self.EndScan()
                 break
+            # Increment counter till maximum scan duration provided with scan command
             else:
                 time.sleep(1)
                 scanning_time += 1
