@@ -333,9 +333,6 @@ pages:
     - mv public/dishleafnode_htmlcov/* public
     - mv public/subarraynode_htmlcov/* public
     - mv public/centralnode_htmlcov/* public
-    # START: Gitlab CI badges creation
-    - curl -s https://gitlab.com/ska-telescope/ci-metrics-utilities/raw/master/scripts/ci-badges-func.sh | sh
-    # END: Gitlab CI badges creation
     - make push
   artifacts:
     paths:
