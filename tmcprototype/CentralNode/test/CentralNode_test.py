@@ -100,7 +100,7 @@ class TestCentralNode(object):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         tango_context.device.StartUpTelescope()
-        time.sleep(180)
+        time.sleep(10)
         print("activity msg test acse:", tango_context.device.activityMessage)
         assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
@@ -305,6 +305,12 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_subarray2HealthState) ENABLED START #
         assert tango_context.device.subarray2HealthState == 0
         # PROTECTED REGION END #    //  CentralNode.test_subarray2HealthState
+
+    def test_subarray3HealthState(self, tango_context):
+        """Test for subarray3HealthState"""
+        # PROTECTED REGION ID(CentralNode.test_subarray3HealthState) ENABLED START #
+        assert tango_context.device.subarray3HealthState == 0
+        # PROTECTED REGION END #    //  CentralNode.test_subarray3HealthState
 
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
