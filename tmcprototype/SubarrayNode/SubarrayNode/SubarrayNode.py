@@ -197,40 +197,52 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._health_state = CONST.ENUM_UNKNOWN
 
     def calculate_observation_state(self):
+        print("Inside calculate obs state")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
+            print("Inside list for")
             if value == CONST.POINTING_STATE_ENUM_TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == CONST.POINTING_STATE_ENUM_SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
 
         if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING:
+            print("scanning loop")
             self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
             # self.isScanning = True
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
+            print("ready loop")
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 self._obs_state = CONST.OBS_STATE_ENUM_READY
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING or \
                 self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
+            print("configuring loop")
             self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
+            print("Idle loop")
+            time.sleep(5)
             if len(self.dishPointingStateMap.values()) != 0:
                 if pointing_state_count_track == len(self.dishPointingStateMap.values()):
+                    print("Inside pointing loop")
                     if self.only_dishconfi_flag == True:
+                        print("Inside only flag")
                         if self.isScanning() == True:
                             self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
                         else:
                             self._obs_state = CONST.OBS_STATE_ENUM_READY
                     else:
+                        print("only flag false")
                         self._obs_state = CONST.OBS_STATE_ENUM_IDLE
                     # if self.isScanning == True:
                     #     self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
                     # else:
                     #     self._obs_state = CONST.OBS_STATE_ENUM_READY
                 elif pointing_state_count_slew != 0:
+                    print("Inside pointing elif")
                     self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
                 else:
+                    print("Inside pointing else")
                     self._obs_state = CONST.OBS_STATE_ENUM_IDLE
     def create_csp_ln_proxy(self):
         """
