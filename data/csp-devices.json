@@ -1476,7 +1476,7 @@
                             "SW2Address": [
                                 "mid_csp_cbf/vcc_sw2/003"
                             ],
-                            "SW2Address": [
+                            "SW3Address": [
                                 "mid_csp_cbf/vcc_sw3/003"
                             ],
                             "VccID": [
@@ -1586,8 +1586,7 @@
                 "VccSearchWindow": {
                     "mid_csp_cbf/vcc_sw1/004": {},
                     "mid_csp_cbf/vcc_sw2/004": {},
-                    "mid_csp_cbf/vcc_sw3
-                    /004": {}
+                    "mid_csp_cbf/vcc_sw3/004": {}
                 }
             }
         }

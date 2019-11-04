@@ -101,7 +101,6 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         tango_context.device.StartUpTelescope()
         time.sleep(10)
-        print("activity msg test acse:", tango_context.device.activityMessage)
         assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 

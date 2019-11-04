@@ -69,31 +69,31 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._sdp_master_leaf_health = health_state
                 else:
                     print(CONST.EVT_UNKNOWN)
-                    self._read_activity_message = CONST.EVT_UNKNOWN
+                    # self._read_activity_message = CONST.EVT_UNKNOWN
 
                 if health_state == CONST.ENUM_OK:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_OK)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_OK
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                    #                                                            ) + CONST.STR_OK
                 elif health_state == CONST.ENUM_DEGRADED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_DEGRADED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_DEGRADED
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                    #                                                            ) + CONST.STR_DEGRADED
                 elif health_state == CONST.ENUM_FAILED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_FAILED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_FAILED
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                    #                                                            ) + CONST.STR_FAILED
                 elif health_state == CONST.ENUM_UNKNOWN:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_UNKNOWN)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(
-                        evt.device) + CONST.STR_UNKNOWN
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(
+                    #     evt.device) + CONST.STR_UNKNOWN
                 else:
                     print(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 # Aggregated Health State
                 failed_health_count = 0
                 degraded_health_count = 0
@@ -133,19 +133,19 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._telescope_health_state = CONST.ENUM_UNKNOWN
             except KeyError as key_error:
                 print(CONST.ERR_SUBARRAY_HEALTHSTATE, key_error)
-                self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+                # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
                 self.dev_logging(CONST.ERR_SUBARRAY_HEALTHSTATE, int(tango.LogLevel.LOG_FATAL))
             except DevFailed as dev_failed:
                 print(CONST.ERR_SUBSR_SA_HEALTH_STATE, dev_failed)
-                self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
                 self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
             except Exception as except_occured:
                 print(CONST.ERR_AGGR_HEALTH_STATE, except_occured)
-                self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
+                # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
                 self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
         else:
             print(CONST.ERR_SUBSR_SA_HEALTH_STATE, evt)
-            self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
+            # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
             self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
