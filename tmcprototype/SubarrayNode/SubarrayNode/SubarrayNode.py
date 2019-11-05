@@ -42,7 +42,6 @@ from skabase.SKASubarray.SKASubarray import SKASubarray
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 __all__ = ["SubarrayNode", "main"]
-print("started")
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
     Provides the monitoring and control interface required by users as well as
@@ -58,18 +57,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return: None
         """
         if evt.err is False:
-            #print("inside if block")
             try:
-                #print("inside try block")
                 self._health_state = evt.attr_value.value
-                #print("health state is :",self._health_state)
-
                 if CONST.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
-                    #print("evt.attr_name :",evt.attr_name)
                     self._csp_sa = self._health_state
                     self.subarray_ln_health_state_map[evt.device] = self._health_state
-                    # print("evt.device :",evt.device)
-                    # print("subarray_ln_health_state_map[evt.device] :", self.subarray_ln_health_state_map[evt.device])
                 elif CONST.PROP_DEF_VAL_TMSDP_MID_SALN in evt.attr_name:
                     self._sdp_sa = self._health_state
                     self.subarray_ln_health_state_map[evt.device] = self._health_state
