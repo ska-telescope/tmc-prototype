@@ -42,7 +42,6 @@ from skabase.SKASubarray.SKASubarray import SKASubarray
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 __all__ = ["SubarrayNode", "main"]
-
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
     Provides the monitoring and control interface required by users as well as
@@ -60,7 +59,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         if evt.err is False:
             try:
                 self._health_state = evt.attr_value.value
-
                 if CONST.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa = self._health_state
                     self.subarray_ln_health_state_map[evt.device] = self._health_state
@@ -211,10 +209,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
             if len(self.dishPointingStateMap.values()) != 0:
                 if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                    if self.isScanning == True:
-                        self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
+                    if self.only_dishconfi_flag == True:
+                        if self.isScanning == True:
+                            self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
+                        else:
+                            self._obs_state = CONST.OBS_STATE_ENUM_READY
                     else:
-                        self._obs_state = CONST.OBS_STATE_ENUM_READY
+                        self._dish_leaf_node_group.command_inout(CONST.CMD_STOP_TRACK)
+                        self._obs_state = CONST.OBS_STATE_ENUM_IDLE
                 elif pointing_state_count_slew != 0:
                     self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
                 else:
@@ -1065,6 +1067,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
         self._csp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
         self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
+        self.only_dishconfi_flag = False
 
 
         # Create proxy for CSP Subarray Leaf Node
@@ -1193,6 +1196,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         excpt_count = 0
         excpt_msg = []
+
         try:
             self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
@@ -1293,7 +1297,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         self._read_activity_message = msg
                         self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
 
-                    if "pointing" in self._scanConfiguration and "dish" in self._scanConfiguration:
+                    # To check Dishonly configuration
+                    if "sdp" not in self._scanConfiguration and "csp" not in self._scanConfiguration \
+                            and "dish" in self._scanConfiguration:
+                        self.only_dishconfi_flag = True
+
+                    if ("pointing" in self._scanConfiguration and "dish" in self._scanConfiguration) \
+                        or (self.only_dishconfi_flag == True):
                         # Configuration of Dish
                         dishConfiguration = self._scanConfiguration.copy()
                         # Keep configuration specific to DISH and delete configuration of other nodes
