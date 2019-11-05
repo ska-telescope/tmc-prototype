@@ -552,11 +552,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
                 self._read_activity_message = CONST.STR_SCAN_SUCCESS
 
-            self.end_scan_thread = threading.Thread(None, self.waitToEndScan, "SubarrayNode")
+            self.end_scan_thread = threading.Thread(None, self.waitForEndScan, "SubarrayNode")
             self.end_scan_thread.start()
             # TODO: FOR FUTURE IMPLEMENTATION
             # with excpt_count is 0 and ThreadPoolExecutor(1) as executor:
-            #     status = executor.submit(self.waitToEndScan, scan_duration)
+            #     status = executor.submit(self.waitForEndScan, scan_duration)
             #     if status:
             #         # call endScan command
             #         print ("Sending end scan command...")
@@ -611,10 +611,21 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
-    def waitToEndScan(self):
-        time.sleep(self.scan_duration)
-        print("Sending end scan command...")
-        self.EndScan()
+    def waitForEndScan(self):
+        scanning_time = 0.0
+        while scanning_time <= self.scan_duration:
+            # Stop thread, if EndScan command is invoked manually
+            if self._endscan_stop == True:
+                break
+            # Stop thread, if scan duration is commpleted and EndScan is not invoked manually.
+            elif self._endscan_stop == False and scanning_time == self.scan_duration:
+                self.EndScan()
+                break
+            # Increment counter till maximum scan duration provided with scan command
+            else:
+                time.sleep(1)
+                scanning_time += 1
+
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
