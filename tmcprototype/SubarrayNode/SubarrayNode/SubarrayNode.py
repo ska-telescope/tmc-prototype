@@ -627,6 +627,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             else:
                 time.sleep(1)
                 scanning_time += 1
+        self._endscan_stop = False
 
 
     def is_Scan_allowed(self):
