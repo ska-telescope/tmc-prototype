@@ -305,6 +305,12 @@ class TestCentralNode(object):
         assert tango_context.device.subarray2HealthState == 0
         # PROTECTED REGION END #    //  CentralNode.test_subarray2HealthState
 
+    def test_subarray3HealthState(self, tango_context):
+        """Test for subarray3HealthState"""
+        # PROTECTED REGION ID(CentralNode.test_subarray3HealthState) ENABLED START #
+        assert tango_context.device.subarray3HealthState == 0
+        # PROTECTED REGION END #    //  CentralNode.test_subarray3HealthState
+
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(CentralNode.test_activityMessage) ENABLED START #

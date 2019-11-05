@@ -60,37 +60,46 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 elif CONST.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
                     self._subarray2_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
+                elif CONST.PROP_DEF_VAL_TM_MID_SA3 in evt.attr_name:
+                    self._subarray3_health_state = health_state
+                    self.subarray_health_state_map[evt.device] = health_state
                 elif self.CspMasterLeafNodeFQDN in evt.attr_name:
                     self._csp_master_leaf_health = health_state
                 elif self.SdpMasterLeafNodeFQDN in evt.attr_name:
                     self._sdp_master_leaf_health = health_state
                 else:
                     print(CONST.EVT_UNKNOWN)
-                    self._read_activity_message = CONST.EVT_UNKNOWN
+                    # TODO: For future reference
+                    # self._read_activity_message = CONST.EVT_UNKNOWN
 
                 if health_state == CONST.ENUM_OK:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_OK)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_OK
+                    # TODO: For future reference
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                    #                                                            ) + CONST.STR_OK
                 elif health_state == CONST.ENUM_DEGRADED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_DEGRADED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_DEGRADED
+                    # TODO: For future reference
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                    #                                                            ) + CONST.STR_DEGRADED
                 elif health_state == CONST.ENUM_FAILED:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_FAILED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + CONST.STR_FAILED
+                    # TODO: For future reference
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
+                    #                                                            ) + CONST.STR_FAILED
                 elif health_state == CONST.ENUM_UNKNOWN:
                     print(CONST.STR_HEALTH_STATE + str(evt.device
                                                        ) + CONST.STR_UNKNOWN)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(
-                        evt.device) + CONST.STR_UNKNOWN
+                    # TODO: For future reference
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(
+                    #     evt.device) + CONST.STR_UNKNOWN
                 else:
                     print(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
+                    # TODO: For future reference
+                    # self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 # Aggregated Health State
                 failed_health_count = 0
                 degraded_health_count = 0
@@ -130,19 +139,23 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._telescope_health_state = CONST.ENUM_UNKNOWN
             except KeyError as key_error:
                 print(CONST.ERR_SUBARRAY_HEALTHSTATE, key_error)
-                self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+                # TODO: For future reference
+                # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
                 self.dev_logging(CONST.ERR_SUBARRAY_HEALTHSTATE, int(tango.LogLevel.LOG_FATAL))
             except DevFailed as dev_failed:
                 print(CONST.ERR_SUBSR_SA_HEALTH_STATE, dev_failed)
-                self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                # TODO: For future reference
+                # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
                 self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
             except Exception as except_occured:
                 print(CONST.ERR_AGGR_HEALTH_STATE, except_occured)
-                self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
+                # TODO: For future reference
+                # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
                 self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
         else:
             print(CONST.ERR_SUBSR_SA_HEALTH_STATE, evt)
-            self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
+            # TODO: For future reference
+            # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
             self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
@@ -201,6 +214,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
         doc="Health state of Subarray2",
     )
+    subarray3HealthState = attribute(
+        dtype='DevEnum',
+        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
+    )
 
     activityMessage = attribute(
         dtype='str',
@@ -219,6 +236,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             SKABaseDevice.init_device(self)
             self._subarray1_health_state = CONST.ENUM_OK
             self._subarray2_health_state = CONST.ENUM_OK
+            self._subarray3_health_state = CONST.ENUM_OK
             self.set_state(DevState.ON)
             # Initialise Properties
             self.SkaLevel = CONST.INT_SKA_LEVEL
@@ -354,6 +372,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Returns Subarray2 health state. """
         return self._subarray2_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray2_healthstate_read
+
+    def read_subarray3HealthState(self):
+        # PROTECTED REGION ID(CentralNode.subarray3HealthState_read) ENABLED START #
+        """ Returns Subarray3 health state. """
+        return self._subarray3_health_state
+        # PROTECTED REGION END #    //  CentralNode.subarray3HealthState_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
