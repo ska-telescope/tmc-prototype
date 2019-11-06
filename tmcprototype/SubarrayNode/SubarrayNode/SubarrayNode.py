@@ -629,7 +629,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 scanning_time += 1
         self._endscan_stop = False
 
-
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
