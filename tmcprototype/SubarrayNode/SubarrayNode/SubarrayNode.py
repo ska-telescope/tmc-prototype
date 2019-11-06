@@ -627,7 +627,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             else:
                 time.sleep(1)
                 scanning_time += 1
-
+        self._endscan_stop = False
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -646,6 +646,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         excpt_count = 0
         excpt_msg = []
+        self._endscan_stop = True
         try:
             assert self._obs_state == CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_COMPLETED
             if self._obs_state == CONST.OBS_STATE_ENUM_SCANNING:
@@ -1068,6 +1069,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._csp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
         self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
         self.only_dishconfi_flag = False
+        self._endscan_stop = False
 
 
         # Create proxy for CSP Subarray Leaf Node
