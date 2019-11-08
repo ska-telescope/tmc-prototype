@@ -129,6 +129,15 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.STR_REL_RESOURCES in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseAllResources
 
+    def test_Scan_device_not_ready(self, tango_context, create_sdpsubarray_proxy):
+        """Test for Scan"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_device_not_ready) ENABLED START #
+        test_input = '{"scanDuration":0}'
+        tango_context.device.Scan(test_input)
+        time.sleep(1)
+        assert CONST.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
+
     def test_Configure(self, tango_context, create_sdpsubarray_proxy):
         """Test for Configure"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Configure) ENABLED START #
@@ -167,6 +176,26 @@ class TestSdpSubarrayLeafNode(object):
             tango_context.device.Configure(test_input)
         assert CONST.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+
+    def test_Scan_invalid_json_format(self, tango_context):
+        """Test for Scan"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_invalid_json_format) ENABLED START #
+        test_input = '{"abc"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan(test_input)
+        time.sleep(1)
+        assert CONST.ERR_INVALID_JSON_SCAN in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_invalid_json_format
+
+    def test_Scan_key_error(self, tango_context):
+        """Test for Scan"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_key_error) ENABLED START #
+        test_input = '{"Duration":10}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan(test_input)
+        time.sleep(1)
+        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_key_error
 
     def test_Scan(self, tango_context, create_sdpsubarray_proxy):
         """Test for Scan"""
