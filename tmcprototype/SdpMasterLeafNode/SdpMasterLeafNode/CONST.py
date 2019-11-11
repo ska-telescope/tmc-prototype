@@ -13,6 +13,8 @@ STR_SDPMASTER_FQDN = "SdpMasterFQDN :-> "
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the device "
 STR_FALSE = "False"
 STR_SDP_MASTER_FQDN = "mid-sdp/elt/master"
+STR_OFF_CMD_SUCCESS = "SdpMasterLeafNode.Off command executed successfully."
+STR_DISABLE_CMS_SUCCESS = "SdpMasterLeafNode.Disable command executed successfully."
 #
 #
 # Error messages
