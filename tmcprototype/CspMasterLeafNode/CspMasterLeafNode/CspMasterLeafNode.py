@@ -373,39 +373,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
 
-    @command(
-        dtype_in='DevEnum',
-        doc_in="adminMode",
-    )
-    @DebugIt()
-    def SetCbfAdminMode(self, argin):
-        # PROTECTED REGION ID(CspMasterLeafNode.SetCbfAdminMode) ENABLED START #
-        """Sets Admin Mode of the CSP Cbf."""
-        self._csp_proxy.command_inout_asynch(CONST.CMD_SET_CBF_ADMIN_MODE, argin, self.commandCallback)
-        # PROTECTED REGION END #    //  CspMasterLeafNode.SetCbfAdminMode
-
-    @command(
-        dtype_in='DevEnum',
-        doc_in="adminMode",
-    )
-    @DebugIt()
-    def SetPssAdminMode(self, argin):
-        # PROTECTED REGION ID(CspMasterLeafNode.SetPssAdminMode) ENABLED START #
-        """Sets Admin Mode of the CSP Pss."""
-        self._csp_proxy.command_inout_asynch(CONST.CMD_SET_PSS_ADMIN_MODE, argin, self.commandCallback)
-        # PROTECTED REGION END #    //  CspMasterLeafNode.SetPssAdminMode
-
-    @command(
-        dtype_in='DevEnum',
-        doc_in="adminMode",
-    )
-    @DebugIt()
-    def SetPstAdminMode(self, argin):
-        # PROTECTED REGION ID(CspMasterLeafNode.SetPstAdminMode) ENABLED START #
-        """Sets Admin Mode of the CSP Pst."""
-        self._csp_proxy.command_inout_asynch(CONST.CMD_SET_PST_ADMIN_MODE, argin, self.commandCallback)
-        # PROTECTED REGION END #    //  CspMasterLeafNode.SetPstAdminMode
-
 # ----------
 # Run server
 # ----------
