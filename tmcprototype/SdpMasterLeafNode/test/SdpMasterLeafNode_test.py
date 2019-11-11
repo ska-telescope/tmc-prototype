@@ -203,3 +203,17 @@ class TestSdpMasterLeafNode(object):
         assert tango_context.device.ProcessingBlockList
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_ProcessingBlockList
 
+    def test_Off(self, tango_context):
+        """Test for Off command"""
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_Off) ENABLED START #
+        tango_context.device.Off()
+        assert tango_context.device.activityMessage in CONST.STR_OFF_CMD_SUCCESS
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Off
+
+    def test_Disable(self, tango_context):
+        """Test for Off command"""
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_Off) ENABLED START #
+        tango_context.device.Disable()
+        assert tango_context.device.activityMessage in CONST.STR_DISABLE_CMS_SUCCESS
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Off
+
