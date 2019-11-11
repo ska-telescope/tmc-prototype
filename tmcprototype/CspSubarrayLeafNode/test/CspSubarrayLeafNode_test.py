@@ -67,12 +67,6 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_mocking) ENABLED START #
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_mocking
 
-    def test_activityMessage(self, tango_context):
-        """Test for activityMessage"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_activityMessage) ENABLED START #
-        assert tango_context.device.activityMessage == " "
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_activityMessage
-
     def test_State(self, tango_context):
         """Test for State"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_State) ENABLED START #
@@ -164,6 +158,18 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
         assert create_cspsubarray1_proxy.obsState is not CONST.ENUM_READY
+
+    def test_StartScan_generic_exception(self, tango_context):
+        """
+        Test case to check generic exception (Negative test case)
+        :param tango_context:
+        :return:
+        """
+        StartScan_input = '[123]'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StartScan(StartScan_input)
+        time.sleep(1)
+        assert CONST.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
     def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
         """Test for ConfigureScan"""
@@ -325,3 +331,10 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_opState) ENABLED START #
         assert tango_context.device.opState == 0
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_opState
+
+    def test_activityMessage(self, tango_context):
+        """Test for activityMessage"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_activityMessage) ENABLED START #
+        tango_context.device.activityMessage = 'text'
+        assert tango_context.device.activityMessage == 'text'
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_activityMessage
