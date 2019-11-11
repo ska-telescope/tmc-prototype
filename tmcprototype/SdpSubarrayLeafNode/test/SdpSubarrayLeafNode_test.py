@@ -71,12 +71,6 @@ class TestSdpSubarrayLeafNode(object):
         assert tango_context.device.State() == DevState.ALARM
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_State
 
-    def test_activityMessage(self, tango_context):
-        """Test for activityMessage"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_activityMessage) ENABLED START #
-        assert tango_context.device.activityMessage == ""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_activityMessage
-
     def test_sdpSubarrayHealthState(self, tango_context, create_sdpsubarray_proxy):
         """Test for sdpSubarrayHealthState"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_sdpSubarrayHealthState) ENABLED START #
@@ -121,6 +115,15 @@ class TestSdpSubarrayLeafNode(object):
             tango_context.device.AssignResources(test_input)
         assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+
+    def test_AssignResources_generic_exception(self, tango_context):
+        """Test for AssignResources_invalid_format"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources_generic_exception) ENABLED START #
+        test_input = '[123]'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(test_input)
+        assert CONST.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources_generic_exception
 
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""
@@ -177,6 +180,15 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
+    def test_Configure_generic_exception(self, tango_context):
+        """Test for Configure command with invalid_format"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Configure_generic_exception) ENABLED START #
+        test_input = '[123]'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure(test_input)
+        assert CONST.ERR_CONFIGURE in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Configure_generic_exception
+
     def test_Scan_invalid_json_format(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_invalid_json_format) ENABLED START #
@@ -196,6 +208,15 @@ class TestSdpSubarrayLeafNode(object):
         time.sleep(1)
         assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_key_error
+
+    def test_Scan_generic_exception(self, tango_context):
+        """Test for Configure command with invalid_format"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_generic_exception) ENABLED START #
+        test_input = '[123]'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan(test_input)
+        assert CONST.ERR_SCAN in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_generic_exception
 
     def test_Scan(self, tango_context, create_sdpsubarray_proxy):
         """Test for Scan"""
@@ -317,3 +338,10 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_activeProcessingBlocks) ENABLED START #
         assert tango_context.device.activeProcessingBlocks == ""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_activeProcessingBlocks
+
+    def test_activityMessage(self, tango_context):
+        """Test for activityMessage"""
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_activityMessage) ENABLED START #
+        tango_context.device.activityMessage = "test"
+        assert tango_context.device.activityMessage == "test"
+        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_activityMessage
