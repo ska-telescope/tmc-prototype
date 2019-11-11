@@ -153,6 +153,19 @@ class TestSubarrayNode(object):
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
+    def test_Scan_Negative_InvalidDataType(self, tango_context):
+        """Test for InvalidScan"""
+        # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
+        test_input = '{"scanDuration": "abc"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan(test_input)
+        time.sleep(5)
+        print("tango activity msg:", tango_context.device.activityMessage)
+        print("code activity msg:", CONST.ERR_INVALID_DATATYPE)
+        assert CONST.ERR_INVALID_DATATYPE in tango_context.device.activityMessage
+        # assert tango_context.device.activityMessage == CONST.ERR_INVALID_DATATYPE
+        # PROTECTED REGION END #    //  SubarrayNode.test_Scan_Negative_InvalidDataType
+
     def test_EndSB(self, tango_context):
         """Test for EndSB command."""
         # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
