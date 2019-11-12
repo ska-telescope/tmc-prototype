@@ -159,6 +159,19 @@ class TestCspSubarrayLeafNode(object):
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
         assert create_cspsubarray1_proxy.obsState is not CONST.ENUM_READY
 
+    # def test_ConfigureScan_generic_exception(self, tango_context):
+    #     """
+    #     Test case to check generic exception (Negative test case)
+    #     :param tango_context:
+    #     :return:
+    #     """
+    #     ConfigureScan_input = '[123]'
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.StartScan(ConfigureScan_input)
+    #     time.sleep(1)
+    #     assert CONST.ERR_CONFIGURESCAN_INVOKING_CMD in tango_context.device.activityMessage
+
+
     def test_StartScan_generic_exception(self, tango_context):
         """
         Test case to check generic exception (Negative test case)

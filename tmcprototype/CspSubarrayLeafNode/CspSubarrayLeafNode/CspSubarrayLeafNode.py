@@ -68,7 +68,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_thowing(except_occurred, excpt_msg, excpt_count, CONST.ERR_EXCEPT_CMD_CB)
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_EXCEPT_CMD_CB)
 
             # self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
             # self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
@@ -210,12 +210,13 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except_count += 1
         return [excpt_msg_list, except_count]
 
-    def exception_thowing(self, except_occ, excpt_msg_list, excpt_count,read_actvity_msg ):
-        self.dev_logging(read_actvity_msg + str(except_occ),
+    def exception_generic_exception(self, exception, excpt_msg_list, except_count,read_actvity_msg ):
+        self.dev_logging(read_actvity_msg + str(exception),
                          int(tango.LogLevel.LOG_ERROR))
-        self._read_activity_message = read_actvity_msg + str(except_occ)
+        self._read_activity_message = read_actvity_msg + str(exception)
         excpt_msg_list.append(self._read_activity_message)
-        excpt_count += 1
+        except_count += 1
+        return [excpt_msg_list, except_count]
 
     def throw_exception(self, excpt_msg_list, read_actvity_msg):
         err_msg = ' '
@@ -427,7 +428,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # excpt_count += 1
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_thowing(except_occurred, excpt_msg, excpt_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
+            [excpt_count, excpt_msg] = self.exception_generic_exception( except_occurred, excpt_msg, excpt_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
 
             # self.dev_logging(CONST.ERR_CONFIGURESCAN_INVOKING_CMD  + str(except_occurred),
             #                  int(tango.LogLevel.LOG_ERROR))
@@ -488,7 +489,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # excpt_count += 1
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_thowing(except_occurred, excpt_msg, excpt_count,
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
                                                               CONST.ERR_STARTSCAN_RESOURCES)
 
             # self.dev_logging(CONST.ERR_STARTSCAN_RESOURCES  + str(except_occurred),
@@ -541,7 +542,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # excpt_count += 1
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_thowing(except_occurred, excpt_msg, excpt_count,
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
                                                               CONST.ERR_ENDSCAN_INVOKING_CMD)
             # self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(except_occurred),
             #                  int(tango.LogLevel.LOG_ERROR))
@@ -590,7 +591,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # excpt_count += 1
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_thowing(except_occurred, excpt_msg, excpt_count,
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
                                                               CONST.ERR_RELEASE_ALL_RESOURCES)
 
             # self.dev_logging(CONST.ERR_RELEASE_ALL_RESOURCES  + str(except_occurred),
@@ -680,7 +681,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # excpt_msg.append(self._read_activity_message)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_thowing(except_occurred, excpt_msg, excpt_count,
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
                                                               CONST.ERR_ASSGN_RESOURCES)
 
             # self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
@@ -730,7 +731,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # excpt_msg.append(self._read_activity_message)
             # excpt_count += 1
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_thowing(except_occurred, excpt_msg, excpt_count,
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
                                                               CONST.ERR_ENDSB_INVOKING_CMD)
 
             # self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.

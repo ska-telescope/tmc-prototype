@@ -90,8 +90,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._read_activity_message = CONST.STR_DISH_UNKNOWN_MODE + str(evt)
             except Exception as except_occurred:
                 print(CONST.ERR_DISH_MODE_CB, except_occurred.message)
-                self._read_activity_message = CONST.ERR_DISH_MODE_CB + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_DISH_MODE_CB, int(tango.LogLevel.LOG_ERROR))
+                self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_MODE_CB)
+                # self._read_activity_message = CONST.ERR_DISH_MODE_CB + str(except_occurred.message)
+                # self.dev_logging(CONST.ERR_DISH_MODE_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print(CONST.ERR_ON_SUBS_DISH_MODE_ATTR, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
@@ -118,8 +119,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._read_activity_message = CONST.STR_DISH_CAPTURING_UNKNOWN + str(evt)
             except Exception as except_occurred:
                 print(CONST.ERR_DISH_CAPTURING_CB, except_occurred.message)
-                self._read_activity_message = CONST.ERR_DISH_CAPTURING_CB + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_DISH_CAPTURING_CB, int(tango.LogLevel.LOG_ERROR))
+                self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_CAPTURING_CB)
+
+                # self._read_activity_message = CONST.ERR_DISH_CAPTURING_CB + str(except_occurred.message)
+                # self.dev_logging(CONST.ERR_DISH_CAPTURING_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print(CONST.ERR_SUBSR_CAPTURING_ATTR, evt.errors)
             self._read_activity_message = CONST.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
@@ -139,8 +142,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
             except Exception as except_occurred:
                 print(CONST.ERR_DISH_ACHVD_POINT, except_occurred.message)
-                self._read_activity_message = CONST.ERR_DISH_ACHVD_POINT + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_DISH_ACHVD_POINT, int(tango.LogLevel.LOG_ERROR))
+                self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_ACHVD_POINT)
+
+                # self._read_activity_message = CONST.ERR_DISH_ACHVD_POINT + str(except_occurred.message)
+                # self.dev_logging(CONST.ERR_DISH_ACHVD_POINT, int(tango.LogLevel.LOG_ERROR))
         else:
             print(CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
@@ -160,8 +165,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.STR_DESIRED_POINTING + str(self._desired_pointing)
             except Exception as except_occurred:
                 print(CONST.ERR_DISH_DESIRED_POINT, except_occurred.message)
-                self._read_activity_message = CONST.ERR_DISH_DESIRED_POINT + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_DISH_DESIRED_POINT, int(tango.LogLevel.LOG_ERROR))
+                self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_DESIRED_POINT)
+
+                # self._read_activity_message = CONST.ERR_DISH_DESIRED_POINT + str(except_occurred.message)
+                # self.dev_logging(CONST.ERR_DISH_DESIRED_POINT, int(tango.LogLevel.LOG_ERROR))
         else:
             print(CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
@@ -187,18 +194,23 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
-            self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+
+            [excpt_count,excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_EXCEPT_CMD_CB)
+
+            # self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
+            # self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
+            # excpt_msg.append(self._read_activity_message)
+            # excpt_count += 1
 
         # Throw Exception
         if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_CMD_CALLBK, tango.ErrSeverity.ERR)
+            self.throw_exception(excpt_msg, CONST.STR_CMD_CALLBK)
+
+            # err_msg = ' '
+            # for item in excpt_msg:
+            #     err_msg += item + "\n"
+            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+            #                              CONST.STR_CMD_CALLBK, tango.ErrSeverity.ERR)
 
     def dmstodd(self, dish_antenna_latitude):
         """Converts latitude from deg:min:sec to decimal degree format.
@@ -277,8 +289,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL_VAL_ERR, int(tango.LogLevel.LOG_ERROR))
         except Exception as except_occurred:
             self.RaDec_AzEl_Conversion = False
-            self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
-            self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
+
+            self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_RADEC_TO_AZEL)
+            # self._read_activity_message = CONST.ERR_RADEC_TO_AZEL + str(except_occurred)
+            # self.dev_logging(CONST.ERR_RADEC_TO_AZEL, int(tango.LogLevel.LOG_ERROR))
 
     def tracking_time_thread(self):
         """This thread allows the dish to track the source for a specified Duration.
@@ -344,8 +358,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #self._dish_proxy.pointingState = 0
         except Exception as except_occurred:
             print(CONST.ERR_EXE_TRACK, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_TRACK + str(except_occurred)
-            self.dev_logging(CONST.ERR_EXE_TRACK, int(tango.LogLevel.LOG_ERROR))
+            self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_EXE_TRACK)
+
+            # self._read_activity_message = CONST.ERR_EXE_TRACK + str(except_occurred)
+            # self.dev_logging(CONST.ERR_EXE_TRACK, int(tango.LogLevel.LOG_ERROR))
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
@@ -449,6 +465,21 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Internal construct of TANGO. """
         # PROTECTED REGION END #    //  DishLeafNode.delete_device
 
+
+    def exception_generic_exception(self, exception, excpt_msg_list, except_count, read_actvity_msg):
+        self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
+        self._read_activity_message = read_actvity_msg + str(exception)
+        excpt_msg_list.append(self._read_activity_message)
+        except_count += 1
+        return [excpt_msg_list, except_count]
+
+    def throw_exception(self, excpt_msg_list, read_actvity_msg):
+        err_msg = ' '
+        for item in excpt_msg_list:
+            err_msg += item + "\n"
+        tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+
+
     # ------------------
     # Attributes methods
     # ------------------
@@ -548,11 +579,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Throw Exception
         if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
+            self.throw_exception(excpt_msg, CONST.STR_SCAN_EXEC)
+
+            # err_msg = ' '
+            # for item in excpt_msg:
+            #     err_msg += item + "\n"
+            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+            #                              CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Scan
 
     @command(
@@ -586,11 +619,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Throw Exception
         if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
+            self.throw_exception(excpt_msg, CONST.STR_ENDSCAN_EXEC)
+
+            # err_msg = ' '
+            # for item in excpt_msg:
+            #     err_msg += item + "\n"
+            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+            #                              CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.EndScan
 
     @command(
@@ -659,18 +694,22 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except Exception as except_occurred:
             print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD + str(except_occurred)
-            self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            [excpt_count,excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_EXE_CONFIGURE_CMD)
+
+            # self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD + str(except_occurred)
+            # self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD, int(tango.LogLevel.LOG_ERROR))
+            # excpt_msg.append(self._read_activity_message)
+            # excpt_count += 1
 
         # Throw Exception
         if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+            self.throw_exception(excpt_msg, CONST.STR_CONFIGURE_EXEC)
+
+            # err_msg = ' '
+            # for item in excpt_msg:
+            #     err_msg += item + "\n"
+            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+            #                              CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Configure
 
     def is_Configure_allowed(self):
@@ -705,11 +744,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Throw Exception
         if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_STARTCAPTURE_EXEC, tango.ErrSeverity.ERR)
+            self.throw_exception(excpt_msg, CONST.STR_STARTCAPTURE_EXEC)
+
+            # err_msg = ' '
+            # for item in excpt_msg:
+            #     err_msg += item + "\n"
+            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+            #                              CONST.STR_STARTCAPTURE_EXEC, tango.ErrSeverity.ERR)
 
 
         # PROTECTED REGION END #    //  DishLeafNode.StartCapture
@@ -740,11 +781,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Throw Exception
         if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_STOPCAPTURE_EXEC, tango.ErrSeverity.ERR)
+            self.throw_exception(excpt_msg, CONST.STR_STOPCAPTURE_EXEC)
+
+            # err_msg = ' '
+            # for item in excpt_msg:
+            #     err_msg += item + "\n"
+            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+            #                              CONST.STR_STOPCAPTURE_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.StopCapture
 
     @command(
@@ -788,11 +831,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Throw Exception
         if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_SLEW_EXEC, tango.ErrSeverity.ERR)
+            self.throw_exception(excpt_msg, CONST.STR_SLEW_EXEC)
+
+            # err_msg = ' '
+            # for item in excpt_msg:
+            #     err_msg += item + "\n"
+            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+            #                              CONST.STR_SLEW_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Slew
 
     @command(
@@ -847,11 +892,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Throw Exception
         if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
+            self.throw_exception(excpt_msg, CONST.STR_TRACK_EXEC)
+
+            # err_msg = ' '
+            # for item in excpt_msg:
+            #     err_msg += item + "\n"
+            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+            #                              CONST.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
 
@@ -881,18 +928,22 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except Exception as except_occurred:
             print(CONST.ERR_EXE_STOP_TRACK_CMD, except_occurred)
-            self._read_activity_message = CONST.ERR_EXE_STOP_TRACK_CMD + str(except_occurred)
-            self.dev_logging(CONST.ERR_EXE_STOP_TRACK_CMD, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            [excpt_count,excpt_msg] = self.devfailed_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_EXE_STOP_TRACK_CMD)
+
+            # self._read_activity_message = CONST.ERR_EXE_STOP_TRACK_CMD + str(except_occurred)
+            # self.dev_logging(CONST.ERR_EXE_STOP_TRACK_CMD, int(tango.LogLevel.LOG_ERROR))
+            # excpt_msg.append(self._read_activity_message)
+            # excpt_count += 1
 
         # Throw Exception
         if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_STOPTRACK_EXEC, tango.ErrSeverity.ERR)
+            self.throw_exception(excpt_msg, CONST.STR_STOPTRACK_EXEC)
+
+            # err_msg = ' '
+            # for item in excpt_msg:
+            #     err_msg += item + "\n"
+            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
+            #                              CONST.STR_STOPTRACK_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishLeafNode.StopTrack
 
