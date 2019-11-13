@@ -569,8 +569,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         try:
             self.scan_duration = int(json_scan_duration['scanDuration'])
             print(CONST.STR_SCAN_IP_ARG, argin)
+            assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
             if self._obs_state == CONST.OBS_STATE_ENUM_READY:
-                assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
                 self._read_activity_message = CONST.STR_SCAN_IP_ARG + argin
                 self.isScanning = True
                 # Invoke Scan command on SDP Subarray Leaf Node
@@ -728,11 +728,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # self.set_status(CONST.STR_SCAN_COMPLETE)
                 # self.dev_logging(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
         except DevFailed as dev_failed:
-            print(CONST.ERR_END_SCAN_CMD_ON_GROUP, "\n", dev_failed)
-            self._read_activity_message = CONST.ERR_END_SCAN_CMD_ON_GROUP + str(dev_failed)
-            self.dev_logging(CONST.ERR_END_SCAN_CMD_ON_GROUP, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+                                                                CONST.ERR_END_SCAN_CMD_ON_GROUP)
+            # print(CONST.ERR_END_SCAN_CMD_ON_GROUP, "\n", dev_failed)
+            # self._read_activity_message = CONST.ERR_END_SCAN_CMD_ON_GROUP + str(dev_failed)
+            # self.dev_logging(CONST.ERR_END_SCAN_CMD_ON_GROUP, int(tango.LogLevel.LOG_ERROR))
+            # excpt_msg.append(self._read_activity_message)
+            # excpt_count += 1
         except AssertionError as assert_err:
             print(CONST.ERR_DUPLICATE_END_SCAN_CMD, "\n", assert_err)
             self._read_activity_message = CONST.ERR_DUPLICATE_END_SCAN_CMD
@@ -1402,11 +1404,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
         except DevFailed as dev_failed:
-            print(CONST.ERR_CONFIGURE_CMD_GROUP, "\n", dev_failed)
-            self._read_activity_message = CONST.ERR_CONFIGURE_CMD_GROUP + str(dev_failed)
-            self.dev_logging(CONST.ERR_CONFIGURE_CMD_GROUP, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+                                                                CONST.ERR_CONFIGURE_CMD_GROUP)
+            # print(CONST.ERR_CONFIGURE_CMD_GROUP, "\n", dev_failed)
+            # self._read_activity_message = CONST.ERR_CONFIGURE_CMD_GROUP + str(dev_failed)
+            # self.dev_logging(CONST.ERR_CONFIGURE_CMD_GROUP, int(tango.LogLevel.LOG_ERROR))
+            # excpt_msg.append(self._read_activity_message)
+            # excpt_count += 1
         except Exception as except_occurred:
             [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
                                                                         excpt_count, CONST.ERR_CONFIGURE_CMD)
@@ -1458,10 +1462,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
                 self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
         except DevFailed as dev_failed:
-            self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+                                                                CONST.ERR_ENDSB_INVOKING_CMD)
+            # self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            # self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
+            # excpt_msg.append(self._read_activity_message)
+            # excpt_count += 1
         except Exception as except_occurred:
             [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
                                                                         excpt_count, CONST.ERR_ENDSB_INVOKING_CMD)
