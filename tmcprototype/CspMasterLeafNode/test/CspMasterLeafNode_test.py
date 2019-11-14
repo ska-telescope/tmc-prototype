@@ -186,21 +186,21 @@ class TestCspMasterLeafNode(object):
         assert  tango_context.device.activityMessage == "text"
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_activityMessage
 
-    def test_Standby(self, tango_context):
-        """Test for Standby"""
-        # PROTECTED REGION ID(CspMasterLeafNode.test_Standby) ENABLED START #
-        #tango_context.device.Standby([])
-        tango_context.device.Standby([])
-        time.sleep(1)
-        assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  CspMasterLeafNode.test_Standby
-
-    def test_Off(self, tango_context):
-        """Test for Off"""
-        # PROTECTED REGION ID(CspMasterLeafNode.test_Off) ENABLED START #
-        #tango_context.device.Off([])
-        tango_context.device.Off([])
-        time.sleep(1)
-        assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
-        #tango_context.device.On([])
-        # PROTECTED REGION END #    //  CspMasterLeafNode.test_Off
+    # def test_Standby(self, tango_context):
+    #     """Test for Standby"""
+    #     # PROTECTED REGION ID(CspMasterLeafNode.test_Standby) ENABLED START #
+    #     #tango_context.device.Standby([])
+    #     tango_context.device.Standby([])
+    #     time.sleep(1)
+    #     assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+    #     # PROTECTED REGION END #    //  CspMasterLeafNode.test_Standby
+    #
+    # def test_Off(self, tango_context):
+    #     """Test for Off"""
+    #     # PROTECTED REGION ID(CspMasterLeafNode.test_Off) ENABLED START #
+    #     #tango_context.device.Off([])
+    #     tango_context.device.Off([])
+    #     time.sleep(1)
+    #     assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+    #     tango_context.device.On([])
+    #     # PROTECTED REGION END #    //  CspMasterLeafNode.test_Off
