@@ -272,6 +272,12 @@ class TestCentralNode(object):
         result = create_subarray1_proxy.receptorIDList
         assert result == None
 
+    def test_ReleaseResources_FalseTag(self, tango_context):
+        test_input = '{"subarrayID":1,"releaseALL":false,"receptorIDList":[]}'
+        tango_context.device.ReleaseResources(test_input)
+        time.sleep(1)
+        assert tango_context.device.activityMessage == CONST.STR_FALSE_TAG
+
     def test_ReleaseResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
         with pytest.raises(tango.DevFailed):
