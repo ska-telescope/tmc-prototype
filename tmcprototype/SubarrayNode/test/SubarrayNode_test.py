@@ -117,14 +117,36 @@ class TestSubarrayNode(object):
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
     def test_AssignResources_ValueError(self, tango_context):
-        """Test for AssignResources"""
+        """Negative Test for AssignResources_ValueError"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         receptor_list = ['abc']
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(receptor_list)
         time.sleep(10)
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
-        # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
+        # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources_ValueError
+
+    def test_Configure_Negative_ScanID(self, tango_context, create_dish_proxy):
+        """Negative Test for Configure"""
+        # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure('{"A":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                           '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                           '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                           '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                           '"corrBandwidth":0}]},"sdp":{"configure":'
+                                           '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                           '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                           '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                           '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                           '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                           '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                           '{"fieldId":0,"intervalMs":1400}}}]}}')
+        time.sleep(5)
+        assert CONST.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
+        # create_dish_proxy.StopTrack()
+        # PROTECTED REGION END #    //  SubarrayNode.test_Configure
+
 
     def test_Configure(self, tango_context, create_dish_proxy):
         """Test for Configure"""
@@ -146,6 +168,75 @@ class TestSubarrayNode(object):
         create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
+    def test_Configure_Negative_CSP(self, tango_context, create_dish_proxy):
+        """Negative Test for Configure"""
+        # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
+        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                           '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                           '{"receiverBand":"1"},"cs_p":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                           '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                           '"corrBandwidth":0}]},"sdp":{"configure":'
+                                           '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                           '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                           '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                           '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                           '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                           '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                           '{"fieldId":0,"intervalMs":1400}}}]}}')
+        time.sleep(5)
+        assert CONST.STR_CONFIGURE_IP_ARG in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SubarrayNode.test_Configure
+    def test_Configure_Negative_SDP(self, tango_context, create_dish_proxy):
+        """Negative Test for Configure"""
+        # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
+        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                           '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                           '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                           '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                           '"corrBandwidth":0}]},"sd_p":{"configure":'
+                                           '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                           '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                           '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                           '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                           '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                           '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                           '{"fieldId":0,"intervalMs":1400}}}]}}')
+        time.sleep(5)
+        assert CONST.STR_CONFIGURE_IP_ARG in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SubarrayNode.test_Configure
+
+    def test_Configure_Negative_VALUE_ERR(self, tango_context, create_dish_proxy):
+        """Negative Test for Configure"""
+        # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
+        tango_context.device.Configure('{Invalid key}')
+        time.sleep(5)
+        assert CONST.STR_CONFIGURE_IP_ARG in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SubarrayNode.test_Configure
+
+
+    def test_Configure_ObsState_NOT_Idle(self, tango_context, create_dish_proxy):
+        """Negative Test for Configure"""
+        # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
+        tango_context.device.Scan('{"scanDuration": 5.0}')
+        time.sleep(5)
+        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                           '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                           '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                           '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                           '"corrBandwidth":0}]},"sdp":{"configure":'
+                                           '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                           '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                           '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                           '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                           '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                           '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                           '{"fieldId":0,"intervalMs":1400}}}]}}')
+        time.sleep(10)
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
+        # create_dish_proxy.StopTrack()
+        # PROTECTED REGION END #    //  SubarrayNode.test_Configure
+
+
     def test_Scan(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
@@ -155,7 +246,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
     def test_Scan_Duplicate(self, tango_context):
-        """Test for Scan"""
+        """Negative Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan('{"scanDuration": 5.0}')
@@ -164,18 +255,16 @@ class TestSubarrayNode(object):
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
     def test_EndScan(self, tango_context):
-        """Test for EndScan"""
+        """Negative Test for EndScan"""
         # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
-        #tango_context.obsState = CONST.OBS_STATE_ENUM_SCANNING
         tango_context.device.EndScan()
         time.sleep(10)
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
     def test_EndScan_Duplicate(self, tango_context):
-        """Test for EndScan"""
+        """Negative Test for EndScan"""
         # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
-        #tango_context.obsState = CONST.OBS_STATE_ENUM_SCANNING
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndScan()
         time.sleep(3)
@@ -190,7 +279,6 @@ class TestSubarrayNode(object):
             tango_context.device.Scan(test_input)
         time.sleep(5)
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
-        # assert tango_context.device.activityMessage == CONST.ERR_INVALID_DATATYPE
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan_Negative_InvalidDataType
 
     def test_Scan_Negative_Keynotfound_ScanPara(self, tango_context):
@@ -202,7 +290,6 @@ class TestSubarrayNode(object):
         print("tango activity msg:", tango_context.device.activityMessage)
         print("code activity msg:", CONST.ERR_SCAN_CMD)
         assert CONST.ERR_SCAN_CMD in tango_context.device.activityMessage
-        # assert tango_context.device.activityMessage == CONST.ERR_INVALID_DATATYPE
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan_Negative_InvalidDataType
 
     def test_EndSB(self, tango_context):
@@ -219,7 +306,6 @@ class TestSubarrayNode(object):
         tango_context.device.EndSB()
         time.sleep(2)
         assert tango_context.device.ObsState != CONST.OBS_STATE_ENUM_READY
-        # assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
         # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 
     def test_ReleaseAllResources(self, tango_context):
