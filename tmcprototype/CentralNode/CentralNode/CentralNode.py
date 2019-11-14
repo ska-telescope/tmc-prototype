@@ -539,8 +539,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._csp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP,
                                                       [])
         except Exception as except_occured:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occured, excpt_msg,
-                                                                        excpt_count, CONST.ERR_EXE_STARTUP_CMD)
+            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occured,
+                                                            excpt_msg, excpt_count, CONST.ERR_EXE_STARTUP_CMD)
         try:
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP)
         except DevFailed as dev_failed:
@@ -685,8 +685,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occured, excpt_msg,
-                                                                        excpt_count, CONST.ERR_ASSGN_RESOURCES)
+            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                    excpt_count, CONST.ERR_ASSGN_RESOURCES)
 
         #throw exception:
         if excpt_count > 0:

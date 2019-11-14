@@ -119,7 +119,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                                     CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
             except Exception as except_occured:
                 [excpt_msg, excpt_count] = self.exception_generic_exception(except_occured, excpt_msg,
-                                                                            excpt_count, CONST.ERR_AGGR_HEALTH_STATE)
+                                                                  excpt_count, CONST.ERR_AGGR_HEALTH_STATE)
         else:
             print(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, evt)
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
@@ -159,7 +159,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                                     CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
             except Exception as except_occured:
                 [excpt_msg, excpt_count] = self.exception_generic_exception(except_occured, excpt_msg,
-                                                                            excpt_count, CONST.ERR_AGGR_OBS_STATE)
+                                                                        excpt_count, CONST.ERR_AGGR_OBS_STATE)
         else:
             print(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE, evt)
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
@@ -217,16 +217,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             elif value == CONST.POINTING_STATE_ENUM_SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
 
-        if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING:
+        if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state ==\
+                CONST.OBS_STATE_ENUM_SCANNING:
             self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
             # self.isScanning = True
-        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_READY:
+        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state ==\
+                CONST.OBS_STATE_ENUM_READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 self._obs_state = CONST.OBS_STATE_ENUM_READY
         elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING or \
                 self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
             self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
-        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
+        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state ==\
+                CONST.OBS_STATE_ENUM_IDLE:
             if len(self.dishPointingStateMap.values()) != 0:
                 if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                     if self.only_dishconfi_flag == True:
@@ -355,7 +358,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
             except(DevFailed, Exception) as except_occurred:
                 [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                            excpt_count, CONST.ERR_ASSIGN_RES_CMD)
+                                                                        excpt_count, CONST.ERR_ASSIGN_RES_CMD)
         # Throw Exception
         if excpt_count > 0:
             self.throw_exception(excpt_msg, CONST.STR_ASSIGN_RES_EXEC)
@@ -367,7 +370,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Node.
 
         :param argin: List of strings
-            Contains the list of strings that has the resources ids. Currently this list contains only receptor ids.
+            Contains the list of strings that has the resources ids. Currently this list contains only
+            receptor ids.
 
         :return: List of strings.
             Returns the list of successfully assigned resources. Currently the
@@ -470,7 +474,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                                 CONST.ERR_RELEASE_RES_CMD_GROUP)
         except Exception as except_occurred:
             [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                        excpt_count, CONST.ERR_RELEASE_RES_CMD)
+                                                                    excpt_count, CONST.ERR_RELEASE_RES_CMD)
     def release_csp_resources(self):
         """
             This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
@@ -549,7 +553,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 print(CONST.STR_CSP_SCAN_INIT)
                 self._read_activity_message = CONST.STR_CSP_SCAN_INIT
 
-                if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
+                if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state ==\
+                        CONST.OBS_STATE_ENUM_IDLE:
                     if len(self.dishPointingStateMap.values()) != 0:
                         self.calculate_observation_state()
 
@@ -660,7 +665,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._read_activity_message = CONST.STR_CSP_END_SCAN_INIT
                 self._scan_id = ""
 
-                if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE:
+                if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state ==\
+                        CONST.OBS_STATE_ENUM_IDLE:
                     if len(self.dishPointingStateMap.values()) != 0:
                         self.calculate_observation_state()
 
@@ -1201,7 +1207,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # Check if scanID is present in Configure JSON
                 if "scanID" in self._scanConfiguration:
                     self._scan_id = str(self._scanConfiguration["scanID"])
-                    self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+                    self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
+                                          for _ in range(4))
                     self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
 
                     if "csp" in self._scanConfiguration:
@@ -1217,10 +1224,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         if cspConfiguration["csp"]:
                             # Add delayModelSubscriptionPoint and visDestinationAddressSubscriptionPoint into
                             # cspConfiguration
-                            cspConfiguration["csp"][CONST.STR_DELAY_MODEL_SUB_POINT] = self.CspSubarrayLNFQDN + \
-                                                                                       "/delayModel"
-                            cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = self.SdpSubarrayFQDN + \
-                                                                                           "/receiveAddresses"
+                            cspConfiguration["csp"][CONST.STR_DELAY_MODEL_SUB_POINT] = self.CspSubarrayLNFQDN\
+                                                                                       + "/delayModel"
+                            cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] =\
+                                self.SdpSubarrayFQDN + "/receiveAddresses"
 
                             csp_config = cspConfiguration["csp"]
                             csp_config["scanID"] = self._scan_id
@@ -1384,7 +1391,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                                 CONST.ERR_ENDSB_INVOKING_CMD)
         except Exception as except_occurred:
             [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                        excpt_count, CONST.ERR_ENDSB_INVOKING_CMD)
+                                                                    excpt_count, CONST.ERR_ENDSB_INVOKING_CMD)
         # throw exception:
         if excpt_count > 0:
             self.throw_exception(excpt_msg, CONST.STR_ENDSB_EXEC)

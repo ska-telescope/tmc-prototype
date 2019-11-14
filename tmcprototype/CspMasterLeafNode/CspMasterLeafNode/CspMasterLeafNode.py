@@ -161,11 +161,11 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 print(CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors))
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
-                self.dev_logging(str(log), int(tango.LogLevel.LOG_ERROR))
+                #self.dev_logging(str(log), int(tango.LogLevel.LOG_ERROR))
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
-                self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
+                #self.dev_logging(str(log), int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
             self.exception_generic_exception(CONST.ERR_EXCEPT_CMD_CB)
             excpt_msg.append(self._read_activity_message)
