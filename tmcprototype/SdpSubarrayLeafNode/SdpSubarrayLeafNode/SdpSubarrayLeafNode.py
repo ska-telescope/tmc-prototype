@@ -67,20 +67,12 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except Exception as except_occurred:
             [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
                                                                         excpt_count, CONST.ERR_EXCEPT_CMD_CB)
-            # self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
-            # self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
 
         # Throw Exception
         if excpt_count > 0:
             self.throw_exception(excpt_msg, CONST.STR_CMD_CALLBK)
-            # err_msg = ' '
-            # for item in excpt_msg:
-            #     err_msg += item + "\n"
-            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-            #                              CONST.STR_CMD_CALLBK, tango.ErrSeverity.ERR)
 
+    # Throw exceptions
     def devfailed_exception(self, df, excpt_msg_list, except_count, read_actvity_msg):
         self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
         self._read_activity_message = read_actvity_msg + str(df)
@@ -253,39 +245,16 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
             # Update the status of command execution status in activity message
             self._read_activity_message = CONST.STR_REL_RESOURCES
-        # except ValueError as value_error:
-        #     self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
-        #     self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
-        #     excpt_msg.append(self._read_activity_message)
-        #     excpt_count += 1
-        # except KeyError as key_error:
-        #     self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
-        #     # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-        #     self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
-        #     excpt_msg.append(self._read_activity_message)
-        #     excpt_count += 1
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count, CONST.ERR_RELEASE_RESOURCES)
-            # self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_RELEASE_RESOURCES + str(dev_failed)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+                                                                CONST.ERR_RELEASE_RESOURCES)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_RELEASE_RESOURCES)
-            # self.dev_logging(CONST.ERR_RELEASE_RESOURCES + str(except_occurred), int(tango.LogLevel.
-            #                                                                          LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_RELEASE_RESOURCES + str(except_occurred)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                    excpt_count, CONST.ERR_RELEASE_RESOURCES)
 
         # throw exception:
         if excpt_count > 0:
             self.throw_exception(excpt_msg, CONST.STR_RELEASE_RES_EXEC)
-            # err_msg = ' '
-            # for item in excpt_msg:
-            #     err_msg += item + "\n"
-            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-            #                              CONST.STR_RELEASE_RES_EXEC, tango.ErrSeverity.ERR)
 
         return ""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
@@ -360,26 +329,15 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count, CONST.ERR_ASSGN_RESOURCES)
-            # self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(dev_failed)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+                                                                CONST.ERR_ASSGN_RESOURCES)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,CONST.ERR_ASSGN_RESOURCES)
-            # self.dev_logging(CONST.ERR_ASSGN_RESOURCES + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_ASSGN_RESOURCES + str(except_occurred)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                        excpt_count,CONST.ERR_ASSGN_RESOURCES)
 
         # throw exception:
         if excpt_count > 0:
             self.throw_exception(excpt_msg, CONST.STR_ASSIGN_RES_EXEC)
-            # err_msg = ' '
-            # for item in excpt_msg:
-            #     err_msg += item + "\n"
-            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-            #                              CONST.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
         return ""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
@@ -478,29 +436,15 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count, CONST.ERR_CONFIGURE)
-            # self.dev_logging(CONST.ERR_CONFIGURE + str(dev_failed),
-            #                  int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_CONFIGURE + str(dev_failed)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
-
+            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg,
+                                                                excpt_count, CONST.ERR_CONFIGURE)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,CONST.ERR_CONFIGURE)
-            # self.dev_logging(CONST.ERR_CONFIGURE + str(except_occurred),
-            #                  int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_CONFIGURE + str(except_occurred)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred,
+                                                                excpt_msg, excpt_count,CONST.ERR_CONFIGURE)
 
         # throw exception:
         if excpt_count > 0:
             self.throw_exception(excpt_msg, CONST.STR_CONFIG_EXEC)
-            # err_msg = ' '
-            # for item in excpt_msg:
-            #     err_msg += item + "\n"
-            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-            #                              CONST.STR_CONFIG_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
@@ -549,29 +493,15 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count, CONST.ERR_SCAN)
-            # self.dev_logging(CONST.ERR_SCAN + str(dev_failed),
-            #                  int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_SCAN + str(dev_failed)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
-
+            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg,
+                                                                excpt_count, CONST.ERR_SCAN)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_SCAN)
-            # self.dev_logging(CONST.ERR_SCAN + str(except_occurred),
-            #                  int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_SCAN + str(except_occurred)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred,
+                                                                    excpt_msg, excpt_count, CONST.ERR_SCAN)
 
         # throw exception:
         if excpt_count > 0:
             self.throw_exception(excpt_msg, CONST.STR_SCAN_EXEC)
-            # err_msg = ' '
-            # for item in excpt_msg:
-            #     err_msg += item + "\n"
-            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-            #                              CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
@@ -598,27 +528,15 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_IN_SCAN
                 self.dev_logging(CONST.ERR_DEVICE_NOT_IN_SCAN, int(tango.LogLevel.LOG_ERROR))
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
-            # self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+                                                                CONST.ERR_ENDSCAN_INVOKING_CMD)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
-            # self.dev_logging(CONST.ERR_ENDSCAN_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.
-            #                                                                             LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_ENDSCAN_INVOKING_CMD + str(except_occurred)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                excpt_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
 
         # throw exception:
         if excpt_count > 0:
             self.throw_exception(excpt_msg, CONST.STR_ENDSCAN_EXEC)
-            # err_msg = ' '
-            # for item in excpt_msg:
-            #     err_msg += item + "\n"
-            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-            #                              CONST.STR_ENDSCAN_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndScan
 
@@ -641,28 +559,15 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
                 self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count, CONST.ERR_ENDSB_INVOKING_CMD)
-            # self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+                                                                CONST.ERR_ENDSB_INVOKING_CMD)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
-                                             CONST.ERR_ENDSB_INVOKING_CMD)
-            # self.dev_logging(CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred), int(tango.LogLevel.
-            #                                                                             LOG_ERROR))
-            # self._read_activity_message = CONST.ERR_ENDSB_INVOKING_CMD + str(except_occurred)
-            # excpt_msg.append(self._read_activity_message)
-            # excpt_count += 1
+            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                excpt_count, CONST.ERR_ENDSB_INVOKING_CMD)
 
         # throw exception:
         if excpt_count > 0:
             self.throw_exception(excpt_msg, CONST.STR_ENDSB_EXEC)
-            # err_msg = ' '
-            # for item in excpt_msg:
-            #     err_msg += item + "\n"
-            # tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-            #                              CONST.STR_ENDSB_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 

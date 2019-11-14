@@ -68,7 +68,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_EXCEPT_CMD_CB)
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred,
+                                                            excpt_msg, excpt_count, CONST.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
         if excpt_count > 0:
@@ -409,10 +410,12 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             excpt_count += 1
 
         except DevFailed as dev_failed:
-            [excpt_count,excpt_msg] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
+            [excpt_count,excpt_msg] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+                                                               CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception( except_occurred, excpt_msg, excpt_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
+            [excpt_count, excpt_msg] = self.exception_generic_exception( except_occurred, excpt_msg,
+                                                        excpt_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
 
         # throw exception:
         if excpt_count > 0:
@@ -456,8 +459,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                                 CONST.ERR_STARTSCAN_RESOURCES)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
-                                                              CONST.ERR_STARTSCAN_RESOURCES)
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                excpt_count, CONST.ERR_STARTSCAN_RESOURCES)
 
         # throw exception:
         if excpt_count > 0:
@@ -494,8 +497,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                                 CONST.ERR_ENDSCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
-                                                              CONST.ERR_ENDSCAN_INVOKING_CMD)
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                excpt_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
 
         # throw exception:
         if excpt_count > 0:
@@ -526,8 +529,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             [excpt_count, excpt_msg] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
                                                                 CONST.ERR_RELEASE_ALL_RESOURCES)
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
-                                                              CONST.ERR_RELEASE_ALL_RESOURCES)
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                excpt_count, CONST.ERR_RELEASE_ALL_RESOURCES)
 
         # throw exception:
         if excpt_count > 0:
@@ -602,8 +605,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                                 CONST.ERR_ASSGN_RESOURCES)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
-                                                              CONST.ERR_ASSGN_RESOURCES)
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                    excpt_count, CONST.ERR_ASSGN_RESOURCES)
 
         # throw exception:
         if excpt_count > 0:
@@ -637,8 +640,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                                 CONST.ERR_ENDSB_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count,
-                                                              CONST.ERR_ENDSB_INVOKING_CMD)
+            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                    excpt_count, CONST.ERR_ENDSB_INVOKING_CMD)
 
         # throw exception:
         if excpt_count > 0:

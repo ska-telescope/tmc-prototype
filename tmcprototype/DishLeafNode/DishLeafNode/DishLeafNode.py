@@ -183,7 +183,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            [excpt_count,excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_EXCEPT_CMD_CB)
+            [excpt_count,excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                       excpt_count, CONST.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
         if excpt_count > 0:
@@ -544,7 +545,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 print(CONST.STR_OUT_SCAN)
         except ValueError as value_error:
             print(CONST.ERR_EXE_SCAN_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
-            self._read_activity_message = CONST.ERR_EXE_SCAN_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self._read_activity_message = CONST.ERR_EXE_SCAN_CMD + CONST.ERR_INVALID_DATATYPE +\
+                                          str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
@@ -579,7 +581,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                       argin, self.commandCallback)
         except ValueError as value_error:
             print(CONST.ERR_EXE_END_SCAN_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
-            self._read_activity_message = CONST.ERR_EXE_END_SCAN_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self._read_activity_message = CONST.ERR_EXE_END_SCAN_CMD + CONST.ERR_INVALID_DATATYPE +\
+                                          str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
@@ -601,7 +604,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :param argin: A String in a JSON format that includes pointing parameters of Dish- Azimuth and
         Elevation Angle.
             Example:
-            {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
+            {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+            "dish":{"receiverBand":"1"}}
 
         :return: None
 
@@ -634,7 +638,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             }
             dish_str_ip = json.dumps(arg_list)
             # Send configure command to Dish Master
-            self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_CONFIGURE, str(dish_str_ip), self.commandCallback)
+            self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_CONFIGURE, str(dish_str_ip),
+                                                  self.commandCallback)
 
         except ValueError as value_error:
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
@@ -655,7 +660,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except Exception as except_occurred:
             print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
-            [excpt_count,excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_EXE_CONFIGURE_CMD)
+            [excpt_count,excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
+                                                                    excpt_count, CONST.ERR_EXE_CONFIGURE_CMD)
 
         # Throw Exception
         if excpt_count > 0:
@@ -689,7 +695,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                       argin, self.commandCallback)
         except ValueError as value_error:
             print(CONST.ERR_EXE_START_CAPTURE_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
-            self._read_activity_message = CONST.ERR_EXE_START_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self._read_activity_message = CONST.ERR_EXE_START_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE +\
+                                          str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
@@ -719,7 +726,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE, argin, self.commandCallback)
         except ValueError as value_error:
             print(CONST.ERR_EXE_STOP_CAPTURE_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
-            self._read_activity_message = CONST.ERR_EXE_STOP_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self._read_activity_message = CONST.ERR_EXE_STOP_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE +\
+                                          str(value_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
@@ -762,7 +770,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SLEW, argin, self.commandCallback)
         except ValueError as value_error:
             print(CONST.ERR_EXE_SLEW_CMD, "\n", CONST.ERR_INVALID_DATATYPE, str(value_error))
-            self._read_activity_message = CONST.ERR_EXE_SLEW_CMD + "\n" + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self._read_activity_message = CONST.ERR_EXE_SLEW_CMD + "\n" + CONST.ERR_INVALID_DATATYPE +\
+                                          str(value_error)
             self.dev_logging(CONST.ERR_EXE_SLEW_CMD, int(tango.LogLevel.LOG_ERROR))
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
@@ -790,7 +799,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         (provided elevation limit is not reached).
 
         For Track command, Argin to be provided is the Ra and Dec values in the following JSON format:
-        {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
+        {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+        "dish":{"receiverBand":"1"}}
 
         :return: None
 
@@ -808,7 +818,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, CONST.THREAD_TRACK)
             # self.tracking_time_thread1.start()
             # Pass string argument in track_thread in brackets
-            self.track_thread1 = threading.Thread(None, self.track_thread, CONST.THREAD_TRACK, args=(radec_value,))
+            self.track_thread1 = threading.Thread(None, self.track_thread, CONST.THREAD_TRACK,
+                                                  args=(radec_value,))
             self.track_thread1.start()
 
         except ValueError as value_error:
@@ -856,7 +867,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except Exception as except_occurred:
             print(CONST.ERR_EXE_STOP_TRACK_CMD, except_occurred)
-            [excpt_count,excpt_msg] = self.devfailed_exception(except_occurred, excpt_msg, excpt_count, CONST.ERR_EXE_STOP_TRACK_CMD)
+            [excpt_count,excpt_msg] = self.devfailed_exception(except_occurred, excpt_msg, excpt_count,
+                                                               CONST.ERR_EXE_STOP_TRACK_CMD)
 
         # Throw Exception
         if excpt_count > 0:

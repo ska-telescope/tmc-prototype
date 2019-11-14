@@ -216,7 +216,7 @@ class TestSdpMasterLeafNode(object):
     def test_off_devfailed_exception(self, tango_context):
         """Negative test for Off command"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_off_devfailed_exception) ENABLED START #
-        tango_context.device.testMode = "True"
+        tango_context.device.testMode = CONST.STR_TRUE
         tango_context.device.Off()
         assert CONST.ERR_MSG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_off_devfailed_exception
