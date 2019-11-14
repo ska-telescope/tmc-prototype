@@ -109,41 +109,6 @@ class TestCspMasterLeafNode(object):
                 (CONST.STR_CSP_CBF_HEALTH_UNKNOWN in tango_context.device.activityMessage)
                 )
 
-    def test_Off(self, tango_context):
-        """Test for Off"""
-        # PROTECTED REGION ID(CspMasterLeafNode.test_Off) ENABLED START #
-        #tango_context.device.Off([])
-        assert 1
-        # PROTECTED REGION END #    //  CspMasterLeafNode.test_Off
-
-    def test_Standby(self, tango_context):
-        """Test for Standby"""
-        # PROTECTED REGION ID(CspMasterLeafNode.test_Standby) ENABLED START #
-        #tango_context.device.Standby([])
-        assert 1
-        # PROTECTED REGION END #    //  CspMasterLeafNode.test_Standby
-
-    def test_SetCbfAdminMode(self, tango_context):
-        """Test for SetCbfAdminMode"""
-        # PROTECTED REGION ID(CspMasterLeafNode.test_SetCbfAdminMode) ENABLED START #
-        #tango_context.device.test_SetCbfAdminMode("ONLINE")
-        assert 1
-        # PROTECTED REGION END #    //  CspMasterLeafNode.test_SetCbfAdminMode
-
-    def test_SetPssAdminMode(self, tango_context):
-        """Test for SetPssAdminMode"""
-        # PROTECTED REGION ID(CspMasterLeafNode.test_SetPssAdminMode) ENABLED START #
-        #tango_context.device.test_SetPssAdminMode("ONLINE")
-        assert 1
-        # PROTECTED REGION END #    //  CspMasterLeafNode.test_SetPssAdminMode
-
-    def test_SetPstAdminMode(self, tango_context):
-        """Test for SetPstAdminMode"""
-        # PROTECTED REGION ID(CspMasterLeafNode.test_SetPstAdminMode) ENABLED START #
-        #tango_context.device.test_SetPstAdminMode(0)
-        assert 1
-        # PROTECTED REGION END #    //  CspMasterLeafNode.test_SetPstAdminMode
-
     def test_buildState(self, tango_context):
         """Test for buildState"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_buildState) ENABLED START #
@@ -214,8 +179,28 @@ class TestCspMasterLeafNode(object):
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_testMode
 
-    def test_activityMessage(self):
+    def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_activityMessage) ENABLED START #
+        tango_context.device.activityMessage = "text"
+        assert  tango_context.device.activityMessage == "text"
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_activityMessage
 
+    def test_Standby(self, tango_context):
+        """Test for Standby"""
+        # PROTECTED REGION ID(CspMasterLeafNode.test_Standby) ENABLED START #
+        #tango_context.device.Standby([])
+        tango_context.device.Standby([])
+        time.sleep(1)
+        assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  CspMasterLeafNode.test_Standby
+
+    def test_Off(self, tango_context):
+        """Test for Off"""
+        # PROTECTED REGION ID(CspMasterLeafNode.test_Off) ENABLED START #
+        #tango_context.device.Off([])
+        tango_context.device.Off([])
+        time.sleep(1)
+        assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        #tango_context.device.On([])
+        # PROTECTED REGION END #    //  CspMasterLeafNode.test_Off

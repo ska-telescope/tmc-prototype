@@ -73,13 +73,15 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     print(CONST.STR_CSP_CBF_HEALTH_UNKNOWN)
                     self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_UNKNOWN
             except DevFailed as dev_failed:
-                print(CONST.ERR_ON_SUBS_CSP_CBF_HEALTH, dev_failed)
-                self._read_activity_message = CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(dev_failed)
-                self.dev_logging(CONST.ERR_ON_SUBS_CSP_CBF_HEALTH, int(tango.LogLevel.LOG_FATAL))
+                self.devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_CBF_HEALTH)
+                # print(CONST.ERR_ON_SUBS_CSP_CBF_HEALTH, dev_failed)
+                # self._read_activity_message = CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(dev_failed)
+                # self.dev_logging(CONST.ERR_ON_SUBS_CSP_CBF_HEALTH, int(tango.LogLevel.LOG_FATAL))
             except Exception as except_occurred:
-                print(CONST.ERR_CSP_CBF_HEALTH_CB, except_occurred.message)
-                self._read_activity_message = CONST.ERR_CSP_CBF_HEALTH_CB + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_CSP_CBF_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
+                self.exception_generic_exception(except_occurred, CONST.ERR_CSP_CBF_HEALTH_CB)
+                # print(CONST.ERR_CSP_CBF_HEALTH_CB, except_occurred.message)
+                # self._read_activity_message = CONST.ERR_CSP_CBF_HEALTH_CB + str(except_occurred.message)
+                # self.dev_logging(CONST.ERR_CSP_CBF_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print(CONST.ERR_ON_SUBS_CSP_CBF_HEALTH, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
@@ -109,13 +111,15 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     print(CONST.STR_CSP_PSS_HEALTH_UNKNOWN)
                     self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_UNKNOWN
             except DevFailed as dev_failed:
-                print(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, dev_failed)
-                self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(dev_failed)
-                self.dev_logging(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, int(tango.LogLevel.LOG_FATAL))
+                self.devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
+                # print(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, dev_failed)
+                # self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(dev_failed)
+                # self.dev_logging(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, int(tango.LogLevel.LOG_FATAL))
             except Exception as except_occurred:
-                print(CONST.ERR_CSP_PSS_HEALTH_CB, except_occurred.message)
-                self._read_activity_message = CONST.ERR_CSP_PSS_HEALTH_CB + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_CSP_PSS_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
+                self.exception_generic_exception(CONST.ERR_CSP_PSS_HEALTH_CB)
+                # print(CONST.ERR_CSP_PSS_HEALTH_CB, except_occurred.message)
+                # self._read_activity_message = CONST.ERR_CSP_PSS_HEALTH_CB + str(except_occurred.message)
+                # self.dev_logging(CONST.ERR_CSP_PSS_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
@@ -145,13 +149,16 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     print(CONST.STR_CSP_PST_HEALTH_UNKNOWN)
                     self._read_activity_message = CONST.STR_CSP_PST_HEALTH_UNKNOWN
             except DevFailed as dev_failed:
-                print(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, dev_failed)
-                self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(dev_failed)
-                self.dev_logging(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, int(tango.LogLevel.LOG_FATAL))
+                self.devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
+                # print(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, dev_failed)
+                # self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(dev_failed)
+                # self.dev_logging(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH, int(tango.LogLevel.LOG_FATAL))
             except Exception as except_occurred:
-                print(CONST.ERR_CSP_PST_HEALTH_CB, except_occurred.message)
-                self._read_activity_message = CONST.ERR_CSP_PST_HEALTH_CB + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_CSP_PST_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
+                self.exception_generic_exception(CONST.ERR_CSP_PST_HEALTH_CB)
+
+                # print(CONST.ERR_CSP_PST_HEALTH_CB, except_occurred.message)
+                # self._read_activity_message = CONST.ERR_CSP_PST_HEALTH_CB + str(except_occurred.message)
+                # self.dev_logging(CONST.ERR_CSP_PST_HEALTH_CB, int(tango.LogLevel.LOG_ERROR))
         else:
             print(CONST.ERR_ON_SUBS_CSP_PST_HEALTH, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
@@ -173,15 +180,16 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 print(CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors))
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
-                self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
+                self.dev_logging(str(log), int(tango.LogLevel.LOG_ERROR))
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
-            self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
-            self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
+            self.exception_generic_exception(CONST.ERR_EXCEPT_CMD_CB)
+            # print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
+            # self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
+            # self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
 
@@ -192,6 +200,17 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_CSP_CMD_CALLBK, tango.ErrSeverity.ERR)
+
+    #Exception handling
+    def devfailed_exception(self, df, read_actvity_msg):
+        print(read_actvity_msg, df)
+        self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
+        self._read_activity_message = read_actvity_msg + str(df)
+
+    def exception_generic_exception(self, read_actvity_msg):
+        print(read_actvity_msg, Exception)
+        self.dev_logging(read_actvity_msg + str(Exception), int(tango.LogLevel.LOG_ERROR))
+        self._read_activity_message = read_actvity_msg + str(Exception)
 
     # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
 
@@ -232,17 +251,15 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._admin_mode = CONST.ENUM_ADMIN_MODE_ONLINE  # Setting adminMode to "ONLINE"
             self._health_state = CONST.ENUM_HEALTH_OK  # Setting healthState to "OK"
             self._simulation_mode = False  # Enabling the simulation mode
-            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            print(CONST.STR_SETTING_CB_MODEL, ApiUtil.instance().get_asynch_cb_sub_model())
-            self._read_activity_message = CONST.STR_SETTING_CB_MODEL + str(
-                ApiUtil.instance().get_asynch_cb_sub_model())
+            self._test_mode = "False"
 
         except DevFailed as dev_failed:
             print(CONST.ERR_INIT_PROP_ATTR)
             self._read_activity_message = CONST.ERR_INIT_PROP_ATTR
-            self.dev_logging(CONST.ERR_INIT_PROP_ATTR, int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
-            print(CONST.ERR_MSG, dev_failed)
+            self.devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR)
+            # self.dev_logging(CONST.ERR_INIT_PROP_ATTR, int(tango.LogLevel.LOG_ERROR))
+            # self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
+            # print(CONST.ERR_MSG, dev_failed)
 
         try:
             self._read_activity_message = CONST.STR_CSPMASTER_FQDN + str(self.CspMasterFQDN)
@@ -253,9 +270,10 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_IN_CREATE_PROXY, self.CspMasterFQDN)
             self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
             self.set_state(DevState.FAULT)
-            print(CONST.ERR_MSG, dev_failed)
-            self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
-            self.dev_logging(CONST.ERR_IN_CREATE_PROXY_CSP_MASTER, int(tango.LogLevel.LOG_ERROR))
+            self.devfailed_exception(dev_failed, CONST.ERR_IN_CREATE_PROXY_CSP_MASTER)
+            # print(CONST.ERR_MSG, dev_failed)
+            # self._read_activity_message = CONST.ERR_MSG + str(dev_failed)
+            # self.dev_logging(CONST.ERR_IN_CREATE_PROXY_CSP_MASTER, int(tango.LogLevel.LOG_ERROR))
 
         # Subscribing to CSPMaster Attributes
         try:
@@ -275,6 +293,11 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_CSP_MASTER_LEAF_INIT)
             self.dev_logging(CONST.ERR_CSP_MASTER_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
+
+        ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+        print(CONST.STR_SETTING_CB_MODEL, ApiUtil.instance().get_asynch_cb_sub_model())
+        self._read_activity_message = CONST.STR_SETTING_CB_MODEL + str(
+            ApiUtil.instance().get_asynch_cb_sub_model())
         # PROTECTED REGION END #    //  CspMasterLeafNode.init_device
 
     def always_executed_hook(self):
