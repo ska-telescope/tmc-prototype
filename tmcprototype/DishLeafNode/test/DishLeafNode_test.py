@@ -121,7 +121,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION END #    //  DishLeafNode.test_Configure
 
     def test_Configure_invalid_JSON(self, tango_context):
-        """Test for Configure_invalid_JSON"""
+        """Test for Configure_invalid_JSON  (Negative test case)"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
         input_string = '{"Invalid Key"}'
         with pytest.raises(tango.DevFailed):
@@ -131,7 +131,7 @@ class TestDishLeafNode(object):
 
 
     def test_Configure_invalid_arguments(self, tango_context):
-        """Test for Configure_invalid_arguments"""
+        """Test for Configure_invalid_arguments  (Negative test case)"""
         input_string = []
         input_string.append('{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}')
         with pytest.raises(tango.DevFailed):
@@ -161,7 +161,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION END #    //  DishLeafNode.test_Scan
 
     def test_Scan_invalid_arguments(self, tango_context):
-        """Test for Scan_invalid_arguments"""
+        """Test for Scan_invalid_arguments (Negative test case)"""
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan("a")
         assert CONST.ERR_EXE_SCAN_CMD in tango_context.device.activityMessage
@@ -176,7 +176,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION END #    //  DishLeafNode.test_EndScan
 
     def test_EndScan_invalid_arguments(self, tango_context):
-        """Test for EndScan_invalid_arguments"""
+        """Test for EndScan_invalid_arguments (Negative test case)"""
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndScan("a")
         assert CONST.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
@@ -191,7 +191,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION END #    //  DishLeafNode.test_StartCapture
 
     def test_StartCapture_invalid_arguments(self, tango_context):
-        """Test for StartCapture_invalid_arguments"""
+        """Test for StartCapture_invalid_arguments (Negative test case)"""
         with pytest.raises(tango.DevFailed):
             tango_context.device.StartCapture("a")
         assert CONST.ERR_EXE_START_CAPTURE_CMD in tango_context.device.activityMessage
@@ -206,7 +206,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION END #    //  DishLeafNode.test_StopCapture
 
     def test_StopCapture_invalid_arguments(self, tango_context):
-        """Test for StopCapture_invalid_arguments"""
+        """Test for StopCapture_invalid_arguments (Negative test case)"""
         with pytest.raises(tango.DevFailed):
             tango_context.device.StopCapture("a")
         assert CONST.ERR_EXE_STOP_CAPTURE_CMD in tango_context.device.activityMessage
@@ -243,7 +243,7 @@ class TestDishLeafNode(object):
         assert tango_context.device.activityMessage == CONST.STR_SLEW_SUCCESS
 
     def test_Slew_invalid_arguments(self, tango_context):
-        """Test for Slew_invalid_arguments"""
+        """Test for Slew_invalid_arguments (Negative test case)"""
         tango_context.device.SetStandByLPMode()
         time.sleep(4)
         with pytest.raises(tango.DevFailed):
@@ -252,7 +252,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION END #    //  DishLeafNode.test_Slew
 
     def test_Track_invalid_arg(self, tango_context):
-        """Test for Track"""
+        """Test for Track_invalid_arguments (Negative test case)"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
         with pytest.raises(tango.DevFailed):
@@ -263,7 +263,7 @@ class TestDishLeafNode(object):
         # PROTECTED REGION END #    //  DishLeafNode.test_Track
 
     def test_Track_invalid_JSON(self, tango_context):
-        """Test for Track_invalid_JSON"""
+        """Test for Track_invalid_JSON (Negative test case)"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
         input_string = '{"Invalid Key"}'
         with pytest.raises(tango.DevFailed):
