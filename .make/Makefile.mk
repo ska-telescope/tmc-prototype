@@ -50,7 +50,6 @@ pre-build:
 post-build:
 
 pre-push:
-	docker login -u ci-cd -p $(DOCKER_REGISTRY_PASSWORD) $(DOCKER_REGISTRY_HOST)
 
 post-push:
 
