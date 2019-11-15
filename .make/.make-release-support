@@ -16,7 +16,6 @@
 #
 function hasChanges() {
 	test -n "$(git status -s .)"
-#  return $(test -n "$(git status -s .)")
 }
 
 function getRelease() {
@@ -76,14 +75,9 @@ function getVersion() {
 		result="$result-$(git log -n 1 --format=%h .)"
 	fi
 
-	change=$(hasChanges)
-	echo $change
 	if hasChanges -eq 1; then
 	  result="$result-dirty"
   fi
-#	if hasChanges -eq 1; then
-#		result="$result-dirty"
-#	fi
 	echo $result
 }
 
