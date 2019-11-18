@@ -108,7 +108,7 @@ class TestCentralNode(object):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         tango_context.device.StartUpTelescope()
-        assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
+        assert CONST.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
     def test_StowAntennas_invalid_argument(self, tango_context):
@@ -127,7 +127,7 @@ class TestCentralNode(object):
         tango_context.device.StartUpTelescope()
         with pytest.raises(tango.DevFailed) :
             tango_context.device.StowAntennas(argin)
-        assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
+        assert CONST.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
     def test_StowAntennas(self, tango_context, create_leafNode1_proxy):
@@ -138,6 +138,16 @@ class TestCentralNode(object):
         tango_context.device.StowAntennas(argin)
         assert tango_context.device.activityMessage == CONST.STR_STOW_CMD_ISSUED_CN
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
+
+    def test_StowAntennas_ValueErr(self, tango_context, create_leafNode1_proxy):
+        """Negative Test for StowAntennas"""
+        # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
+        argin = ["xyz",]
+        create_leafNode1_proxy.SetStandByLPMode()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StowAntennas(argin)
+        assert CONST.ERR_STOW_ARGIN in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  CentralNode.test_StowAntennas_ValueErr
 
     def test_StandByTelescope(self, tango_context):
         """Test for StandByTelescope"""
@@ -154,7 +164,7 @@ class TestCentralNode(object):
         create_leafNode1_proxy.Scan("0")
         time.sleep(1)
         tango_context.device.StandByTelescope()
-        assert CONST.STR_ERR_MSG in tango_context.device.activityMessage
+        assert CONST.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
     def test_buildState(self, tango_context):
@@ -310,6 +320,12 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_subarray2HealthState) ENABLED START #
         assert tango_context.device.subarray2HealthState == 0
         # PROTECTED REGION END #    //  CentralNode.test_subarray2HealthState
+
+    def test_subarray3HealthState(self, tango_context):
+        """Test for subarray3HealthState"""
+        # PROTECTED REGION ID(CentralNode.test_subarray3HealthState) ENABLED START #
+        assert tango_context.device.subarray3HealthState == 0
+        # PROTECTED REGION END #    //  CentralNode.test_subarray3HealthState
 
     def test_subarray3HealthState(self, tango_context):
         """Test for subarray3HealthState"""
