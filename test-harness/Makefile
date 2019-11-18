@@ -13,29 +13,29 @@ all: test
 # then be extracted to form the CI summary for the test procedure.
 test:
 #   Due to pipeline failure commented ping statements.
-#	retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01
-#	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_01
-#	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
-#	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1
-#	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray01
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_master
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
-#	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
+	retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01
+	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_01
+	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_master
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
 	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
@@ -45,7 +45,7 @@ test:
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
-	cd /app && ./code-analysis.sh | tee code_analysis.stdout
+#	cd /app && ./code-analysis.sh | tee code_analysis.stdout
 	if [ -d /build ]; then \
         mv /app/tmcprototype/DishMaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
         mv /app/tmcprototype/DishMaster/htmlcov /build/dishmaster_htmlcov; \
@@ -73,4 +73,37 @@ test:
         mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml; \
         mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
     fi;
-.PHONY: all test
+lint:
+retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01
+	retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_01
+	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1
+	retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_master
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
+	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
+	# Pylint needs to run twice
+	if [ -d /build ]; then \
+        cd /app && pylint -f colorized tmcprototype| tee code_analysis.stdout: \
+        cd /app && pylint tmcprototype > lint_output.xml \
+        if [ -d /build ]; then \
+            mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
+            mv /app/lint_output.xml /build/lint_output.xml; \
+    fi;
+
+.PHONY: all test lint
