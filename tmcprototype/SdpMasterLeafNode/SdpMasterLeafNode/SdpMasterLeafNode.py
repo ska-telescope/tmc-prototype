@@ -61,8 +61,8 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
@@ -78,19 +78,19 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
             self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         # Throw Exception
-        if excpt_count > 0:
+        if exception_count > 0:
             err_msg = ' '
-            for item in excpt_msg:
+            for item in exception_message:
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_SDP_CMD_CALLBK, tango.ErrSeverity.ERR)
 
     #Throw devfailed exception
-    def devfailed_exception(self, df, actvity_msg):
+    def _handle_devfailed_exception(self, df, actvity_msg):
         print(actvity_msg)
         self._read_activity_message = actvity_msg
         print(CONST.ERR_MSG, df)
@@ -163,7 +163,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._test_mode = "False"
 
         except DevFailed as dev_failed:
-            self.devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR)
+            self._handle_devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR)
 
         try:
             self._read_activity_message = CONST.STR_SDPMASTER_FQDN + str(self.SdpMasterFQDN)
@@ -172,7 +172,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._sdp_proxy = DeviceProxy(str(self.SdpMasterFQDN))
         except DevFailed as dev_failed:
             self.set_state(DevState.FAULT)
-            self.devfailed_exception(dev_failed, CONST.ERR_IN_CREATE_PROXY_SDP_MASTER)
+            self._handle_devfailed_exception(dev_failed, CONST.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
         print(CONST.STR_SETTING_CB_MODEL, ApiUtil.instance().get_asynch_cb_sub_model())
@@ -255,7 +255,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # This code is written only to improve code coverage
         if self._test_mode == "True":
-            self.devfailed_exception(DevFailed, CONST.ERR_OFF_CMD_FAIL)
+            self._handle_devfailed_exception(DevFailed, CONST.ERR_OFF_CMD_FAIL)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Off
 
     @command(

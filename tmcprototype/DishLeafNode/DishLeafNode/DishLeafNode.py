@@ -90,7 +90,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._read_activity_message = CONST.STR_DISH_UNKNOWN_MODE + str(evt)
             except Exception as except_occurred:
                 print(CONST.ERR_DISH_MODE_CB, except_occurred.message)
-                self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_MODE_CB)
+                self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_MODE_CB)
         else:
             print(CONST.ERR_ON_SUBS_DISH_MODE_ATTR, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
@@ -117,7 +117,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._read_activity_message = CONST.STR_DISH_CAPTURING_UNKNOWN + str(evt)
             except Exception as except_occurred:
                 print(CONST.ERR_DISH_CAPTURING_CB, except_occurred.message)
-                self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_CAPTURING_CB)
+                self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_CAPTURING_CB)
         else:
             print(CONST.ERR_SUBSR_CAPTURING_ATTR, evt.errors)
             self._read_activity_message = CONST.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
@@ -137,7 +137,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
             except Exception as except_occurred:
                 print(CONST.ERR_DISH_ACHVD_POINT, except_occurred.message)
-                self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_ACHVD_POINT)
+                self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_ACHVD_POINT)
         else:
             print(CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
@@ -157,7 +157,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.STR_DESIRED_POINTING + str(self._desired_pointing)
             except Exception as except_occurred:
                 print(CONST.ERR_DISH_DESIRED_POINT, except_occurred.message)
-                self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_DESIRED_POINT)
+                self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_DESIRED_POINT)
         else:
             print(CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR, evt.errors)
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
@@ -170,8 +170,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
@@ -183,12 +183,12 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            [excpt_count,excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                       excpt_count, CONST.ERR_EXCEPT_CMD_CB)
+            [exception_count,exception_message] = self._handle_generic_exception(except_occurred, exception_message,
+                                                                       exception_count, CONST.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_CMD_CALLBK)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_CMD_CALLBK)
 
     def dmstodd(self, dish_antenna_latitude):
         """Converts latitude from deg:min:sec to decimal degree format.
@@ -267,7 +267,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_RADEC_TO_AZEL_VAL_ERR, int(tango.LogLevel.LOG_ERROR))
         except Exception as except_occurred:
             self.RaDec_AzEl_Conversion = False
-            self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_RADEC_TO_AZEL)
+            self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_RADEC_TO_AZEL)
 
     def tracking_time_thread(self):
         """This thread allows the dish to track the source for a specified Duration.
@@ -333,7 +333,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #self._dish_proxy.pointingState = 0
         except Exception as except_occurred:
             print(CONST.ERR_EXE_TRACK, except_occurred)
-            self.exception_generic_exception(except_occurred, [], 0, CONST.ERR_EXE_TRACK)
+            self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_EXE_TRACK)
 
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
@@ -438,16 +438,16 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION END #    //  DishLeafNode.delete_device
 
 
-    def exception_generic_exception(self, exception, excpt_msg_list, except_count, read_actvity_msg):
+    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
         self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
         self._read_activity_message = read_actvity_msg + str(exception)
-        excpt_msg_list.append(self._read_activity_message)
-        except_count += 1
-        return [excpt_msg_list, except_count]
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
 
-    def throw_exception(self, excpt_msg_list, read_actvity_msg):
+    def throw_exception(self, except_msg_list, read_actvity_msg):
         err_msg = ' '
-        for item in excpt_msg_list:
+        for item in except_msg_list:
             err_msg += item + "\n"
         tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
@@ -530,8 +530,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         {"scanDuration": 10.0}
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         # TODO: Accept Scan argument in JSON format
         # jsonArgument = json.loads(argin)
         # scan_duration = jsonArgument['scanDuration']
@@ -547,12 +547,12 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXE_SCAN_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
             self._read_activity_message = CONST.ERR_EXE_SCAN_CMD + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_SCAN_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_SCAN_EXEC)
 
         # PROTECTED REGION END #    //  DishLeafNode.Scan
 
@@ -569,8 +569,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         TODO: EndScan argument in JSON format
         {"timestamp": 0}
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         # TODO: Accept EndScan argument in JSON format
         # jsonArgument = json.loads(argin)
         # timestamp = jsonArgument['timestamp']
@@ -583,12 +583,12 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXE_END_SCAN_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
             self._read_activity_message = CONST.ERR_EXE_END_SCAN_CMD + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_ENDSCAN_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_ENDSCAN_EXEC)
 
         # PROTECTED REGION END #    //  DishLeafNode.EndScan
 
@@ -610,8 +610,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
             jsonArgument = json.loads(argin)
             ra_value = (jsonArgument["pointing"]["target"]["RA"])
@@ -644,28 +644,28 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except ValueError as value_error:
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(CONST.ERR_INVALID_JSON + str(value_error))
-            excpt_count += 1
+            exception_message.append(CONST.ERR_INVALID_JSON + str(value_error))
+            exception_count += 1
 
         except KeyError as key_error:
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
-            excpt_count += 1
+            exception_message.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            exception_count += 1
 
         except DevFailed as dev_failed:
             self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
             self.dev_logging(CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed))
+            exception_message.append(CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed))
 
         except Exception as except_occurred:
             print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
-            [excpt_count,excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                    excpt_count, CONST.ERR_EXE_CONFIGURE_CMD)
+            [exception_count,exception_message] = self._handle_generic_exception(except_occurred, exception_message,
+                                                                    exception_count, CONST.ERR_EXE_CONFIGURE_CMD)
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_CONFIGURE_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_CONFIGURE_EXEC)
 
         # PROTECTED REGION END #    //  DishLeafNode.Configure
 
@@ -687,8 +687,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_START_CAPTURE,
@@ -697,12 +697,12 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXE_START_CAPTURE_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
             self._read_activity_message = CONST.ERR_EXE_START_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_STARTCAPTURE_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_STARTCAPTURE_EXEC)
 
         # PROTECTED REGION END #    //  DishLeafNode.StartCapture
 
@@ -719,8 +719,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE, argin, self.commandCallback)
@@ -728,12 +728,12 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXE_STOP_CAPTURE_CMD, "\n", CONST.ERR_INVALID_DATATYPE, value_error)
             self._read_activity_message = CONST.ERR_EXE_STOP_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_STOPCAPTURE_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_STOPCAPTURE_EXEC)
         # PROTECTED REGION END #    //  DishLeafNode.StopCapture
 
     @command(
@@ -763,8 +763,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SLEW, argin, self.commandCallback)
@@ -773,12 +773,12 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_EXE_SLEW_CMD + "\n" + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
             self.dev_logging(CONST.ERR_EXE_SLEW_CMD, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_SLEW_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_SLEW_EXEC)
 
         # PROTECTED REGION END #    //  DishLeafNode.Slew
 
@@ -805,8 +805,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
             self.el_limit = False
             jsonArgument = json.loads(argin)
@@ -825,18 +825,18 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except ValueError as value_error:
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(CONST.ERR_INVALID_JSON + str(value_error))
-            excpt_count += 1
+            exception_message.append(CONST.ERR_INVALID_JSON + str(value_error))
+            exception_count += 1
 
         except KeyError as key_error:
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
-            excpt_count += 1
+            exception_message.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            exception_count += 1
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_TRACK_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_TRACK_EXEC)
 
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
@@ -854,8 +854,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
             self.event_track_time.set()
             self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_TRACK, self.commandCallback)
@@ -863,16 +863,16 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except DevFailed as dev_failed:
             self._read_activity_message = CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)
             self.dev_logging(CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed))
+            exception_message.append(CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed))
 
         except Exception as except_occurred:
             print(CONST.ERR_EXE_STOP_TRACK_CMD, except_occurred)
-            [excpt_count,excpt_msg] = self.devfailed_exception(except_occurred, excpt_msg, excpt_count,
+            [exception_count,exception_message] = self._handle_devfailed_exception(except_occurred, exception_message, exception_count,
                                                                CONST.ERR_EXE_STOP_TRACK_CMD)
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_STOPTRACK_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_STOPTRACK_EXEC)
 
         # PROTECTED REGION END #    //  DishLeafNode.StopTrack
 

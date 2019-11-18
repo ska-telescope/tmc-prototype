@@ -503,7 +503,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         json_scan_duration = json.loads(argin)
         try:
             self.scan_duration = int(json_scan_duration['scanDuration'])
-            print(CONST.STR_SCAN_IP_ARG, argin)
             assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
             if self._obs_state == CONST.OBS_STATE_ENUM_READY:
                 self._read_activity_message = CONST.STR_SCAN_IP_ARG + argin

@@ -55,8 +55,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
@@ -68,12 +68,12 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred,
-                                                            excpt_msg, excpt_count, CONST.ERR_EXCEPT_CMD_CB)
+            [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
+                                                            exception_message, exception_count, CONST.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_CMD_CALLBK)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_CMD_CALLBK)
 
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.class_variable
 
@@ -195,25 +195,25 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self.dev_logging("Stop event received. Thread exit.", int(tango.LogLevel.LOG_INFO))
 
     # Function for handling all Devfailed exception
-    def devfailed_exception(self, df, excpt_msg_list, except_count, read_actvity_msg):
+    def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
         self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
         self._read_activity_message = read_actvity_msg + str(df)
-        excpt_msg_list.append(self._read_activity_message)
-        except_count += 1
-        return [excpt_msg_list, except_count]
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
 
     # Function for handling all generic exception
-    def exception_generic_exception(self, exception, excpt_msg_list, except_count,read_actvity_msg ):
+    def _handle_generic_exception(self, exception, except_msg_list, exception_count,read_actvity_msg ):
         self.dev_logging(read_actvity_msg + str(exception),
                          int(tango.LogLevel.LOG_ERROR))
         self._read_activity_message = read_actvity_msg + str(exception)
-        excpt_msg_list.append(self._read_activity_message)
-        except_count += 1
-        return [excpt_msg_list, except_count]
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
 
-    def throw_exception(self, excpt_msg_list, read_actvity_msg):
+    def throw_exception(self, except_msg_list, read_actvity_msg):
         err_msg = ' '
-        for item in excpt_msg_list:
+        for item in except_msg_list:
             err_msg += item + "\n"
         tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
@@ -257,7 +257,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.STR_CSPSALN_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except DevFailed as dev_failed:
-            self.devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR_CSPSALN, 0,
+            self._handle_devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR_CSPSALN, 0,
                                                                 CONST.STR_ERR_MSG)
             print(CONST.ERR_INIT_PROP_ATTR_CSPSALN)
             print(CONST.STR_ERR_MSG, dev_failed)
@@ -393,8 +393,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None.
         """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message = []
+        exception_count = 0
         try:
             json.loads(argin)
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
@@ -406,20 +406,20 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error),
                              int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         except DevFailed as dev_failed:
-            [excpt_count,excpt_msg] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+            [exception_count,exception_message] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                                CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception( except_occurred, excpt_msg,
-                                                        excpt_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
+            [exception_count, exception_message] = self._handle_generic_exception( except_occurred, exception_message,
+                                                        exception_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
 
         # throw exception:
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_CONFIG_SCAN_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_CONFIG_SCAN_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ConfigureScan
 
@@ -439,8 +439,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None.
         """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message = []
+        exception_count = 0
         try:
             json_scan_duration = json.loads(argin[0])
             scan_duration = json_scan_duration["scanDuration"]
@@ -455,16 +455,16 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
 
         except DevFailed as dev_failed:
-            [excpt_count, excpt_msg] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                                 CONST.ERR_STARTSCAN_RESOURCES)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                excpt_count, CONST.ERR_STARTSCAN_RESOURCES)
+            [exception_count, exception_message] = self._handle_generic_exception(except_occurred, exception_message,
+                                                                exception_count, CONST.ERR_STARTSCAN_RESOURCES)
 
         # throw exception:
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_START_SCAN_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_START_SCAN_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
@@ -480,8 +480,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None.
         """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message = []
+        exception_count = 0
         try:
             if self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING:
                 # Invoke EndScan command on CspSubarray
@@ -493,16 +493,16 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.dev_logging(CONST.ERR_DEVICE_NOT_IN_SCAN, int(tango.LogLevel.LOG_ERROR))
 
         except DevFailed as dev_failed:
-            [excpt_count, excpt_msg] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                                 CONST.ERR_ENDSCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                excpt_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
+            [exception_count, exception_message] = self._handle_generic_exception(except_occurred, exception_message,
+                                                                exception_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
 
         # throw exception:
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_ENDSCAN_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_ENDSCAN_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndScan
 
@@ -517,8 +517,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None.
         """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message = []
+        exception_count = 0
         try:
             #Invoke RemoveAllReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
@@ -526,15 +526,15 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS, int(tango.LogLevel.LOG_INFO))
 
         except DevFailed as dev_failed:
-            [excpt_count, excpt_msg] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                                 CONST.ERR_RELEASE_ALL_RESOURCES)
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                excpt_count, CONST.ERR_RELEASE_ALL_RESOURCES)
+            [exception_count, exception_message] = self._handle_generic_exception(except_occurred, exception_message,
+                                                                exception_count, CONST.ERR_RELEASE_ALL_RESOURCES)
 
         # throw exception:
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_RELEASE_RES_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_RELEASE_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ReleaseResources
 
@@ -571,8 +571,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None.
         """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message = []
+        exception_count = 0
         try:
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
@@ -591,26 +591,26 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.dev_logging(CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error),
                              int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         except KeyError as key_error:
             self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         except DevFailed as dev_failed:
-            [excpt_count, excpt_msg] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                                 CONST.ERR_ASSGN_RESOURCES)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                    excpt_count, CONST.ERR_ASSGN_RESOURCES)
+            [exception_count, exception_message] = self._handle_generic_exception(except_occurred, exception_message,
+                                                                    exception_count, CONST.ERR_ASSGN_RESOURCES)
 
         # throw exception:
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_ASSIGN_RES_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
 
@@ -625,8 +625,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None.
 
         """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message = []
+        exception_count = 0
         try:
             if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
                 self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
@@ -636,16 +636,16 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
                 self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
         except DevFailed as dev_failed:
-            [excpt_count, excpt_msg] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
+            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                                 CONST.ERR_ENDSB_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [excpt_count, excpt_msg] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                    excpt_count, CONST.ERR_ENDSB_INVOKING_CMD)
+            [exception_count, exception_message] = self._handle_generic_exception(except_occurred, exception_message,
+                                                                    exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
 
         # throw exception:
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_ENDSB_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_ENDSB_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndSB
 

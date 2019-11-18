@@ -40,7 +40,7 @@ import time
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context")
+@pytest.mark.usefixtures("tango_context","create_cspmaster_proxy")
 
 class TestCspMasterLeafNode(object):
     """Test case for packet generation."""
@@ -178,20 +178,22 @@ class TestCspMasterLeafNode(object):
         assert  tango_context.device.activityMessage == "text"
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_activityMessage
 
-    def test_On(self, tango_context):
+    def test_On(self, tango_context, create_cspmaster_proxy):
         """Test for On"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_On) ENABLED START #
         tango_context.device.On([])
         time.sleep(1)
         assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert create_cspmaster_proxy.state() == DevState.ON
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_On
 
-    def test_Standby(self, tango_context):
+    def test_Standby(self, tango_context, create_cspmaster_proxy):
         """Test for Standby"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_Standby) ENABLED START #
         tango_context.device.Standby([])
         time.sleep(1)
         assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert create_cspmaster_proxy.state() == DevState.STANDBY
         time.sleep(1)
         tango_context.device.On([])
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_Standby
