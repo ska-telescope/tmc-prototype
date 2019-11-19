@@ -171,7 +171,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Throw Exception
         if exception_count > 0:
-            err_msg = ' '
+            err_msg = ''
             for item in exception_message:
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,

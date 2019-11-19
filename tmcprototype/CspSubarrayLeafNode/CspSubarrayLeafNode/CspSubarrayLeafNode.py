@@ -212,7 +212,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         return [except_msg_list, exception_count]
 
     def throw_exception(self, except_msg_list, read_actvity_msg):
-        err_msg = ' '
+        err_msg = ''
         for item in except_msg_list:
             err_msg += item + "\n"
         tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)

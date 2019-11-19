@@ -83,7 +83,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Throw Exception
         if exception_count > 0:
-            err_msg = ' '
+            err_msg = ''
             for item in exception_message:
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
@@ -265,7 +265,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(SdpMasterLeafNode.Disable) ENABLED START #
         print(CONST.STR_DISABLE_CMS_SUCCESS)
         self._read_activity_message = CONST.STR_DISABLE_CMS_SUCCESS
-        # PROTECTED REGION END #    //  SdpMasterLeafNode.Disable
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.Disableon
 
     @command(
     )
