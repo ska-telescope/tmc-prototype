@@ -91,6 +91,12 @@ class TestCspSubarrayLeafNode(object):
         #create_cspsubarray1_proxy.device.Reset() is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Reset
 
+    def test_delayModel(self, tango_context):
+        """Test for delayModel"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_delayModel) ENABLED START #
+        assert tango_context.device.delayModel == ' '
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
+
     def test_AssignResources_invalid_json(self, tango_context, create_cspsubarray1_proxy):
         """
         Test case to check invalid JSON format (Negative test case)
@@ -333,9 +339,3 @@ class TestCspSubarrayLeafNode(object):
         tango_context.device.activityMessage = 'text'
         assert tango_context.device.activityMessage == 'text'
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_activityMessage
-
-    def test_delayModel(self, tango_context):
-        """Test for delayModel"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_delayModel) ENABLED START #
-        assert tango_context.device.delayModel == ' '
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
