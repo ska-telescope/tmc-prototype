@@ -40,7 +40,7 @@ import time
 
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_dish_proxy")
+@pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy")
 
 class TestSubarrayNode(object):
     """Test case for packet generation."""
@@ -116,6 +116,45 @@ class TestSubarrayNode(object):
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
+    def test_AssignResources_ValueError(self, tango_context):
+        """Negative Test for AssignResources_ValueError"""
+        # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
+        receptor_list = ['abc']
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(receptor_list)
+        time.sleep(10)
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
+        # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources_ValueError
+
+    def test_Configure_Negative_ScanID(self, tango_context, create_dish_proxy):
+        """Negative Test for Configure"""
+        # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure('{"A":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                           '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                           '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                           '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                           '"corrBandwidth":0}]},"sdp":{"configure":'
+                                           '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                           '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                           '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                           '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                           '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                           '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                           '{"fieldId":0,"intervalMs":1400}}}]}}')
+        time.sleep(5)
+        # assert CONST.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
+        # create_dish_proxy.StopTrack()
+        # PROTECTED REGION END #    //  SubarrayNode.test_Configure
+
+    def test_Configure_Negative_InvalidJson(self, tango_context):
+        test_input = '{"invalid_key"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure(test_input)
+        time.sleep(3)
+        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+
     def test_Configure(self, tango_context, create_dish_proxy):
         """Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
@@ -136,22 +175,81 @@ class TestSubarrayNode(object):
         create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
+    def test_Configure_ObsState_NOT_Idle(self, tango_context, create_dish_proxy):
+        """Negative Test for Configure"""
+        # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
+        tango_context.device.Scan('{"scanDuration": 5.0}')
+        time.sleep(5)
+        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                           '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                           '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                           '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                           '"corrBandwidth":0}]},"sdp":{"configure":'
+                                           '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                           '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                           '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                           '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                           '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                           '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                           '{"fieldId":0,"intervalMs":1400}}}]}}')
+        time.sleep(10)
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
+        # create_dish_proxy.StopTrack()
+        # PROTECTED REGION END #    //  SubarrayNode.test_Configure
+
+
     def test_Scan(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-        tango_context.device.Scan('{"scanDuration": 10.0}')
+        tango_context.device.Scan('{"scanDuration": 15.0}')
         time.sleep(5)
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
+    def test_Scan_Duplicate(self, tango_context):
+        """Negative Test for Scan"""
+        # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan('{"scanDuration": 5.0}')
+        time.sleep(2)
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
+        # PROTECTED REGION END #    //  SubarrayNode.test_Scan
+
     def test_EndScan(self, tango_context):
-        """Test for EndScan"""
+        """Negative Test for EndScan"""
         # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
-        #tango_context.obsState = CONST.OBS_STATE_ENUM_SCANNING
         tango_context.device.EndScan()
         time.sleep(10)
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
+
+    def test_EndScan_Duplicate(self, tango_context):
+        """Negative Test for EndScan"""
+        # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndScan()
+        time.sleep(3)
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
+        # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
+
+    def test_Scan_Negative_InvalidDataType(self, tango_context):
+        """Test for InvalidScan"""
+        # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
+        test_input = '{"scanDuration": "abc"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan(test_input)
+        time.sleep(5)
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
+        # PROTECTED REGION END #    //  SubarrayNode.test_Scan_Negative_InvalidDataType
+
+    def test_Scan_Negative_Keynotfound_ScanPara(self, tango_context):
+        """Test for InvalidScan"""
+        # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
+        test_input = '{"scan_Duration": "10"}'
+        tango_context.device.Scan(test_input)
+        time.sleep(5)
+        assert CONST.ERR_SCAN_CMD in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SubarrayNode.test_Scan_Negative_InvalidDataType
 
     def test_EndSB(self, tango_context):
         """Test for EndSB command."""
@@ -167,7 +265,6 @@ class TestSubarrayNode(object):
         tango_context.device.EndSB()
         time.sleep(2)
         assert tango_context.device.ObsState != CONST.OBS_STATE_ENUM_READY
-        # assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
         # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 
     def test_ReleaseAllResources(self, tango_context):
@@ -323,3 +420,12 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_receptorIDList) ENABLED START #
         assert tango_context.device.receptorIDList is None
         # PROTECTED REGION END #    //  SubarrayNode.test_receptorIDList
+
+    def test_Track(self, tango_context, create_dishln_proxy):
+        """Test for Track"""
+        # PROTECTED REGION ID(SubarrayNode.test_Track) ENABLED START #
+        track_argin = "radec|2:31:50.91|89:15:51.4"
+        tango_context.device.Track(track_argin)
+        assert CONST.STR_TRACK_IP_ARG in tango_context.device.activityMessage
+        create_dishln_proxy.StopTrack()
+        # PROTECTED REGION END #    //  SubarrayNode.test_Track

@@ -94,6 +94,7 @@ class TestSdpMasterLeafNode(object):
         tango_context.device.On()
         time.sleep(4)
         assert create_sdp_master_proxy.OperatingState == 1
+        assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_On
 
     def test_Standby(self, tango_context, create_sdp_master_proxy):
@@ -102,6 +103,7 @@ class TestSdpMasterLeafNode(object):
         tango_context.device.Standby()
         time.sleep(4)
         assert create_sdp_master_proxy.OperatingState == 3
+        assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Standby
 
     def test_buildState(self, tango_context):
@@ -194,7 +196,8 @@ class TestSdpMasterLeafNode(object):
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_activityMessage) ENABLED START #
-        assert tango_context.device.activityMessage
+        tango_context.device.activityMessage = "text"
+        assert tango_context.device.activityMessage == "text"
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_activityMessage
 
     def test_ProcessingBlockList(self, tango_context):
@@ -202,4 +205,26 @@ class TestSdpMasterLeafNode(object):
         # PROTECTED REGION ID(SdpMasterLeafNode.test_ProcessingBlockList) ENABLED START #
         assert tango_context.device.ProcessingBlockList
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_ProcessingBlockList
+
+    def test_Off(self, tango_context, create_sdp_master_proxy):
+        """Test for Off command"""
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_Off) ENABLED START #
+        tango_context.device.Off()
+        assert tango_context.device.activityMessage in CONST.STR_OFF_CMD_SUCCESS
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Off
+
+    def test_off_devfailed_exception(self, tango_context):
+        """Negative test for Off command"""
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_off_devfailed_exception) ENABLED START #
+        tango_context.device.testMode = CONST.STR_TRUE
+        tango_context.device.Off()
+        assert CONST.ERR_MSG in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_off_devfailed_exception
+
+    def test_Disable(self, tango_context):
+        """Test for Off command"""
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_Off) ENABLED START #
+        tango_context.device.Disable()
+        assert tango_context.device.activityMessage in CONST.STR_DISABLE_CMS_SUCCESS
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Off
 

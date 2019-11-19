@@ -55,3 +55,8 @@ def initialize_device(tango_context):
 def create_dish_proxy():
     dish_proxy = DeviceProxy("mid_d0001/elt/master")
     return dish_proxy
+
+@pytest.fixture(scope="class")
+def create_dishln_proxy():
+    dishln_proxy = DeviceProxy("ska_mid/tm_leaf_node/d0001")
+    return dishln_proxy
