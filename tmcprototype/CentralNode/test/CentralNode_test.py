@@ -330,6 +330,7 @@ class TestCentralNode(object):
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(CentralNode.test_activityMessage) ENABLED START #
-        assert tango_context.device.activityMessage != ""
+        tango_context.device.activityMessage = 'test'
+        assert tango_context.device.activityMessage == "test"
         # PROTECTED REGION END #    //  CentralNode.test_activityMessage
 

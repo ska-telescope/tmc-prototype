@@ -183,8 +183,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
         except Exception as except_occurred:
-            [exception_count,exception_message] = self._handle_generic_exception(except_occurred, exception_message,
-                                                                       exception_count, CONST.ERR_EXCEPT_CMD_CB)
+            [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count, CONST.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
         if exception_count > 0:
@@ -335,6 +335,19 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             print(CONST.ERR_EXE_TRACK, except_occurred)
             self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_EXE_TRACK)
 
+    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
+        self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
+        self._read_activity_message = read_actvity_msg + str(exception)
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
+
+    def throw_exception(self, except_msg_list, read_actvity_msg):
+        err_msg = ''
+        for item in except_msg_list:
+            err_msg += item + "\n"
+        tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
     # -----------------
@@ -436,21 +449,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
         # PROTECTED REGION END #    //  DishLeafNode.delete_device
-
-
-    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
-        self._read_activity_message = read_actvity_msg + str(exception)
-        except_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [except_msg_list, exception_count]
-
-    def throw_exception(self, except_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in except_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
-
 
     # ------------------
     # Attributes methods
@@ -660,8 +658,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except Exception as except_occurred:
             print(CONST.ERR_EXE_CONFIGURE_CMD, except_occurred)
-            [exception_count,exception_message] = self._handle_generic_exception(except_occurred, exception_message,
-                                                                    exception_count, CONST.ERR_EXE_CONFIGURE_CMD)
+            [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, CONST.ERR_EXE_CONFIGURE_CMD)
 
         # Throw Exception
         if exception_count > 0:
@@ -867,8 +865,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except Exception as except_occurred:
             print(CONST.ERR_EXE_STOP_TRACK_CMD, except_occurred)
-            [exception_count,exception_message] = self._handle_devfailed_exception(except_occurred, exception_message, exception_count,
-                                                               CONST.ERR_EXE_STOP_TRACK_CMD)
+            [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, CONST.ERR_EXE_STOP_TRACK_CMD)
 
         # Throw Exception
         if exception_count > 0:
