@@ -143,10 +143,17 @@ class TestSubarrayNode(object):
                                            '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                            '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(5)
-        assert CONST.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
+        # assert CONST.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
         # create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
+    def test_Configure_Negative_InvalidJson(self, tango_context):
+        test_input = '{"invalid_key"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure(test_input)
+        time.sleep(3)
+        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
 
     def test_Configure(self, tango_context, create_dish_proxy):
         """Test for Configure"""
@@ -241,8 +248,6 @@ class TestSubarrayNode(object):
         test_input = '{"scan_Duration": "10"}'
         tango_context.device.Scan(test_input)
         time.sleep(5)
-        print("tango activity msg:", tango_context.device.activityMessage)
-        print("code activity msg:", CONST.ERR_SCAN_CMD)
         assert CONST.ERR_SCAN_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan_Negative_InvalidDataType
 

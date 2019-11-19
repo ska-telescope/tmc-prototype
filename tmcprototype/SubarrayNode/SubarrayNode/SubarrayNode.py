@@ -529,8 +529,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         excpt_count = 0
         excpt_msg = []
-        json_scan_duration = json.loads(argin)
         try:
+            json_scan_duration = json.loads(argin)
             self.scan_duration = int(json_scan_duration['scanDuration'])
             print(CONST.STR_SCAN_IP_ARG, argin)
             assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
@@ -1193,10 +1193,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_msg = []
 
         try:
+            self._scanConfiguration = json.loads(argin)
             self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
             if self._obs_state == CONST.OBS_STATE_ENUM_IDLE:
-                self._scanConfiguration = json.loads(argin)
                 # TODO: FOR FUTURE IMPLEMENTATION
                 # scanID = scanConfiguration["scanID"]
                 # pointing =  scanConfiguration["pointing"]
@@ -1337,11 +1337,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         except ValueError as value_error:
             self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
-        except KeyError as key_error:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             excpt_msg.append(self._read_activity_message)
             excpt_count += 1
         except DevFailed as dev_failed:
