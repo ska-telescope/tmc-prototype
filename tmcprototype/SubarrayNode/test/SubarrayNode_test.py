@@ -206,14 +206,14 @@ class TestSubarrayNode(object):
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
-    def test_Scan_Duplicate(self, tango_context):
-        """Negative Test for Scan"""
-        # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan('{"scanDuration": 5.0}')
-        time.sleep(2)
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
-        # PROTECTED REGION END #    //  SubarrayNode.test_Scan
+    # def test_Scan_Duplicate(self, tango_context):
+    #     """Negative Test for Scan"""
+    #     # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.Scan('{"scanDuration": 5.0}')
+    #     time.sleep(2)
+    #     assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
+    #     # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
     def test_EndScan(self, tango_context):
         """Negative Test for EndScan"""
