@@ -44,7 +44,7 @@ test:
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
-    mkdir -p /build/reports; \
+	mkdir -p /build/reports; \
     mv /app/tmcprototype/DishMaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
     mv /app/tmcprototype/DishMaster/htmlcov /build/dishmaster_htmlcov; \
     mv /app/tmcprototype/DishMaster/coverage.xml /build/dishmaster_coverage.xml; \
