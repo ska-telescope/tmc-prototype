@@ -95,33 +95,6 @@
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="SetCbfAdminMode" description="Set the administration mode of the CBF sub-element." execMethod="set_cbf_admin_mode" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="adminMode">
-        <type xsi:type="pogoDsl:EnumType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
-    <commands name="SetPssAdminMode" description="Set the administration mode of the PSS sub-element." execMethod="set_pss_admin_mode" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="adminMode">
-        <type xsi:type="pogoDsl:EnumType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
-    <commands name="SetPstAdminMode" description="Set the administration mode of the PST sub-element." execMethod="set_pst_admin_mode" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="adminMode">
-        <type xsi:type="pogoDsl:EnumType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
     <attributes name="buildState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="60000" maxX="" maxY="" allocReadMember="true">
       <dataType xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="true" concrete="true"/>

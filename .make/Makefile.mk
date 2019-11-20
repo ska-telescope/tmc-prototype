@@ -30,7 +30,6 @@ ifeq ($(strip $(DOCKER_REGISTRY_USER)),)
 endif
 
 IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
-ALARMHANDLER_IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tmalarmhandler
 
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
@@ -50,7 +49,6 @@ pre-build:
 post-build:
 
 pre-push:
-	docker login -u ci-cd -p $(DOCKER_REGISTRY_PASSWORD) $(DOCKER_REGISTRY_HOST)
 
 post-push:
 
@@ -66,17 +64,6 @@ docker-build: .release
 		docker tag $(IMAGE):$(VERSION) $(IMAGE):latest ; \
 	fi
 
-	docker build $(DOCKER_BUILD_ARGS) -t $(ALARMHANDLER_IMAGE):$(VERSION) tmcprototype/TMAlarmHandler/ -f tmcprototype/TMAlarmHandler/Dockerfile --build-arg DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) --build-arg DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER)
-	@DOCKER_MAJOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f1) ; \
-	DOCKER_MINOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f2) ; \
-	if [ $$DOCKER_MAJOR -eq 1 ] && [ $$DOCKER_MINOR -lt 10 ] ; then \
-		echo docker tag -f $(ALARMHANDLER_IMAGE):$(VERSION) $(ALARMHANDLER_IMAGE):latest ;\
-		docker tag -f $(ALARMHANDLER_IMAGE):$(ALARMHANDLER_IMAGE) $(IMAGE):latest ;\
-	else \
-		echo docker tag $(ALARMHANDLER_IMAGE):$(VERSION) $(ALARMHANDLER_IMAGE):latest ;\
-		docker tag $(ALARMHANDLER_IMAGE):$(VERSION) $(ALARMHANDLER_IMAGE):latest ; \
-	fi
-
 .release:
 	@echo "release=0.0.0" > .release
 	@echo "tag=$(NAME)-0.0.0" >> .release
@@ -88,9 +75,8 @@ release: check-status check-release build push
 push: pre-push do-push post-push  ## push the image to the Docker registry
 
 do-push:
-	docker push $(IMAGE):$(VERSION)
+#	docker push $(IMAGE):$(VERSION)
 	docker push $(IMAGE):latest
-	docker push $(ALARMHANDLER_IMAGE):latest
 
 snapshot: build push
 
