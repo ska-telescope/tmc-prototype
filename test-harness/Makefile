@@ -74,7 +74,7 @@ test:
         mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
     fi;
 lint:
-retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master
+	retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master
 	retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master
 	retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master
 	retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master
