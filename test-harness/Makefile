@@ -71,9 +71,9 @@ test:
     mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml; \
     mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
 lint:
-    pip3 install pylint2junit; \
-    mkdir -p /build/reports; \
-    cd /app && pylint --output-format=parseable tmcprototype | tee /build/code_analysis.stdout; \
-    cd /app && pylint --output-format=pylint2junit.JunitReporter csplmc > /build/reports/linting.xml;
+	pip3 install pylint2junit; \
+	mkdir -p /build/reports; \
+	cd /app && pylint --output-format=parseable tmcprototype | tee /build/code_analysis.stdout; \
+	cd /app && pylint --output-format=pylint2junit.JunitReporter csplmc > /build/reports/linting.xml;
 
 .PHONY: all test lint
