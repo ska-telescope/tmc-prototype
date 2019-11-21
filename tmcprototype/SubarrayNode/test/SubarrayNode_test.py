@@ -201,7 +201,7 @@ class TestSubarrayNode(object):
     def test_Scan(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-        tango_context.device.Scan('{"scanDuration": 15.0}')
+        tango_context.device.Scan('{"scanDuration": 30.0}')
         time.sleep(5)
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
