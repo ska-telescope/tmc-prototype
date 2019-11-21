@@ -68,9 +68,7 @@ test:
     mv /app/tmcprototype/SubarrayNode/coverage.xml /build/subarraynode_coverage.xml; \
     mv /app/tmcprototype/CentralNode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout; \
     mv /app/tmcprototype/CentralNode/htmlcov /build/centralnode_htmlcov; \
-#   mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml;
     mv /app/tmcprototype/CentralNode/coverage.xml /build/reports/code-coverage.xml;
-#   mv /app/code_analysis.stdout /build/tmcprototype_code_analysis.stdout; \
 lint:
 	pip3 install pylint2junit; \
 	mkdir -p /build/reports; \
