@@ -28,6 +28,14 @@ stages:
   - pages
   - trigger
 
+clean shell runner:
+  stage: .pre
+  tags:
+    - docker-executor
+  script:
+    # Gitlab CI badges creation
+    - rm -rf build/*
+
 build CentralNode wheel for publication: # Executed on a tag
   stage: build
   tags:
