@@ -299,7 +299,7 @@ linting:
   tags:
     - docker-executor
   script:
-    - apt-update -y update
+    - apt-get -y update
     - apt-get install -y python3-pip python3-setuptools python3-wheel --no-install-recommends
     - make lint
   artifacts:
