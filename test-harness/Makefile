@@ -72,7 +72,7 @@ test:
 lint:
 	pip3 install pylint2junit; \
 	mkdir -p /build/reports; \
-	cd /app && pylint --output-format=parseable CentralNode | tee /build/code_analysis.stdout; \
-	cd /app && pylint --output-format=pylint2junit.JunitReporter CentralNode > /build/reports/linting.xml;
+	cd /app && pylint --output-format=parseable /tmcprototype/CentralNode | tee /build/code_analysis.stdout; \
+	cd /app && pylint --output-format=pylint2junit.JunitReporter /tmcprototype/CentralNode > /build/reports/linting.xml;
 
 .PHONY: all test lint
