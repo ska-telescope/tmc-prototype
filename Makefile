@@ -134,7 +134,7 @@ lint: build up ##lint the application (static code analysis)
 	$(INIT_CACHE)
 	$(call make,lint); \
 	status=$$?; \
-	docker cp $(BUILD):/build .: \
+	docker cp $(BUILD):/build .; \
 	$(MAKE) down; \
 	exit $$status
 
