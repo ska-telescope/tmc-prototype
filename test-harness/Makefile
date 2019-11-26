@@ -53,7 +53,7 @@ test:
     mv /app/tmcprototype/CspSubarrayLeafNode/coverage.xml /build/cspsubarrayleafnode_coverage.xml; \
     mv /app/tmcprototype/DishLeafNode/setup_py_test.stdout /build/dishleafnode_setup_py_test.stdout; \
     mv /app/tmcprototype/DishLeafNode/htmlcov /build/dishleafnode_htmlcov; \
-#   mv /app/tmcprototype/DishLeafNode/coverage.xml /build/dishleafnode_coverage.xml; \
+    mv /app/tmcprototype/DishLeafNode/coverage.xml /build/dishleafnode_coverage.xml; \
     mv /app/tmcprototype/SdpSubarrayLeafNode/setup_py_test.stdout /build/sdpsubarrayleafnode_setup_py_test.stdout; \
     mv /app/tmcprototype/SdpSubarrayLeafNode/htmlcov /build/sdpsubarrayleafnode_htmlcov; \
     mv /app/tmcprototype/SdpSubarrayLeafNode/coverage.xml /build/sdpsubarrayleafnode_coverage.xml; \
@@ -68,12 +68,12 @@ test:
     mv /app/tmcprototype/SubarrayNode/coverage.xml /build/subarraynode_coverage.xml; \
     mv /app/tmcprototype/CentralNode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout; \
     mv /app/tmcprototype/CentralNode/htmlcov /build/centralnode_htmlcov; \
-    mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml; \
-    mv /app/tmcprototype/DishLeafNode/coverage.xml /build/reports/code-coverage.xml;
+#   mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml; \
+    mv /app/tmcprototype/CentralNode/coverage.xml /build/reports/code-coverage.xml;
 lint:
 	pip3 install pylint2junit; \
 	mkdir -p /build/reports; \
-	cd /app/tmcprototype && pylint --output-format=parseable DishLeafNode | tee /build/code_analysis.stdout; \
-	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter DishLeafNode > /build/reports/linting.xml;
+	cd /app/tmcprototype && pylint --output-format=parseable CentralNode | tee /build/code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter CentralNode > /build/reports/linting.xml;
 
 .PHONY: all test lint
