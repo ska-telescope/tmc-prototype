@@ -56,7 +56,7 @@ test:
     mv /app/tmcprototype/DishLeafNode/coverage.xml /build/dishleafnode_coverage.xml; \
     mv /app/tmcprototype/SdpSubarrayLeafNode/setup_py_test.stdout /build/sdpsubarrayleafnode_setup_py_test.stdout; \
     mv /app/tmcprototype/SdpSubarrayLeafNode/htmlcov /build/sdpsubarrayleafnode_htmlcov; \
-    mv /app/tmcprototype/SdpSubarrayLeafNode/coverage.xml /build/sdpsubarrayleafnode_coverage.xml; \
+#   mv /app/tmcprototype/SdpSubarrayLeafNode/coverage.xml /build/sdpsubarrayleafnode_coverage.xml; \
     mv /app/tmcprototype/CspMasterLeafNode/setup_py_test.stdout /build/cspmasterleafnode_setup_py_test.stdout; \
     mv /app/tmcprototype/CspMasterLeafNode/htmlcov /build/cspmasterleafnode_htmlcov; \
     mv /app/tmcprototype/CspMasterLeafNode/coverage.xml /build/cspmasterleafnode_coverage.xml; \
@@ -65,15 +65,15 @@ test:
     mv /app/tmcprototype/SdpMasterLeafNode/coverage.xml /build/sdpmasterleafnode_coverage.xml; \
     mv /app/tmcprototype/SubarrayNode/setup_py_test.stdout /build/subarraynode_setup_py_test.stdout; \
     mv /app/tmcprototype/SubarrayNode/htmlcov /build/subarraynode_htmlcov; \
-#   mv /app/tmcprototype/SubarrayNode/coverage.xml /build/subarraynode_coverage.xml; \
+    mv /app/tmcprototype/SubarrayNode/coverage.xml /build/subarraynode_coverage.xml; \
     mv /app/tmcprototype/CentralNode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout; \
     mv /app/tmcprototype/CentralNode/htmlcov /build/centralnode_htmlcov; \
     mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml; \
-    mv /app/tmcprototype/SubarrayNode/coverage.xml /build/reports/code-coverage.xml;
+    mv /app/tmcprototype/SdpSubarrayLeafNode/coverage.xml /build/reports/code-coverage.xml;
 lint:
 	pip3 install pylint2junit; \
 	mkdir -p /build/reports; \
-	cd /app/tmcprototype && pylint --output-format=parseable SubarrayNode | tee /build/code_analysis.stdout; \
-	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter SubarrayNode > /build/reports/linting.xml;
+	cd /app/tmcprototype && pylint --output-format=parseable SdpSubarrayLeafNode | tee /build/code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter SdpSubarrayLeafNode > /build/reports/linting.xml;
 
 .PHONY: all test lint
