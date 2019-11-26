@@ -50,7 +50,7 @@ test:
     mv /app/tmcprototype/DishMaster/coverage.xml /build/dishmaster_coverage.xml; \
     mv /app/tmcprototype/CspSubarrayLeafNode/setup_py_test.stdout /build/cspsubarrayleafnode_setup_py_test.stdout; \
     mv /app/tmcprototype/CspSubarrayLeafNode/htmlcov /build/cspsubarrayleafnode_htmlcov; \
-#   mv /app/tmcprototype/CspSubarrayLeafNode/coverage.xml /build/cspsubarrayleafnode_coverage.xml; \
+    mv /app/tmcprototype/CspSubarrayLeafNode/coverage.xml /build/cspsubarrayleafnode_coverage.xml; \
     mv /app/tmcprototype/DishLeafNode/setup_py_test.stdout /build/dishleafnode_setup_py_test.stdout; \
     mv /app/tmcprototype/DishLeafNode/htmlcov /build/dishleafnode_htmlcov; \
     mv /app/tmcprototype/DishLeafNode/coverage.xml /build/dishleafnode_coverage.xml; \
@@ -59,7 +59,7 @@ test:
     mv /app/tmcprototype/SdpSubarrayLeafNode/coverage.xml /build/sdpsubarrayleafnode_coverage.xml; \
     mv /app/tmcprototype/CspMasterLeafNode/setup_py_test.stdout /build/cspmasterleafnode_setup_py_test.stdout; \
     mv /app/tmcprototype/CspMasterLeafNode/htmlcov /build/cspmasterleafnode_htmlcov; \
-    mv /app/tmcprototype/CspMasterLeafNode/coverage.xml /build/cspmasterleafnode_coverage.xml; \
+#   mv /app/tmcprototype/CspMasterLeafNode/coverage.xml /build/cspmasterleafnode_coverage.xml; \
     mv /app/tmcprototype/SdpMasterLeafNode/setup_py_test.stdout /build/sdpmasterleafnode_setup_py_test.stdout; \
     mv /app/tmcprototype/SdpMasterLeafNode/htmlcov /build/sdpmasterleafnode_htmlcov; \
     mv /app/tmcprototype/SdpMasterLeafNode/coverage.xml /build/sdpmasterleafnode_coverage.xml; \
@@ -69,11 +69,11 @@ test:
     mv /app/tmcprototype/CentralNode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout; \
     mv /app/tmcprototype/CentralNode/htmlcov /build/centralnode_htmlcov; \
     mv /app/tmcprototype/CentralNode/coverage.xml /build/centralnode_coverage.xml; \
-    mv /app/tmcprototype/CspSubarrayLeafNode/coverage.xml /build/reports/code-coverage.xml;
+    mv /app/tmcprototype/CspMasterLeafNode/coverage.xml /build/reports/code-coverage.xml;
 lint:
 	pip3 install pylint2junit; \
 	mkdir -p /build/reports; \
-	cd /app/tmcprototype && pylint --output-format=parseable CspSubarrayLeafNode | tee /build/code_analysis.stdout; \
-	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter CspSubarrayLeafNode > /build/reports/linting.xml;
+	cd /app/tmcprototype && pylint --output-format=parseable CspMasterLeafNode | tee /build/code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter CspMasterLeafNode > /build/reports/linting.xml;
 
 .PHONY: all test lint
