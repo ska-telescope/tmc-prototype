@@ -68,7 +68,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 print(CONST.ERR_MSG, except_occured)
         else:
             self.set_status(CONST.STR_DISH_POINT_ALREADY)
-            #self.dev_logging(CONST.STR_DISH_POINT_ALREADY, int(tango.LogLevel.LOG_INFO))
             self.logger.info(CONST.STR_DISH_POINT_ALREADY)
 
     def azimuth(self):
@@ -111,11 +110,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         if input_increment == max_increment:
             input_increment = input_increment + 0.01
         self.set_status(CONST.STR_DISH_POINT_INPROG)
-        self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+        self.logger.info(CONST.STR_DISH_POINT_INPROG)
         self._pointing_state = 1
         for position in numpy.arange(0, input_increment, 0.01):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
-            self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_DISH_POINT_INPROG)
             self._pointing_state = 1
 
             if position == input_increment:
@@ -126,10 +125,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                         self._achieved_pointing[2] == self._desired_pointing[2]):
                     self._pointing_state = 0
                     self.set_status(CONST.STR_DISH_POINT_SUCCESS)
-                    self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                    self.logger.info(CONST.STR_DISH_POINT_SUCCESS)
                 else:
                     self.set_status(CONST.STR_DISH_POINT_INPROG)
-                    self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+                    self.logger.info(CONST.STR_DISH_POINT_INPROG)
                     self._pointing_state = 1
                     self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
 
@@ -153,11 +152,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             input_decrement = input_decrement + 0.01
 
         self.set_status(CONST.STR_DISH_POINT_INPROG)
-        self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+        self.logger.info(CONST.STR_DISH_POINT_INPROG)
         self._pointing_state = 1
         for position in numpy.arange(0, input_decrement, 0.01):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
-            self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_DISH_POINT_INPROG)
             self._pointing_state = 1
 
             if position == input_decrement:
@@ -168,10 +167,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                         self._achieved_pointing[2] == self._desired_pointing[2]):
                     self._pointing_state = 0
                     self.set_status(CONST.STR_DISH_POINT_SUCCESS)
-                    self.dev_logging(CONST.STR_DISH_POINT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                    self.logger.info(CONST.STR_DISH_POINT_SUCCESS)
                 else:
                     self.set_status(CONST.STR_DISH_POINT_INPROG)
-                    self.dev_logging(CONST.STR_DISH_POINT_INPROG, int(tango.LogLevel.LOG_INFO))
+                    self.logger.info(CONST.STR_DISH_POINT_INPROG)
                     self._pointing_state = 1
                     self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] - 0.01), 2)
 
@@ -188,7 +187,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._dish_mode = 6                         # Set dishMode to STOW
                 self._health_state = 0                      # Set healthState to OK
                 self.set_status(CONST.STR_DISH_STOW_SUCCESS)
-                self.dev_logging(CONST.STR_DISH_STOW_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_DISH_STOW_SUCCESS)
                 break
 
     def track_slew(self):
@@ -368,11 +367,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self._azimuthoverwrap = False
             self._toggle_fault = False
             self.set_status(CONST.STR_DISH_INIT_SUCCESS)
-            self.dev_logging(CONST.STR_DISH_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
         except Exception as except_occured:
             print(CONST.ERR_INIT_PROP_ATTR_DISH, self.ReceptorNumber)
-            self.dev_logging(CONST.ERR_INIT_PROP_ATTR_DISH, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_INIT_PROP_ATTR_DISH)
             print(CONST.ERR_MSG, except_occured)
         # PROTECTED REGION END #    //  DishMaster.always_executed_hook
 
@@ -570,7 +569,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         except Exception as except_occured:
             print(CONST.ERR_EXE_SET_STOW_MODE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SET_STOW_MODE_CMD + str(self.ReceptorNumber))
-            self.dev_logging(CONST.ERR_EXE_SET_STOW_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_EXE_SET_STOW_MODE_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
 
@@ -607,14 +606,12 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_state(DevState.STANDBY)             # Set STATE to STANDBY
             self._dish_mode = 3                          # set dishMode to STANDBYLP
             self.set_status(CONST.STR_DISH_STANDBYLP_MODE)
-            #self.dev_logging(CONST.STR_DISH_STANDBYLP_MODE, int(tango.LogLevel.LOG_INFO))
             self.logger.info(CONST.STR_DISH_STANDBYLP_MODE)
         except Exception as except_occured:
             print(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.set_status(str(except_occured))
-            #self.dev_logging(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
             self.logger.error(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
@@ -654,12 +651,12 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
             self._dish_mode = 5                         # set dishMode to MAINTENANCE
             self.set_status(CONST.STR_DISH_MAINT_MODE)
-            self.dev_logging(CONST.STR_DISH_MAINT_MODE, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_DISH_MAINT_MODE)
         except Exception as except_occured:
             print(CONST.ERR_EXE_SET_MAINT_MODE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SET_MAINT_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            self.dev_logging(CONST.ERR_EXE_SET_MAINT_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_EXE_SET_MAINT_MODE_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -698,13 +695,12 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_state(DevState.ON)                 # Set STATE to ON
             self._dish_mode = 8                         # set dishMode to OPERATE
             self.set_status(CONST.STR_DISH_OPERATE_MODE)
-            #self.dev_logging(CONST.STR_DISH_OPERATE_MODE, int(tango.LogLevel.LOG_INFO))
             self.logger.info(CONST.STR_DISH_OPERATE_MODE)
         except Exception as except_occured:
             print(CONST.ERR_EXE_SET_OPERATE_MODE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SET_OPERATE_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            self.dev_logging(CONST.ERR_EXE_SET_OPERATE_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_EXE_SET_OPERATE_MODE_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -752,15 +748,15 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._scan_delta_t = self._scan_execution_time - self._current_time
                 schedule_scan_thread = Timer(self._scan_delta_t, self.StartCapture, [argin])
                 schedule_scan_thread.start()
-                self.dev_logging(CONST.STR_SCAN_INPROG, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_SCAN_INPROG)
             else:
                 self.set_status(CONST.STR_DISH_NOT_READY)
-                self.dev_logging(CONST.STR_DISH_NOT_READY, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_DISH_NOT_READY)
         except Exception as except_occured:
             print(CONST.ERR_EXE_SCAN_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SCAN_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            self.dev_logging(CONST.ERR_EXE_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_EXE_SCAN_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -806,15 +802,15 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                     self._capturing = True                      # set Capturing to True
                     self._pointing_state = 3                    # set pointingState to SCAN
                     self.set_status(CONST.STR_DATA_CAPTURE_STRT)
-                    self.dev_logging(CONST.STR_DATA_CAPTURE_STRT, int(tango.LogLevel.LOG_INFO))
+                    self.logger.info(CONST.STR_DATA_CAPTURE_STRT)
                 else:
                     self.set_status(CONST.STR_DATA_CAPTURE_ALREADY_STARTED)
-                    self.dev_logging(CONST.STR_DATA_CAPTURE_ALREADY_STARTED, int(tango.LogLevel.LOG_INFO))
+                    self.logger.info(CONST.STR_DATA_CAPTURE_ALREADY_STARTED)
         except Exception as except_occured:
             print(CONST.ERR_EXE_STRT_CAPTURE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_STRT_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            self.dev_logging(CONST.ERR_EXE_STRT_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_EXE_STRT_CAPTURE_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -859,15 +855,15 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                     self._capturing = False                     # set Capturing to FALSE
                     self._pointing_state = 0                    # set pointingState to READY
                     self.set_status(CONST.STR_DATA_CAPTURE_STOP)
-                    self.dev_logging(CONST.STR_DATA_CAPTURE_STOP, int(tango.LogLevel.LOG_INFO))
+                    self.logger.info(CONST.STR_DATA_CAPTURE_STOP)
                 else:
                     self.set_status(CONST.STR_DATA_CAPTURE_ALREADY_STOPPED)
-                    self.dev_logging(CONST.STR_DATA_CAPTURE_ALREADY_STOPPED, int(tango.LogLevel.LOG_INFO))
+                    self.logger.info(CONST.STR_DATA_CAPTURE_ALREADY_STOPPED)
         except Exception as except_occured:
             print(CONST.ERR_EXE_STOP_CAPTURE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_STOP_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            self.dev_logging(CONST.ERR_EXE_STOP_CAPTURE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_EXE_STOP_CAPTURE_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -906,12 +902,12 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_state(DevState.STANDBY)            # set STATE to STANDBY
             self._dish_mode = 4                         # set dishMode to STANDBY-FP
             self.set_status(CONST.STR_DISH_STANDBYFP_MODE)
-            self.dev_logging(CONST.STR_DISH_STANDBYFP_MODE, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_DISH_STANDBYFP_MODE)
         except Exception as except_occured:
             print(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            self.dev_logging(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -956,12 +952,12 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._point_delta_t = self._point_execution_time - self._current_time
                 schedule_slew_thread = Timer(self._point_delta_t, self.point)
                 schedule_slew_thread.start()
-                self.dev_logging(CONST.STR_DISH_SLEW, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_DISH_SLEW)
         except Exception as except_occured:
             print(CONST.ERR_EXE_SLEW_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SLEW_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            self.dev_logging(CONST.ERR_EXE_SLEW_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_EXE_SLEW_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -1071,24 +1067,24 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self._desired_pointing[2] = EL
             receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
             self._configured_band = int(receiverBand)
-            self.dev_logging(CONST.STR_CONFIG_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_CONFIG_SUCCESS)
 
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_INVALID_JSON + str(value_error))
             excpt_msg.append(CONST.ERR_INVALID_JSON + str(value_error))
             excpt_count += 1
 
         except KeyError as key_error:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             excpt_msg.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             excpt_count += 1
 
         except DevFailed as dev_failed:
-            self.dev_logging(CONST.ERR_CONFIG_DM + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_CONFIG_DM + str(dev_failed))
             excpt_msg.append(CONST.ERR_CONFIG_DM + str(dev_failed))
 
         except Exception as except_occurred:
-            self.dev_logging(CONST.ERR_CONFIG_DM + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_CONFIG_DM + str(except_occurred))
             excpt_msg.append(CONST.ERR_CONFIG_DM + str(except_occurred))
             excpt_count += 1
 
@@ -1116,11 +1112,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             if (self._pointing_state == 1 or self._pointing_state == 2):
                 self._pointing_state = 0
         except DevFailed as dev_failed:
-            self.dev_logging(CONST.ERR_CONFIG_DM + str(dev_failed), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_CONFIG_DM + str(dev_failed))
             excpt_msg.append(CONST.ERR_CONFIG_DM + str(dev_failed))
 
         except Exception as except_occurred:
-            self.dev_logging(CONST.ERR_CONFIG_DM + str(except_occurred), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_CONFIG_DM + str(except_occurred))
             excpt_msg.append(CONST.ERR_CONFIG_DM + str(except_occurred))
             excpt_count += 1
 
