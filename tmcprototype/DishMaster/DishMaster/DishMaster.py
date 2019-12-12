@@ -68,7 +68,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 print(CONST.ERR_MSG, except_occured)
         else:
             self.set_status(CONST.STR_DISH_POINT_ALREADY)
-            self.dev_logging(CONST.STR_DISH_POINT_ALREADY, int(tango.LogLevel.LOG_INFO))
+            #self.dev_logging(CONST.STR_DISH_POINT_ALREADY, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_DISH_POINT_ALREADY)
 
     def azimuth(self):
         """ Calculates the azimuth angle difference. """
@@ -606,13 +607,15 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_state(DevState.STANDBY)             # Set STATE to STANDBY
             self._dish_mode = 3                          # set dishMode to STANDBYLP
             self.set_status(CONST.STR_DISH_STANDBYLP_MODE)
-            self.dev_logging(CONST.STR_DISH_STANDBYLP_MODE, int(tango.LogLevel.LOG_INFO))
+            #self.dev_logging(CONST.STR_DISH_STANDBYLP_MODE, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_DISH_STANDBYLP_MODE)
         except Exception as except_occured:
             print(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.set_status(str(except_occured))
-            self.dev_logging(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            #self.dev_logging(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD)
             print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -695,7 +698,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_state(DevState.ON)                 # Set STATE to ON
             self._dish_mode = 8                         # set dishMode to OPERATE
             self.set_status(CONST.STR_DISH_OPERATE_MODE)
-            self.dev_logging(CONST.STR_DISH_OPERATE_MODE, int(tango.LogLevel.LOG_INFO))
+            #self.dev_logging(CONST.STR_DISH_OPERATE_MODE, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_DISH_OPERATE_MODE)
         except Exception as except_occured:
             print(CONST.ERR_EXE_SET_OPERATE_MODE_CMD, self.ReceptorNumber)
             excpt_msg.append(CONST.ERR_EXE_SET_OPERATE_MODE_CMD + str(self.ReceptorNumber))

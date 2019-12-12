@@ -6,7 +6,6 @@ CMD_SCAN = "StartScan"
 CMD_ENDSCAN = "EndScan"
 CMD_ENDSB = "EndSB"
 
-#
 # #Error messages
 ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes " \
                          "on Sdp Subarray Leaf Node Node device."
@@ -48,9 +47,6 @@ STR_ENDSB_SUCCESS = "EndSB invoked successfully on SdpSubarray."
 STR_CONFIG_EXEC = "Configure command execution"
 STR_SCAN_EXEC = "Scan command execution"
 STR_SCAN_SUCCESS = "Scan invoked successfully on SdpSubarray."
-
-
-#
 STR_CMD_FAILED = "SDP Subarray Leaf Node_CommandFailed"
 STR_RELEASE_RES_EXEC = "ReleaseResources command execution"
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
@@ -60,13 +56,7 @@ STR_CMD_CALLBK = "SdpSubarrayLeafNode Command Callback"
 
 # #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_1"
-#
-#
-# ENUM_LAB_OK = "OK"
-# ENUM_LAB_DEGRADED = "DEGRADED"
-# ENUM_LAB_FAILED = "FAILED"
-# ENUM_LAB_UNKNOWN = "UNKNOWN"
-#
+
 # #ENUMS
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 ENUM_IDLE, ENUM_CONFIGURING, ENUM_READY, ENUM_SCANNING = list(range(0, 4))
