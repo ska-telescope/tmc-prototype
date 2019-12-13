@@ -15,19 +15,6 @@
       <type xsi:type="pogoDsl:StringVectorType"/>
       <status abstract="false" inherited="true" concrete="true"/>
     </deviceProperties>
-    <deviceProperties name="CentralLoggingTarget" description="Pre-configured logging target CentralLogger DS">
-      <type xsi:type="pogoDsl:StringType"/>
-      <status abstract="false" inherited="true" concrete="true"/>
-    </deviceProperties>
-    <deviceProperties name="ElementLoggingTarget" description="Pre-configured logging target ElementLogger DS">
-      <type xsi:type="pogoDsl:StringType"/>
-      <status abstract="false" inherited="true" concrete="true"/>
-    </deviceProperties>
-    <deviceProperties name="StorageLoggingTarget" description="Pre-configured logging target for syslog">
-      <type xsi:type="pogoDsl:StringType"/>
-      <status abstract="false" inherited="true" concrete="true"/>
-      <DefaultPropValue>localhost</DefaultPropValue>
-    </deviceProperties>
     <deviceProperties name="SdpSubarrayFQDN" description="FQDN of the SDP Subarray Tango Device Server.">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
@@ -149,21 +136,6 @@
       <dataType xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="true" concrete="true"/>
       <properties description="Version Id of this device" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
-    </attributes>
-    <attributes name="centralLoggingLevel" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true">
-      <dataType xsi:type="pogoDsl:UShortType"/>
-      <status abstract="false" inherited="true" concrete="true"/>
-      <properties description="Current logging level to Central logging target for this device - &#xA;initialises to CentralLoggingLevelDefault on startup" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
-    </attributes>
-    <attributes name="elementLoggingLevel" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true">
-      <dataType xsi:type="pogoDsl:UShortType"/>
-      <status abstract="false" inherited="true" concrete="true"/>
-      <properties description="Current logging level to Element logging target for this device - &#xA;initialises to ElementLoggingLevelDefault on startup" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
-    </attributes>
-    <attributes name="storageLoggingLevel" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" memorized="true" allocReadMember="true">
-      <dataType xsi:type="pogoDsl:UShortType"/>
-      <status abstract="false" inherited="true" concrete="true"/>
-      <properties description="Current logging level to Syslog for this device - &#xA;initialises from  StorageLoggingLevelDefault on first execution of device.&#xA;Needs to be READ_WRITE To make it memorized - but writing this attribute should &#xA;do the same as command SetStorageLoggingLevel to ensure the targets and adjustments&#xA;are made correctly" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
     <attributes name="healthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true">
       <dataType xsi:type="pogoDsl:EnumType"/>

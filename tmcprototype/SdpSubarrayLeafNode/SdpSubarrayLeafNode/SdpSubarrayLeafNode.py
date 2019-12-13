@@ -19,7 +19,7 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpSubarrayLeafNode"
 sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
+
 
 # PyTango imports
 import tango
@@ -59,11 +59,12 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
-                self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
+
+                self.logger.error(log)
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
-                self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(log)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred, exception_message,
                                                                         exception_count, CONST.ERR_EXCEPT_CMD_CB)
@@ -74,14 +75,15 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     # Throw exceptions
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
+        self.logger.error(read_actvity_msg + str(df))
         self._read_activity_message = read_actvity_msg + str(df)
         except_msg_list.append(self._read_activity_message)
         exception_count += 1
         return [except_msg_list, exception_count]
 
     def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
+
+        self.logger.error(read_actvity_msg + str(exception))
         self._read_activity_message = read_actvity_msg + str(exception)
         except_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -155,11 +157,12 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
             self._sdp_subarray_proxy = DeviceProxy(self.SdpSubarrayFQDN)
         except DevFailed as dev_failed:
-            print(CONST.ERR_INIT_PROP_ATTR_CN)
+            self.logger.error(CONST.ERR_INIT_PROP_ATTR_CN)
             self._read_activity_message = CONST.ERR_INIT_PROP_ATTR_CN
-            self.dev_logging(CONST.ERR_INIT_PROP_ATTR_CN, int(tango.LogLevel.LOG_ERROR))
+
+            self.logger.error(CONST.ERR_INIT_PROP_ATTR_CN)
             self._read_activity_message = CONST.STR_ERR_MSG + str(dev_failed)
-            print(CONST.STR_ERR_MSG, dev_failed)
+            self.logger.error(CONST.STR_ERR_MSG, dev_failed)
 
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
 
@@ -318,12 +321,14 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Update the status of command execution status in activity message
             self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+
+            self.logger.error(CONST.ERR_INVALID_JSON + str(value_error))
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+
+            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
@@ -417,20 +422,23 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             sdpConfiguration = sdp_arg.copy()
             if "configureScan" in sdpConfiguration:
                 del sdpConfiguration["configureScan"]
-            print ("sdpConfiguration :", sdpConfiguration)
             self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                           self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURE_SUCCESS
-            self.dev_logging(str(sdpConfiguration), int(tango.LogLevel.LOG_DEBUG))
-            self.dev_logging(CONST.STR_CONFIGURE_SUCCESS, int(tango.LogLevel.LOG_INFO))
+
+            self.logger.debug(str(sdpConfiguration))
+
+            self.logger.info(CONST.STR_CONFIGURE_SUCCESS)
 
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON_CONFIG + str(value_error), int(tango.LogLevel.LOG_ERROR))
+
+            self.logger.info(CONST.ERR_INVALID_JSON_CONFIG + str(value_error))
             self._read_activity_message = CONST.ERR_INVALID_JSON_CONFIG + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+
+            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
@@ -478,17 +486,17 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if sdp_subarray_obs_state == CONST.ENUM_READY:
                 self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_SCAN, self.commandCallback)
                 self._read_activity_message = CONST.STR_SCAN_SUCCESS
-                self.dev_logging(CONST.STR_SCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_SCAN_SUCCESS)
             else:
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
-                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+                self.logger.error(CONST.ERR_DEVICE_NOT_READY)
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON_SCAN + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_INVALID_JSON_SCAN + str(value_error))
             self._read_activity_message = CONST.ERR_INVALID_JSON_SCAN + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -523,10 +531,12 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if self._sdp_subarray_proxy.obsState == CONST.ENUM_SCANNING:
                 self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSCAN, self.commandCallback)
                 self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
-                self.dev_logging(CONST.STR_ENDSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+
+                self.logger.info(CONST.STR_ENDSCAN_SUCCESS)
             else:
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_IN_SCAN
-                self.dev_logging(CONST.ERR_DEVICE_NOT_IN_SCAN, int(tango.LogLevel.LOG_ERROR))
+
+                self.logger.error(CONST.ERR_DEVICE_NOT_IN_SCAN)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                                 CONST.ERR_ENDSCAN_INVOKING_CMD)
@@ -554,10 +564,12 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if self._sdp_subarray_proxy.obsState == CONST.ENUM_READY:
                 self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
                 self._read_activity_message = CONST.STR_ENDSB_SUCCESS
-                self.dev_logging(CONST.STR_ENDSB_SUCCESS, int(tango.LogLevel.LOG_INFO))
+
+                self.logger.info(CONST.STR_ENDSB_SUCCESS)
             else:
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
-                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+
+                self.logger.error(CONST.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                                 CONST.ERR_ENDSB_INVOKING_CMD)
