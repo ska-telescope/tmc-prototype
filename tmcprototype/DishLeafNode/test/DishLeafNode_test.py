@@ -99,6 +99,16 @@ class TestDishLeafNode(object):
                (CONST.STR_DISH_OPERATE_MODE)
         # PROTECTED REGION END #    //  DishLeafNode.test_SetOperateMode
 
+    def test_Track_invalid_radec(self, tango_context, create_dish_proxy):
+        """Test for Track"""
+        # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"14:26:54.38","dec":"-83:40:03.1"}},"dish":{"receiverBand":"1"}}'
+        time.sleep(2)
+        tango_context.device.Track(input_string)
+        time.sleep(2)
+        assert CONST.ERR_ELE_LIM in tango_context.device.activityMessage
+        create_dish_proxy.StopTrack()
+        # PROTECTED REGION END #    //  DishLeafNode.Track
 
     def test_Configure(self, tango_context):
         """Test for Configure"""
@@ -261,7 +271,6 @@ class TestDishLeafNode(object):
         time.sleep(5)
         assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
 
-
     def test_Track(self, tango_context, create_dish_proxy):
         """Test for Track"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
@@ -275,10 +284,8 @@ class TestDishLeafNode(object):
     def test_StopTrack(self, tango_context, create_dish_proxy):
         """Test for Track"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-        print("Before: ",create_dish_proxy.pointingState)
         tango_context.device.StopTrack()
         time.sleep(10)
-        print("After: ", create_dish_proxy.pointingState)
         assert (create_dish_proxy.pointingState == 0)
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
@@ -286,13 +293,13 @@ class TestDishLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.1.3, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  DishLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(DishLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.1.3"
+        assert tango_context.device.versionId == "0.2.0"
         # PROTECTED REGION END #    //  DishLeafNode.test_versionId
 
     def test_centralLoggingLevel(self, tango_context):
@@ -394,7 +401,3 @@ class TestDishLeafNode(object):
         assert create_dish_proxy.capturing is False
         create_dish_proxy.unsubscribe_event(eid)
         tango_context.device.SetStandByLPMode()
-
-
-
-

@@ -79,16 +79,10 @@ class TestCspSubarrayLeafNode(object):
         assert tango_context.device.Status() != CONST.STR_CSPSALN_INIT_SUCCESS
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Status
 
-    def test_delayModel(self, tango_context):
-        """Test for delayModel"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_delayModel) ENABLED START #
-        assert tango_context.device.delayModel == " "
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
-
-    def test_GetVersionInfo(self, create_cspsubarray1_proxy):
+    def test_GetVersionInfo(self, tango_context):
         """Test for GetVersionInfo"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_GetVersionInfo) ENABLED START #
-        #create_cspsubarray1_proxy.device.GetVersionInfo()
+        assert tango_context.device.versionInFo == " "
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_GetVersionInfo
 
     def test_Reset(self, create_cspsubarray1_proxy):
@@ -96,6 +90,12 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_Reset) ENABLED START #
         #create_cspsubarray1_proxy.device.Reset() is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Reset
+
+    def test_delayModel(self, tango_context):
+        """Test for delayModel"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_delayModel) ENABLED START #
+        assert tango_context.device.delayModel == ' '
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
 
     def test_AssignResources_invalid_json(self, tango_context, create_cspsubarray1_proxy):
         """
@@ -254,13 +254,13 @@ class TestCspSubarrayLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.1.3, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.1.3"
+        assert tango_context.device.versionId == "0.2.0"
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_versionId
 
     def test_centralLoggingLevel(self, tango_context):
@@ -323,7 +323,8 @@ class TestCspSubarrayLeafNode(object):
     def test_visDestinationAddress(self, tango_context):
         """Test for visDestinationAddress"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_visDestinationAddress) ENABLED START #
-        assert tango_context.device.visDestinationAddress == " "
+        tango_context.device.visDestinationAddress = "test"
+        assert tango_context.device.visDestinationAddress == "test"
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_visDestinationAddress
 
     def test_opState(self, tango_context):

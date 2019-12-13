@@ -143,10 +143,17 @@ class TestSubarrayNode(object):
                                            '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                            '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(5)
-        assert CONST.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
+        # assert CONST.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
+        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
         # create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
+    def test_Configure_Negative_InvalidJson(self, tango_context):
+        test_input = '{"invalid_key"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure(test_input)
+        time.sleep(3)
+        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
 
     def test_Configure(self, tango_context, create_dish_proxy):
         """Test for Configure"""
@@ -194,7 +201,7 @@ class TestSubarrayNode(object):
     def test_Scan(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-        tango_context.device.Scan('{"scanDuration": 15.0}')
+        tango_context.device.Scan('{"scanDuration": 30.0}')
         time.sleep(5)
         assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
@@ -241,8 +248,6 @@ class TestSubarrayNode(object):
         test_input = '{"scan_Duration": "10"}'
         tango_context.device.Scan(test_input)
         time.sleep(5)
-        print("tango activity msg:", tango_context.device.activityMessage)
-        print("code activity msg:", CONST.ERR_SCAN_CMD)
         assert CONST.ERR_SCAN_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan_Negative_InvalidDataType
 
@@ -305,7 +310,7 @@ class TestSubarrayNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SubarrayNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.1.3, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SubarrayNode.test_buildState
 
     def test_centralLoggingLevel(self, tango_context):
@@ -380,7 +385,7 @@ class TestSubarrayNode(object):
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(SubarrayNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.1.3"
+        assert tango_context.device.versionId == "0.2.0"
         # PROTECTED REGION END #    //  SubarrayNode.test_versionId
 
     def test_scanID(self, tango_context):

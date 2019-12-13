@@ -48,27 +48,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     other TM Components (such as OET, Central Node) for a Subarray.
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
-
-    def exception_generic_exception(self, exception, excpt_msg_list, except_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
-        self._read_activity_message = read_actvity_msg + str(exception)
-        excpt_msg_list.append(self._read_activity_message)
-        except_count += 1
-        return [excpt_msg_list, except_count]
-
-    def devfailed_exception(self, df, excpt_msg_list, except_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
-        self._read_activity_message = read_actvity_msg + str(df)
-        excpt_msg_list.append(self._read_activity_message)
-        except_count += 1
-        return [excpt_msg_list, except_count]
-
-    def throw_exception(self, excpt_msg_list, read_actvity_msg):
-        err_msg = ' '
-        for item in excpt_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
-
     def healthStateCallback(self, evt):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
@@ -76,8 +55,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :param evt: A TANGO_CHANGE event on CSP and SDP Subarray healthState.
         :return: None
         """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message = []
+        exception_count = 0
         if evt.err is False:
             try:
                 self._health_state = evt.attr_value.value
@@ -115,11 +94,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._read_activity_message = CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error)
                 self.dev_logging(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE, int(tango.LogLevel.LOG_FATAL))
             except DevFailed as dev_failed:
-                [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
-                                                                    CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                    exception_message, exception_count, CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
             except Exception as except_occured:
-                [excpt_msg, excpt_count] = self.exception_generic_exception(except_occured, excpt_msg,
-                                                                  excpt_count, CONST.ERR_AGGR_HEALTH_STATE)
+                [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                            exception_message, exception_count, CONST.ERR_AGGR_HEALTH_STATE)
         else:
             print(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, evt)
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
@@ -131,8 +110,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 :param evt: A TANGO_CHANGE event on CSP and SDP Subarray obsState.
                 :return: None
                 """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message = []
+        exception_count = 0
         if evt.err is False:
             try:
                 self._observetion_state = evt.attr_value.value
@@ -155,11 +134,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._read_activity_message = CONST.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
                 self.dev_logging(CONST.ERR_CSPSDP_SUBARRAY_OBS_STATE, int(tango.LogLevel.LOG_FATAL))
             except DevFailed as dev_failed:
-                [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
-                                                                    CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                    exception_message, exception_count, CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
             except Exception as except_occured:
-                [excpt_msg, excpt_count] = self.exception_generic_exception(except_occured, excpt_msg,
-                                                                        excpt_count, CONST.ERR_AGGR_OBS_STATE)
+                [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                                exception_message, exception_count, CONST.ERR_AGGR_OBS_STATE)
         else:
             print(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE, evt)
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
@@ -289,8 +268,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return:
             DevVarStringArray. List of Resources added to the Subarray.
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         allocation_success = []
         allocation_failure = []
         # Add each dish into the tango group
@@ -343,8 +322,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
                 self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
             except DevFailed as dev_failed:
-                [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
-                                                                    CONST.ERR_ADDING_LEAFNODE)
+                [exception_message, excpt_count] = self._handle_devfailed_exception(dev_failed,
+                                                    exception_message, excpt_count, CONST.ERR_ADDING_LEAFNODE)
                 allocation_failure.append(str_leafId)
                 # Exception Logic to remove Id from subarray group
                 group_dishes = self._dish_leaf_node_group.get_device_list()
@@ -357,11 +336,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 if self._dishLnVsPointingStateEventID[devProxy]:
                     devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
             except(DevFailed, Exception) as except_occurred:
-                [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                        excpt_count, CONST.ERR_ASSIGN_RES_CMD)
+                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, CONST.ERR_ASSIGN_RES_CMD)
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_ASSIGN_RES_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
         return allocation_success
 
     def assign_csp_resources(self, argin):
@@ -440,8 +419,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 :return:
                     DevVoid
                 """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         try:
 
             if self._dishLnVsHealthEventID != {} or self._dishLnVsPointingStateEventID != {}:
@@ -470,11 +449,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
                 self.dev_logging(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
-                                                                CONST.ERR_RELEASE_RES_CMD_GROUP)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                        exception_message, exception_count, CONST.ERR_RELEASE_RES_CMD_GROUP)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                    excpt_count, CONST.ERR_RELEASE_RES_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count, CONST.ERR_RELEASE_RES_CMD)
     def release_csp_resources(self):
         """
             This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
@@ -527,10 +506,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :return: None
         """
-        excpt_count = 0
-        excpt_msg = []
-        json_scan_duration = json.loads(argin)
+        exception_count = 0
+        exception_message = []
         try:
+            json_scan_duration = json.loads(argin)
             self.scan_duration = int(json_scan_duration['scanDuration'])
             print(CONST.STR_SCAN_IP_ARG, argin)
             assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
@@ -590,26 +569,26 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         except AssertionError as assert_error:
             print(CONST.ERR_SCAN_CMD, "\n", assert_error, CONST.ERR_DUPLICATE_SCAN_CMD)
             self._read_activity_message = CONST.ERR_DUPLICATE_SCAN_CMD + str(assert_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
         except ValueError as value_error:
             print(CONST.ERR_SCAN_CMD, value_error, CONST.ERR_INVALID_DATATYPE)
             self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
         except KeyError as key_err:
             print(CONST.ERR_SCAN_CMD, str(key_err))
             self._read_activity_message = CONST.ERR_SCAN_CMD + str(key_err)
             self.dev_logging(CONST.ERR_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
-                                                                CONST.ERR_SCAN_CMD)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                    exception_message, exception_count, CONST.ERR_SCAN_CMD)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                        excpt_count, CONST.ERR_SCAN_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                    exception_message, exception_count, CONST.ERR_SCAN_CMD)
         #Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_SCAN_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_SCAN_EXEC)
             # err_msg = ' '
             # for item in excpt_msg:
             #     err_msg += str(item) + "\n"
@@ -647,8 +626,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :return: None
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
         self._endscan_stop = True
         try:
             assert self._obs_state == CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_COMPLETED
@@ -684,19 +663,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # self.set_status(CONST.STR_SCAN_COMPLETE)
                 # self.dev_logging(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
-                                                                CONST.ERR_END_SCAN_CMD_ON_GROUP)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                        exception_message, exception_count, CONST.ERR_END_SCAN_CMD_ON_GROUP)
         except AssertionError as assert_err:
             print(CONST.ERR_DUPLICATE_END_SCAN_CMD, "\n", assert_err)
             self._read_activity_message = CONST.ERR_DUPLICATE_END_SCAN_CMD
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                        excpt_count, CONST.ERR_END_SCAN_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count, CONST.ERR_END_SCAN_CMD)
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_END_SCAN_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_END_SCAN_EXEC)
 
     def is_EndScan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -726,8 +705,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return:
             DevVarStringArray. List of Resources added to the Subarray.
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
 
         # 1. Argument validation
         try:
@@ -738,10 +717,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             print(CONST.ERR_SCAN_CMD, "\n", value_error, CONST.ERR_INVALID_DATATYPE)
             self.dev_logging(CONST.ERR_INVALID_DATATYPE, int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
-        with excpt_count is 0 and ThreadPoolExecutor(3) as executor:
+        with exception_count is 0 and ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
             self.dev_logging(CONST.STR_DISH_ALLOCATION, int(tango.LogLevel.LOG_INFO))
             dish_allocation_status = executor.submit(self.add_receptors_in_group, argin)
@@ -966,6 +945,26 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             print(CONST.ERR_SUBSR_DSH_POINTING_STATE, evt.errors)
             self._read_activity_message = CONST.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
             self.dev_logging(CONST.ERR_SUBSR_DSH_POINTING_STATE, int(tango.LogLevel.LOG_ERROR))
+            
+    def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
+        self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
+        self._read_activity_message = read_actvity_msg + str(exception)
+        excpt_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [excpt_msg_list, exception_count]
+
+    def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
+        self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
+        self._read_activity_message = read_actvity_msg + str(df)
+        excpt_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [excpt_msg_list, exception_count]
+
+    def throw_exception(self, excpt_msg_list, read_actvity_msg):
+        err_msg = ''
+        for item in excpt_msg_list:
+            err_msg += item + "\n"
+        tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 
     # -----------------
@@ -1189,14 +1188,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return: None
 
         """
-        excpt_count = 0
-        excpt_msg = []
+        exception_count = 0
+        exception_message = []
 
         try:
+            self._scanConfiguration = json.loads(argin)
             self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
             if self._obs_state == CONST.OBS_STATE_ENUM_IDLE:
-                self._scanConfiguration = json.loads(argin)
                 # TODO: FOR FUTURE IMPLEMENTATION
                 # scanID = scanConfiguration["scanID"]
                 # pointing =  scanConfiguration["pointing"]
@@ -1326,7 +1325,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     # # set obsState to READY when the configuration is completed
                     # self._obs_state = CONST.OBS_STATE_ENUM_READY
                 else:
-                    err_msg = ' '
+                    err_msg = ''
                     msg = "'scanID' must be given. Aborting configuration."
                     self._read_activity_message = msg
                     # this is a fatal error
@@ -1337,22 +1336,17 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         except ValueError as value_error:
             self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
-        except KeyError as key_error:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            excpt_msg.append(self._read_activity_message)
-            excpt_count += 1
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
-                                                                CONST.ERR_CONFIGURE_CMD_GROUP)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_CONFIGURE_CMD_GROUP)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                        excpt_count, CONST.ERR_CONFIGURE_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count, CONST.ERR_CONFIGURE_CMD)
         # Throw Exception
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_CONFIGURE_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_CONFIGURE_EXEC)
         # PROTECTED REGION END #    //  SubarrayNode.Configure
 
     def is_Configure_allowed(self):
@@ -1372,8 +1366,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :return: None.
         """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message = []
+        exception_count = 0
         try:
             print("EndSB invoked on SubarrayNode.")
             if self._obs_state == CONST.OBS_STATE_ENUM_READY:
@@ -1387,14 +1381,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
                 self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
         except DevFailed as dev_failed:
-            [excpt_msg, excpt_count] = self.devfailed_exception(dev_failed, excpt_msg, excpt_count,
-                                                                CONST.ERR_ENDSB_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
         except Exception as except_occurred:
-            [excpt_msg, excpt_count] = self.exception_generic_exception(except_occurred, excpt_msg,
-                                                                    excpt_count, CONST.ERR_ENDSB_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
         # throw exception:
-        if excpt_count > 0:
-            self.throw_exception(excpt_msg, CONST.STR_ENDSB_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_ENDSB_EXEC)
         # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
     @command(
@@ -1415,8 +1409,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return: None
 
         """
-        excpt_msg = []
-        excpt_count = 0
+        exception_message= []
+        exception_count = 0
         try:
             self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
             # set obsState to CONFIGURING when the configuration is started
@@ -1433,21 +1427,21 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.dev_logging(CONST.STR_TRACK_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
 
         except tango.DevFailed as devfailed:
-            excpt_msg.append(CONST.ERR_TRACK_CMD + ": " + \
+            exception_message.append(CONST.ERR_TRACK_CMD + ": " + \
                            str(devfailed.args[0].desc))
-            excpt_count += 1
+            exception_count += 1
         except Exception as except_occured:
             print(CONST.ERR_TRACK_CMD, "\n", except_occured)
             self._read_activity_message = CONST.ERR_TRACK_CMD + str(except_occured)
             self.dev_logging(CONST.ERR_TRACK_CMD, int(tango.LogLevel.LOG_ERROR))
-            excpt_msg.append(CONST.ERR_TRACK_CMD + ": " + \
+            exception_message.append(CONST.ERR_TRACK_CMD + ": " + \
                              str(except_occured.args[0].desc))
-            excpt_count += 1
+            exception_count += 1
 
         # throw exception
-        if excpt_count > 0:
+        if exception_count > 0:
             err_msg = ' '
-            for item in excpt_msg:
+            for item in exception_message:
                 err_msg += item + "\n"
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_TRACK_EXEC, tango.ErrSeverity.ERR)

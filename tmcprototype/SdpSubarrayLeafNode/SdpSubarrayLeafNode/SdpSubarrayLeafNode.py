@@ -66,8 +66,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = log
                 self.logger.info(log)
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred, exception_message,
-                                                                        exception_count, CONST.ERR_EXCEPT_CMD_CB)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count, CONST.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
         if exception_count > 0:
@@ -249,11 +249,11 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Update the status of command execution status in activity message
             self._read_activity_message = CONST.STR_REL_RESOURCES
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                                                CONST.ERR_RELEASE_RESOURCES)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_RELEASE_RESOURCES)
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred, exception_message,
-                                                                    exception_count, CONST.ERR_RELEASE_RESOURCES)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, CONST.ERR_RELEASE_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
@@ -334,11 +334,11 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                                                CONST.ERR_ASSGN_RESOURCES)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred, exception_message,
-                                                                        exception_count,CONST.ERR_ASSGN_RESOURCES)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count,CONST.ERR_ASSGN_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
@@ -444,11 +444,11 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,
-                                                                exception_count, CONST.ERR_CONFIGURE)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                    exception_message, exception_count, CONST.ERR_CONFIGURE)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                exception_message, exception_count,CONST.ERR_CONFIGURE)
+                                                    exception_message, exception_count,CONST.ERR_CONFIGURE)
 
         # throw exception:
         if exception_count > 0:
@@ -501,11 +501,11 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,
-                                                                exception_count, CONST.ERR_SCAN)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                        exception_message, exception_count, CONST.ERR_SCAN)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                    exception_message, exception_count, CONST.ERR_SCAN)
+                                                        exception_message, exception_count, CONST.ERR_SCAN)
 
         # throw exception:
         if exception_count > 0:
@@ -538,11 +538,11 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 self.logger.error(CONST.ERR_DEVICE_NOT_IN_SCAN)
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                                                CONST.ERR_ENDSCAN_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                        exception_message, exception_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred, exception_message,
-                                                                exception_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                        exception_message, exception_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
@@ -571,11 +571,11 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 self.logger.error(CONST.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                                                CONST.ERR_ENDSB_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred, exception_message,
-                                                                exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                        exception_message, exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:

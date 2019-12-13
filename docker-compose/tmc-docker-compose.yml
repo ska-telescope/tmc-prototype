@@ -487,7 +487,7 @@ services:
             /venv/bin/python /app/tmcprototype/configure_logging.py"
 
   tm-alarmhandler:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmalarmhandler
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmalarmhandler:latest
     depends_on:
       - databaseds
       - tmc-dsconfig
