@@ -6,7 +6,6 @@ RUN ipython profile create
 
 #install lmc-base-classes
 USER root
-# RUN DEBIAN_FRONTEND=noninteractive pip3 install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.1.3+163bf057/lmcbaseclasses-0.1.3+163bf057.tar.gz
 RUN DEBIAN_FRONTEND=noninteractive pip3 install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.2.0+6bb55a6e/lmcbaseclasses-0.2.0+6bb55a6e.tar.gz
 
 USER tango

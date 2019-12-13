@@ -62,11 +62,11 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
-                self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
+                self.logger.error(log)
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
-                self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(log)
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
                                                 exception_message, exception_count, CONST.ERR_EXCEPT_CMD_CB)
@@ -156,7 +156,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
 
-                self.dev_logging("Calculating delays.", int(tango.LogLevel.LOG_INFO))
+                self.logger.info("Calculating delays.")
                 delay_model_json = {}
                 delay_model = []
                 receptor_delay_model = []
@@ -192,11 +192,11 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._delay_model = " "
 
         print("Stop event received. Thread exit.")
-        self.dev_logging("Stop event received. Thread exit.", int(tango.LogLevel.LOG_INFO))
+        self.logger.info("Stop event received. Thread exit.")
 
     # Function for handling all Devfailed exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
+        self.logger.error(read_actvity_msg + str(df))
         self._read_activity_message = read_actvity_msg + str(df)
         except_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -204,8 +204,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     # Function for handling all generic exception
     def _handle_generic_exception(self, exception, except_msg_list, exception_count,read_actvity_msg ):
-        self.dev_logging(read_actvity_msg + str(exception),
-                         int(tango.LogLevel.LOG_ERROR))
+        self.logger.error(read_actvity_msg + str(exception))
         self._read_activity_message = read_actvity_msg + str(exception)
         except_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -244,7 +243,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.delay_model_lock = threading.Lock()
 
             # create thread
-            self.dev_logging("Starting thread to calculate delay model.", int(tango.LogLevel.LOG_INFO))
+            self.logger.info("Starting thread to calculate delay model.")
             self.delay_model_calculator_thread = threading.Thread(
                 target=self.delay_model_calculator,
                 args=[self._DELAY_UPDATE_INTERVAL],
@@ -255,7 +254,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
             self._csp_subarray_health_state = CONST.ENUM_OK
             self._opstate = CONST.ENUM_INIT
-            self.dev_logging(CONST.STR_CSPSALN_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_CSPSALN_INIT_SUCCESS)
 
         except DevFailed as dev_failed:
             self._handle_devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR_CSPSALN, 0,
@@ -273,10 +272,10 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
         # Stop thread to update delay model
-        self.dev_logging("Stopping delay model thread.", int(tango.LogLevel.LOG_INFO))
+        self.logger.info("Stopping delay model thread.")
         self._stop_delay_model_event.set()
         self.delay_model_calculator_thread.join()
-        self.dev_logging("Exiting.", int(tango.LogLevel.LOG_INFO))
+        self.logger.info("Exiting.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
 
     # ------------------
@@ -400,12 +399,11 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             json.loads(argin)
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
-            self.dev_logging(CONST.STR_CONFIGURESCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
-            self.dev_logging(argin, int(tango.LogLevel.LOG_DEBUG))
+            self.logger.info(CONST.STR_CONFIGURESCAN_SUCCESS)
+            self.logger.debug(argin)
 
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error),
-                             int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error))
             self._read_activity_message = CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -450,10 +448,10 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 #Invoke StartScan command on CspSubarray
                 self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_STARTSCAN, "0", self.commandCallback)
                 self._read_activity_message = CONST.STR_STARTSCAN_SUCCESS
-                self.dev_logging(CONST.STR_STARTSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_STARTSCAN_SUCCESS)
             else:
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
-                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+                self.logger.error(CONST.ERR_DEVICE_NOT_READY)
 
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
@@ -488,10 +486,10 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 # Invoke EndScan command on CspSubarray
                 self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSCAN, self.commandCallback)
                 self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
-                self.dev_logging(CONST.STR_ENDSCAN_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_ENDSCAN_SUCCESS)
             else:
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_IN_SCAN
-                self.dev_logging(CONST.ERR_DEVICE_NOT_IN_SCAN, int(tango.LogLevel.LOG_ERROR))
+                self.logger.error(CONST.ERR_DEVICE_NOT_IN_SCAN)
 
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
@@ -524,7 +522,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #Invoke RemoveAllReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
             self._read_activity_message = CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS
-            self.dev_logging(CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
@@ -586,17 +584,16 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, receptorIDList,
                                                        self.commandCallback)
             self._read_activity_message = CONST.STR_ADD_RECEPTORS_SUCCESS
-            self.dev_logging(CONST.STR_ADD_RECEPTORS_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_ADD_RECEPTORS_SUCCESS)
 
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error),
-                             int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error))
             self._read_activity_message = CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except KeyError as key_error:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -632,10 +629,10 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
                 self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
                 self._read_activity_message = CONST.STR_ENDSB_SUCCESS
-                self.dev_logging(CONST.STR_ENDSB_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_ENDSB_SUCCESS)
             else:
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
-                self.dev_logging(CONST.ERR_DEVICE_NOT_READY, int(tango.LogLevel.LOG_ERROR))
+                self.logger.error(CONST.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
