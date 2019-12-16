@@ -440,7 +440,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #print(CONST.STR_DISHMASTER_FQN, self.DishMasterFQDN)
             self.logger.debug(CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN))
             self._read_activity_message = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
-            self._dish_proxy = DeviceProxy((self.DishMasterFQDN))   #Creating proxy to the DishMaster
+            self._dish_proxy = DeviceProxy("mid_d0001/elt/master")   #Creating proxy to the DishMaster
             print("self.DishMasterFQDN: ", self.DishMasterFQDN)
             self.event_track_time = threading.Event()
         except DevFailed as dev_failed:
