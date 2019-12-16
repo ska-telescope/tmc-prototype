@@ -46,8 +46,7 @@ class TestDishLeafNode(object):
     # PROTECTED REGION END #    //  DishLeafNode.test_additionnal_import
     device = DishLeafNode
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
-                  'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
-                  'DishMasterFQDN': 'mid_d0001/elt/master','TrackDuration': 1,
+                     'DishMasterFQDN': 'mid_d0001/elt/master','TrackDuration': 1,
                   }
     empty = None  # Should be []
 
