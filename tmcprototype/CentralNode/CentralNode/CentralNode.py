@@ -316,8 +316,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
             except (DevFailed, KeyError) as except_occurred:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
-                                                                        exception_count,CONST.ERR_IN_CREATE_PROXY)
+                [exception_message, exception_count] = self._handle_devfailed_exception(except_occurred,
+                                                exception_message, exception_count,CONST.ERR_IN_CREATE_PROXY)
 
         # Create device proxy for CSP Master Leaf Node
         try:
@@ -326,8 +326,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                         EventType.CHANGE_EVENT,
                                                         self.healthStateCallback, stateless=True)
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
-                                                            exception_count,CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                    exception_message, exception_count,CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
+
 
         # Create device proxy for SDP Master Leaf Node
         try:
@@ -336,8 +337,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                         EventType.CHANGE_EVENT,
                                                         self.healthStateCallback, stateless=True)
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, \
-                                                            exception_count,CONST.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                exception_message, exception_count,CONST.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
+
 
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
@@ -352,8 +354,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 subarrayID = int(tokens[2])
                 self.subarray_FQDN_dict[subarrayID] = subarray_proxy
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
-                                                                    exception_count,CONST.ERR_SUBSR_SA_HEALTH_STATE)
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                        exception_message, exception_count,CONST.ERR_SUBSR_SA_HEALTH_STATE)
 
 
         # PROTECTED REGION END #    //  CentralNode.init_device
@@ -439,8 +441,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     device_proxy = DeviceProxy(device_name)
                     device_proxy.command_inout(CONST.CMD_SET_STOW_MODE)
                 except DevFailed as dev_failed:
-                    [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, \
-                                                           exception_message, exception_count,  CONST.ERR_EXE_STOW_CMD)
+                    [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count,  CONST.ERR_EXE_STOW_CMD)
 
                 # throw exception:
                 if exception_count > 0:
@@ -453,8 +455,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured, exception_message,
-                                                                        exception_count, CONST.ERR_EXE_STOW_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                                exception_message, exception_count, CONST.ERR_EXE_STOW_CMD)
 
         # throw exception:
         if exception_count > 0:
@@ -476,21 +478,21 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_STANDBY_MODE)
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
-                                                                exception_count, CONST.ERR_EXE_STANDBY_CMD)
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
 
         try:
             self._csp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY, [])
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, \
-                                                                exception_count, CONST.ERR_EXE_STANDBY_CMD)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
 
 
         try:
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY)
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, \
-                                                                    exception_count, CONST.ERR_EXE_STANDBY_CMD)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
 
             # throw exception:
             if exception_count > 0:
@@ -512,8 +514,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_OPERATE_MODE)
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
-                                                                    exception_count, CONST.ERR_EXE_STARTUP_CMD)
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
 
 
         try:
@@ -521,12 +523,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                       [])
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                       exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
+                                                exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
         try:
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP)
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, \
-                                                                exception_count,  CONST.ERR_EXE_STARTUP_CMD)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count,  CONST.ERR_EXE_STARTUP_CMD)
 
 
             # throw exception:
@@ -660,12 +662,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             exception_count += 1
 
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, \
-                                                                exception_count,CONST.ERR_ASSGN_RESOURCES)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count,CONST.ERR_ASSGN_RESOURCES)
 
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred, exception_message,
-                                                                    exception_count, CONST.ERR_ASSGN_RESOURCES)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
 
         #throw exception:
         if exception_count > 0:
@@ -769,8 +771,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message, \
-                                                                exception_count,  CONST.ERR_RELEASE_RESOURCES)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                        exception_message, exception_count,  CONST.ERR_RELEASE_RESOURCES)
 
 
         # throw exception:
@@ -800,3 +802,4 @@ def main(args=None, **kwargs):
 
 if __name__ == '__main__':
     main()
+
