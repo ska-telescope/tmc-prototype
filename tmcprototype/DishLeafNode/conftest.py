@@ -54,7 +54,7 @@ def tango_context(request): #, dishmaster_context):
     # klass = getattr(module, class_name)
     module = importlib.import_module("{}.{}".format("DishLeafNode", "DishLeafNode"))
     klass = getattr(module, "DishLeafNode")
-    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '','DishMasterFQDN': "mid_d0001/elt/master", 'TrackDuration': 1}
+    properties = {'SkaLevel': '4', 'GroupDefinitions': '','DishMasterFQDN': "mid_d0001/elt/master", 'TrackDuration': 1}
     tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
