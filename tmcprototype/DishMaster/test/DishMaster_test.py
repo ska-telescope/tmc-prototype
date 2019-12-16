@@ -46,8 +46,7 @@ class TestDishMaster(object):
     # PROTECTED REGION ID(DishMaster.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  DishMaster.test_additionnal_import
     device = DishMaster
-    properties = {'SkaLevel': '4', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost', 'MetricList': 'healthState', 'GroupDefinitions': '',
+    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'NrSubarrays': '16', 'CapabilityTypes': '', 'MaxCapabilities': '', 'ReceptorNumber': '',
                   }
     empty = None  # Should be []
@@ -243,27 +242,6 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_versionId) ENABLED START #
         assert tango_context.device.versionId == "0.2.0"
         # PROTECTED REGION END #    //  DishMaster.test_versionId
-
-    def test_centralLoggingLevel(self, tango_context):
-        """Test for centralLoggingLevel"""
-        # PROTECTED REGION ID(DishMaster.test_centralLoggingLevel) ENABLED START #
-        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  DishMaster.test_centralLoggingLevel
-
-    def test_elementLoggingLevel(self, tango_context):
-        """Test for elementLoggingLevel"""
-        # PROTECTED REGION ID(DishMaster.test_elementLoggingLevel) ENABLED START #
-        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  DishMaster.test_elementLoggingLevel
-
-    def test_storageLoggingLevel(self, tango_context):
-        """Test for storageLoggingLevel"""
-        # PROTECTED REGION ID(DishMaster.test_storageLoggingLevel) ENABLED START #
-        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  DishMaster.test_storageLoggingLevel
 
     def test_healthState(self, tango_context):
         """Test for healthState"""

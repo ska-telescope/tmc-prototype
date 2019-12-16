@@ -50,8 +50,7 @@ class TestSdpMasterLeafNode(object):
     # PROTECTED REGION ID(SdpMasterLeafNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  SdpMasterLeafNode.test_additionnal_import
     device = SdpMasterLeafNode
-    properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+    properties = {'SkaLevel': '4', 'GroupDefinitions': '',
                   'SdpMasterFQDN': 'mid_sdp/elt/master',
                   }
     empty = None  # Should be []
@@ -118,27 +117,6 @@ class TestSdpMasterLeafNode(object):
         # PROTECTED REGION ID(SdpMasterLeafNode.test_versionId) ENABLED START #
         assert tango_context.device.versionId == '0.2.0'
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_versionId
-
-    def test_centralLoggingLevel(self, tango_context):
-        """Test for centralLoggingLevel"""
-        # PROTECTED REGION ID(SdpMasterLeafNode.test_centralLoggingLevel) ENABLED START #
-        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_centralLoggingLevel
-
-    def test_elementLoggingLevel(self, tango_context):
-        """Test for elementLoggingLevel"""
-        # PROTECTED REGION ID(SdpMasterLeafNode.test_elementLoggingLevel) ENABLED START #
-        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_elementLoggingLevel
-
-    def test_storageLoggingLevel(self, tango_context):
-        """Test for storageLoggingLevel"""
-        # PROTECTED REGION ID(SdpMasterLeafNode.test_storageLoggingLevel) ENABLED START #
-        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_storageLoggingLevel
 
     def test_healthState(self, tango_context):
         """Test for healthState"""

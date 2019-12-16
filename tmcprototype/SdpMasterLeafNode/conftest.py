@@ -25,8 +25,7 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     module = importlib.import_module("{}.{}".format("SdpMasterLeafNode", "SdpMasterLeafNode"))
     klass = getattr(module, "SdpMasterLeafNode")
-    properties = {'SkaLevel': '4', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+    properties = {'SkaLevel': '4', 'GroupDefinitions': '',
                   'SdpMasterFQDN': 'mid_sdp/elt/master',
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process=False)
