@@ -12,11 +12,6 @@
                 "CentralNode": {
                     "ska_mid/tm_central/central_node": {
                         "attribute_properties": {
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
-                            },
                             "subarray1HealthState": {
                                 "abs_change": [
                                     "-1",
@@ -117,11 +112,6 @@
                                 "__value": [
                                     "true"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -197,11 +187,6 @@
                             "simulationMode": {
                                 "__value": [
                                     "true"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
                                 ]
                             }
                         },
@@ -280,11 +265,6 @@
                                 "__value": [
                                     "true"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -345,11 +325,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -390,11 +365,6 @@
                                 "abs_change": [
                                     "-1",
                                     "1"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
                                 ]
                             }
                         },
@@ -437,11 +407,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -483,11 +448,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -525,11 +485,6 @@
                                 "abs_change": [
                                     "-1",
                                     "1"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
                                 ]
                             }
                         },
@@ -573,11 +528,6 @@
                                 "abs_change": [
                                     "-1",
                                     "1"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
                                 ]
                             }
                         },
@@ -624,11 +574,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -674,11 +619,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -714,11 +654,6 @@
                             "sdpHealthState": {
                                 "__root_att": [
                                     "mid_sdp/elt/master/healthState"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
                                 ]
                             }
                         },
@@ -756,11 +691,6 @@
                             "sdpSubarrayObsState": {
                                 "__root_att": [
                                     "mid_sdp/elt/subarray_1/obsState"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
                                 ]
                             }
                         },
@@ -802,11 +732,6 @@
                                 "__root_att": [
                                     "mid_sdp/elt/subarray_2/obsState"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -846,11 +771,6 @@
                             "sdpSubarrayObsState": {
                                 "__root_att": [
                                     "mid_sdp/elt/subarray_3/obsState"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
                                 ]
                             }
                         },
@@ -1100,11 +1020,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -1185,11 +1100,6 @@
                                 "abs_change": [
                                     "-1",
                                     "1"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
                                 ]
                             }
                         },
@@ -1272,11 +1182,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -1357,11 +1262,6 @@
                                 "abs_change": [
                                     "-1",
                                     "1"
-                                ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
                                 ]
                             }
                         },
