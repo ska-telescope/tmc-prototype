@@ -25,7 +25,9 @@ sys.path.insert(0, os.path.abspath(path))
 import tango
 from tango import DevState, EventType, DeviceProxy
 from CentralNode.CentralNode import CentralNode
+from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
+import TangoLoggingLevel
 import pytest
 import json
 
@@ -180,26 +182,12 @@ class TestCentralNode(object):
         assert tango_context.device.versionId == "0.2.0"
         # PROTECTED REGION END #    //  CentralNode.test_versionId
 
-    def test_centralLoggingLevel(self, tango_context):
-        """Test for centralLoggingLevel"""
-        # PROTECTED REGION ID(CentralNode.test_centralLoggingLevel) ENABLED START #
-        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  CentralNode.test_centralLoggingLevel
-
-    def test_elementLoggingLevel(self, tango_context):
-        """Test for elementLoggingLevel"""
-        # PROTECTED REGION ID(CentralNode.test_elementLoggingLevel) ENABLED START #
-        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  CentralNode.test_elementLoggingLevel
-
-    def test_storageLoggingLevel(self, tango_context):
-        """Test for storageLoggingLevel"""
-        # PROTECTED REGION ID(CentralNode.test_storageLoggingLevel) ENABLED START #
-        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  CentralNode.test_storageLoggingLevel
+    def test_loggingLevel(self, tango_context):
+        """Test for loggingLevel"""
+        # PROTECTED REGION ID(CentralNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
+        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        # PROTECTED REGION END #    //  CentralNode.test_loggingLevel
 
     def test_healthState(self, tango_context):
         """Test for healthState"""
