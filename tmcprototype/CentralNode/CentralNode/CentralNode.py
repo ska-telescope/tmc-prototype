@@ -68,19 +68,16 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 elif self.SdpMasterLeafNodeFQDN in evt.attr_name:
                     self._sdp_master_leaf_health = health_state
                 else:
-
                     self.logger.debug(CONST.EVT_UNKNOWN)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.EVT_UNKNOWN
 
                 if health_state == CONST.ENUM_OK:
-
                     self.logger.info(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_OK
                 elif health_state == CONST.ENUM_DEGRADED:
-
                     self.logger.info(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
@@ -98,8 +95,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(
                     #     evt.device) + CONST.STR_UNKNOWN
                 else:
+                    self.logger.info(CONST.STR_HEALTH_STATE_UNKNOWN_VAL)
 
-                     self.logger.info(CONST.STR_HEALTH_STATE_UNKNOWN_VAL)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 # Aggregated Health State
@@ -143,30 +140,25 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-
                 self.logger.critical(CONST.ERR_SUBARRAY_HEALTHSTATE)
             except DevFailed as dev_failed:
 
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-
                 self.logger.critical(CONST.ERR_SUBSR_SA_HEALTH_STATE)
             except Exception as except_occured:
 
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
-
                 self.logger.critical(CONST.ERR_AGGR_HEALTH_STATE)
         else:
 
             # TODO: For future reference
             # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
-
             self.logger.critical(CONST.ERR_SUBSR_SA_HEALTH_STATE)
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
     def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
-
         self.logger.error(read_actvity_msg + str(df))
         self._read_activity_message = read_actvity_msg + str(df)
         excpt_msg_list.append(self._read_activity_message)
@@ -174,7 +166,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         return [excpt_msg_list, exception_count]
 
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
-
         self.logger.error(read_actvity_msg + str(exception))
         self._read_activity_message = read_actvity_msg + str(exception)
         excpt_msg_list.append(self._read_activity_message)
@@ -301,10 +292,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
 
         for dish in range(1, (self.NumDishes+1)):
-
             # Update self._dish_leaf_node_devices variable
-
-
             self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
 
             # Initialize self.subarray_allocation variable to indicate availability of the dishes
@@ -432,7 +420,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for leafId in range(0, len(argin)):
                 if type(float(argin[leafId])) == float:
                     pass
-
             self.logger.info(CONST.STR_STOW_CMD_ISSUED_CN)
             self._read_activity_message = CONST.STR_STOW_CMD_ISSUED_CN
             for i in range(0, len(argin)):
@@ -449,7 +436,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self.throw_exception(exception_message, CONST.STR_STOW_ANTENNA_EXEC)
 
         except ValueError as value_error:
-
             self.logger.error(CONST.ERR_STOW_ARGIN)
             self._read_activity_message = CONST.ERR_STOW_ARGIN + str(value_error)
             exception_message.append(self._read_activity_message)
@@ -471,7 +457,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Set the Elements into STANDBY state (i.e. Low Power State). """
         exception_count =0
         exception_message =[]
-
         self.logger.info(CONST.STR_STANDBY_CMD_ISSUED)
         self._read_activity_message = CONST.STR_STANDBY_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
@@ -507,7 +492,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Set the Elements into ON state from STANDBY state."""
         exception_count =0
         exception_message = []
-
         self.logger.info(CONST.STR_STARTUP_CMD_ISSUED)
         self._read_activity_message = CONST.STR_STARTUP_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
@@ -640,7 +624,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     }
                 }
             else:
-
                 self._read_activity_message = CONST.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
                 argout = {
                     "dish": {
@@ -648,14 +631,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     }
                 }
         except ValueError as value_error:
-
             self.logger.error(CONST.ERR_INVALID_JSON)
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except KeyError as key_error:
-
             self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
@@ -759,13 +740,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             else:
                 self._read_activity_message = CONST.STR_FALSE_TAG
         except ValueError as value_error:
-
             self.logger.error(CONST.ERR_INVALID_JSON)
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-
             self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
