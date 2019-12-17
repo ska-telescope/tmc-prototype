@@ -46,8 +46,7 @@ class TestSdpSubarrayLeafNode(object):
     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_additionnal_import
     device = SdpSubarrayLeafNode
-    properties = {'SkaLevel': '4', 'GroupDefinitions': '',  'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_1',
-                  }
+    properties = {'SkaLevel': '4', 'GroupDefinitions': '',  'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_1'}
     empty = None  # Should be []
 
     @classmethod
