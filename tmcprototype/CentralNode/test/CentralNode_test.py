@@ -27,7 +27,6 @@ from tango import DevState, EventType, DeviceProxy
 from CentralNode.CentralNode import CentralNode
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
-import TangoLoggingLevel
 import pytest
 import json
 
