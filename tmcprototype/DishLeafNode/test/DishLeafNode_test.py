@@ -26,6 +26,7 @@ import tango
 from tango import DevState, EventType
 import pytest
 from DishLeafNode.DishLeafNode import DishLeafNode
+from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 # Note:
 #
@@ -299,28 +300,6 @@ class TestDishLeafNode(object):
         assert tango_context.device.versionId == "0.2.0"
         # PROTECTED REGION END #    //  DishLeafNode.test_versionId
 
-    def test_centralLoggingLevel(self, tango_context):
-        """Test for centralLoggingLevel"""
-        # PROTECTED REGION ID(DishLeafNode.test_centralLoggingLevel) ENABLED START #
-        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  DishLeafNode.test_centralLoggingLevel
-
-    def test_elementLoggingLevel(self, tango_context):
-        """Test for elementLoggingLevel"""
-        # PROTECTED REGION ID(DishLeafNode.test_elementLoggingLevel) ENABLED START #
-        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  DishLeafNode.test_elementLoggingLevel
-
-    def test_storageLoggingLevel(self, tango_context):
-        """Test for storageLoggingLevel"""
-        # PROTECTED REGION ID(DishLeafNode.test_storageLoggingLevel) ENABLED START #
-        #self.device.storageLoggingLevel
-        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  DishLeafNode.test_storageLoggingLevel
-
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(DishLeafNode.test_healthState) ENABLED START #
@@ -398,3 +377,10 @@ class TestDishLeafNode(object):
         assert create_dish_proxy.capturing is False
         create_dish_proxy.unsubscribe_event(eid)
         tango_context.device.SetStandByLPMode()
+
+    def test_loggingLevel(self, tango_context):
+        """Test for loggingLevel"""
+        # PROTECTED REGION ID(DishLeafNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingLevel = TangoLoggingLevel.info
+        assert tango_context.device.loggingLevel == TangoLoggingLevel.info
+        # PROTECTED REGION END #    //  DishLeafNode.test_loggingLevel
