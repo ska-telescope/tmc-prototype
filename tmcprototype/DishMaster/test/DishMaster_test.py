@@ -442,7 +442,7 @@ class TestDishMaster(object):
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.DEBUG
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.DEBUG
+        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
+        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
         # PROTECTED REGION END #    //  DishMaster.test_loggingLevel
 
