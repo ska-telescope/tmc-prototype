@@ -55,6 +55,7 @@ def tango_context(request): #, dishmaster_context):
     module = importlib.import_module("{}.{}".format("DishLeafNode", "DishLeafNode"))
     klass = getattr(module, "DishLeafNode")
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
+                  'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
                   'DishMasterFQDN': "mid_d0001/elt/master", 'TrackDuration': 1,
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process=False)
@@ -77,3 +78,4 @@ def initialize_device(tango_context):
 def create_dish_proxy():
     dish_proxy = DeviceProxy("mid_d0001/elt/master")
     return dish_proxy
+

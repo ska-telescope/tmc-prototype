@@ -193,7 +193,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         self.logger.debug("Stop event received. Thread exit.")
         #print("Stop event received. Thread exit.")
-        self.logger.info("Stop event received. Thread exit.")
 
     # Function for handling all Devfailed exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):

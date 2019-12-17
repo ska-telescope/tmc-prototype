@@ -198,7 +198,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
         :return: None
         """
-        print("Dish is SLEWING.")
+        #print("Dish is SLEWING.")
+        self.logger.debug("Dish is SLEWING.")
         az_diff = abs(self._desired_pointing[1] - self._achieved_pointing[1])
         el_diff = abs(self._desired_pointing[2] - self._achieved_pointing[2])
         az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
@@ -213,7 +214,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
             else:
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
-            print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
+            #print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
+            self.logger.debug(CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing))
             time.sleep(2)
         # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
         self._pointing_state = 2

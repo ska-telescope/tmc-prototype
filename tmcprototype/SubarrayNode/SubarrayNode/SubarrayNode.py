@@ -104,6 +104,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
             self.dev_logging(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
 
+
     def obsStateCallback(self, evt):
         """
                 Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
@@ -132,7 +133,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             except KeyError as key_error:
                 print(CONST.ERR_CSPSDP_SUBARRAY_OBS_STATE, key_error)
                 self._read_activity_message = CONST.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
-                self.dev_logging(CONST.ERR_CSPSDP_SUBARRAY_OBS_STATE, int(tango.LogLevel.LOG_FATAL))
+                #self.dev_logging(CONST.ERR_CSPSDP_SUBARRAY_OBS_STATE, int(tango.LogLevel.LOG_FATAL))
+                self.logger.critical(CONST.ERR_CSPSDP_SUBARRAY_OBS_STATE)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                     exception_message, exception_count, CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
@@ -142,7 +144,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         else:
             print(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE, evt)
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
-            self.dev_logging(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE, int(tango.LogLevel.LOG_FATAL))
+            #self.dev_logging(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE, int(tango.LogLevel.LOG_FATAL))
+            self.logger.critical(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
 
     def calculate_health_state(self):
         """
@@ -320,7 +323,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # set obsState to "IDLE"
                 self._obs_state = CONST.OBS_STATE_ENUM_IDLE
                 self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
-                self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                #self.dev_logging(CONST.STR_ASSIGN_RES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
                 [exception_message, excpt_count] = self._handle_devfailed_exception(dev_failed,
                                                     exception_message, excpt_count, CONST.ERR_ADDING_LEAFNODE)
@@ -369,9 +373,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
             argout = argin
         except DevFailed as df:
-            print(CONST.ERR_CSP_CMD)
-            self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
-            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+            #self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
+            #self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+            self.logger.error(CONST.ERR_CSP_CMD)
+            self.logger.debug(df)
 
         # For this PI CSP Subarray Leaf Node does not return anything. So this function is
         # looping the receptor ids back.
@@ -400,9 +405,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, str_json_arg)
             argout = argin
         except DevFailed as df:
-            print(CONST.ERR_SDP_CMD)
-            self.dev_logging(CONST.ERR_SDP_CMD, int(tango.LogLevel.LOG_ERROR))
-            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+            #self.dev_logging(CONST.ERR_SDP_CMD, int(tango.LogLevel.LOG_ERROR))
+            #self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+            self.logger.error(CONST.ERR_SDP_CMD)
+            self.logger.debug(df)
 
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
@@ -447,7 +453,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._dish_leaf_node_proxy = []
                 del self._receptor_id_list[:]
                 self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
-                self.dev_logging(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                #self.dev_logging(CONST.STR_RECEPTORS_REMOVE_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, CONST.ERR_RELEASE_RES_CMD_GROUP)
@@ -467,9 +474,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         try:
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_RELEASE_ALL_RESOURCES)
         except DevFailed as df:
-            print(CONST.ERR_CSP_CMD)
-            self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
-            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+            # self.dev_logging(CONST.ERR_CSP_CMD, int(tango.LogLevel.LOG_ERROR))
+            # self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+            self.logger.error(CONST.ERR_CSP_CMD)
+            self.logger.debug(df)
 
     def release_sdp_resources(self):
         """
@@ -484,9 +492,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_RELEASE_ALL_RESOURCES)
 
         except DevFailed as df:
-            print(CONST.ERR_SDP_CMD)
-            self.dev_logging(CONST.ERR_SDP_CMD, int(tango.LogLevel.LOG_ERROR))
-            self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+            # self.dev_logging(CONST.ERR_SDP_CMD, int(tango.LogLevel.LOG_ERROR))
+            # self.dev_logging(df, int(tango.LogLevel.LOG_DEBUG))
+            self.logger.error(CONST.ERR_SDP_CMD)
+            self.logger.debug(df)
 
     @command(
         dtype_in='str',
@@ -538,7 +547,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         self.calculate_observation_state()
 
                 self.set_status(CONST.STR_SA_SCANNING)
-                self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
+                #self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_SA_SCANNING)
                 self._read_activity_message = CONST.STR_SCAN_SUCCESS
 
             self.end_scan_thread = threading.Thread(None, self.waitForEndScan, "SubarrayNode")
@@ -565,7 +575,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             #     # set obsState to SCANNING when the scan is started
             #     self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
             #     self.set_status(CONST.STR_SA_SCANNING)
-            #     self.dev_logging(CONST.STR_SA_SCANNING, int(tango.LogLevel.LOG_INFO))
+            #     self.logger.info(CONST.STR_SA_SCANNING)
         except AssertionError as assert_error:
             print(CONST.ERR_SCAN_CMD, "\n", assert_error, CONST.ERR_DUPLICATE_SCAN_CMD)
             self._read_activity_message = CONST.ERR_DUPLICATE_SCAN_CMD + str(assert_error)
@@ -579,7 +589,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         except KeyError as key_err:
             print(CONST.ERR_SCAN_CMD, str(key_err))
             self._read_activity_message = CONST.ERR_SCAN_CMD + str(key_err)
-            self.dev_logging(CONST.ERR_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
+            #self.dev_logging(CONST.ERR_SCAN_CMD, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_SCAN_CMD)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                     exception_message, exception_count, CONST.ERR_SCAN_CMD)
@@ -650,7 +661,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         self.calculate_observation_state()
 
                 self.set_status(CONST.STR_SCAN_COMPLETE)
-                self.dev_logging(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
+                #self.dev_logging(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_SCAN_COMPLETE)
                 self._read_activity_message = CONST.STR_END_SCAN_SUCCESS
 
                 # TODO: FOR FUTURE IMPLEMENTATION
@@ -661,7 +673,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # self._obs_state = CONST.OBS_STATE_ENUM_READY
                 # self._scan_id = ""
                 # self.set_status(CONST.STR_SCAN_COMPLETE)
-                # self.dev_logging(CONST.STR_SCAN_COMPLETE, int(tango.LogLevel.LOG_INFO))
+                # self.logger.info(CONST.STR_SCAN_COMPLETE)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, CONST.ERR_END_SCAN_CMD_ON_GROUP)
@@ -715,23 +727,27 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 float(argin[leafId])
         except ValueError as value_error:
             print(CONST.ERR_SCAN_CMD, "\n", value_error, CONST.ERR_INVALID_DATATYPE)
-            self.dev_logging(CONST.ERR_INVALID_DATATYPE, int(tango.LogLevel.LOG_ERROR))
+            #self.dev_logging(CONST.ERR_INVALID_DATATYPE, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_INVALID_DATATYPE)
             self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         with exception_count is 0 and ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
-            self.dev_logging(CONST.STR_DISH_ALLOCATION, int(tango.LogLevel.LOG_INFO))
+            #self.dev_logging(CONST.STR_DISH_ALLOCATION, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_DISH_ALLOCATION)
             dish_allocation_status = executor.submit(self.add_receptors_in_group, argin)
 
             # 2.2. Add resources in CSP subarray
-            self.dev_logging(CONST.STR_CSP_ALLOCATION, int(tango.LogLevel.LOG_INFO))
+            #self.dev_logging(CONST.STR_CSP_ALLOCATION, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_CSP_ALLOCATION)
             csp_allocation_status = executor.submit(self.assign_csp_resources, argin)
 
             # 2.3. Add resources in SDP subarray
             # For PI#3, TMC sends dummy resources to SDP.
-            self.dev_logging(CONST.STR_SDP_ALLOCATION, int(tango.LogLevel.LOG_INFO))
+            #self.dev_logging(CONST.STR_SDP_ALLOCATION, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_SDP_ALLOCATION)
             dummy_sdp_resources = ["PB1", "PB2"]
             sdp_allocation_status = executor.submit(self.assign_sdp_resources, dummy_sdp_resources)
 
@@ -745,17 +761,20 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             # 2.5. prepare return value
             dish_allocation_result = dish_allocation_status.result()
             log_msg = CONST.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
-            self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            #self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            self.logger.debug(log_msg)
             print("dish_allocation_result: ", dish_allocation_result)
 
             csp_allocation_result = csp_allocation_status.result()
             log_msg = CONST.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
-            self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            #self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            self.logger.debug(log_msg)
             print("csp_allocation_result: ", csp_allocation_result)
 
             sdp_allocation_result = sdp_allocation_status.result()
             log_msg = CONST.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
-            self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            #self.dev_logging(log_msg, int(tango.LogLevel.LOG_DEBUG))
+            self.logger.debug(log_msg)
             print("sdp_allocation_result: ", sdp_allocation_result)
 
             dish_allocation_result.sort()
@@ -804,15 +823,18 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             assert self._dishLnVsHealthEventID != {}, CONST.RESRC_ALREADY_RELEASED
             with self._release_excpt_count is 0 and ThreadPoolExecutor(3) as executor:
                 # 1. Delete the group of receptors
-                self.dev_logging(CONST.STR_DISH_RELEASE, int(tango.LogLevel.LOG_INFO))
+                #self.dev_logging(CONST.STR_DISH_RELEASE, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_DISH_RELEASE)
                 dish_release_status = executor.submit(self.remove_receptors_in_group)
 
                 # Release resources from CSP Subarray
-                self.dev_logging(CONST.STR_CSP_RELEASE, int(tango.LogLevel.LOG_INFO))
+                #self.dev_logging(CONST.STR_CSP_RELEASE, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_CSP_RELEASE)
                 csp_release_status = executor.submit(self.release_csp_resources)
 
                 # Release resources from SDP Subarray
-                self.dev_logging(CONST.STR_SDP_RELEASE, int(tango.LogLevel.LOG_INFO))
+                #self.dev_logging(CONST.STR_SDP_RELEASE, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_SDP_RELEASE)
                 sdp_release_status = executor.submit(self.release_sdp_resources)
 
                 # 2.4 wait for result
@@ -888,15 +910,18 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             except KeyError as key_err:
                 print(CONST.ERR_SETHEALTH_CALLBK, str(key_err))
                 self._read_activity_message = CONST.ERR_SETHEALTH_CALLBK + str(key_err)
-                self.dev_logging(CONST.ERR_SETHEALTH_CALLBK, int(tango.LogLevel.LOG_ERROR))
+                #self.dev_logging(CONST.ERR_SETHEALTH_CALLBK, int(tango.LogLevel.LOG_ERROR))
+                self.logger.error(CONST.ERR_SETHEALTH_CALLBK)
             except Exception as except_occurred:
                 print(CONST.ERR_AGGR_HEALTH_STATE, except_occurred.message)
                 self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
+                #self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
+                self.logger.error(CONST.ERR_AGGR_HEALTH_STATE)
         else:
             print(CONST.ERR_SUBSR_SA_HEALTH_STATE, evt.errors)
             self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors)
-            self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
+            #self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_SUBSR_SA_HEALTH_STATE)
 
     def setPointingState(self, evt):
         """
@@ -936,25 +961,30 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             except KeyError as key_err:
                 print(CONST.ERR_SETPOINTING_CALLBK, str(key_err))
                 self._read_activity_message = CONST.ERR_SETPOINTING_CALLBK + str(key_err)
-                self.dev_logging(CONST.ERR_SETPOINTING_CALLBK, int(tango.LogLevel.LOG_ERROR))
+                #self.dev_logging(CONST.ERR_SETPOINTING_CALLBK, int(tango.LogLevel.LOG_ERROR))
+                self.logger.error(CONST.ERR_SETPOINTING_CALLBK)
             except Exception as except_occurred:
                 print(CONST.ERR_AGGR_POINTING_STATE, except_occurred.message)
                 self._read_activity_message = CONST.ERR_AGGR_POINTING_STATE + str(except_occurred.message)
-                self.dev_logging(CONST.ERR_AGGR_POINTING_STATE, int(tango.LogLevel.LOG_ERROR))
+                #self.dev_logging(CONST.ERR_AGGR_POINTING_STATE, int(tango.LogLevel.LOG_ERROR))
+                self.logger.error(CONST.ERR_AGGR_POINTING_STATE)
         else:
             print(CONST.ERR_SUBSR_DSH_POINTING_STATE, evt.errors)
             self._read_activity_message = CONST.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
-            self.dev_logging(CONST.ERR_SUBSR_DSH_POINTING_STATE, int(tango.LogLevel.LOG_ERROR))
+            #self.dev_logging(CONST.ERR_SUBSR_DSH_POINTING_STATE, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_SUBSR_DSH_POINTING_STATE)
             
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
+        #self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
+        self.logger.error(read_actvity_msg + str(exception))
         self._read_activity_message = read_actvity_msg + str(exception)
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
         return [excpt_msg_list, exception_count]
 
     def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
+        #self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
+        self.logger.error(read_actvity_msg + str(df))
         self._read_activity_message = read_actvity_msg + str(df)
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -1080,13 +1110,15 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                         self.obsStateCallback, stateless=True)
 
             self.set_status(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
-            self.dev_logging(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            #self.dev_logging(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
             print(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR, dev_failed)
             self._read_activity_message = CONST.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR)
-            self.dev_logging(CONST.ERR_CSP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
+            #self.dev_logging(CONST.ERR_CSP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_CSP_SA_LEAF_INIT)
 
         try:
             self.subarray_ln_health_state_map[self._sdp_subarray_ln_proxy] = -1
@@ -1097,17 +1129,21 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
             self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
-            self.dev_logging(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            #self.dev_logging(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
             print(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR, dev_failed)
             self._read_activity_message = CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR)
-            self.dev_logging(CONST.ERR_SDP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_SDP_SA_LEAF_INIT)
+            #self.dev_logging(CONST.ERR_SDP_SA_LEAF_INIT, int(tango.LogLevel.LOG_ERROR))
+            self.logger.info(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
 
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
-        self.dev_logging(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        #self.dev_logging(CONST.STR_SA_INIT_SUCCESS, int(tango.LogLevel.LOG_INFO))
+        self.logger.info(CONST.STR_SA_INIT_SUCCESS)
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
 
@@ -1208,7 +1244,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     self._scan_id = str(self._scanConfiguration["scanID"])
                     self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
                                           for _ in range(4))
-                    self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+                    #self.dev_logging(CONST.STR_CONFIGURE_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+                    self.logger.info(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
 
                     if "csp" in self._scanConfiguration:
                         # Configuration of CSP
