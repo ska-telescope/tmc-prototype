@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.abspath(path))
 import tango
 from tango import DevState
 from CspMasterLeafNode.CspMasterLeafNode import CspMasterLeafNode
+from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 import pytest
 import time
@@ -182,4 +183,10 @@ class TestCspMasterLeafNode(object):
         assert 1
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_Off
 
+    def test_loggingLevel(self, tango_context):
+        """Test for loggingLevel"""
+        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingLevel = TangoLoggingLevel.DEBUG
+        assert tango_context.device.loggingLevel == TangoLoggingLevel.DEBUG
+        # PROTECTED REGION END #    //  DishMaster.test_loggingLevel
 

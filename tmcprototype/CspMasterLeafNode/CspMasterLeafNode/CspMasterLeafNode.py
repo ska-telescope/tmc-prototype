@@ -320,6 +320,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
         """
         self._csp_proxy.command_inout_asynch(CONST.CMD_ON, argin, self.commandCallback)
+        self.logger.debug(CONST.STR_ON_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.On
 
@@ -341,6 +342,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
         """
         self._csp_proxy.command_inout_asynch(CONST.CMD_OFF, argin, self.commandCallback)
+        self.logger.debug(CONST.STR_OFF_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Off
 
@@ -364,6 +366,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
         """
         self._csp_proxy.command_inout_asynch(CONST.CMD_STANDBY, argin, self.commandCallback)
+        self.logger.debug(CONST.STR_STANDBY_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
 
