@@ -29,6 +29,7 @@ from mock import MagicMock
 from tango import DevState, EventType, DeviceProxy
 #from devicetest import DeviceTestCase, main
 from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
+from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 import pytest
 import json
@@ -317,3 +318,10 @@ class TestCspSubarrayLeafNode(object):
         tango_context.device.activityMessage = 'text'
         assert tango_context.device.activityMessage == 'text'
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_activityMessage
+
+    def test_loggingLevel(self, tango_context):
+        """Test for loggingLevel"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingLevel = TangoLoggingLevel.DEBUG
+        assert tango_context.device.loggingLevel == TangoLoggingLevel.DEBUG
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_loggingLevel

@@ -25,6 +25,7 @@ import tango
 from tango import DevState
 import pytest
 from DishMaster.DishMaster import DishMaster
+from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 import json
 
@@ -437,3 +438,11 @@ class TestDishMaster(object):
         tango_context.device.StopTrack()
         assert (tango_context.device.pointingState == 0)
         #tango_context.device.SetStandbyLPMode()
+
+    def test_loggingLevel(self, tango_context):
+        """Test for loggingLevel"""
+        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingLevel = TangoLoggingLevel.DEBUG
+        assert tango_context.device.loggingLevel == TangoLoggingLevel.DEBUG
+        # PROTECTED REGION END #    //  DishMaster.test_loggingLevel
+
