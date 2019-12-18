@@ -73,30 +73,31 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     # self._read_activity_message = CONST.EVT_UNKNOWN
 
                 if health_state == CONST.ENUM_OK:
-                    self.logger.info(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK)
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                    self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_OK
                 elif health_state == CONST.ENUM_DEGRADED:
-                    self.logger.info(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED)
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
+                    self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_DEGRADED
                 elif health_state == CONST.ENUM_FAILED:
-                    self.logger.info(CONST.STR_HEALTH_STATE + str(evt.device ) + CONST.STR_FAILED)
-
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                    self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_FAILED
                 elif health_state == CONST.ENUM_UNKNOWN:
-                    self.logger.info(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN)
-
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
+                    self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(
                     #     evt.device) + CONST.STR_UNKNOWN
                 else:
                     self.logger.info(CONST.STR_HEALTH_STATE_UNKNOWN_VAL)
-
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 # Aggregated Health State
@@ -152,21 +153,22 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
                 self.logger.critical(CONST.ERR_AGGR_HEALTH_STATE)
         else:
-
             # TODO: For future reference
             # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
             self.logger.critical(CONST.ERR_SUBSR_SA_HEALTH_STATE)
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
     def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
-        self.logger.error(read_actvity_msg + str(df))
+        str_log = read_actvity_msg + str(df)
+        self.logger.error(str_log)
         self._read_activity_message = read_actvity_msg + str(df)
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
         return [excpt_msg_list, exception_count]
 
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
-        self.logger.error(read_actvity_msg + str(exception))
+        str_log = read_actvity_msg + str(exception)
+        self.logger.error(str_log)
         self._read_activity_message = read_actvity_msg + str(exception)
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
