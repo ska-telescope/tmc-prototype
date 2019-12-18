@@ -1,88 +1,88 @@
 import katpoint
+from katpoint import  conversion, ephem_extra
+import numpy
 
-# Load a set of antenna descriptions and construct Antenna objects from them
-with open('ska_antennas.txt') as f:
-    descriptions = f.readlines()
-antennas = [katpoint.Antenna(line) for line in descriptions]
-antennas = {ant.name: ant for ant in antennas}
 
-#  Construct a Target object
+# convert ecef coordinates to lat, long, alt of reference antenna
+def ecef_to_lla_dms(x,y,z):
+    lla = conversion.ecef_to_lla(x,y,z)
+    lat_dms = ephem_extra.rad2deg(lla[0])
+    long_dms = ephem_extra.rad2deg(lla[1])
+    alt = lla[2]
+    return lat_dms, long_dms, alt
+
+# Create timestamp oblect
+timestamp = katpoint.Timestamp('2019-08-06 11:00:00.000')
+print(timestamp.to_mjd())
+
+# # Create target object
 target = katpoint.Target('radec , 19:39:25.03 , -63:42:45.7')
+print("target: ", target)
 
-# Timestamp in date string
-timestamp = katpoint.Timestamp('2019-04-29 21:51:00.9701018')
+# Reference Antenna Object
+refx = 1000.0
+refy = 1299.0
+refz = 6380000.0
+#
+ref_lat, ref_long, ref_alt = ecef_to_lla_dms(refx, refy, refz)
+#
+ref_antenna = katpoint.Antenna('ref_ant', str(ref_lat), str(ref_long), str(ref_alt), '0.0', '0.0 0.0 0.0 0.0 0.0 0.0')
+print(ref_antenna)
 
-with open('ska_delay_model.txt') as f:
-    array_model_json = f.readline()
-array_model = katpoint.DelayCorrection(array_model_json)
+# Create Antenna 1 Object
+# Antenna 1 ecef coorinates in meters
+ant1_x = 1500.0
+ant1_y = 1500.0
+ant1_z = 6380000.0
+# Convert ecef to enu coordinates
+ant1_e, ant1_n, ant1_u = conversion.ecef_to_enu(ref_lat, ref_long, ref_alt, ant1_x, ant1_y, ant1_z)
+ant1_delay_model = katpoint.DelayModel([ant1_e, ant1_n, ant1_u,0,0,0])
+antenna1 = katpoint.Antenna('A1', str(ref_lat), str(ref_long), str(ref_alt), '0.0', ant1_delay_model)
+print(antenna1)
 
-# two delay values per antenna
-array_delays = array_model._calculate_delays(target, timestamp)
-print("array_delays: ", array_delays)
+# Create DelayCorrection Object
+delay_correction = katpoint.DelayCorrection([antenna1], ref_antenna)
 
-# Delay and Phase corrections
-delays_corrections, phases_corrections = array_model.corrections(target, timestamp)
+# Calculate geometric delay value
+delay_array = delay_correction._calculate_delays(target, timestamp)
+print("calculate delay:", delay_array)
+
+# Calculate delay and phase correction values
+delays_corrections, phases_corrections = delay_correction.corrections(target, timestamp)
 print("delays_corrections: ", delays_corrections)
 print("phases_corrections: ", phases_corrections)
 
-# Apply delays_corrections on array_delays to obtain correct delay values
+
+# Calculate actual delay values: delay_value + delay_correction_value
+actual_delay_h = delay_array[0] + delays_corrections['A1h']
+print(delays_corrections['A1h'])
+print("actual_delay_h: ", actual_delay_h)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Get current time in UTC format and convert it to string
-# timestamp1 = katpoint.Timestamp('2019-04-29 21:51:00.9701018')
-# timestamp_string = timestamp1.to_string()
-# print("timestamp: ", timestamp1)
+# # Load a set of antenna descriptions and construct Antenna objects from them
+# with open('ska_antennas.txt') as f:
+#     descriptions = f.readlines()
+# antennas = [katpoint.Antenna(line) for line in descriptions]
+# antennas = {ant.name: ant for ant in antennas}
 #
-# # Create target object
-# target1 = katpoint.Target('radec , 19:39:25.03 , -63:42:45.7')
-# print("target 1 ", target1)
+# #  Construct a Target object
+# target = katpoint.Target('radec , 19:39:25.03 , -63:42:45.7')
 #
-# # Antenna(name, latitude=None, longitude=None, altitude=None, diameter=0.0, delay_model=None, pointing_model=None, beamwidth=1.22)
+# # Timestamp in date string
+# timestamp = katpoint.Timestamp('2019-04-29 21:51:00.9701018')
 #
-# ref_antenna = katpoint.Antenna('A, 18.5304, 73.7667, 0, 12.0, 0.0 0.0 0.0')
-# antenna1 = katpoint.Antenna('A1, 18.5304, 73.7667, 0, 12.0, 50.0 -50.0 0.0')
-# antenna2 = katpoint.Antenna('A2, 18.5304, 73.7667, 0, 12.0, 5.0 10.0 3.0')
+# with open('ska_delay_model.txt') as f:
+#     array_model_json = f.readline()
+# array_model = katpoint.DelayCorrection(array_model_json)
 #
-# # create delay object
-# delay1 = katpoint.DelayCorrection([antenna1, antenna2], ref_antenna)
+# # two delay values per antenna
+# array_delays = array_model._calculate_delays(target, timestamp)
+# print("array_delays: ", array_delays)
 #
-# b = delay1._calculate_delays(target1, timestamp_string)
-# print("calculate delay:", b)
+# # Delay and Phase corrections
+# delays_corrections, phases_corrections = array_model.corrections(target, timestamp)
+# print("delays_corrections: ", delays_corrections)
+# print("phases_corrections: ", phases_corrections)
 #
-# c = delay1.corrections(target1, timestamp1)
-# print("Corrections:", c)
+# # Apply delays_corrections on array_delays to obtain correct delay values
