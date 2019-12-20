@@ -12,7 +12,7 @@ def ecef_to_lla_dd_rad(x,y,z):
     return alt, lat_rad, long_rad
 
 # # Create target object
-target = katpoint.Target('radec , 2:31:50.91 , 89:15:51.4')
+target = katpoint.Target('radec , 20:20:14.07 , 18:30:11.5')
 
 # Reference Antenna ECEF coorinates in meters
 refx = 1000.0
@@ -26,11 +26,11 @@ ref_alt, ref_lat_rad, ref_long_rad = ecef_to_lla_dd_rad(refx, refy, refz)
 ref_antenna_delay_model = katpoint.DelayModel([0.0,0.0,0.0,0.0,0.0,0.0])
 
 # Create reference antenna object
-ref_antenna = katpoint.Antenna('ref_ant', ref_lat_rad, ref_long_rad, ref_alt, '0.0', ref_antenna_delay_model,[0],0)
+ref_antenna = katpoint.Antenna('ref_ant', ref_lat_rad, ref_long_rad, ref_alt, 0.0, ref_antenna_delay_model,[0],0)
 
 # Antenna1 ECEF coorinates in meters
-ant1_x = 1500.0
-ant1_y = 1500.0
+ant1_x = 50000.0
+ant1_y = 50000.0
 ant1_z = 6380000.0
 
 # Convert ECEF to enu coordinates for antenna1
@@ -39,7 +39,7 @@ ant1_e, ant1_n, ant1_u = conversion.ecef_to_enu(ref_lat_rad, ref_long_rad, ref_a
 # Create antenna1 delay model object
 ant1_delay_model = katpoint.DelayModel([ant1_e, ant1_n, ant1_u,0,0,0])
 # Create antenna1 object
-antenna1 = katpoint.Antenna('A1', ref_lat_rad, ref_long_rad, ref_alt, '0.0', ant1_delay_model,[0],0)
+antenna1 = katpoint.Antenna('A1', ref_lat_rad, ref_long_rad, ref_alt, 0.0, ant1_delay_model,[0],0)
 
 # Create DelayCorrection Object
 delay_correction = katpoint.DelayCorrection([antenna1], ref_antenna)
