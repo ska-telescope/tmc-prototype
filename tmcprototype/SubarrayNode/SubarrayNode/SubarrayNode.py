@@ -106,8 +106,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         else:
             self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt))
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
-            self.dev_logging(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
-
+            self.logger.critical(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
 
     def obsStateCallback(self, evt):
         """
@@ -294,7 +293,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
                 self._health_event_id.append(self._event_id)
                 self.dishHealthStateMap[devProxy] = -1
-                print(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID, self._dishLnVsHealthEventID)
+                self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID))
 
                 # Subscribe Dish Pointing State
                 self._event_id = devProxy.subscribe_event(CONST.EVT_DISH_POINTING_STATE,
@@ -304,21 +303,21 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._dishLnVsPointingStateEventID[devProxy] = self._event_id
                 self._pointing_state_event_id.append(self._event_id)
                 self.dishPointingStateMap[devProxy] = -1
-                print(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID, self._dishLnVsPointingStateEventID)
+                self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID))
 
                 self._receptor_id_list.append(int(str_leafId))
 
 
 
-                print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list(True))
-                print(CONST.STR_LN_PROXIES, self._dish_leaf_node_proxy)
+                self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
+                self.logger.debug(CONST.STR_LN_PROXIES +str(self._dish_leaf_node_proxy))
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
                 self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
                 self.logger.debug(CONST.STR_SUBS_ATTRS_LN)
                 self._read_activity_message = CONST.STR_SUBS_ATTRS_LN
                 # TODO: FOR FUTURE REFERENCE
-                # print(CONST.STR_HS_EVNT_ID, self._health_event_id)
+                # self.logger.debug(CONST.STR_HS_EVNT_ID +str(self._health_event_id))
                 # self._read_activity_message = CONST.STR_HS_EVNT_ID + str(self._health_event_id)
                 # Set state = ON
                 self.set_state(DevState.ON)
@@ -549,14 +548,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             #     status = executor.submit(self.waitForEndScan, scan_duration)
             #     if status:
             #         # call endScan command
-            #         print ("Sending end scan command...")
+            #         self.logger.debug("Sending end scan command...")
             #         self.EndScan()
 
             #TODO: FOR FUTURE IMPLEMENTATION
             # if type(float(argin[0])) == float:
-            #     print("Observation state:", self._obs_state)
+            #     self.logger.debug("Observation state:", self._obs_state)
             #     assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
-            #     print(CONST.STR_GRP_DEF, self._dish_leaf_node_group.get_device_list())
+            #     self.logger.debug(CONST.STR_GRP_DEF +str(self._dish_leaf_node_group.get_device_list()))
             #     self._read_activity_message = CONST.STR_SCAN_IP_ARG + str(argin)
             #     self._read_activity_message = CONST.STR_GRP_DEF + str(
             #         self._dish_leaf_node_group.get_device_list())
@@ -1321,7 +1320,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         # this is a fatal error
                         self._read_activity_message = msg
                         self.logger.debug (msg)
-                        self.dev_logging(msg, int(tango.LogLevel.LOG_DEBUG))
+                        self.logger.debug(msg)
                     # TODO: FOR FUTURE REFERENCE
                     # # set obsState to READY when the configuration is completed
                     # self._obs_state = CONST.OBS_STATE_ENUM_READY
@@ -1370,13 +1369,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         exception_message = []
         exception_count = 0
         try:
-            print("EndSB invoked on SubarrayNode.")
+            self.logger.debug("EndSB invoked on SubarrayNode.")
             if self._obs_state == CONST.OBS_STATE_ENUM_READY:
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
                 self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
                 self._dish_leaf_node_group.command_inout(CONST.CMD_STOP_TRACK)
                 self._read_activity_message = CONST.STR_ENDSB_SUCCESS
-                self.dev_logging(CONST.STR_ENDSB_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_ENDSB_SUCCESS)
                 self.set_status(CONST.STR_ENDSB_SUCCESS)
             else:
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
@@ -1425,7 +1424,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             # self._obs_state = CONST.OBS_STATE_ENUM_READY
             self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             #self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-            self.dev_logging(CONST.STR_TRACK_CMD_INVOKED_SA, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_TRACK_CMD_INVOKED_SA)
 
         except tango.DevFailed as devfailed:
             exception_message.append(CONST.ERR_TRACK_CMD + ": " + \
