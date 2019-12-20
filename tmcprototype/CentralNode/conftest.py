@@ -28,6 +28,8 @@ def tango_context(request):
     klass = getattr(module, "CentralNode")
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralAlarmHandler': '', 'TMAlarmHandler': '',
+                  'LoggingTargetsDefault': 'console::cout',
+                  'LoggingLevelDefault': '4',
                   'TMMidSubarrayNodes': 'ska_mid/tm_subarray_node/1', 'NumDishes': '4',
                   'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
                   'CspMasterLeafNodeFQDN': 'ska_mid/tm_leaf_node/csp_master',
