@@ -64,8 +64,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self.change_elevation_thread.start()
                 self._pointing_state = 1
             except Exception as except_occured:
-                #print(CONST.ERR_EXE_POINT_FN, self.ReceptorNumber)
-                #print(CONST.ERR_MSG, except_occured)
+                self.logger.error(CONST.ERR_MSG + str(except_occured))
                 self.logger.error(CONST.ERR_EXE_POINT_FN + str(self.ReceptorNumber))
                 self.logger.error(CONST.ERR_MSG + str(except_occured))
         else:
@@ -198,7 +197,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
         :return: None
         """
-        #print("Dish is SLEWING.")
         self.logger.debug("Dish is SLEWING.")
         az_diff = abs(self._desired_pointing[1] - self._achieved_pointing[1])
         el_diff = abs(self._desired_pointing[2] - self._achieved_pointing[2])
@@ -214,7 +212,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
             else:
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
-            #print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
             self.logger.debug(CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing))
             time.sleep(2)
         # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
@@ -374,10 +371,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.logger.info(CONST.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
         except Exception as except_occured:
-            #print(CONST.ERR_INIT_PROP_ATTR_DISH, self.ReceptorNumber)
             self.logger.error(CONST.ERR_INIT_PROP_ATTR_DISH + str(self.ReceptorNumber))
             self.logger.error(CONST.ERR_INIT_PROP_ATTR_DISH)
-            #print(CONST.ERR_MSG, except_occured)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
         # PROTECTED REGION END #    //  DishMaster.always_executed_hook
 
@@ -573,11 +568,9 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.stow_thread = threading.Thread(None, self.check_slew, 'DishMaster')
             self.stow_thread.start()
         except Exception as except_occured:
-            #print(CONST.ERR_EXE_SET_STOW_MODE_CMD, self.ReceptorNumber)
             self.logger.error(CONST.ERR_EXE_SET_STOW_MODE_CMD + str(self.ReceptorNumber))
             excpt_msg.append(CONST.ERR_EXE_SET_STOW_MODE_CMD + str(self.ReceptorNumber))
             self.logger.error(CONST.ERR_EXE_SET_STOW_MODE_CMD)
-            #print(CONST.ERR_MSG, except_occured)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
 
@@ -616,14 +609,12 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_status(CONST.STR_DISH_STANDBYLP_MODE)
             self.logger.info(CONST.STR_DISH_STANDBYLP_MODE)
         except Exception as except_occured:
-            #print(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD, self.ReceptorNumber)
             self.logger.error(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD + str(self.ReceptorNumber))
             excpt_msg.append(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.set_status(str(except_occured))
             self.logger.error(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
-            #print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
@@ -667,7 +658,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_msg.append(CONST.ERR_EXE_SET_MAINT_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.logger.error(CONST.ERR_EXE_SET_MAINT_MODE_CMD)
-            #print(CONST.ERR_MSG, except_occured)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -712,7 +702,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             excpt_msg.append(CONST.ERR_EXE_SET_OPERATE_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.logger.error(CONST.ERR_EXE_SET_OPERATE_MODE_CMD)
-            #print(CONST.ERR_MSG, except_occured)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -765,12 +754,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self.set_status(CONST.STR_DISH_NOT_READY)
                 self.logger.info(CONST.STR_DISH_NOT_READY)
         except Exception as except_occured:
-            #print(CONST.ERR_EXE_SCAN_CMD, self.ReceptorNumber)
             self.logger.error(CONST.ERR_EXE_SCAN_CMD + str(self.ReceptorNumber))
             excpt_msg.append(CONST.ERR_EXE_SCAN_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.logger.error(CONST.ERR_EXE_SCAN_CMD)
-            #print(CONST.ERR_MSG, except_occured)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -821,13 +808,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                     self.set_status(CONST.STR_DATA_CAPTURE_ALREADY_STARTED)
                     self.logger.info(CONST.STR_DATA_CAPTURE_ALREADY_STARTED)
         except Exception as except_occured:
-            #print(CONST.ERR_EXE_STRT_CAPTURE_CMD, self.ReceptorNumber)
             self.logger.error(CONST.ERR_EXE_STRT_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_msg.append(CONST.ERR_EXE_STRT_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.logger.error(CONST.ERR_EXE_STRT_CAPTURE_CMD)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
-            #print(CONST.ERR_MSG, except_occured)
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
 
@@ -876,12 +861,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                     self.set_status(CONST.STR_DATA_CAPTURE_ALREADY_STOPPED)
                     self.logger.info(CONST.STR_DATA_CAPTURE_ALREADY_STOPPED)
         except Exception as except_occured:
-            #print(CONST.ERR_EXE_STOP_CAPTURE_CMD, self.ReceptorNumber)
             self.logger.error(CONST.ERR_EXE_STOP_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_msg.append(CONST.ERR_EXE_STOP_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.logger.error(CONST.ERR_EXE_STOP_CAPTURE_CMD)
-            #print(CONST.ERR_MSG, except_occured)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -922,12 +905,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_status(CONST.STR_DISH_STANDBYFP_MODE)
             self.logger.info(CONST.STR_DISH_STANDBYFP_MODE)
         except Exception as except_occured:
-            #print(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD, self.ReceptorNumber)
             self.logger.error(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD + str(self.ReceptorNumber))
             excpt_msg.append(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.logger.error(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD)
-            #print(CONST.ERR_MSG, except_occured)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -974,12 +955,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 schedule_slew_thread.start()
                 self.logger.info(CONST.STR_DISH_SLEW)
         except Exception as except_occured:
-            #print(CONST.ERR_EXE_SLEW_CMD, self.ReceptorNumber)
             self.logger.error(CONST.ERR_EXE_SLEW_CMD + str(self.ReceptorNumber))
             excpt_msg.append(CONST.ERR_EXE_SLEW_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.logger.error(CONST.ERR_EXE_SLEW_CMD)
-            #print(CONST.ERR_MSG, except_occured)
             self.logger.error(CONST.ERR_MSG + str(except_occured))
             excpt_msg.append(CONST.ERR_MSG + str(except_occured))
             excpt_count += 1
@@ -1029,8 +1008,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                     self._pointing_state = 3
                 self._achieved_pointing[1] = self._desired_pointing[1]
                 self._achieved_pointing[2] = self._desired_pointing[2]
-                #print(CONST.STR_ACHIEVED_POINTING, self._achieved_pointing)
-                #print("Dish is TRACKING.")
                 self.logger.debug(CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing))
                 self.logger.debug("Dish is TRACKING.")
             else:

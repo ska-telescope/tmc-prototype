@@ -179,7 +179,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 delay_model_per_epoch["delayDetails"] = receptor_delay_model
                 delay_model.append(delay_model_per_epoch)
                 delay_model_json["delayModel"] = delay_model
-                #print("delay_model_json: ", delay_model_json)
                 self.logger.debug("delay_model_json: " + str(delay_model_json))
                 # update the attribute
                 self.delay_model_lock.acquire()
@@ -192,7 +191,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._delay_model = " "
 
         self.logger.debug("Stop event received. Thread exit.")
-        #print("Stop event received. Thread exit.")
 
     # Function for handling all Devfailed exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
@@ -249,7 +247,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 args=[self._DELAY_UPDATE_INTERVAL],
                 daemon=False)
             self.delay_model_calculator_thread.start()
-
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
             self._csp_subarray_health_state = CONST.ENUM_OK

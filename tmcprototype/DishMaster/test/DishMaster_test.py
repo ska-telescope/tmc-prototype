@@ -48,6 +48,7 @@ class TestDishMaster(object):
     # PROTECTED REGION END #    //  DishMaster.test_additionnal_import
     device = DishMaster
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
+                  'LoggingLevelDefault': '4', 'LoggingTargetsDefault':'console::cout',
                   'NrSubarrays': '16', 'CapabilityTypes': '', 'MaxCapabilities': '', 'ReceptorNumber': '',
                   }
     empty = None  # Should be []
@@ -445,4 +446,3 @@ class TestDishMaster(object):
         tango_context.device.loggingLevel = TangoLoggingLevel.INFO
         assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
         # PROTECTED REGION END #    //  DishMaster.test_loggingLevel
-
