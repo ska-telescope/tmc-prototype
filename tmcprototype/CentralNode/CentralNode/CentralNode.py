@@ -19,16 +19,12 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CentralNode"
 sys.path.insert(0, module_path)
-
-
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-
 # Additional import
-
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 import CONST
 from future.utils import with_metaclass
@@ -138,17 +134,14 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 else:
                     self._telescope_health_state = CONST.ENUM_UNKNOWN
             except KeyError as key_error:
-
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
                 self.logger.critical(CONST.ERR_SUBARRAY_HEALTHSTATE)
             except DevFailed as dev_failed:
-
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                self.logger.critical(CONST.ERR_SUBSR_SA_HEALTH_STATE)
+                self.logger.error(CONST.ERR_SUBSR_SA_HEALTH_STATE)
             except Exception as except_occured:
-
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
                 self.logger.critical(CONST.ERR_AGGR_HEALTH_STATE)
@@ -263,8 +256,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._subarray2_health_state = CONST.ENUM_OK
             self._subarray3_health_state = CONST.ENUM_OK
             self.set_state(DevState.ON)
-            # Initialise Properties
-            self.SkaLevel = CONST.INT_SKA_LEVEL
             # Initialise Attributes
             self._health_state = CONST.ENUM_OK
             self._admin_mode = CONST.ENUM_ONLINE
@@ -275,6 +266,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.subarray_FQDN_dict = {}
             self._subarray_allocation = {}
             self.set_status(CONST.STR_INIT_SUCCESS)
+            self.logger.debug(CONST.STR_INIT_SUCCESS)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
                                                                     exception_count,CONST.ERR_INIT_PROP_ATTR_CN)
@@ -616,9 +608,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     dish_ID = "dish" + (self._resources_allocated[dish])
                     self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
                     receptorIDList.append(self._resources_allocated[dish])
-
                 self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
-
                 self.logger.info(CONST.STR_ASSIGN_RESOURCES_SUCCESS)
                 argout = {
                     "dish": {
