@@ -56,6 +56,7 @@ class TestCspSubarrayLeafNode(object):
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_additionnal_import
     device = CspSubarrayLeafNode
     properties = {'SkaLevel': '3', 'GroupDefinitions': '',
+                  'LoggingLevelDefault': '4', 'LoggingTargetsDefault': 'console::cout',
                   'CspSubarrayFQDN': 'mid_csp/elt/subarray_01',}
     empty = None  # Should be []
 

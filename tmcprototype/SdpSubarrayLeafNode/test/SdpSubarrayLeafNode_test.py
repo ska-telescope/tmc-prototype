@@ -276,6 +276,7 @@ class TestSdpSubarrayLeafNode(object):
         tango_context.device.loggingLevel = TangoLoggingLevel.INFO
         assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_loggingLevel
+
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_healthState) ENABLED START #
