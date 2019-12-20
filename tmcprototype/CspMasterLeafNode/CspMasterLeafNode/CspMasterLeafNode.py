@@ -179,7 +179,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     #Exception handling
     def _handle_devfailed_exception(self, df, read_actvity_msg):
-        self.logger.debug(read_actvity_msg + str(df))
         self.logger.error(read_actvity_msg + str(df))
         self._read_activity_message = read_actvity_msg + str(df)
 

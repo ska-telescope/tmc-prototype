@@ -29,7 +29,6 @@ STR_CSP_PST_HEALTH_UNKNOWN = "CSP PST health is UNKNOWN."
 STR_ON_CMD_ISSUED = "ON command invoked successfully from CSP Master leaf node."
 STR_STANDBY_CMD_ISSUED = "StandByTelescope command invoked successfully from CSP Master leaf node."
 STR_OFF_CMD_ISSUED = "OFF command invoked successfully from CSP Master leaf node."
-
 STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = " invoked successfully."
 STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "

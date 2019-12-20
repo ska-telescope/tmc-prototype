@@ -1,13 +1,12 @@
     # """ Python file containing String Variables for CSP Master Leaf Node"""
 #
-# # Events
-#
+# Events
 # In/out commands
 CMD_ON = "On"
 # CMD_OFF = "Off"
 CMD_STANDBY = "Standby"
 
-# # String constants
+# String constants
 STR_INIT_SUCCESS = "SDP Master Leaf Node is initialized successfully."
 STR_SDPMASTER_FQDN = "SdpMasterFQDN :-> "
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the device "
@@ -21,8 +20,7 @@ STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = " invoked successfully."
 STR_CMD_FAILED = "SdpSubarray_Commandfailed"
 STR_SDP_CMD_CALLBK = "SdpMasterLeafNode Command callback"
-#
-#
+
 # Error messages
 ERR_INIT_PROP_ATTR = "Error on initialising properties and attributes "
 ERR_MSG = "Error message is: "

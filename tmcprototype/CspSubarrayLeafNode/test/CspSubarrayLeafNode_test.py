@@ -326,3 +326,10 @@ class TestCspSubarrayLeafNode(object):
         tango_context.device.loggingLevel = TangoLoggingLevel.INFO
         assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_loggingLevel
+
+    def test_loggingTargets(self, tango_context):
+        """Test for loggingTargets"""
+        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['console::cout']
+        assert 'console::cout' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  DishMaster.test_loggingTargets

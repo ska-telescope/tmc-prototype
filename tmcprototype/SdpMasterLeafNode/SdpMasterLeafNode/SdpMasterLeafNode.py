@@ -69,17 +69,14 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 print(CONST.ERR_INVOKING_CMD + event.cmd_name + "\n" + str(event.errors))
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
-                # self.dev_logging(log, int(tango.LogLevel.LOG_ERROR))
                 self.logger.error(log)
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
-                # self.dev_logging(log, int(tango.LogLevel.LOG_INFO))
                 self.logger.info(log)
         except Exception as except_occurred:
             print(CONST.ERR_EXCEPT_CMD_CB, except_occurred)
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
-            # self.dev_logging(CONST.ERR_EXCEPT_CMD_CB, int(tango.LogLevel.LOG_ERROR))
             self.logger.error(CONST.ERR_EXCEPT_CMD_CB)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -96,7 +93,6 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def _handle_devfailed_exception(self, df, actvity_msg):
         self._read_activity_message = actvity_msg
         self._read_activity_message = CONST.ERR_MSG + str(df)
-        # self.dev_logging(actvity_msg, int(tango.LogLevel.LOG_ERROR))
         self.logger.error(actvity_msg)
     # PROTECTED REGION END #    //  SdpMasterLeafNode.class_variable
 
