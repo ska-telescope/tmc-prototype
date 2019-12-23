@@ -115,6 +115,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self._pointing_state = 1
             if position == input_increment:
+                self.logger.info("position == input_increment. Breaking the loop")
                 break
             else:
                 time.sleep(0.01)
