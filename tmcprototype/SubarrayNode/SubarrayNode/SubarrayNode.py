@@ -94,9 +94,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.calculate_health_state()
 
             except KeyError as key_error:
-                self.logger.error(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error))
+                self.logger.debug(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error))
                 self._read_activity_message = CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error)
-                self.logger.critical(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE)
+                self.logger.debug(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                     exception_message, exception_count, CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
@@ -106,7 +106,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         else:
             self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt))
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
-            self.logger.critical(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
+            self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
 
     def obsStateCallback(self, evt):
         """
@@ -304,13 +304,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._pointing_state_event_id.append(self._event_id)
                 self.dishPointingStateMap[devProxy] = -1
                 self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID))
-
                 self._receptor_id_list.append(int(str_leafId))
-
-
-
-                self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
-                self.logger.debug(CONST.STR_LN_PROXIES +str(self._dish_leaf_node_proxy))
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
                 self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
@@ -567,12 +561,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             #     self.set_status(CONST.STR_SA_SCANNING)
             #     self.logger.info(CONST.STR_SA_SCANNING)
         except AssertionError as assert_error:
-            self.logger.error(CONST.ERR_SCAN_CMD + "\n" +str(assert_error) + CONST.ERR_DUPLICATE_SCAN_CMD)
+            str_log = CONST.ERR_SCAN_CMD + "\n" +str(assert_error) + CONST.ERR_DUPLICATE_SCAN_CMD
+            self.logger.error(str_log)
             self._read_activity_message = CONST.ERR_DUPLICATE_SCAN_CMD + str(assert_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_SCAN_CMD + str(value_error) + CONST.ERR_INVALID_DATATYPE)
+            str_log = CONST.ERR_SCAN_CMD + str(value_error) + CONST.ERR_INVALID_DATATYPE
+            self.logger.error(str_log)
             self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -666,7 +662,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, CONST.ERR_END_SCAN_CMD_ON_GROUP)
         except AssertionError as assert_err:
-            self.logger.error(CONST.ERR_DUPLICATE_END_SCAN_CMD +"\n" + str(assert_err))
+            str_log = CONST.ERR_DUPLICATE_END_SCAN_CMD + "\n" + str(assert_err)
+            self.logger.error(str_log)
             self._read_activity_message = CONST.ERR_DUPLICATE_END_SCAN_CMD
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -714,7 +711,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             for leafId in range(0, len(argin)):
                 float(argin[leafId])
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_SCAN_CMD +"\n" + str(value_error) + CONST.ERR_INVALID_DATATYPE)
+            str_log = CONST.ERR_SCAN_CMD +"\n" + str(value_error) + CONST.ERR_INVALID_DATATYPE
+            self.logger.error(str_log)
             self.logger.error(CONST.ERR_INVALID_DATATYPE)
             self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
             exception_message.append(self._read_activity_message)
@@ -746,17 +744,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             dish_allocation_result = dish_allocation_status.result()
             log_msg = CONST.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
             self.logger.debug(log_msg)
-            self.logger.debug("dish_allocation_result: " + str(dish_allocation_result))
 
             csp_allocation_result = csp_allocation_status.result()
             log_msg = CONST.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
             self.logger.debug(log_msg)
-            self.logger.debug("csp_allocation_result: " + str(csp_allocation_result))
 
             sdp_allocation_result = sdp_allocation_status.result()
             log_msg = CONST.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
             self.logger.debug(log_msg)
-            self.logger.debug("sdp_allocation_result: " +str(sdp_allocation_result))
 
             dish_allocation_result.sort()
             csp_allocation_result.sort()
@@ -867,20 +862,21 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._dish_health_state = evt.attr_value.value
                 self.dishHealthStateMap[evt.device] = self._dish_health_state
                 if self._dish_health_state == CONST.ENUM_OK:
-                    self.logger.debug(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                    self.logger.debug(str_log)
+                    self._read_activity_message = str_log
                 elif self._dish_health_state == CONST.ENUM_DEGRADED:
-                    self.logger.debug(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
-                                                  CONST.STR_DEGRADED
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
+                    self.logger.debug(str_log)
+                    self._read_activity_message = str_log
                 elif self._dish_health_state == CONST.ENUM_FAILED:
-                    self.logger.debug(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
-                                                  CONST.STR_FAILED
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                    self.logger.debug(str_log)
+                    self._read_activity_message = str_log
                 elif self._dish_health_state == CONST.ENUM_UNKNOWN:
-                    self.logger.debug(CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
-                                                  CONST.STR_UNKNOWN
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
+                    self.logger.debug(str_log)
+                    self._read_activity_message = str_log
                 else:
                     self.logger.debug(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
                     self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
@@ -888,15 +884,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             except KeyError as key_err:
                 self.logger.error(CONST.ERR_SETHEALTH_CALLBK + str(key_err))
                 self._read_activity_message = CONST.ERR_SETHEALTH_CALLBK + str(key_err)
-                self.logger.error(CONST.ERR_SETHEALTH_CALLBK)
             except Exception as except_occurred:
                 self.logger.error(CONST.ERR_AGGR_HEALTH_STATE + str(except_occurred.message))
                 self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occurred.message)
-                self.logger.error(CONST.ERR_AGGR_HEALTH_STATE)
         else:
             self.logger.debug(CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors))
             self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors)
-            self.logger.error(CONST.ERR_SUBSR_SA_HEALTH_STATE)
 
     def setPointingState(self, evt):
         """
@@ -913,39 +906,35 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._dish_pointing_state = evt.attr_value.value
                 self.dishPointingStateMap[evt.device] = self._dish_pointing_state
                 if self._dish_pointing_state == CONST.POINTING_STATE_ENUM_READY:
-                    self.logger.debug(CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_READY)
-                    self._read_activity_message = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_READY
+                    str_log = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_READY
+                    self.logger.debug(str_log)
+                    self._read_activity_message = str_log
                 elif self._dish_pointing_state == CONST.POINTING_STATE_ENUM_SLEW:
-                    self.logger.debug(CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_SLEW)
-                    self._read_activity_message = CONST.STR_POINTING_STATE + str(evt.device) + \
-                                                  CONST.STR_SLEW
+                    str_log = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_SLEW
+                    self.logger.debug(str_log)
+                    self._read_activity_message = str_log
                 elif self._dish_pointing_state == CONST.POINTING_STATE_ENUM_TRACK:
-                    self.logger.debug(CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_TRACK)
-                    self._read_activity_message = CONST.STR_POINTING_STATE + str(evt.device) + \
-                                                  CONST.STR_TRACK
+                    str_log = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_TRACK
+                    self.logger.debug(str_log)
+                    self._read_activity_message = str_log
                 elif self._dish_pointing_state == CONST.POINTING_STATE_ENUM_SCAN:
-                    self.logger.debug(CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_SCAN)
-                    self._read_activity_message = CONST.STR_POINTING_STATE + str(evt.device) + \
-                                                  CONST.STR_SCAN
+                    str_log = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_SCAN
+                    self.logger.debug(str_log)
+                    self._read_activity_message = str_log
                 else:
                     self.logger.debug(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
                     self._read_activity_message = CONST.STR_POINTING_STATE_UNKNOWN_VAL + str(evt)
-
                 self.calculate_observation_state()
-
             except KeyError as key_err:
                 self.logger.error(CONST.ERR_SETPOINTING_CALLBK + str(key_err))
                 self._read_activity_message = CONST.ERR_SETPOINTING_CALLBK + str(key_err)
-                self.logger.error(CONST.ERR_SETPOINTING_CALLBK)
             except Exception as except_occurred:
                 self.logger.error(CONST.ERR_AGGR_POINTING_STATE + str(except_occurred.message))
                 self._read_activity_message = CONST.ERR_AGGR_POINTING_STATE + str(except_occurred.message)
-                self.logger.error(CONST.ERR_AGGR_POINTING_STATE)
         else:
             self.logger.debug(CONST.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors))
             self._read_activity_message = CONST.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
-            self.logger.error(CONST.ERR_SUBSR_DSH_POINTING_STATE)
-            
+
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
         self.logger.error(read_actvity_msg + str(exception))
         self._read_activity_message = read_actvity_msg + str(exception)
@@ -1097,21 +1086,16 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
             self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
-            self.logger.info(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
             self.logger.error(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed))
             self._read_activity_message = CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR)
-            self.logger.error(CONST.ERR_SDP_SA_LEAF_INIT)
-            self.logger.info(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
 
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
         self.logger.info(CONST.STR_SA_INIT_SUCCESS)
         # PROTECTED REGION END #    //  SubarrayNode.init_device
-
-
 
 
     def always_executed_hook(self):
@@ -1319,8 +1303,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         msg = "Dish configuration must be given. Aborting Dish configuration."
                         # this is a fatal error
                         self._read_activity_message = msg
-                        self.logger.debug (msg)
-                        self.logger.debug(msg)
+                        self.logger.error (msg)
                     # TODO: FOR FUTURE REFERENCE
                     # # set obsState to READY when the configuration is completed
                     # self._obs_state = CONST.OBS_STATE_ENUM_READY
@@ -1431,7 +1414,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                            str(devfailed.args[0].desc))
             exception_count += 1
         except Exception as except_occured:
-            self.logger.error(CONST.ERR_TRACK_CMD + "\n" + str(except_occured))
+            str_log = CONST.ERR_TRACK_CMD + "\n" + str(except_occured)
+            self.logger.error(str_log)
             self._read_activity_message = CONST.ERR_TRACK_CMD + str(except_occured)
             self.logger.error(CONST.ERR_TRACK_CMD)
             exception_message.append(CONST.ERR_TRACK_CMD + ": " + \
