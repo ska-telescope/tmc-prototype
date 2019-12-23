@@ -106,8 +106,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             max_increment = abs(self._elevation_difference)
         else:
             max_increment = input_increment
-
-        self.logger.debug(CONST.STR_DISH_POINT_INPROG)
         if input_increment == max_increment:
             input_increment = input_increment + 0.01
         self.set_status(CONST.STR_DISH_POINT_INPROG)
@@ -116,7 +114,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         for position in numpy.arange(0, input_increment, 0.01):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
             self._pointing_state = 1
-
             if position == input_increment:
                 break
             else:
