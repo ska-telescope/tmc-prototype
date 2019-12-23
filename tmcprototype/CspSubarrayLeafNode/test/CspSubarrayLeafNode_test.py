@@ -29,6 +29,7 @@ from mock import MagicMock
 from tango import DevState, EventType, DeviceProxy
 #from devicetest import DeviceTestCase, main
 from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
+from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 import pytest
 import json
@@ -54,8 +55,8 @@ class TestCspSubarrayLeafNode(object):
     # PROTECTED REGION ID(CspSubarrayLeafNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_additionnal_import
     device = CspSubarrayLeafNode
-    properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+    properties = {'SkaLevel': '3', 'GroupDefinitions': '',
+                  'LoggingLevelDefault': '4', 'LoggingTargetsDefault': 'console::cout',
                   'CspSubarrayFQDN': 'mid_csp/elt/subarray_01',}
     empty = None  # Should be []
 
@@ -254,35 +255,14 @@ class TestCspSubarrayLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.1.3, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.1.3"
+        assert tango_context.device.versionId == "0.2.0"
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_versionId
-
-    def test_centralLoggingLevel(self, tango_context):
-        """Test for centralLoggingLevel"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_centralLoggingLevel) ENABLED START #
-        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_centralLoggingLevel
-
-    def test_elementLoggingLevel(self, tango_context):
-        """Test for elementLoggingLevel"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_elementLoggingLevel) ENABLED START #
-        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_elementLoggingLevel
-
-    def test_storageLoggingLevel(self, tango_context):
-        """Test for storageLoggingLevel"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_storageLoggingLevel) ENABLED START #
-        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_storageLoggingLevel
 
     def test_healthState(self, tango_context):
         """Test for healthState"""
@@ -339,3 +319,17 @@ class TestCspSubarrayLeafNode(object):
         tango_context.device.activityMessage = 'text'
         assert tango_context.device.activityMessage == 'text'
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_activityMessage
+
+    def test_loggingLevel(self, tango_context):
+        """Test for loggingLevel"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
+        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_loggingLevel
+
+    def test_loggingTargets(self, tango_context):
+        """Test for loggingTargets"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_loggingTargets) ENABLED START #
+        tango_context.device.loggingTargets = ['console::cout']
+        assert 'console::cout' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_loggingTargets

@@ -12,11 +12,6 @@
                 "CentralNode": {
                     "ska_mid/tm_central/central_node": {
                         "attribute_properties": {
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
-                            },
                             "subarray1HealthState": {
                                 "abs_change": [
                                     "-1",
@@ -60,6 +55,12 @@
                             ],
                             "SkaLevel": [
                                 "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "subarray1healthstate",
@@ -117,11 +118,6 @@
                                 "__value": [
                                     "true"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -141,6 +137,12 @@
                             ],
                             "SkaLevel": [
                                 "2"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -198,11 +200,6 @@
                                 "__value": [
                                     "true"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -223,6 +220,12 @@
                             ],
                             "SkaLevel": [
                                 "2"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -280,11 +283,6 @@
                                 "__value": [
                                     "true"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -305,6 +303,12 @@
                             ],
                             "SkaLevel": [
                                 "2"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -345,11 +349,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -361,6 +360,12 @@
                             ],
                             "TrackDuration": [
                                 "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -391,11 +396,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -407,6 +407,12 @@
                             ],
                             "TrackDuration": [
                                 "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -437,11 +443,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -453,6 +454,12 @@
                             ],
                             "TrackDuration": [
                                 "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -483,11 +490,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -499,6 +501,12 @@
                             ],
                             "TrackDuration": [
                                 "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -526,16 +534,17 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
                             "CspMasterFQDN": [
                                 "mid_csp/elt/master"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -574,11 +583,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -586,6 +590,12 @@
                                 "mid_csp/elt/subarray_01"],
                             "SkaLevel": [
                                 "3"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -624,11 +634,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -636,6 +641,12 @@
                                 "mid_csp/elt/subarray_02"],
                             "SkaLevel": [
                                 "3"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -674,11 +685,6 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -686,6 +692,12 @@
                                 "mid_csp/elt/subarray_03"],
                             "SkaLevel": [
                                 "3"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -715,16 +727,17 @@
                                 "__root_att": [
                                     "mid_sdp/elt/master/healthState"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
                             "SdpMasterFQDN": [
                                 "mid_sdp/elt/master"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -757,11 +770,6 @@
                                 "__root_att": [
                                     "mid_sdp/elt/subarray_1/obsState"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -770,6 +778,12 @@
                             ],
                             "SkaLevel": [
                                 "3"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -802,11 +816,6 @@
                                 "__root_att": [
                                     "mid_sdp/elt/subarray_2/obsState"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -815,6 +824,12 @@
                             ],
                             "SkaLevel": [
                                 "3"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -847,11 +862,6 @@
                                 "__root_att": [
                                     "mid_sdp/elt/subarray_3/obsState"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
@@ -860,6 +870,12 @@
                             ],
                             "SkaLevel": [
                                 "3"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -1100,16 +1116,17 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
                             "SkaLevel": [
                                 "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1186,16 +1203,17 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
                             "SkaLevel": [
                                 "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1272,16 +1290,17 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
                             "SkaLevel": [
                                 "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1358,16 +1377,17 @@
                                     "-1",
                                     "1"
                                 ]
-                            },
-                            "storageLoggingLevel": {
-                                "__value": [
-                                    "5"
-                                ]
                             }
                         },
                         "properties": {
                             "SkaLevel": [
                                 "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "console::cout"
+                            ],
+                            "LoggingLevelDefault": [
+                                "4"
                             ],
                             "polled_attr": [
                                 "achievedpointing",

@@ -27,7 +27,8 @@ def tango_context(request):
     module = importlib.import_module("{}.{}".format("SdpSubarrayLeafNode", "SdpSubarrayLeafNode"))
     klass = getattr(module, "SdpSubarrayLeafNode")
     properties = {'SkaLevel': '3', 'MetricList': 'healthState', 'GroupDefinitions': '',
-                  'CentralLoggingTarget': '', 'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+                  'LoggingTargetsDefault': 'console::cout',
+                  'LoggingLevelDefault': '4',
                   'SdpSubarrayFQDN': "mid_sdp/elt/subarray_1"
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process=False)

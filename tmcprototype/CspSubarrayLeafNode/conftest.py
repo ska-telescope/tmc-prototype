@@ -31,8 +31,8 @@ def tango_context(request):
     # klass = getattr(module, class_name)
     module = importlib.import_module("{}.{}".format("CspSubarrayLeafNode", "CspSubarrayLeafNode"))
     klass = getattr(module, "CspSubarrayLeafNode")
-    properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+    properties = {'SkaLevel': '3', 'GroupDefinitions': '',
+                  'LoggingLevelDefault': '4', 'LoggingTargetsDefault': 'console::cout',
                   'CspSubarrayFQDN': 'mid_csp/elt/subarray_01'
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process=False)

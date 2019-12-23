@@ -25,9 +25,9 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     module = importlib.import_module("{}.{}".format("CspMasterLeafNode", "CspMasterLeafNode"))
     klass = getattr(module, "CspMasterLeafNode")
-    properties = {'SkaLevel': '3', 'GroupDefinitions': '', 'CentralLoggingTarget': '',
-                  'ElementLoggingTarget': '', 'StorageLoggingTarget': 'localhost',
+    properties = {'SkaLevel': '3', 'GroupDefinitions': '',
                   'CspMasterFQDN': 'mid_csp/elt/master',
+                  'LoggingLevelDefault': '4', 'LoggingTargetsDefault': 'console::cout'
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process= False)
     tango_context.start()

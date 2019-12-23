@@ -19,16 +19,12 @@ import os
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CentralNode"
 sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
-
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-
 # Additional import
-
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 import CONST
 from future.utils import with_metaclass
@@ -68,36 +64,36 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 elif self.SdpMasterLeafNodeFQDN in evt.attr_name:
                     self._sdp_master_leaf_health = health_state
                 else:
-                    print(CONST.EVT_UNKNOWN)
+                    self.logger.debug(CONST.EVT_UNKNOWN)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.EVT_UNKNOWN
 
                 if health_state == CONST.ENUM_OK:
-                    print(CONST.STR_HEALTH_STATE + str(evt.device
-                                                       ) + CONST.STR_OK)
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                    self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_OK
                 elif health_state == CONST.ENUM_DEGRADED:
-                    print(CONST.STR_HEALTH_STATE + str(evt.device
-                                                       ) + CONST.STR_DEGRADED)
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
+                    self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_DEGRADED
                 elif health_state == CONST.ENUM_FAILED:
-                    print(CONST.STR_HEALTH_STATE + str(evt.device
-                                                       ) + CONST.STR_FAILED)
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                    self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_FAILED
                 elif health_state == CONST.ENUM_UNKNOWN:
-                    print(CONST.STR_HEALTH_STATE + str(evt.device
-                                                       ) + CONST.STR_UNKNOWN)
+                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
+                    self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(
                     #     evt.device) + CONST.STR_UNKNOWN
                 else:
-                    print(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
+                    self.logger.info(CONST.STR_HEALTH_STATE_UNKNOWN_VAL)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
                 # Aggregated Health State
@@ -138,36 +134,34 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 else:
                     self._telescope_health_state = CONST.ENUM_UNKNOWN
             except KeyError as key_error:
-                print(CONST.ERR_SUBARRAY_HEALTHSTATE, key_error)
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-                self.dev_logging(CONST.ERR_SUBARRAY_HEALTHSTATE, int(tango.LogLevel.LOG_FATAL))
+                self.logger.critical(CONST.ERR_SUBARRAY_HEALTHSTATE)
             except DevFailed as dev_failed:
-                print(CONST.ERR_SUBSR_SA_HEALTH_STATE, dev_failed)
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+                self.logger.error(CONST.ERR_SUBSR_SA_HEALTH_STATE)
             except Exception as except_occured:
-                print(CONST.ERR_AGGR_HEALTH_STATE, except_occured)
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
-                self.dev_logging(CONST.ERR_AGGR_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+                self.logger.critical(CONST.ERR_AGGR_HEALTH_STATE)
         else:
-            print(CONST.ERR_SUBSR_SA_HEALTH_STATE, evt)
             # TODO: For future reference
             # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
-            self.dev_logging(CONST.ERR_SUBSR_SA_HEALTH_STATE, int(tango.LogLevel.LOG_FATAL))
+            self.logger.critical(CONST.ERR_SUBSR_SA_HEALTH_STATE)
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
     def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(df), int(tango.LogLevel.LOG_ERROR))
+        str_log = read_actvity_msg + str(df)
+        self.logger.error(str_log)
         self._read_activity_message = read_actvity_msg + str(df)
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
         return [excpt_msg_list, exception_count]
 
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
-        self.dev_logging(read_actvity_msg + str(exception), int(tango.LogLevel.LOG_ERROR))
+        str_log = read_actvity_msg + str(exception)
+        self.logger.error(str_log)
         self._read_activity_message = read_actvity_msg + str(exception)
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -178,6 +172,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         for item in excpt_msg_list:
             err_msg += item + "\n"
         tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+        self.logger.error(CONST.STR_CMD_FAILED)
 
     # -----------------
     # Device Properties
@@ -254,23 +249,27 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Initializes the attributes and properties of the Central Node. """
         exception_count = 0
         exception_message = []
-        SKABaseDevice.init_device(self)
-        self._subarray1_health_state = CONST.ENUM_OK
-        self._subarray2_health_state = CONST.ENUM_OK
-        self._subarray3_health_state = CONST.ENUM_OK
-        self.set_state(DevState.ON)
-        # Initialise Properties
-        self.SkaLevel = CONST.INT_SKA_LEVEL
-        # Initialise Attributes
-        self._health_state = CONST.ENUM_OK
-        self._admin_mode = CONST.ENUM_ONLINE
-        self._telescope_health_state = CONST.ENUM_OK
-        self.subarray_health_state_map = {}
-        self._dish_leaf_node_devices = []
-        self._leaf_device_proxy = []
-        self.subarray_FQDN_dict = {}
-        self._subarray_allocation = {}
-        self.set_status(CONST.STR_INIT_SUCCESS)
+        try:
+            SKABaseDevice.init_device(self)
+            self.logger.info("Device initialisating...")
+            self._subarray1_health_state = CONST.ENUM_OK
+            self._subarray2_health_state = CONST.ENUM_OK
+            self._subarray3_health_state = CONST.ENUM_OK
+            self.set_state(DevState.ON)
+            # Initialise Attributes
+            self._health_state = CONST.ENUM_OK
+            self._admin_mode = CONST.ENUM_ONLINE
+            self._telescope_health_state = CONST.ENUM_OK
+            self.subarray_health_state_map = {}
+            self._dish_leaf_node_devices = []
+            self._leaf_device_proxy = []
+            self.subarray_FQDN_dict = {}
+            self._subarray_allocation = {}
+            self.set_status(CONST.STR_INIT_SUCCESS)
+            self.logger.debug(CONST.STR_INIT_SUCCESS)
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
+                                                                    exception_count,CONST.ERR_INIT_PROP_ATTR_CN)
 
         #  Get Dish Leaf Node devices List
         # TODO: Getting DishLeafNode devices list from TANGO DB
@@ -285,10 +284,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         #     self._read_activity_message = CONST.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
         #     self.dev_logging(CONST.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
 
-        for dish in range(1, (self.NumDishes+1)):
 
+        for dish in range(1, (self.NumDishes+1)):
             # Update self._dish_leaf_node_devices variable
-            print("DishLeafNodePrefix:", self.DishLeafNodePrefix)
             self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
 
             # Initialize self.subarray_allocation variable to indicate availability of the dishes
@@ -416,7 +414,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for leafId in range(0, len(argin)):
                 if type(float(argin[leafId])) == float:
                     pass
-            self.dev_logging(CONST.STR_STOW_CMD_ISSUED_CN, int(tango.LogLevel.LOG_INFO))
+            self.logger.info(CONST.STR_STOW_CMD_ISSUED_CN)
             self._read_activity_message = CONST.STR_STOW_CMD_ISSUED_CN
             for i in range(0, len(argin)):
                 device_name = self.DishLeafNodePrefix + argin[i]
@@ -432,7 +430,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self.throw_exception(exception_message, CONST.STR_STOW_ANTENNA_EXEC)
 
         except ValueError as value_error:
-            print(CONST.ERR_STOW_ARGIN, value_error)
+            self.logger.error(CONST.ERR_STOW_ARGIN)
             self._read_activity_message = CONST.ERR_STOW_ARGIN + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -453,7 +451,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Set the Elements into STANDBY state (i.e. Low Power State). """
         exception_count =0
         exception_message =[]
-        self.dev_logging(CONST.STR_STANDBY_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
+        self.logger.info(CONST.STR_STANDBY_CMD_ISSUED)
         self._read_activity_message = CONST.STR_STANDBY_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
@@ -488,7 +486,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Set the Elements into ON state from STANDBY state."""
         exception_count =0
         exception_message = []
-        self.dev_logging(CONST.STR_STARTUP_CMD_ISSUED, int(tango.LogLevel.LOG_INFO))
+        self.logger.info(CONST.STR_STARTUP_CMD_ISSUED)
         self._read_activity_message = CONST.STR_STARTUP_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
@@ -610,16 +608,14 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     dish_ID = "dish" + (self._resources_allocated[dish])
                     self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
                     receptorIDList.append(self._resources_allocated[dish])
-
                 self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
-                self.dev_logging(CONST.STR_ASSIGN_RESOURCES_SUCCESS, int(tango.LogLevel.LOG_INFO))
+                self.logger.info(CONST.STR_ASSIGN_RESOURCES_SUCCESS)
                 argout = {
                     "dish": {
                         "receptorIDList_success": receptorIDList
                     }
                 }
             else:
-                print(CONST.STR_DISH_DUPLICATE, duplicate_allocation_dish_ids)
                 self._read_activity_message = CONST.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
                 argout = {
                     "dish": {
@@ -627,17 +623,17 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     }
                 }
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_INVALID_JSON)
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
-            print("ValueError")
+
         except KeyError as key_error:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
-            print("KeyError")
+
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count,CONST.ERR_ASSGN_RESOURCES)
@@ -722,7 +718,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if jsonArgument['releaseALL'] == True:
                 res_not_released = subarrayProxy.command_inout(CONST.CMD_RELEASE_RESOURCES)
                 self._read_activity_message = CONST.STR_REL_RESOURCES
-                self.dev_logging(CONST.STR_REL_RESOURCES, int(tango.LogLevel.LOG_INFO))
+
+                self.logger.info(CONST.STR_REL_RESOURCES)
                 if not res_not_released:
                     release_success = True
                     for Dish_ID, Dish_Status in self._subarray_allocation.items():
@@ -735,12 +732,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             else:
                 self._read_activity_message = CONST.STR_FALSE_TAG
         except ValueError as value_error:
-            self.dev_logging(CONST.ERR_INVALID_JSON + str(value_error), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_INVALID_JSON)
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            self.dev_logging(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error), int(tango.LogLevel.LOG_ERROR))
+            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -776,3 +773,4 @@ def main(args=None, **kwargs):
 
 if __name__ == '__main__':
     main()
+

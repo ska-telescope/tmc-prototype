@@ -25,6 +25,7 @@ import tango
 from tango import DevState
 import pytest
 from SubarrayNode.SubarrayNode import SubarrayNode
+from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 import time
 
@@ -47,9 +48,10 @@ class TestSubarrayNode(object):
     # PROTECTED REGION ID(SubarrayNode.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  SubarrayNode.test_additionnal_import
     device = SubarrayNode
-    properties = {'CapabilityTypes': '', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
+    properties = {'CapabilityTypes': '',
                   'GroupDefinitions': '', 'MetricList': 'healthState', 'SkaLevel': '4',
-                  'StorageLoggingTarget': 'localhost', 'SubID': '',
+                  'LoggingLevelDefault': '4', 'LoggingTargetsDefault': 'console::cout',
+                  'SubID': '',
                   'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
                   }
     empty = None  # Should be []
@@ -310,15 +312,8 @@ class TestSubarrayNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SubarrayNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.1.3, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SubarrayNode.test_buildState
-
-    def test_centralLoggingLevel(self, tango_context):
-        """Test for centralLoggingLevel"""
-        # PROTECTED REGION ID(SubarrayNode.test_centralLoggingLevel) ENABLED START #
-        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  SubarrayNode.test_centralLoggingLevel
 
     def test_configurationDelayExpected(self, tango_context):
         """Test for configurationDelayExpected"""
@@ -340,13 +335,6 @@ class TestSubarrayNode(object):
         assert tango_context.device.controlMode == control_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_controlMode
 
-    def test_elementLoggingLevel(self, tango_context):
-        """Test for elementLoggingLevel"""
-        # PROTECTED REGION ID(SubarrayNode.test_elementLoggingLevel) ENABLED START #
-        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  SubarrayNode.test_elementLoggingLevel
-
     def test_obsMode(self, tango_context):
         """Test for obsMode"""
         # PROTECTED REGION ID(SubarrayNode.test_obsMode) ENABLED START #
@@ -367,13 +355,6 @@ class TestSubarrayNode(object):
         assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_simulationMode
 
-    def test_storageLoggingLevel(self, tango_context):
-        """Test for storageLoggingLevel"""
-        # PROTECTED REGION ID(SubarrayNode.test_storageLoggingLevel) ENABLED START #
-        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  SubarrayNode.test_storageLoggingLevel
-
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(SubarrayNode.test_testMode) ENABLED START #
@@ -385,7 +366,7 @@ class TestSubarrayNode(object):
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(SubarrayNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.1.3"
+        assert tango_context.device.versionId == "0.2.0"
         # PROTECTED REGION END #    //  SubarrayNode.test_versionId
 
     def test_scanID(self, tango_context):
@@ -408,7 +389,6 @@ class TestSubarrayNode(object):
         assert tango_context.device.activityMessage == message
         # PROTECTED REGION END #    //  SubarrayNode.test_activityMessage
 
-
     def test_configuredCapabilities(self, tango_context):
         """Test for configuredCapabilities"""
         # PROTECTED REGION ID(SubarrayNode.test_configuredCapabilities) ENABLED START #
@@ -429,3 +409,18 @@ class TestSubarrayNode(object):
         assert CONST.STR_TRACK_IP_ARG in tango_context.device.activityMessage
         create_dishln_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Track
+
+    def test_loggingLevel(self, tango_context):
+        """Test for loggingLevel"""
+        # PROTECTED REGION ID(SubarrayNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
+        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        # PROTECTED REGION END #    //  SubarrayNode.test_loggingLevel
+
+    def test_loggingTargets(self, tango_context):
+        """Test for loggingTargets"""
+        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['console::cout']
+        assert 'console::cout' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+

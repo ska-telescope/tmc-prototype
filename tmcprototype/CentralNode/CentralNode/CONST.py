@@ -14,7 +14,7 @@ EVT_SUBSR_HEALTH_STATE = "healthState"
 EVT_SUBSR_CSP_MASTER_HEALTH = "cspHealthState"
 EVT_SUBSR_SDP_MASTER_HEALTH = "sdpHealthState"
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
-#
+
 #Error messages
 ERR_AGGR_HEALTH_STATE = "Error while aggregating Subarray healthState \n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
@@ -57,7 +57,6 @@ STR_REL_RESOURCES = "Resources have been released successfully"
 STR_ALL_RES_NOT_REL = "All the resources are not released"
 STR_LIST_RES_NOT_REL = "List of the resources that are not released:"
 STR_CSP_CBF_DEV_NAME = "mid_csp_cbf/sub_elt/master"
-
 STR_CMD_FAILED = "CentralNode_CommandFailed"
 STR_STOW_ANTENNA_EXEC = "StowAntennas command execution"
 STR_RELEASE_RES_EXEC = "ReleaseResources command execution"
@@ -70,9 +69,7 @@ PROP_DEF_VAL_TM_MID_SA1 = "ska_mid/tm_subarray_node/1"
 PROP_DEF_VAL_TM_MID_SA2 = "ska_mid/tm_subarray_node/2"
 PROP_DEF_VAL_TM_MID_SA3 = "ska_mid/tm_subarray_node/3"
 PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
-
 GET_DEVICE_LIST_TANGO_DB = "ska_mid/tm_leaf_node/d000*"
-
 ENUM_LAB_OK = "OK"
 ENUM_LAB_DEGRADED = "DEGRADED"
 ENUM_LAB_FAILED = "FAILED"
@@ -83,6 +80,5 @@ ENUM_LAB_UNKNOWN = "UNKNOWN"
 ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
 # adminMode
 ENUM_ONLINE, ENUM_OFFLINE, ENUM_MAINTENANCE, ENUM_NOTFITTED, ENUM_RESERVED = list(range(0, 5))
-
 #INTEGERS
 INT_SKA_LEVEL = 1

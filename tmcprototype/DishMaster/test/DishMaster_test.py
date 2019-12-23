@@ -25,6 +25,7 @@ import tango
 from tango import DevState
 import pytest
 from DishMaster.DishMaster import DishMaster
+from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 import json
 
@@ -46,8 +47,8 @@ class TestDishMaster(object):
     # PROTECTED REGION ID(DishMaster.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  DishMaster.test_additionnal_import
     device = DishMaster
-    properties = {'SkaLevel': '4', 'CentralLoggingTarget': '', 'ElementLoggingTarget': '',
-                  'StorageLoggingTarget': 'localhost', 'MetricList': 'healthState', 'GroupDefinitions': '',
+    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
+                  'LoggingLevelDefault': '4', 'LoggingTargetsDefault':'console::cout',
                   'NrSubarrays': '16', 'CapabilityTypes': '', 'MaxCapabilities': '', 'ReceptorNumber': '',
                   }
     empty = None  # Should be []
@@ -235,35 +236,14 @@ class TestDishMaster(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishMaster.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.1.3, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  DishMaster.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(DishMaster.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.1.3"
+        assert tango_context.device.versionId == "0.2.0"
         # PROTECTED REGION END #    //  DishMaster.test_versionId
-
-    def test_centralLoggingLevel(self, tango_context):
-        """Test for centralLoggingLevel"""
-        # PROTECTED REGION ID(DishMaster.test_centralLoggingLevel) ENABLED START #
-        tango_context.device.centralLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.centralLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  DishMaster.test_centralLoggingLevel
-
-    def test_elementLoggingLevel(self, tango_context):
-        """Test for elementLoggingLevel"""
-        # PROTECTED REGION ID(DishMaster.test_elementLoggingLevel) ENABLED START #
-        tango_context.device.elementLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.elementLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  DishMaster.test_elementLoggingLevel
-
-    def test_storageLoggingLevel(self, tango_context):
-        """Test for storageLoggingLevel"""
-        # PROTECTED REGION ID(DishMaster.test_storageLoggingLevel) ENABLED START #
-        tango_context.device.storageLoggingLevel = int(tango.LogLevel.LOG_DEBUG)
-        assert tango_context.device.storageLoggingLevel == int(tango.LogLevel.LOG_DEBUG)
-        # PROTECTED REGION END #    //  DishMaster.test_storageLoggingLevel
 
     def test_healthState(self, tango_context):
         """Test for healthState"""
@@ -459,3 +439,17 @@ class TestDishMaster(object):
         tango_context.device.StopTrack()
         assert (tango_context.device.pointingState == 0)
         #tango_context.device.SetStandbyLPMode()
+
+    def test_loggingLevel(self, tango_context):
+        """Test for loggingLevel"""
+        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
+        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        # PROTECTED REGION END #    //  DishMaster.test_loggingLevel
+
+    def test_loggingTargets(self, tango_context):
+        """Test for loggingTargets"""
+        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['console::cout']
+        assert 'console::cout' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
