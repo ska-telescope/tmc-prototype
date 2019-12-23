@@ -80,7 +80,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self.logger.debug(CONST.STR_DISH_STOW_MODE)
                     self._read_activity_message = CONST.STR_DISH_STOW_MODE
                 elif self._dish_mode == 7:
-                    self.logger.error(CONST.STR_DISH_CONFIG_MODE)
+                    self.logger.debug(CONST.STR_DISH_CONFIG_MODE)
                     self._read_activity_message = CONST.STR_DISH_CONFIG_MODE
                 elif self._dish_mode == 8:
                     self.logger.debug(CONST.STR_DISH_OPERATE_MODE)
@@ -416,8 +416,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self._simulation_mode = False                           #Enabling the simulation mode
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
         self.logger.error(CONST.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model()))
-        self._read_activity_message = CONST.STR_SETTING_CB_MODEL + str(
-            ApiUtil.instance().get_asynch_cb_sub_model())
+        self._read_activity_message = CONST.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
         # Subscribing to DishMaster Attributes
         try:
             self._dish_proxy.subscribe_event(CONST.EVT_DISH_MODE, EventType.CHANGE_EVENT,
