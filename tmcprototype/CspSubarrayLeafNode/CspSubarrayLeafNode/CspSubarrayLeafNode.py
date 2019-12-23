@@ -59,9 +59,9 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         try:
             if event.err:
-                log = CONST.ERR_INVOKING_CMD + event.cmd_name
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
+                log = CONST.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
@@ -227,7 +227,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             except:
-                print(CONST.ERR_IN_CREATE_PROXY_CSPSA)
+                self.logger.debug(CONST.ERR_IN_CREATE_PROXY_CSPSA)
             self._read_activity_message = " "
             self._delay_model = " "
             self._visdestination_address = " "
@@ -241,7 +241,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.delay_model_lock = threading.Lock()
 
             # create thread
-            self.logger.info("Starting thread to calculate delay model.")
+            self.logger.debug("Starting thread to calculate delay model.")
             self.delay_model_calculator_thread = threading.Thread(
                 target=self.delay_model_calculator,
                 args=[self._DELAY_UPDATE_INTERVAL],
@@ -256,8 +256,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except DevFailed as dev_failed:
             self._handle_devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR_CSPSALN, 0,
                                                                 CONST.STR_ERR_MSG)
-            print(CONST.ERR_INIT_PROP_ATTR_CSPSALN)
-            print(CONST.STR_ERR_MSG, dev_failed)
+            self.logger.debug(CONST.ERR_INIT_PROP_ATTR_CSPSALN)
+            self.logger.debug(CONST.STR_ERR_MSG, dev_failed)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -269,10 +269,10 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
         # Stop thread to update delay model
-        self.logger.info("Stopping delay model thread.")
+        self.logger.debug("Stopping delay model thread.")
         self._stop_delay_model_event.set()
         self.delay_model_calculator_thread.join()
-        self.logger.info("Exiting.")
+        self.logger.debug("Exiting.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
 
     # ------------------
