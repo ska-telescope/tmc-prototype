@@ -2,49 +2,24 @@ import katpoint
 from katpoint import  conversion, ephem_extra
 import matplotlib.pyplot as plt
 
-# convert ECEF coordinates to lat, long, alt
-def ecef_to_lla_dd_rad(x,y,z):
-    lla = conversion.ecef_to_lla(x,y,z)
-    lat_rad = lla[0]
-    long_rad = lla[1]
-    print("lla is: ", lla)
-    alt = lla[2]
-    return alt, lat_rad, long_rad
 
-# # Create target object
-target = katpoint.Target('radec , 20:20:14.07 , 18:30:11.5')
+# Load a set of antenna descriptions and construct Antenna objects from them
+with open('ska_antennas.txt') as f:
+    descriptions = f.readlines()
+antennas = [katpoint.Antenna(line) for line in descriptions]
+antennas = {ant.name: ant for ant in antennas}
 
-# Reference Antenna ECEF coorinates in meters
-refx = 1000.0
-refy = 1299.0
-refz = 6380000.0
-
-# Get altitude(meters), latutide(rad) and longitude(rad) of reference antenna
-ref_alt, ref_lat_rad, ref_long_rad = ecef_to_lla_dd_rad(refx, refy, refz)
-
-
-# Create delay model for reference antenna
-ref_antenna_delay_model = katpoint.DelayModel([0.0,0.0,0.0,0.0,0.0,0.0])
-
-# Create reference antenna object
-ref_antenna = katpoint.Antenna('ref_ant', ref_lat_rad, ref_long_rad, ref_alt, 0.0, ref_antenna_delay_model,[0],0)
-
-# Antenna1 ECEF coorinates in meters
-ant1_x = 50000.0
-ant1_y = 50000.0
-ant1_z = 6380000.0
-
-# Convert ECEF to enu coordinates for antenna1
-ant1_e, ant1_n, ant1_u = conversion.ecef_to_enu(ref_lat_rad, ref_long_rad, ref_alt, ant1_x, ant1_y, ant1_z)
-
-# Create antenna1 delay model object
-ant1_delay_model = katpoint.DelayModel([ant1_e, ant1_n, ant1_u,0,0,0])
-# Create antenna1 object
-antenna1 = katpoint.Antenna('A1', ref_lat_rad, ref_long_rad, ref_alt, 0.0, ant1_delay_model,[0],0)
+ref_ant = antennas['ref_ant']
+print(ref_ant)
+antenna1 = antennas['m001']
+print(antenna1)
 
 # Create DelayCorrection Object
-delay_correction = katpoint.DelayCorrection([antenna1], ref_antenna)
+delay_correction = katpoint.DelayCorrection([antenna1], ref_ant)
 
+
+# Create target object
+target = katpoint.Target('radec , 20:21:10.31 , -30:52:17.3')
 delay_h_array = []
 delay_v_array = []
 delay_corrections_h_array = []
@@ -62,25 +37,12 @@ for i in range(0,len(timestamp_array)):
     delay_h_array.append(delay[0])
     delay_v_array.append(delay[1])
     print(delay[0])
-    # Calculate delay and phase correction values
-    delays_corrections, phases_corrections = delay_correction.corrections(target, timestamp)
-    delay_corrections_h_array.append(delays_corrections['A1h'])
-    delay_corrections_v_array.append(delays_corrections['A1v'])
-
-    # Calculate actual delay (horizontal) values: delay_value_h + delay_correction_h_value
-    actual_delay_h = delay[0] + delays_corrections['A1h']
-    actual_delay_h_array.append(actual_delay_h)
 
 print("------------------------------------------------------------------------------------------")
 print("calculate delay h: ", delay_h_array)
 print("------------------------------------------------------------------------------------------")
 print("calculate delay v: ", delay_v_array)
-print("------------------------------------------------------------------------------------------")
-print("delay_corrections_h_array: ", delay_corrections_h_array)
-print("------------------------------------------------------------------------------------------")
-print("delay_corrections_v_array: ", delay_corrections_v_array)
-print("------------------------------------------------------------------------------------------")
-print("actual_delay_h_array: ", actual_delay_h_array)
+
 print("------------------------------------------------------------------------------------------")
 
 index = list(range(1440))
