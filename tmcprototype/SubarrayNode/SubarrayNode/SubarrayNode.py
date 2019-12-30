@@ -991,7 +991,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     scanID = attribute(
         dtype='str',
+        access=AttrWriteType.READ_WRITE,
         doc="ID of ongoing SCAN",
+        memorized=True,
+        hw_memorized=True,
     )
 
     sbID = attribute(
@@ -1032,7 +1035,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._obs_mode = CONST.ENUM_IDLE        # set obsMode to "IDLE"
         self._simulation_mode = False
         self.isScanning = False
-        self._scan_id = ""
         self._sb_id = ""
         self._receptor_id_list = []
         self.dishHealthStateMap = {}
@@ -1095,6 +1097,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
         self.logger.info(CONST.STR_SA_INIT_SUCCESS)
+
+
+
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
 
@@ -1106,6 +1111,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
+        print ("Deleting device")
         # PROTECTED REGION END #    //  SubarrayNode.delete_device
 
     # ------------------
@@ -1116,7 +1122,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """ Returns the Scan ID. """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
         return self._scan_id
+
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
+
+    def write_scanID(self, value):
+        """ Sets the scanID. """
+        # PROTECTED REGION ID(SubarrayNode.scanID_write) ENABLED START #
+        self._scan_id = value
+        # PROTECTED REGION END #    //  SubarrayNode.scanID_write
 
     def read_sbID(self):
         """ Returns the scheduling block ID. """
