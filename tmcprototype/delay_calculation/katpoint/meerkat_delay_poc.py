@@ -11,11 +11,12 @@ antennas = {ant.name: ant for ant in antennas}
 
 ref_ant = antennas['ref_ant']
 print(ref_ant)
-antenna1 = antennas['m001']
+antenna1 = antennas['m059']
 print(antenna1)
 
 # Create DelayCorrection Object
 delay_correction = katpoint.DelayCorrection([antenna1], ref_ant)
+print("delay_correction: ", delay_correction)
 
 
 # Create target object
@@ -39,9 +40,9 @@ for i in range(0,len(timestamp_array)):
     print(delay[0])
 
 print("------------------------------------------------------------------------------------------")
-print("calculate delay h: ", delay_h_array)
+# print("calculate delay h: ", delay_h_array)
 print("------------------------------------------------------------------------------------------")
-print("calculate delay v: ", delay_v_array)
+#print("calculate delay v: ", delay_v_array)
 
 print("------------------------------------------------------------------------------------------")
 

@@ -8,13 +8,14 @@ nant = 1   # Number of antenna
 ntimes = 1440  # Number of timestamps
 
 # Reference Antenna ECEF coorinates in meters
-refx = 5109319.640443285
-refy = 2007034.45548414
-refz = -3238898.4638169957
-# Antenna1 ECEF coorinates in meters
-antx = np.array([5109244.363429216])
-anty = np.array([2007006.0891425142])
-antz = np.array([-3239050.4635253837])
+refx = 5109359.65317832
+refy = 2006852.39745255
+refz =-3238947.8210535827
+
+# Antenna1 ECEF coorinates in meters  5108382.137945333, 2010429.0438966767, -3238301.3955808613
+antx = np.array([5108382.137945333])
+anty = np.array([2010429.0438966767])
+antz = np.array([-3238301.3955808613])
 
 temp = np.array([0.0])  # Temperature = 0 degree celsius
 pressure = np.array([0.0])  # Pressure = 0 hPa
@@ -56,7 +57,7 @@ print('geodelay:')
 print("---------------------------------------------------------------------")
 print('geodelay_plot_array:')
 for i in range(0,1440):
-    print(str(geodelay_plot_array[i]) + ",")
+    print(str(geodelay_plot_array[i]))
 print("---------------------------------------------------------------------")
 print('drydelay:')
 print(drydelay)

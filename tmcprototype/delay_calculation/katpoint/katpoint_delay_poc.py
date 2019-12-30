@@ -12,38 +12,42 @@ def ecef_to_lla_dd_rad(x,y,z):
     return alt, lat_rad, long_rad
 
 # # Create target object
-target = katpoint.Target('radec , 20:20:14.07 , 18:30:11.5')
+target = katpoint.Target('radec , 20:21:10.31 , -30:52:17.3')
 
 # Reference Antenna ECEF coorinates in meters
-refx = 1000.0
-refy = 1299.0
-refz = 6380000.0
+refx = 5109359.65317832
+refy = 2006852.39745255
+refz = -3238947.8210535827
 
 # Get altitude(meters), latutide(rad) and longitude(rad) of reference antenna
 ref_alt, ref_lat_rad, ref_long_rad = ecef_to_lla_dd_rad(refx, refy, refz)
-
+print("ref_alt, ref_lat_rad, ref_long_rad: ", ref_alt, ref_lat_rad, ref_long_rad)
 
 # Create delay model for reference antenna
 ref_antenna_delay_model = katpoint.DelayModel([0.0,0.0,0.0,0.0,0.0,0.0])
 
 # Create reference antenna object
-ref_antenna = katpoint.Antenna('ref_ant', ref_lat_rad, ref_long_rad, ref_alt, 0.0, ref_antenna_delay_model,[0],0)
+ref_antenna = katpoint.Antenna('ref_ant', ref_lat_rad, ref_long_rad, ref_alt, 13.5, ref_antenna_delay_model,[0],0)
+print("ref_ant: ", ref_antenna)
 
 # Antenna1 ECEF coorinates in meters
-ant1_x = 50000.0
-ant1_y = 50000.0
-ant1_z = 6380000.0
+ant1_x = 5109284.373934625
+ant1_y = 2006824.0331331773
+ant1_z = -3239099.820035124
 
 # Convert ECEF to enu coordinates for antenna1
 ant1_e, ant1_n, ant1_u = conversion.ecef_to_enu(ref_lat_rad, ref_long_rad, ref_alt, ant1_x, ant1_y, ant1_z)
 
 # Create antenna1 delay model object
 ant1_delay_model = katpoint.DelayModel([ant1_e, ant1_n, ant1_u,0,0,0])
+print("ant1_delay_model: ", ant1_delay_model)
 # Create antenna1 object
-antenna1 = katpoint.Antenna('A1', ref_lat_rad, ref_long_rad, ref_alt, 0.0, ant1_delay_model,[0],0)
+antenna1 = katpoint.Antenna('A1', ref_lat_rad, ref_long_rad, ref_alt, 13.5, ant1_delay_model,[0],0)
+print("antenna1: ", antenna1)
 
 # Create DelayCorrection Object
 delay_correction = katpoint.DelayCorrection([antenna1], ref_antenna)
+print("delay_correction: ", delay_correction)
 
 delay_h_array = []
 delay_v_array = []
@@ -72,16 +76,16 @@ for i in range(0,len(timestamp_array)):
     actual_delay_h_array.append(actual_delay_h)
 
 print("------------------------------------------------------------------------------------------")
-print("calculate delay h: ", delay_h_array)
+# print("calculate delay h: ", delay_h_array)
 print("------------------------------------------------------------------------------------------")
-print("calculate delay v: ", delay_v_array)
-print("------------------------------------------------------------------------------------------")
-print("delay_corrections_h_array: ", delay_corrections_h_array)
-print("------------------------------------------------------------------------------------------")
-print("delay_corrections_v_array: ", delay_corrections_v_array)
-print("------------------------------------------------------------------------------------------")
-print("actual_delay_h_array: ", actual_delay_h_array)
-print("------------------------------------------------------------------------------------------")
+# print("calculate delay v: ", delay_v_array)
+# print("------------------------------------------------------------------------------------------")
+# print("delay_corrections_h_array: ", delay_corrections_h_array)
+# print("------------------------------------------------------------------------------------------")
+# print("delay_corrections_v_array: ", delay_corrections_v_array)
+# print("------------------------------------------------------------------------------------------")
+# print("actual_delay_h_array: ", actual_delay_h_array)
+# print("------------------------------------------------------------------------------------------")
 
 index = list(range(1440))
 plt.plot(index , delay_h_array)
