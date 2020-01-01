@@ -16,7 +16,6 @@ services:
     image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_master:0.2.3
     depends_on:
       - databaseds
-      - rsyslog-tmcprototype
       - sdp-dsconfig
     container_name: ${CONTAINER_NAME_PREFIX}sdp_master
     network_mode: ${NETWORK_MODE}
@@ -30,7 +29,6 @@ services:
     image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:0.5.16
     depends_on:
       - databaseds
-      - rsyslog-tmcprototype
       - sdp-dsconfig
     container_name: ${CONTAINER_NAME_PREFIX}sdp_subarray1
     network_mode: ${NETWORK_MODE}
@@ -47,7 +45,6 @@ services:
     image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:0.5.16
     depends_on:
       - databaseds
-      - rsyslog-tmcprototype
       - sdp-dsconfig
     container_name: ${CONTAINER_NAME_PREFIX}sdp_subarray2
     network_mode: ${NETWORK_MODE}
@@ -64,7 +61,6 @@ services:
     image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_subarray:0.5.16
     depends_on:
       - databaseds
-      - rsyslog-tmcprototype
       - sdp-dsconfig
     container_name: ${CONTAINER_NAME_PREFIX}sdp_subarray3
     network_mode: ${NETWORK_MODE}

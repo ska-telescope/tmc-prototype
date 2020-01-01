@@ -91,7 +91,6 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [pytest-json-report](https://pypi.org/project/pytest-json-report/)
 * [pycodestyle](https://pypi.org/project/pycodestyle/)
 * [pylint](https://pypi.org/project/pylint/)
-* rsyslog
 * [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) (for running the prototype in a containerised environment)
 * [Kubernetes (K8s)](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
 
@@ -124,7 +123,6 @@ Define and configure 4 instances of DishMaster TANGO Device server as specified 
 * [Device Properties](https://drive.google.com/file/d/1OyuOe1bdexS6BAYndghnQ10OJeC-rnHD/view?usp=sharing)
 * [Attribute Polling Configuration](https://drive.google.com/file/d/1JgYrDh2QTyOC72ABrTg1wxbXv5Au7FXK/view?usp=sharing)
 * [Events Configuration](https://drive.google.com/file/d/1RTmY91IF23Qk3CtTu6WTIkJ3QIEGHpY8/view?usp=sharing)
-* [Logging Configuration](https://drive.google.com/file/d/12Wl5mL367BNP_Ss0xlSCOtcsbKg-K3ut/view?usp=sharing)
 
 #### CspMasterLeafNode
 Define and configure 4 instances of CspMasterLeafNode TANGO Device server as specified in the given screenshots.
@@ -133,7 +131,6 @@ Define and configure 4 instances of CspMasterLeafNode TANGO Device server as spe
 * [Attribute Polling Configuration](https://drive.google.com/file/d/188km3WwMApz1GkVdNVBmzsWp-VHP6KEK/view?usp=sharing)
 * [Events Configuration](https://drive.google.com/file/d/1ZVJIDUvjphWfrFQCvr_lpFhBaYUSFDzV/view?usp=sharing)
 * [Attribute Property](https://drive.google.com/file/d/1IU719MZJYPPv4C0w__XFaxzLLrDNsSEY/view?usp=sharing)
-* [Logging Configuration](https://drive.google.com/file/d/17Bd7zE-tDBaHu4O1ciIow8XxNsNioVDJ/view?usp=sharing)
 
 #### CspSubarrayLeafNode
 Define and configure 4 instances of CspSubarrayLeafNode TANGO Device server as specified in the given screenshots.
@@ -142,7 +139,6 @@ Define and configure 4 instances of CspSubarrayLeafNode TANGO Device server as s
 * [Attribute Polling Configuration](https://drive.google.com/file/d/1W5P9MbkqCJpWhhdLuUrcVE-48zUSTKcW/view?usp=sharing)
 * [Events Configuration](https://drive.google.com/file/d/1ZQdWDeOTOzTT4YI-u3yn0dE6C80R6M8X/view?usp=sharing)
 * [Attribute Property](https://drive.google.com/file/d/1N-KPCOmXPQrI8c7LVttdnYpyg1D_hsDC/view?usp=sharing)
-* [Logging Configuration](https://drive.google.com/file/d/1F_AuoB39Xvlz-9FiOqF14_QnfqpLT1hF/view?usp=sharing)
 
 #### SdpMasterLeafNode
 Define and configure 4 instances of SdpMasterLeafNode TANGO Device server as specified in the given screenshots.
@@ -150,7 +146,6 @@ Define and configure 4 instances of SdpMasterLeafNode TANGO Device server as spe
 * [Device Properties](https://drive.google.com/file/d/13AIHf7sM9YdHkIYqVaBjdl8OeX-pYwmz/view?usp=sharing)
 * [Attribute Polling Configuration](https://drive.google.com/file/d/1LHjxu9F9dAaWW6_D5sPnqYgBKFO_PE7F/view?usp=sharing)
 * [Events Configuration](https://drive.google.com/file/d/1KW1ZKUlz5ylYwUcoCL6xhpW7jo6OK7BI/view?usp=sharing)
-* [Logging Configuration](https://drive.google.com/file/d/1LbdTD4g-W4zUnKHvc1eLjMkFCdzo37Vu/view?usp=sharing)
 
 #### SdpSubarrayLeafNode
 Define and configure 4 instances of SdpSubarrayLeafNode TANGO Device server as specified in the given screenshots.
@@ -159,7 +154,6 @@ Define and configure 4 instances of SdpSubarrayLeafNode TANGO Device server as s
 * [Attribute Polling Configuration](https://drive.google.com/file/d/1ah6jPSQAmNin40Ec4Qquf14FT5f8P9Q2/view?usp=sharing)
 * [Events Configuration](https://drive.google.com/file/d/1d_6JCW7ekEXboZAlkDNXotqvV6y4qnvI/view?usp=sharing)
 * [Attribute Property](https://drive.google.com/file/d/1ky8LSE25L4uOppybyheovCEFxH0NjpnW/view?usp=sharing)
-* [Logging Configuration](https://drive.google.com/file/d/13cYGQTlhpxDnkiFHPy8u_O6NJ6tG9bTf/view?usp=sharing)
 
 #### DishLeafNode
 Define and configure 4 instances of DishLeafNode TANGO Device server as specified in the given screenshots.
@@ -168,7 +162,7 @@ Define and configure 4 instances of DishLeafNode TANGO Device server as specifie
 * [Attribute Polling Configuration](https://drive.google.com/file/d/1J5AJvdn5cJotRmkkySdkDlds1Y4WWvBK/view?usp=sharing)
 * [Events Configuration](https://drive.google.com/file/d/1wxo33D5O-D83R4PunZQ9I3n1AzwfYxEO/view?usp=sharing)
 * [Attribute Property](https://drive.google.com/file/d/1rDGLJcZB9_m-J9mdFVU7mug3AhUHFF19/view?usp=sharing)
-* [Logging Configuration](https://drive.google.com/file/d/1cZVDc6uK_z7JKlQbStWkceFQXaRL4QWu/view?usp=sharing)
+
 
 
 #### SubarrayNode
@@ -177,7 +171,7 @@ Define and configure 2 instances of SubarrayNode TANGO Device server as specifie
 * [Device Properties](https://drive.google.com/file/d/1AB7ZuviRw4h5rDxiXUjl4huU969z4Sg8/view?usp=sharing)
 * [Attribute Polling Configuration](https://drive.google.com/file/d/1wtyaIfxOY2Cc_GwyDWmb7GUzf5syMqwE/view?usp=sharing)
 * [Events Configuration](https://drive.google.com/file/d/1MVpcP-g6s67jje42nJuZH0sEp2GUdN8R/view?usp=sharing)
-* [Logging Configuration](https://drive.google.com/file/d/159Kl4Q7uvHzVNGrsZVzpYsdQbLiAeAc0/view?usp=sharing)
+
 
 #### CentralNode
 Define and configure CentralNode TANGO Device server as specified in the given screenshots.
@@ -187,8 +181,6 @@ Define and configure CentralNode TANGO Device server as specified in the given s
 * [Events Configuration](https://drive.google.com/file/d/1_jglNHV6jzVT3mSINhQ2LJnIxuo5Bdyk/view?usp=sharing)
 * [Attribute Property 1](https://drive.google.com/file/d/1r-Fdd_vTitjZ7m3FCtZ5Y9_S2dKYKPOZ/view?usp=sharing)
 * [Attribute Property 2](https://drive.google.com/file/d/1E5ig4n8eBwfI8TOdvXpXI3NnGOoeu-yN/view?usp=sharing)
-* [Logging Configuration](https://drive.google.com/file/d/1o9FH1blAfulYAYD8EuKebcxpQrG3LDqs/view?usp=sharing)
-
 
 #### AlarmHandler
 Define and configure AlarmHandler TANGO Device server as specified in the given screenshots.
@@ -200,8 +192,6 @@ Define and configure AlarmHandler TANGO Device server as specified in the given 
 Define and configure SKALogger TANGO Device server as specified in the given screenshots.
 
 * [Device Properties](https://drive.google.com/file/d/1UxBUb71euQQrqMfMRQe7brfaClFnEL3t/view?usp=sharing)
-* [Logging Configuration](https://drive.google.com/file/d/1ExPvqqKg-2tXPZg_-rQophfDV5LpTa-a/view?usp=sharing)
-
 
 ### 3.5: GUI
 
