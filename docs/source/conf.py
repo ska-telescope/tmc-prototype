@@ -14,7 +14,7 @@
 #
 
 autodoc_mock_imports = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta', 'command',
-                 'future', 'future.utils', 'logging', 'logging.handlers', 'skabase',
+                 'future', 'future.utils','skabase',
                  'skabase.SKABaseDevice.SKABaseDevice', 'SKABaseDevice',
                  'skabase.SKAMaster.SKAMaster', 'SKAMaster',
                  'skabase.SKASubarray.SKASubarray', 'SKASubarray', 'katpoint', 'numpy'

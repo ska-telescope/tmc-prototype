@@ -184,8 +184,7 @@ help:  ## show this help.
 # Creates Docker volume for use as a cache, if it doesn't exist already
 INIT_CACHE = \
 	docker volume ls | grep $(CACHE_VOLUME) || \
-	docker create --name $(CACHE_VOLUME) -v $(CACHE_VOLUME):/cache $(IMAGEm	_TO_TEST)
-
+	docker create --name $(CACHE_VOLUME) -v $(CACHE_VOLUME):/cache $(IMAGE_TO_TEST)
 # http://cakoose.com/wiki/gnu_make_thunks
 BUILD_GEN = $(shell docker create -v /build $(IMAGE_TO_TEST))
 BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
