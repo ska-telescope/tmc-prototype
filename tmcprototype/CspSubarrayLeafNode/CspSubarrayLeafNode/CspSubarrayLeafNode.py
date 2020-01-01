@@ -17,6 +17,11 @@ import threading
 import random
 import calendar
 import time
+from datetime import datetime, timedelta
+import katpoint
+from scipy.interpolate import UnivariateSpline
+import numpy as np
+import matplotlib.pyplot as plt
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
@@ -44,6 +49,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # PROTECTED REGION ID(CspSubarrayLeafNode.class_variable) ENABLED START #
 
     _DELAY_UPDATE_INTERVAL = 10
+    _delay_in_advance = 60
     # _stop_delay_model_event = # type: Event
 
     def commandCallback(self, event):
@@ -125,6 +131,88 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ---------------
     # General methods
     # ---------------
+    def calculate_geometric_delays(self, time_t0, delay_correction, target):
+
+        delay_corrections_h_array_t0 = []
+        delay_corrections_h_array_t1 = []
+        delay_corrections_h_array_t2 = []
+        delay_corrections_h_array_t3 = []
+        delay_corrections_h_array_t4 = []
+        delay_corrections_h_array_t5 = []
+        delay_corrections_h_array_dict = {}
+        delay_corrections_v_array_t0 = []
+        delay_corrections_v_array_t1 = []
+        delay_corrections_v_array_t2 = []
+        delay_corrections_v_array_t3 = []
+        delay_corrections_v_array_t4 = []
+        delay_corrections_v_array_t5 = []
+        delay_corrections_v_array_dict = {}
+        timestamp_array = [time_t0,(time_t0+timedelta(seconds=2)),(time_t0+timedelta(seconds=4)),(time_t0+timedelta(seconds=6)),(time_t0+timedelta(seconds=8)),(time_t0+timedelta(seconds=10))]
+        print("timestamp: ", str(timestamp_array))
+
+        for timestamp in range(0, len(timestamp_array)):
+            # Calculate geometric delay value
+            delay = delay_correction._calculate_delays(target, str(timestamp_array[timestamp]))
+            antenna_names = list(delay_correction.ant_models.keys())
+            print(antenna_names)
+
+            # Horizontal and vertical delay corrections for each antenna
+            for i in range(0, len(delay)):
+                if i % 2 == 0:
+                    if timestamp == 0:
+                        delay_corrections_h_array_t0.append(delay[i])
+                    elif timestamp == 1:
+                        delay_corrections_h_array_t1.append(delay[i])
+                    elif timestamp == 2:
+                        delay_corrections_h_array_t2.append(delay[i])
+                    elif timestamp == 3:
+                        delay_corrections_h_array_t3.append(delay[i])
+                    elif timestamp == 4:
+                        delay_corrections_h_array_t4.append(delay[i])
+                    elif timestamp == 5:
+                        delay_corrections_h_array_t5.append(delay[i])
+
+                else:
+                    if timestamp == 0:
+                        delay_corrections_v_array_t0.append(delay[i])
+                    elif timestamp == 1:
+                        delay_corrections_v_array_t1.append(delay[i])
+                    elif timestamp == 2:
+                        delay_corrections_v_array_t2.append(delay[i])
+                    elif timestamp == 3:
+                        delay_corrections_v_array_t3.append(delay[i])
+                    elif timestamp == 4:
+                        delay_corrections_v_array_t4.append(delay[i])
+                    elif timestamp == 5:
+                        delay_corrections_v_array_t5.append(delay[i])
+
+        x = np.array([0, 0.2, 0.4, 0.6, 0.8, 1])
+        for i in range(0, len(antenna_names)):
+            temp_delay_list = []
+            temp_delay_list.append(delay_corrections_h_array_t0[i])
+            temp_delay_list.append(delay_corrections_h_array_t1[i])
+            temp_delay_list.append(delay_corrections_h_array_t2[i])
+            temp_delay_list.append(delay_corrections_h_array_t3[i])
+            temp_delay_list.append(delay_corrections_h_array_t4[i])
+            temp_delay_list.append(delay_corrections_h_array_t5[i])
+
+            # x should be independent and y should be independent
+            # The number of data points must be larger than the spline degree `k`
+            y = np.array(temp_delay_list)
+
+            output = UnivariateSpline(x, y, k=5, s=0)
+            poly = output.get_coeffs()
+            delay_corrections_h_array_dict[antenna_names[i]] = poly
+
+            # xs = np.linspace(0, 1, )
+            # plt.plot(x, output(x), 'g', lw=3)
+
+        print("antenna_names: ", antenna_names)
+        print("delay_corrections_h_array_t0: ", delay_corrections_h_array_t0)
+        print("delay_corrections_h_array_dict: ", delay_corrections_h_array_dict)
+        # plt.show()
+        return delay_corrections_h_array_dict
+
     def delay_model_calculator(self, argin):
         """
         This method calculates the delay model for consumption of CSP subarray.
@@ -143,20 +231,58 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None.
         """
+        assigned_receptors_dict = {}
+        assigned_receptors =[]
+
         delay_update_interval = argin
         # list of frequency slice ids
-        _fsids_list = ["fs1", "fs2", "fs3", "fs4"]
+        _fsids_list = ["fs1"]
         # list of bands
         _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
         # receptor list
         # TBD: This list should be taken from receptor_id_list attribute of subarray node
-        _receptor_list = ["d0001", "d0002", "d0003", "d0004"]
+        _receptor_list = ["d0000","d0001", "d0002"]
+
+        # Create target object
+        target = katpoint.Target('radec , 20:21:10.31 , -30:52:17.3')
+
+
+        # Load a set of antenna descriptions and construct Antenna objects from them
+        with open('../../ska_antennas.txt') as f:
+            descriptions = f.readlines()
+        antennas = [katpoint.Antenna(line) for line in descriptions]
+        print("\n", "antennas 1: ", antennas, type(antennas))
+        for receptor in _receptor_list:
+            for ant in antennas:
+                if receptor == ant.name:
+                    assigned_receptors.append(ant)
+                    assigned_receptors_dict[ant.name] = ant
+
+        print("assigned_receptors: ", assigned_receptors)
+        print("assigned_receptors_dict: ", assigned_receptors_dict)
+
+        ref_ant = assigned_receptors_dict['d0000']
+        print(ref_ant)
+        # Create DelayCorrection Object
+        delay_correction_object = katpoint.DelayCorrection(assigned_receptors, ref_ant)
+        print("delay_correction: ", delay_correction_object)
+
+        # time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
+        #
+        # delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0, delay_correction_object, target)
+        # print("time_t0: ", time_t0)
+        # print("epoch: ", time_t0.timestamp())
 
         while not self._stop_delay_model_event.isSet():
             if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY
+                    or self.CspSubarrayProxy.obsState == CONST.ENUM_CONFIGURING
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
-
+                print("Calculating delays.........................")
                 self.logger.info("Calculating delays.")
+                time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
+
+                delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0, delay_correction_object, target)
+
                 delay_model_json = {}
                 delay_model = []
                 receptor_delay_model = []
@@ -168,17 +294,22 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     for fsid in _fsids_list:
                         fsid_delay_object = {}
                         fsid_delay_object["fsid"] = fsid
-                        delay_coeff_array = []
-                        for band in _bands_list:
-                            delay_coeff_array.append(random.uniform(0.01, 10))  # random delay
-                        fsid_delay_object["delayCoeff"] = delay_coeff_array
+                        # delay_coeff_array = []
+                        # for band in _bands_list:
+                        #     delay_coeff_array.append(random.uniform(0.01, 10))  # random delay
+                        fsid_delay_object["delayCoeff"] = str(delay_corrections_h_array_dict[receptor])
                         receptor_specific_delay_details.append(fsid_delay_object)
                     receptor_delay_object["receptorDelayDetails"] = receptor_specific_delay_details
                     receptor_delay_model.append(receptor_delay_object)
-                delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
+                # delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
+                delay_model_per_epoch["epoch"] = str(time_t0)
                 delay_model_per_epoch["delayDetails"] = receptor_delay_model
                 delay_model.append(delay_model_per_epoch)
                 delay_model_json["delayModel"] = delay_model
+
+                print("-----------------------------------------------------------------")
+                print(delay_model_json)
+                print("-----------------------------------------------------------------")
                 self.logger.debug("delay_model_json: " + str(delay_model_json))
                 # update the attribute
                 self.delay_model_lock.acquire()
