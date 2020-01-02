@@ -131,7 +131,20 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ---------------
     # General methods
     # ---------------
-    def calculate_geometric_delays(self, time_t0, delay_correction, target):
+
+    def calculate_geometric_delays(self, time_t0):
+        """
+        This method calculates geometric delay values (in Second) using KATPoint library. It requires delay
+        correction object, timestamp t0 and target RaDec.
+        Scipy library is used to convert delay values (in Seconds) to a fifth order polynomial coefficients.
+        Six timestamps from the time-frame t0 to t+10, are used to calculate delays per antenna. These six
+        delay values are then used to calculate fifth order polynomial coefficients.
+            In order to calculate delays in advance, timestamp t0 is considered to be one minute ahead of the
+        the current timestamp.
+
+        :param argin: time_t0
+        :return: Dictionary containing fifth order polynomial coefficients per antenna per fsp.
+        """
 
         delay_corrections_h_array_t0 = []
         delay_corrections_h_array_t1 = []
@@ -147,14 +160,14 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         delay_corrections_v_array_t4 = []
         delay_corrections_v_array_t5 = []
         delay_corrections_v_array_dict = {}
-        timestamp_array = [time_t0,(time_t0+timedelta(seconds=2)),(time_t0+timedelta(seconds=4)),(time_t0+timedelta(seconds=6)),(time_t0+timedelta(seconds=8)),(time_t0+timedelta(seconds=10))]
-        print("timestamp: ", str(timestamp_array))
+        timestamp_array = [time_t0,(time_t0+timedelta(seconds=2)),(time_t0+timedelta(seconds=4)),
+                           (time_t0+timedelta(seconds=6)),(time_t0+timedelta(seconds=8)),
+                           (time_t0+timedelta(seconds=10))]
 
         for timestamp in range(0, len(timestamp_array)):
             # Calculate geometric delay value
-            delay = delay_correction._calculate_delays(target, str(timestamp_array[timestamp]))
-            antenna_names = list(delay_correction.ant_models.keys())
-            print(antenna_names)
+            delay = self.delay_correction_object._calculate_delays(self.target, str(timestamp_array[timestamp]))
+            antenna_names = list(self.delay_correction_object.ant_models.keys())
 
             # Horizontal and vertical delay corrections for each antenna
             for i in range(0, len(delay)):
@@ -196,7 +209,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             temp_delay_list.append(delay_corrections_h_array_t4[i])
             temp_delay_list.append(delay_corrections_h_array_t5[i])
 
-            # x should be independent and y should be independent
             # The number of data points must be larger than the spline degree `k`
             y = np.array(temp_delay_list)
 
@@ -204,94 +216,85 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             poly = output.get_coeffs()
             delay_corrections_h_array_dict[antenna_names[i]] = poly
 
-            # xs = np.linspace(0, 1, )
-            # plt.plot(x, output(x), 'g', lw=3)
-
-        print("antenna_names: ", antenna_names)
-        print("delay_corrections_h_array_t0: ", delay_corrections_h_array_t0)
         print("delay_corrections_h_array_dict: ", delay_corrections_h_array_dict)
-        # plt.show()
         return delay_corrections_h_array_dict
+
+    def update_config_params(self):
+        """
+        In this method parameters related to the resources assigned, are updated every time assign, release
+        or configure commands are executed.
+
+        :param argin: None
+
+        :return: None
+
+        """
+        assigned_receptors_dict = {}
+        assigned_receptors =[]
+
+        # Create target object
+        self.target = katpoint.Target('radec , 20:21:10.31 , -30:52:17.3')
+
+        # Load a set of antenna descriptions and construct Antenna objects from them
+        with open('../../ska_antennas.txt') as f:
+            descriptions = f.readlines()
+        antennas = [katpoint.Antenna(line) for line in descriptions]
+        for receptor in self.receptorIDList_str:
+            for ant in antennas:
+                if receptor == ant.name:
+                    assigned_receptors.append(ant)
+                    assigned_receptors_dict[ant.name] = ant
+
+
+        # First antenna from the list of assigned antennas is referred as a reference antenna.
+        # TODO: For future reference
+        ref_antenna_ID = str(list(assigned_receptors_dict.keys())[0])
+
+        ref_ant = assigned_receptors_dict["0000"]
+        # Create DelayCorrection Object
+        self.delay_correction_object = katpoint.DelayCorrection(assigned_receptors, ref_ant)
+
+        # list of frequency slice ids
+        for fsp_entry in self.fsp_ids_object:
+            self.fsids_list.append(fsp_entry["fspID"])
 
     def delay_model_calculator(self, argin):
         """
         This method calculates the delay model for consumption of CSP subarray.
-        This implementation is very ad hoc and require lots of modifications to calculate
-        actual delay models.
-        Current implementation generates random number for delay values. No delay
-        library is used in this code. It also considers four receptors to calculate
-        delays. Ideally, the receptor count should be based on the receptors allocated
-        to the subarray. Also, currently four frequency slices and six  bands are
-        considered for delay calculations. The values of receptors and frequency slice
-        ids are also non-standard.
-        The epoch value is the current timestamp value.
+        The epoch value is the current timestamp value. Delay calculation starts when configure
+        command is invoked. It calls the function which internally calculates delay values using KATPoint
+        library and converts them to fifth order polynomial coefficients.
 
         :param argin: int.
             The argument contains delay model update interval in seconds.
 
         :return: None.
         """
-        assigned_receptors_dict = {}
-        assigned_receptors =[]
-
         delay_update_interval = argin
-        # list of frequency slice ids
-        _fsids_list = ["fs1"]
+
         # list of bands
         _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
-        # receptor list
-        # TBD: This list should be taken from receptor_id_list attribute of subarray node
-        _receptor_list = ["d0000","d0001", "d0002"]
 
-        # Create target object
-        target = katpoint.Target('radec , 20:21:10.31 , -30:52:17.3')
-
-
-        # Load a set of antenna descriptions and construct Antenna objects from them
-        with open('../../ska_antennas.txt') as f:
-            descriptions = f.readlines()
-        antennas = [katpoint.Antenna(line) for line in descriptions]
-        print("\n", "antennas 1: ", antennas, type(antennas))
-        for receptor in _receptor_list:
-            for ant in antennas:
-                if receptor == ant.name:
-                    assigned_receptors.append(ant)
-                    assigned_receptors_dict[ant.name] = ant
-
-        print("assigned_receptors: ", assigned_receptors)
-        print("assigned_receptors_dict: ", assigned_receptors_dict)
-
-        ref_ant = assigned_receptors_dict['d0000']
-        print(ref_ant)
-        # Create DelayCorrection Object
-        delay_correction_object = katpoint.DelayCorrection(assigned_receptors, ref_ant)
-        print("delay_correction: ", delay_correction_object)
-
-        # time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
-        #
-        # delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0, delay_correction_object, target)
-        # print("time_t0: ", time_t0)
-        # print("epoch: ", time_t0.timestamp())
 
         while not self._stop_delay_model_event.isSet():
             if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_CONFIGURING
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
-                print("Calculating delays.........................")
                 self.logger.info("Calculating delays.")
                 time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
 
-                delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0, delay_correction_object, target)
-
+                delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0)
+                # print("time_t0: ", time_t0)
+                # print("epoch: ", time_t0.timestamp())
                 delay_model_json = {}
                 delay_model = []
                 receptor_delay_model = []
                 delay_model_per_epoch = {}
-                for receptor in _receptor_list:
+                for receptor in self.receptorIDList_str:
                     receptor_delay_object = {}
-                    receptor_delay_object["receptor"] = receptor
+                    receptor_delay_object["receptor"] = int(receptor)
                     receptor_specific_delay_details = []
-                    for fsid in _fsids_list:
+                    for fsid in self.fsids_list:
                         fsid_delay_object = {}
                         fsid_delay_object["fsid"] = fsid
                         # delay_coeff_array = []
@@ -306,10 +309,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 delay_model_per_epoch["delayDetails"] = receptor_delay_model
                 delay_model.append(delay_model_per_epoch)
                 delay_model_json["delayModel"] = delay_model
-
-                print("-----------------------------------------------------------------")
-                print(delay_model_json)
-                print("-----------------------------------------------------------------")
                 self.logger.debug("delay_model_json: " + str(delay_model_json))
                 # update the attribute
                 self.delay_model_lock.acquire()
@@ -363,6 +362,9 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._delay_model = " "
             self._visdestination_address = " "
             self._versioninfo = " "
+            self.receptorIDList = []
+            self.fsp_ids_object =[]
+            self.fsids_list = []
 
             ## Start thread to update delay model ##
             # Create event
@@ -524,7 +526,10 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            json.loads(argin)
+            argin_json = json.loads(argin)
+            # Used to extract FSP IDs
+            self.fsp_ids_object = argin_json["csp"]["fsp"]
+            self.update_config_params()
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
             self.logger.info(CONST.STR_CONFIGURESCAN_SUCCESS)
@@ -648,6 +653,9 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_count = 0
         try:
             #Invoke RemoveAllReceptors command on CspSubarray
+            self.receptorIDList = []
+            self.fsids_list = []
+            self.update_config_params()
             self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
             self._read_activity_message = CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS
             self.logger.info(CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
@@ -694,7 +702,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                  }
 
         Note: From Jive, enter input as:
-        {"dish":{"receptorIDList":["0001","0002"]}} without any space.
+        {"dish":{"receptorIDList":["0000","0001","0002"]}} without any space.
 
         :return: None.
         """
@@ -703,14 +711,17 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
-            receptorIDList = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
+            self.receptorIDList_str = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
             #convert receptorIDList from list of string to list of int
-            for i in range(0, len(receptorIDList)):
-                receptorIDList[i] = int(receptorIDList[i])
+            for i in range(0, len(self.receptorIDList_str)):
+                self.receptorIDList.append(int(self.receptorIDList_str[i]))
+
+            self.update_config_params()
 
             #Invoke AddReceptors command on CspSubarray
-            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, receptorIDList,
+            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, self.receptorIDList,
                                                        self.commandCallback)
+
             self._read_activity_message = CONST.STR_ADD_RECEPTORS_SUCCESS
             self.logger.info(CONST.STR_ADD_RECEPTORS_SUCCESS)
 
