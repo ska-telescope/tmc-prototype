@@ -213,7 +213,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             poly = output.get_coeffs()
             delay_corrections_h_array_dict[antenna_names[i]] = poly
 
-        print("delay_corrections_h_array_dict: ", delay_corrections_h_array_dict)
+        # print("delay_corrections_h_array_dict: ", delay_corrections_h_array_dict)
         return delay_corrections_h_array_dict
 
     def update_config_params(self):
@@ -228,9 +228,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         assigned_receptors_dict = {}
         assigned_receptors =[]
-
-        # Create target object
-        self.target = katpoint.Target('radec , 20:21:10.31 , -30:52:17.3')
 
         # Load a set of antenna descriptions and construct Antenna objects from them
         with open('../../ska_antennas.txt') as f:
@@ -247,7 +244,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # TODO: For future reference
         ref_antenna_ID = str(list(assigned_receptors_dict.keys())[0])
 
-        ref_ant = assigned_receptors_dict["0000"]
+        ref_ant = assigned_receptors_dict["0001"]
         # Create DelayCorrection Object
         self.delay_correction_object = katpoint.DelayCorrection(assigned_receptors, ref_ant)
 
@@ -272,7 +269,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # list of bands
         _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
 
-
         while not self._stop_delay_model_event.isSet():
             if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_CONFIGURING
@@ -280,7 +276,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.logger.info("Calculating delays.")
                 time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
                 time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
-                print("time_t0_utc", time_t0_utc)
 
                 delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0)
                 # print("time_t0: ", time_t0)
@@ -304,10 +299,11 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     receptor_delay_object["receptorDelayDetails"] = receptor_specific_delay_details
                     receptor_delay_model.append(receptor_delay_object)
                 # delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
-                delay_model_per_epoch["epoch"] = str(time_t0)
+                delay_model_per_epoch["epoch"] = str(time_t0_utc)
                 delay_model_per_epoch["delayDetails"] = receptor_delay_model
                 delay_model.append(delay_model_per_epoch)
                 delay_model_json["delayModel"] = delay_model
+                print("delay_model_json: ------------", delay_model_json)
                 self.logger.debug("delay_model_json: " + str(delay_model_json))
                 # update the attribute
                 self.delay_model_lock.acquire()
@@ -364,6 +360,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.receptorIDList = []
             self.fsp_ids_object =[]
             self.fsids_list = []
+            self.target_Ra = ""
+            self.target_Dec = ""
 
             ## Start thread to update delay model ##
             # Create event
@@ -525,11 +523,27 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
+            print("argin configure: ", argin)
             argin_json = json.loads(argin)
             # Used to extract FSP IDs
-            self.fsp_ids_object = argin_json["csp"]["fsp"]
+            self.fsp_ids_object = argin_json["fsp"]
             self.update_config_params()
-            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, argin, self.commandCallback)
+            self.pointing_params = argin_json["pointing"]
+            self.target_Ra = self.pointing_params["target"]["RA"]
+            self.target_Dec = self.pointing_params["target"]["dec"]
+            # Create target object
+            self.target = katpoint.Target('radec , ' + str(self.target_Ra) + ", " + str(self.target_Dec))
+
+            cspConfiguration = argin_json.copy()
+            # Keep configuration specific to CSP and delete configuration of other nodes
+            if "pointing" in cspConfiguration:
+                del cspConfiguration["pointing"]
+
+            print("cspConfiguration: ", cspConfiguration)
+            cmdData = tango.DeviceData()
+            cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
+
+            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, cmdData, self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
             self.logger.info(CONST.STR_CONFIGURESCAN_SUCCESS)
             self.logger.debug(argin)
