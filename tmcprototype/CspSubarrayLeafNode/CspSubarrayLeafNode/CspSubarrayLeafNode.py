@@ -210,10 +210,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             y = np.array(temp_delay_list)
 
             output = UnivariateSpline(x, y, k=5, s=0)
-            poly = output.get_coeffs()
-            delay_corrections_h_array_dict[antenna_names[i]] = poly
-
-        # print("delay_corrections_h_array_dict: ", delay_corrections_h_array_dict)
+            polynomial = output.get_coeffs()
+            delay_corrections_h_array_dict[antenna_names[i]] = polynomial
         return delay_corrections_h_array_dict
 
     def update_config_params(self):
@@ -239,12 +237,11 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     assigned_receptors.append(ant)
                     assigned_receptors_dict[ant.name] = ant
 
-
         # First antenna from the list of assigned antennas is referred as a reference antenna.
         # TODO: For future reference
         ref_antenna_ID = str(list(assigned_receptors_dict.keys())[0])
-
         ref_ant = assigned_receptors_dict["0001"]
+
         # Create DelayCorrection Object
         self.delay_correction_object = katpoint.DelayCorrection(assigned_receptors, ref_ant)
 
@@ -278,8 +275,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
 
                 delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0)
-                # print("time_t0: ", time_t0)
-                # print("epoch: ", time_t0.timestamp())
                 delay_model_json = {}
                 delay_model = []
                 receptor_delay_model = []
@@ -291,19 +286,20 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     for fsid in self.fsids_list:
                         fsid_delay_object = {}
                         fsid_delay_object["fsid"] = fsid
-                        # delay_coeff_array = []
-                        # for band in _bands_list:
-                        #     delay_coeff_array.append(random.uniform(0.01, 10))  # random delay
-                        fsid_delay_object["delayCoeff"] = str(delay_corrections_h_array_dict[receptor])
+                        delay_coeff_array = []
+                        receptor_delay_coeffs = delay_corrections_h_array_dict[receptor]
+                        print("receptor_delay_coeffs:", (receptor_delay_coeffs[0]))
+                        for i in range (0,len(receptor_delay_coeffs)):
+                            delay_coeff_array.append(receptor_delay_coeffs[i])
+                        fsid_delay_object["delayCoeff"] = delay_coeff_array
                         receptor_specific_delay_details.append(fsid_delay_object)
                     receptor_delay_object["receptorDelayDetails"] = receptor_specific_delay_details
                     receptor_delay_model.append(receptor_delay_object)
-                # delay_model_per_epoch["epoch"] = calendar.timegm(time.gmtime())
                 delay_model_per_epoch["epoch"] = str(time_t0_utc)
                 delay_model_per_epoch["delayDetails"] = receptor_delay_model
                 delay_model.append(delay_model_per_epoch)
                 delay_model_json["delayModel"] = delay_model
-                print("delay_model_json: ------------", delay_model_json)
+                print("delay_model_json: ", delay_model_json)
                 self.logger.debug("delay_model_json: " + str(delay_model_json))
                 # update the attribute
                 self.delay_model_lock.acquire()
@@ -348,8 +344,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         try:
             self._state = 0
-            # create subarray Proxy
             try:
+                # create subarray Proxy
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             except:
                 self.logger.debug(CONST.ERR_IN_CREATE_PROXY_CSPSA)
@@ -463,8 +459,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         return self._opstate
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.opState_read
 
-
-
     # --------
     # Commands
     # --------
@@ -535,7 +529,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.target = katpoint.Target('radec , ' + str(self.target_Ra) + ", " + str(self.target_Dec))
 
             cspConfiguration = argin_json.copy()
-            # Keep configuration specific to CSP and delete configuration of other nodes
+            # Keep configuration specific to CSP and delete pointing configuration
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
 
@@ -728,7 +722,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #convert receptorIDList from list of string to list of int
             for i in range(0, len(self.receptorIDList_str)):
                 self.receptorIDList.append(int(self.receptorIDList_str[i]))
-
             self.update_config_params()
 
             #Invoke AddReceptors command on CspSubarray
