@@ -14,14 +14,11 @@ import datetime
 import sys
 import os
 import threading
-import random
-import calendar
-import time
 from datetime import datetime, timedelta
+import pytz
 import katpoint
 from scipy.interpolate import UnivariateSpline
 import numpy as np
-import matplotlib.pyplot as plt
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
@@ -282,6 +279,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
                 self.logger.info("Calculating delays.")
                 time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
+                time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
+                print("time_t0_utc", time_t0_utc)
 
                 delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0)
                 # print("time_t0: ", time_t0)
