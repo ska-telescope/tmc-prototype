@@ -92,12 +92,6 @@ class TestCspSubarrayLeafNode(object):
         #create_cspsubarray1_proxy.device.Reset() is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Reset
 
-    def test_delayModel(self, tango_context):
-        """Test for delayModel"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_delayModel) ENABLED START #
-        assert tango_context.device.delayModel == ' '
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
-
     def test_AssignResources_invalid_json(self, tango_context, create_cspsubarray1_proxy):
         """
         Test case to check invalid JSON format (Negative test case)
@@ -177,20 +171,62 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Null')
         time.sleep(2)
-        configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
-                              '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
-                              '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
-                              ',"visDestinationAddressSubscriptionPoint":' \
-                              '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
-        time.sleep(2)
+        configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
+                              '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
+                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
+                              '"visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", ' \
+                              '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
+                              '"dec": "-30:52:17.3"}}, "scanID": "123"}'
+        time.sleep(8)
         tango_context.device.ConfigureScan(configurescan_input)
-        time.sleep(10)
+        time.sleep(20)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
-        time.sleep(10)
+        time.sleep(20)
         assert create_cspsubarray1_proxy.obsState == CONST.ENUM_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
+
+    def test_delayModel(self, tango_context):
+        """Test for delayModel"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_delayModel) ENABLED START #
+        _assert_flag = True
+        delay_model_json = json.loads(tango_context.device.delayModel)
+        for delayModel in (delay_model_json['delayModel']):
+            for delayDetails in delayModel['delayDetails']:
+                for receptorDelayDetails in delayDetails['receptorDelayDetails']:
+                    # Check if length of delay coefficients array is 6 and all the elements in array are float
+                    if len(receptorDelayDetails['delayCoeff'])== 6:
+                        for delaycoff in receptorDelayDetails['delayCoeff']:
+                            if not float(receptorDelayDetails['delayCoeff']):
+                                _assert_flag = False
+                                assert 0
+                                break
+
+                            if not receptorDelayDetails['fsid'] in range(1, 27):
+                                _assert_flag = False
+                                assert 0
+                                break
+
+                # Check if receptor id is in the range 1 to 197
+                if _assert_flag == False:
+                    break
+                elif not delayDetails['receptor'] in range(1, 198):
+                    _assert_flag = False
+                    assert 0
+                    break
+
+            # Check if epoch is empty and is float
+            if _assert_flag == False:
+                break
+            elif not (delayModel['epoch']) or not float(delayModel['epoch']):
+                _assert_flag = False
+                assert 0
+                break
+
+        if _assert_flag == True:
+            assert 1
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
 
     def test_StartScan(self, tango_context, create_cspsubarray1_proxy):
         """Test for StartScan"""
