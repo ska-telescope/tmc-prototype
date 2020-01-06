@@ -177,11 +177,12 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Null')
         time.sleep(2)
-        configurescan_input = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
-                              '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
-                              '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"' \
-                              ',"visDestinationAddressSubscriptionPoint":' \
-                              '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses","scanID":"123"}'
+        configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
+                              '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
+                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
+                              '"visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", ' \
+                              '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
+                              '"dec": "-30:52:17.3"}}, "scanID": "123"}'
         time.sleep(2)
         tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(10)
