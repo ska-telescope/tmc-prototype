@@ -22,8 +22,12 @@ import numpy as np
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
+
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
+ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pardir),os.pardir)) \
+                    + "/ska_antennas.txt"
+
 
 # PyTango imports
 import tango
@@ -228,7 +232,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         assigned_receptors =[]
 
         # Load a set of antenna descriptions and construct Antenna objects from them
-        with open('../../ska_antennas.txt') as f:
+        with open(ska_antennas_path) as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         for receptor in self.receptorIDList_str:
@@ -709,7 +713,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                  }
 
         Note: From Jive, enter input as:
-        {"dish":{"receptorIDList":["0000","0001","0002"]}} without any space.
+        {"dish":{"receptorIDList":["0001","0002"]}} without any space.
 
         :return: None.
         """
