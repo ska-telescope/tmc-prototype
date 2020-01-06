@@ -1042,12 +1042,18 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.db = Database()
         self.name = self.get_name()
         memflag_dict = self.db.get_device_attribute_property(str(self.name), "memflag")
-        self._memflag = memflag_dict["memflag"]["__value"][0]
+        if memflag_dict:
+            self._memflag = memflag_dict["memflag"]["__value"][0]
+        else:
+            self._memflag = "false"
+
         print("Attribute property value:", str(self._memflag))
+
         if self._memflag == "true":
             print ("Need to restore the values")
             self._receptor_id_list = [1,2]
             self.restorefromdb()
+            # self.connecttostateserver()
         else:
             print ("Initialise with normal values.")
 
@@ -1526,6 +1532,20 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         receptorId = restore_dict["ReceptorId"]
         self._receptor_id_list = receptorId
 
+    def sub_state_callback(self, evt):
+        print("State on State server:", evt.attr_value.value)
+        if evt.attr_value.value == str('ON'):
+            self.set_state(DevState.ON)
+        elif evt.attr_value.value == str('OFF'):
+            self.set_state(DevState.OFF)
+
+    def connecttostateserver(self):
+        print ("Subscribing to subarray state from state server")
+        self.state_server_proxy = DeviceProxy("test/stateserver/1")
+        # print("State on State server:",self.state_server_proxy. Subarray1_state)
+        self.state_server_proxy.subscribe_event("Subarray1_state", EventType.CHANGE_EVENT,
+                                                 self.sub_state_callback, stateless=True)
+0
     # ----------
 # Run server
 # ----------
