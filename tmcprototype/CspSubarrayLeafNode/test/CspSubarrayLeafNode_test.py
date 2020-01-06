@@ -197,8 +197,8 @@ class TestCspSubarrayLeafNode(object):
                 for receptorDelayDetails in delayDetails['receptorDelayDetails']:
                     # Check if length of delay coefficients array is 6 and all the elements in array are float
                     if len(receptorDelayDetails['delayCoeff'])== 6:
-                        for delaycoff in receptorDelayDetails['delayCoeff']:
-                            if not float(receptorDelayDetails['delayCoeff']):
+                        for i in (0, len(receptorDelayDetails['delayCoeff'])):
+                            if not float(receptorDelayDetails['delayCoeff'][i]):
                                 _assert_flag = False
                                 assert 0
                                 break
@@ -207,7 +207,10 @@ class TestCspSubarrayLeafNode(object):
                                 _assert_flag = False
                                 assert 0
                                 break
-
+                    else:
+                        _assert_flag = False
+                        assert 0
+                        break
                 # Check if receptor id is in the range 1 to 197
                 if _assert_flag == False:
                     break
