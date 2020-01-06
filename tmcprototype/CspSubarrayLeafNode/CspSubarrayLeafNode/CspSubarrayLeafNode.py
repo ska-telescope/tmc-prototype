@@ -272,7 +272,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         while not self._stop_delay_model_event.isSet():
             if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY
-                    or self.CspSubarrayProxy.obsState == CONST.ENUM_CONFIGURING
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
                 self.logger.info("Calculating delays.")
                 time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
