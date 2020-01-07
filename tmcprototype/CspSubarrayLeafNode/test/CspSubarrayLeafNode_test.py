@@ -213,7 +213,7 @@ class TestCspSubarrayLeafNode(object):
                 # Check if receptor id is in the range 1 to 197
                 if _assert_flag == False:
                     break
-                elif not delayDetails['receptor'] in range(1, 198):
+                elif not int(delayDetails['receptor']) in range(1, 198):
                     _assert_flag = False
                     assert 0
                     break
