@@ -23,11 +23,7 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-from time import sleep
-from mock import MagicMock
-#from tango import DevFailed, DevState
 from tango import DevState, EventType, DeviceProxy
-#from devicetest import DeviceTestCase, main
 from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST

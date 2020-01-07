@@ -22,13 +22,10 @@ import numpy as np
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
-
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pardir),os.pardir)) \
                     + "/ska_antennas.txt"
-
-
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
@@ -50,6 +47,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # PROTECTED REGION ID(CspSubarrayLeafNode.class_variable) ENABLED START #
 
     _DELAY_UPDATE_INTERVAL = 10
+    # _delay_in_advance variable (in seconds) is added to current timestamp and is used to calculate advance delay
+    # coefficients.
     _delay_in_advance = 60
     # _stop_delay_model_event = # type: Event
 
@@ -185,7 +184,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         delay_corrections_h_array_t4.append(delay[i])
                     elif timestamp == 5:
                         delay_corrections_h_array_t5.append(delay[i])
-
                 else:
                     if timestamp == 0:
                         delay_corrections_v_array_t0.append(delay[i])
@@ -292,7 +290,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         fsid_delay_object["fsid"] = fsid
                         delay_coeff_array = []
                         receptor_delay_coeffs = delay_corrections_h_array_dict[receptor]
-                        print("receptor_delay_coeffs:", (receptor_delay_coeffs[0]))
                         for i in range (0,len(receptor_delay_coeffs)):
                             delay_coeff_array.append(receptor_delay_coeffs[i])
                         fsid_delay_object["delayCoeff"] = delay_coeff_array
@@ -349,7 +346,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             self._state = 0
             try:
-                # create subarray Proxy
+                # create CspSubarray Proxy
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             except:
                 self.logger.debug(CONST.ERR_IN_CREATE_PROXY_CSPSA)
@@ -521,7 +518,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            print("argin configure: ", argin)
             argin_json = json.loads(argin)
             # Used to extract FSP IDs
             self.fsp_ids_object = argin_json["fsp"]
@@ -537,7 +533,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
 
-            print("cspConfiguration: ", cspConfiguration)
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
 
