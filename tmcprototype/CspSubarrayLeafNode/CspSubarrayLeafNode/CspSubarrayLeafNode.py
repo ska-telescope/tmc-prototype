@@ -271,7 +271,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
 
         while not self._stop_delay_model_event.isSet():
-            if(self.CspSubarrayProxy.obsState == CONST.ENUM_READY
+            if(self.CspSubarrayProxy.obsState == CONST.ENUM_CONFIGURING
+                    or self.CspSubarrayProxy.obsState == CONST.ENUM_READY
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
                 self.logger.info("Calculating delays.")
                 time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
