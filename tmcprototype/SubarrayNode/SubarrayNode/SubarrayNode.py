@@ -31,7 +31,7 @@ import json
 
 # Tango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
+from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType, Database
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from future.utils import with_metaclass
 
@@ -768,6 +768,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             else:
                 #TODO: Need to add code to revert allocated resources
                 argout = []
+        # call store method
+        self.storeindb()
         # return dish_allocation_result
         return argout
 
@@ -991,6 +993,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     scanID = attribute(
         dtype='str',
+        access=AttrWriteType.READ_WRITE,
         doc="ID of ongoing SCAN",
     )
 
@@ -1011,6 +1014,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         doc="ID List of the Receptors assigned in the Subarray",
     )
 
+    testmemattr = attribute(
+        dtype='str',
+        access=AttrWriteType.READ_WRITE,
+        memorized=True,
+        hw_memorized=True,
+    )
+
+    memflag = attribute(
+        dtype='str',
+        access=AttrWriteType.READ_WRITE,
+        memorized=True,
+        hw_memorized=True,
+    )
     # ---------------
     # General methods
     # ---------------
@@ -1023,18 +1039,37 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
-        self.set_state(DevState.INIT)
-        self.set_status(CONST.STR_SA_INIT)
+        self.db = Database()
+        self.name = self.get_name()
+        memflag_dict = self.db.get_device_attribute_property(str(self.name), "memflag")
+        if memflag_dict:
+            self._memflag = memflag_dict["memflag"]["__value"][0]
+        else:
+            self._memflag = "false"
+
+        print("Attribute property value:", str(self._memflag))
+
+        if self._memflag == "true":
+            print ("Need to restore the values")
+            self._receptor_id_list = [1,2]
+            self.restorefromdb()
+            # self.connecttostateserver()
+        else:
+            print ("Initialise with normal values.")
+
+            self.set_state(DevState.INIT)
+            self.set_status(CONST.STR_SA_INIT)
+            self._obs_state = CONST.OBS_STATE_ENUM_IDLE  # set obsState to "IDLE"
+            self._receptor_id_list = []
+            self.set_state(DevState.OFF)  # Set state = OFF
+
         self.SkaLevel = 2                       # set SKALevel to "2"
         self._admin_mode = CONST.ENUM_ONLINE    # set adminMode to "ON-LINE"
         self._health_state = CONST.ENUM_OK      # set health state to "OK"
-        self._obs_state = CONST.OBS_STATE_ENUM_IDLE       # set obsState to "IDLE"
         self._obs_mode = CONST.ENUM_IDLE        # set obsMode to "IDLE"
         self._simulation_mode = False
         self.isScanning = False
-        self._scan_id = ""
         self._sb_id = ""
-        self._receptor_id_list = []
         self.dishHealthStateMap = {}
         self.dishPointingStateMap = {}
         self._dish_leaf_node_group = tango.Group(CONST.GRP_DISH_LEAF_NODE)
@@ -1043,7 +1078,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._pointing_state_event_id = []
         self._dishLnVsHealthEventID = {}
         self._dishLnVsPointingStateEventID = {}
-        self.set_state(DevState.OFF)            # Set state = OFF
         self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
                                                 # SDP SA LN
         self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
@@ -1095,6 +1129,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
         self.logger.info(CONST.STR_SA_INIT_SUCCESS)
+
+        # call store method
+        self.storeindb()
+        self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "true"}})
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
 
@@ -1106,6 +1144,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
+        print ("Deleting device")
+        self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "false"}})
+        attr_val = self.db.get_device_attribute_property(str(self.name), "memflag")
+        print("Attribute property value:", attr_val)
+
         # PROTECTED REGION END #    //  SubarrayNode.delete_device
 
     # ------------------
@@ -1116,7 +1159,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """ Returns the Scan ID. """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
         return self._scan_id
+
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
+
+    def write_scanID(self, value):
+        """ Sets the scanID. """
+        # PROTECTED REGION ID(SubarrayNode.scanID_write) ENABLED START #
+        self._scan_id = value
+        # PROTECTED REGION END #    //  SubarrayNode.scanID_write
 
     def read_sbID(self):
         """ Returns the scheduling block ID. """
@@ -1141,6 +1191,27 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
         return self._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
+
+    def read_testmemattr(self):
+        # PROTECTED REGION ID(Test.testmemattr_read) ENABLED START #
+        return self._testmemattr
+        # PROTECTED REGION END #    //  Test.testmemattr_read
+
+    def write_testmemattr(self, value):
+        # PROTECTED REGION ID(Test.testmemattr_write) ENABLED START #
+        self._testmemattr = value
+        # PROTECTED REGION END #    //  Test.testmemattr_write
+
+    def read_memflag(self):
+        # PROTECTED REGION ID(Test.memflag_read) ENABLED START #
+        return self._memflag
+        # PROTECTED REGION END #    //  Test.memflag_read
+
+    def write_memflag(self, value):
+        # PROTECTED REGION ID(Test.memflag_write) ENABLED START #
+        self._memflag = value
+        # PROTECTED REGION END #    //  Test.memflag_write
+
 
     # --------
     # Commands
@@ -1431,7 +1502,51 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                          CONST.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  SubarrayNode.Track
 
-# ----------
+    def storeindb(self):
+        state = self.get_state()
+        print ("State:", state)
+        obsState = self._obs_state
+        receptor_id = self._receptor_id_list
+        tempStoreData = {
+            "State": state,
+            "ObsState": obsState,
+            "ReceptorId": receptor_id
+        }
+        restore_json= json.dumps(tempStoreData)
+        self.db.put_device_attribute_property(str(self.name), {"testmemattr": {"__value": restore_json}})
+
+    def restorefromdb(self):
+        testmemattr_json = self.db.get_device_attribute_property(str(self.name), "testmemattr")
+        print("Attribute property value:", testmemattr_json, type(testmemattr_json))
+        restore_dict = json.loads(testmemattr_json["testmemattr"]["__value"][0])
+        print ("restore_dict:", restore_dict)
+
+        # Set state of device
+        # parse json
+        state = restore_dict["State"]
+        if state == 1:
+            self.set_state(DevState.ON)
+        self.set_status(CONST.STR_SA_INIT)
+        obsState = restore_dict["ObsState"]
+        self._obs_state = obsState  # set obsState to "IDLE"
+        receptorId = restore_dict["ReceptorId"]
+        self._receptor_id_list = receptorId
+
+    def sub_state_callback(self, evt):
+        print("State on State server:", evt.attr_value.value)
+        if evt.attr_value.value == str('ON'):
+            self.set_state(DevState.ON)
+        elif evt.attr_value.value == str('OFF'):
+            self.set_state(DevState.OFF)
+
+    def connecttostateserver(self):
+        print ("Subscribing to subarray state from state server")
+        self.state_server_proxy = DeviceProxy("test/stateserver/1")
+        # print("State on State server:",self.state_server_proxy. Subarray1_state)
+        self.state_server_proxy.subscribe_event("Subarray1_state", EventType.CHANGE_EVENT,
+                                                 self.sub_state_callback, stateless=True)
+0
+    # ----------
 # Run server
 # ----------
 
