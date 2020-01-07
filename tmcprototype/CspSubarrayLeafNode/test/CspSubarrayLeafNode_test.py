@@ -177,13 +177,13 @@ class TestCspSubarrayLeafNode(object):
                               '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", ' \
                               '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
                               '"dec": "-30:52:17.3"}}, "scanID": "123"}'
-        time.sleep(8)
+        time.sleep(4)
         tango_context.device.ConfigureScan(configurescan_input)
-        time.sleep(20)
+        time.sleep(10)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
-        time.sleep(20)
+        time.sleep(10)
         assert create_cspsubarray1_proxy.obsState == CONST.ENUM_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
 
@@ -196,14 +196,11 @@ class TestCspSubarrayLeafNode(object):
             for delayDetails in delayModel['delayDetails']:
                 for receptorDelayDetails in delayDetails['receptorDelayDetails']:
                     # Check if length of delay coefficients array is 6 and all the elements in array are float
-                    if len(receptorDelayDetails['delayCoeff'])== 6:
-                        for i in (0, len(receptorDelayDetails['delayCoeff'])):
-                            if not float(receptorDelayDetails['delayCoeff'][i]):
-                                _assert_flag = False
-                                assert 0
-                                break
-
-                            if not receptorDelayDetails['fsid'] in range(1, 27):
+                    delay_coeff_list = receptorDelayDetails['delayCoeff']
+                    fsid = receptorDelayDetails['fsid']
+                    if len(delay_coeff_list)== 6:
+                        for i in range(0, 6):
+                            if not isinstance(delay_coeff_list[i], float) :
                                 _assert_flag = False
                                 assert 0
                                 break
@@ -211,6 +208,12 @@ class TestCspSubarrayLeafNode(object):
                         _assert_flag = False
                         assert 0
                         break
+
+                    if not fsid in range(1, 27):
+                        _assert_flag = False
+                        assert 0
+                        break
+
                 # Check if receptor id is in the range 1 to 197
                 if _assert_flag == False:
                     break
@@ -220,12 +223,15 @@ class TestCspSubarrayLeafNode(object):
                     break
 
             # Check if epoch is empty and is float
+            epoch = delayModel['epoch']
             if _assert_flag == False:
                 break
-            elif not (delayModel['epoch']) or not float(delayModel['epoch']):
+            elif not (epoch) or not isinstance(float(epoch), float):
                 _assert_flag = False
                 assert 0
                 break
+            else:
+                pass
 
         if _assert_flag == True:
             assert 1
