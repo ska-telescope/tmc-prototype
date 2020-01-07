@@ -47,8 +47,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # PROTECTED REGION ID(CspSubarrayLeafNode.class_variable) ENABLED START #
 
     _DELAY_UPDATE_INTERVAL = 10
-    # _delay_in_advance variable (in seconds) is added to current timestamp and is used to calculate advance delay
-    # coefficients.
+    # _delay_in_advance variable (in seconds) is added to current timestamp and is used to calculate advance
+    # delay coefficients.
     _delay_in_advance = 60
     # _stop_delay_model_event = # type: Event
 
@@ -139,7 +139,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         Scipy library is used to convert delay values (in Seconds) to a fifth order polynomial coefficients.
         Six timestamps from the time-frame t0 to t+10, are used to calculate delays per antenna. These six
         delay values are then used to calculate fifth order polynomial coefficients.
-            In order to calculate delays in advance, timestamp t0 is considered to be one minute ahead of the
+        In order to calculate delays in advance, timestamp t0 is considered to be one minute ahead of the
         the current timestamp.
 
         :param argin: time_t0
@@ -166,8 +166,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         for timestamp in range(0, len(timestamp_array)):
             # Calculate geometric delay value
-            delay = self.delay_correction_object._calculate_delays(self.target, str(timestamp_array[timestamp]))
-            antenna_names = list(self.delay_correction_object.ant_models.keys())
+            delay = self.delay_correction_object._calculate_delays(self.target,
+                                                                   str(timestamp_array[timestamp]))
 
             # Horizontal and vertical delay corrections for each antenna
             for i in range(0, len(delay)):
@@ -199,21 +199,21 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         delay_corrections_v_array_t5.append(delay[i])
 
         x = np.array([0, 0.2, 0.4, 0.6, 0.8, 1])
-        for i in range(0, len(antenna_names)):
-            temp_delay_list = []
-            temp_delay_list.append(delay_corrections_h_array_t0[i])
-            temp_delay_list.append(delay_corrections_h_array_t1[i])
-            temp_delay_list.append(delay_corrections_h_array_t2[i])
-            temp_delay_list.append(delay_corrections_h_array_t3[i])
-            temp_delay_list.append(delay_corrections_h_array_t4[i])
-            temp_delay_list.append(delay_corrections_h_array_t5[i])
+        for i in range(0, len(self.antenna_names)):
+            antenna_delay_list = []
+            antenna_delay_list.append(delay_corrections_h_array_t0[i])
+            antenna_delay_list.append(delay_corrections_h_array_t1[i])
+            antenna_delay_list.append(delay_corrections_h_array_t2[i])
+            antenna_delay_list.append(delay_corrections_h_array_t3[i])
+            antenna_delay_list.append(delay_corrections_h_array_t4[i])
+            antenna_delay_list.append(delay_corrections_h_array_t5[i])
 
             # The number of data points must be larger than the spline degree `k`
-            y = np.array(temp_delay_list)
+            y = np.array(antenna_delay_list)
 
             output = UnivariateSpline(x, y, k=5, s=0)
             polynomial = output.get_coeffs()
-            delay_corrections_h_array_dict[antenna_names[i]] = polynomial
+            delay_corrections_h_array_dict[self.antenna_names[i]] = polynomial
         return delay_corrections_h_array_dict
 
     def update_config_params(self):
@@ -246,6 +246,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Create DelayCorrection Object
         self.delay_correction_object = katpoint.DelayCorrection(assigned_receptors, ref_ant)
+        self.antenna_names = list(self.delay_correction_object.ant_models.keys())
 
         # list of frequency slice ids
         for fsp_entry in self.fsp_ids_object:
@@ -283,7 +284,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 delay_model_per_epoch = {}
                 for receptor in self.receptorIDList_str:
                     receptor_delay_object = {}
-                    receptor_delay_object["receptor"] = int(receptor)
+                    receptor_delay_object["receptor"] = receptor
                     receptor_specific_delay_details = []
                     for fsid in self.fsids_list:
                         fsid_delay_object = {}
@@ -350,6 +351,9 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             except:
                 self.logger.debug(CONST.ERR_IN_CREATE_PROXY_CSPSA)
+
+            # create CspSubarray Proxy
+            # self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             self._read_activity_message = " "
             self._delay_model = " "
             self._visdestination_address = " "
@@ -479,38 +483,36 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
             Example:
                 {
-                  "csp":
-                  {
-                     "frequencyBand": "1",
-                     "delayModelSubscriptionPoint": "",
-                     "visDestinationAddressSubscriptionPoint": "",
-                     "fsp": [
+                  "frequencyBand": "1",
+                  "fsp": [
                     {
-                      "fspID": "1",
+                      "fspID": 1,
                       "functionMode": "CORR",
                       "frequencySliceID": 1,
                       "integrationTime": 1400,
-                      "corrBandwidth": 0,
-                      "channelAveragingMap": []
-                    },
-                    {
-                      "fspID": "2",
-                      "functionMode": "CORR",
-                      "frequencySliceID": 1,
-                      "integrationTime": 1400,
-                      "corrBandwidth": 0,
-                      "channelAveragingMap": []
-                     }
-                    ]
-                   }
-                 }
+                      "corrBandwidth": 0
+                    }
+                  ],
+                  "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel",
+                  "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses",
+                  "pointing": {
+                    "target": {
+                      "system": "ICRS",
+                      "name": "Polaris",
+                      "RA": "20:21:10.31",
+                      "dec": "-30:52:17.3"
+                    }
+                  },
+                  "scanID": "123"
+                }
 
         Note: \n
         from Jive, enter input as :\n
-        {"csp":{"frequencyBand":"1","delayModelSubscriptionPoint": "","visDestinationAddressSubscriptionPoint"
-        :"",,"fsp":[{"fspID":"1","functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,
-        "corrBandwidth":0,"channelAveragingMap":[]},{"fspID":"2","functionMode":"CORR","frequencySliceID":1,
-        "integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[]}]}}
+        {"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,
+        "integrationTime":1400,"corrBandwidth":0}],"delayModelSubscriptionPoint":
+        "ska_mid/tm_leaf_node/csp_subarray01/delayModel","visDestinationAddressSubscriptionPoint":
+        "mid_sdp/elt/subarray_1/receiveAddresses","pointing":{"target":{"system":"ICRS","name":"Polaris",
+        "RA":"20:21:10.31","dec":"-30:52:17.3"}},"scanID":"123"}
         without white spaces
 
         :return: None.
@@ -518,6 +520,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
+            print("argin configure: ", argin)
             argin_json = json.loads(argin)
             # Used to extract FSP IDs
             self.fsp_ids_object = argin_json["fsp"]
@@ -536,7 +539,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
 
-            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, cmdData, self.commandCallback)
+            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, cmdData,
+                                                       self.commandCallback)
             self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
             self.logger.info(CONST.STR_CONFIGURESCAN_SUCCESS)
             self.logger.debug(argin)
@@ -743,12 +747,12 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             exception_count += 1
 
         except DevFailed as dev_failed:
-            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                                                CONST.ERR_ASSGN_RESOURCES)
+            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
+                                         exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
 
         except Exception as except_occurred:
-            [exception_count, exception_message] = self._handle_generic_exception(except_occurred, exception_message,
-                                                                    exception_count, CONST.ERR_ASSGN_RESOURCES)
+            [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
+                                         exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
