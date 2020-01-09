@@ -12,7 +12,6 @@ SKA Dish Master TANGO device server
 """
 from __future__ import print_function
 from __future__ import absolute_import
-
 import sys
 import os
 file_path = os.path.dirname(os.path.abspath(__file__))
@@ -99,7 +98,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         """
         #input_increment = int(argin[1])
         input_increment = argin[1]
-        #time.sleep(1)
         if abs(self._azimuth_difference) > abs(self._elevation_difference):
             max_increment = abs(self._azimuth_difference)
         elif abs(self._azimuth_difference) < abs(self._elevation_difference):
@@ -190,6 +188,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def track_slew(self):
         """
         Completes slewing of Dish in 10 steps.
+
 
         :return: None
         """
@@ -384,20 +383,25 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     # ------------------
     def read_dishMode(self):
         # PROTECTED REGION ID(DishMaster.dishMode_read) ENABLED START #
-        """ Returns the dishMode. """
+        """ Internal construct of TANGO
+            Returns the dishMode. """
         return self._dish_mode
         # PROTECTED REGION END #    //  DishMaster.dishMode_read
 
     def read_pointingState(self):
         # PROTECTED REGION ID(DishMaster.pointingState_read) ENABLED START #
-        """ Returns the pointingState. """
+        """ Internal construct of TANGO
+            Returns the pointingState. """
         return self._pointing_state
         # PROTECTED REGION END #    //  DishMaster.pointingState_read
 
     def write_band1SamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band1SamplerFrequency_write) ENABLED START #
-        """ Sets the band1 sampler frequency.
+        """ Internal construct of TANGO
+         Sets the band1 sampler frequency.
+
         :param value: band1SamplerFrequency
+
         :return: None
         """
         self._band1_sampler_frequency = value
@@ -406,8 +410,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def write_band2SamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band2SamplerFrequency_write) ENABLED START #
         """
-        Sets the band2 sampler frequency.
+        Internal construct of TANGO
+         Sets the band2 sampler frequency.
+
         :param value: band2SamplerFrequency
+
         :return: None
         """
         self._band2_sampler_frequency = value
@@ -416,6 +423,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def write_band3SamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band3SamplerFrequency_write) ENABLED START #
         """
+        Internal construct of TANGO
         Sets the band3 sampler frequency.
 
         :param value: band3SamplerFrequency
@@ -428,6 +436,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def write_band4SamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band4SamplerFrequency_write) ENABLED START #
         """
+        Internal construct of TANGO
         Sets band4 sampler frequency.
 
         :param value: band4SamplerFrequency
@@ -440,6 +449,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def write_band5aSamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band5aSamplerFrequency_write) ENABLED START #
         """
+        Internal construct of TANGO
         Sets the band5a sampler frequency.
 
         :param value: band5aSamplerFrequency
@@ -452,6 +462,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def write_band5bSamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band5bSamplerFrequency_write) ENABLED START #
         """
+        Internal construct of TANGO
         Sets the band5b sampler frequency.
 
         :param value: band5bSamplerFrequency
@@ -463,25 +474,29 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def read_capturing(self):
         # PROTECTED REGION ID(DishMaster.capturing_read) ENABLED START #
-        """ Returns true if the dish is capturing the data, else false. """
+        """ Internal construct of TANGO
+            Returns true if the dish is capturing the data, else false. """
         return self._capturing
         # PROTECTED REGION END #    //  DishMaster.capturing_read
 
     def read_ConfiguredBand(self):
         # PROTECTED REGION ID(DishMaster.ConfiguredBand_read) ENABLED START #
-        """ Returns the band configured for the Dish. """
+        """ Internal construct of TANGO
+            Returns the band configured for the Dish. """
         return self._configured_band
         # PROTECTED REGION END #    //  DishMaster.ConfiguredBand_read
 
     def read_WindSpeed(self):
         # PROTECTED REGION ID(DishMaster.WindSpeed_read) ENABLED START #
-        """ Returns the Wind speed. """
+        """ Internal construct of TANGO
+            Returns the Wind speed. """
         return self._wind_speed
         # PROTECTED REGION END #    //  DishMaster.WindSpeed_read
 
     def write_WindSpeed(self, value):
         # PROTECTED REGION ID(DishMaster.WindSpeed_write) ENABLED START #
         """
+        Internal construct of TANGO
         Sets the wind speed.
 
         :param value: WindSpeed
@@ -493,19 +508,22 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def read_azimuthOverWrap(self):
         # PROTECTED REGION ID(DishMaster.azimuthOverWrap_read) ENABLED START #
-        """ Returns boolean to notify if Dish Azimuth is beyond Azimuth wrap limit. """
+        """Internal construct of TANGO
+           Returns boolean to notify if Dish Azimuth is beyond Azimuth wrap limit. """
         return self._azimuthoverwrap
         # PROTECTED REGION END #    //  DishMaster.azimuthOverWrap_read
 
     def read_desiredPointing(self):
         # PROTECTED REGION ID(DishMaster.desiredPointing_read) ENABLED START #
-        """ Returns the desired pointing coordinates of Dish. """
+        """ Internal construct of TANGO
+            Returns the desired pointing coordinates of Dish. """
         return self._desired_pointing
         # PROTECTED REGION END #    //  DishMaster.desiredPointing_read
 
     def write_desiredPointing(self, value):
         # PROTECTED REGION ID(DishMaster.desiredPointing_write) ENABLED START #
         """
+        Internal construct of TANGO
         Sets the desired pointing coordinates of Dish.
 
         :param value: desiredPointing
@@ -517,13 +535,15 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def read_achievedPointing(self):
         # PROTECTED REGION ID(DishMaster.achievedPointing_read) ENABLED START #
-        """ Returns the achieved pointing coordinates of Dish. """
+        """ Internal construct of TANGO
+            Returns the achieved pointing coordinates of Dish. """
         return self._achieved_pointing
         # PROTECTED REGION END #    //  DishMaster.achievedPointing_read
 
     def read_AzElOffset(self):
         # PROTECTED REGION ID(DishMaster.AzElOffset_read) ENABLED START #
-        """ Returns Azimuth and Elevation pointing limits of Dish. """
+        """Internal construct of TANGO
+           Returns Azimuth and Elevation pointing limits of Dish. """
         return self._azeloffset
         # PROTECTED REGION END #    //  DishMaster.AzElOffset_read
 
@@ -534,6 +554,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def write_toggleFault(self, value):
         # PROTECTED REGION ID(DishMaster.toggleFault_write) ENABLED START #
+        """ Internal construct of TANGO"""
         self._toggle_fault = value
         # PROTECTED REGION END #    //  DishMaster.toggleFault_write
 
@@ -960,6 +981,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
         :param argin: DevString. Timestamp in UTC at which command should be executed.
 
+            Example:0
+
         :return: None
 
         """
@@ -968,7 +991,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
             self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
             self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
-
             actual_az_lim = abs((self._achieved_pointing[1] - self._desired_pointing[1])
                                 * math.cos(((self._desired_pointing[2]) * math.pi)/180))
             actual_el_lim = abs(self._achieved_pointing[2] - self._desired_pointing[2])
