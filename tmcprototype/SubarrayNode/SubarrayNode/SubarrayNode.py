@@ -1199,8 +1199,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         # Configuration of CSP
                         cspConfiguration = self._scanConfiguration.copy()
                         # Keep configuration specific to CSP and delete configuration of other nodes
-                        if "pointing" in cspConfiguration:
-                            del cspConfiguration["pointing"]
                         if "dish" in cspConfiguration:
                             del cspConfiguration["dish"]
                         if "sdp" in self._scanConfiguration:
@@ -1214,6 +1212,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                 self.SdpSubarrayFQDN + "/receiveAddresses"
 
                             csp_config = cspConfiguration["csp"]
+                            csp_config["pointing"] = cspConfiguration["pointing"]
                             csp_config["scanID"] = self._scan_id
 
                             cmdData = tango.DeviceData()
