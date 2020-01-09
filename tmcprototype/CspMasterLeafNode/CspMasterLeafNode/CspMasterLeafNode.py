@@ -323,7 +323,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
-        print("on_string::",argin)
         self._csp_proxy.command_inout_asynch(CONST.CMD_ON, argin, self.commandCallback)
         self.logger.debug(CONST.STR_ON_CMD_ISSUED)
 
@@ -346,7 +345,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
-        print("off_string::",argin)
         self._csp_proxy.command_inout_asynch(CONST.CMD_OFF, argin, self.commandCallback)
         self.logger.debug(CONST.STR_OFF_CMD_ISSUED)
 
@@ -371,7 +369,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
-        print("standby_string::",argin)
         self._csp_proxy.command_inout_asynch(CONST.CMD_STANDBY, argin, self.commandCallback)
         self.logger.debug(CONST.STR_STANDBY_CMD_ISSUED)
 
