@@ -981,7 +981,6 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
         :param argin: DevString. Timestamp in UTC at which command should be executed.
 
-            Example:0
 
         :return: None
 

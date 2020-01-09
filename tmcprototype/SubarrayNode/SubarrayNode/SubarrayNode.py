@@ -52,7 +52,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
         to calculate the subarray health state.
+
         :param evt: A TANGO_CHANGE event on CSP and SDP Subarray healthState.
+
         :return: None
         """
         exception_message = []
@@ -192,6 +194,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._health_state = CONST.ENUM_UNKNOWN
 
     def calculate_observation_state(self):
+        """
+        Calculates aggregated observation state of Subarray.
+        """
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
@@ -269,14 +274,18 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :param argin:
             DevVarStringArray. List of receptor IDs to be allocated to subarray.
+            Example: ['0001', '0002']
+
         :return:
             DevVarStringArray. List of Resources added to the Subarray.
+            Example: ['0001', '0002']
         """
         exception_count = 0
         exception_message = []
         allocation_success = []
         allocation_failure = []
         # Add each dish into the tango group
+        self.logger.debug("add_receptors_in_group::",argin)
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
@@ -339,6 +348,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # Throw Exception
         if exception_count > 0:
             self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
+
+        self.logger.debug("add_receptors_in_group::",allocation_success)
         return allocation_success
 
     def assign_csp_resources(self, argin):
@@ -351,6 +362,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             receptor ids.
 
         :return: List of strings.
+
+        Example: ['0001', '0002']
+
             Returns the list of successfully assigned resources. Currently the
             CSPSubarrayLeafNode.AssignResources function returns void. Thus, this
             function just loops back the input argument in case of success. In case of
@@ -372,6 +386,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         # For this PI CSP Subarray Leaf Node does not return anything. So this function is
         # looping the receptor ids back.
+        self.logger.debug("assign_csp_resources::",argout)
         return argout
 
     def assign_sdp_resources(self, argin):
@@ -384,6 +399,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             processing block ids are passed to this function.
 
         :return: List of strings.
+        Example: ['PB1', 'PB2']
+
             Returns the list of successfully assigned resources. Currently the
             SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
             function just loops back the input argument in case of success. In case of
@@ -402,6 +419,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
+        self.logger.debug("assign_sdp_resources::",argout)
         return argout
 
     def remove_receptors_in_group(self):
@@ -690,8 +708,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         Assigns resources to the subarray. It accepts receptor id list as an array of
         DevStrings . Upon successful execution, the 'receptorIDList' attribute of the
-        given subarray is populated with the given receptors. And returns list of
-        assigned resources as array of DevStrings.
+        given subarray is populated with the given receptors.Add resources to CSP,SDP subarray and DishLeafNode.
+        And returns list of assigned resources as array of DevStrings.
 
         Note: Resource allocation for CSP and SDP resources is also implemented but
         currently CSP accepts only receptorIDList and SDP accepts only dummy resources.
@@ -699,8 +717,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :param argin:
             DevVarStringArray. List of receptor IDs to be allocated to subarray.
 
+            Example: ['0001', '0002'] as argin
+
         :return:
             DevVarStringArray. List of Resources added to the Subarray.
+
+            Example: ['0001', '0002'] as argout if allocation successful
+
+                [] as argout if allocation unsuccessful
         """
         exception_count = 0
         exception_message = []
@@ -710,6 +734,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             # Allocation success and failure lists
             for leafId in range(0, len(argin)):
                 float(argin[leafId])
+                self.logger.debug("assign_resource_argin",argin)
         except ValueError as value_error:
             str_log = CONST.ERR_SCAN_CMD +"\n" + str(value_error) + CONST.ERR_INVALID_DATATYPE
             self.logger.error(str_log)
@@ -769,6 +794,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 #TODO: Need to add code to revert allocated resources
                 argout = []
         # return dish_allocation_result
+        self.logger.debug("assign_resource_argout",argout)
         return argout
 
     def is_AssignResources_allowed(self):
@@ -791,6 +817,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :param argin: DevVoid.
 
         :return: DevVarStringArray.
+        Example: "[]" as argout on successful release all resources.
         """
         self._release_excpt_count = 0
         self._release_excpt_msg = []
@@ -840,6 +867,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
 
         argout.extend(self._dish_leaf_node_group.get_device_list(True))
+        self.logger.debug("Release_all_resources:",argout)
         return argout
 
     def is_ReleaseAllResources_allowed(self):
@@ -1113,31 +1141,49 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # ------------------
 
     def read_scanID(self):
-        """ Returns the Scan ID. """
+        """ Internal construct of TANGO.
+
+        Returns the Scan ID.
+
+        EXAMPLE: 123
+        Where 123 is a Scan ID from configuration json string.
+        """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
+        self.logger.debug("read_scanID",self._scan_id)
         return self._scan_id
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
     def read_sbID(self):
-        """ Returns the scheduling block ID. """
+        """ Internal construct of TANGO.
+
+        Returns the scheduling block ID. """
         # PROTECTED REGION ID(SubarrayNode.sbID_read) ENABLED START #
         return self._sb_id
         # PROTECTED REGION END #    //  SubarrayNode.sbID_read
 
     def read_activityMessage(self):
-        """ Returns activityMessage. """
+        """ Internal construct of TANGO.
+
+        Returns activityMessage.
+        Example: "Subarray node is initialized successfully"
+        //result occured after initialization of device.
+        """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_read) ENABLED START #
         return self._read_activity_message
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_read
 
     def write_activityMessage(self, value):
-        """ Sets the activityMessage. """
+        """ Internal construct of TANGO.
+        Sets the activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
     def read_receptorIDList(self):
-        """ Returns the receptor IDs allocated to the Subarray. """
+        """ Internal construct of TANGO.
+
+        Returns the receptor IDs allocated to the Subarray.
+         """
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
         return self._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
@@ -1156,17 +1202,17 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         Configures the resources assinged to the Subarray.
 
-        :param argin: DevStringArray. JSON string that includes pointing parameters of Dish - Azimuth and
-        Elevation Angle, CSP Configuration and SDP Configuration parameters. JSON string example is:
+        :param argin: DevStringArray.
+        JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP Configuration and SDP Configuration parameters.
+        assign_csp_resourcesJSON string example is:
 
-        {"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"M51","RA":"13:29:52.698",
-        "dec":"+47:11:42.93"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,
-        "functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},"sdp":{
-        "configure":[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest",
-        "type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChannels":372,
-        "numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS",
-        "name":"M51","ra":3.5337607188635975,"dec":0.8237126492459581}}},"scanParameters":{"12345":{
-        "fieldId":0,"intervalMs":1400}}}]}}
+        {"scanID":123,"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946","dec":
+        "+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode"
+        :"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},"sdp":{"configure":[{"id":
+        "realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest","type":"realtime","version"
+        :"0.1.0"},"parameters":{"numStations":4,"numChannels":372,"numPolarisations":4,"freqStartHz":0.35e9,
+        "freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"Polaris","ra":0.662432049839445,"dec":
+        1.5579526053855042}}},"scanParameters":{"123":{"fieldId":0,"intervalMs":1400}}}]}}
 
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
@@ -1383,7 +1429,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """ Invokes Track command on the resources assigned to the Subarray.
 
         :param argin: DevString
-
+        Example: radec|2:31:50.91|89:15:51.4 as argin
         Argin to be provided is the Ra and Dec values in the following format: radec|2:31:50.91|89:15:51.4
         Where first value is tag that is radec, second value is Ra in Hr:Min:Sec, and third value is Dec in
         Deg:Min:Sec.
@@ -1393,6 +1439,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         exception_message= []
         exception_count = 0
+        self.logger.debug("Track:",argin)
         try:
             self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
             # set obsState to CONFIGURING when the configuration is started

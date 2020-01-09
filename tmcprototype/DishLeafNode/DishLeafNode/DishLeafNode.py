@@ -51,10 +51,12 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishModeCallback(self, evt):
         """
         Retrieves the subscribed dishMode attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on dishMode attribute.
+
         :return: None
 
-        """
+        """ 
         if evt.err is False:
             try:
                 self._dish_mode = evt.attr_value.value
@@ -99,7 +101,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishCapturingCallback(self, evt):
         """
         Retrieves the subscribed capturing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on capturing attribute.
+
         :return: None
 
         """
@@ -126,7 +130,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishAchievedPointingCallback(self, evt):
         """
         Retrieves the subscribed achievedPointing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on achievedPointing attribute.
+
         :return: None
 
         """
@@ -146,7 +152,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def dishDesiredPointingCallback(self, evt):
         """
         Retrieves the subscribed desiredPointing attribute of DishMaster.
+
         :param evt: A TANGO_CHANGE event on desiredPointing attribute.
+
         :return: None
 
         """
@@ -166,7 +174,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def commandCallback(self, event):
         """
         Checks whether the command has been successfully invoked on DishMaster.
+
         :param event: response from DishMaster for the invoked command
+
+
         :return: None
 
         """
@@ -194,9 +205,10 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """Converts latitude from deg:min:sec to decimal degree format.
 
         :param dish_antenna_latitude: latitude of Dish location in Deg:Min:Sec.
+        Example: 18:31:48.0
 
         :return: latitude of Dish location in decimal Degree.
-
+        Example : "18.529999999999998" is the returned value of dmstodd
         """
         dd = re.split('[:]+', dish_antenna_latitude)
         deg_dec = abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
@@ -205,11 +217,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         else:
             return deg_dec
 
+
     def convert_radec_to_azel(self, data):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
         :param data: DevVarStringArray
-        Argin to be provided is the Ra and Dec values in the following format: radec|2:31:50.91|89:15:51.4
+        Argin to be provided is the Ra and Dec values in the following format:
+        radec|2:31:50.91|89:15:51.4
         Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,and third value is Dec in
         Deg:Min:Sec.
 
@@ -255,7 +269,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Calculate enu coordinates
             enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
 
-            # Calculate Az El coordinates
+            # Calculate Az El coordinatesdishAchievedPointingCallback
             self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
             self.az = katpoint.rad2deg(self.az_el_coordinates[0])
             self.el = katpoint.rad2deg(self.az_el_coordinates[1])
@@ -383,6 +397,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         Initializes the attributes and properties of DishLeafNode and subscribes change event
         on attributes of DishMaster.
+
         :return: None
 
         """
@@ -462,7 +477,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(DishLeafNode.activityMessage_write) ENABLED START #
-        """ Sets the activityMessage """
+        """ Internal construct of TANGO.
+
+        Sets the activityMessage """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  DishLeafNode.activityMessage_write
 
@@ -522,7 +539,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Scan) ENABLED START #
         """
         Triggers the DishMaster to start the Scan.
+
         :param argin: timestamp
+
         :return: None
 
         TODO: Scan argument in JSON format
@@ -563,7 +582,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def EndScan(self, argin):
         # PROTECTED REGION ID(DishLeafNode.EndScan) ENABLED START #
         """ Triggers the DishMaster to stop the Scan.
+
         :param argin: timestamp
+
         :return: None
         TODO: EndScan argument in JSON format
         {"timestamp": 0}
@@ -600,8 +621,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
-        :param argin: A String in a JSON format that includes pointing parameters of Dish- Azimuth and
-        Elevation Angle.
+
+        :param argin: A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
+
             Example:
             {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
             "dish":{"receiverBand":"1"}}
@@ -682,7 +704,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def StartCapture(self, argin):
         # PROTECTED REGION ID(DishLeafNode.StartCapture) ENABLED START #
         """ Triggers the DishMaster to Start capture on the set configured band.
+
         :param argin: timestamp
+
         :return: None
 
         """
@@ -714,7 +738,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.StopCapture) ENABLED START #
         """
         Triggers the DishMaster to Stop capture on the set configured band.
+
         :param argin: timestamp
+
         :return: None
 
         """
@@ -758,10 +784,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Slew) ENABLED START #
         """
         Triggers the DishMaster to slew the dish towards the set pointing coordinates.
+
         :param argin: timestamp
+
         :return: None
 
         """
+        print ("timestamp:::",argin)
         exception_count = 0
         exception_message = []
         try:
@@ -798,6 +827,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         (provided elevation limit is not reached).
 
         For Track command, Argin to be provided is the Ra and Dec values in the following JSON format:
+
         {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
         "dish":{"receiverBand":"1"}}
 
