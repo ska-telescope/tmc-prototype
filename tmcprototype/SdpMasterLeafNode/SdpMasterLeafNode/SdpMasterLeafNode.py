@@ -59,7 +59,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param event: response from SDP Master for the invoked command.
 
-        :return: None
+        :return: None.
         """
         exception_count = 0
         exception_message = []
@@ -191,21 +191,29 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def read_SDPState(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.SDPState_read) ENABLED START #
+        """ Internal construct of TANGO.
+        This is a forwarded attribute from SDP Master which depicts State of the SDP."""
         return self._sdp_state
         # PROTECTED REGION END #    //  SdpMasterLeafNode.SDPState_read
 
     def read_SDPAdminMode(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.SDPAdminMode_read) ENABLED START #
+        """ Internal construct of TANGO.
+        This is a forwarded attribute from SDP Master which depicts Admin Mode of the SDP."""
         return self._sdp_admin_mode
         # PROTECTED REGION END #    //  SdpMasterLeafNode.SDPAdminMode_read
 
     def read_versionInfo(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.versionInfo_read) ENABLED START #
+        """ Internal construct of TANGO.
+        Version information of TANGO device."""
         return self._version_info
         # PROTECTED REGION END #    //  SdpMasterLeafNode.versionInfo_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.activityMessage_read) ENABLED START #
+        """ Internal construct of TANGO.
+        String providing information about the current activity in SDPLeafNode."""
         return self._read_activity_message
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_read
 
@@ -233,7 +241,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param argin: DevVoid.
 
-        :return: None
+        :return: None.
 
         """
         self._sdp_proxy.command_inout_asynch(CONST.CMD_ON, self.commandCallback)
@@ -245,6 +253,13 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def Off(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.Off) ENABLED START #
+        """ Sets the OperatingState to OFF.
+
+         :param argin: DevVoid.
+
+         :return: None.
+
+         """
         self.logger.debug(CONST.STR_OFF_CMD_SUCCESS)
         self._read_activity_message = CONST.STR_OFF_CMD_SUCCESS
 
@@ -258,6 +273,13 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def Disable(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.Disable) ENABLED START #
+        """ Sets the OperatingState to Disable.
+
+         :param argin: DevVoid.
+
+         :return: None.
+
+         """
         self.logger.debug(CONST.STR_DISABLE_CMS_SUCCESS)
         self._read_activity_message = CONST.STR_DISABLE_CMS_SUCCESS
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Disableon
@@ -273,7 +295,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param argin: DevVoid.
 
-        :return: None
+        :return: None.
 
         """
         self._sdp_proxy.command_inout_asynch(CONST.CMD_STANDBY, self.commandCallback)

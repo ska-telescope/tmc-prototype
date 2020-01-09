@@ -42,13 +42,13 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # PROTECTED REGION ID(SdpSubarrayLeafNode.class_variable) ENABLED START #
 
     def commandCallback(self, event):
-        """
-        Checks whether the command has been successfully invoked on SDP Subarray.
-        :param
-            event: response from SDP Subarray for the invoked command
-        :return: None
+        """         Checks whether the command has been successfully invoked on SDP Subarray.
 
-        """
+                        :param argin:
+                            event: response from SDP Subarray for the invoked command.
+
+                        :return: None.
+                        """
         exception_count = 0
         exception_message = []
         try:
@@ -176,37 +176,44 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def read_receiveAddresses(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.receiveAddresses_read) ENABLED START #
-        """ Returns the Receive Addresses."""
+        """ Internal construct of TANGO. Returns the Receive Addresses.
+        receiveAddresses is a forwarded attribute from SDP Master which depicts State of the SDP."""
         return self._receive_addresses
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
 
     def write_receiveAddresses(self, value):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.receiveAddresses_read) ENABLED START #
-        """ Sets the Receive Addresses."""
+        """ Internal construct of TANGO. Sets the Receive Addresses.
+        receiveAddresses is a forwarded attribute from SDP Master which depicts State of the SDP."""
         self._receive_addresses = value
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
 
     def read_sdpSubarrayHealthState(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.sdpSubarrayHealthState_read) ENABLED START #
-        """ Returns SDP Subarray Health State"""
+        """ Internal construct of TANGO. Returns SDP Subarray Health State.
+        sdpSubarrayHealthState is a forwarded attribute from SDP Subarray which depicts Health State of the SDP Subarray."""
         return self._sdp_subarray_health_state
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.sdpSubarrayHealthState_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_read) ENABLED START #
-        """ Returns Activity Messages"""
+        """ Internal construct of TANGO. Returns Activity Messages.
+        activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node"""
         return self._read_activity_message
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_write) ENABLED START #
-        """ Sets the Activity Message"""
+        """Internal construct of TANGO. Sets the Activity Message.
+        activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node."""
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activityMessage_write
 
     def read_activeProcessingBlocks(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activeProcessingBlocks_read) ENABLED START #
-        """ Returns Active Processing Blocks"""
+        """Internal construct of TANGO. Returns Active Processing Blocks.
+        activeProcessingBlocks is a forwarded attribute from SDP Subarray which depicts the active Processing Blocks in '
+        'the SDP Subarray"""
         return self._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
 
@@ -219,18 +226,19 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def ReleaseAllResources(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
-        """
-                Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
-                receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources
-                command is invoked on the respective subarray. In this case, the receptorIDList tag is empty
-                as all the resources of the Subarray are released. When releaseALL is False, ReleaseResources
-                will be invoked on the Subarray and the resources provided in receptorIDList tag, are
-                released from Subarray. This selective release of the resources when releaseALL is False,
-                will be implemented in the later stages of the prototype.
-                :param
-                    argin: None
-                :return:
-                """
+        """         Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+                    receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+                    is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
+                    resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
+                    on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
+                    This selective release of the resources when releaseALL is False, will be implemented in the
+                    later stages of the prototype.
+
+                        :param argin: None.
+
+                        :return: None.
+                        """
+
         exception_message = []
         exception_count = 0
 
@@ -262,11 +270,11 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def ReleaseResources(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseResources) ENABLED START #
-        """
-        Release resources
-        :param
-            argin: None
-        :return:
+        """ Release resources.
+
+                :param argin: None.
+
+                :return: None.
         """
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseResources
 
@@ -301,7 +309,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         Note: From Jive, enter input as:
         {"processingBlockIdList": ["0001", "0002"]} without any space.
 
-        :return: None
+        :return: None.
         """
         exception_message = []
         exception_count = 0
@@ -449,16 +457,15 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def Scan(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Scan) ENABLED START #
-        """
-        Invoke Scan command to SDP subarray.
+        """ Invoke Scan command to SDP subarray.
 
-        :param argin: The JSON string format. The string contains following values:
+            :param argin: The string in JSON format. The JSON contains following values:
+            Example:
+            {“scanDuration”:0}.
+        Note:
+        From Jive, enter input as: {“scanDuration”:0} without any space.
 
-            Example: {"scanDuration":0}
-
-        Note: From Jive, enter input as:
-        {"scanDuration":0} without any space.
-
+            :return: None.
         """
         exception_message = []
         exception_count = 0
@@ -505,12 +512,13 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def EndScan(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
-        """
-        It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING
+        """         It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING
         state.
 
-        :return : None
-        """
+                        :param argin: None.
+
+                        :return: None.
+                        """
 
         exception_message = []
         exception_count = 0
@@ -541,7 +549,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def EndSB(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
         """ This command invokes EndSB command on SDP subarray to
-         end the current Scheduling block"""
+         end the current Scheduling block."""
+
         # TODO: For future use
         exception_message = []
         exception_count = 0
@@ -571,7 +580,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def Abort(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
-        """ Abort command"""
+        """ Abort command."""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
 # ----------
