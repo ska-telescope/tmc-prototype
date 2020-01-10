@@ -54,6 +54,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     # PROTECTED REGION ID(SdpMasterLeafNode.class_variable) ENABLED START #
     def commandCallback(self, event):
+
         """
         Checks whether the command has been successfully invoked on SDP Master.
 
@@ -126,6 +127,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     activityMessage = attribute(
+
         dtype='str',
         access=AttrWriteType.READ_WRITE,
         doc="String providing information about the current activity in SDPLeafNode.",
@@ -142,9 +144,10 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ---------------
 
     def init_device(self):
+        '''Initializes the attributes and properties of CSPMasterLeafNode'''
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(SdpMasterLeafNode.init_device) ENABLED START #
-        """ Initializes the attributes and properties of CSPMasterLeafNode """
+
         try:
             SKABaseDevice.init_device(self)
             self.set_state(DevState.ON)
@@ -219,11 +222,19 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(SdpMasterLeafNode.activityMessage_write) ENABLED START #
+        '''
+        Internal construct of TANGO.
+        Sets the activity message.
+        '''
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_write
 
     def read_ProcessingBlockList(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.ProcessingBlockList_read) ENABLED START #
+        '''
+        Internal construct of TANGO.
+        :return:
+        '''
         return self._processing_block_list
         # PROTECTED REGION END #    //  SdpMasterLeafNode.ProcessingBlockList_read
 

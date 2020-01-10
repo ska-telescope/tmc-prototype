@@ -1040,15 +1040,15 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 and receiverBand.
 
             Example:
+
                 {
-                    "pointing":  {
-                          "AZ": 1.0,
-                          "EL": 1.0
-                    },
-                    "dish":{
-                      "receiverBand":"1"
+                    "pointing":
+                    {"AZ": 1.0,"EL": 1.0},
+
+                    "dish":
+                    {"receiverBand":"1"}
+
                     }
-                }
 
         :return: None.
 

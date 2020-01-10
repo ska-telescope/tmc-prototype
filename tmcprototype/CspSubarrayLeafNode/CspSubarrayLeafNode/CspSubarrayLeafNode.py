@@ -490,39 +490,14 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param argin: The string in JSON format. The JSON contains following values:
 
-            Example:
-                {
-                  "frequencyBand": "1",
-                  "fsp": [
-                    {
-                      "fspID": 1,
-                      "functionMode": "CORR",
-                      "frequencySliceID": 1,
-                      "integrationTime": 1400,
-                      "corrBandwidth": 0
-                    }
-                  ],
-                  "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel",
-                  "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses",
-                  "pointing": {
-                    "target": {
-                      "system": "ICRS",
-                      "name": "Polaris",
-                      "RA": "20:21:10.31",
-                      "dec": "-30:52:17.3"
-                    }
-                  },
-                  "scanID": "123"
-                }
+        Example:
 
-        Note: \n
-        from Jive, enter input as :\n
         {"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,
         "integrationTime":1400,"corrBandwidth":0}],"delayModelSubscriptionPoint":
         "ska_mid/tm_leaf_node/csp_subarray01/delayModel","visDestinationAddressSubscriptionPoint":
         "mid_sdp/elt/subarray_1/receiveAddresses","pointing":{"target":{"system":"ICRS","name":"Polaris",
         "RA":"20:21:10.31","dec":"-30:52:17.3"}},"scanID":"123"}
-        without white spaces
+
 
         :return: None.
         """
@@ -711,17 +686,14 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     DevVarStringArray
                     The individual string should contain dish numbers in string format
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+        Example:
+                {
+                "subarrayID": 1,
+                "dish": {
+                "receptorIDList": ["0001", "0002"]
+                }
+                }
 
-            Example:
-                 {
-                   "subarrayID": 1,
-                   "dish": {
-                     "receptorIDList": ["0001","0002"]
-                   }
-                 }
-
-        Note: From Jive, enter input as:
-        {"dish":{"receptorIDList":["0001","0002"]}} without any space.
 
         :return: None.
         """
