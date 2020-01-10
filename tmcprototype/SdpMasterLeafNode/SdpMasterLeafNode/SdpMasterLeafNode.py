@@ -149,7 +149,6 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(SdpMasterLeafNode.init_device) ENABLED START #
 
         try:
-            SKABaseDevice.init_device(self)
             self.set_state(DevState.ON)
             self._sdp_state = CONST.ENUM_STATE_INIT # Setting SDP State to "INIT"
             self._sdp_admin_mode = CONST.ENUM_ADMIN_MODE_ONLINE # Setting adminMode to "ONLINE"

@@ -136,9 +136,10 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ---------------
 
     def init_device(self):
+        """ Initializes the attributes and properties of the Central Node. """
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(SdpSubarrayLeafNode.init_device) ENABLED START #
-        """ Initializes the attributes and properties of the Central Node. """
+
         try:
             # Initialise device state
             self.set_state(DevState.ON) # set State=On
