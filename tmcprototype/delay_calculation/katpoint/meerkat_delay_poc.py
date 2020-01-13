@@ -9,7 +9,7 @@ with open('ska_antennas.txt') as f:
 antennas = [katpoint.Antenna(line) for line in descriptions]
 antennas = {ant.name: ant for ant in antennas}
 
-ref_ant = antennas['ref_ant']
+ref_ant = antennas['m000']
 print(ref_ant)
 antenna1 = antennas['m059']
 print(antenna1)
@@ -20,7 +20,7 @@ print("delay_correction: ", delay_correction)
 
 
 # Create target object
-target = katpoint.Target('radec , 20:21:10.31 , -30:52:17.3')
+target = katpoint.Target('radec , 21:08:47.89 , -88:57:23.0')
 delay_h_array = []
 delay_v_array = []
 delay_corrections_h_array = []
@@ -37,10 +37,10 @@ for i in range(0,len(timestamp_array)):
     delay = delay_correction._calculate_delays(target, timestamp)
     delay_h_array.append(delay[0])
     delay_v_array.append(delay[1])
-    print(delay[0])
+    # print(delay[0])
 
 print("------------------------------------------------------------------------------------------")
-# print("calculate delay h: ", delay_h_array)
+print("calculate delay h: ", delay_h_array)
 print("------------------------------------------------------------------------------------------")
 #print("calculate delay v: ", delay_v_array)
 
