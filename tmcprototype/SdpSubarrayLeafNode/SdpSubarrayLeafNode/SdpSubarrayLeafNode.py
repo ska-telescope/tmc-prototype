@@ -42,13 +42,13 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # PROTECTED REGION ID(SdpSubarrayLeafNode.class_variable) ENABLED START #
 
     def commandCallback(self, event):
-        """         Checks whether the command has been successfully invoked on SDP Subarray.
+        """ Checks whether the command has been successfully invoked on SDP Subarray.
 
-                        :param argin:
-                            event: response from SDP Subarray for the invoked command.
+          :param argin:
+            event: response from SDP Subarray for the invoked command.
 
-                        :return: None.
-                        """
+          :return: None.
+        """
         exception_count = 0
         exception_message = []
         try:
@@ -139,7 +139,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Initializes the attributes and properties of the Central Node. """
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(SdpSubarrayLeafNode.init_device) ENABLED START #
-
         try:
             # Initialise device state
             self.set_state(DevState.ON) # set State=On
@@ -212,9 +211,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def read_activeProcessingBlocks(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activeProcessingBlocks_read) ENABLED START #
-        """Internal construct of TANGO. Returns Active Processing Blocks.
-        activeProcessingBlocks is a forwarded attribute from SDP Subarray which depicts the active Processing Blocks in '
-        'the SDP Subarray"""
+        """Internal construct of TANGO. Returns Active Processing Blocks.activeProcessingBlocks is a forwarded attribute
+         from SDP Subarray which depicts the active Processing Blocks in the SDP Subarray"""
         return self._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
 
@@ -271,7 +269,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def ReleaseResources(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseResources) ENABLED START #
-        """ Release resources.
+        """ Invokes ReleaseResources command on SDP Subarray and Release resources.
 
                 :param argin: None.
 
@@ -291,7 +289,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         For PI#3 this command will be provided as a noop placeholder from SDP subarray.
         Eventually this will likely take a JSON string specifying the resource request.
 
-
         :param argin: The string in JSON format. The JSON contains following values:
 
             Processing Block ID List:
@@ -306,6 +303,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 {
                 "processingBlockIdList": ["0001", "0002"]
                 }
+            Note: Enter input without spaces  as:{"processingBlockIdList": ["0001", "0002"]}
 
         :return: None.
         """
@@ -354,7 +352,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ When commanded in the IDLE state: configures the Subarray device by providing the SDP PB
         configuration needed to execute the receive workflow
 
-            :param argin: The string in JSON format. The JSON contains following values:
+        :param argin: The string in JSON format. The JSON contains following values:
 
         Example:
 
@@ -363,7 +361,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         372,"numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS",
         "name":"NGC6251","ra":1.0,"dec":1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},
         "configureScan":{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}
-
 
         :return: None.
         """
@@ -418,6 +415,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             :param argin: The string in JSON format. The JSON contains following values:
             Example:
             {“scanDuration”:0}.
+            Note: Enter input as without spaces:{“scanDuration”:0}
 
             :return: None.
         """

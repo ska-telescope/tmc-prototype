@@ -269,7 +269,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Calculate enu coordinates
             enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
 
-            # Calculate Az El coordinatesdishAchievedPointingCallback
+            # Calculate Az El coordinates
             self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
             self.az = katpoint.rad2deg(self.az_el_coordinates[0])
             self.el = katpoint.rad2deg(self.az_el_coordinates[1])
@@ -477,9 +477,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(DishLeafNode.activityMessage_write) ENABLED START #
-        """ Internal construct of TANGO.
-
-        Sets the activityMessage """
+        """ Internal construct of TANGO.Sets the activityMessage """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  DishLeafNode.activityMessage_write
 
@@ -790,7 +788,6 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None
 
         """
-        print ("timestamp:::",argin)
         exception_count = 0
         exception_message = []
         try:

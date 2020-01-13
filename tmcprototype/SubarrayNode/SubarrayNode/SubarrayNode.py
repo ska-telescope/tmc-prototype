@@ -354,8 +354,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     def assign_csp_resources(self, argin):
         """
-        This function assigns CSP resources to CSP Subarray through CSP Subarray Leaf
-        Node.
+        This function invokes the assign resources command on the CSP Subarray Leaf Node.
 
         :param argin: List of strings
             Contains the list of strings that has the resources ids. Currently this list contains only
@@ -365,10 +364,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         Example: ['0001', '0002']
 
-            Returns the list of successfully assigned resources. Currently the
-            CSPSubarrayLeafNode.AssignResources function returns void. Thus, this
-            function just loops back the input argument in case of success. In case of
-            failure, empty list is returned.
+            Returns the list of CSP resources successfully assigned to the Subarray. Currently, the
+            CSPSubarrayLeafNode.AssignResources function returns void. The function only loops back
+            the input argument in case of successful resource allocation, or returns an empty list in case
+            of failure.
         """
         arg_list = []
         json_argument = {}
@@ -510,8 +509,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Schedules a scan for execution on a subarray. Subarray transitions to
         obsState = SCANNING, when the execution of a scan starts.
 
-        :param argin: DevVarStringArray. JSON string containing scan duration. JSON string example as follows:
+        :param argin: DevVarStringArray. JSON string containing scan duration.
 
+        JSON string example as follows:
+        
         {"scanDuration": 10.0}
 
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
@@ -633,8 +634,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
     @DebugIt()
     def EndScan(self):
-        """ Ends the scan. It can be either an automatic or an externally triggered transition
-        after the scanning completes normally.
+        """ Ends the scan. It is invoked on completion of the scan duration. It can be invoked by an
+        external client while a scan is in progress.
 
         :param argin: DevVoid.
 
@@ -707,9 +708,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def AssignResources(self, argin):
         """
         Assigns resources to the subarray. It accepts receptor id list as an array of
-        DevStrings . Upon successful execution, the 'receptorIDList' attribute of the
-        given subarray is populated with the given receptors.Add resources to CSP,SDP subarray and DishLeafNode.
-        And returns list of assigned resources as array of DevStrings.
+        DevStrings. Upon successful execution, the 'receptorIDList' attribute of the
+        subarray is updated with the list of receptors, and returns list of assigned
+        resources as array of DevStrings.
 
         Note: Resource allocation for CSP and SDP resources is also implemented but
         currently CSP accepts only receptorIDList and SDP accepts only dummy resources.
@@ -1141,9 +1142,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # ------------------
 
     def read_scanID(self):
-        """ Internal construct of TANGO.
-
-        Returns the Scan ID.
+        """ Internal construct of TANGO.Returns the Scan ID.
 
         EXAMPLE: 123
         Where 123 is a Scan ID from configuration json string.
@@ -1154,17 +1153,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
     def read_sbID(self):
-        """ Internal construct of TANGO.
-
-        Returns the scheduling block ID. """
+        """ Internal construct of TANGO.Returns the scheduling block ID. """
         # PROTECTED REGION ID(SubarrayNode.sbID_read) ENABLED START #
         return self._sb_id
         # PROTECTED REGION END #    //  SubarrayNode.sbID_read
 
     def read_activityMessage(self):
-        """ Internal construct of TANGO.
-
-        Returns activityMessage.
+        """ Internal construct of TANGO.Returns activityMessage.
         Example: "Subarray node is initialized successfully"
         //result occured after initialization of device.
         """
@@ -1173,16 +1168,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_read
 
     def write_activityMessage(self, value):
-        """ Internal construct of TANGO.
-        Sets the activityMessage. """
+        """ Internal construct of TANGO.Sets the activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
     def read_receptorIDList(self):
-        """ Internal construct of TANGO.
-
-        Returns the receptor IDs allocated to the Subarray.
+        """ Internal construct of TANGO.Returns the receptor IDs allocated to the Subarray.
          """
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
         return self._receptor_id_list
@@ -1200,11 +1192,15 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def Configure(self, argin):
         # PROTECTED REGION ID(SubarrayNode.Configure) ENABLED START #
         """
-        Configures the resources assinged to the Subarray.
+        Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
+        extracted out of the input configuration string and relayed to the respective underlying devices (SDP
+        Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
 
         :param argin: DevStringArray.
-        JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP Configuration and SDP Configuration parameters.
-        assign_csp_resourcesJSON string example is:
+        JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP Configuration and SDP
+        Configuration parameters.
+
+        JSON string example is:
 
         {"scanID":123,"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946","dec":
         "+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode"
@@ -1217,7 +1213,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
         :return: None
-
         """
         exception_count = 0
         exception_message = []
@@ -1390,7 +1385,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def EndSB(self):
         # PROTECTED REGION ID(SubarrayNode.EndSB) ENABLED START #
         """
-        This command invokes EndSB command on CSP Subarray Leaf Node and SDP Subarray Leaf Node.
+        This command invokes EndSB command on CSP Subarray Leaf Node and SDP Subarray Leaf Node, and stops
+        tracking of all the assigned dishes.
 
         :return: None.
         """
@@ -1421,7 +1417,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     @command(
         dtype_in='str',
-        doc_in="Initial Pointing parameters of Dish - Right ascension and Declination coordinates.",
+        doc_in="Initial Pointing parameters of Dish - Right Ascension and Declination coordinates.",
     )
     @DebugIt()
     def Track(self, argin):
@@ -1429,6 +1425,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """ Invokes Track command on the resources assigned to the Subarray.
 
         :param argin: DevString
+
         Example: radec|2:31:50.91|89:15:51.4 as argin
         Argin to be provided is the Ra and Dec values in the following format: radec|2:31:50.91|89:15:51.4
         Where first value is tag that is radec, second value is Ra in Hr:Min:Sec, and third value is Dec in
