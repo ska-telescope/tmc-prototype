@@ -198,7 +198,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     elif timestamp == 5:
                         delay_corrections_v_array_t5.append(delay[i])
 
-        x = np.array([0, 0.2, 0.4, 0.6, 0.8, 1])
+        x = np.array([0, 2, 4, 6, 8, 10])
         for i in range(0, len(self.antenna_names)):
             antenna_delay_list = []
             antenna_delay_list.append(delay_corrections_h_array_t0[i])
@@ -233,16 +233,16 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         with open(ska_antennas_path) as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
+        # Create a dictionary including antenna objects
+        antennas_dict = {ant.name: ant for ant in antennas}
         for receptor in self.receptorIDList_str:
             for ant in antennas:
                 if receptor == ant.name:
                     assigned_receptors.append(ant)
                     assigned_receptors_dict[ant.name] = ant
 
-        # First antenna from the list of assigned antennas is referred as a reference antenna.
-        # TODO: For future reference
-        ref_antenna_ID = str(list(assigned_receptors_dict.keys())[0])
-        ref_ant = assigned_receptors_dict["0001"]
+        # Antenna having key 'ref_ant' from antennas_dict, is referred as a reference antenna.
+        ref_ant = antennas_dict["ref_ant"]
 
         # Create DelayCorrection Object
         self.delay_correction_object = katpoint.DelayCorrection(assigned_receptors, ref_ant)
@@ -268,7 +268,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # list of bands
         _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
-
         while not self._stop_delay_model_event.isSet():
             if(self.CspSubarrayProxy.obsState == CONST.ENUM_CONFIGURING
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_READY
