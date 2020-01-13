@@ -192,7 +192,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def read_SDPState(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.SDPState_read) ENABLED START #
-        """ Internal construct of TANGO.This is a forwarded attribute from SDP Master which depicts State of the SDP."""
+        """ Internal construct of TANGO. This is a forwarded attribute from SDP Master which depicts State of the SDP."""
         return self._sdp_state
         # PROTECTED REGION END #    //  SdpMasterLeafNode.SDPState_read
 
@@ -205,20 +205,20 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def read_versionInfo(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.versionInfo_read) ENABLED START #
-        """ Internal construct of TANGO.Version information of TANGO device."""
+        """ Internal construct of TANGO. Version information of TANGO device."""
         return self._version_info
         # PROTECTED REGION END #    //  SdpMasterLeafNode.versionInfo_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.activityMessage_read) ENABLED START #
-        """ Internal construct of TANGO.String providing information about the current activity in SDPLeafNode."""
+        """ Internal construct of TANGO. String providing information about the current activity in SDPLeafNode."""
         return self._read_activity_message
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(SdpMasterLeafNode.activityMessage_write) ENABLED START #
         '''
-        Internal construct of TANGO.Sets the activity message.
+        Internal construct of TANGO. Sets the activity message.
         '''
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_write

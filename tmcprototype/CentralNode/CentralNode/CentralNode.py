@@ -360,37 +360,37 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
-        """ Internal construct of TANGO.Returns the Telescope health state."""
+        """ Internal construct of TANGO. Returns the Telescope health state."""
         return self._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
     def read_subarray1HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray1_healthstate_read) ENABLED START #
-        """ Internal construct of TANGO.Returns Subarray1 health state. """
+        """ Internal construct of TANGO. Returns Subarray1 health state. """
         return self._subarray1_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray1_healthstate_read
 
     def read_subarray2HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray2_healthstate_read) ENABLED START #
-        """ Internal construct of TANGO.Returns Subarray2 health state. """
+        """ Internal construct of TANGO. Returns Subarray2 health state. """
         return self._subarray2_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray2_healthstate_read
 
     def read_subarray3HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray3HealthState_read) ENABLED START #
-        """ Internal construct of TANGO.Returns Subarray3 health state. """
+        """ Internal construct of TANGO. Returns Subarray3 health state. """
         return self._subarray3_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray3HealthState_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
-        """Internal construct of TANGO.Returns activity message. """
+        """Internal construct of TANGO. Returns activity message. """
         return self._read_activity_message
         # PROTECTED REGION END #    //  CentralNode.activity_message_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CentralNode.activity_message_write) ENABLED START #
-        """Internal construct of TANGO.Sets the activity message. """
+        """Internal construct of TANGO. Sets the activity message. """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CentralNode.activity_message_write
 

@@ -477,7 +477,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(DishLeafNode.activityMessage_write) ENABLED START #
-        """ Internal construct of TANGO.Sets the activityMessage """
+        """ Internal construct of TANGO. Sets the activityMessage """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  DishLeafNode.activityMessage_write
 

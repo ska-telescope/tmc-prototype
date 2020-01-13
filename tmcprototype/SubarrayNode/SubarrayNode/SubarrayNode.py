@@ -512,7 +512,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :param argin: DevVarStringArray. JSON string containing scan duration.
 
         JSON string example as follows:
-        
+
         {"scanDuration": 10.0}
 
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
@@ -1142,7 +1142,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # ------------------
 
     def read_scanID(self):
-        """ Internal construct of TANGO.Returns the Scan ID.
+        """ Internal construct of TANGO. Returns the Scan ID.
 
         EXAMPLE: 123
         Where 123 is a Scan ID from configuration json string.
@@ -1153,13 +1153,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
     def read_sbID(self):
-        """ Internal construct of TANGO.Returns the scheduling block ID. """
+        """ Internal construct of TANGO. Returns the scheduling block ID. """
         # PROTECTED REGION ID(SubarrayNode.sbID_read) ENABLED START #
         return self._sb_id
         # PROTECTED REGION END #    //  SubarrayNode.sbID_read
 
     def read_activityMessage(self):
-        """ Internal construct of TANGO.Returns activityMessage.
+        """ Internal construct of TANGO. Returns activityMessage.
         Example: "Subarray node is initialized successfully"
         //result occured after initialization of device.
         """
@@ -1168,13 +1168,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_read
 
     def write_activityMessage(self, value):
-        """ Internal construct of TANGO.Sets the activityMessage. """
+        """ Internal construct of TANGO. Sets the activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
     def read_receptorIDList(self):
-        """ Internal construct of TANGO.Returns the receptor IDs allocated to the Subarray.
+        """ Internal construct of TANGO. Returns the receptor IDs allocated to the Subarray.
          """
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
         return self._receptor_id_list
@@ -1197,8 +1197,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
 
         :param argin: DevStringArray.
-        JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP Configuration and SDP
-        Configuration parameters.
+        JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
+        Configuration and SDP Configuration parameters.
 
         JSON string example is:
 

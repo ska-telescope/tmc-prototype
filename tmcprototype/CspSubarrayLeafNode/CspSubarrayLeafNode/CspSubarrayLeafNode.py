@@ -412,56 +412,55 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def read_state(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.state_read) ENABLED START #
-        '''Internal construct of TANGO.Returns the state of device.'''
+        '''Internal construct of TANGO. Returns the state of device.'''
         return self._state
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.state_read
 
     def read_delayModel(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_read) ENABLED START #
-        '''Internal construct of TANGO.Returns the delay model.'''
+        '''Internal construct of TANGO. Returns the delay model.'''
         return self._delay_model
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_read
 
     def write_delayModel(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_write) ENABLED START #
-        '''Internal construct of TANGO.Sets in to the delay model.'''
+        '''Internal construct of TANGO. Sets in to the delay model.'''
         self._delay_model = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_write
 
     def read_visDestinationAddress(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.visDestinationAddress_read) ENABLED START #
-        '''Internal construct of TANGO.
-        Returns the destination address.'''
+        '''Internal construct of TANGO. Returns the destination address.'''
         return self._visdestination_address
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.visDestinationAddress_read
 
     def write_visDestinationAddress(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.visDestinationAddress_write) ENABLED START #
-        '''Internal construct of TANGO.Sets the destination address.'''
+        '''Internal construct of TANGO. Sets the destination address.'''
         self._visdestination_address = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.visDestinationAddress_write
 
     def read_versionInfo(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.versionInfo_read) ENABLED START #
-        '''Internal construct of TANGO.Returns the version information.'''
+        '''Internal construct of TANGO. Returns the version information.'''
         return self._versioninfo
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.versionInfo_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_read) ENABLED START #
-        '''Internal construct of TANGO.Returns activity message.'''
+        '''Internal construct of TANGO. Returns activity message.'''
         return self._read_activity_message
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_write) ENABLED START #
-        '''Internal construct of TANGO.Sets the activity message.'''
+        '''Internal construct of TANGO. Sets the activity message.'''
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_write
 
     def read_opState(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.opState_read) ENABLED START #
-        '''Internal construct of TANGO.Returns the OpState.'''
+        '''Internal construct of TANGO. Returns the OpState.'''
         return self._opstate
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.opState_read
 

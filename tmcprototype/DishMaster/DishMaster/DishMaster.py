@@ -382,19 +382,19 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     # ------------------
     def read_dishMode(self):
         # PROTECTED REGION ID(DishMaster.dishMode_read) ENABLED START #
-        """ Internal construct of TANGO.Returns the dishMode. """
+        """ Internal construct of TANGO. Returns the dishMode. """
         return self._dish_mode
         # PROTECTED REGION END #    //  DishMaster.dishMode_read
 
     def read_pointingState(self):
         # PROTECTED REGION ID(DishMaster.pointingState_read) ENABLED START #
-        """ Internal construct of TANGO.Returns the pointingState. """
+        """ Internal construct of TANGO. Returns the pointingState. """
         return self._pointing_state
         # PROTECTED REGION END #    //  DishMaster.pointingState_read
 
     def write_band1SamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band1SamplerFrequency_write) ENABLED START #
-        """ Internal construct of TANGO.Sets the band1 sampler frequency.
+        """ Internal construct of TANGO. Sets the band1 sampler frequency.
 
         :param value: band1SamplerFrequency
 
@@ -418,7 +418,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def write_band3SamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band3SamplerFrequency_write) ENABLED START #
         """
-        Internal construct of TANGO.Sets the band3 sampler frequency.
+        Internal construct of TANGO. Sets the band3 sampler frequency.
 
         :param value: band3SamplerFrequency
 
@@ -442,7 +442,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def write_band5aSamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band5aSamplerFrequency_write) ENABLED START #
         """
-        Internal construct of TANGO.Sets the band5a sampler frequency.
+        Internal construct of TANGO. Sets the band5a sampler frequency.
 
         :param value: band5aSamplerFrequency
 
@@ -454,7 +454,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def write_band5bSamplerFrequency(self, value):
         # PROTECTED REGION ID(DishMaster.band5bSamplerFrequency_write) ENABLED START #
         """
-        Internal construct of TANGO.Sets the band5b sampler frequency.
+        Internal construct of TANGO. Sets the band5b sampler frequency.
 
         :param value: band5bSamplerFrequency
 

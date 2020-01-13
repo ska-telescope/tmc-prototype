@@ -225,18 +225,18 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def ReleaseAllResources(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
-        """         Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
-                    receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-                    is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
-                    resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
-                    on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
-                    This selective release of the resources when releaseALL is False, will be implemented in the
-                    later stages of the prototype.
+        """ Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+            receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+            is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
+            resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
+            on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
+            This selective release of the resources when releaseALL is False, will be implemented in the
+            later stages of the prototype.
 
-                        :param argin: None.
+        :param argin: None.
 
-                        :return: None.
-                        """
+        :return: None.
+        """
 
         exception_message = []
         exception_count = 0
@@ -269,11 +269,9 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def ReleaseResources(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseResources) ENABLED START #
-        """ Invokes ReleaseResources command on SDP Subarray and Release resources.
-
-                :param argin: None.
-
-                :return: None.
+        """
+        This command results into selective release of the resources from
+        SDP Subarray. This command is yet to be implemented.
         """
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseResources
 
@@ -415,6 +413,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             :param argin: The string in JSON format. The JSON contains following values:
             Example:
             {“scanDuration”:0}.
+
             Note: Enter input as without spaces:{“scanDuration”:0}
 
             :return: None.
