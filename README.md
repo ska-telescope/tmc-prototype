@@ -28,7 +28,7 @@
 # 1: Introduction
 This is the repository for TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
-The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.5.2** (PyTango 9.5.2a), it is a single repository consisting eight packages - CentralNode, SubarrayNode, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode and DishMaster.
+The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.6** (PyTango 9.5.2a), it is a single repository consisting eight packages - CentralNode, SubarrayNode, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode and DishMaster.
 
 TMC prototype addresses the  following architectural aspects and functionality:
 
@@ -78,8 +78,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 
 # 2: Prerequisites
 * Linux/Ubuntu (16.04 LTS) (preferably)
-* Python 3.5.2
-* Python 2.7.12 (for Taurus GUI)
+* Python 3.6
 * [python3-pip](https://packages.ubuntu.com/xenial/python3-pip)
 * [Tango (9.2.5a)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
 * [PyTango (9.2.4)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
@@ -120,78 +119,78 @@ Start the TMC Devices and follow the screenshots for configuration of TANGO devi
 #### DishMaster
 Define and configure 4 instances of DishMaster TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1OyuOe1bdexS6BAYndghnQ10OJeC-rnHD/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1JgYrDh2QTyOC72ABrTg1wxbXv5Au7FXK/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1RTmY91IF23Qk3CtTu6WTIkJ3QIEGHpY8/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1G1NHeK-XJ_lFtVT8anjk9J3-tpH4c_IV)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1NlduVk23cBcGou1jpkrRILzwW-53Fl28)
+* [Events Configuration](https://drive.google.com/open?id=13EdgU_5BhesN9wloeHIvSEZGJ7nY00EA)
 
 #### CspMasterLeafNode
 Define and configure 4 instances of CspMasterLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/11rdsQxq4sbkkyg3MgrcRVbh5iEAVKC9S/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/188km3WwMApz1GkVdNVBmzsWp-VHP6KEK/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1ZVJIDUvjphWfrFQCvr_lpFhBaYUSFDzV/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1IU719MZJYPPv4C0w__XFaxzLLrDNsSEY/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1VyLxuuFJjA94iYDt3y0JZe6cDg8jh25U)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1GAjvKtTAGkMg_77eqGdBy7HNNg4El01v)
+* [Events Configuration](https://drive.google.com/open?id=1GAjvKtTAGkMg_77eqGdBy7HNNg4El01v)
+* [Attribute Property](https://drive.google.com/open?id=15ZYaVP8vKeIDXZ05qhlSzsvjhsAEZFT4)
 
 #### CspSubarrayLeafNode
 Define and configure 4 instances of CspSubarrayLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1iraqklKUvnH3fAMEVRW9PKXspyeRMmxk/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1W5P9MbkqCJpWhhdLuUrcVE-48zUSTKcW/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1ZQdWDeOTOzTT4YI-u3yn0dE6C80R6M8X/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1N-KPCOmXPQrI8c7LVttdnYpyg1D_hsDC/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1NQmm5fSkrDNRU51VKGOUIpUFliqBJe6G)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1rVIayVKOmp0Uzr3vgl5hL5klpmEnoDWX)
+* [Events Configuration](https://drive.google.com/open?id=1-O79aqX_5QgKOz9iwSDKAgPJ-rquKOoC)
+* [Attribute Property](https://drive.google.com/open?id=1NQmm5fSkrDNRU51VKGOUIpUFliqBJe6G)
 
 #### SdpMasterLeafNode
 Define and configure 4 instances of SdpMasterLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/13AIHf7sM9YdHkIYqVaBjdl8OeX-pYwmz/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1LHjxu9F9dAaWW6_D5sPnqYgBKFO_PE7F/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1KW1ZKUlz5ylYwUcoCL6xhpW7jo6OK7BI/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1mwgI569BURblQEkA21g2Dcc6icX0UDnR)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1b8qLjuNU2FYhLyEcs212vcrkzSHhWJVz)
+* [Events Configuration](https://drive.google.com/open?id=173vg_wcNLayRbMK75Ii_lsih8MRPdW6F)
 
 #### SdpSubarrayLeafNode
 Define and configure 4 instances of SdpSubarrayLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1Op_H8GGW3t9xd-e36LikDayZF3zMvQ8x/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1ah6jPSQAmNin40Ec4Qquf14FT5f8P9Q2/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1d_6JCW7ekEXboZAlkDNXotqvV6y4qnvI/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1ky8LSE25L4uOppybyheovCEFxH0NjpnW/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1mykD_LXB1KoLAAcNvlIx4RJABLf4M8bf)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1y6NP3hT367F-DqegFStQWTTemxriv4jK)
+* [Events Configuration](https://drive.google.com/open?id=1GpgCrbDvn9x780TXziw-TzxGT8_i7Ngl)
+* [Attribute Property](https://drive.google.com/open?id=1hMQ74xkrdB16J4JGcr3E7hBFshNdBJZQ)
 
 #### DishLeafNode
 Define and configure 4 instances of DishLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/18Mezq9axZLl-ruxkrxWJUOXKDObICd_S/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1J5AJvdn5cJotRmkkySdkDlds1Y4WWvBK/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1wxo33D5O-D83R4PunZQ9I3n1AzwfYxEO/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1rDGLJcZB9_m-J9mdFVU7mug3AhUHFF19/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=18vNSpi4Jx6fCZGKYwlhX55dY7ZbVXGnW)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1f4tjcswQpEsRYBaDUdoh-ZWTCqhVUwBU)
+* [Events Configuration](https://drive.google.com/open?id=13YtvVCDzmqDbhzI3ukCEHarReh6R2urr)
+* [Attribute Property](https://drive.google.com/open?id=1B2ehixv08yGrqHorL27KHIIGiZnMWw8M)
 
 
 
 #### SubarrayNode
 Define and configure 2 instances of SubarrayNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1AB7ZuviRw4h5rDxiXUjl4huU969z4Sg8/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1wtyaIfxOY2Cc_GwyDWmb7GUzf5syMqwE/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1MVpcP-g6s67jje42nJuZH0sEp2GUdN8R/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1OrZ3y1xbLhN-4_jxtCejAbSefVEUrId-)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1T-lzMrwW8e6b4GZIrdHZJCSXSOQj8s4O)
+* [Events Configuration](https://drive.google.com/open?id=1haJAKSLNrnkx7RAZlyylhkah31LiRJ75)
 
 
 #### CentralNode
 Define and configure CentralNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1lzFvdrwSZKxdRoCnpsYcuMPQE8TME7Mr/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1XKItAKnK4Zqgs6-KQAcDUvu1om7ED1zk/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1_jglNHV6jzVT3mSINhQ2LJnIxuo5Bdyk/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1A5bQvtvRv_EZbNelrsb0rS38GZ5bXbnY)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1AfVIwQJmULBHBAbArTm_CEILYfXTvzl8)
+* [Events Configuration](https://drive.google.com/open?id=15UBTGLLKobWTf53xgc88e3YjEJSyHPK3)
 * [Attribute Property 1](https://drive.google.com/file/d/1r-Fdd_vTitjZ7m3FCtZ5Y9_S2dKYKPOZ/view?usp=sharing)
 * [Attribute Property 2](https://drive.google.com/file/d/1E5ig4n8eBwfI8TOdvXpXI3NnGOoeu-yN/view?usp=sharing)
 
 #### AlarmHandler
 Define and configure AlarmHandler TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/11CETSDM9UMWeXF8mbL8zOXcKqZK5-N-j/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1T_KhGFcPZzAIvT_YgDbTxmZNkHL3F5eQ/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1eOtmi1ANOm1tkgDiJMjB7dvMhY7J2IxH)
+* [Attribute Property](https://drive.google.com/open?id=1r0hrbsmt-8AwCGkeHvsYy9Nd9eUZ46CO)
 
 #### SKALogger
 Define and configure SKALogger TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1UxBUb71euQQrqMfMRQe7brfaClFnEL3t/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1zNe5jLZMWJmdq2iQVNAYsWJ-IhTe_t8J)
 
 ### 3.5: GUI
 
