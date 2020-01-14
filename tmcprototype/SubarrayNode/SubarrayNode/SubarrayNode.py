@@ -28,6 +28,8 @@ import random
 import string
 from concurrent.futures import ThreadPoolExecutor
 import json
+import mysql.connector
+
 
 # Tango imports
 import tango
@@ -42,6 +44,11 @@ from skabase.SKASubarray.SKASubarray import SKASubarray
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 __all__ = ["SubarrayNode", "main"]
+
+
+
+
+
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
     Provides the monitoring and control interface required by users as well as
@@ -147,6 +154,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt))
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
             self.logger.critical(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
+            self._obs_state = CONST.OBS_STATE_ENUM_IDLE #for testing purpose
 
     def calculate_health_state(self):
         """
@@ -192,6 +200,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._health_state = CONST.ENUM_UNKNOWN
 
     def calculate_observation_state(self):
+        print ("In calculate_observation_state")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
@@ -768,8 +777,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             else:
                 #TODO: Need to add code to revert allocated resources
                 argout = []
-        # call store method
-        self.storeindb()
         # return dish_allocation_result
         return argout
 
@@ -1039,24 +1046,40 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
-        self.db = Database()
-        self.name = self.get_name()
-        memflag_dict = self.db.get_device_attribute_property(str(self.name), "memflag")
-        if memflag_dict:
-            self._memflag = memflag_dict["memflag"]["__value"][0]
+        # self.db = Database()
+        self.mydb = mysql.connector.connect(host="localhost", user="handes", passwd="", database="tmc_recoverability")
+        print("Database connection is successful.",self.mydb)
+        self.mycursor = self.mydb.cursor()
+        self.subarray_name = (str(self.get_name()),)
+        self.mycursor.execute("""select id from device_restore_flag where device_name=%s""", (self.subarray_name))
+        self.subarray_id=(self.mycursor.fetchone()[0],)
+        # print("subarray id is", self.subarray_id)
+
+
+        # memflag_dict = self.db.get_device_attribute_property(str(self.name), "memflag")
+        # if memflag_dict:
+        #     self._memflag = memflag_dict["memflag"]["__value"][0]
+        # else:
+        #     self._memflag = "false"
+        #
+        # print("Attribute property value:", str(self._memflag))
+        #
+        # if self._memflag == "true":
+        #     print ("Need to restore the values")
+        #     self._receptor_id_list = [1,2]
+        #     self.restorefromdb()
+        #     # self.connecttostateserver()
+        # else:
+        #    print ("Initialise with normal values.")
+
+
+        self.mycursor.execute("""select flag from device_restore_flag where id=%s """, (self.subarray_id))
+        restore_flag = self.mycursor.fetchone()[0]
+        print("Restore flag value is:- ", restore_flag)
+        if (restore_flag == 0):
+            self.restorefromsql()
         else:
-            self._memflag = "false"
-
-        print("Attribute property value:", str(self._memflag))
-
-        if self._memflag == "true":
-            print ("Need to restore the values")
-            self._receptor_id_list = [1,2]
-            self.restorefromdb()
-            # self.connecttostateserver()
-        else:
-            print ("Initialise with normal values.")
-
+            print("initialsed with normal value")
             self.set_state(DevState.INIT)
             self.set_status(CONST.STR_SA_INIT)
             self._obs_state = CONST.OBS_STATE_ENUM_IDLE  # set obsState to "IDLE"
@@ -1131,8 +1154,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.logger.info(CONST.STR_SA_INIT_SUCCESS)
 
         # call store method
-        self.storeindb()
-        self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "true"}})
+        print("Storing data in database")
+        self.storeinmysql()
+        self.mycursor.execute("""update device_restore_flag set flag='0' where id=%s""", self.subarray_id)
+        self.mydb.commit()
+
+        # self.storeindb()
+        # self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "true"}})
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
 
@@ -1144,10 +1172,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        print ("Deleting device")
-        self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "false"}})
-        attr_val = self.db.get_device_attribute_property(str(self.name), "memflag")
-        print("Attribute property value:", attr_val)
+        print("Deleting device")
+        self.mycursor.execute("""update device_restore_flag set flag='1' where id=%s""", self.subarray_id)
+        self.mydb.commit()
+
+        # self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "false"}})
+        # attr_val = self.db.get_device_attribute_property(str(self.name), "memflag")
+        # print("Attribute property value:", attr_val)
 
         # PROTECTED REGION END #    //  SubarrayNode.delete_device
 
@@ -1545,8 +1576,69 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # print("State on State server:",self.state_server_proxy. Subarray1_state)
         self.state_server_proxy.subscribe_event("Subarray1_state", EventType.CHANGE_EVENT,
                                                  self.sub_state_callback, stateless=True)
-0
-    # ----------
+
+    def storeinmysql(self):
+        curr_state = str(self.get_state())
+        sql = "update device_attribute_value set value= %s where id=%s and attribute='state'"
+        if curr_state == 'ON':
+            state1=('0', self.subarray_id[0],)
+        elif curr_state == 'OFF':
+            state1=('1', self.subarray_id[0], )
+        self.mycursor.execute(sql,state1)
+        self.mydb.commit()
+        print("state is stored in database as:- ",curr_state)
+
+        sql = "update device_attribute_value set value= %s where id=%s and attribute='receptor_id'"
+        receptor_id = (json.dumps(self._receptor_id_list), self.subarray_id[0],)
+        self.mycursor.execute(sql, receptor_id)
+        self.mydb.commit()
+        print("receptor_id is stored in database as:- ",self._receptor_id_list)
+
+
+        sql ="update device_attribute_value set value= %s where id=%s and attribute='obs_state'"
+        if self._obs_state == CONST.OBS_STATE_ENUM_IDLE:
+            obsState1 = ('0',self.subarray_id[0], )
+        elif self._obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
+             obsState1 = ('1',self.subarray_id[0], )
+        elif self._obs_state  == CONST.OBS_STATE_ENUM_READY:
+            obsState1 = ('2',self.subarray_id[0], )
+        elif self._obs_state == CONST.OBS_STATE_ENUM_SCANNING:
+            obsState1 = ('3',self.subarray_id[0], )
+        self.mycursor.execute(sql,obsState1)
+        self.mydb.commit()
+        print("obs_state stored in database as:- ", self._obs_state)
+
+    def restorefromsql(self):
+        print("***need to restore values****")
+        self.mycursor.execute("""select value from device_attribute_value where id=%s and attribute='state'""",
+                              self.subarray_id)
+        state1 =self.mycursor.fetchone()[0]
+        print("after restoring state: ", state1)
+        if state1 == '0':
+            self.set_state(DevState.ON)
+
+        elif state1 == '1':
+            self.set_state(DevState.OFF)
+
+        self.mycursor.execute("""select value from device_attribute_value where id=%s and attribute='obs_state'""",
+                               self.subarray_id)
+        obsState1 =self.mycursor.fetchone()[0]
+        if obsState1 == '0':
+            self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+        elif obsState1 == '1':
+            self._obs_state=CONST.OBS_STATE_ENUM_CONFIGURING
+        elif obsState1 == '2':
+            self.obsState1 = CONST.OBS_STATE_ENUM_READY
+        elif obsState1 == '3':
+            self.obsState1= CONST.OBS_STATE_ENUM_SCANNING
+        print("after restoring obs state", obsState1)
+
+        self.mycursor.execute("""select value from device_attribute_value where id=%s and attribute='receptor_id'""",
+                              self.subarray_id)
+        receptor_id = self.mycursor.fetchone()[0]
+        self._receptor_id_list = json.loads(receptor_id)
+        print("after restoring  rec id:",self._receptor_id_list)
+# ----------
 # Run server
 # ----------
 
