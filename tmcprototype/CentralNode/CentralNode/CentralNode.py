@@ -333,10 +333,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                EventType.CHANGE_EVENT,
                                                self.healthStateCallback, stateless=True)
 
-                #populate subarrayID-subarray proxy map
+                #populate subarrayID-subarray proxy mapsubarray_proxy
                 tokens = self.TMMidSubarrayNodes[subarray].split('/')
                 subarrayID = int(tokens[2])
                 self.subarray_FQDN_dict[subarrayID] = subarray_proxy
+                print("Hii Akash subarrays proxy dict:",self.subarray_FQDN_dict)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count,CONST.ERR_SUBSR_SA_HEALTH_STATE)
@@ -476,7 +477,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
-
+        try:
+            self.subarrayProxy.command_inout(CONST.CMD_STARTUP)
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message,exception_count, CONST.ERR_EXE_STARTUP_CMD)
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, CONST.STR_STANDBY_EXEC)
@@ -511,10 +516,24 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count,  CONST.ERR_EXE_STARTUP_CMD)
+                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
 
+        for subarray in range(0, len(self.TMMidSubarrayNodes)):
+            try:
+                subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
+                self.subarray_health_state_map[subarray_proxy] = -1
+                subarray_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE,
+                                               EventType.CHANGE_EVENT,
+                                               self.healthStateCallback, stateless=True)
 
-            # throw exception:
+                # populate subarrayID-subarray proxy mapsubarray_proxy
+                tokens = self.TMMidSubarrayNodes[subarray].split('/')
+                subarrayID = int(tokens[2])
+                self.subarray_FQDN_dict[subarrayID] = subarray_proxy
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
+
             if exception_count > 0:
                 self.throw_exception(exception_message, CONST.STR_STARTUP_EXEC)
 

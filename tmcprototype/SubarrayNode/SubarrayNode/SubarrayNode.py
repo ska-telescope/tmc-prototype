@@ -1054,9 +1054,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
         self.set_state(DevState.INIT)
         self.set_status(CONST.STR_SA_INIT)
-        self.SkaLevel = 2                       # set SKALevel to "2"
-        self._admin_mode = CONST.ENUM_ONLINE    # set adminMode to "ON-LINE"
-        self._health_state = CONST.ENUM_OK      # set health state to "OK"
+        self.SkaLevel = 2                        # set SKALevel to "2"
+        self._admin_mode = CONST.ENUM_OFFLINE    # set adminMode to "OFFLINE"
+        self.set_state(DevState.DISABLE)         # Set state = DISABLE
+        self._health_state = CONST.ENUM_OK       # set health state to "OK"
         self._obs_state = CONST.OBS_STATE_ENUM_IDLE       # set obsState to "IDLE"
         self._obs_mode = CONST.ENUM_IDLE        # set obsMode to "IDLE"
         self._simulation_mode = False
@@ -1072,7 +1073,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._pointing_state_event_id = []
         self._dishLnVsHealthEventID = {}
         self._dishLnVsPointingStateEventID = {}
-        self.set_state(DevState.OFF)            # Set state = OFF
         self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
                                                 # SDP SA LN
         self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
@@ -1473,7 +1473,25 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  SubarrayNode.Track
+    @command(
+    )
+    @DebugIt()
+    def StartUp(self):
+        # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
+        self._admin_mode = CONST.ENUM_ONLINE  # set adminMode to "ONLINE"
+        self.set_state(DevState.OFF)       # Set state = OFF
+        pass
+        # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
+    @command(
+    )
+    @DebugIt()
+    def Standby(self):
+        # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
+        self._admin_mode = CONST.ENUM_OFFLINE  # set adminMode to "OFFLINE"
+        self.set_state(DevState.DISABLE)  # Set state = DISABLED
+        pass
+        # PROTECTED REGION END #    //  SubarrayNode.Standby
 # ----------
 # Run server
 # ----------
