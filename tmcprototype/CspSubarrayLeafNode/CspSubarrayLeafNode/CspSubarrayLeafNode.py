@@ -235,11 +235,15 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         antennas = [katpoint.Antenna(line) for line in descriptions]
         # Create a dictionary including antenna objects
         antennas_dict = {ant.name: ant for ant in antennas}
+        antenna_keys_list = antennas_dict.keys()
         for receptor in self.receptorIDList_str:
-            for ant in antennas:
-                if receptor == ant.name:
-                    assigned_receptors.append(ant)
-                    assigned_receptors_dict[ant.name] = ant
+            # for ant in antennas:
+            #     if receptor == ant.name:
+            #         assigned_receptors.append(ant)
+            #         assigned_receptors_dict[ant.name] = ant
+            if receptor in antenna_keys_list:
+                assigned_receptors.append(antennas_dict[receptor])
+                assigned_receptors_dict[receptor] = antennas_dict[receptor]
 
         # Antenna having key 'ref_ant' from antennas_dict, is referred as a reference antenna.
         ref_ant = antennas_dict["ref_ant"]
