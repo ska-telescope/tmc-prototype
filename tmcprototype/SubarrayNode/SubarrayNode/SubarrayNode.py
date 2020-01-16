@@ -1047,13 +1047,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
         # self.db = Database()
-        self.mydb = mysql.connector.connect(host="localhost", user="handes", passwd="", database="tmc_recoverability")
+        self.mydb = mysql.connector.connect(host="staterecover-tmc-proto-test", user="tango", passwd="tango", database="tmc_recoverability")
         print("Database connection is successful.",self.mydb)
         self.mycursor = self.mydb.cursor()
         self.subarray_name = (str(self.get_name()),)
         self.mycursor.execute("""select id from device_restore_flag where device_name=%s""", (self.subarray_name))
         self.subarray_id=(self.mycursor.fetchone()[0],)
-        # print("subarray id is", self.subarray_id)
+        print("subarray id is", self.subarray_id)
 
 
         # memflag_dict = self.db.get_device_attribute_property(str(self.name), "memflag")
@@ -1156,7 +1156,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # call store method
         print("Storing data in database")
         self.storeinmysql()
-        self.mycursor.execute("""update device_restore_flag set flag='0' where id=%s""", self.subarray_id)
+        self.mycursor.execute("""update device_restore_flag set flag=0 where id=%s""", self.subarray_id)
         self.mydb.commit()
 
         # self.storeindb()
@@ -1173,7 +1173,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
         print("Deleting device")
-        self.mycursor.execute("""update device_restore_flag set flag='1' where id=%s""", self.subarray_id)
+        self.mycursor.execute("""update device_restore_flag set flag=1 where id=%s""", self.subarray_id)
         self.mydb.commit()
 
         # self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "false"}})
