@@ -111,11 +111,9 @@ make = tar -c test-harness/ | \
 	   docker run -i --rm --network=$(NETWORK_MODE) \
 	   -e TANGO_HOST=$(TANGO_HOST) \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   --volumes-from=$(CONTAINER_NAME_PREFIX)rsyslog:rw \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "sudo chown -R tango:tango /build && \
 	   tar x --strip-components 1 --warning=all && \
-	   sudo ln -sf /var/run/rsyslog/dev/log /dev/log && \
 	   make TANGO_HOST=$(TANGO_HOST) $1"
 
 test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
@@ -161,7 +159,7 @@ piplock: build  ## overwrite Pipfile.lock with the image version
 interactive: up
 interactive:  ## start an interactive session using the project image (caution: R/W mounts source directory to /app)
 	docker run --rm -it -p 3000:3000 --name=$(CONTAINER_NAME_PREFIX)dev -e TANGO_HOST=$(TANGO_HOST) --network=$(NETWORK_MODE) \
-	       -v $(CURDIR):/app --volumes-from=$(CONTAINER_NAME_PREFIX)rsyslog-tmcprototype:rw nexus.engageska-portugal.pt/ska-docker/tango-java:latest /bin/bash
+	       -v $(CURDIR):/app nexus.engageska-portugal.pt/ska-docker/tango-java:latest /bin/bash
 
 down:  ## stop develop/test environment and any interactive session
 	docker ps | grep $(CONTAINER_NAME_PREFIX)dev && docker stop $(PROJECT)-dev || true
@@ -187,7 +185,6 @@ help:  ## show this help.
 INIT_CACHE = \
 	docker volume ls | grep $(CACHE_VOLUME) || \
 	docker create --name $(CACHE_VOLUME) -v $(CACHE_VOLUME):/cache $(IMAGE_TO_TEST)
-
 # http://cakoose.com/wiki/gnu_make_thunks
 BUILD_GEN = $(shell docker create -v /build $(IMAGE_TO_TEST))
 BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
