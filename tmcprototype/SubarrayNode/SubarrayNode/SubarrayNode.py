@@ -1481,7 +1481,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         print("Startup executed on subarray node")
         self._admin_mode = CONST.ENUM_ONLINE  # set adminMode to "ONLINE"
         self.set_state(DevState.OFF)       # Set state = OFF
-        pass
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
     @command(
@@ -1492,7 +1491,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         print("Standby executed on subarray node")
         self._admin_mode = CONST.ENUM_OFFLINE  # set adminMode to "OFFLINE"
         self.set_state(DevState.DISABLE)  # Set state = DISABLED
-        pass
         # PROTECTED REGION END #    //  SubarrayNode.Standby
 # ----------
 # Run server
