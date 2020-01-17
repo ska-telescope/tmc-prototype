@@ -470,13 +470,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
 
-
         try:
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
-
 
         try:
             for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
@@ -507,7 +505,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
 
-
         try:
             self._csp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP,[])
         except Exception as except_occured:
@@ -524,22 +521,12 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.subarray_FQDN_dict[subarrayID].command_inout(CONST.CMD_STARTUP)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        CONST.ERR_EXE_STANDBY_CMD)
-        # for subarrayID in range(0, len(self.TMMidSubarrayNodes)):
-        #     try:
-        #         s=str(self.subarray_FQDN_dict[subarrayID])
-        #         a = s[s.find("(") + 1:s.find(")")]
-        #         a.command_inout(CONST.CMD_STARTUP)
-        #     except DevFailed as dev_failed:
-        #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-        #                                     exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
-
+                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
+            # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, CONST.STR_STARTUP_EXEC)
-
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
+
 
     @command(
         dtype_in='str',

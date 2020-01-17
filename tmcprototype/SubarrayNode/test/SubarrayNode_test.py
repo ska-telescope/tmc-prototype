@@ -98,7 +98,7 @@ class TestSubarrayNode(object):
     def test_State(self, tango_context):
         """Test for State"""
         # PROTECTED REGION ID(SubarrayNode.test_State) ENABLED START #
-        assert tango_context.device.State() == DevState.OFF
+        assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  SubarrayNode.test_State
 
     def test_healthState(self, tango_context):
@@ -106,6 +106,14 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
         assert tango_context.device.healthState == 1
         # PROTECTED REGION END #    //  SubarrayNode.test_healthState
+
+    def test_On(self, tango_context):
+        """Test for StartUpTelescope"""
+        # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
+        tango_context.device.On()
+        assert tango_context.device.adminMode == 0
+        assert tango_context.device.State() == DevState.OFF
+        # PROTECTED REGION END #    //  SubarrayNode.test_On
 
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
@@ -284,6 +292,14 @@ class TestSubarrayNode(object):
         """Test for ReleaseResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseResources) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseResources
+
+    def Standby(self, tango_context):
+        """Test for StartUpTelescope"""
+        # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
+        tango_context.device.Standby()
+        assert tango_context.device.adminMode == 1
+        assert tango_context.device.State() == DevState.DISABLE
+        # PROTECTED REGION END #    //  SubarrayNode.Standby
 
     def test_Reset(self, tango_context):
         """Test for Reset"""
