@@ -1477,6 +1477,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
     @DebugIt()
     def On(self):
+        '''
+        changes the admin_mode from offline to online and dev_state from disabled to off.
+        :return: None
+        '''
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
         self._admin_mode = CONST.ENUM_ONLINE  # set adminMode to "ONLINE"
         self.set_state(DevState.OFF)       # Set state = OFF
@@ -1486,6 +1490,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
     @DebugIt()
     def Standby(self):
+        '''
+        changes the admin_mode from online to offline and dev_state from  off to disabled.
+        :return: None
+        '''
         # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
         self._admin_mode = CONST.ENUM_OFFLINE  # set adminMode to "OFFLINE"
         self.set_state(DevState.DISABLE)  # Set state = DISABLED
