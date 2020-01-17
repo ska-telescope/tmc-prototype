@@ -77,7 +77,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 **NOTE:** Refer to the Demo link provided in the [Documentation](#6-documentation) section for more details.
 
 # 2: Prerequisites
-* Linux/Ubuntu (16.04 LTS) (preferably)
+* Linux/Ubuntu (18.04 LTS) 
 * Python 3.6
 * [python3-pip](https://packages.ubuntu.com/xenial/python3-pip)
 * [Tango (9.2.5a)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
