@@ -38,7 +38,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Interface between the TMC and Element LMC (Dish Master)
 * [x] Integration of KATPoint library
 * [x] Use of Alarm Handler
-* [x] Use of Central Logger
+* [x] Use of SKA Logger
 * [x] Interface between the CentralNode/SubarrayNode and OET
 * [x] Interface between the TMC and CSP (CspMaster and CspSubarray)
 * [x] Interface between the TMC and SDP (SdpMaster and SdpSubarray)
