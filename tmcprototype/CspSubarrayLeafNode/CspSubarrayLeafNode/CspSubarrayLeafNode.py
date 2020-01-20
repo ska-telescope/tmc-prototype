@@ -161,7 +161,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         delay_corrections_v_array_t5 = []
         delay_corrections_v_array_dict = {}
 
-        # Delays are calculated for the timestamps between t0 - 25 to t0 + 25 at an interval of 10 seconds.
+        # Delays are calculated for the timestamps between "t0 - 25" to "t0 + 25" at an interval of 10
+        # seconds.
         timestamp_array = [time_t0 - timedelta(seconds=25), (time_t0 - timedelta(seconds=15)),
                            (time_t0 - timedelta(seconds=5)), (time_t0 + timedelta(seconds=5)),
                            (time_t0 + timedelta(seconds=15)), (time_t0 + timedelta(seconds=25))]
@@ -202,7 +203,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # Convert delays in seconds to 5th order polynomial coefficients
         # x is always [-25, -15, -5, 5, 15, 25] as the delays are calculated for the timestamps between
-        # t0 - 25 to t0 + 25 at an interval of 10 seconds.
+        # "t0 - 25" to "t0 + 25" at an interval of 10 seconds.
         x = np.array([-25, -15, -5, 5, 15, 25])
         for i in range(0, len(self.antenna_names)):
             antenna_delay_list = []
@@ -213,7 +214,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             antenna_delay_list.append(delay_corrections_h_array_t4[i])
             antenna_delay_list.append(delay_corrections_h_array_t5[i])
 
-            # Array including delay values per antenna for the timestamps between t0 - 25 to t0 + 25
+            # Array including delay values per antenna for the timestamps between "t0 - 25" to "t0 + 25"
             # at an interval of 10 seconds.
             y = np.array(antenna_delay_list)
 
