@@ -54,7 +54,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
     """
-    # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
+    # PROTECTED REGION IDhande
+    # (SubarrayNode.class_variable) ENABLED START #
     def healthStateCallback(self, evt):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
@@ -236,6 +237,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
                 else:
                     self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+        # call store method
+        print("In calculate observation state method: Storing data in database after assigning resources.")
+        self.storeinmysql()
+
     def create_csp_ln_proxy(self):
         """
         Creates proxy of CSP Subarray Leaf Node.
@@ -286,11 +291,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         allocation_success = []
         allocation_failure = []
         # Add each dish into the tango group
+        print ("In add_receptors_in_group Argin :", argin, type(argin))
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
                 devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                print ("devproxy:",devProxy )
                 self._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
@@ -300,6 +307,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                           self.setHealth,
                                                           stateless=True)
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
+                print ("self._dishLnVsHealthEventID :", self._dishLnVsHealthEventID)
                 self._health_event_id.append(self._event_id)
                 self.dishHealthStateMap[devProxy] = -1
                 self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID))
@@ -313,7 +321,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._pointing_state_event_id.append(self._event_id)
                 self.dishPointingStateMap[devProxy] = -1
                 self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID))
-                self._receptor_id_list.append(int(str_leafId))
+                # TODO:
+                if int(str_leafId) in self._receptor_id_list:
+                    print ("Dish already present")
+                else:
+                    self._receptor_id_list.append(int(str_leafId))
+
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
                 self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
@@ -329,6 +342,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
                 self.logger.info(CONST.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
+                print ("In exception :", dev_failed )
                 [exception_message, excpt_count] = self._handle_devfailed_exception(dev_failed,
                                                     exception_message, excpt_count, CONST.ERR_ADDING_LEAFNODE)
                 allocation_failure.append(str_leafId)
@@ -427,6 +441,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         exception_count = 0
         exception_message = []
         try:
+            print ("self._dishLnVsHealthEventID :", self._dishLnVsHealthEventID)
+            print ("self._dishLnVsPointingStateEventID :", self._dishLnVsPointingStateEventID)
 
             if self._dishLnVsHealthEventID != {} or self._dishLnVsPointingStateEventID != {}:
                 self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
@@ -715,6 +731,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         exception_message = []
 
         # 1. Argument validation
+        print ("AssignResources argin :", argin, type(argin))
+        self.mycursor.execute("""update device_restore_flag set flag=0 where id=%s""", self.subarray_id)
+        self.mydb.commit()
+
         try:
             # Allocation success and failure lists
             for leafId in range(0, len(argin)):
@@ -741,7 +761,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.info(CONST.STR_SDP_ALLOCATION)
             dummy_sdp_resources = ["PB1", "PB2"]
             sdp_allocation_status = executor.submit(self.assign_sdp_resources, dummy_sdp_resources)
-
+            # call store method
             # 2.4 wait for result
             while (dish_allocation_status.done() is False or
                    csp_allocation_status.done() is False or
@@ -778,6 +798,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 #TODO: Need to add code to revert allocated resources
                 argout = []
         # return dish_allocation_result
+        self.storeinmysql()
+        print ("argout: ", argout)
         return argout
 
     def is_AssignResources_allowed(self):
@@ -805,7 +827,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._release_excpt_msg = []
         argout = []
         try:
-            assert self._dishLnVsHealthEventID != {}, CONST.RESRC_ALREADY_RELEASED
+            # assert self._dishLnVsHealthEventID != {}, CONST.RESRC_ALREADY_RELEASED
             with self._release_excpt_count is 0 and ThreadPoolExecutor(3) as executor:
                 # 1. Delete the group of receptors
                 self.logger.info(CONST.STR_DISH_RELEASE)
@@ -849,6 +871,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
 
         argout.extend(self._dish_leaf_node_group.get_device_list(True))
+        self.storeinmysql()
+        self.mycursor.execute("""update device_restore_flag set flag=1 where id=%s""", self.subarray_id)
+        self.mydb.commit()
         return argout
 
     def is_ReleaseAllResources_allowed(self):
@@ -1047,6 +1072,29 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
         # self.db = Database()
+        self.SkaLevel = 2  # set SKALevel to "2"
+        self._admin_mode = CONST.ENUM_ONLINE  # set adminMode to "ON-LINE"
+        self._health_state = CONST.ENUM_OK  # set health state to "OK"
+        self._obs_mode = CONST.ENUM_IDLE  # set obsMode to "IDLE"
+        self._simulation_mode = False
+        self.isScanning = False
+        self._sb_id = ""
+        self.dishHealthStateMap = {}
+        self.dishPointingStateMap = {}
+        self._dish_leaf_node_group = tango.Group(CONST.GRP_DISH_LEAF_NODE)
+        self._dish_leaf_node_proxy = []
+        self._health_event_id = []
+        self._pointing_state_event_id = []
+        self._dishLnVsHealthEventID = {}
+        self._dishLnVsPointingStateEventID = {}
+        self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
+        # SDP SA LN
+        self._subarray_health_state = CONST.ENUM_OK  # Aggregated Subarray Health State
+        self._csp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
+        self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
+        self.only_dishconfi_flag = False
+        self._endscan_stop = False
+
         self.mydb = mysql.connector.connect(host="staterecover-tmc-proto-test", user="tango", passwd="tango", database="tmc_recoverability")
         print("Database connection is successful.",self.mydb)
         self.mycursor = self.mydb.cursor()
@@ -1085,30 +1133,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._obs_state = CONST.OBS_STATE_ENUM_IDLE  # set obsState to "IDLE"
             self._receptor_id_list = []
             self.set_state(DevState.OFF)  # Set state = OFF
-
-        self.SkaLevel = 2                       # set SKALevel to "2"
-        self._admin_mode = CONST.ENUM_ONLINE    # set adminMode to "ON-LINE"
-        self._health_state = CONST.ENUM_OK      # set health state to "OK"
-        self._obs_mode = CONST.ENUM_IDLE        # set obsMode to "IDLE"
-        self._simulation_mode = False
-        self.isScanning = False
-        self._sb_id = ""
-        self.dishHealthStateMap = {}
-        self.dishPointingStateMap = {}
-        self._dish_leaf_node_group = tango.Group(CONST.GRP_DISH_LEAF_NODE)
-        self._dish_leaf_node_proxy = []
-        self._health_event_id = []
-        self._pointing_state_event_id = []
-        self._dishLnVsHealthEventID = {}
-        self._dishLnVsPointingStateEventID = {}
-        self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
-                                                # SDP SA LN
-        self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
-        self._csp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
-        self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
-        self.only_dishconfi_flag = False
-        self._endscan_stop = False
-
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
@@ -1156,9 +1180,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # call store method
         print("Storing data in database")
         self.storeinmysql()
-        self.mycursor.execute("""update device_restore_flag set flag=0 where id=%s""", self.subarray_id)
-        self.mydb.commit()
-
         # self.storeindb()
         # self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "true"}})
         # PROTECTED REGION END #    //  SubarrayNode.init_device
@@ -1172,9 +1193,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        print("Deleting device")
-        self.mycursor.execute("""update device_restore_flag set flag=1 where id=%s""", self.subarray_id)
-        self.mydb.commit()
 
         # self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "false"}})
         # attr_val = self.db.get_device_attribute_property(str(self.name), "memflag")
@@ -1638,6 +1656,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         receptor_id = self.mycursor.fetchone()[0]
         self._receptor_id_list = json.loads(receptor_id)
         print("after restoring  rec id:",self._receptor_id_list)
+        if len(self._receptor_id_list) > 0:
+            receptor_list = []
+            for id in self._receptor_id_list:
+                receptor_list.append(str('000') + str(id))
+            with ThreadPoolExecutor(1) as executor:
+                dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
+
 # ----------
 # Run server
 # ----------
