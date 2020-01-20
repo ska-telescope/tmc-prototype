@@ -277,7 +277,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
     `py.test --cov=SdpSubarrayLeafNode test/`
 
 ### 4.7 Testing SubarrayNode
-**Prerequisite:** DishLeafNode and DishMaster TANGO Devices should be up and running.
+**Prerequisite:** All TMC LeafNodes, DishMaster, CSPMaster, CSPSubarray, SDPMaster and SDPSubarray TANGO Devices should be up and running.
 
 * Navigate to the SubarrayNode folder:
 
@@ -288,7 +288,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
     `py.test --cov=SubarrayNode test/`
 
 ### 4.8 Testing CentralNode
-**Prerequisite:** All instances of SubarrayNode, DishLeafNode and DishMaster TANGO Devices should be up and running.
+**Prerequisite:** All instances of SubarrayNodes, all TMC LeafNodes, DishMaster, CSPMaster, CSPSubarray, SDPMaster and SDPSubarray TANGO Devices should be up and running.
 
 * Navigate to the CentralNode folder:
 
