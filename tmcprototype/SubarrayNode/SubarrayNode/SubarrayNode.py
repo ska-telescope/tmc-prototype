@@ -43,12 +43,73 @@ from skabase.SKASubarray.SKASubarray import SKASubarray
 
 __all__ = ["SubarrayNode", "main"]
 
-class SubArrayHealthState:
-    """
-    Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
-    to calculate the subarray health state.
-    """
-    def __init__(self):
+class SubarrayHealthState:
+
+    @staticmethod
+    def generate_log_msg_based_on_health_state(evt):
+        if self._health_state == HealthState.OK:
+            str_log = CONST.STR_HEALTH_STATE + device_name + CONST.STR_OK
+            self.logger.debug(str_log)
+        elif self._health_state == HealthState.DEGRADED:
+            str_log = CONST.STR_HEALTH_STATE + device_name + CONST.STR_DEGRADED
+            self.logger.debug(str_log)
+        elif self._health_state == HealthState.FAILED:
+            str_log = CONST.STR_HEALTH_STATE + device_name + CONST.STR_FAILED
+            self.logger.debug(str_log)
+        elif self._health_state == HealthState.UNKNOWN:
+            str_log = CONST.STR_HEALTH_STATE + device_name + CONST.STR_UNKNOWN
+            self.logger.debug(str_log)
+        else:
+            str_log = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + evt
+            self.logger.debug(str_log)
+        return str_log
+
+    @staticmethod
+    def calculate_health_state(subarray_ln_health_state_map, dishHealthStateMap):
+        """
+        Calculates aggregated health state of Subarray.
+        """
+        failed_health_count = 0
+        degraded_health_count = 0
+        unknown_health_count = 0
+        ok_health_count = 0
+
+        # Calculate Health states of CSP and SDP
+        """can be represented with a function"""
+        for value in list(subarray_ln_health_state_map.values()):
+            if value == HealthState.FAILED:
+                failed_health_count = failed_health_count + 1
+                break
+            elif value == HealthState.DEGRADED:
+                degraded_health_count = degraded_health_count + 1
+            elif value == HealthState.UNKNOWN:
+                unknown_health_count = unknown_health_count + 1
+            else:
+                ok_health_count = ok_health_count + 1
+
+        # Aggregated Health State
+        """can be represented with a function"""
+        for value in list(dishHealthStateMap.values()):
+            if value == HealthState.FAILED:
+                failed_health_count = failed_health_count + 1
+                break
+            elif value == HealthState.DEGRADED:
+                degraded_health_count = degraded_health_count + 1
+            elif value == HealthState.UNKNOWN:
+                unknown_health_count = unknown_health_count + 1
+            else:
+                ok_health_count = ok_health_count + 1
+
+        count_of_dict_items = len(subarray_ln_health_state_map) + len(dishHealthStateMap.values)
+        if ok_health_count == count_of_dict_items:
+            return HealthState.OK
+        elif failed_health_count != 0:
+            return HealthState.FAILED
+        elif self.degraded_health_count != 0:
+            return HealthState.DEGRADED
+        else:
+            return HealthState.UNKNOWN
+
 
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
@@ -56,7 +117,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     other TM Components (such as OET, Central Node) for a Subarray.
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
-    def healthStateCallback(self, evt):
+    def health_state_cb(self, evt):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
         to calculate the subarray health state.
@@ -67,56 +128,43 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         exception_message = []
         exception_count = 0
-        if evt.err is False:
+        device_name = evt.device.dev_name()
+        if not evt.err:
             try:
                 self._health_state = evt.attr_value.value
                 # health state for csp and sdp retrieved if they are found in event's attribute's name
                 if CONST.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa = self._health_state
-                    self.subarray_ln_health_state_map[evt.device] = self._health_state
+                    self.subarray_ln_health_state_map[device_name] = self._health_state
                 elif CONST.PROP_DEF_VAL_TMSDP_MID_SALN in evt.attr_name:
                     self._sdp_sa = self._health_state
-                    self.subarray_ln_health_state_map[evt.device] = self._health_state
+                    self.subarray_ln_health_state_map[device_name] = self._health_state
                 else:
                     self.logger.debug(CONST.EVT_UNKNOWN)
-                    self._read_activity_message = CONST.EVT_UNKNOWN
+                    self._read_activity_message = CONST.EVT_UNKNOWN # this may be overriden below so should it be here?
 
-                if self._health_state == CONST.ENUM_OK:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
-                    self.logger.debug(str_log)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK # why not just use "str_log" variable
-                elif self._health_state == CONST.ENUM_DEGRADED:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
-                    self.logger.debug(str_log)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
-                                                  CONST.STR_DEGRADED # ditto
-                elif self._health_state == CONST.ENUM_FAILED:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
-                    self.logger.debug(str_log)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED # ditto
-                elif self._health_state == CONST.ENUM_UNKNOWN:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
-                    self.logger.debug(str_log)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
-                                                  CONST.STR_UNKNOWN
-                else:
-                    self.logger.debug(CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt))
-                    self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
-                self.calculate_health_state()
+                self._read_activity_message = (
+                    SubarrayHealthState.generate_log_msg_based_on_health_state(str(evt)))
+                self._health_state = SubarrayHealthState.calculate_health_state(
+                    self.subarray_ln_health_state_map,
+                    self.dishHealthStateMap)
 
             except KeyError as key_error:
                 self.logger.debug(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error))
                 self._read_activity_message = CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error)
                 self.logger.debug(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE)
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                    exception_message, exception_count, CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
+                [exception_message, exception_count] = (
+                    self._handle_devfailed_exception(dev_failed,
+                    exception_message, exception_count, CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE))
             except Exception as except_occured:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                            exception_message, exception_count, CONST.ERR_AGGR_HEALTH_STATE)
+                [exception_message, exception_count] = (
+                    self._handle_generic_exception(except_occured,
+                    exception_message, exception_count, CONST.ERR_AGGR_HEALTH_STATE))
         else:
-            self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt))
-            self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
+            str_log =  CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
+            self.logger.debug(str_log)
+            self._read_activity_message = str_log
             self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
 
     def obsStateCallback(self, evt):
@@ -159,51 +207,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
             self.logger.critical(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
 
-    def calculate_health_state(self):
-        """
-        Calculates aggregated health state of Subarray.
-        """
-        self.failed_health_count = 0
-        self.degraded_health_count = 0
-        self.unknown_health_count = 0
-        self.ok_health_count = 0
-
-        # Calculate Health states of CSP and SDP
-        """can be represented with a function"""
-        for value in list(self.subarray_ln_health_state_map.values()):
-            if value == CONST.ENUM_FAILED:
-                self.failed_health_count = self.failed_health_count + 1
-                break
-            elif value == CONST.ENUM_DEGRADED:
-                self.degraded_health_count = self.degraded_health_count + 1
-            elif value == CONST.ENUM_UNKNOWN:
-                self.unknown_health_count = self.unknown_health_count + 1
-            else:
-                self.ok_health_count = self.ok_health_count + 1
-
-        # Aggregated Health State
-        """can be represented with a function"""
-        for value in list(self.dishHealthStateMap.values()):
-            if value == CONST.ENUM_FAILED:
-                self.failed_health_count = self.failed_health_count + 1
-                break
-            elif value == CONST.ENUM_DEGRADED:
-                self.degraded_health_count = self.degraded_health_count + 1
-            elif value == CONST.ENUM_UNKNOWN:
-                self.unknown_health_count = self.unknown_health_count + 1
-            else:
-                self.ok_health_count = self.ok_health_count + 1
-
-        if self.ok_health_count == len(list(self.subarray_ln_health_state_map.values())) + \
-                len(list(self.dishHealthStateMap.values())):
-            self._health_state = CONST.ENUM_OK
-        elif self.failed_health_count != 0: # let's rather say if it's a positive number
-            self._health_state = CONST.ENUM_FAILED
-        elif self.degraded_health_count != 0:
-            self._health_state = CONST.ENUM_DEGRADED
-        else:
-            self._health_state = CONST.ENUM_UNKNOWN
-
     def calculate_observation_state(self):
         """
         Calculates aggregated observation state of Subarray.
@@ -212,38 +215,38 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         pointing_state_count_slew = 0
         """can be represented with a function as well"""
         for value in list(self.dishPointingStateMap.values()):
-            if value == CONST.POINTING_STATE_ENUM_TRACK:
+            if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
-            elif value == CONST.POINTING_STATE_ENUM_SLEW:
+            elif value == PointingState.SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
         """several if elif blocks here.. can something be done about it?"""
-        if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state ==\
-                CONST.OBS_STATE_ENUM_SCANNING:
-            self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
+        if self._csp_sa_obs_state == ObsState.SCANNING and self._sdp_sa_obs_state ==\
+                ObsState.SCANNING:
+            self._obs_state = ObsState.SCANNING
             # self.isScanning = True
-        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_READY and self._sdp_sa_obs_state ==\
-                CONST.OBS_STATE_ENUM_READY:
+        elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
+                ObsState.READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                self._obs_state = CONST.OBS_STATE_ENUM_READY
-        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING or \
-                self._sdp_sa_obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
-            self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
-        elif self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state ==\
-                CONST.OBS_STATE_ENUM_IDLE:
+                self._obs_state = ObsState.READY
+        elif self._csp_sa_obs_state == ObsState.CONFIGURING or \
+                self._sdp_sa_obs_state == ObsState.CONFIGURING:
+            self._obs_state = ObsState.CONFIGURING
+        elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
+                ObsState.IDLE:
             if len(self.dishPointingStateMap.values()) != 0:
                 if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                     if self.only_dishconfi_flag == True:
                         if self.isScanning == True:
-                            self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
+                            self._obs_state = ObsState.SCANNING
                         else:
-                            self._obs_state = CONST.OBS_STATE_ENUM_READY
+                            self._obs_state = ObsState.READY
                     else:
                         self._dish_leaf_node_group.command_inout(CONST.CMD_STOP_TRACK)
-                        self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+                        self._obs_state = ObsState.IDLE
                 elif pointing_state_count_slew != 0:
-                    self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
+                    self._obs_state = ObsState.CONFIGURING
                 else:
-                    self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+                    self._obs_state = ObsState.IDLE
 
     def create_csp_ln_proxy(self):
         """
@@ -338,7 +341,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # Set state = ON
                 self.set_state(DevState.ON)
                 # set obsState to "IDLE"
-                self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+                self._obs_state = ObsState.IDLE
                 self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
                 self.logger.info(CONST.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
@@ -539,8 +542,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             json_scan_duration = json.loads(argin)
             self.scan_duration = int(json_scan_duration['scanDuration'])
             self.logger.debug(CONST.STR_SCAN_IP_ARG, argin)
-            assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
-            if self._obs_state == CONST.OBS_STATE_ENUM_READY:
+            assert self._obs_state != ObsState.SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
+            if self._obs_state == ObsState.READY:
                 self._read_activity_message = CONST.STR_SCAN_IP_ARG + argin
                 self.isScanning = True
                 # Invoke Scan command on SDP Subarray Leaf Node
@@ -559,8 +562,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.logger.debug(CONST.STR_CSP_SCAN_INIT)
                 self._read_activity_message = CONST.STR_CSP_SCAN_INIT
 
-                if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state ==\
-                        CONST.OBS_STATE_ENUM_IDLE:
+                if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
+                        ObsState.IDLE:
                     if len(self.dishPointingStateMap.values()) != 0:
                         self.calculate_observation_state()
 
@@ -581,7 +584,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             #TODO: FOR FUTURE IMPLEMENTATION
             # if type(float(argin[0])) == float:
             #     self.logger.debug("Observation state:", self._obs_state)
-            #     assert self._obs_state != CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
+            #     assert self._obs_state != ObsState.SCANNING, CONST.SCAN_ALREADY_IN_PROGRESS
             #     self.logger.debug(CONST.STR_GRP_DEF +str(self._dish_leaf_node_group.get_device_list()))
             #     self._read_activity_message = CONST.STR_SCAN_IP_ARG + str(argin)
             #     self._read_activity_message = CONST.STR_GRP_DEF + str(
@@ -590,7 +593,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             #     cmdData.insert(tango.DevString, argin[0])
             #     self._dish_leaf_node_group.command_inout(CONST.CMD_SCAN, cmdData)
             #     # set obsState to SCANNING when the scan is started
-            #     self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
+            #     self._obs_state = ObsState.SCANNING
             #     self.set_status(CONST.STR_SA_SCANNING)
             #     self.logger.info(CONST.STR_SA_SCANNING)
         except AssertionError as assert_error:
@@ -659,8 +662,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         exception_message = []
         self._endscan_stop = True
         try:
-            assert self._obs_state == CONST.OBS_STATE_ENUM_SCANNING, CONST.SCAN_ALREADY_COMPLETED
-            if self._obs_state == CONST.OBS_STATE_ENUM_SCANNING:
+            assert self._obs_state == ObsState.SCANNING, CONST.SCAN_ALREADY_COMPLETED
+            if self._obs_state == ObsState.SCANNING:
                 self.isScanning = False
                 # Invoke EndScan command on SDP Subarray Leaf Node
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_END_SCAN)
@@ -673,8 +676,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._read_activity_message = CONST.STR_CSP_END_SCAN_INIT
                 self._scan_id = ""
 
-                if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_IDLE and self._sdp_sa_obs_state ==\
-                        CONST.OBS_STATE_ENUM_IDLE:
+                if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
+                        ObsState.IDLE:
                     if len(self.dishPointingStateMap.values()) != 0:
                         self.calculate_observation_state()
 
@@ -687,7 +690,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # cmdData.insert(tango.DevString, "0")
                 # self._dish_leaf_node_group.command_inout(CONST.CMD_END_SCAN, cmdData)
                 # set obsState to READY when the scan is ended
-                # self._obs_state = CONST.OBS_STATE_ENUM_READY
+                # self._obs_state = ObsState.READY
                 # self._scan_id = ""
                 # self.set_status(CONST.STR_SCAN_COMPLETE)
                 # self.logger.info(CONST.STR_SCAN_COMPLETE)
@@ -864,7 +867,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # It will be moved to that command.
                 self._sb_id = ""
                 self.set_state(DevState.OFF)  # Set state = OFF
-                self._obs_state = CONST.OBS_STATE_ENUM_IDLE  # set obsState to "IDLE"
+                self._obs_state = ObsState.IDLE  # set obsState to "IDLE"
 
         except AssertionError as assert_err:
             self.logger.error(CONST.ERR_RELEASE_RES_CMD + str(assert_err))
@@ -904,19 +907,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             try:
                 self._dish_health_state = evt.attr_value.value
                 self.dishHealthStateMap[evt.device] = self._dish_health_state
-                if self._dish_health_state == CONST.ENUM_OK:
+                if self._dish_health_state == HealthState.OK:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
                     self.logger.debug(str_log)
                     self._read_activity_message = str_log
-                elif self._dish_health_state == CONST.ENUM_DEGRADED:
+                elif self._dish_health_state == HealthState.DEGRADED:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
                     self.logger.debug(str_log)
                     self._read_activity_message = str_log
-                elif self._dish_health_state == CONST.ENUM_FAILED:
+                elif self._dish_health_state == HealthState.FAILED:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
                     self.logger.debug(str_log)
                     self._read_activity_message = str_log
-                elif self._dish_health_state == CONST.ENUM_UNKNOWN:
+                elif self._dish_health_state == HealthState.UNKNOWN:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
                     self.logger.debug(str_log)
                     self._read_activity_message = str_log
@@ -948,19 +951,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             try:
                 self._dish_pointing_state = evt.attr_value.value
                 self.dishPointingStateMap[evt.device] = self._dish_pointing_state
-                if self._dish_pointing_state == CONST.POINTING_STATE_ENUM_READY:
+                if self._dish_pointing_state == PointingState.READY:
                     str_log = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_READY
                     self.logger.debug(str_log)
                     self._read_activity_message = str_log
-                elif self._dish_pointing_state == CONST.POINTING_STATE_ENUM_SLEW:
+                elif self._dish_pointing_state == PointingState.SLEW:
                     str_log = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_SLEW
                     self.logger.debug(str_log)
                     self._read_activity_message = str_log
-                elif self._dish_pointing_state == CONST.POINTING_STATE_ENUM_TRACK:
+                elif self._dish_pointing_state == PointingState.TRACK:
                     str_log = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_TRACK
                     self.logger.debug(str_log)
                     self._read_activity_message = str_log
-                elif self._dish_pointing_state == CONST.POINTING_STATE_ENUM_SCAN:
+                elif self._dish_pointing_state == PointingState.SCAN:
                     str_log = CONST.STR_POINTING_STATE + str(evt.device) + CONST.STR_SCAN
                     self.logger.debug(str_log)
                     self._read_activity_message = str_log
@@ -1069,11 +1072,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
         self.set_state(DevState.INIT)
         self.set_status(CONST.STR_SA_INIT)
-        self.SkaLevel = 2                        # set SKALevel to "2"
-        self._admin_mode = CONST.ENUM_OFFLINE    # set adminMode to "OFFLINE"
-        self._health_state = CONST.ENUM_OK       # set health state to "OK"
-        self._obs_state = CONST.OBS_STATE_ENUM_IDLE       # set obsState to "IDLE"
-        self._obs_mode = CONST.ENUM_IDLE        # set obsMode to "IDLE"
+        self.SkaLevel = 2  # set SKALevel to "2"
+        self._admin_mode = AdminMode.OFFLINE
+        self._health_state = HealthState.OK
+        self._obs_state = ObsState.IDLE
+        self._obs_mode = ObsMode.IDLE
         self._simulation_mode = False
         self.isScanning = False
         self._scan_id = ""
@@ -1089,9 +1092,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._dishLnVsPointingStateEventID = {}
         self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
                                                 # SDP SA LN
-        self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
-        self._csp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
-        self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
+        self._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
+        self._csp_sa_obs_state = ObsState.IDLE
+        self._sdp_sa_obs_state = ObsState.IDLE
         self.only_dishconfi_flag = False
         self._endscan_stop = False
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
@@ -1244,7 +1247,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._scanConfiguration = json.loads(argin)
             self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
             self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
-            if self._obs_state == CONST.OBS_STATE_ENUM_IDLE:
+            if self._obs_state == ObsState.IDLE:
                 # TODO: FOR FUTURE IMPLEMENTATION
                 # scanID = scanConfiguration["scanID"]
                 # pointing =  scanConfiguration["pointing"]
@@ -1369,7 +1372,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         self.logger.error (msg)
                     # TODO: FOR FUTURE REFERENCE
                     # # set obsState to READY when the configuration is completed
-                    # self._obs_state = CONST.OBS_STATE_ENUM_READY
+                    # self._obs_state = ObsState.READY
                 else:
                     err_msg = ''
                     msg = "'scanID' must be given. Aborting configuration."
@@ -1417,7 +1420,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         exception_count = 0
         try:
             self.logger.debug("EndSB invoked on SubarrayNode.")
-            if self._obs_state == CONST.OBS_STATE_ENUM_READY:
+            if self._obs_state == ObsState.READY:
                 self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
                 self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ENDSB)
                 self._dish_leaf_node_group.command_inout(CONST.CMD_STOP_TRACK)
@@ -1463,14 +1466,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         try:
             self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
             # set obsState to CONFIGURING when the configuration is started
-            # self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
+            # self._obs_state = ObsState.CONFIGURING
             cmd_input = []
             cmd_input.append(argin)
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevVarStringArray, cmd_input)
             self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
             # set obsState to READY when the configuration is completed
-            # self._obs_state = CONST.OBS_STATE_ENUM_READY
+            # self._obs_state = ObsState.READY
             self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             #self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self.logger.info(CONST.STR_TRACK_CMD_INVOKED_SA)
