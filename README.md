@@ -32,7 +32,7 @@ The prototype utilizes the base classes created in-line with the SKA Control Sys
 TMC prototype addresses the  following architectural aspects and functionality:
 
 ### 1.1: Architecture
-* [x] Use of base classes for development of control nodes and Dish Master, CspMaster, CspSubarray, SdpMaster and SdpSubarray Simulators
+* [x] Use of base classes for development of TMC control nodes and element simulator such as Dish Master
 * [x] Hierarchy of control nodes - Central Node, Subarray Node, Leaf Node
 * [x] Interface between the TMC and Element LMC (Dish Master)
 * [x] Integration of KATPoint library for pointing and delay calculation 
