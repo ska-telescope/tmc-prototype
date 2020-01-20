@@ -75,13 +75,21 @@ test:
 	 sdp-master-leaf-node-unit-tests.xml sdp-subarray-leaf-node-unit-tests.xml subarraynode-unit-tests.xml
 
 	mv /app/tmcprototype/DishMaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
+	mv /app/tmcprototype/DishMaster/htmlcov /build/dishmaster_htmlcov; \
 	mv /app/tmcprototype/CspSubarrayLeafNode/setup_py_test.stdout /build/cspsubarrayleafnode_setup_py_test.stdout; \
+	mv /app/tmcprototype/CspSubarrayLeafNode/htmlcov /build/cspsubarrayleafnode_htmlcov; \
 	mv /app/tmcprototype/DishLeafNode/setup_py_test.stdout /build/dishleafnode_setup_py_test.stdout; \
+	mv /app/tmcprototype/DishLeafNode/htmlcov /build/dishleafnode_htmlcov; \
 	mv /app/tmcprototype/SdpSubarrayLeafNode/setup_py_test.stdout /build/sdpsubarrayleafnode_setup_py_test.stdout; \
+	mv /app/tmcprototype/SdpSubarrayLeafNode/htmlcov /build/sdpsubarrayleafnode_htmlcov; \
 	mv /app/tmcprototype/CspMasterLeafNode/setup_py_test.stdout /build/cspmasterleafnode_setup_py_test.stdout; \
+	mv /app/tmcprototype/CspMasterLeafNode/htmlcov /build/cspmasterleafnode_htmlcov; \
 	mv /app/tmcprototype/SdpMasterLeafNode/setup_py_test.stdout /build/sdpmasterleafnode_setup_py_test.stdout; \
+	mv /app/tmcprototype/SdpMasterLeafNode/htmlcov /build/sdpmasterleafnode_htmlcov; \
 	mv /app/tmcprototype/SubarrayNode/setup_py_test.stdout /build/subarraynode_setup_py_test.stdout; \
-	mv /app/tmcprototype/CentralNode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout
+	mv /app/tmcprototype/SubarrayNode/htmlcov /build/subarraynode_htmlcov; \
+	mv /app/tmcprototype/CentralNode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout; \
+	mv /app/tmcprototype/CentralNode/htmlcov /build/centralnode_htmlcov; \
 
 lint:
 	pip3 install pylint2junit; \
