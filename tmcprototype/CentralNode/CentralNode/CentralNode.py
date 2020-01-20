@@ -333,7 +333,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                EventType.CHANGE_EVENT,
                                                self.healthStateCallback, stateless=True)
 
-                #populate subarrayID-subarray proxy mapsubarray_proxy
+                #populate subarrayID-subarray proxy map
                 tokens = self.TMMidSubarrayNodes[subarray].split('/')
                 subarrayID = int(tokens[2])
                 self.subarray_FQDN_dict[subarrayID] = subarray_proxy
@@ -509,7 +509,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._csp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP,[])
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
+                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
         try:
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP)
         except DevFailed as dev_failed:
