@@ -1079,6 +1079,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
         self.only_dishconfi_flag = False
         self._endscan_stop = False
+        self._state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
 
 
         # Create proxy for CSP Subarray Leaf Node
@@ -1102,7 +1103,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.error(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed))
             self._read_activity_message = CONST.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
-            state_fault_flag = True
+            self._state_fault_flag = True
             self.set_status(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR)
             self.logger.error(CONST.ERR_CSP_SA_LEAF_INIT)
 
@@ -1119,14 +1120,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.error(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed))
             self._read_activity_message = CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
-            state_fault_flag = True
+            self._state_fault_flag = True
             self.set_status(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR)
 
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
         self.logger.info(CONST.STR_SA_INIT_SUCCESS)
 
-        if(state_fault_flag == True):
+        if(self._state_fault_flag == True):
             self.set_state(DevState.FAULT)           # Set state = FAULT
         else:
             self.set_state(DevState.DISABLE)         # Set state = DISABLE
