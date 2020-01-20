@@ -324,7 +324,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                 exception_message, exception_count,CONST.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
 
-
+        # Create device proxy for Subarray Node
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
@@ -470,13 +470,18 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
 
-
         try:
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
 
+        try:
+            for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
+                self.subarray_FQDN_dict[subarrayID].command_inout(CONST.CMD_STANDBY)
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                        exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, CONST.STR_STANDBY_EXEC)
@@ -500,25 +505,28 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
 
-
         try:
-            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP,
-                                                      [])
+            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP,[])
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
+                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
         try:
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count,  CONST.ERR_EXE_STARTUP_CMD)
+                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
 
-
+        try:
+            for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
+                self.subarray_FQDN_dict[subarrayID].command_inout(CONST.CMD_STARTUP)
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, CONST.STR_STARTUP_EXEC)
-
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
+
 
     @command(
         dtype_in='str',
