@@ -42,6 +42,14 @@ from skabase.SKASubarray.SKASubarray import SKASubarray
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 __all__ = ["SubarrayNode", "main"]
+
+class SubArrayHealthState:
+    """
+    Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
+    to calculate the subarray health state.
+    """
+    def __init__(self):
+
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
     Provides the monitoring and control interface required by users as well as
@@ -62,6 +70,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         if evt.err is False:
             try:
                 self._health_state = evt.attr_value.value
+                # health state for csp and sdp retrieved if they are found in event's attribute's name
                 if CONST.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa = self._health_state
                     self.subarray_ln_health_state_map[evt.device] = self._health_state
@@ -75,16 +84,16 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 if self._health_state == CONST.ENUM_OK:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
                     self.logger.debug(str_log)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK # why not just use "str_log" variable
                 elif self._health_state == CONST.ENUM_DEGRADED:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
                     self.logger.debug(str_log)
                     self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + \
-                                                  CONST.STR_DEGRADED
+                                                  CONST.STR_DEGRADED # ditto
                 elif self._health_state == CONST.ENUM_FAILED:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
                     self.logger.debug(str_log)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                    self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED # ditto
                 elif self._health_state == CONST.ENUM_UNKNOWN:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
                     self.logger.debug(str_log)
@@ -160,6 +169,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.ok_health_count = 0
 
         # Calculate Health states of CSP and SDP
+        """can be represented with a function"""
         for value in list(self.subarray_ln_health_state_map.values()):
             if value == CONST.ENUM_FAILED:
                 self.failed_health_count = self.failed_health_count + 1
@@ -172,6 +182,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.ok_health_count = self.ok_health_count + 1
 
         # Aggregated Health State
+        """can be represented with a function"""
         for value in list(self.dishHealthStateMap.values()):
             if value == CONST.ENUM_FAILED:
                 self.failed_health_count = self.failed_health_count + 1
@@ -186,7 +197,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         if self.ok_health_count == len(list(self.subarray_ln_health_state_map.values())) + \
                 len(list(self.dishHealthStateMap.values())):
             self._health_state = CONST.ENUM_OK
-        elif self.failed_health_count != 0:
+        elif self.failed_health_count != 0: # let's rather say if it's a positive number
             self._health_state = CONST.ENUM_FAILED
         elif self.degraded_health_count != 0:
             self._health_state = CONST.ENUM_DEGRADED
@@ -199,12 +210,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
+        """can be represented with a function as well"""
         for value in list(self.dishPointingStateMap.values()):
             if value == CONST.POINTING_STATE_ENUM_TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == CONST.POINTING_STATE_ENUM_SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
-
+        """several if elif blocks here.. can something be done about it?"""
         if self._csp_sa_obs_state == CONST.OBS_STATE_ENUM_SCANNING and self._sdp_sa_obs_state ==\
                 CONST.OBS_STATE_ENUM_SCANNING:
             self._obs_state = CONST.OBS_STATE_ENUM_SCANNING
@@ -232,6 +244,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
                 else:
                     self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+
     def create_csp_ln_proxy(self):
         """
         Creates proxy of CSP Subarray Leaf Node.
@@ -301,7 +314,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                           stateless=True)
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
                 self._health_event_id.append(self._event_id)
-                self.dishHealthStateMap[devProxy] = -1
+                self.dishHealthStateMap[devProxy] = -1 # what does -1 represent?
                 self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID))
 
                 # Subscribe Dish Pointing State
@@ -311,7 +324,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                           stateless=True)
                 self._dishLnVsPointingStateEventID[devProxy] = self._event_id
                 self._pointing_state_event_id.append(self._event_id)
-                self.dishPointingStateMap[devProxy] = -1
+                self.dishPointingStateMap[devProxy] = -1 # what does -1 represent?
                 self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID))
                 self._receptor_id_list.append(int(str_leafId))
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
@@ -447,6 +460,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID))
                 self.logger.debug(CONST.STR_POINTING_STATE_ID + str(self._pointing_state_event_id))
                 self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID +str(self._dishLnVsPointingStateEventID))
+                """any need to replace the two for loops with function calls?"""
                 for dev in self._dishLnVsHealthEventID:
                     dev.unsubscribe_event(self._dishLnVsHealthEventID[dev])
                 for dev in self._dishLnVsPointingStateEventID:
@@ -977,6 +991,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
         return [excpt_msg_list, exception_count]
+    def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
 
     def throw_exception(self, excpt_msg_list, read_actvity_msg):
         err_msg = ''
