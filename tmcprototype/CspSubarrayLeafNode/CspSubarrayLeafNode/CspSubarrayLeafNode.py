@@ -17,8 +17,8 @@ import threading
 from datetime import datetime, timedelta
 import pytz
 import katpoint
-from scipy.interpolate import UnivariateSpline
 import numpy as np
+from scipy.interpolate import UnivariateSpline
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
@@ -160,45 +160,51 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         delay_corrections_v_array_t4 = []
         delay_corrections_v_array_t5 = []
         delay_corrections_v_array_dict = {}
-        timestamp_array = [time_t0,(time_t0+timedelta(seconds=2)),(time_t0+timedelta(seconds=4)),
-                           (time_t0+timedelta(seconds=6)),(time_t0+timedelta(seconds=8)),
-                           (time_t0+timedelta(seconds=10))]
 
-        for timestamp in range(0, len(timestamp_array)):
-            # Calculate geometric delay value
+        # Delays are calculated for the timestamps between "t0 - 25" to "t0 + 25" at an interval of 10
+        # seconds.
+        timestamp_array = [time_t0 - timedelta(seconds=25), (time_t0 - timedelta(seconds=15)),
+                           (time_t0 - timedelta(seconds=5)), (time_t0 + timedelta(seconds=5)),
+                           (time_t0 + timedelta(seconds=15)), (time_t0 + timedelta(seconds=25))]
+
+        for timestamp_index in range(0, len(timestamp_array)):
+            # Calculate geometric delay value.
             delay = self.delay_correction_object._calculate_delays(self.target,
-                                                                   str(timestamp_array[timestamp]))
+                                                                   str(timestamp_array[timestamp_index]))
 
             # Horizontal and vertical delay corrections for each antenna
             for i in range(0, len(delay)):
                 if i % 2 == 0:
-                    if timestamp == 0:
+                    if timestamp_index == 0:
                         delay_corrections_h_array_t0.append(delay[i])
-                    elif timestamp == 1:
+                    elif timestamp_index == 1:
                         delay_corrections_h_array_t1.append(delay[i])
-                    elif timestamp == 2:
+                    elif timestamp_index == 2:
                         delay_corrections_h_array_t2.append(delay[i])
-                    elif timestamp == 3:
+                    elif timestamp_index == 3:
                         delay_corrections_h_array_t3.append(delay[i])
-                    elif timestamp == 4:
+                    elif timestamp_index == 4:
                         delay_corrections_h_array_t4.append(delay[i])
-                    elif timestamp == 5:
+                    elif timestamp_index == 5:
                         delay_corrections_h_array_t5.append(delay[i])
                 else:
-                    if timestamp == 0:
+                    if timestamp_index == 0:
                         delay_corrections_v_array_t0.append(delay[i])
-                    elif timestamp == 1:
+                    elif timestamp_index == 1:
                         delay_corrections_v_array_t1.append(delay[i])
-                    elif timestamp == 2:
+                    elif timestamp_index == 2:
                         delay_corrections_v_array_t2.append(delay[i])
-                    elif timestamp == 3:
+                    elif timestamp_index == 3:
                         delay_corrections_v_array_t3.append(delay[i])
-                    elif timestamp == 4:
+                    elif timestamp_index == 4:
                         delay_corrections_v_array_t4.append(delay[i])
-                    elif timestamp == 5:
+                    elif timestamp_index == 5:
                         delay_corrections_v_array_t5.append(delay[i])
 
-        x = np.array([0, 2, 4, 6, 8, 10])
+        # Convert delays in seconds to 5th order polynomial coefficients
+        # x is always [-25, -15, -5, 5, 15, 25] as the delays are calculated for the timestamps between
+        # "t0 - 25" to "t0 + 25" at an interval of 10 seconds.
+        x = np.array([-25, -15, -5, 5, 15, 25])
         for i in range(0, len(self.antenna_names)):
             antenna_delay_list = []
             antenna_delay_list.append(delay_corrections_h_array_t0[i])
@@ -208,12 +214,14 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             antenna_delay_list.append(delay_corrections_h_array_t4[i])
             antenna_delay_list.append(delay_corrections_h_array_t5[i])
 
-            # The number of data points must be larger than the spline degree `k`
+            # Array including delay values per antenna for the timestamps between "t0 - 25" to "t0 + 25"
+            # at an interval of 10 seconds.
             y = np.array(antenna_delay_list)
 
-            output = UnivariateSpline(x, y, k=5, s=0)
-            polynomial = output.get_coeffs()
-            delay_corrections_h_array_dict[self.antenna_names[i]] = polynomial
+            # Fit polynomial to the values over 50-second range
+            polynomial = np.polynomial.Polynomial.fit(x, y, 5)
+            polynomial_coefficients = polynomial.convert().coef
+            delay_corrections_h_array_dict[self.antenna_names[i]] = polynomial_coefficients
         return delay_corrections_h_array_dict
 
     def update_config_params(self):

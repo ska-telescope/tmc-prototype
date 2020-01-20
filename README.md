@@ -35,12 +35,12 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Use of base classes for development of TMC control nodes and element simulator such as Dish Master
 * [x] Hierarchy of control nodes - Central Node, Subarray Node, Leaf Node
 * [x] Interface between the TMC and Element LMC (Dish Master)
-* [x] Integration of KATPoint library for pointing and delay calculation 
-* [x] Use of Alarm Handler
-* [x] Use of SKA Logger
 * [x] Interface between the CentralNode/SubarrayNode and OET
 * [x] Interface between the TMC and CSP (CspMaster and CspSubarray)
 * [x] Interface between the TMC and SDP (SdpMaster and SdpSubarray)
+* [x] Integration of KATPoint library for pointing and delay calculation 
+* [x] Use of Alarm Handler
+* [x] Use of SKA Logger
 * [x] Source tracking
 
 ### 1.2: Functionality
@@ -53,28 +53,30 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] TANGO group commands
 * [x] Conversion of Ra-Dec to Az-El coordinates using KATPoint
 * [x] Calculate Az-El periodically in Dish Leaf Node and implement tracking functionality in the Dish simulator
-* [x] Calculation of time delay polynomials (Using KATpoint library)
 * [x] Interface between the TMC and CSP:
    * [x] Develop CSP Master Leaf Node and CSP Subarray Leaf Node
    * [x] Monitor/subscribe CSP Master and CSP Subarray attributes from CSP Master Leaf Node and CSP Subarray Leaf Node respectively
-   * [x] Aggregation of overall Telescope Health (residing in Central Node) to include CSP Master health
-   * [x] Aggregation of Subarray Node health state to include CSP Subarray health
-   * [x] StartUpTelescope command on Central Node to start CSP Master device
-   * [x] Configure the CSP for a simple scan by relaying the configuration received from the OET
-   * [x] Send Delay coefficients at regular time interval per subarray
+   * [x] Use of CSP Master health to calculate overall Telescope Health (in Central Node)
+   * [x] Use of CSP Subarray health to calculate Subarray Node health state
+   * [x] StartUpTelescope command on Central Node to change CSP Master device state to ON
+   * [x] Configure the CSP for a simple scan
+   * [x] Publish Delay coefficients at regular time interval on CSP Subarray Leaf Node per Subarray
 * [x] Interface between the TMC and SDP:
    * [x] Develop SDP Master Leaf Node and SDP Subarray Leaf Node
    * [x] Monitor/subscribe SDP Master and SDP Subarray attributes from SDP Master Leaf Node and SDP Subarray Leaf Node respectively
-   * [x] Aggregation of overall Telescope Health (residing in Central Node) to include SDP Master health
-   * [x] Aggregation of Subarray Node health state to include SDP Subarray health
-   * [x] StartUpTelescope command on Central Node to start SDP Master device
-   * [x] Configure the SDP for a simple scan by providing the configuration received from the OET
+   * [x] Use of SDP Master health to calculate overall Telescope Health (in Central Node)
+   * [x] Use of SDP Subarray health to calculate Subarray Node health state
+   * [x] StartUpTelescope command on Central Node to change SDP Master device state to ON
+   * [x] Configure the SDP for a simple scan
+* [x] Telescope Startup and Standby
 * [x] Accept configuration as strings (JSON) from OET for following commands:
   * [x] AssignResources
   * [x] ReleaseResources
+* [x] Start Configure command on Subarray
 * [x] Start a simple Scan and End the Scan
-* [x] EndSB command on SubarrayNode 
-
+* [x] EndSB command on SubarrayNode
+* [x] Calculate Geometric delay values (in seconds) per antenna on CSP Subarray Leaf Node
+* [x] Convert delay values (in seconds) to 5th order polynomial coefficients
 
 **NOTE:** Refer to the Demo link provided in the [Documentation](#6-documentation) section for more details.
 
