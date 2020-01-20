@@ -14,31 +14,30 @@
    * 3.5 - Running the GUI
  * 4   - Unit and Integration Testing
    * 4.1 - Testing DishMaster
-   * 4.2 - Testing CspMasterLeafNode
-   * 4.3 - Testing CspSubarrayLeafNode
-   * 4.4 - Testing SdpMasterLeafNode
-   * 4.5 - Testing SdpSubarrayLeafNode
-   * 4.6 - Testing DishLeafNode
-   * 4.7 - Testing CSPMasterLeafNode
-   * 4.8 - Testing SubarrayNode
-   * 4.9 - Testing CentralNode
+   * 4.2 - Testing DishLeafNode
+   * 4.3 - Testing CspMasterLeafNode
+   * 4.4 - Testing CspSubarrayLeafNode
+   * 4.5 - Testing SdpMasterLeafNode
+   * 4.6 - Testing SdpSubarrayLeafNode
+   * 4.7 - Testing SubarrayNode
+   * 4.8 - Testing CentralNode
  * 5   - Running tmc-prototype inside Docker containers
  * 6   - Documentation
 
 # 1: Introduction
 This is the repository for TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
-The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.5.2** (PyTango 9.5.2a), it is a single repository consisting eight packages - CentralNode, SubarrayNode, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode and DishMaster.
+The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.6** (PyTango 9.5.2a), it is a single repository consisting eight packages - CentralNode, SubarrayNode, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode and DishMaster.
 
 TMC prototype addresses the  following architectural aspects and functionality:
 
 ### 1.1: Architecture
-* [x] Use of base classes for development of control nodes and Dish Master, CspMaster, CspSubarray, SdpMaster, SdpSubarray and CbfTestMaster Simulators
-* [x] Hierarchy of control nodes - Central node, Subarray node, Leaf Node
+* [x] Use of base classes for development of TMC control nodes and element simulator such as Dish Master
+* [x] Hierarchy of control nodes - Central Node, Subarray Node, Leaf Node
 * [x] Interface between the TMC and Element LMC (Dish Master)
-* [x] Integration of KATPoint library
+* [x] Integration of KATPoint library for pointing and delay calculation 
 * [x] Use of Alarm Handler
-* [x] Use of Central Logger
+* [x] Use of SKA Logger
 * [x] Interface between the CentralNode/SubarrayNode and OET
 * [x] Interface between the TMC and CSP (CspMaster and CspSubarray)
 * [x] Interface between the TMC and SDP (SdpMaster and SdpSubarray)
@@ -54,6 +53,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] TANGO group commands
 * [x] Conversion of Ra-Dec to Az-El coordinates using KATPoint
 * [x] Calculate Az-El periodically in Dish Leaf Node and implement tracking functionality in the Dish simulator
+* [x] Calculation of time delay polynomials (Using KATpoint library)
 * [x] Interface between the TMC and CSP:
    * [x] Develop CSP Master Leaf Node and CSP Subarray Leaf Node
    * [x] Monitor/subscribe CSP Master and CSP Subarray attributes from CSP Master Leaf Node and CSP Subarray Leaf Node respectively
@@ -61,6 +61,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
    * [x] Aggregation of Subarray Node health state to include CSP Subarray health
    * [x] StartUpTelescope command on Central Node to start CSP Master device
    * [x] Configure the CSP for a simple scan by relaying the configuration received from the OET
+   * [x] Send Delay coefficients at regular time interval per subarray
 * [x] Interface between the TMC and SDP:
    * [x] Develop SDP Master Leaf Node and SDP Subarray Leaf Node
    * [x] Monitor/subscribe SDP Master and SDP Subarray attributes from SDP Master Leaf Node and SDP Subarray Leaf Node respectively
@@ -72,14 +73,14 @@ TMC prototype addresses the  following architectural aspects and functionality:
   * [x] AssignResources
   * [x] ReleaseResources
 * [x] Start a simple Scan and End the Scan
-* [x] Calculation of time delay polynomials (Currently dummy delays are populated.)
+* [x] EndSB command on SubarrayNode 
+
 
 **NOTE:** Refer to the Demo link provided in the [Documentation](#6-documentation) section for more details.
 
 # 2: Prerequisites
-* Linux/Ubuntu (16.04 LTS) (preferably)
-* Python 3.5.2
-* Python 2.7.12 (for Taurus GUI)
+* Linux/Ubuntu (18.04 LTS) 
+* Python 3.6
 * [python3-pip](https://packages.ubuntu.com/xenial/python3-pip)
 * [Tango (9.2.5a)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
 * [PyTango (9.2.4)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
@@ -101,7 +102,7 @@ Since TMC prototype is developed using SKA Base classes, we need to install them
 Follow the steps specified at [this link](https://github.com/ska-telescope/lmc-base-classes) to install SKA Base classes.
 
 ### 3.2: Install Elettra Alarm Handler
-Alarm handler is optional feature and can be installed if desired. Refer [this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing) document for installation guide.
+Alarm handler is an optional feature and can be installed if desired. Refer [this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing) document for installation guide.
 
 ### 3.3: Running tmc-prototype on local environment (non-containerised)
 Scripts are provided in tmcprototype folder in order to start and stop all the TANGO Devices.
@@ -120,98 +121,96 @@ Start the TMC Devices and follow the screenshots for configuration of TANGO devi
 #### DishMaster
 Define and configure 4 instances of DishMaster TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1OyuOe1bdexS6BAYndghnQ10OJeC-rnHD/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1JgYrDh2QTyOC72ABrTg1wxbXv5Au7FXK/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1RTmY91IF23Qk3CtTu6WTIkJ3QIEGHpY8/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1G1NHeK-XJ_lFtVT8anjk9J3-tpH4c_IV)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1NlduVk23cBcGou1jpkrRILzwW-53Fl28)
+* [Events Configuration](https://drive.google.com/open?id=13EdgU_5BhesN9wloeHIvSEZGJ7nY00EA)
 
 #### CspMasterLeafNode
-Define and configure 4 instances of CspMasterLeafNode TANGO Device server as specified in the given screenshots.
+Define and configure 1 instance of CspMasterLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/11rdsQxq4sbkkyg3MgrcRVbh5iEAVKC9S/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/188km3WwMApz1GkVdNVBmzsWp-VHP6KEK/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1ZVJIDUvjphWfrFQCvr_lpFhBaYUSFDzV/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1IU719MZJYPPv4C0w__XFaxzLLrDNsSEY/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1VyLxuuFJjA94iYDt3y0JZe6cDg8jh25U)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1GAjvKtTAGkMg_77eqGdBy7HNNg4El01v)
+* [Events Configuration](https://drive.google.com/open?id=1GAjvKtTAGkMg_77eqGdBy7HNNg4El01v)
+* [Attribute Property](https://drive.google.com/open?id=15ZYaVP8vKeIDXZ05qhlSzsvjhsAEZFT4)
 
 #### CspSubarrayLeafNode
-Define and configure 4 instances of CspSubarrayLeafNode TANGO Device server as specified in the given screenshots.
+Define and configure 3 instances of CspSubarrayLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1iraqklKUvnH3fAMEVRW9PKXspyeRMmxk/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1W5P9MbkqCJpWhhdLuUrcVE-48zUSTKcW/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1ZQdWDeOTOzTT4YI-u3yn0dE6C80R6M8X/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1N-KPCOmXPQrI8c7LVttdnYpyg1D_hsDC/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1NQmm5fSkrDNRU51VKGOUIpUFliqBJe6G)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1rVIayVKOmp0Uzr3vgl5hL5klpmEnoDWX)
+* [Events Configuration](https://drive.google.com/open?id=1-O79aqX_5QgKOz9iwSDKAgPJ-rquKOoC)
+* [Attribute Property](https://drive.google.com/open?id=1NQmm5fSkrDNRU51VKGOUIpUFliqBJe6G)
 
 #### SdpMasterLeafNode
-Define and configure 4 instances of SdpMasterLeafNode TANGO Device server as specified in the given screenshots.
+Define and configure 1 instances of SdpMasterLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/13AIHf7sM9YdHkIYqVaBjdl8OeX-pYwmz/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1LHjxu9F9dAaWW6_D5sPnqYgBKFO_PE7F/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1KW1ZKUlz5ylYwUcoCL6xhpW7jo6OK7BI/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1mwgI569BURblQEkA21g2Dcc6icX0UDnR)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1b8qLjuNU2FYhLyEcs212vcrkzSHhWJVz)
+* [Events Configuration](https://drive.google.com/open?id=173vg_wcNLayRbMK75Ii_lsih8MRPdW6F)
 
 #### SdpSubarrayLeafNode
-Define and configure 4 instances of SdpSubarrayLeafNode TANGO Device server as specified in the given screenshots.
+Define and configure 3 instances of SdpSubarrayLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1Op_H8GGW3t9xd-e36LikDayZF3zMvQ8x/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1ah6jPSQAmNin40Ec4Qquf14FT5f8P9Q2/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1d_6JCW7ekEXboZAlkDNXotqvV6y4qnvI/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1ky8LSE25L4uOppybyheovCEFxH0NjpnW/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1mykD_LXB1KoLAAcNvlIx4RJABLf4M8bf)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1y6NP3hT367F-DqegFStQWTTemxriv4jK)
+* [Events Configuration](https://drive.google.com/open?id=1GpgCrbDvn9x780TXziw-TzxGT8_i7Ngl)
+* [Attribute Property](https://drive.google.com/open?id=1hMQ74xkrdB16J4JGcr3E7hBFshNdBJZQ)
 
 #### DishLeafNode
 Define and configure 4 instances of DishLeafNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/18Mezq9axZLl-ruxkrxWJUOXKDObICd_S/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1J5AJvdn5cJotRmkkySdkDlds1Y4WWvBK/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1wxo33D5O-D83R4PunZQ9I3n1AzwfYxEO/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1rDGLJcZB9_m-J9mdFVU7mug3AhUHFF19/view?usp=sharing)
-
-
+* [Device Properties](https://drive.google.com/open?id=18vNSpi4Jx6fCZGKYwlhX55dY7ZbVXGnW)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1f4tjcswQpEsRYBaDUdoh-ZWTCqhVUwBU)
+* [Events Configuration](https://drive.google.com/open?id=13YtvVCDzmqDbhzI3ukCEHarReh6R2urr)
+* [Attribute Property](https://drive.google.com/open?id=1B2ehixv08yGrqHorL27KHIIGiZnMWw8M)
 
 #### SubarrayNode
-Define and configure 2 instances of SubarrayNode TANGO Device server as specified in the given screenshots.
+Define and configure 3 instances of SubarrayNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1AB7ZuviRw4h5rDxiXUjl4huU969z4Sg8/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1wtyaIfxOY2Cc_GwyDWmb7GUzf5syMqwE/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1MVpcP-g6s67jje42nJuZH0sEp2GUdN8R/view?usp=sharing)
-
+* [Device Properties](https://drive.google.com/open?id=1OrZ3y1xbLhN-4_jxtCejAbSefVEUrId-)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1T-lzMrwW8e6b4GZIrdHZJCSXSOQj8s4O)
+* [Events Configuration](https://drive.google.com/open?id=1haJAKSLNrnkx7RAZlyylhkah31LiRJ75)
 
 #### CentralNode
 Define and configure CentralNode TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1lzFvdrwSZKxdRoCnpsYcuMPQE8TME7Mr/view?usp=sharing)
-* [Attribute Polling Configuration](https://drive.google.com/file/d/1XKItAKnK4Zqgs6-KQAcDUvu1om7ED1zk/view?usp=sharing)
-* [Events Configuration](https://drive.google.com/file/d/1_jglNHV6jzVT3mSINhQ2LJnIxuo5Bdyk/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1A5bQvtvRv_EZbNelrsb0rS38GZ5bXbnY)
+* [Attribute Polling Configuration](https://drive.google.com/open?id=1AfVIwQJmULBHBAbArTm_CEILYfXTvzl8)
+* [Events Configuration](https://drive.google.com/open?id=15UBTGLLKobWTf53xgc88e3YjEJSyHPK3)
 * [Attribute Property 1](https://drive.google.com/file/d/1r-Fdd_vTitjZ7m3FCtZ5Y9_S2dKYKPOZ/view?usp=sharing)
 * [Attribute Property 2](https://drive.google.com/file/d/1E5ig4n8eBwfI8TOdvXpXI3NnGOoeu-yN/view?usp=sharing)
 
 #### AlarmHandler
 Define and configure AlarmHandler TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/11CETSDM9UMWeXF8mbL8zOXcKqZK5-N-j/view?usp=sharing)
-* [Attribute Property](https://drive.google.com/file/d/1T_KhGFcPZzAIvT_YgDbTxmZNkHL3F5eQ/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1eOtmi1ANOm1tkgDiJMjB7dvMhY7J2IxH)
+* [Attribute Property](https://drive.google.com/open?id=1r0hrbsmt-8AwCGkeHvsYy9Nd9eUZ46CO)
 
 #### SKALogger
 Define and configure SKALogger TANGO Device server as specified in the given screenshots.
 
-* [Device Properties](https://drive.google.com/file/d/1UxBUb71euQQrqMfMRQe7brfaClFnEL3t/view?usp=sharing)
+* [Device Properties](https://drive.google.com/open?id=1zNe5jLZMWJmdq2iQVNAYsWJ-IhTe_t8J)
 
-### 3.5: GUI
-
-The GUI is an optional component not contained in the TMC prototype repository. The GUI is created using Webjive and configured for the TMC devices. See [Webjive Project](https://github.com/ska-telescope/ska-engineering-ui-compose-utils). 
 
 # 4: Unit and Integration Testing
 The hierarchy of TANGO devices are as follows:
-
-Central Node -> SubarrayNode -> DishLeafNode/CspMasterLeafNode/CspSubarrayLeafNode/SdpMasterLeafNode/SdpSubarrayLeafNode -> DishMaster/CspMaster/CspSubarray/SdpMaster/SdpSubarray
+Central Node -> SubarrayNode -> DishLeafNode/DishMaster
+                             -> CspMasterLeafNode/CspMaster
+                             -> CspSubarrayLeafNode/CspSubarray
+                             -> SdpMasterLeafNode/SdpMaster
+                             -> SdpSubarrayLeafNode ->SdpSubarray
 
 (The flow from left to right depicts the Client -> Server relationship)
 
 One needs to have DishMaster/CspMaster/CspSubarray/SdpMaster/SdpSubarray running prior to executing the test cases of DishLeafNode/CspMasterLeafNode/CspSubarrayLeafNode/SdpMasterLeafNode/ SdpSubarrayLeafNode.
-Similarly, one needs to have DishLeafNode/CspMasterLeafNode/CspSubarrayLeafNode/ SdpMasterLeafNode/SdpSubarrayLeafNode and DishMaster/CspMaster/CspSubarray/SdpMaster /SdpSubarray running prior to executing the test cases of SubarrayNode. And at last, SubarrayNode, DishLeafNode/CspMasterLeafNode/CspSubarrayLeafNode/SdpMasterLeafNode/SdpSubarrayLeafNode and DishMaster/CspMaster/CspSubarray/SdpMaster/SdpSubarray should be running prior to executing the test cases of CentralNode.
+Similarly, one needs to have DishLeafNode/CspMasterLeafNode/CspSubarrayLeafNode/SdpMasterLeafNode/SdpSubarrayLeafNode and DishMaster/CspMaster/CspSubarray/SdpMaster /SdpSubarray running prior to executing the test cases of SubarrayNode. And at last, SubarrayNode, DishLeafNode/CspMasterLeafNode/CspSubarrayLeafNode/SdpMasterLeafNode/SdpSubarrayLeafNode and DishMaster/CspMaster/CspSubarray/SdpMaster/SdpSubarray should be running prior to executing the test cases of CentralNode.
 
 The dependent TANGO devices are required to be started in order to test a given TANGO device due to this [issue.](http://www.tango-controls.org/community/forum/c/development/python/testing-tango-devices-using-pytest/)
 
 The prototype can be tested once the configuration of TMC TANGO devices is completed. Start the TMC TANGO devices as specified in (#running-tmc-prototype) section.
 
 **Note:** Refer [csp-lmc-prototype](https://github.com/ska-telescope/csp-lmc-prototype) for CSP TANGO devices.
+          Refer [sdp-prototype](https://github.com/ska-telescope/sdp-prototype) for SDP TANGO devices.
 
 ### 4.1 Testing DishMaster
 * Navigate to the DishMaster folder:
@@ -222,51 +221,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=DishMaster test/`
 
-### 4.2 Testing CspMasterLeafNode
-**Prerequisite:** CspMaster TANGO Device should be up and running.
-
-* Navigate to the CspMasterLeafNode folder:
-
-    `cd tmcprototype/CspMasterLeafNode/CspMasterLeafNode`
-
-* To execute test cases, run:
-
-    `py.test --cov=CspMasterLeafNode test/`
-
-### 4.3 Testing CspSubarrayLeafNode
-**Prerequisite:** CspSubarray TANGO Device should be up and running.
-
-* Navigate to the CspSubarrayLeafNode folder:
-
-    `cd tmcprototype/CspSubarrayLeafNode/CspSubarrayLeafNode`
-
-* To execute test cases, run:
-
-    `py.test --cov=CspSubarrayLeafNode test/`
-
-### 4.4 Testing SdpMasterLeafNode
-**Prerequisite:** SdpMaster TANGO Device should be up and running.
-
-* Navigate to the SdpMasterLeafNode folder:
-
-    `cd tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode`
-
-* To execute test cases, run:
-
-    `py.test --cov=SdpMasterLeafNode test/`
-
-### 4.5 Testing SdpSubarrayLeafNode
-**Prerequisite:** SdpSubarray TANGO Device should be up and running.
-
-* Navigate to the SdpSubarrayLeafNode folder:
-
-    `cd tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode`
-
-* To execute test cases, run:
-
-    `py.test --cov=SdpSubarrayLeafNode test/`
-
-### 4.6 Testing DishLeafNode
+### 4.2 Testing DishLeafNode
 **Prerequisite:** DishMaster TANGO Device should be up and running.
 
 * Navigate to the DishLeafNode folder:
@@ -277,8 +232,52 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=DishLeafNode test/`
 
-### 4.8 Testing SubarrayNode
-**Prerequisite:** DishLeafNode and DishMaster TANGO Devices should be up and running.
+### 4.3 Testing CspMasterLeafNode
+**Prerequisite:** CspMaster TANGO Device should be up and running.
+
+* Navigate to the CspMasterLeafNode folder:
+
+    `cd tmcprototype/CspMasterLeafNode/CspMasterLeafNode`
+
+* To execute test cases, run:
+
+    `py.test --cov=CspMasterLeafNode test/`
+
+### 4.4 Testing CspSubarrayLeafNode
+**Prerequisite:** CspSubarray TANGO Device should be up and running.
+
+* Navigate to the CspSubarrayLeafNode folder:
+
+    `cd tmcprototype/CspSubarrayLeafNode/CspSubarrayLeafNode`
+
+* To execute test cases, run:
+
+    `py.test --cov=CspSubarrayLeafNode test/`
+
+### 4.5 Testing SdpMasterLeafNode
+**Prerequisite:** SdpMaster TANGO Device should be up and running.
+
+* Navigate to the SdpMasterLeafNode folder:
+
+    `cd tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode`
+
+* To execute test cases, run:
+
+    `py.test --cov=SdpMasterLeafNode test/`
+
+### 4.6 Testing SdpSubarrayLeafNode
+**Prerequisite:** SdpSubarray TANGO Device should be up and running.
+
+* Navigate to the SdpSubarrayLeafNode folder:
+
+    `cd tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode`
+
+* To execute test cases, run:
+
+    `py.test --cov=SdpSubarrayLeafNode test/`
+
+### 4.7 Testing SubarrayNode
+**Prerequisite:** All TMC LeafNodes, DishMaster, CSPMaster, CSPSubarray, SDPMaster and SDPSubarray TANGO Devices should be up and running.
 
 * Navigate to the SubarrayNode folder:
 
@@ -288,8 +287,8 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=SubarrayNode test/`
 
-### 4.9 Testing CentralNode
-**Prerequisite:** Two instances of SubarrayNode (sub1, sub2), DishLeafNode and DishMaster TANGO Devices should be up and running.
+### 4.8 Testing CentralNode
+**Prerequisite:** All instances of SubarrayNodes, all TMC LeafNodes, DishMaster, CSPMaster, CSPSubarray, SDPMaster and SDPSubarray TANGO Devices should be up and running.
 
 * Navigate to the CentralNode folder:
 
