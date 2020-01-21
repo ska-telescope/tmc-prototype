@@ -24,9 +24,10 @@ sys.path.insert(0, os.path.abspath(path))
 import tango
 from tango import DevState
 import pytest
-from SubarrayNode.SubarrayNode import SubarrayNode
+from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
 from skabase.SKABaseDevice import TangoLoggingLevel
-import CONST
+from SubarrayNode import CONST
+from SubarrayNode.CONST import HealthState
 import time
 
 # Note:
@@ -39,6 +40,48 @@ import time
 #
 # Look at devicetest examples for more advanced testing
 
+
+class TestSubarrayHealthState:
+
+    # TODO: use a fixture for the permutations
+    def test_generate_health_state_log_msg(self):
+        msg = SubarrayHealthState.generate_health_state_log_msg(
+                HealthState.OK, 'my/dev/name', None)
+        assert msg == "healthState of my/dev/name :-> OK"
+        msg = SubarrayHealthState.generate_health_state_log_msg(
+                HealthState.DEGRADED, 'my/dev/name', None)
+        assert msg == "healthState of my/dev/name :-> DEGRADED"
+        msg = SubarrayHealthState.generate_health_state_log_msg(
+                HealthState.FAILED, 'my/dev/name', None)
+        assert msg == "healthState of my/dev/name :-> FAILED"
+        msg = SubarrayHealthState.generate_health_state_log_msg(
+                HealthState.UNKNOWN, 'my/dev/name', None)
+        assert msg == "healthState of my/dev/name :-> UNKNOWN"
+        msg = SubarrayHealthState.generate_health_state_log_msg(
+                "not a health state enum", 'my/dev/name', None)
+        assert msg == "healthState event returned unknown value \nNone"
+
+    # TODO: use a fixture for the permutations / break up into more specific tests
+    def test_calculate_health_state(self):
+        health_states = [HealthState.OK, HealthState.OK, HealthState.OK]
+        result = SubarrayHealthState.calculate_health_state(health_states)
+        assert result == HealthState.OK
+
+        health_states = [HealthState.OK, HealthState.FAILED, HealthState.OK]
+        result = SubarrayHealthState.calculate_health_state(health_states)
+        assert result == HealthState.FAILED
+
+        health_states = [HealthState.OK, HealthState.OK, HealthState.DEGRADED]
+        result = SubarrayHealthState.calculate_health_state(health_states)
+        assert result == HealthState.DEGRADED
+
+        health_states = [HealthState.OK, HealthState.FAILED, HealthState.DEGRADED]
+        result = SubarrayHealthState.calculate_health_state(health_states)
+        assert result == HealthState.FAILED
+
+        health_states = [HealthState.UNKNOWN, HealthState.OK, HealthState.OK]
+        result = SubarrayHealthState.calculate_health_state(health_states)
+        assert result == HealthState.UNKNOWN
 
 # Device test case
 @pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy")
