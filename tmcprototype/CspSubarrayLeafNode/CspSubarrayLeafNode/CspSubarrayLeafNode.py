@@ -18,7 +18,6 @@ from datetime import datetime, timedelta
 import pytz
 import katpoint
 import numpy as np
-from scipy.interpolate import UnivariateSpline
 
 file_path = os.path.dirname(os.path.abspath(__file__))
 module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
