@@ -52,14 +52,14 @@ test:
 	mv /app/tmcprototype/SubarrayNode/subarraynode_coverage /build/subarraynode_coverage
 	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
 	mv /app/tmcprototype/CentralNode/centralnode_coverage /build/centralnode_coverage
-	# Combine raw output from 'coverage' and export to xml
+	# Combine raw output from the coverage files of all the packages/devices and export to XML file
 	cd /build && coverage combine dishmaster_coverage dishleafnode_coverage cspmasterleafnode_coverage \
 	 cspsubarrayleafnode_coverage sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
 	 subarraynode_coverage centralnode_coverage  && coverage xml && coverage html
 	mkdir -p /build/reports
 	cd /build && mv coverage.xml ./reports/code-coverage.xml
 
-	# Merge device-unit-tests.xml files into single unittests.xml file
+	# Merge device-unit-tests.xml files of all the packages/devices into single unit-tests.xml file
 	pip3 install junitparser
 	junitparser merge /build/reports/dish-leaf-node-unit-tests.xml \
                              /build/reports/dish-master-unit-tests.xml \
