@@ -887,7 +887,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 else:
                     self.logger.debug(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
                     self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
-                self.calculate_health_state()
+                self._health_state = SubarrayHealthState.calculate_health_state(
+                    list(self.subarray_ln_health_state_map.values()) +
+                    list(self.dish_health_state_map.values()))
             except KeyError as key_err:
                 self.logger.error(CONST.ERR_SETHEALTH_CALLBK + str(key_err))
                 self._read_activity_message = CONST.ERR_SETHEALTH_CALLBK + str(key_err)
@@ -1468,7 +1470,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return: None
         """
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
-        self._admin_mode = CONST.ENUM_ONLINE  # set adminMode to "ONLINE"
+        self._admin_mode = AdminMode.ONLINE
         self.set_state(DevState.OFF)       # Set state = OFF
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
@@ -1481,7 +1483,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return: None
         """
         # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
-        self._admin_mode = CONST.ENUM_OFFLINE  # set adminMode to "OFFLINE"
+        self._admin_mode = AdminMode.OFFLINE
         self.set_state(DevState.DISABLE)  # Set state = DISABLED
         # PROTECTED REGION END #    //  SubarrayNode.Standby
 # ----------
