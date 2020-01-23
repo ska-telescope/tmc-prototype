@@ -36,8 +36,8 @@ from tango.server import run, DeviceMeta, attribute, command, device_property
 from future.utils import with_metaclass
 
 # Additional import
-from . import CONST
-from .CONST import AdminMode, HealthState, ObsMode, ObsState, PointingState
+import CONST
+from CONST import AdminMode, HealthState, ObsMode, ObsState, PointingState
 from skabase.SKASubarray.SKASubarray import SKASubarray
 
 

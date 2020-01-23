@@ -21,14 +21,14 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
+import time
+import pytest
 import tango
 from tango import DevState
-import pytest
-from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
 from skabase.SKABaseDevice import TangoLoggingLevel
-from SubarrayNode import CONST
-from SubarrayNode.CONST import HealthState, ObsState
-import time
+import CONST
+from CONST import HealthState, ObsState
+from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
 
 # Note:
 #
