@@ -51,7 +51,7 @@ setup(
     ],
     tests_require=[
         'pytest',
-        'pytest-cov',
+        'coverage',
         'pytest-json-report',
         'pycodestyle',
     ],

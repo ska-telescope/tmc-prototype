@@ -60,7 +60,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
         to calculate the subarray health state.
+
         :param evt: A TANGO_CHANGE event on CSP and SDP Subarray healthState.
+
         :return: None
         """
         exception_message = []
@@ -155,7 +157,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt))
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
             self.logger.critical(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
-            self._obs_state = CONST.OBS_STATE_ENUM_IDLE #for testing purpose
+            self._obs_state = CONST.OBS_STATE_ENUM_IDLE
 
     def calculate_health_state(self):
         """
@@ -201,7 +203,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._health_state = CONST.ENUM_UNKNOWN
 
     def calculate_observation_state(self):
-        print ("In calculate_observation_state")
+        """
+        Calculates aggregated observation state of Subarray.
+        """
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
@@ -238,7 +242,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 else:
                     self._obs_state = CONST.OBS_STATE_ENUM_IDLE
         # call store method
-        print("In calculate observation state method: Storing data in database after assigning resources.")
+        self.logger.info("In calculate observation state method: Storing data in database after assigning resources.")
         self.storeinmysql()
 
     def create_csp_ln_proxy(self):
@@ -283,21 +287,23 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :param argin:
             DevVarStringArray. List of receptor IDs to be allocated to subarray.
+            Example: ['0001', '0002']
+
         :return:
             DevVarStringArray. List of Resources added to the Subarray.
+            Example: ['0001', '0002']
         """
         exception_count = 0
         exception_message = []
         allocation_success = []
         allocation_failure = []
         # Add each dish into the tango group
-        print ("In add_receptors_in_group Argin :", argin, type(argin))
+        self.logger.debug("add_receptors_in_group::",argin)
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
                 devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
-                print ("devproxy:",devProxy )
                 self._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
@@ -307,7 +313,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                           self.setHealth,
                                                           stateless=True)
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
-                print ("self._dishLnVsHealthEventID :", self._dishLnVsHealthEventID)
                 self._health_event_id.append(self._event_id)
                 self.dishHealthStateMap[devProxy] = -1
                 self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID))
@@ -323,7 +328,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID))
                 # TODO:
                 if int(str_leafId) in self._receptor_id_list:
-                    print ("Dish already present")
+                    self.logger.debug("Dish already present")
                 else:
                     self._receptor_id_list.append(int(str_leafId))
 
@@ -342,7 +347,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
                 self.logger.info(CONST.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
-                print ("In exception :", dev_failed )
                 [exception_message, excpt_count] = self._handle_devfailed_exception(dev_failed,
                                                     exception_message, excpt_count, CONST.ERR_ADDING_LEAFNODE)
                 allocation_failure.append(str_leafId)
@@ -362,22 +366,26 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # Throw Exception
         if exception_count > 0:
             self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
+
+        self.logger.debug("add_receptors_in_group::",allocation_success)
         return allocation_success
 
     def assign_csp_resources(self, argin):
         """
-        This function assigns CSP resources to CSP Subarray through CSP Subarray Leaf
-        Node.
+        This function invokes the assign resources command on the CSP Subarray Leaf Node.
 
         :param argin: List of strings
             Contains the list of strings that has the resources ids. Currently this list contains only
             receptor ids.
 
         :return: List of strings.
-            Returns the list of successfully assigned resources. Currently the
-            CSPSubarrayLeafNode.AssignResources function returns void. Thus, this
-            function just loops back the input argument in case of success. In case of
-            failure, empty list is returned.
+
+        Example: ['0001', '0002']
+
+            Returns the list of CSP resources successfully assigned to the Subarray. Currently, the
+            CSPSubarrayLeafNode.AssignResources function returns void. The function only loops back
+            the input argument in case of successful resource allocation, or returns an empty list in case
+            of failure.
         """
         arg_list = []
         json_argument = {}
@@ -395,6 +403,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         # For this PI CSP Subarray Leaf Node does not return anything. So this function is
         # looping the receptor ids back.
+        self.logger.debug("assign_csp_resources::",argout)
         return argout
 
     def assign_sdp_resources(self, argin):
@@ -407,6 +416,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             processing block ids are passed to this function.
 
         :return: List of strings.
+        Example: ['PB1', 'PB2']
+
             Returns the list of successfully assigned resources. Currently the
             SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
             function just loops back the input argument in case of success. In case of
@@ -425,6 +436,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
+        self.logger.debug("assign_sdp_resources::",argout)
         return argout
 
     def remove_receptors_in_group(self):
@@ -441,9 +453,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         exception_count = 0
         exception_message = []
         try:
-            print ("self._dishLnVsHealthEventID :", self._dishLnVsHealthEventID)
-            print ("self._dishLnVsPointingStateEventID :", self._dishLnVsPointingStateEventID)
-
             if self._dishLnVsHealthEventID != {} or self._dishLnVsPointingStateEventID != {}:
                 self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
                 self._dish_leaf_node_group.remove_all()
@@ -517,7 +526,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         Schedules a scan for execution on a subarray. Subarray transitions to
         obsState = SCANNING, when the execution of a scan starts.
 
-        :param argin: DevVarStringArray. JSON string containing scan duration. JSON string example as follows:
+        :param argin: DevVarStringArray. JSON string containing scan duration.
+
+        JSON string example as follows:
 
         {"scanDuration": 10.0}
 
@@ -640,8 +651,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
     @DebugIt()
     def EndScan(self):
-        """ Ends the scan. It can be either an automatic or an externally triggered transition
-        after the scanning completes normally.
+        """ Ends the scan. It is invoked on completion of the scan duration. It can be invoked by an
+        external client while a scan is in progress.
 
         :param argin: DevVoid.
 
@@ -714,9 +725,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def AssignResources(self, argin):
         """
         Assigns resources to the subarray. It accepts receptor id list as an array of
-        DevStrings . Upon successful execution, the 'receptorIDList' attribute of the
-        given subarray is populated with the given receptors. And returns list of
-        assigned resources as array of DevStrings.
+        DevStrings. Upon successful execution, the 'receptorIDList' attribute of the
+        subarray is updated with the list of receptors, and returns list of assigned
+        resources as array of DevStrings.
 
         Note: Resource allocation for CSP and SDP resources is also implemented but
         currently CSP accepts only receptorIDList and SDP accepts only dummy resources.
@@ -724,21 +735,26 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :param argin:
             DevVarStringArray. List of receptor IDs to be allocated to subarray.
 
+            Example: ['0001', '0002'] as argin
+
         :return:
             DevVarStringArray. List of Resources added to the Subarray.
+
+            Example: ['0001', '0002'] as argout if allocation successful
+
+                [] as argout if allocation unsuccessful
         """
         exception_count = 0
         exception_message = []
-
-        # 1. Argument validation
-        print ("AssignResources argin :", argin, type(argin))
-        self.mycursor.execute("""update device_restore_flag set flag=0 where id=%s""", self.subarray_id)
-        self.mydb.commit()
+        cursor=self.get_cursor()
+        cursor.execute("""update device_restore_flag set flag=0 where id=%s""", self.subarray_id)
+        self.connection.commit()
 
         try:
             # Allocation success and failure lists
             for leafId in range(0, len(argin)):
                 float(argin[leafId])
+                self.logger.debug("assign_resource_argin",argin)
         except ValueError as value_error:
             str_log = CONST.ERR_SCAN_CMD +"\n" + str(value_error) + CONST.ERR_INVALID_DATATYPE
             self.logger.error(str_log)
@@ -799,7 +815,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 argout = []
         # return dish_allocation_result
         self.storeinmysql()
-        print ("argout: ", argout)
+        self.logger.debug("assign_resource_argout",argout)
         return argout
 
     def is_AssignResources_allowed(self):
@@ -822,6 +838,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :param argin: DevVoid.
 
         :return: DevVarStringArray.
+        Example: "[]" as argout on successful release all resources.
         """
         self._release_excpt_count = 0
         self._release_excpt_msg = []
@@ -871,9 +888,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
 
         argout.extend(self._dish_leaf_node_group.get_device_list(True))
+        cursor=self.get_cursor()
         self.storeinmysql()
-        self.mycursor.execute("""update device_restore_flag set flag=1 where id=%s""", self.subarray_id)
-        self.mydb.commit()
+        cursor.execute("""update device_restore_flag set flag=1 where id=%s""", self.subarray_id)
+        self.connection.commit()
+        self.logger.debug("Release_all_resources:",argout)
         return argout
 
     def is_ReleaseAllResources_allowed(self):
@@ -1071,11 +1090,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
-        # self.db = Database()
-        self.SkaLevel = 2  # set SKALevel to "2"
-        self._admin_mode = CONST.ENUM_ONLINE  # set adminMode to "ON-LINE"
-        self._health_state = CONST.ENUM_OK  # set health state to "OK"
-        self._obs_mode = CONST.ENUM_IDLE  # set obsMode to "IDLE"
+        self.SkaLevel = 2                        # set SKALevel to "2"
+        self._admin_mode = CONST.ENUM_OFFLINE    # set adminMode to "OFFLINE"
+        self._health_state = CONST.ENUM_OK       # set health state to "OK"
+        self._obs_state = CONST.OBS_STATE_ENUM_IDLE       # set obsState to "IDLE"
+        self._obs_mode = CONST.ENUM_IDLE        # set obsMode to "IDLE"
         self._simulation_mode = False
         self.isScanning = False
         self._sb_id = ""
@@ -1094,45 +1113,15 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
         self.only_dishconfi_flag = False
         self._endscan_stop = False
-
-        self.mydb = mysql.connector.connect(host="staterecover-tmc-proto-test", user="tango", passwd="tango", database="tmc_recoverability")
-        print("Database connection is successful.",self.mydb)
-        self.mycursor = self.mydb.cursor()
+        _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
         self.subarray_name = (str(self.get_name()),)
-        self.mycursor.execute("""select id from device_restore_flag where device_name=%s""", (self.subarray_name))
-        self.subarray_id=(self.mycursor.fetchone()[0],)
-        print("subarray id is", self.subarray_id)
-
-
-        # memflag_dict = self.db.get_device_attribute_property(str(self.name), "memflag")
-        # if memflag_dict:
-        #     self._memflag = memflag_dict["memflag"]["__value"][0]
-        # else:
-        #     self._memflag = "false"
-        #
-        # print("Attribute property value:", str(self._memflag))
-        #
-        # if self._memflag == "true":
-        #     print ("Need to restore the values")
-        #     self._receptor_id_list = [1,2]
-        #     self.restorefromdb()
-        #     # self.connecttostateserver()
-        # else:
-        #    print ("Initialise with normal values.")
-
-
-        self.mycursor.execute("""select flag from device_restore_flag where id=%s """, (self.subarray_id))
-        restore_flag = self.mycursor.fetchone()[0]
-        print("Restore flag value is:- ", restore_flag)
-        if (restore_flag == 0):
+        self.connection = self.init_db()
+        restore_flag = self.get_restore_flag()
+        if restore_flag == 0:
             self.restorefromsql()
         else:
-            print("initialsed with normal value")
-            self.set_state(DevState.INIT)
-            self.set_status(CONST.STR_SA_INIT)
-            self._obs_state = CONST.OBS_STATE_ENUM_IDLE  # set obsState to "IDLE"
+            self.logger.info("Subarray initialsed with normal value")
             self._receptor_id_list = []
-            self.set_state(DevState.OFF)  # Set state = OFF
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
@@ -1155,6 +1144,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.error(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed))
             self._read_activity_message = CONST.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
+            _state_fault_flag = True
             self.set_status(CONST.ERR_SUBS_CSP_SA_LEAF_ATTR)
             self.logger.error(CONST.ERR_CSP_SA_LEAF_INIT)
 
@@ -1171,33 +1161,32 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.error(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed))
             self._read_activity_message = CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
+            _state_fault_flag = True
             self.set_status(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR)
 
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
         self.logger.info(CONST.STR_SA_INIT_SUCCESS)
-
-        # call store method
-        print("Storing data in database")
+        if restore_flag == 1:
+            if(_state_fault_flag == True):
+                self.set_state(DevState.FAULT)           # Set state = FAULT
+            else:
+                self.set_state(DevState.DISABLE)         # Set state = DISABLE
+        # call storeinmysql method to store values in database
         self.storeinmysql()
-        # self.storeindb()
-        # self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "true"}})
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
 
     def always_executed_hook(self):
         """ Internal construct of TANGO. """
         # PROTECTED REGION ID(SubarrayNode.always_executed_hook) ENABLED START #
+        pass
         # PROTECTED REGION END #    //  SubarrayNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-
-        # self.db.put_device_attribute_property(str(self.name), {"memflag": {"__value": "false"}})
-        # attr_val = self.db.get_device_attribute_property(str(self.name), "memflag")
-        # print("Attribute property value:", attr_val)
-
+        pass
         # PROTECTED REGION END #    //  SubarrayNode.delete_device
 
     # ------------------
@@ -1205,8 +1194,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # ------------------
 
     def read_scanID(self):
-        """ Returns the Scan ID. """
+        """ Internal construct of TANGO. Returns the Scan ID.
+
+        EXAMPLE: 123
+        Where 123 is a Scan ID from configuration json string.
+        """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
+        self.logger.debug("read_scanID",self._scan_id)
         return self._scan_id
 
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
@@ -1218,25 +1212,29 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION END #    //  SubarrayNode.scanID_write
 
     def read_sbID(self):
-        """ Returns the scheduling block ID. """
+        """ Internal construct of TANGO. Returns the scheduling block ID. """
         # PROTECTED REGION ID(SubarrayNode.sbID_read) ENABLED START #
         return self._sb_id
         # PROTECTED REGION END #    //  SubarrayNode.sbID_read
 
     def read_activityMessage(self):
-        """ Returns activityMessage. """
+        """ Internal construct of TANGO. Returns activityMessage.
+        Example: "Subarray node is initialized successfully"
+        //result occured after initialization of device.
+        """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_read) ENABLED START #
         return self._read_activity_message
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_read
 
     def write_activityMessage(self, value):
-        """ Sets the activityMessage. """
+        """ Internal construct of TANGO. Sets the activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
     def read_receptorIDList(self):
-        """ Returns the receptor IDs allocated to the Subarray. """
+        """ Internal construct of TANGO. Returns the receptor IDs allocated to the Subarray.
+         """
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
         return self._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
@@ -1274,24 +1272,27 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def Configure(self, argin):
         # PROTECTED REGION ID(SubarrayNode.Configure) ENABLED START #
         """
-        Configures the resources assinged to the Subarray.
+        Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
+        extracted out of the input configuration string and relayed to the respective underlying devices (SDP
+        Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
 
-        :param argin: DevStringArray. JSON string that includes pointing parameters of Dish - Azimuth and
-        Elevation Angle, CSP Configuration and SDP Configuration parameters. JSON string example is:
+        :param argin: DevStringArray.
+        JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
+        Configuration and SDP Configuration parameters.
 
-        {"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"M51","RA":"13:29:52.698",
-        "dec":"+47:11:42.93"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,
-        "functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},"sdp":{
-        "configure":[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest",
-        "type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChannels":372,
-        "numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS",
-        "name":"M51","ra":3.5337607188635975,"dec":0.8237126492459581}}},"scanParameters":{"12345":{
-        "fieldId":0,"intervalMs":1400}}}]}}
+        JSON string example is:
+
+        {"scanID":123,"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946","dec":
+        "+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode"
+        :"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},"sdp":{"configure":[{"id":
+        "realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest","type":"realtime","version"
+        :"0.1.0"},"parameters":{"numStations":4,"numChannels":372,"numPolarisations":4,"freqStartHz":0.35e9,
+        "freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"Polaris","ra":0.662432049839445,"dec":
+        1.5579526053855042}}},"scanParameters":{"123":{"fieldId":0,"intervalMs":1400}}}]}}
 
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
         :return: None
-
         """
         exception_count = 0
         exception_message = []
@@ -1319,8 +1320,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                         # Configuration of CSP
                         cspConfiguration = self._scanConfiguration.copy()
                         # Keep configuration specific to CSP and delete configuration of other nodes
-                        if "pointing" in cspConfiguration:
-                            del cspConfiguration["pointing"]
                         if "dish" in cspConfiguration:
                             del cspConfiguration["dish"]
                         if "sdp" in self._scanConfiguration:
@@ -1334,6 +1333,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                 self.SdpSubarrayFQDN + "/receiveAddresses"
 
                             csp_config = cspConfiguration["csp"]
+                            csp_config["pointing"] = cspConfiguration["pointing"]
                             csp_config["scanID"] = self._scan_id
 
                             cmdData = tango.DeviceData()
@@ -1465,7 +1465,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def EndSB(self):
         # PROTECTED REGION ID(SubarrayNode.EndSB) ENABLED START #
         """
-        This command invokes EndSB command on CSP Subarray Leaf Node and SDP Subarray Leaf Node.
+        This command invokes EndSB command on CSP Subarray Leaf Node and SDP Subarray Leaf Node, and stops
+        tracking of all the assigned dishes.
 
         :return: None.
         """
@@ -1496,7 +1497,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     @command(
         dtype_in='str',
-        doc_in="Initial Pointing parameters of Dish - Right ascension and Declination coordinates.",
+        doc_in="Initial Pointing parameters of Dish - Right Ascension and Declination coordinates.",
     )
     @DebugIt()
     def Track(self, argin):
@@ -1505,6 +1506,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :param argin: DevString
 
+        Example: radec|2:31:50.91|89:15:51.4 as argin
         Argin to be provided is the Ra and Dec values in the following format: radec|2:31:50.91|89:15:51.4
         Where first value is tag that is radec, second value is Ra in Hr:Min:Sec, and third value is Dec in
         Deg:Min:Sec.
@@ -1514,6 +1516,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         exception_message= []
         exception_count = 0
+        self.logger.debug("Track:",argin)
         try:
             self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin
             # set obsState to CONFIGURING when the configuration is started
@@ -1550,112 +1553,118 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
                                          CONST.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  SubarrayNode.Track
+    @command(
+    )
+    @DebugIt()
+    def On(self):
+        """
+        Changes the admin_mode from offline to online and dev_state from disabled to off.
+        :return: None
+        """
+        # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
+        self._admin_mode = CONST.ENUM_ONLINE  # set adminMode to "ONLINE"
+        self.set_state(DevState.OFF)       # Set state = OFF
+        # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
-    def storeindb(self):
-        state = self.get_state()
-        print ("State:", state)
-        obsState = self._obs_state
-        receptor_id = self._receptor_id_list
-        tempStoreData = {
-            "State": state,
-            "ObsState": obsState,
-            "ReceptorId": receptor_id
-        }
-        restore_json= json.dumps(tempStoreData)
-        self.db.put_device_attribute_property(str(self.name), {"testmemattr": {"__value": restore_json}})
+    @command(
+    )
+    @DebugIt()
+    def Standby(self):
+        """
+        Changes the admin_mode from online to offline and dev_state from  off to disabled.
+        :return: None
+        """
+        # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
+        self._admin_mode = CONST.ENUM_OFFLINE  # set adminMode to "OFFLINE"
+        self.set_state(DevState.DISABLE)  # Set state = DISABLED
+        # PROTECTED REGION END #    //  SubarrayNode.Standby
 
-    def restorefromdb(self):
-        testmemattr_json = self.db.get_device_attribute_property(str(self.name), "testmemattr")
-        print("Attribute property value:", testmemattr_json, type(testmemattr_json))
-        restore_dict = json.loads(testmemattr_json["testmemattr"]["__value"][0])
-        print ("restore_dict:", restore_dict)
 
-        # Set state of device
-        # parse json
-        state = restore_dict["State"]
-        if state == 1:
-            self.set_state(DevState.ON)
-        self.set_status(CONST.STR_SA_INIT)
-        obsState = restore_dict["ObsState"]
-        self._obs_state = obsState  # set obsState to "IDLE"
-        receptorId = restore_dict["ReceptorId"]
-        self._receptor_id_list = receptorId
 
-    def sub_state_callback(self, evt):
-        print("State on State server:", evt.attr_value.value)
-        if evt.attr_value.value == str('ON'):
-            self.set_state(DevState.ON)
-        elif evt.attr_value.value == str('OFF'):
-            self.set_state(DevState.OFF)
+    def init_db(self):
+        '''
+        Iniialises connection with database
+        '''
+        connection = mysql.connector.connect(
+            host=CONST.MYSQL_HOSTNAME,
+            user=CONST.MYSQL_USER,
+            passwd=CONST.MYSQL_PASSWORD,
+            database=CONST.MYSQL_DB_NAME,
+            connect_timeout=60000
+            )
+        self.logger.info("Database connection is successful.")
+        return connection
 
-    def connecttostateserver(self):
-        print ("Subscribing to subarray state from state server")
-        self.state_server_proxy = DeviceProxy("test/stateserver/1")
-        # print("State on State server:",self.state_server_proxy. Subarray1_state)
-        self.state_server_proxy.subscribe_event("Subarray1_state", EventType.CHANGE_EVENT,
-                                                 self.sub_state_callback, stateless=True)
+
+    def get_cursor(self):
+        try:
+            self.connection.ping(reconnect=True, attempts=3, delay=5)
+        except mysql.connector.Error as err:
+            # reconnect your cursor as you did in __init__ or wherever
+            self.connection = self.init_db()
+        return self.connection.cursor()
+
+    def get_restore_flag(self):
+        cursor = self.get_cursor()
+        cursor.execute("""select id from device_restore_flag where device_name=%s""", (self.subarray_name))
+        self.subarray_id = (cursor.fetchone()[0],)
+        self.logger.info("subarray id is" + str(self.subarray_id))
+        cursor.execute("""select flag from device_restore_flag where id=%s """, (self.subarray_id))
+        restore_flag = cursor.fetchone()[0]
+        self.logger.info("Restore flag value is:- " + str(restore_flag))
+        return restore_flag
 
     def storeinmysql(self):
+        '''
+        stores current value of state,obsState and receptor_id list in mysql database
+        '''
+        cursor = self.get_cursor()
         curr_state = str(self.get_state())
-        sql = "update device_attribute_value set value= %s where id=%s and attribute='state'"
-        if curr_state == 'ON':
-            state1=('0', self.subarray_id[0],)
-        elif curr_state == 'OFF':
-            state1=('1', self.subarray_id[0], )
-        self.mycursor.execute(sql,state1)
-        self.mydb.commit()
-        print("state is stored in database as:- ",curr_state)
-
-        sql = "update device_attribute_value set value= %s where id=%s and attribute='receptor_id'"
-        receptor_id = (json.dumps(self._receptor_id_list), self.subarray_id[0],)
-        self.mycursor.execute(sql, receptor_id)
-        self.mydb.commit()
-        print("receptor_id is stored in database as:- ",self._receptor_id_list)
-
-
-        sql ="update device_attribute_value set value= %s where id=%s and attribute='obs_state'"
-        if self._obs_state == CONST.OBS_STATE_ENUM_IDLE:
-            obsState1 = ('0',self.subarray_id[0], )
-        elif self._obs_state == CONST.OBS_STATE_ENUM_CONFIGURING:
-             obsState1 = ('1',self.subarray_id[0], )
-        elif self._obs_state  == CONST.OBS_STATE_ENUM_READY:
-            obsState1 = ('2',self.subarray_id[0], )
-        elif self._obs_state == CONST.OBS_STATE_ENUM_SCANNING:
-            obsState1 = ('3',self.subarray_id[0], )
-        self.mycursor.execute(sql,obsState1)
-        self.mydb.commit()
-        print("obs_state stored in database as:- ", self._obs_state)
+        query = "update device_attribute_value set value= %s where id=%s and attribute='state'"
+        sql_state = (curr_state, self.subarray_id[0],)
+        cursor.execute(query, sql_state)
+        self.connection.commit()
+        self.logger.info("state is stored in database as:- " + str(curr_state))
+        query = "update device_attribute_value set value= %s where id=%s and attribute='receptor_id'"
+        sql_receptor_id = (json.dumps(self._receptor_id_list), self.subarray_id[0],)
+        cursor.execute(query, sql_receptor_id)
+        self.connection.commit()
+        self.logger.info("receptor_id is stored in database as:- " + str(self._receptor_id_list))
+        query ="update device_attribute_value set value= %s where id=%s and attribute='obs_state'"
+        sql_obsState = (self._obs_state, self.subarray_id[0],)
+        cursor.execute(query,sql_obsState)
+        self.connection.commit()
+        self.logger.info("obs_state stored in database as:- " + str(self._obs_state))
 
     def restorefromsql(self):
-        print("***need to restore values****")
-        self.mycursor.execute("""select value from device_attribute_value where id=%s and attribute='state'""",
+        '''
+        restores values of state,obsState and receptor_id list from mysql database and assign it to current state,
+        obsState and receptor_id list
+        '''
+        self._read_activity_message = str("Restoring attribute values from database")
+        self.logger.info("Restoring attribute values from database")
+        cursor = self.get_cursor()
+        cursor.execute("""select value from device_attribute_value where id=%s and attribute='state'""",
                               self.subarray_id)
-        state1 =self.mycursor.fetchone()[0]
-        print("after restoring state: ", state1)
-        if state1 == '0':
+        sql_state =cursor.fetchone()[0]
+        self.logger.info("after restoring state: " + str(sql_state))
+        if sql_state == 'ON':
             self.set_state(DevState.ON)
-
-        elif state1 == '1':
+        elif sql_state == 'OFF':
             self.set_state(DevState.OFF)
-
-        self.mycursor.execute("""select value from device_attribute_value where id=%s and attribute='obs_state'""",
+        elif sql_state == 'DISABLE':
+            self.set_state(DevState.DISABLE)
+        cursor.execute("""select value from device_attribute_value where id=%s and attribute='obs_state'""",
                                self.subarray_id)
-        obsState1 =self.mycursor.fetchone()[0]
-        if obsState1 == '0':
-            self._obs_state = CONST.OBS_STATE_ENUM_IDLE
-        elif obsState1 == '1':
-            self._obs_state=CONST.OBS_STATE_ENUM_CONFIGURING
-        elif obsState1 == '2':
-            self.obsState1 = CONST.OBS_STATE_ENUM_READY
-        elif obsState1 == '3':
-            self.obsState1= CONST.OBS_STATE_ENUM_SCANNING
-        print("after restoring obs state", obsState1)
-
-        self.mycursor.execute("""select value from device_attribute_value where id=%s and attribute='receptor_id'""",
+        sql_obsState =cursor.fetchone()[0]
+        self._obs_state = sql_obsState
+        self.logger.info("after restoring obs state : " + str(sql_obsState))
+        cursor.execute("""select value from device_attribute_value where id=%s and attribute='receptor_id'""",
                               self.subarray_id)
-        receptor_id = self.mycursor.fetchone()[0]
-        self._receptor_id_list = json.loads(receptor_id)
-        print("after restoring  rec id:",self._receptor_id_list)
+        sql_receptor_id = cursor.fetchone()[0]
+        self._receptor_id_list = json.loads(sql_receptor_id)
+        self.logger.info("after restoring  rec id:" + str(self._receptor_id_list))
+        # To update  DICTIONARIES in add_receptors_in_group method
         if len(self._receptor_id_list) > 0:
             receptor_list = []
             for id in self._receptor_id_list:

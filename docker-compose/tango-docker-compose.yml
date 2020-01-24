@@ -16,8 +16,6 @@ services:
     image: nexus.engageska-portugal.pt/ska-docker/tango-db:latest
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}tangodb
-    depends_on:
-      - rsyslog-tmcprototype
     environment:
       - MYSQL_ROOT_PASSWORD=secret
       - MYSQL_DATABASE=tango
