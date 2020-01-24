@@ -61,7 +61,8 @@ def valid_health_state(request):
          HealthState.FAILED),
                 ])
 def health_states_and_expected_aggregate(request):
-    return request.param
+    states_in, expected_state_out = request.param
+    return states_in, expected_state_out
 
 
 class TestSubarrayHealthState:
