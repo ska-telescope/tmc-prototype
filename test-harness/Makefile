@@ -93,8 +93,27 @@ test:
 
 lint:
 	pip3 install pylint2junit; \
+	pip3 install junitparser; \
 	mkdir -p /build/reports; \
-	cd /app/tmcprototype && pylint --output-format=parseable CentralNode | tee /build/code_analysis.stdout; \
-	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter CentralNode > /build/reports/linting.xml;
+	cd /app/tmcprototype && pylint --output-format=parseable DishMaster | tee /build/dish-master-code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=parseable CspSubarrayLeafNode | tee /build/csp-subarray-leaf-node-code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=parseable DishLeafNode | tee /build/dish-leaf-node-code_analysis.stdout;
+	cd /app/tmcprototype && pylint --output-format=parseable SdpSubarrayLeafNode | tee /build/sdp-subarray-leaf-code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=parseable CspMasterLeafNode | tee /build/csp-master-leaf-node-code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=parseable SdpMasterLeafNode | tee /build/sdp-master-leaf-node-code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=parseable SubarrayNode | tee /build/subarray-node-code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=parseable CentralNode | tee /build/central-node-code_analysis.stdout; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter DishMaster > /build/dish-master-linting.xml; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter CspSubarrayLeafNode > /build/csp-subarray-leaf-node-linting.xml; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter DishLeafNode > /build/dish-leaf-node-linting.xml; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter SdpSubarrayLeafNode > /build/sdp-subarray-leaf-linting.xml; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter CspMasterLeafNode > /build/csp-master-leaf-node-linting.xml; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter SdpMasterLeafNode > /build/sdp-master-leaf-node-linting.xml; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter SubarrayNode > /build/subarray-node-linting.xml; \
+	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter CentralNode > /build/central-node-linting.xml; \
+	junitparser merge /build/dish-master-linting.xml /build/csp-subarray-leaf-node-linting.xml \
+	 /build/dish-leaf-node-linting.xml /build/sdp-subarray-leaf-linting.xml \
+	 /build/csp-master-leaf-node-linting.xml /build/sdp-master-leaf-node-linting.xml \
+	 /build/subarray-node-linting.xml /build/central-node-linting.xml /build/reports/linting.xml
 
 .PHONY: all test lint
