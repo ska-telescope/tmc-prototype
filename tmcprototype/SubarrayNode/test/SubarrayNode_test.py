@@ -66,7 +66,6 @@ def health_states_and_expected_calculated_health_state(request):
 
 class TestSubarrayHealthState:
 
-    @pytest.mark.usefixtures("valid_health_state")
     def test_generate_health_state_log_msg_valid(self, valid_health_state):
         msg = SubarrayHealthState.generate_health_state_log_msg(
             valid_health_state, "my/dev/name", None
@@ -79,7 +78,6 @@ class TestSubarrayHealthState:
         )
         assert msg == "healthState event returned unknown value \nNone"
 
-    @pytest.mark.usefixtures("health_states_and_expected_calculated_health_state")
     def test_calculate_health_state(self,
                                     health_states_and_expected_calculated_health_state):
         health_states, expected_health_state = (
