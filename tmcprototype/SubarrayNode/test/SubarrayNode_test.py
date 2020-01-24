@@ -40,7 +40,6 @@ from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
 #
 # Look at devicetest examples for more advanced testing
 
-
 @pytest.fixture(scope="function",
                 params=[HealthState.OK, HealthState.DEGRADED,
                         HealthState.FAILED, HealthState.UNKNOWN])
@@ -48,9 +47,35 @@ def valid_health_state(request):
     return request.param
 
 
-@pytest.mark.usefixtures("valid_health_state")
+@pytest.fixture(
+    scope="function",
+    params=[
+        ([HealthState.OK], HealthState.OK),
+        ([HealthState.FAILED], HealthState.FAILED),
+        ([HealthState.DEGRADED], HealthState.DEGRADED),
+        ([HealthState.UNKNOWN], HealthState.UNKNOWN),
+        ([HealthState.OK, HealthState.FAILED], HealthState.FAILED),
+        ([HealthState.OK, HealthState.DEGRADED], HealthState.DEGRADED),
+        ([HealthState.OK, HealthState.UNKNOWN], HealthState.UNKNOWN),
+        ([HealthState.FAILED, HealthState.DEGRADED], HealthState.FAILED),
+        ([HealthState.FAILED, HealthState.UNKNOWN], HealthState.FAILED),
+        ([HealthState.DEGRADED, HealthState.UNKNOWN], HealthState.DEGRADED),
+        ([HealthState.OK, HealthState.FAILED, HealthState.DEGRADED], HealthState.FAILED),
+        ([HealthState.OK, HealthState.FAILED, HealthState.UNKNOWN], HealthState.FAILED),
+        ([HealthState.OK, HealthState.UNKNOWN, HealthState.DEGRADED],
+         HealthState.DEGRADED),
+        ([HealthState.FAILED, HealthState.UNKNOWN, HealthState.DEGRADED],
+         HealthState.FAILED),
+        ([HealthState.OK, HealthState.FAILED, HealthState.UNKNOWN, HealthState.DEGRADED],
+         HealthState.FAILED),
+                ])
+def health_states_and_expected_calculated_health_state(request):
+    return request.param
+
+
 class TestSubarrayHealthState:
 
+    @pytest.mark.usefixtures("valid_health_state")
     def test_generate_health_state_log_msg_valid(self, valid_health_state):
         msg = SubarrayHealthState.generate_health_state_log_msg(
             valid_health_state, "my/dev/name", None
@@ -63,27 +88,14 @@ class TestSubarrayHealthState:
         )
         assert msg == "healthState event returned unknown value \nNone"
 
-    # TODO: use a fixture for the permutations / break up into more specific tests
-    def test_calculate_health_state(self):
-        health_states = [HealthState.OK, HealthState.OK, HealthState.OK]
+    @pytest.mark.usefixtures("health_states_and_expected_calculated_health_state")
+    def test_calculate_health_state(self,
+                                    health_states_and_expected_calculated_health_state):
+        health_states, expected_health_state = (
+            health_states_and_expected_calculated_health_state)
         result = SubarrayHealthState.calculate_health_state(health_states)
-        assert result == HealthState.OK
+        assert result == expected_health_state
 
-        health_states = [HealthState.OK, HealthState.FAILED, HealthState.OK]
-        result = SubarrayHealthState.calculate_health_state(health_states)
-        assert result == HealthState.FAILED
-
-        health_states = [HealthState.OK, HealthState.OK, HealthState.DEGRADED]
-        result = SubarrayHealthState.calculate_health_state(health_states)
-        assert result == HealthState.DEGRADED
-
-        health_states = [HealthState.OK, HealthState.FAILED, HealthState.DEGRADED]
-        result = SubarrayHealthState.calculate_health_state(health_states)
-        assert result == HealthState.FAILED
-
-        health_states = [HealthState.UNKNOWN, HealthState.OK, HealthState.OK]
-        result = SubarrayHealthState.calculate_health_state(health_states)
-        assert result == HealthState.UNKNOWN
 
 # Device test case
 @pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy")
