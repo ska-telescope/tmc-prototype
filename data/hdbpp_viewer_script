@@ -1,0 +1,44 @@
+#!/bin/bash
+
+if [ ! $TANGO_HOST ] && [ -f /etc/tangorc ]; then
+   . /etc/tangorc
+fi
+
+#
+# Define the CLASSPATH
+#
+
+BASEDIR=$(dirname "$0")
+echo "$BASEDIR"
+echo "************"
+
+TANGO=$BASEDIR/JTango.jar
+TANGOATK=$BASEDIR/ATKCore.jar:$BASEDIR/ATKWidget.jar
+HDBVIEWER=$BASEDIR/jhdbviewer.jar
+HDBPP=$BASEDIR/HDBPP.jar
+JYTHON=$BASEDIR/jython.jar
+JCALENDAR=$BASEDIR/jcalendar.jar
+
+HDB_TYPE=mysql
+HDB_MYSQL_HOST=archiver-maria-db
+HDB_MYSQL_PORT=3306
+HDB_USER=tango
+HDB_PASSWORD=tango
+HDB_NAME=hdbpp
+CLASSPATH=$TANGO:$TANGOATK:$HDBVIEWER:$HDBPP:$JYTHON:$JCALENDAR
+
+export HDB_TYPE
+export HDB_MYSQL_HOST
+export HDB_USER
+export HDB_PASSWORD
+export HDB_NAME
+export HDB_MYSQL_PORT
+export CLASSPATH
+
+echo "************"
+echo $CLASSPATH
+echo "************"
+echo $HDBVIEWER
+echo "************"
+
+java -Djava.util.logging.config.file=log.properties -DTANGO_HOST=$TANGO_HOST HDBViewer.MainPanel $@
