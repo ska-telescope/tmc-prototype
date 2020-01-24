@@ -228,8 +228,10 @@ class TestCentralNode(object):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
+        result = create_subarray1_proxy.receptorIDList
         time.sleep(3)
-        assert CONST.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
+        assert result == None
+        assert create_subarray1_proxy.State() == DevState.DISABLE
 
     def test_AssignResources(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
