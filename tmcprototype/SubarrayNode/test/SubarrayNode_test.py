@@ -30,15 +30,6 @@ import CONST
 from CONST import HealthState, ObsState
 from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
 
-# Note:
-#
-# Since the device uses an inner thread, it is necessary to
-# wait during the tests in order the let the device update itself.
-# Hence, the sleep calls have to be secured enough not to produce
-# any inconsistent behavior. However, the unittests need to run fast.
-# Here, we use a factor 3 between the read period and the sleep calls.
-#
-# Look at devicetest examples for more advanced testing
 
 @pytest.fixture(scope="function",
                 params=[HealthState.OK, HealthState.DEGRADED,
@@ -96,6 +87,16 @@ class TestSubarrayHealthState:
         result = SubarrayHealthState.calculate_health_state(health_states)
         assert result == expected_health_state
 
+
+# Note:
+#
+# Since the device uses an inner thread, it is necessary to
+# wait during the tests in order the let the device update itself.
+# Hence, the sleep calls have to be secured enough not to produce
+# any inconsistent behavior. However, the unittests need to run fast.
+# Here, we use a factor 3 between the read period and the sleep calls.
+#
+# Look at devicetest examples for more advanced testing
 
 # Device test case
 @pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy")
