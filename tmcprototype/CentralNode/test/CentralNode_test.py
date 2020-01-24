@@ -224,6 +224,15 @@ class TestCentralNode(object):
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  CentralNode.test_testMode
 
+    def test_AssignResources_Failure_Before_Startup(self, tango_context, create_subarray1_proxy):
+        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(test_input)
+        result = create_subarray1_proxy.receptorIDList
+        time.sleep(3)
+        assert result == None
+        assert create_subarray1_proxy.State() == DevState.DISABLE
+
     def test_AssignResources(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
         tango_context.device.StartUpTelescope()
