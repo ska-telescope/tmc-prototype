@@ -60,7 +60,7 @@ def valid_health_state(request):
         ([HealthState.OK, HealthState.FAILED, HealthState.UNKNOWN, HealthState.DEGRADED],
          HealthState.FAILED),
                 ])
-def health_states_and_expected_calculated_health_state(request):
+def health_states_and_expected_aggregate(request):
     return request.param
 
 
@@ -78,10 +78,8 @@ class TestSubarrayHealthState:
         )
         assert msg == "healthState event returned unknown value \nNone"
 
-    def test_calculate_health_state(self,
-                                    health_states_and_expected_calculated_health_state):
-        health_states, expected_health_state = (
-            health_states_and_expected_calculated_health_state)
+    def test_calculate_health_state(self, health_states_and_expected_aggregate):
+        health_states, expected_health_state = health_states_and_expected_aggregate
         result = SubarrayHealthState.calculate_health_state(health_states)
         assert result == expected_health_state
 
