@@ -41,24 +41,26 @@ from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
 # Look at devicetest examples for more advanced testing
 
 
+@pytest.fixture(scope="function",
+                params=[HealthState.OK, HealthState.DEGRADED,
+                        HealthState.FAILED, HealthState.UNKNOWN])
+def valid_health_state(request):
+    return request.param
+
+
+@pytest.mark.usefixtures("valid_health_state")
 class TestSubarrayHealthState:
 
-    # TODO: use a fixture for the permutations
-    def test_generate_health_state_log_msg(self):
+    def test_generate_health_state_log_msg_valid(self, valid_health_state):
         msg = SubarrayHealthState.generate_health_state_log_msg(
-                HealthState.OK, 'my/dev/name', None)
-        assert msg == "healthState of my/dev/name :-> OK"
+            valid_health_state, "my/dev/name", None
+        )
+        assert msg == "healthState of my/dev/name :-> {}".format(valid_health_state.name)
+
+    def test_generate_health_state_log_msg_invalid(self):
         msg = SubarrayHealthState.generate_health_state_log_msg(
-                HealthState.DEGRADED, 'my/dev/name', None)
-        assert msg == "healthState of my/dev/name :-> DEGRADED"
-        msg = SubarrayHealthState.generate_health_state_log_msg(
-                HealthState.FAILED, 'my/dev/name', None)
-        assert msg == "healthState of my/dev/name :-> FAILED"
-        msg = SubarrayHealthState.generate_health_state_log_msg(
-                HealthState.UNKNOWN, 'my/dev/name', None)
-        assert msg == "healthState of my/dev/name :-> UNKNOWN"
-        msg = SubarrayHealthState.generate_health_state_log_msg(
-                "not a health state enum", 'my/dev/name', None)
+            "not a health state enum", "my/dev/name", None
+        )
         assert msg == "healthState event returned unknown value \nNone"
 
     # TODO: use a fixture for the permutations / break up into more specific tests
