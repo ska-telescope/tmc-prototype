@@ -490,7 +490,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def SetStowMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStowMode) ENABLED START #
-        """ Triggers the DishMaster to transit into Stow Mode """
+        """ Triggers the DishMaster to transit into Stow Mode. """
         self._dish_proxy.command_inout_asynch(CONST.CMD_SET_STOW_MODE, self.commandCallback)
         # PROTECTED REGION END #    //  DishLeafNode.SetStowMode
 
@@ -504,7 +504,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def SetStandByLPMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStandByLPMode) ENABLED START #
-        """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State) """
+        """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State). """
         self._dish_proxy.command_inout_asynch(CONST.CMD_SET_STANDBYLP_MODE, self.commandCallback)
         # PROTECTED REGION END #    //  DishLeafNode.SetStandByLPMode
 
@@ -619,8 +619,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
+        This function convert the input json and calculate it into pointing parameters of Dish- Azimuth
+        and Elevation Angle.Calculated parameters again converted to json and fed to the dish master.
 
-        :param argin: A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
+        :param argin:
+        A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
 
             Example:
             {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
