@@ -1585,11 +1585,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         '''
         Iniialises connection with database
         '''
+        print (os.environ['MYSQL_HOST'])
         connection = mysql.connector.connect(
-            host=CONST.MYSQL_HOSTNAME,
-            user=CONST.MYSQL_USER,
-            passwd=CONST.MYSQL_PASSWORD,
-            database=CONST.MYSQL_DB_NAME,
+            host=os.environ['MYSQL_HOST'],
+            user=os.environ['MYSQL_USER'],
+            passwd=os.environ['MYSQL_PASSWORD'],
+            database=os.environ['MYSQL_DATABASE'],
             connect_timeout=60000
             )
         self.logger.info("Database connection is successful.")

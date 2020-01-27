@@ -280,6 +280,11 @@ services:
     container_name: ${CONTAINER_NAME_PREFIX}subarraynode1
     environment:
       - TANGO_HOST=${TANGO_HOST}
+      - MYSQL_DATABASE=tmc_recoverability
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_HOST=${TMC_MYSQL_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device ska_mid/tm_leaf_node/d0001 10 &&\

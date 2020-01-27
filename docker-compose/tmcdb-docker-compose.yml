@@ -1,0 +1,26 @@
+#
+# Tmc state db docker compose file
+#
+# Defines:
+#   - tmc-db: TMC state DB container
+#   - MariaDB
+#
+version: '2'
+
+volumes:
+  tmcdb: {}
+
+services:
+
+  tmc-db:
+    image: nexus.engageska-portugal.pt/tango-example/tmcstatedb:0.0.1
+    container_name: tmc-db
+    environment:
+      - MYSQL_DATABASE=tmc_recoverability
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_HOST=${TMC_MYSQL_HOST}
+    volumes:
+      - tmcdb:/var/lib/mysql
+    restart: on-failure
