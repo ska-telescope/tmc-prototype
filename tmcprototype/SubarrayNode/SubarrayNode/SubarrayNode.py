@@ -1585,7 +1585,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         '''
         Iniialises connection with database
         '''
-        print (os.environ['MYSQL_HOST'])
+        self.logger.info(os.environ['MYSQL_HOST'])
         connection = mysql.connector.connect(
             host=os.environ['MYSQL_HOST'],
             user=os.environ['MYSQL_USER'],
@@ -1627,7 +1627,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.connection.commit()
         self.logger.info("state is stored in database as:- " + str(curr_state))
         query = "update device_attribute_value set value= %s where id=%s and attribute='receptor_id'"
-        sql_receptor_id = (json.dumps(self._receptor_id_list), self.subarray_id[0],)
+        rec_id_json=json.dumps(self._receptor_id_list)
+        sql_receptor_id = (rec_id_json, self.subarray_id[0],)
         cursor.execute(query, sql_receptor_id)
         self.connection.commit()
         self.logger.info("receptor_id is stored in database as:- " + str(self._receptor_id_list))

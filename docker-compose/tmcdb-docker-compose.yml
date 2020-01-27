@@ -14,7 +14,8 @@ services:
 
   tmc-db:
     image: nexus.engageska-portugal.pt/tango-example/tmcstatedb:0.0.1
-    container_name: tmc-db
+    container_name: ${TMC_MYSQL_HOST}
+    network_mode: ${NETWORK_MODE}
     environment:
       - MYSQL_DATABASE=tmc_recoverability
       - MYSQL_USER=tango
