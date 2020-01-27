@@ -42,7 +42,7 @@ __all__ = ["DishMaster", "main"]
 
 class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 # class DishMaster(SKAMaster):
-    """
+    """read_toggleFault
     SKA Dish Master TANGO device server
     """
     # PROTECTED REGION ID(DishMaster.class_variable) ENABLED START #
@@ -531,6 +531,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def read_toggleFault(self):
         # PROTECTED REGION ID(DishMaster.toggleFault_read) ENABLED START #
+        """Internal construct of TANGO.Returns the toggleFault  ."""
         return self._toggle_fault
         # PROTECTED REGION END #    //  DishMaster.toggleFault_read
 
