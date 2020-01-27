@@ -78,55 +78,30 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     other TM Components (such as OET, Central Node) for a Subarray.
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
-    def health_state_cb(self, evt):
+    def health_state_cb(self, event):
         """
-        Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
-        to calculate the subarray health state.
+        Retrieves the subscribed health states, aggregates them
+        to calculate the overall subarray health state.
 
-        :param evt: A TANGO_CHANGE event on CSP and SDP Subarray healthState.
+        :param evt: A TANGO_CHANGE event on Subarray healthState.
 
         :return: None
         """
-        exception_message = []
-        exception_count = 0
-        device_name = evt.device.dev_name()
-        if not evt.err:
-            try:
-                event_health_state = evt.attr_value.value
-                # health state for csp and sdp retrieved if they are found in event's attribute's name
-                if CONST.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
-                    self.subarray_ln_health_state_map[device_name] = event_health_state
-                elif CONST.PROP_DEF_VAL_TMSDP_MID_SALN in evt.attr_name:
-                    self.subarray_ln_health_state_map[device_name] = event_health_state
-                else:
-                    self.logger.debug(CONST.EVT_UNKNOWN)
-                    self._read_activity_message = CONST.EVT_UNKNOWN # this may be overriden below so should it be here?
+        device_name = event.device.dev_name()
+        if not event.err:
+            event_health_state = event.attr_value.value
+            # health state for csp and sdp retrieved if they are found in event's attribute's name
+            self.subarray_health_state_map[device_name] = event_health_state
 
-                log_message = SubarrayHealthState.generate_health_state_log_msg(
-                    event_health_state, device_name, evt)
-                self._read_activity_message = log_message
-                self.logger.debug(log_message)
-                self._health_state = SubarrayHealthState.calculate_health_state(
-                    list(self.subarray_ln_health_state_map.values()) +
-                    list(self.dish_health_state_map.values()))
-
-            except KeyError as key_error:
-                self.logger.debug(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error))
-                self._read_activity_message = CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE + str(key_error)
-                self.logger.debug(CONST.ERR_CSPSDP_SUBARRAY_HEALTHSTATE)
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = (
-                    self._handle_devfailed_exception(dev_failed,
-                    exception_message, exception_count, CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE))
-            except Exception as except_occured:
-                [exception_message, exception_count] = (
-                    self._handle_generic_exception(except_occured,
-                    exception_message, exception_count, CONST.ERR_AGGR_HEALTH_STATE))
-        else:
-            str_log =  CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE + str(evt)
-            self.logger.debug(str_log)
-            self._read_activity_message = str_log
-            self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_HEALTH_STATE)
+            log_message = SubarrayHealthState.generate_health_state_log_msg(
+                event_health_state, device_name, event)
+            self._read_activity_message = log_message
+            self.logger.debug(log_message)
+            self._health_state = SubarrayHealthState.calculate_health_state(
+                list(self.subarray_health_state_map.values()))
+        else: 
+            self.logger.debug(CONST.ERR_SUBSR_SA_HEALTH_STATE + device_name + str(event))
+            self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + device_name + str(event)
 
     def obsStateCallback(self, evt):
         """
@@ -274,11 +249,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # Subscribe Dish Health State
                 self._event_id = devProxy.subscribe_event(CONST.EVT_DISH_HEALTH_STATE,
                                                           tango.EventType.CHANGE_EVENT,
-                                                          self.setHealth,
+                                                          self.health_state_cb,
                                                           stateless=True)
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
                 self._health_event_id.append(self._event_id)
-                self.dish_health_state_map[devProxy] = -1 # what does -1 represent?
+                self.subarray_health_state_map[devProxy] = -1 # what does -1 represent?
                 self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID))
 
                 # Subscribe Dish Pointing State
@@ -432,7 +407,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._dishLnVsHealthEventID = {}
                 self._health_event_id = []
                 self._dishLnVsPointingStateEventID = {}
-                self.dish_health_state_map = {}
+                self.subarray_health_state_map = {}
                 self.dishPointingStateMap = {}
                 self._pointing_state_event_id = []
                 self._dish_leaf_node_proxy = []
@@ -854,52 +829,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
                                         DevState.STANDBY]
 
-    def setHealth(self, evt):
-        """
-        Retrieves the subscribed DishMaster health state, aggregate them to evaluate
-        health state of the Subarray.
-
-        :param evt: A TANGO_CHANGE event on DishMaster healthState.
-
-        :return: None
-
-        """
-        if evt.err is False:
-            try:
-                self._dish_health_state = evt.attr_value.value
-                self.dish_health_state_map[evt.device] = self._dish_health_state
-                if self._dish_health_state == HealthState.OK:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
-                    self.logger.debug(str_log)
-                    self._read_activity_message = str_log
-                elif self._dish_health_state == HealthState.DEGRADED:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
-                    self.logger.debug(str_log)
-                    self._read_activity_message = str_log
-                elif self._dish_health_state == HealthState.FAILED:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
-                    self.logger.debug(str_log)
-                    self._read_activity_message = str_log
-                elif self._dish_health_state == HealthState.UNKNOWN:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
-                    self.logger.debug(str_log)
-                    self._read_activity_message = str_log
-                else:
-                    self.logger.debug(CONST.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
-                    self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
-                self._health_state = SubarrayHealthState.calculate_health_state(
-                    list(self.subarray_ln_health_state_map.values()) +
-                    list(self.dish_health_state_map.values()))
-            except KeyError as key_err:
-                self.logger.error(CONST.ERR_SETHEALTH_CALLBK + str(key_err))
-                self._read_activity_message = CONST.ERR_SETHEALTH_CALLBK + str(key_err)
-            except Exception as except_occurred:
-                self.logger.error(CONST.ERR_AGGR_HEALTH_STATE + str(except_occurred.message))
-                self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occurred.message)
-        else:
-            self.logger.debug(CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors))
-            self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt.errors)
-
     def setPointingState(self, evt):
         """
         Retrieves the subscribed DishMaster health state, aggregate them to evaluate
@@ -1044,7 +973,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._scan_id = ""
         self._sb_id = ""
         self._receptor_id_list = []
-        self.dish_health_state_map = {}
         self.dishPointingStateMap = {}
         self._dish_leaf_node_group = tango.Group(CONST.GRP_DISH_LEAF_NODE)
         self._dish_leaf_node_proxy = []
@@ -1052,7 +980,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._pointing_state_event_id = []
         self._dishLnVsHealthEventID = {}
         self._dishLnVsPointingStateEventID = {}
-        self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
+        self.subarray_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
                                                 # SDP SA LN
         self._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
         self._csp_sa_obs_state = ObsState.IDLE
@@ -1069,7 +997,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._sdp_subarray_ln_proxy = None
         result = self.create_sdp_ln_proxy()
         try:
-            self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = -1
+            self.subarray_health_state_map[self._csp_subarray_ln_proxy] = -1
             # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
             self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
                                                         self.health_state_cb, stateless=True)
@@ -1088,7 +1016,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.error(CONST.ERR_CSP_SA_LEAF_INIT)
 
         try:
-            self.subarray_ln_health_state_map[self._sdp_subarray_ln_proxy] = -1
+            self.subarray_health_state_map[self._sdp_subarray_ln_proxy] = -1
             # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
                                                         self.health_state_cb, stateless=True)
