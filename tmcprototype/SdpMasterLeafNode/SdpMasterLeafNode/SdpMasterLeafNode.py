@@ -67,7 +67,8 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
-                self.logger.error(CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors))
+                log_msg = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
                 self.logger.error(log)
@@ -77,7 +78,8 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.logger.info(log)
         except Exception as except_occurred:
             self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
-            self.logger.error(CONST.ERR_EXCEPT_CMD_CB + str(except_occurred))
+            log_msg = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
+            self.logger.error(log_msg)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
