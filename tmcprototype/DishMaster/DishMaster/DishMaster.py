@@ -42,7 +42,7 @@ __all__ = ["DishMaster", "main"]
 
 class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 # class DishMaster(SKAMaster):
-    """read_toggleFault
+    """
     SKA Dish Master TANGO device server
     """
     # PROTECTED REGION ID(DishMaster.class_variable) ENABLED START #
