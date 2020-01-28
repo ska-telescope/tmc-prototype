@@ -1403,8 +1403,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def EndSB(self):
         # PROTECTED REGION ID(SubarrayNode.EndSB) ENABLED START #
         """
-        This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP Subarray Leaf Node, and stops
-        tracking of all the assigned dishes.
+        This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP
+        Subarray Leaf Node, and stops tracking of all the assigned dishes.
 
         :return: None.
         """
