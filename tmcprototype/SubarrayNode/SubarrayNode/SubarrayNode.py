@@ -268,10 +268,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     def add_receptors_in_group(self, argin):
         """
-        Creates tango group of the resources allocated successfully in the subarray.
-        For each resource device proxy is created and health state and pointing state are
-        subscribed to receive state changes on subarray node.
-
+        Creates a tango group of the successfully allocated resources in the subarray.
+        Device proxy for each of the resources is created. The healthState and pointintgState attributes
+        from all the devices in the group are subscribed so that the changes in the respective device are
+        received at Subarray Node.
 
 
         Note: Currently there are only receptors allocated so the group contains only receptor ids.
@@ -358,7 +358,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     def assign_csp_resources(self, argin):
         """
-        This function accepts the receptor ID list as input and invokes the assign resources command on
+        This function accepts the receptor IDs list as input and invokes the assign resources command on
         the CSP Subarray Leaf Node.
 
         :param argin: List of strings
@@ -511,7 +511,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def Scan(self, argin):
         """
-        This command accepts time interval as input and Schedules scan execution on subarray
+        This command accepts time interval as input. And it Schedule scan on subarray
         from where scan command is invoked on respective CSP and SDP subarray node for the
         provided interval of time. It checks whether the scan is already in progress. If yes it will
         throw error showing duplication of command.
@@ -641,9 +641,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
     @DebugIt()
     def EndScan(self):
-        """ Ends the scan. It is invoked on subarray after completion of the scan duration. It can also be
-        invoked by an external client while a scan is in progress, which will stop the scan at that instant
-        irrespective of provided scan duration.
+        """ Ends the scan. It is invoked on subarray after completion of the scan duration. It can
+        also be invoked by an external client while a scan is in progress, Which stops the scan
+        immediately irrespective of the provided scan duration.
 
         :param argin: DevVoid.
 
@@ -818,8 +818,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def ReleaseAllResources(self):
         """
-        It checks whether all resources are already released. If yes then it will throw error while
-        executing command.If not it will Release all the resources from the subarray i.e. Releases
+        It checks whether all resources are already released. If yes then it throws error while
+        executing command. If not it Releases all the resources from the subarray i.e. Releases
         resources from CSP Subarray and SDP Subarray. If the command execution fails, array of receptors
         (device names) which are failed to be released from the subarray, is returned to Central Node.
         Upon successful execution, all the resources of a given subarray get released and empty
@@ -1440,7 +1440,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def Track(self, argin):
         # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
-        """ Invokes Track command on the resources (DishLeafNode) assigned to the Subarray.
+        """ Invokes Track command on the resources assigned to the Subarray.
 
         :param argin: DevString
 
