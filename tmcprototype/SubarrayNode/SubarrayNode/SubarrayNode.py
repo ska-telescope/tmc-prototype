@@ -374,7 +374,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         return argout
 
     def _remove_subarray_dish_lns_health_states(self):
-        for dev_name in self.subarray_ln_health_state_map:
+        subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
+        for dev_name in subarray_ln_health_state_map_copy:
                 if dev_name.startwith(CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX):
                     _ = self.subarray_ln_health_state_map.pop(dev_name)
 
