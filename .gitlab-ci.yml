@@ -299,8 +299,8 @@ run tests:
     - docker-executor
   script:
     - make test
-    - make push
-    - make lint
+#    - make push
+#    - make lint
   retry: 0
 
 linting:
@@ -396,6 +396,6 @@ release docker image:
   script:
     - make push-release #Publish tagged version on Nexus
   when: manual
-  only:
-    refs:
-      - master
+#  only:
+#    refs:
+#      - master
