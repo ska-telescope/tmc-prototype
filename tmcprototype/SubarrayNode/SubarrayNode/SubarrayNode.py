@@ -90,8 +90,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         device_name = event.device.dev_name()
         if not event.err:
             event_health_state = event.attr_value.value
-            # health state for csp and sdp retrieved if they are found in event's attribute's name
-            self.subarray_health_state_map[device_name] = event_health_state
+            self.subarray_ln_health_state_map[device_name] = event_health_state
 
             log_message = SubarrayHealthState.generate_health_state_log_msg(
                 event_health_state, device_name, event)
@@ -407,7 +406,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._dishLnVsHealthEventID = {}
                 self._health_event_id = []
                 self._dishLnVsPointingStateEventID = {}
-                self.subarray_health_state_map = {}
+                self.subarray_ln_health_state_map = {}
                 self.dishPointingStateMap = {}
                 self._pointing_state_event_id = []
                 self._dish_leaf_node_proxy = []
@@ -980,8 +979,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._pointing_state_event_id = []
         self._dishLnVsHealthEventID = {}
         self._dishLnVsPointingStateEventID = {}
-        self.subarray_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
-                                                # SDP SA LN
+        self.subarray_ln_health_state_map = {}
         self._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
         self._csp_sa_obs_state = ObsState.IDLE
         self._sdp_sa_obs_state = ObsState.IDLE
