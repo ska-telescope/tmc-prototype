@@ -26,6 +26,7 @@ stages:
   - linting
   - publish
   - pages
+  - release
   - trigger
 
 clean shell runner:
@@ -384,3 +385,17 @@ trigger:
   - docker-executor
   script:
   - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH -F "variables[HELM_CHART]=tmc-proto" https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
+
+release docker image:
+  stage: release
+  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+  before_script:
+  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
+  tags:
+    - docker-executor
+  script:
+    - make push-release #Publish tagged version on Nexus
+  when: manual
+  only:
+    refs:
+      - master
