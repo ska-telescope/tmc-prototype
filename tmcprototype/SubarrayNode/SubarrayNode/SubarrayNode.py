@@ -253,7 +253,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                           stateless=True)
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
                 self._health_event_id.append(self._event_id)
-                self.subarray_health_state_map[devProxy] = -1 # what does -1 represent?
+                self.subarray_ln_health_state_map[devProxy] = HealthState.UNKNOWN
                 self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID))
 
                 # Subscribe Dish Pointing State
@@ -263,7 +263,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                           stateless=True)
                 self._dishLnVsPointingStateEventID[devProxy] = self._event_id
                 self._pointing_state_event_id.append(self._event_id)
-                self.dishPointingStateMap[devProxy] = -1 # what does -1 represent?
+                self.dishPointingStateMap[devProxy] = HealthState.UNKNOWN
                 self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID))
                 self._receptor_id_list.append(int(str_leafId))
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
@@ -997,7 +997,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._sdp_subarray_ln_proxy = None
         result = self.create_sdp_ln_proxy()
         try:
-            self.subarray_health_state_map[self._csp_subarray_ln_proxy] = -1
+            self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = (
+                HealthState.UNKNOWN)
             # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
             self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
                                                         self.health_state_cb, stateless=True)
@@ -1016,7 +1017,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.error(CONST.ERR_CSP_SA_LEAF_INIT)
 
         try:
-            self.subarray_health_state_map[self._sdp_subarray_ln_proxy] = -1
+            self.subarray_ln_health_state_map[self._sdp_subarray_ln_proxy] = (
+                HealthState.UNKNOWN)
             # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
                                                         self.health_state_cb, stateless=True)
