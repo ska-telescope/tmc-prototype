@@ -99,8 +99,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._health_state = SubarrayHealthState.calculate_health_state(
                 list(self.subarray_health_state_map.values()))
         else: 
-            self.logger.debug(CONST.ERR_SUBSR_SA_HEALTH_STATE + device_name + str(event))
-            self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + device_name + str(event)
+            log_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + device_name + str(event)
+            self.logger.debug(log_message)
+            self._read_activity_message = log_message
 
     def obsStateCallback(self, evt):
         """
