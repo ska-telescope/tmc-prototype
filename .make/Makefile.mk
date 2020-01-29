@@ -40,7 +40,7 @@ DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
 .PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
-	push pre-push do-push post-push push-release test-push
+	push pre-push do-push post-push push-versioned-image
 
 build: pre-build docker-build post-build  ## build the application image
 
@@ -72,7 +72,7 @@ docker-build: .release
 
 release: check-status check-release build push
 
-push: pre-push do-push post-push  ## push the image to the Docker registry
+push: pre-push do-push post-push ## push the image to the Docker registry
 
 do-push:
 	docker push $(IMAGE):latest
@@ -116,7 +116,6 @@ check-release: .release
 	@. $(RELEASE_SUPPORT) ; tagExists $(TAG) || (echo "ERROR: version not yet tagged in git. make [minor,major,patch]-release." >&2 && exit 1) ;
 	@. $(RELEASE_SUPPORT) ; ! differsFromRelease $(TAG) || (echo "ERROR: current directory differs from tagged $(TAG). make [minor,major,patch]-release." ; exit 1)
 
-push-release: test-push
-
-test-push:
-    docker push $(IMAGE):$(VERSION)
+push-versioned-image:
+	docker push $(IMAGE):$(VERSION)
+	
