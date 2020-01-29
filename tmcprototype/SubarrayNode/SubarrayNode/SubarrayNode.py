@@ -253,7 +253,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                           stateless=True)
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
                 self._health_event_id.append(self._event_id)
-                self.subarray_ln_health_state_map[devProxy] = HealthState.UNKNOWN
+                self.subarray_ln_health_state_map[devProxy.dev_name()] = HealthState.UNKNOWN
                 self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID))
 
                 # Subscribe Dish Pointing State
@@ -1001,7 +1001,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._sdp_subarray_ln_proxy = None
         result = self.create_sdp_ln_proxy()
         try:
-            self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = (
+            self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
             # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
             self._csp_subarray_ln_proxy.subscribe_event(
@@ -1022,7 +1022,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.error(CONST.ERR_CSP_SA_LEAF_INIT)
 
         try:
-            self.subarray_ln_health_state_map[self._sdp_subarray_ln_proxy] = (
+            self.subarray_ln_health_state_map[self._sdp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
             # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
