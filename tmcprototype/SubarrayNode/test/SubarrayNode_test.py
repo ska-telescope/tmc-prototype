@@ -421,7 +421,7 @@ class TestSubarrayNode(object):
     def test_simulationMode(self, tango_context):
         """Test for simulationMode"""
         # PROTECTED REGION ID(SubarrayNode.test_simulationMode) ENABLED START #
-        simulation_mode = 0
+        simulation_mode = False
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_simulationMode
