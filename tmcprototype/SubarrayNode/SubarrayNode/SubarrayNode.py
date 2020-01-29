@@ -998,8 +998,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy] = (
                 HealthState.UNKNOWN)
             # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
-            self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,
-                                                        self.health_state_cb, stateless=True)
+            self._csp_subarray_ln_proxy.subscribe_event(
+                CONST.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,self.health_state_cb,
+                stateless=True)
             # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
             self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
