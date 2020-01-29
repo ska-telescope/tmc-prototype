@@ -9,6 +9,7 @@ from tango import DeviceProxy
 
 
 from tango.test_context import DeviceTestContext
+from pytest_mysql import factories
 
 
 @pytest.fixture(scope="class")
@@ -34,7 +35,7 @@ def tango_context(request):
                   'CspSubarrayFQDN': 'mid_csp/elt/subarray_01'}
     module = importlib.import_module("{}.{}".format("SubarrayNode", "SubarrayNode"))
     klass = getattr(module, "SubarrayNode")
-    tango_context = DeviceTestContext(klass, properties=properties)
+    tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
     klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context
@@ -60,3 +61,6 @@ def create_dish_proxy():
 def create_dishln_proxy():
     dishln_proxy = DeviceProxy("ska_mid/tm_leaf_node/d0001")
     return dishln_proxy
+
+mysql_proc2 = factories.mysql_proc(port=3306,host="tmc-db",database="tmc_recoverability")
+mysql2 = factories.mysql('mysql_proc2')

@@ -77,16 +77,14 @@ endif
 ifeq ($(NETWORK_MODE),host)
 TANGO_HOST := $(shell hostname):10000
 MYSQL_HOST := $(shell hostname):3306
-TMC_MYSQL_HOST := tmc-db
 else
 # distinguish the bridge network from others by adding the project name
 NETWORK_MODE := $(NETWORK_MODE)-$(PROJECT)
 TANGO_HOST := $(CONTAINER_NAME_PREFIX)databaseds:10000
 MYSQL_HOST := $(CONTAINER_NAME_PREFIX)tangodb:3306
-TMC_MYSQL_HOST := tmc-db
 endif
 
-
+TMC_MYSQL_HOST := tmc-db
 DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(TANGO_HOST) \
 		NETWORK_MODE=$(NETWORK_MODE) XAUTHORITY_MOUNT=$(XAUTHORITY_MOUNT) MYSQL_HOST=$(MYSQL_HOST) \
 		DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
@@ -113,6 +111,7 @@ DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(
 make = tar -c test-harness/ | \
 	   docker run -i --rm --network=$(NETWORK_MODE) \
 	   -e TANGO_HOST=$(TANGO_HOST) \
+	   -e MYSQL_HOST=$(TMC_MYSQL_HOST) \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "sudo chown -R tango:tango /build && \

@@ -1597,8 +1597,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             host="tmc-db",
             user="tango",
             passwd="tango",
-            database="tmc_recoverability",x
-            connect_timeout=60000
+            database="tmc_recoverability"#,
+            # connect_timeout=60000
         )
         self.logger.info("Database connection is successful.")
         return connection

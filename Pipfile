@@ -17,6 +17,7 @@ scipy = "==1.4.1"
 pyyaml = "==4.2b1"
 mock = "*"
 mysql-connector = "*"
+pytest_mysql = "==2.0.1"
 
 [dev-packages]
 docutils = "*"
