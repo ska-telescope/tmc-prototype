@@ -290,7 +290,7 @@ build SdpMaster wheel for development: # Executed on a commit
       - ./tmcprototype/SdpMaster/dist/
 
 unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+  image: nexus.engageska-portugal.pt/tango-example/tmcprototype:latest
   stage: test
   tags:
     - docker-executor
