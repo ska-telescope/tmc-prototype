@@ -35,6 +35,7 @@ def test_telescope_health_state_is_degraded_when_any_subdevice_is_degraded_after
 
     # assert:
     assert tango_context.device.telescopeHealthState == expected_telescope_health_state
+    tango_context.stop()
 
 
 def _prepare_event_system(mocked_device_proxy, attribute_to_mock):
