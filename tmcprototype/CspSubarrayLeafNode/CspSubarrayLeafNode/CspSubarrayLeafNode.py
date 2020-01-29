@@ -135,7 +135,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         This method calculates geometric delay values (in Second) using KATPoint library. It requires delay
         correction object, timestamp t0 and target RaDec.
-        Numpy library is used to convert delay values (in Seconds) to a fifth order polynomial coefficients.
+        Numpy library is used to convert delay values (in Seconds) to fifth order polynomial coefficients.
         Six timestamps from the time-frame t0 to t+10, are used to calculate delays per antenna. These six
         delay values are then used to calculate fifth order polynomial coefficients.
         In order to calculate delays in advance, timestamp t0 is considered to be one minute ahead of the

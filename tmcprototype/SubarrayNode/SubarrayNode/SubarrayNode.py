@@ -820,10 +820,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         It checks whether all resources are already released. If yes then it throws error while
         executing command. If not it Releases all the resources from the subarray i.e. Releases
-        resources from CSP Subarray and SDP Subarray. If the command execution fails, array of receptors
-        (device names) which are failed to be released from the subarray, is returned to Central Node.
-        Upon successful execution, all the resources of a given subarray get released and empty
-        array is returned. Selective release is not yet supported.
+        resources from TMC Subarray Node, CSP Subarray Node and SDP Subarray Node. If the command
+        execution fails, array of receptors(device names) which are failed to be released from the
+        subarray, is returned to Central Node. Upon successful execution, all the resources of a given
+        subarray get released and empty array is returned. Selective release is not yet supported.
 
         :param argin: DevVoid.
 

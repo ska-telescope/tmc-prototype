@@ -619,7 +619,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
-        This function convert the input json and calculate it into pointing parameters of Dish- Azimuth
+        This function accepts the input json and calculate pointing parameters of Dish- Azimuth
         and Elevation Angle.Calculated parameters again converted to json and fed to the dish master.
 
         :param argin:
