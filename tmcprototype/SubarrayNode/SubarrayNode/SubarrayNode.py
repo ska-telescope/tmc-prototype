@@ -97,8 +97,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._read_activity_message = log_message
             self.logger.debug(log_message)
             self._health_state = SubarrayHealthState.calculate_health_state(
-                list(self.subarray_health_state_map.values()))
-        else: 
+                self.subarray_ln_health_state_map.values())
+        else:
             log_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + device_name + str(event)
             self.logger.debug(log_message)
             self._read_activity_message = log_message
