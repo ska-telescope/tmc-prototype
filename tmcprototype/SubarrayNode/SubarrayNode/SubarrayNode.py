@@ -373,6 +373,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.logger.debug("assign_sdp_resources::",argout)
         return argout
 
+    def _remove_subarray_dish_lns_health_states(self):
+        for dev_name in self.subarray_ln_health_state_map:
+                if dev_name.startwith(CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX):
+                    _ = self.subarray_ln_health_state_map.pop(dev_name)
+
     def remove_receptors_in_group(self):
         """
                 Deletes tango group of the resources allocated in the subarray.
@@ -406,7 +411,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._dishLnVsHealthEventID = {}
                 self._health_event_id = []
                 self._dishLnVsPointingStateEventID = {}
-                self.subarray_ln_health_state_map = {}
+                self._remove_subarray_dish_lns_health_states()
                 self.dishPointingStateMap = {}
                 self._pointing_state_event_id = []
                 self._dish_leaf_node_proxy = []
