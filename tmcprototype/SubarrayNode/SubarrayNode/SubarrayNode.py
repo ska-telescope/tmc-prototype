@@ -399,7 +399,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID))
                 self.logger.debug(CONST.STR_POINTING_STATE_ID + str(self._pointing_state_event_id))
                 self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID +str(self._dishLnVsPointingStateEventID))
-                """any need to replace the two for loops with function calls?"""
                 for dev in self._dishLnVsHealthEventID:
                     dev.unsubscribe_event(self._dishLnVsHealthEventID[dev])
                 for dev in self._dishLnVsPointingStateEventID:
