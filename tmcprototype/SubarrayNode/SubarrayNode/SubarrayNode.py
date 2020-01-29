@@ -263,7 +263,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                                           stateless=True)
                 self._dishLnVsPointingStateEventID[devProxy] = self._event_id
                 self._pointing_state_event_id.append(self._event_id)
-                self.dishPointingStateMap[devProxy] = HealthState.UNKNOWN
+                self.dishPointingStateMap[devProxy] = -1
                 self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID))
                 self._receptor_id_list.append(int(str_leafId))
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
