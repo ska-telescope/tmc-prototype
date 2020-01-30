@@ -227,13 +227,14 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def ReleaseAllResources(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
-        """ Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
-            receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-            is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
-            resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
-            on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
-            This selective release of the resources when releaseALL is False, will be implemented in the
-            later stages of the prototype.
+        """
+        Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+        receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+        is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
+        resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
+        on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
+        This selective release of the resources when releaseALL is False, will be implemented in the
+        later stages of the prototype.
 
         :param argin: None.
 
@@ -471,8 +472,9 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def EndScan(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
-        """         It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING
-        state.
+        """
+        It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in
+        SCANNING state.
 
                         :param argin: None.
 
@@ -539,7 +541,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def Abort(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
-        """ Abort command."""
+        """ Abort command. Not yet implememnted."""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
 # ----------
