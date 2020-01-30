@@ -44,7 +44,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
         telescope health state.
+
         :param evt: A TANGO_CHANGE event on Subarray healthState.
+
         :return: None
         """
         if evt.err is False:
@@ -322,7 +324,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                 exception_message, exception_count,CONST.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
 
-
+        # Create device proxy for Subarray Node
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
@@ -358,37 +360,37 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
-        """ Returns the Telescope health state."""
+        """ Internal construct of TANGO. Returns the Telescope health state."""
         return self._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
     def read_subarray1HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray1_healthstate_read) ENABLED START #
-        """ Returns Subarray1 health state. """
+        """ Internal construct of TANGO. Returns Subarray1 health state. """
         return self._subarray1_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray1_healthstate_read
 
     def read_subarray2HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray2_healthstate_read) ENABLED START #
-        """ Returns Subarray2 health state. """
+        """ Internal construct of TANGO. Returns Subarray2 health state. """
         return self._subarray2_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray2_healthstate_read
 
     def read_subarray3HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray3HealthState_read) ENABLED START #
-        """ Returns Subarray3 health state. """
+        """ Internal construct of TANGO. Returns Subarray3 health state. """
         return self._subarray3_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray3HealthState_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
-        """ Returns activity message. """
+        """Internal construct of TANGO. Returns activity message. """
         return self._read_activity_message
         # PROTECTED REGION END #    //  CentralNode.activity_message_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CentralNode.activity_message_write) ENABLED START #
-        """ Sets the activity message. """
+        """Internal construct of TANGO. Sets the activity message. """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CentralNode.activity_message_write
 
@@ -405,7 +407,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(CentralNode.StowAntennas) ENABLED START #
         """
         Stows the specified receptors.
+
         :param argin: List of Receptors to be stowed.
+
         :return: None
         """
         exception_count = 0
@@ -466,13 +470,18 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
 
-
         try:
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
 
+        try:
+            for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
+                self.subarray_FQDN_dict[subarrayID].command_inout(CONST.CMD_STANDBY)
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                        exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, CONST.STR_STANDBY_EXEC)
@@ -483,7 +492,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def StartUpTelescope(self):
         # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
-        """ Set the Elements into ON state from STANDBY state."""
+        """ Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
+        model.Set the Elements into ON state from STANDBY state. """
         exception_count =0
         exception_message = []
         self.logger.info(CONST.STR_STARTUP_CMD_ISSUED)
@@ -495,25 +505,28 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
 
-
         try:
-            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP,
-                                                      [])
+            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP,[])
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
+                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
         try:
             self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count,  CONST.ERR_EXE_STARTUP_CMD)
+                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
 
-
+        try:
+            for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
+                self.subarray_FQDN_dict[subarrayID].command_inout(CONST.CMD_STARTUP)
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, CONST.STR_STARTUP_EXEC)
-
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
+
 
     @command(
         dtype_in='str',
@@ -533,7 +546,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         Assigns resources to given subarray. It accepts the subarray id and
         receptor id list in JSON string format. Upon successful execution, the
         'receptorIDList' attribute of the given subarray is populated with the given
-        receptors.
+        receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throwout
+        error message regarding t he prior existence of resource.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -577,6 +591,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 "receptorIDList_success": ["0001", "0002"]
                 }
                 }
+            Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
         """
         receptorIDList = []
         exception_message = []
@@ -659,13 +674,13 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
 
         """
-        Release all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+        Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
         receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-        is         invoked on the respective subarray. In this case, the receptorIDList tag is empty as all
-        the resources of the Subarray are released.
-        When releaseALL is False, ReleaseResources will be invoked on the Subarray and the resources provided
-        in receptorIDList tag, are released from Subarray. This selective release of the resources when
-        releaseALL is False, will be implemented in the later stages of the prototype.
+        is invoked on the respective SubarrayNode. In this case, the receptorIDList tag is empty as all
+        the resources of the Subarray are to be released.
+        When releaseALL is False, ReleaseResources will be invoked on the SubarrayNode and the resources provided
+        in receptorIDList tag, are to be released from the Subarray. The selective release of the resources when
+        releaseALL Flag is False is not yet supported.
 
         :param argin: The string in JSON format. The JSON contains following values:
 

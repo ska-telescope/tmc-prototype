@@ -56,7 +56,20 @@ class TestSubarrayNode(object):
                   }
     empty = None  # Should be []
 
+    query='''CREATE TABLE `device_restore_flag` (`id` int(11) NOT NULL,`device_name` varchar(120) DEFAULT NULL,
+                                                 `flag` tinyint(1) DEFAULT NULL,
+                                                 PRIMARY KEY (`id`)
+                                                ) '''
+
+    query2='''CREATE TABLE `device_attribute_value` (`id` int(11) NOT NULL,`attribute` varchar(120) NOT NULL,
+                                                    `value` varchar(300) DEFAULT NULL,
+                                  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                   PRIMARY KEY (`id`,`attribute`),
+                 CONSTRAINT `device_attribute_value_ibfk_1` FOREIGN KEY (`id`) REFERENCES `device_restore_flag` (`id`)
+                                                    )'''
+
     @classmethod
+
     def mocking(cls):
         """Mock external libraries."""
         # Example : Mock numpy
@@ -89,6 +102,28 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_DeconfigureCapability) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_DeconfigureCapability
 
+    def test_proc(mysql_proc):
+        """Check first, basic server fixture factory."""
+        assert mysql_proc.running()
+
+
+    def test_mysql_newfixture(mysql, mysql2,query,query2):
+        """More complext test with several mysql_processes."""
+        cursor = mysql.cursor()
+        cursor.execute(query)
+        cursor.execute(query2)
+        mysql.commit()
+        cursor.close()
+
+        cursor = mysql2.cursor()
+        cursor.execute(query)
+        cursor.execute(query2)
+        mysql2.commit()
+        cursor.close()
+
+
+
+
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(SubarrayNode.test_Status) ENABLED START #
@@ -98,7 +133,7 @@ class TestSubarrayNode(object):
     def test_State(self, tango_context):
         """Test for State"""
         # PROTECTED REGION ID(SubarrayNode.test_State) ENABLED START #
-        assert tango_context.device.State() == DevState.OFF
+        assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  SubarrayNode.test_State
 
     def test_healthState(self, tango_context):
@@ -106,6 +141,25 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
         assert tango_context.device.healthState == 1
         # PROTECTED REGION END #    //  SubarrayNode.test_healthState
+
+    def test_AssignResourcesfailure_before_startup(self, tango_context):
+        """Test for AssignResources"""
+        # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
+        receptor_list = ['0001']
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(receptor_list)
+        time.sleep(10)
+        assert tango_context.device.State() == DevState.DISABLE
+        assert tango_context.device.receptorIDList == None
+        # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
+
+    def test_On(self, tango_context):
+        """Test for StartUpTelescope on subarray."""
+        # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
+        tango_context.device.On()
+        assert tango_context.device.adminMode == 0
+        assert tango_context.device.State() == DevState.OFF
+        # PROTECTED REGION END #    //  SubarrayNode.test_On
 
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
@@ -285,6 +339,14 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseResources) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseResources
 
+    def Standby(self, tango_context):
+        """Test for StandbyTelescope on subarray."""
+        # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
+        tango_context.device.Standby()
+        assert tango_context.device.adminMode == 1
+        assert tango_context.device.State() == DevState.DISABLE
+        # PROTECTED REGION END #    //  SubarrayNode.Standby
+
     def test_Reset(self, tango_context):
         """Test for Reset"""
         # PROTECTED REGION ID(SubarrayNode.test_Reset) ENABLED START #
@@ -423,4 +485,6 @@ class TestSubarrayNode(object):
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
         # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+
+
 

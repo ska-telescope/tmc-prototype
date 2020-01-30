@@ -23,6 +23,7 @@ from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 
 # Additional import
+
 # PROTECTED REGION ID(CspMasterLeafNode.additionnal_import) ENABLED START #
 from future.utils import with_metaclass
 import CONST
@@ -286,13 +287,13 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_read) ENABLED START #
-        """ Returns the activityMessage. """
+        """ Internal construct of TANGO. Returns the activityMessage. """
         return self._read_activity_message
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_write) ENABLED START #
-        """ Sets the activityMessage. """
+        """Internal construct of TANGO. Sets the activityMessage. """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_write
 
