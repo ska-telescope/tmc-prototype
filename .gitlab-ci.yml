@@ -295,8 +295,6 @@ unit tests:
   tags:
     - docker-executor
   script:
-    - ls -al /
-    - which python
     - |-
       for path in `ls -d tmcprototype/*/ | grep -v __`; do
         export TMC_ELEMENT=$(basename $path)
