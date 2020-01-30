@@ -304,6 +304,9 @@ unit tests:
           --json-report-file=./build/${TMC_ELEMENT}_htmlcov/reports.json \
           --junitxml=./build/reports/${TMC_ELEMENT}-unit-tests.xml
       done
+  artifacts:
+    paths:
+      - ./build
 
 run tests:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
