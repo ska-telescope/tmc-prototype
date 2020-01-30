@@ -302,7 +302,7 @@ unit tests:
         export TMC_ELEMENT=$(basename $path)
         echo "+++ Running tests for ${TMC_ELEMENT}"
         pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
-          --cov=${TMC_ELEMENT} \
+          --cov=tmcprototype/${TMC_ELEMENT} \
           --json-report-file=/build/${TMC_ELEMENT}_htmlcov/reports.json \
           --junitxml=/build/reports/${TMC_ELEMENT}-unit-tests.xml
       done
