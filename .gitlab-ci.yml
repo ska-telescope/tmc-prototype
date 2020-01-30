@@ -301,7 +301,7 @@ run tests:
     - make test
     - make push
     - make lint
-  retry: 0
+  retry: 2
 
 linting:
   stage: linting
