@@ -379,52 +379,61 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 if dev_name.startswith(CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX):
                     _ = self.subarray_ln_health_state_map.pop(dev_name)
 
+    def _unsubscribe_dish_attribute_events(self):
+        for device_proxy in self._dishLnVsHealthEventID:
+            try:
+                device_proxy.unsubscribe_event(self._dishLnVsHealthEventID[device_proxy])
+            except DevFailed as dev_failed:
+                self.logger.error("Failed to unsubscribe event {}.".format(dev_failed))
+
+        for device_proxy in self._dishLnVsPointingStateEventID:
+            try:
+                device_proxy.unsubscribe_event(self._dishLnVsPointingStateEventID[device_proxy])
+            except DevFailed as dev_failed:
+                self.logger.error("Failed to unsubscribe event {}.".format(dev_failed))
+
     def remove_receptors_in_group(self):
         """
-                Deletes tango group of the resources allocated in the subarray.
+        Deletes tango group of the resources allocated in the subarray.
 
-                Note: Currently there are only receptors allocated so the group contains only receptor ids.
+        Note: Currently there are only receptors allocated so the group contains only receptor ids.
 
-                :param argin:
-                    DevVoid
-                :return:
-                    DevVoid
-                """
-        exception_count = 0
-        exception_message = []
-        try:
-
-            if self._dishLnVsHealthEventID != {} or self._dishLnVsPointingStateEventID != {}:
+        :param argin:
+            DevVoid
+        :return:
+            DevVoid
+        """
+        if self._dishLnVsHealthEventID != {} or self._dishLnVsPointingStateEventID != {}:
+            try:
                 self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
                 self._dish_leaf_node_group.remove_all()
                 self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
-                self._read_activity_message = CONST.STR_GRP_DEF + str(
+            except DevFailed as dev_failed:
+                self.logger.error("Failed to remove receptors from the group. {}".format(dev_failed))
+                return
+
+            self._read_activity_message = CONST.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
-                self.logger.debug(CONST.STR_DISH_PROXY_LIST + str(self._dish_leaf_node_proxy))
-                self.logger.debug(CONST.STR_HEALTH_ID + str(self._health_event_id))
-                self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID))
-                self.logger.debug(CONST.STR_POINTING_STATE_ID + str(self._pointing_state_event_id))
-                self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID +str(self._dishLnVsPointingStateEventID))
-                for dev in self._dishLnVsHealthEventID:
-                    dev.unsubscribe_event(self._dishLnVsHealthEventID[dev])
-                for dev in self._dishLnVsPointingStateEventID:
-                    dev.unsubscribe_event(self._dishLnVsPointingStateEventID[dev])
-                self._dishLnVsHealthEventID = {}
-                self._health_event_id = []
-                self._dishLnVsPointingStateEventID = {}
-                self._remove_subarray_dish_lns_health_states()
-                self.dishPointingStateMap = {}
-                self._pointing_state_event_id = []
-                self._dish_leaf_node_proxy = []
-                del self._receptor_id_list[:]
-                self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
-                self.logger.info(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, CONST.ERR_RELEASE_RES_CMD_GROUP)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, CONST.ERR_RELEASE_RES_CMD)
+            
+            self.logger.debug(CONST.STR_DISH_PROXY_LIST + str(self._dish_leaf_node_proxy))
+            self.logger.debug(CONST.STR_HEALTH_ID + str(self._health_event_id))
+            self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID))
+            self.logger.debug(CONST.STR_POINTING_STATE_ID + str(self._pointing_state_event_id))
+            self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID +str(self._dishLnVsPointingStateEventID))
+
+            self._unsubscribe_dish_attribute_events()
+
+            self._dishLnVsHealthEventID = {}
+            self._health_event_id = []
+            self._dishLnVsPointingStateEventID = {}
+            self._remove_subarray_dish_lns_health_states()
+            self.dishPointingStateMap = {}
+            self._pointing_state_event_id = []
+            self._dish_leaf_node_proxy = []
+            self._receptor_id_list = []
+            self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
+            self.logger.info(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
+
     def release_csp_resources(self):
         """
             This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
@@ -778,54 +787,31 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return: DevVarStringArray.
         Example: "[]" as argout on successful release all resources.
         """
-        self._release_excpt_count = 0
-        self._release_excpt_msg = []
-        argout = []
         try:
             assert self._dishLnVsHealthEventID != {}, CONST.RESRC_ALREADY_RELEASED
-            with self._release_excpt_count is 0 and ThreadPoolExecutor(3) as executor:
-                # 1. Delete the group of receptors
-                self.logger.info(CONST.STR_DISH_RELEASE)
-                dish_release_status = executor.submit(self.remove_receptors_in_group)
-
-                # Release resources from CSP Subarray
-                self.logger.info(CONST.STR_CSP_RELEASE)
-                csp_release_status = executor.submit(self.release_csp_resources)
-
-                # Release resources from SDP Subarray
-                self.logger.info(CONST.STR_SDP_RELEASE)
-                sdp_release_status = executor.submit(self.release_sdp_resources)
-
-                # 2.4 wait for result
-                while (dish_release_status.done() is False or
-                       csp_release_status.done() is False or
-                       sdp_release_status.done() is False
-                      ):
-                    pass
-
-                self._scan_id = ""
-                # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
-                # It will be moved to that command.
-                self._sb_id = ""
-                self.set_state(DevState.OFF)  # Set state = OFF
-                self._obs_state = ObsState.IDLE  # set obsState to "IDLE"
-
         except AssertionError as assert_err:
-            self.logger.error(CONST.ERR_RELEASE_RES_CMD + str(assert_err))
-            self._read_activity_message = CONST.ERR_RELEASE_RES_CMD + str(assert_err)
-            self._release_excpt_msg.append(self._read_activity_message)
-            self._release_excpt_count += 1
+            log_message = CONST.ERR_RELEASE_RES_CMD + str(assert_err)
+            self.logger.error(log_message)
+            self._read_activity_message = log_message
+            return self._dish_leaf_node_group.get_device_list(True)
 
-        # Throw Exception
-        if self._release_excpt_count > 0:
-            err_msg = ''
-            for item in self._release_excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
+        self.logger.info(CONST.STR_DISH_RELEASE)
+        self.remove_receptors_in_group()
+        self.logger.info(CONST.STR_CSP_RELEASE)
+        self.release_csp_resources()
+        self.logger.info(CONST.STR_SDP_RELEASE)
+        self.release_sdp_resources()
 
 
-        argout.extend(self._dish_leaf_node_group.get_device_list(True))
+        self._scan_id = ""
+        # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
+        # It will be moved to that command.
+        self._sb_id = ""
+        self.set_state(DevState.OFF)  # Set state = OFF
+        self._obs_state = ObsState.IDLE  # set obsState to "IDLE"
+
+        argout = self._dish_leaf_node_group.get_device_list(True)
+
         self.logger.debug("Release_all_resources:",argout)
         return argout
 
