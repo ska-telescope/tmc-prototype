@@ -300,7 +300,8 @@ unit tests:
     - which pytest
     - |-
       for path in `ls -d tmcprototype/*/ | grep -v __`; do
-        TMC_ELEMENT=$(basename $path)
+        export TMC_ELEMENT=$(basename $path)
+        echo "+++ Running tests for ${TMC_ELEMENT}"
         pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
           --cov=${TMC_ELEMENT} \
           --json-report-file=/build/${TMC_ELEMENT}_htmlcov/reports.json \
