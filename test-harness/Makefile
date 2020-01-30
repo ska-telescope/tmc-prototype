@@ -92,9 +92,9 @@ test:
 	mv /app/tmcprototype/CentralNode/htmlcov /build/centralnode_htmlcov; \
 
 lint:
-	pip3 install pylint2junit; \
-	pip3 install junitparser; \
+	pip3 install pylint2junit junitparser; \
 	mkdir -p /build/reports; \
+# Code analysis of all the devices/packages using pylint
 	cd /app/tmcprototype && pylint --output-format=parseable DishMaster | tee /build/dish-master-code_analysis.stdout; \
 	cd /app/tmcprototype && pylint --output-format=parseable CspSubarrayLeafNode | tee /build/csp-subarray-leaf-node-code_analysis.stdout; \
 	cd /app/tmcprototype && pylint --output-format=parseable DishLeafNode | tee /build/dish-leaf-node-code_analysis.stdout;
@@ -103,6 +103,7 @@ lint:
 	cd /app/tmcprototype && pylint --output-format=parseable SdpMasterLeafNode | tee /build/sdp-master-leaf-node-code_analysis.stdout; \
 	cd /app/tmcprototype && pylint --output-format=parseable SubarrayNode | tee /build/subarray-node-code_analysis.stdout; \
 	cd /app/tmcprototype && pylint --output-format=parseable CentralNode | tee /build/central-node-code_analysis.stdout; \
+# Generate device-linting.xml files for all the devices/packages
 	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter DishMaster > /build/dish-master-linting.xml; \
 	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter CspSubarrayLeafNode > /build/csp-subarray-leaf-node-linting.xml; \
 	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter DishLeafNode > /build/dish-leaf-node-linting.xml; \
@@ -111,6 +112,7 @@ lint:
 	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter SdpMasterLeafNode > /build/sdp-master-leaf-node-linting.xml; \
 	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter SubarrayNode > /build/subarray-node-linting.xml; \
 	cd /app/tmcprototype && pylint --output-format=pylint2junit.JunitReporter CentralNode > /build/central-node-linting.xml; \
+# Merge device-linting.xml files of all the packages/devices into single linting.xml file
 	junitparser merge /build/dish-master-linting.xml /build/csp-subarray-leaf-node-linting.xml \
 	 /build/dish-leaf-node-linting.xml /build/sdp-subarray-leaf-linting.xml \
 	 /build/csp-master-leaf-node-linting.xml /build/sdp-master-leaf-node-linting.xml \

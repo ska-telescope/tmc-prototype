@@ -190,8 +190,6 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     def _handle_generic_exception(self, read_actvity_msg):
         log_msg = read_actvity_msg + str(Exception)
-        self.logger.debug(log_msg)
-        log_msg = read_actvity_msg + str(Exception)
         self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(Exception)
 
