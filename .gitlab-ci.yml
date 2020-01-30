@@ -295,6 +295,9 @@ unit tests:
   tags:
     - docker-executor
   script:
+    - ls -al /
+    - which python
+    - which pytest
     - |-
       for path in `ls -d tmcprototype/*/ | grep -v __`; do
         TMC_ELEMENT=$(basename $path)
