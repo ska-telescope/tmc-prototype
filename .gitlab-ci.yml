@@ -301,8 +301,8 @@ unit tests:
         echo "+++ Running tests for ${TMC_ELEMENT}"
         pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
           --cov=tmcprototype/${TMC_ELEMENT} \
-          --json-report-file=/build/${TMC_ELEMENT}_htmlcov/reports.json \
-          --junitxml=/build/reports/${TMC_ELEMENT}-unit-tests.xml
+          --json-report-file=./build/${TMC_ELEMENT}_htmlcov/reports.json \
+          --junitxml=./build/reports/${TMC_ELEMENT}-unit-tests.xml
       done
 
 run tests:
