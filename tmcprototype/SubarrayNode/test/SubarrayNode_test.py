@@ -27,7 +27,7 @@ import tango
 from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
-from CONST import HealthState, ObsState
+from CONST import AdminMode, HealthState, ObsState, ObsMode
 from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
 
 
@@ -159,14 +159,14 @@ class TestSubarrayNode(object):
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == 1
+        assert tango_context.device.healthState == HealthState.DEGRADED
         # PROTECTED REGION END #    //  SubarrayNode.test_healthState
 
     def test_On(self, tango_context):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
         tango_context.device.On()
-        assert tango_context.device.adminMode == 0
+        assert tango_context.device.adminMode == AdminMode.ONLINE
         assert tango_context.device.State() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 
@@ -352,7 +352,7 @@ class TestSubarrayNode(object):
         """Test for StandbyTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
         tango_context.device.Standby()
-        assert tango_context.device.adminMode == 1
+        assert tango_context.device.adminMode == AdminMode.OFFLINE
         assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  SubarrayNode.Standby
 
@@ -376,7 +376,7 @@ class TestSubarrayNode(object):
     def test_adminMode(self, tango_context):
         """Test for adminMode"""
         # PROTECTED REGION ID(SubarrayNode.test_adminMode) ENABLED START #
-        assert tango_context.device.adminMode == 0
+        assert tango_context.device.adminMode == AdminMode.ONLINE
         # PROTECTED REGION END #    //  SubarrayNode.test_adminMode
 
     def test_buildState(self, tango_context):
@@ -401,7 +401,7 @@ class TestSubarrayNode(object):
     def test_controlMode(self, tango_context):
         """Test for controlMode"""
         # PROTECTED REGION ID(SubarrayNode.test_controlMode) ENABLED START #
-        control_mode = 0
+        control_mode = tango_context.device.controlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_controlMode
@@ -409,7 +409,7 @@ class TestSubarrayNode(object):
     def test_obsMode(self, tango_context):
         """Test for obsMode"""
         # PROTECTED REGION ID(SubarrayNode.test_obsMode) ENABLED START #
-        assert tango_context.device.obsMode == 0
+        assert tango_context.device.obsMode == ObsMode.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_obsMode
 
     def test_obsState(self, tango_context):
