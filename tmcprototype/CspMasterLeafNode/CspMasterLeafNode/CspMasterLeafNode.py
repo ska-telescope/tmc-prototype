@@ -78,7 +78,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             except Exception as except_occurred:
                 self._handle_generic_exception(CONST.ERR_CSP_CBF_HEALTH_CB)
         else:
-            self.logger.error(CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors))
+            log_msg = CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
             self.logger.error(CONST.ERR_ON_SUBS_CSP_CBF_HEALTH)
 
@@ -110,7 +111,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             except Exception as except_occurred:
                 self._handle_generic_exception(CONST.ERR_CSP_PSS_HEALTH_CB)
         else:
-            self.logger.error(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors))
+            log_msg = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
             self.logger.error(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
 
@@ -142,7 +144,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             except Exception as except_occurred:
                 self._handle_generic_exception(CONST.ERR_CSP_PST_HEALTH_CB)
         else:
-            self.logger.error(CONST.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors))
+            log_msg = CONST.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
             self.logger.error(CONST.ERR_ON_SUBS_CSP_PST_HEALTH)
 
@@ -159,7 +162,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             if event.err:
                 log = CONST.ERR_INVOKING_CMD + event.cmd_name
-                self.logger.error(CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors))
+                log_msg = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
                 self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
             else:
@@ -180,12 +184,13 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     #Exception handling
     def _handle_devfailed_exception(self, df, read_actvity_msg):
-        self.logger.error(read_actvity_msg + str(df))
+        log_msg = read_actvity_msg + str(df)
+        self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(df)
 
     def _handle_generic_exception(self, read_actvity_msg):
-        self.logger.debug(read_actvity_msg + str(Exception))
-        self.logger.error(read_actvity_msg + str(Exception))
+        log_msg = read_actvity_msg + str(Exception)
+        self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(Exception)
 
     # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
@@ -237,10 +242,12 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             self._read_activity_message = CONST.STR_CSPMASTER_FQDN + str(self.CspMasterFQDN)
             # Creating proxy to the CSPMaster
-            self.logger.debug("CSP Master name: " + str(self.CspMasterFQDN))
+            log_msg = "CSP Master name: " + str(self.CspMasterFQDN)
+            self.logger.debug(log_msg)
             self._csp_proxy = DeviceProxy(str(self.CspMasterFQDN))
         except DevFailed as dev_failed:
-            self.logger.error(CONST.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN))
+            log_msg = CONST.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
             self.set_state(DevState.FAULT)
             self._handle_devfailed_exception(dev_failed, CONST.ERR_IN_CREATE_PROXY_CSP_MASTER)
@@ -259,14 +266,16 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.logger.info(CONST.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
 
         except DevFailed as dev_failed:
-            self.logger.error(CONST.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed))
+            log_msg = CONST.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_CSP_MASTER_LEAF_INIT)
             self.logger.error(CONST.ERR_CSP_MASTER_LEAF_INIT)
 
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-        self.logger.debug(CONST.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model()))
+        log_msg = CONST.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+        self.logger.debug(log_msg)
         self._read_activity_message = CONST.STR_SETTING_CB_MODEL + str(
             ApiUtil.instance().get_asynch_cb_sub_model())
         # PROTECTED REGION END #    //  CspMasterLeafNode.init_device

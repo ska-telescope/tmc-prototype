@@ -513,8 +513,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         This command accepts time interval as input. And it Schedule scan on subarray
         from where scan command is invoked on respective CSP and SDP subarray node for the
-        provided interval of time. It checks whether the scan is already in progress. If yes it will
-        throw error showing duplication of command.
+        provided interval of time. It checks whether the scan is already in progress. If yes it
+        throws error showing duplication of command.
 
         :param argin: DevVarStringArray. JSON string containing scan duration.
 
@@ -820,7 +820,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         It checks whether all resources are already released. If yes then it throws error while
         executing command. If not it Releases all the resources from the subarray i.e. Releases
-        resources from TMC Subarray Node, CSP Subarray Node and SDP Subarray Node. If the command
+        resources from TMC Subarray Node, CSP Subarray and SDP Subarray. If the command
         execution fails, array of receptors(device names) which are failed to be released from the
         subarray, is returned to Central Node. Upon successful execution, all the resources of a given
         subarray get released and empty array is returned. Selective release is not yet supported.
@@ -857,7 +857,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
                 self._scan_id = ""
                 # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
-                # It will be moved to that command.
+                # It moves to that command.
                 self._sb_id = ""
                 self.set_state(DevState.OFF)  # Set state = OFF
                 self._obs_state = CONST.OBS_STATE_ENUM_IDLE  # set obsState to "IDLE"
@@ -1440,7 +1440,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def Track(self, argin):
         # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
-        """ Invokes Track command on the resources assigned to the Subarray.
+        """ Invokes Track command on the Dishes assigned to the Subarray.
 
         :param argin: DevString
 
