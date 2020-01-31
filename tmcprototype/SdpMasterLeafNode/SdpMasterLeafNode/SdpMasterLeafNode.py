@@ -252,7 +252,8 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         """
         self._sdp_proxy.command_inout_asynch(CONST.CMD_ON, self.commandCallback)
-        self.logger.debug(CONST.CMD_ON + CONST.STR_COMMAND + CONST.STR_INVOKE_SUCCESS)
+        log_msg = CONST.CMD_ON + CONST.STR_COMMAND + CONST.STR_INVOKE_SUCCESS
+        self.logger.debug(log_msg)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.On
 
     @command(
@@ -306,7 +307,8 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         """
         self._sdp_proxy.command_inout_asynch(CONST.CMD_STANDBY, self.commandCallback)
-        self.logger.debug(CONST.CMD_STANDBY + CONST.STR_COMMAND + CONST.STR_INVOKE_SUCCESS)
+        log_msg = CONST.CMD_STANDBY + CONST.STR_COMMAND + CONST.STR_INVOKE_SUCCESS
+        self.logger.debug(log_msg)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Standby
 
 # ----------
