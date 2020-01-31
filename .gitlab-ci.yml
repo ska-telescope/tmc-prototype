@@ -291,13 +291,13 @@ unit tests:
         echo "+++ Trying tests for ${TMC_ELEMENT}"
         pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
           --cov=tmcprototype/${TMC_ELEMENT} \
-          --json-report-file=./test_results/${TMC_ELEMENT}_htmlcov/reports.json \
+          --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
+          --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
           --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
       done
   artifacts:
     paths:
       - ./test_results
-      - "./test_results/*"
 
 run tests:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
