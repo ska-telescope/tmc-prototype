@@ -37,7 +37,7 @@ def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degrade
         event_subscription_map[csp_master_health_attribute](fake_event)
 
         # assert:
-        assert tango_context.device.telescopeHealthState == False
+        assert tango_context.device.telescopeHealthState == ENUM_DEGRADED
 
 
 @contextlib.contextmanager
