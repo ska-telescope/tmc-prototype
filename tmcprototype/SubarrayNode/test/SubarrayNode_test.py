@@ -56,7 +56,20 @@ class TestSubarrayNode(object):
                   }
     empty = None  # Should be []
 
+    query='''CREATE TABLE `device_restore_flag` (`id` int(11) NOT NULL,`device_name` varchar(120) DEFAULT NULL,
+                                                 `flag` tinyint(1) DEFAULT NULL,
+                                                 PRIMARY KEY (`id`)
+                                                ) '''
+
+    query2='''CREATE TABLE `device_attribute_value` (`id` int(11) NOT NULL,`attribute` varchar(120) NOT NULL,
+                                                    `value` varchar(300) DEFAULT NULL,
+                                  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                   PRIMARY KEY (`id`,`attribute`),
+                 CONSTRAINT `device_attribute_value_ibfk_1` FOREIGN KEY (`id`) REFERENCES `device_restore_flag` (`id`)
+                                                    )'''
+
     @classmethod
+
     def mocking(cls):
         """Mock external libraries."""
         # Example : Mock numpy
@@ -88,6 +101,28 @@ class TestSubarrayNode(object):
         """Test for DeconfigureCapability"""
         # PROTECTED REGION ID(SubarrayNode.test_DeconfigureCapability) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_DeconfigureCapability
+
+    def test_proc(mysql_proc):
+        """Check first, basic server fixture factory."""
+        assert mysql_proc.running()
+
+
+    def test_mysql_newfixture(mysql, mysql2,query,query2):
+        """More complext test with several mysql_processes."""
+        cursor = mysql.cursor()
+        cursor.execute(query)
+        cursor.execute(query2)
+        mysql.commit()
+        cursor.close()
+
+        cursor = mysql2.cursor()
+        cursor.execute(query)
+        cursor.execute(query2)
+        mysql2.commit()
+        cursor.close()
+
+
+
 
     def test_Status(self, tango_context):
         """Test for Status"""
@@ -450,4 +485,6 @@ class TestSubarrayNode(object):
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
         # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+
+
 

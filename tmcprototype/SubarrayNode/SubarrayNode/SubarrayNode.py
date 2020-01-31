@@ -28,10 +28,12 @@ import random
 import string
 from concurrent.futures import ThreadPoolExecutor
 import json
+import mysql.connector
+
 
 # Tango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
+from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType, Database
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from future.utils import with_metaclass
 
@@ -42,12 +44,18 @@ from skabase.SKASubarray.SKASubarray import SKASubarray
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 __all__ = ["SubarrayNode", "main"]
+
+
+
+
+
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
     """
-    # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
+    # PROTECTED REGION IDhande
+    # (SubarrayNode.class_variable) ENABLED START #
     def healthStateCallback(self, evt):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray health state, aggregates them
@@ -149,6 +157,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt))
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
             self.logger.critical(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
+            self._obs_state = CONST.OBS_STATE_ENUM_IDLE
 
     def calculate_health_state(self):
         """
@@ -232,6 +241,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                     self._obs_state = CONST.OBS_STATE_ENUM_CONFIGURING
                 else:
                     self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+        # call store method
+        self.logger.info("In calculate observation state method: Storing data in database after assigning resources.")
+        self.storeinmysql()
+
     def create_csp_ln_proxy(self):
         """
         Creates proxy of CSP Subarray Leaf Node.
@@ -317,7 +330,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._pointing_state_event_id.append(self._event_id)
                 self.dishPointingStateMap[devProxy] = -1
                 self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID))
-                self._receptor_id_list.append(int(str_leafId))
+                # TODO:
+                if int(str_leafId) in self._receptor_id_list:
+                    self.logger.debug("Dish already present")
+                else:
+                    self._receptor_id_list.append(int(str_leafId))
+
                 self._read_activity_message = CONST.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
                 self._read_activity_message = CONST.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
@@ -440,7 +458,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         exception_count = 0
         exception_message = []
         try:
-
             if self._dishLnVsHealthEventID != {} or self._dishLnVsPointingStateEventID != {}:
                 self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
                 self._dish_leaf_node_group.remove_all()
@@ -737,8 +754,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         exception_count = 0
         exception_message = []
+        cursor=self.get_cursor()
+        cursor.execute("""update device_restore_flag set flag=0 where id=%s""", self.subarray_id)
+        self.connection.commit()
 
-        # 1. Argument validation
         try:
             # Allocation success and failure lists
             for leafId in range(0, len(argin)):
@@ -766,7 +785,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.info(CONST.STR_SDP_ALLOCATION)
             dummy_sdp_resources = ["PB1", "PB2"]
             sdp_allocation_status = executor.submit(self.assign_sdp_resources, dummy_sdp_resources)
-
+            # call store method
             # 2.4 wait for result
             while (dish_allocation_status.done() is False or
                    csp_allocation_status.done() is False or
@@ -803,6 +822,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 #TODO: Need to add code to revert allocated resources
                 argout = []
         # return dish_allocation_result
+        self.storeinmysql()
         self.logger.debug("assign_resource_argout",argout)
         return argout
 
@@ -834,7 +854,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._release_excpt_msg = []
         argout = []
         try:
-            assert self._dishLnVsHealthEventID != {}, CONST.RESRC_ALREADY_RELEASED
+            # assert self._dishLnVsHealthEventID != {}, CONST.RESRC_ALREADY_RELEASED
             with self._release_excpt_count is 0 and ThreadPoolExecutor(3) as executor:
                 # 1. Delete the group of receptors
                 self.logger.info(CONST.STR_DISH_RELEASE)
@@ -878,6 +898,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
 
         argout.extend(self._dish_leaf_node_group.get_device_list(True))
+        cursor=self.get_cursor()
+        self.storeinmysql()
+        cursor.execute("""update device_restore_flag set flag=1 where id=%s""", self.subarray_id)
+        self.connection.commit()
         self.logger.debug("Release_all_resources:",argout)
         return argout
 
@@ -1030,6 +1054,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     scanID = attribute(
         dtype='str',
+        access=AttrWriteType.READ_WRITE,
         doc="ID of ongoing SCAN",
     )
 
@@ -1050,6 +1075,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         doc="ID List of the Receptors assigned in the Subarray",
     )
 
+    testmemattr = attribute(
+        dtype='str',
+        access=AttrWriteType.READ_WRITE,
+        memorized=True,
+        hw_memorized=True,
+    )
+
+    memflag = attribute(
+        dtype='str',
+        access=AttrWriteType.READ_WRITE,
+        memorized=True,
+        hw_memorized=True,
+    )
     # ---------------
     # General methods
     # ---------------
@@ -1062,8 +1100,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
-        self.set_state(DevState.INIT)
-        self.set_status(CONST.STR_SA_INIT)
         self.SkaLevel = 2                        # set SKALevel to "2"
         self._admin_mode = CONST.ENUM_OFFLINE    # set adminMode to "OFFLINE"
         self._health_state = CONST.ENUM_OK       # set health state to "OK"
@@ -1071,9 +1107,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._obs_mode = CONST.ENUM_IDLE        # set obsMode to "IDLE"
         self._simulation_mode = False
         self.isScanning = False
-        self._scan_id = ""
         self._sb_id = ""
-        self._receptor_id_list = []
         self.dishHealthStateMap = {}
         self.dishPointingStateMap = {}
         self._dish_leaf_node_group = tango.Group(CONST.GRP_DISH_LEAF_NODE)
@@ -1083,14 +1117,21 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._dishLnVsHealthEventID = {}
         self._dishLnVsPointingStateEventID = {}
         self.subarray_ln_health_state_map = {}  # Dictionary containing health states of CSP SA LN and
-                                                # SDP SA LN
-        self._subarray_health_state = CONST.ENUM_OK  #Aggregated Subarray Health State
+        # SDP SA LN
+        self._subarray_health_state = CONST.ENUM_OK  # Aggregated Subarray Health State
         self._csp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
         self._sdp_sa_obs_state = CONST.OBS_STATE_ENUM_IDLE
         self.only_dishconfi_flag = False
         self._endscan_stop = False
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
-
+        self.subarray_name = (str(self.get_name()),)
+        self.connection = self.init_db()
+        restore_flag = self.get_restore_flag()
+        if restore_flag == 0:
+            self.restorefromsql()
+        else:
+            self.logger.info("Subarray initialsed with normal value")
+            self._receptor_id_list = []
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
@@ -1136,23 +1177,26 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._read_activity_message = CONST.STR_SA_INIT_SUCCESS
         self.set_status(CONST.STR_SA_INIT_SUCCESS)
         self.logger.info(CONST.STR_SA_INIT_SUCCESS)
-
-        if(_state_fault_flag == True):
-            self.set_state(DevState.FAULT)           # Set state = FAULT
-        else:
-            self.set_state(DevState.DISABLE)         # Set state = DISABLE
-
+        if restore_flag == 1:
+            if(_state_fault_flag == True):
+                self.set_state(DevState.FAULT)           # Set state = FAULT
+            else:
+                self.set_state(DevState.DISABLE)         # Set state = DISABLE
+        # call storeinmysql method to store values in database
+        self.storeinmysql()
         # PROTECTED REGION END #    //  SubarrayNode.init_device
 
 
     def always_executed_hook(self):
         """ Internal construct of TANGO. """
         # PROTECTED REGION ID(SubarrayNode.always_executed_hook) ENABLED START #
+        pass
         # PROTECTED REGION END #    //  SubarrayNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(SubarrayNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
+        pass
         # PROTECTED REGION END #    //  SubarrayNode.delete_device
 
     # ------------------
@@ -1168,7 +1212,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
         self.logger.debug("read_scanID",self._scan_id)
         return self._scan_id
+
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
+
+    def write_scanID(self, value):
+        """ Sets the scanID. """
+        # PROTECTED REGION ID(SubarrayNode.scanID_write) ENABLED START #
+        self._scan_id = value
+        # PROTECTED REGION END #    //  SubarrayNode.scanID_write
 
     def read_sbID(self):
         """ Internal construct of TANGO. Returns the scheduling block ID. """
@@ -1197,6 +1248,27 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
         return self._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
+
+    def read_testmemattr(self):
+        # PROTECTED REGION ID(Test.testmemattr_read) ENABLED START #
+        return self._testmemattr
+        # PROTECTED REGION END #    //  Test.testmemattr_read
+
+    def write_testmemattr(self, value):
+        # PROTECTED REGION ID(Test.testmemattr_write) ENABLED START #
+        self._testmemattr = value
+        # PROTECTED REGION END #    //  Test.testmemattr_write
+
+    def read_memflag(self):
+        # PROTECTED REGION ID(Test.memflag_read) ENABLED START #
+        return self._memflag
+        # PROTECTED REGION END #    //  Test.memflag_read
+
+    def write_memflag(self, value):
+        # PROTECTED REGION ID(Test.memflag_write) ENABLED START #
+        self._memflag = value
+        # PROTECTED REGION END #    //  Test.memflag_write
+
 
     # --------
     # Commands
@@ -1517,6 +1589,109 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._admin_mode = CONST.ENUM_OFFLINE  # set adminMode to "OFFLINE"
         self.set_state(DevState.DISABLE)  # Set state = DISABLED
         # PROTECTED REGION END #    //  SubarrayNode.Standby
+
+
+
+    def init_db(self):
+        '''
+        Iniialises connection with database
+        '''
+        # self.logger.info(os.environ['MYSQL_HOST'])
+        # connection = mysql.connector.connect(
+        #     host=os.environ['MYSQL_HOST'],
+        #     user=os.environ['MYSQL_USER'],
+        #     passwd=os.environ['MYSQL_PASSWORD'],
+        #     database=os.environ['MYSQL_DATABASE'],
+        #     connect_timeout=60000
+        #     )
+        connection = mysql.connector.connect(
+            host="tmc-db",
+            user="tango",
+            passwd="tango",
+            database="tmc_recoverability"#,
+            # connect_timeout=60000
+        )
+        self.logger.info("Database connection is successful.")
+        return connection
+
+
+    def get_cursor(self):
+        try:
+            self.connection.ping(reconnect=True, attempts=3, delay=5)
+        except mysql.connector.Error as err:
+            # reconnect your cursor as you did in __init__ or wherever
+            self.connection = self.init_db()
+        return self.connection.cursor()
+
+    def get_restore_flag(self):
+        cursor = self.get_cursor()
+        cursor.execute("""select id from device_restore_flag where device_name=%s""", (self.subarray_name))
+        self.subarray_id = (cursor.fetchone()[0],)
+        self.logger.info("subarray id is" + str(self.subarray_id))
+        cursor.execute("""select flag from device_restore_flag where id=%s """, (self.subarray_id))
+        restore_flag = cursor.fetchone()[0]
+        self.logger.info("Restore flag value is:- " + str(restore_flag))
+        return restore_flag
+
+    def storeinmysql(self):
+        '''
+        stores current value of state,obsState and receptor_id list in mysql database
+        '''
+        cursor = self.get_cursor()
+        curr_state = str(self.get_state())
+        query = "update device_attribute_value set value= %s where id=%s and attribute='state'"
+        sql_state = (curr_state, self.subarray_id[0],)
+        cursor.execute(query, sql_state)
+        self.connection.commit()
+        self.logger.info("state is stored in database as:- " + str(curr_state))
+        query = "update device_attribute_value set value= %s where id=%s and attribute='receptor_id'"
+        rec_id_json=json.dumps(self._receptor_id_list)
+        sql_receptor_id = (rec_id_json, self.subarray_id[0],)
+        cursor.execute(query, sql_receptor_id)
+        self.connection.commit()
+        self.logger.info("receptor_id is stored in database as:- " + str(self._receptor_id_list))
+        query ="update device_attribute_value set value= %s where id=%s and attribute='obs_state'"
+        sql_obsState = (self._obs_state, self.subarray_id[0],)
+        cursor.execute(query,sql_obsState)
+        self.connection.commit()
+        self.logger.info("obs_state stored in database as:- " + str(self._obs_state))
+
+    def restorefromsql(self):
+        '''
+        restores values of state,obsState and receptor_id list from mysql database and assign it to current state,
+        obsState and receptor_id list
+        '''
+        self._read_activity_message = str("Restoring attribute values from database")
+        self.logger.info("Restoring attribute values from database")
+        cursor = self.get_cursor()
+        cursor.execute("""select value from device_attribute_value where id=%s and attribute='state'""",
+                              self.subarray_id)
+        sql_state =cursor.fetchone()[0]
+        self.logger.info("after restoring state: " + str(sql_state))
+        if sql_state == 'ON':
+            self.set_state(DevState.ON)
+        elif sql_state == 'OFF':
+            self.set_state(DevState.OFF)
+        elif sql_state == 'DISABLE':
+            self.set_state(DevState.DISABLE)
+        cursor.execute("""select value from device_attribute_value where id=%s and attribute='obs_state'""",
+                               self.subarray_id)
+        sql_obsState =cursor.fetchone()[0]
+        self._obs_state = sql_obsState
+        self.logger.info("after restoring obs state : " + str(sql_obsState))
+        cursor.execute("""select value from device_attribute_value where id=%s and attribute='receptor_id'""",
+                              self.subarray_id)
+        sql_receptor_id = cursor.fetchone()[0]
+        self._receptor_id_list = json.loads(sql_receptor_id)
+        self.logger.info("after restoring  rec id:" + str(self._receptor_id_list))
+        # To update  DICTIONARIES in add_receptors_in_group method
+        if len(self._receptor_id_list) > 0:
+            receptor_list = []
+            for id in self._receptor_id_list:
+                receptor_list.append(str('000') + str(id))
+            with ThreadPoolExecutor(1) as executor:
+                dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
+
 # ----------
 # Run server
 # ----------

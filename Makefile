@@ -84,11 +84,12 @@ TANGO_HOST := $(CONTAINER_NAME_PREFIX)databaseds:10000
 MYSQL_HOST := $(CONTAINER_NAME_PREFIX)tangodb:3306
 endif
 
-
+TMC_MYSQL_HOST := tmc-db
 DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(TANGO_HOST) \
 		NETWORK_MODE=$(NETWORK_MODE) XAUTHORITY_MOUNT=$(XAUTHORITY_MOUNT) MYSQL_HOST=$(MYSQL_HOST) \
 		DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
-		CONTAINER_NAME_PREFIX=$(CONTAINER_NAME_PREFIX) COMPOSE_IGNORE_ORPHANS=true
+		CONTAINER_NAME_PREFIX=$(CONTAINER_NAME_PREFIX) COMPOSE_IGNORE_ORPHANS=true \
+		TMC_MYSQL_HOST=$(TMC_MYSQL_HOST)
 
 #
 # Defines a default make target so that help is printed if make is called
@@ -110,6 +111,7 @@ DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(
 make = tar -c test-harness/ | \
 	   docker run -i --rm --network=$(NETWORK_MODE) \
 	   -e TANGO_HOST=$(TANGO_HOST) \
+	   -e MYSQL_HOST=$(TMC_MYSQL_HOST) \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "sudo chown -R tango:tango /build && \
@@ -151,6 +153,7 @@ endif
 	-f docker-compose/tmc-docker-compose.yml \
 	-f docker-compose/archiver-docker-compose.yml \
 	-f docker-compose/jive.yml \
+	-f docker-compose/tmcdb-docker-compose.yml \
 	up -d
 
 piplock: build  ## overwrite Pipfile.lock with the image version
@@ -171,6 +174,7 @@ down:  ## stop develop/test environment and any interactive session
 	-f docker-compose/tmc-docker-compose.yml \
 	-f docker-compose/archiver-docker-compose.yml \
 	-f docker-compose/jive.yml \
+	-f docker-compose/tmcdb-docker-compose.yml \
 	 down
 ifneq ($(NETWORK_MODE),host)
 	docker network inspect $(NETWORK_MODE) &> /dev/null && ([ $$? -eq 0 ] && docker network rm $(NETWORK_MODE)) || true

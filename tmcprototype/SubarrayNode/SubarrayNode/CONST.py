@@ -185,3 +185,9 @@ STR_KEY_PB_ID_LIST = "processingBlockIdList"
 PROP_DEF_VAL_TMCSP_MID_SALN = "ska_mid/tm_leaf_node/csp_subarray"
 PROP_DEF_VAL_TMSDP_MID_SALN = "ska_mid/tm_leaf_node/sdp_subarray"
 PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
+
+#mysql connection
+MYSQL_HOSTNAME="staterecover-tmc-proto-test"
+MYSQL_USER="tango"
+MYSQL_PASSWORD="tango"
+MYSQL_DB_NAME="tmc_recoverability"
