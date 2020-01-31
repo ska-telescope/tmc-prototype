@@ -295,14 +295,18 @@ unit tests:
   tags:
     - docker-executor
   script:
+    - pwd
+    - ls -al .
+    - ls -al ./build
     - |-
       for path in `ls -d tmcprototype/*/ | grep -v __`; do
+        pwd
         export TMC_ELEMENT=$(basename $path)
         echo "+++ Running tests for ${TMC_ELEMENT}"
         pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
           --cov=tmcprototype/${TMC_ELEMENT} \
           --json-report-file=./build/${TMC_ELEMENT}_htmlcov/reports.json \
-          --junitxml=./build/reports/${TMC_ELEMENT}-unit-tests.xml
+          --junitxml=./build/${TMC_ELEMENT}-unit-tests.xml
       done
 
 run tests:
