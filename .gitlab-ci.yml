@@ -297,10 +297,10 @@ unit tests:
   script:
     - mkdir test_results
     - |-
-      for path in `ls -d tmcprototype/*/ | grep -v __`; do
-        export TMC_ELEMENT=$(basename $path)
+      for path in `find ./tmcprototype/*/test  -type d -name unit`; do
+        export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
         echo "+++ Trying tests for ${TMC_ELEMENT}"
-        [ -d "tmcprototype/${TMC_ELEMENT}/test/unit" ] && pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
+        pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
           --cov=tmcprototype/${TMC_ELEMENT} \
           --json-report-file=./test_results/${TMC_ELEMENT}_htmlcov/reports.json \
           --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
