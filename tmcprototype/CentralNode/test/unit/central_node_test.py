@@ -1,5 +1,6 @@
 import collections
 import importlib
+import sys
 from unittest import mock
 from unittest.mock import MagicMock, Mock
 
@@ -35,6 +36,8 @@ def test_telescope_health_state_is_degraded_when_any_subdevice_is_degraded_after
 
     patched_constructor.return_value = device_proxy_mock
 
+    patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+    device_under_test = getattr(patched_module, device_under_test.__name__)
     tango_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
 
     tango_context.start()
