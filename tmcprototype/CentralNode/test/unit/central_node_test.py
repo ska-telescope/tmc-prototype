@@ -7,11 +7,12 @@ import pytest
 import tango
 from tango.test_context import DeviceTestContext
 
+from CONST import ENUM_DEGRADED, ENUM_OK
 
 @pytest.mark.parametrize(
     'subdevice_fqdn_prop_name,subdevice_fqdn_prop_value,subdevice_health_state_attribute,subdevice_health_state_value,expected_telescope_health_state',
     [
-        ('CspMasterLeafNodeFQDN', 'mid/csp_elt/master', 'cspHealthState', 1, 1)
+        ('CspMasterLeafNodeFQDN', 'mid/csp_elt/master', 'cspHealthState', ENUM_DEGRADED, ENUM_DEGRADED)
     ]
 )
 def test_telescope_health_state_is_degraded_when_any_subdevice_is_degraded_after_start(subdevice_fqdn_prop_name,
