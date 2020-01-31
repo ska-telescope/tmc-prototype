@@ -381,7 +381,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     def _unsubscribe_resource_events(self, proxy_event_id_map):
         """
-        This function unsubscribes all events given by the event ids and and their
+        This function unsubscribes all events given by the event ids and their
         corresponding DeviceProxy objects.
 
         :param proxy_event_id_map: dict
@@ -390,9 +390,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return: None
 
         """
-        for device_proxy in proxy_event_id_map:
+        for device_proxy, event_id in proxy_event_id_map.items():
             try:
-                device_proxy.unsubscribe_event(proxy_event_id_map[device_proxy])
+                device_proxy.unsubscribe_event(event_id)
             except DevFailed as dev_failed:
                 log_message = "Failed to unsubscribe event {}.".format(dev_failed)
                 self.logger.error(log_message )
