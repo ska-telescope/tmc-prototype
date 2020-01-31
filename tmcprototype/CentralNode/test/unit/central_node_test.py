@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, Mock
 import pytest
 import tango
 from CONST import ENUM_DEGRADED
+from CentralNode import CentralNode
 from tango.test_context import DeviceTestContext
 
 
@@ -22,7 +23,7 @@ def test_telescope_health_state_is_degraded_when_any_subdevice_is_degraded_after
                                                                                        subdevice_health_state_value,
                                                                                        expected_telescope_health_state):
     # arrange:
-    device_under_test = importlib.import_module("CentralNode", "tmcprototype").CentralNode
+    device_under_test = CentralNode
     initial_dut_properties = {
         subdevice_fqdn_prop_name: subdevice_fqdn_prop_value
     }
@@ -45,7 +46,6 @@ def test_telescope_health_state_is_degraded_when_any_subdevice_is_degraded_after
 
 def fake_tango_system(device_under_test, dependent_device_proxy_mock, initial_dut_properties={},
                       device_proxy_import_path='tango.DeviceProxy'):
-
     with mock.patch(device_proxy_import_path) as patched_constructor:
         patched_constructor.return_value = dependent_device_proxy_mock
         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
@@ -60,7 +60,7 @@ def _prepare_event_system(mocked_device_proxy, attribute_to_mock):
         attribute_to_mock: None,
     }
 
-    def fake_subscribe_event(attribute_name, event_type, callback_fn, *args, **kwargs):
+    def fake_subscribe_event(attribute_name, callback_fn):
         events[attribute_name] = callback_fn
 
     mocked_device_proxy.subscribe_event.side_effect = fake_subscribe_event
