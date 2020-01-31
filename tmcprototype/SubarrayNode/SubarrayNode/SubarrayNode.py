@@ -63,7 +63,7 @@ class SubarrayHealthState:
             return HealthState.OK
         elif HealthState.FAILED in unique_states:
             return HealthState.FAILED
-        elif  HealthState.DEGRADED in unique_states:
+        elif HealthState.DEGRADED in unique_states:
             return HealthState.DEGRADED
         else:
             return HealthState.UNKNOWN
