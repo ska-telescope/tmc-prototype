@@ -24,9 +24,11 @@ def test_telescope_health_state_is_degraded_when_any_subdevice_is_degraded_after
     device_proxy_mock = Mock()
     event_system = _prepare_event_system(device_proxy_mock, subdevice_health_state_attribute)
 
-    with mock.patch('tango.DeviceProxy') as patched_constructor:
-        patched_constructor.return_value = device_proxy_mock
-        klass = importlib.import_module("CentralNode", "tmcprototype").CentralNode
+    patcher = mock.patch('tango.DeviceProxy')
+    patched_constructor = patcher.start()
+
+    patched_constructor.return_value = device_proxy_mock
+    klass = importlib.import_module("CentralNode", "tmcprototype").CentralNode
 
     tango_context = DeviceTestContext(klass, properties={
         subdevice_fqdn_prop_name: subdevice_fqdn_prop_value
@@ -41,6 +43,7 @@ def test_telescope_health_state_is_degraded_when_any_subdevice_is_degraded_after
     # assert:
     assert tango_context.device.telescopeHealthState == expected_telescope_health_state
     tango_context.stop()
+    patcher.stop()
 
 
 def _prepare_event_system(mocked_device_proxy, attribute_to_mock):
