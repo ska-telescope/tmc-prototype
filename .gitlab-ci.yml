@@ -49,12 +49,12 @@ build CentralNode wheel for publication: # Executed on a tag
     paths:
       - ./tmcprototype/CentralNode/dist/
 
-build Nodes wheel for development: # Executed on a commit
+build all wheels for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - find ./tmcprototype -name setup.py  -execdir python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel \;
+    - find ./tmcprototype -name setup.py  -execdir python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel \;
   except:
     - tags
   artifacts:
