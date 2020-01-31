@@ -379,18 +379,24 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 if dev_name.startswith(CONST.PROP_DEF_VAL_LEAF_NODE_PREFIX):
                     _ = self.subarray_ln_health_state_map.pop(dev_name)
 
-    def _unsubscribe_dish_attribute_events(self):
-        for device_proxy in self._dishLnVsHealthEventID:
-            try:
-                device_proxy.unsubscribe_event(self._dishLnVsHealthEventID[device_proxy])
-            except DevFailed as dev_failed:
-                self.logger.error("Failed to unsubscribe event {}.".format(dev_failed))
+    def _unsubscribe_resource_events(self, proxy_event_id_map):
+        """
+        This function unsubscribes all events given by the event ids and and their
+        corresponding DeviceProxy objects.
 
-        for device_proxy in self._dishLnVsPointingStateEventID:
+        :param proxy_event_id_map: dict
+            A mapping of '<DeviceProxy>': <event_id>.
+
+        :return: None
+
+        """
+        for device_proxy in proxy_event_id_map:
             try:
-                device_proxy.unsubscribe_event(self._dishLnVsPointingStateEventID[device_proxy])
+                device_proxy.unsubscribe_event(proxy_event_id_map[device_proxy])
             except DevFailed as dev_failed:
-                self.logger.error("Failed to unsubscribe event {}.".format(dev_failed))
+                log_message = "Failed to unsubscribe event {}.".format(dev_failed)
+                self.logger.error(log_message )
+                self._read_activity_message = log_message
 
     def remove_receptors_in_group(self):
         """
@@ -403,36 +409,40 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         :return:
             DevVoid
         """
-        if self._dishLnVsHealthEventID != {} or self._dishLnVsPointingStateEventID != {}:
-            try:
-                self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
-                self._dish_leaf_node_group.remove_all()
-                self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
-            except DevFailed as dev_failed:
-                self.logger.error("Failed to remove receptors from the group. {}".format(dev_failed))
-                return
+        if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
+            return
+        
+        try:
+            self.logger.debug(CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
+            self._dish_leaf_node_group.remove_all()
+            log_message = CONST.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
+            self.logger.debug(log_message)
+            self._read_activity_message = log_message
+        except DevFailed as dev_failed:
+            log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
+            self.logger.error(log_message)
+            self._read_activity_message = log_message
+            return
 
-            self._read_activity_message = CONST.STR_GRP_DEF + str(
-                    self._dish_leaf_node_group.get_device_list(True))
-            
-            self.logger.debug(CONST.STR_DISH_PROXY_LIST + str(self._dish_leaf_node_proxy))
-            self.logger.debug(CONST.STR_HEALTH_ID + str(self._health_event_id))
-            self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID))
-            self.logger.debug(CONST.STR_POINTING_STATE_ID + str(self._pointing_state_event_id))
-            self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID +str(self._dishLnVsPointingStateEventID))
+        self.logger.debug(CONST.STR_DISH_PROXY_LIST + str(self._dish_leaf_node_proxy))
+        self.logger.debug(CONST.STR_HEALTH_ID + str(self._health_event_id))
+        self.logger.debug(CONST.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID))
+        self.logger.debug(CONST.STR_POINTING_STATE_ID + str(self._pointing_state_event_id))
+        self.logger.debug(CONST.STR_DISH_LN_VS_POINTING_STATE_EVT_ID +str(self._dishLnVsPointingStateEventID))
 
-            self._unsubscribe_dish_attribute_events()
+        self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
+        self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
 
-            self._dishLnVsHealthEventID = {}
-            self._health_event_id = []
-            self._dishLnVsPointingStateEventID = {}
-            self._remove_subarray_dish_lns_health_states()
-            self.dishPointingStateMap = {}
-            self._pointing_state_event_id = []
-            self._dish_leaf_node_proxy = []
-            self._receptor_id_list = []
-            self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
-            self.logger.info(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
+        self._dishLnVsHealthEventID = {}
+        self._health_event_id = []
+        self._dishLnVsPointingStateEventID = {}
+        self._remove_subarray_dish_lns_health_states()
+        self.dishPointingStateMap = {}
+        self._pointing_state_event_id = []
+        self._dish_leaf_node_proxy = []
+        self._receptor_id_list = []
+        self.set_status(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
+        self.logger.info(CONST.STR_RECEPTORS_REMOVE_SUCCESS)
 
     def release_csp_resources(self):
         """
