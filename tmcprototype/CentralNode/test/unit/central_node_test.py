@@ -45,13 +45,12 @@ def test_telescope_health_state_is_degraded_when_any_subdevice_is_degraded_after
 
 def fake_tango_system(device_under_test, dependent_device_proxy_mock, initial_dut_properties={},
                       device_proxy_import_path='tango.DeviceProxy'):
-    patcher = mock.patch(device_proxy_import_path)
-    patched_constructor = patcher.start()
 
-    patched_constructor.return_value = dependent_device_proxy_mock
-    patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+    with mock.patch(device_proxy_import_path) as patched_constructor:
+        patched_constructor.return_value = dependent_device_proxy_mock
+        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+
     device_under_test = getattr(patched_module, device_under_test.__name__)
-    patcher.stop()
 
     return DeviceTestContext(device_under_test, properties=initial_dut_properties)
 
