@@ -135,7 +135,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         This method calculates geometric delay values (in Second) using KATPoint library. It requires delay
         correction object, timestamp t0 and target RaDec.
-        Scipy library is used to convert delay values (in Seconds) to a fifth order polynomial coefficients.
+        Numpy library is used to convert delay values (in Seconds) to fifth order polynomial coefficients.
         Six timestamps from the time-frame t0 to t+10, are used to calculate delays per antenna. These six
         delay values are then used to calculate fifth order polynomial coefficients.
         In order to calculate delays in advance, timestamp t0 is considered to be one minute ahead of the
@@ -309,7 +309,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 delay_model.append(delay_model_per_epoch)
                 delay_model_json["delayModel"] = delay_model
                 print("delay_model_json: ", delay_model_json)
-                self.logger.debug("delay_model_json: " + str(delay_model_json))
+                log_msg = "delay_model_json: " + str(delay_model_json)
+                self.logger.debug(log_msg)
                 # update the attribute
                 self.delay_model_lock.acquire()
                 self._delay_model = json.dumps(delay_model_json)
@@ -324,7 +325,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     # Function for handling all Devfailed exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
-        self.logger.error(read_actvity_msg + str(df))
+        log_msg = read_actvity_msg + str(df)
+        self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(df)
         except_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -332,7 +334,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     # Function for handling all generic exception
     def _handle_generic_exception(self, exception, except_msg_list, exception_count,read_actvity_msg ):
-        self.logger.error(read_actvity_msg + str(exception))
+        log_msg = read_actvity_msg + str(exception)
+        self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(exception)
         except_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -528,7 +531,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.logger.debug(argin)
 
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error))
+            log_msg = CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -714,13 +718,15 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.logger.info(CONST.STR_ADD_RECEPTORS_SUCCESS)
 
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error))
+            log_msg = CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except KeyError as key_error:
-            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1

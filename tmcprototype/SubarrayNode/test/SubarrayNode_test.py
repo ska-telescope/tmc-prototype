@@ -162,6 +162,17 @@ class TestSubarrayNode(object):
         assert tango_context.device.healthState == HealthState.DEGRADED
         # PROTECTED REGION END #    //  SubarrayNode.test_healthState
 
+    def test_AssignResourcesfailure_before_startup(self, tango_context):
+        """Test for AssignResources"""
+        # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
+        receptor_list = ['0001']
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(receptor_list)
+        time.sleep(10)
+        assert tango_context.device.State() == DevState.DISABLE
+        assert tango_context.device.receptorIDList == None
+        # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
+
     def test_On(self, tango_context):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #

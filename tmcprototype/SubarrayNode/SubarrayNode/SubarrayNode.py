@@ -220,7 +220,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     def add_receptors_in_group(self, argin):
         """
-        Creates tango group of the resources allocated in the subarray.
+        Creates a tango group of the successfully allocated resources in the subarray.
+        Device proxy for each of the resources is created. The healthState and pointintgState attributes
+        from all the devices in the group are subscribed so that the changes in the respective device are
+        received at Subarray Node.
+
 
         Note: Currently there are only receptors allocated so the group contains only receptor ids.
 
@@ -306,7 +310,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     def assign_csp_resources(self, argin):
         """
-        This function invokes the assign resources command on the CSP Subarray Leaf Node.
+        This function accepts the receptor IDs list as input and invokes the assign resources command on
+        the CSP Subarray Leaf Node.
 
         :param argin: List of strings
             Contains the list of strings that has the resources ids. Currently this list contains only
@@ -342,8 +347,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     def assign_sdp_resources(self, argin):
         """
-        This function assigns SDP resources to SDP Subarray through SDP Subarray Leaf
-        Node.
+        This function accepts the receptor ID list as input and assigns SDP resources to SDP Subarray
+        through SDP Subarray Leaf Node.
 
         :param argin: List of strings
             Contains the list of strings that has the resources ids. Currently
@@ -483,8 +488,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def Scan(self, argin):
         """
-        Schedules a scan for execution on a subarray. Subarray transitions to
-        obsState = SCANNING, when the execution of a scan starts.
+        This command accepts time interval as input. And it Schedule scan on subarray
+        from where scan command is invoked on respective CSP and SDP subarray node for the
+        provided interval of time. It checks whether the scan is already in progress. If yes it
+        throws error showing duplication of command.
 
         :param argin: DevVarStringArray. JSON string containing scan duration.
 
@@ -611,8 +618,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     )
     @DebugIt()
     def EndScan(self):
-        """ Ends the scan. It is invoked on completion of the scan duration. It can be invoked by an
-        external client while a scan is in progress.
+        """ Ends the scan. It is invoked on subarray after completion of the scan duration. It can
+        also be invoked by an external client while a scan is in progress, Which stops the scan
+        immediately irrespective of the provided scan duration.
 
         :param argin: DevVoid.
 
@@ -787,10 +795,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def ReleaseAllResources(self):
         """
-        Releases all the resources from the subarray. If the command execution fails, array of receptors
-        (device names) which are failed to be realeased from the subarray, is returned to Central Node.
-        Upon successful execution, all the resources of a given subarray get released and empty array
-        is returned.
+        It checks whether all resources are already released. If yes then it throws error while
+        executing command. If not it Releases all the resources from the subarray i.e. Releases
+        resources from TMC Subarray Node, CSP Subarray and SDP Subarray. If the command
+        execution fails, array of receptors(device names) which are failed to be released from the
+        subarray, is returned to Central Node. Upon successful execution, all the resources of a given
+        subarray get released and empty array is returned. Selective release is not yet supported.
 
         :param argin: DevVoid.
 
@@ -1305,8 +1315,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def EndSB(self):
         # PROTECTED REGION ID(SubarrayNode.EndSB) ENABLED START #
         """
-        This command invokes EndSB command on CSP Subarray Leaf Node and SDP Subarray Leaf Node, and stops
-        tracking of all the assigned dishes.
+        This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP
+        Subarray Leaf Node, and stops tracking of all the assigned dishes.
 
         :return: None.
         """
@@ -1342,11 +1352,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     @DebugIt()
     def Track(self, argin):
         # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
-        """ Invokes Track command on the resources assigned to the Subarray.
+        """ Invokes Track command on the Dishes assigned to the Subarray.
 
         :param argin: DevString
 
-        Example: radec|2:31:50.91|89:15:51.4 as argin
+        Example:
+        radec|2:31:50.91|89:15:51.4 as argin
         Argin to be provided is the Ra and Dec values in the following format: radec|2:31:50.91|89:15:51.4
         Where first value is tag that is radec, second value is Ra in Hr:Min:Sec, and third value is Dec in
         Deg:Min:Sec.

@@ -71,14 +71,16 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     # Throw exceptions
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
-        self.logger.error(read_actvity_msg + str(df))
+        log_msg = read_actvity_msg + str(df)
+        self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(df)
         except_msg_list.append(self._read_activity_message)
         exception_count += 1
         return [except_msg_list, exception_count]
 
     def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
-        self.logger.error(read_actvity_msg + str(exception))
+        log_msg = read_actvity_msg + str(exception)
+        self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(exception)
         except_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -225,13 +227,14 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def ReleaseAllResources(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
-        """ Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
-            receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-            is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
-            resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
-            on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
-            This selective release of the resources when releaseALL is False, will be implemented in the
-            later stages of the prototype.
+        """
+        Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+        receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+        is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
+        resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
+        on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
+        This selective release of the resources when releaseALL is False, will be implemented in the
+        later stages of the prototype.
 
         :param argin: None.
 
@@ -317,12 +320,14 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             # Update the status of command execution status in activity message
             self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_INVALID_JSON + str(value_error))
+            log_msg = CONST.ERR_INVALID_JSON + str(value_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.logger.error(log_msg)
             # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
@@ -380,12 +385,14 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.logger.info(CONST.STR_CONFIGURE_SUCCESS)
 
         except ValueError as value_error:
-            self.logger.info(CONST.ERR_INVALID_JSON_CONFIG + str(value_error))
+            log_msg = CONST.ERR_INVALID_JSON_CONFIG + str(value_error)
+            self.logger.info(log_msg)
             self._read_activity_message = CONST.ERR_INVALID_JSON_CONFIG + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.logger.error(log_msg)
             # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
@@ -436,12 +443,14 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
                 self.logger.error(CONST.ERR_DEVICE_NOT_READY)
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_INVALID_JSON_SCAN + str(value_error))
+            log_msg = CONST.ERR_INVALID_JSON_SCAN + str(value_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_INVALID_JSON_SCAN + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -463,8 +472,9 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def EndScan(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
-        """         It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING
-        state.
+        """
+        It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in
+        SCANNING state.
 
                         :param argin: None.
 
@@ -531,7 +541,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def Abort(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
-        """ Abort command."""
+        """ Abort command. Not yet implememnted."""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
 # ----------
