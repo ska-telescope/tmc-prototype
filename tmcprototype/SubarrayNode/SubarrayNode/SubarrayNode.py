@@ -793,7 +793,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             log_message = CONST.ERR_RELEASE_RES_CMD + str(assert_err)
             self.logger.error(log_message)
             self._read_activity_message = log_message
-            return self._dish_leaf_node_group.get_device_list(True)
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, log_message,
+                                         CONST.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
 
         self.logger.info(CONST.STR_DISH_RELEASE)
         self.remove_receptors_in_group()

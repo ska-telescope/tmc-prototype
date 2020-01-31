@@ -336,10 +336,10 @@ class TestSubarrayNode(object):
         """Test for ReleaseAllResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
         tango_context.device.ReleaseAllResources()
+        assert tango_context.device.assignedResources is None
         assert tango_context.device.obsState == ObsState.IDLE
         assert tango_context.device.State() == DevState.OFF
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseAllResources()
+        tango_context.device.ReleaseAllResources()
         assert CONST.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
 
