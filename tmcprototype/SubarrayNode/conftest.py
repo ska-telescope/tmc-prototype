@@ -62,5 +62,5 @@ def create_dishln_proxy():
     dishln_proxy = DeviceProxy("ska_mid/tm_leaf_node/d0001")
     return dishln_proxy
 
-mysql_proc2 = factories.mysql_proc(port=3306,host="tmc-db",database="tmc_recoverability")
-mysql2 = factories.mysql('mysql_proc2')
+mysql_proc2 = factories.mysql_proc(port=3306,host="tmc-db")
+mysql2 = factories.mysql('mysql_proc2', passwd='tango', db='tmc-recoverability')

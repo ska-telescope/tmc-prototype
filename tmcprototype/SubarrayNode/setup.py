@@ -55,6 +55,7 @@ setup(
         'coverage',
         'pytest-json-report',
         'pycodestyle',
+        'pytest-mysql'
     ],
     extras_require={
         'dev':  ['prospector[with_pyroma]', 'yapf', 'isort']
