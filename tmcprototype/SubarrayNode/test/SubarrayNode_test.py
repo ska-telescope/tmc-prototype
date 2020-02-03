@@ -21,13 +21,69 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
+import time
+import pytest
 import tango
 from tango import DevState
-import pytest
-from SubarrayNode.SubarrayNode import SubarrayNode
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
-import time
+from CONST import AdminMode, HealthState, ObsState, ObsMode
+from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
+
+
+@pytest.fixture(scope="function",
+                params=[HealthState.OK, HealthState.DEGRADED,
+                        HealthState.FAILED, HealthState.UNKNOWN])
+def valid_health_state(request):
+    return request.param
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ([HealthState.OK], HealthState.OK),
+        ([HealthState.FAILED], HealthState.FAILED),
+        ([HealthState.DEGRADED], HealthState.DEGRADED),
+        ([HealthState.UNKNOWN], HealthState.UNKNOWN),
+        ([HealthState.OK, HealthState.FAILED], HealthState.FAILED),
+        ([HealthState.OK, HealthState.DEGRADED], HealthState.DEGRADED),
+        ([HealthState.OK, HealthState.UNKNOWN], HealthState.UNKNOWN),
+        ([HealthState.FAILED, HealthState.DEGRADED], HealthState.FAILED),
+        ([HealthState.FAILED, HealthState.UNKNOWN], HealthState.FAILED),
+        ([HealthState.DEGRADED, HealthState.UNKNOWN], HealthState.DEGRADED),
+        ([HealthState.OK, HealthState.FAILED, HealthState.DEGRADED], HealthState.FAILED),
+        ([HealthState.OK, HealthState.FAILED, HealthState.UNKNOWN], HealthState.FAILED),
+        ([HealthState.OK, HealthState.UNKNOWN, HealthState.DEGRADED],
+         HealthState.DEGRADED),
+        ([HealthState.FAILED, HealthState.UNKNOWN, HealthState.DEGRADED],
+         HealthState.FAILED),
+        ([HealthState.OK, HealthState.FAILED, HealthState.UNKNOWN, HealthState.DEGRADED],
+         HealthState.FAILED),
+                ])
+def health_states_and_expected_aggregate(request):
+    states_in, expected_state_out = request.param
+    return states_in, expected_state_out
+
+
+class TestSubarrayHealthState:
+
+    def test_generate_health_state_log_msg_valid(self, valid_health_state):
+        msg = SubarrayHealthState.generate_health_state_log_msg(
+            valid_health_state, "my/dev/name", None
+        )
+        assert msg == "healthState of my/dev/name :-> {}".format(valid_health_state.name)
+
+    def test_generate_health_state_log_msg_invalid(self):
+        msg = SubarrayHealthState.generate_health_state_log_msg(
+            "not a health state enum", "my/dev/name", None
+        )
+        assert msg == "healthState event returned unknown value \nNone"
+
+    def test_calculate_health_state(self, health_states_and_expected_aggregate):
+        health_states, expected_health_state = health_states_and_expected_aggregate
+        result = SubarrayHealthState.calculate_health_state(health_states)
+        assert result == expected_health_state
+
 
 # Note:
 #
@@ -38,7 +94,6 @@ import time
 # Here, we use a factor 3 between the read period and the sleep calls.
 #
 # Look at devicetest examples for more advanced testing
-
 
 # Device test case
 @pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy")
@@ -104,7 +159,7 @@ class TestSubarrayNode(object):
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == 1
+        assert tango_context.device.healthState == HealthState.DEGRADED
         # PROTECTED REGION END #    //  SubarrayNode.test_healthState
 
     def test_AssignResourcesfailure_before_startup(self, tango_context):
@@ -122,7 +177,7 @@ class TestSubarrayNode(object):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
         tango_context.device.On()
-        assert tango_context.device.adminMode == 0
+        assert tango_context.device.adminMode == AdminMode.ONLINE
         assert tango_context.device.State() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 
@@ -134,7 +189,7 @@ class TestSubarrayNode(object):
         time.sleep(10)
         assert tango_context.device.State() == DevState.ON
         assert len(tango_context.device.receptorIDList) == 1
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
+        assert tango_context.device.obsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
     def test_AssignResources_ValueError(self, tango_context):
@@ -144,7 +199,7 @@ class TestSubarrayNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(receptor_list)
         time.sleep(10)
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
+        assert tango_context.device.obsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources_ValueError
 
     def test_Configure_Negative_ScanID(self, tango_context, create_dish_proxy):
@@ -165,7 +220,7 @@ class TestSubarrayNode(object):
                                            '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(5)
         # assert CONST.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
+        assert tango_context.device.obsState == ObsState.IDLE
         # create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
@@ -192,7 +247,7 @@ class TestSubarrayNode(object):
                                        '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                        '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(65)
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
+        assert tango_context.device.obsState == ObsState.READY
         create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
@@ -214,7 +269,7 @@ class TestSubarrayNode(object):
                                            '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                            '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(10)
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
+        assert tango_context.device.obsState == ObsState.READY
         # create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
@@ -224,7 +279,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
         tango_context.device.Scan('{"scanDuration": 30.0}')
         time.sleep(5)
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
+        assert tango_context.device.obsState == ObsState.SCANNING
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
     def test_Scan_Duplicate(self, tango_context):
@@ -233,7 +288,7 @@ class TestSubarrayNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan('{"scanDuration": 5.0}')
         time.sleep(2)
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_SCANNING
+        assert tango_context.device.obsState == ObsState.SCANNING
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
 
     def test_EndScan(self, tango_context):
@@ -241,7 +296,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_EndScan) ENABLED START #
         tango_context.device.EndScan()
         time.sleep(10)
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
+        assert tango_context.device.obsState == ObsState.READY
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
     def test_EndScan_Duplicate(self, tango_context):
@@ -250,7 +305,7 @@ class TestSubarrayNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndScan()
         time.sleep(3)
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
+        assert tango_context.device.obsState == ObsState.READY
         # PROTECTED REGION END #    //  SubarrayNode.test_EndScan
 
     def test_Scan_Negative_InvalidDataType(self, tango_context):
@@ -260,7 +315,7 @@ class TestSubarrayNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(test_input)
         time.sleep(5)
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_READY
+        assert tango_context.device.obsState == ObsState.READY
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan_Negative_InvalidDataType
 
     def test_Scan_Negative_Keynotfound_ScanPara(self, tango_context):
@@ -277,7 +332,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
         tango_context.device.EndSB()
         time.sleep(2)
-        assert tango_context.device.ObsState == CONST.OBS_STATE_ENUM_IDLE
+        assert tango_context.device.ObsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 
     def test_EndSB_device_not_ready(self, tango_context):
@@ -285,14 +340,15 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
         tango_context.device.EndSB()
         time.sleep(2)
-        assert tango_context.device.ObsState != CONST.OBS_STATE_ENUM_READY
+        assert tango_context.device.ObsState != ObsState.READY
         # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
         tango_context.device.ReleaseAllResources()
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
+        assert tango_context.device.assignedResources is None
+        assert tango_context.device.obsState == ObsState.IDLE
         assert tango_context.device.State() == DevState.OFF
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseAllResources()
@@ -308,7 +364,7 @@ class TestSubarrayNode(object):
         """Test for StandbyTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
         tango_context.device.Standby()
-        assert tango_context.device.adminMode == 1
+        assert tango_context.device.adminMode == AdminMode.OFFLINE
         assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  SubarrayNode.Standby
 
@@ -332,7 +388,7 @@ class TestSubarrayNode(object):
     def test_adminMode(self, tango_context):
         """Test for adminMode"""
         # PROTECTED REGION ID(SubarrayNode.test_adminMode) ENABLED START #
-        assert tango_context.device.adminMode == 0
+        assert tango_context.device.adminMode == AdminMode.ONLINE
         # PROTECTED REGION END #    //  SubarrayNode.test_adminMode
 
     def test_buildState(self, tango_context):
@@ -357,7 +413,7 @@ class TestSubarrayNode(object):
     def test_controlMode(self, tango_context):
         """Test for controlMode"""
         # PROTECTED REGION ID(SubarrayNode.test_controlMode) ENABLED START #
-        control_mode = 0
+        control_mode = tango_context.device.controlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_controlMode
@@ -365,19 +421,19 @@ class TestSubarrayNode(object):
     def test_obsMode(self, tango_context):
         """Test for obsMode"""
         # PROTECTED REGION ID(SubarrayNode.test_obsMode) ENABLED START #
-        assert tango_context.device.obsMode == 0
+        assert tango_context.device.obsMode == ObsMode.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_obsMode
 
     def test_obsState(self, tango_context):
         """Test for obsState"""
         # PROTECTED REGION ID(SubarrayNode.test_obsState) ENABLED START #
-        assert tango_context.device.obsState == CONST.OBS_STATE_ENUM_IDLE
+        assert tango_context.device.obsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_obsState
 
     def test_simulationMode(self, tango_context):
         """Test for simulationMode"""
         # PROTECTED REGION ID(SubarrayNode.test_simulationMode) ENABLED START #
-        simulation_mode = 0
+        simulation_mode = False
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_simulationMode

@@ -2,6 +2,59 @@
 """
 This file is part of the SubarrayNode project and defines variables used
 """
+
+# ENUMS
+from enum import IntEnum, unique
+
+@unique
+class HealthState(IntEnum):
+    OK = 0
+    DEGRADED = 1
+    FAILED = 2
+    UNKNOWN = 3
+
+
+@unique
+class PointingState(IntEnum):
+    READY = 0
+    SLEW = 1
+    TRACK = 2
+    SCAN = 3
+    RESERVED = 4
+
+
+@unique
+class AdminMode(IntEnum):
+    ONLINE = 0
+    OFFLINE = 1
+    MAINTENANCE = 2
+    NOTIFIED = 3
+    RESERVED = 4
+
+
+@unique
+class ObsState(IntEnum):
+    IDLE = 0
+    CONFIGURING = 1
+    READY = 2
+    SCANNING = 3
+    PAUSED = 4
+    ABORTED = 5
+    FAULT = 6
+
+
+@unique
+class ObsMode(IntEnum):
+    IDLE = 0
+    IMAGING = 1
+    PULSARSEARCH = 2
+    PULSARTIMING = 3
+    DYNAMICSPECTRUM = 4
+    TRANSIENTSEARCH = 5
+    VLBI = 6
+    CALIBRATION = 7
+
+
 #Events
 EVT_DISH_HEALTH_STATE = "dishHealthState"
 EVT_DISH_POINTING_STATE = "dishPointingState"
@@ -59,6 +112,7 @@ STR_SLEW = " :-> SLEW"
 STR_TRACK = " :-> TRACK"
 STR_SCAN = " :-> SCAN"
 STR_POINTING_STATE_UNKNOWN_VAL = "Subarray pointingState event returned unknown value  \n"
+STR_ARROW = " :-> "
 
 STR_SA_INIT = "Initializing SubarrayNode..."
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
@@ -75,7 +129,6 @@ SCAN_ALREADY_COMPLETED = "Scan is already completed"
 SCAN_NOT_EXECUTED = "Scan can not be executed as Subarray.obsState is not READY."
 RESRC_ALREADY_RELEASED = "Resources are already released from Subarray"
 STR_FALSE = "False"
-STR_OK = "OK"
 STR_TRACK_EXEC = "Track command execution"
 STR_CMD_FAILED = "SubarrayNode_Commandfailed"
 STR_CONFIGURE_EXEC = "Configure command execution"
@@ -111,7 +164,7 @@ STR_SDP_SA_LEAF_INIT_SUCCESS = "Sdp Subarray Leaf Node initialized successfully.
 STR_SCAN_SUCCESS = "Scan command is executed successfully."
 STR_END_SCAN_SUCCESS = "EndScan command is executed successfully."
 STR_HEALTH_STATE = "healthState of "
-STR_HEALTH_STATE_UNKNOWN_VAL = "CSPSubarray healthState event returned unknown value \n"
+STR_HEALTH_STATE_UNKNOWN_VAL = "healthState event returned unknown value \n"
 STR_DELAY_MODEL_SUB_POINT = "delayModelSubscriptionPoint"
 STR_VIS_DESTIN_ADDR_SUB_POINT = "visDestinationAddressSubscriptionPoint"
 STR_CSP_CBFOUTLINK = "cspCbfOutlinkAddress"
@@ -161,21 +214,6 @@ ERR_SUBSR_CSPSDPSA_OBS_STATE = "Error in subscribing CSP/SDP Subarray obsState o
 
 ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarray attribute"
 ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
-
-
-#ENUMS
-# healthState
-ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
-# pointingState
-POINTING_STATE_ENUM_READY, POINTING_STATE_ENUM_SLEW, POINTING_STATE_ENUM_TRACK, POINTING_STATE_ENUM_SCAN = list(range(0, 4))
-# adminMode
-ENUM_ONLINE, ENUM_OFFLINE, ENUM_MAINTENANCE, ENUM_NOTFITTED, ENUM_RESERVED = list(range(0, 5))
-# obsState
-OBS_STATE_ENUM_IDLE, OBS_STATE_ENUM_CONFIGURING, OBS_STATE_ENUM_READY, OBS_STATE_ENUM_SCANNING, \
-OBS_STATE_ENUM_PAUSED, OBS_STATE_ENUM_ABORTED, OBS_STATE_ENUM_FAULT = list(range(0, 7))
-# obsMode
-ENUM_IDLE, ENUM_IMAGING, ENUM_PULSAR_SEARCH, ENUM_PULSAR_TIMING, ENUM_DYNAMIC_SPECTRUM, ENUM_TRANSIENT_SEARCH, \
-ENUM_VLBI, ENUM_CALIBRATION = list(range(0, 8))
 
 # JSON keys
 STR_KEY_DISH = "dish"
