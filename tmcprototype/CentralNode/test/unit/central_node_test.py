@@ -30,14 +30,19 @@ def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degrade
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        fake_event = Mock()
-        fake_event.err = False
-        fake_event.attr_name = f"{csp_master_fqdn}/healthState"
-        fake_event.attr_value.value = ENUM_DEGRADED
-        event_subscription_map[csp_master_health_attribute](fake_event)
+        dummy_event = create_dummy_event(csp_master_fqdn)
+        event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.telescopeHealthState == ENUM_DEGRADED
+
+
+def create_dummy_event(csp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_value.value = ENUM_DEGRADED
+    return fake_event
 
 
 @contextlib.contextmanager
