@@ -1114,6 +1114,107 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # Commands
     # --------
 
+    def _configure_sdp(self):
+        if "sdp" in self._scanConfiguration:
+            sdpConfiguration = self._scanConfiguration.copy()
+            # Keep configuration specific to SDP and delete configuration of other nodes
+            sdpConfiguration.pop("pointing", None)
+            sdpConfiguration.pop("dish", None)
+            sdpConfiguration.pop("csp", None)
+            # Check if 'sdp' is not empty
+            if sdpConfiguration["sdp"]:
+                # Add cspCbfOutlinkAddress to SDP configuration
+                if "configure" in sdpConfiguration["sdp"]:
+                    # for sdp_config_array_item in sdpConfiguration["sdp"]["configure"]:
+                    #     sdp_config_array_item[CONST.STR_CSP_CBFOUTLINK] \
+                    #         = self.CspSubarrayFQDN + "/cbfOutputLink"
+                    # Zeroth index fix
+                    sdp = sdpConfiguration["sdp"]["configure"][0]
+                    sdpConfiguration["sdp"]["configure"] = sdp
+                    sdpConfiguration["sdp"]["configure"][CONST.STR_CSP_CBFOUTLINK] = (
+                        self.CspSubarrayFQDN + "/cbfOutputLink")
+                    self.logger.debug("sdpConfiguration: " + str(sdpConfiguration))
+                    cmdData = tango.DeviceData()
+                    cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
+                    self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
+                    self.logger.debug("SDP Configuration is initiated.")
+                else:
+                    msg = 'SDP Subarray reconfiguration command is not invoked.'
+                    self._read_activity_message = msg
+                    self.logger.debug(msg)
+
+            else:
+                msg = 'SDP configuration is empty. Aborting SDP configuration.'
+                self._read_activity_message = msg
+                self.logger.debug(msg)
+        else:
+            msg = "'sdp' must be given. Aborting SDP configuration."
+            # this is a fatal error
+            self.logger.debug(msg)
+            self._read_activity_message = msg
+            self.logger.debug(msg)
+
+    def _configure_csp(self):
+        if "csp" in self._scanConfiguration:
+            # Configuration of CSP
+            cspConfiguration = self._scanConfiguration.copy()
+            # Keep configuration specific to CSP and delete configuration of other nodes
+            cspConfiguration.pop("dish", None)
+            cspConfiguration.pop("sdp", None)
+            if cspConfiguration["csp"]:
+                # Add delayModelSubscriptionPoint and visDestinationAddressSubscriptionPoint into
+                # cspConfiguration
+                cspConfiguration["csp"][CONST.STR_DELAY_MODEL_SUB_POINT] = (
+                    self.CspSubarrayLNFQDN + "/delayModel")
+                cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = (
+                    self.SdpSubarrayFQDN + "/receiveAddresses")
+
+                csp_config = cspConfiguration["csp"]
+                csp_config["pointing"] = cspConfiguration["pointing"]
+                csp_config["scanID"] = self._scan_id
+
+                cmdData = tango.DeviceData()
+                cmdData.insert(tango.DevString, json.dumps(csp_config))
+
+                self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
+                self.logger.debug("CSP Configuration is initiated.")
+            else:
+                msg = "CSP configuration is empty. Aborting CSP configuration."
+                self._read_activity_message = msg
+                self.logger.debug(msg)
+        else:
+            msg = "'csp' must be given. Aborting CSP configuration."
+            # this is a fatal error
+            self._read_activity_message = msg
+            self.logger.debug(msg)
+
+    def _configure_dsh(self, argin):
+        if "sdp" not in self._scanConfiguration and "csp" not in self._scanConfiguration \
+                and "dish" in self._scanConfiguration:
+            self.only_dishconfi_flag = True
+
+        if ("pointing" in self._scanConfiguration and "dish" in self._scanConfiguration) \
+            or (self.only_dishconfi_flag == True):
+            # Configuration of Dish
+            dishConfiguration = self._scanConfiguration.copy()
+            # Keep configuration specific to DISH and delete configuration of other nodes
+            dishConfiguration.pop("sdp")
+            dishConfiguration.pop("csp")
+            cmdData = tango.DeviceData()
+            cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
+            # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
+            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
+            self.logger.debug("Dish Configuration is initiated.")
+            # Invoke Track command on the group of Dishes assigned to the Subarray
+            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
+            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
+            self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
+        else:
+            msg = "Dish configuration must be given. Aborting Dish configuration."
+            # this is a fatal error
+            self._read_activity_message = msg
+            self.logger.error (msg)
+
     @command(
         dtype_in='str',
         doc_in="Pointing parameters of Dish - Right ascension and Declination coordinates.",
@@ -1147,160 +1248,44 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         exception_count = 0
         exception_message = []
 
+        if self._obs_state != ObsState.IDLE:
+            return
+        
         try:
             self._scanConfiguration = json.loads(argin)
-            self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
-            self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
-            if self._obs_state == ObsState.IDLE:
-                # TODO: FOR FUTURE IMPLEMENTATION
-                # scanID = scanConfiguration["scanID"]
-                # pointing =  scanConfiguration["pointing"]
-                # dishConfiguration1 = scanConfiguration["dish"]
-                # cspConfiguration = scanConfiguration["csp"]
-                # sdpConfiguration = scanConfiguration["sdp"]
+        except json.JSONDecodeError as jerror:
+            log_message = CONST.ERR_INVALID_JSON + str(jerror)
+            self.logger.error(log_message)
+            self._read_activity_message = log_message
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, log_message,
+                                         CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
 
-                # Check if scanID is present in Configure JSON
-                if "scanID" in self._scanConfiguration:
-                    self._scan_id = str(self._scanConfiguration["scanID"])
-                    self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
-                                          for _ in range(4))
-                    self.logger.info(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
+        self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
+        self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
+        
+        if "scanID" not in self._scanConfiguration:
+            log_message = "'scanID' must be given. Aborting configuration."
+            self.logger.error(log_message)
+            self._read_activity_message = log_message
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, log_message,
+                                         CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
 
-                    if "csp" in self._scanConfiguration:
-                        # Configuration of CSP
-                        cspConfiguration = self._scanConfiguration.copy()
-                        # Keep configuration specific to CSP and delete configuration of other nodes
-                        if "dish" in cspConfiguration:
-                            del cspConfiguration["dish"]
-                        if "sdp" in self._scanConfiguration:
-                            del cspConfiguration["sdp"]
-                        if cspConfiguration["csp"]:
-                            # Add delayModelSubscriptionPoint and visDestinationAddressSubscriptionPoint into
-                            # cspConfiguration
-                            cspConfiguration["csp"][CONST.STR_DELAY_MODEL_SUB_POINT] = self.CspSubarrayLNFQDN\
-                                                                                       + "/delayModel"
-                            cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] =\
-                                self.SdpSubarrayFQDN + "/receiveAddresses"
+        self._scan_id = str(self._scanConfiguration["scanID"])
+        self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
+                                for _ in range(4))
+        self.logger.info(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
 
-                            csp_config = cspConfiguration["csp"]
-                            csp_config["pointing"] = cspConfiguration["pointing"]
-                            csp_config["scanID"] = self._scan_id
+        self._configure_csp()
 
-                            cmdData = tango.DeviceData()
-                            cmdData.insert(tango.DevString, json.dumps(csp_config))
+        time.sleep(2)
 
-                            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
-                            self.logger.debug("CSP Configuration is initiated.")
-                        else:
-                            msg = "CSP configuration is empty. Aborting CSP configuration."
-                            self._read_activity_message = msg
-                            self.logger.debug(msg)
-                    else:
-                        msg = "'csp' must be given. Aborting CSP configuration."
-                        # this is a fatal error
-                        self._read_activity_message = msg
-                        self.logger.debug(msg)
+        # Configuration of SDP
+        self._configure_sdp()
 
-                    time.sleep(2)
+        # To check Dishonly configuration
+        self._configure_dsh(argin)
 
-                    # Configuration of SDP
-                    if "sdp" in self._scanConfiguration:
-                        sdpConfiguration = self._scanConfiguration.copy()
-                        # Keep configuration specific to SDP and delete configuration of other nodes
-                        if "pointing" in sdpConfiguration:
-                            del sdpConfiguration["pointing"]
-                        if "dish" in sdpConfiguration:
-                            del sdpConfiguration["dish"]
-                        if "csp" in self._scanConfiguration:
-                            del sdpConfiguration["csp"]
-                        # Check if 'sdp' is not empty
-                        if sdpConfiguration["sdp"]:
-                            # Add cspCbfOutlinkAddress to SDP configuration
-                            if "configure" in sdpConfiguration["sdp"]:
-                                # for sdp_config_array_item in sdpConfiguration["sdp"]["configure"]:
-                                #     sdp_config_array_item[CONST.STR_CSP_CBFOUTLINK] \
-                                #         = self.CspSubarrayFQDN + "/cbfOutputLink"
-                                # Zeroth index fix
-                                sdp = sdpConfiguration["sdp"]["configure"][0]
-                                sdpConfiguration["sdp"]["configure"] = sdp
-                                sdpConfiguration["sdp"]["configure"][CONST.STR_CSP_CBFOUTLINK] \
-                                    = self.CspSubarrayFQDN + "/cbfOutputLink"
-                                self.logger.debug("sdpConfiguration: " + str(sdpConfiguration))
-                                cmdData = tango.DeviceData()
-                                cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
-                                self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
-                                self.logger.debug("SDP Configuration is initiated.")
-                            else:
-                                msg = 'SDP Subarray reconfiguration command is not invoked.'
-                                self._read_activity_message = msg
-                                self.logger.debug(msg)
-
-                        else:
-                            msg = 'SDP configuration is empty. Aborting SDP configuration.'
-                            self._read_activity_message = msg
-                            self.logger.debug(msg)
-                    else:
-                        msg = "'sdp' must be given. Aborting SDP configuration."
-                        # this is a fatal error
-                        self.logger.debug(msg)
-                        self._read_activity_message = msg
-                        self.logger.debug(msg)
-
-                    # To check Dishonly configuration
-                    if "sdp" not in self._scanConfiguration and "csp" not in self._scanConfiguration \
-                            and "dish" in self._scanConfiguration:
-                        self.only_dishconfi_flag = True
-
-                    if ("pointing" in self._scanConfiguration and "dish" in self._scanConfiguration) \
-                        or (self.only_dishconfi_flag == True):
-                        # Configuration of Dish
-                        dishConfiguration = self._scanConfiguration.copy()
-                        # Keep configuration specific to DISH and delete configuration of other nodes
-                        if "sdp" in self._scanConfiguration:
-                            del dishConfiguration["sdp"]
-                        if "csp" in self._scanConfiguration:
-                            del dishConfiguration["csp"]
-                        cmdData = tango.DeviceData()
-                        cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
-                        # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
-                        self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
-                        self.logger.debug("Dish Configuration is initiated.")
-                        # Invoke Track command on the group of Dishes assigned to the Subarray
-                        self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
-                        self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
-                        self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
-                    else:
-                        msg = "Dish configuration must be given. Aborting Dish configuration."
-                        # this is a fatal error
-                        self._read_activity_message = msg
-                        self.logger.error (msg)
-                    # TODO: FOR FUTURE REFERENCE
-                    # # set obsState to READY when the configuration is completed
-                    # self._obs_state = ObsState.READY
-                else:
-                    err_msg = ''
-                    msg = "'scanID' must be given. Aborting configuration."
-                    self._read_activity_message = msg
-                    # this is a fatal error
-                    self.logger.debug(msg)
-                    tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                                 CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-
-        except ValueError as value_error:
-            self.logger.error(CONST.ERR_INVALID_JSON + str(value_error))
-            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, CONST.ERR_CONFIGURE_CMD_GROUP)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, CONST.ERR_CONFIGURE_CMD)
-        # Throw Exception
-        if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_CONFIGURE_EXEC)
-        # PROTECTED REGION END #    //  SubarrayNode.Configure
+        ## PROTECTED REGION END #    //  SubarrayNode.Configure
 
     def is_Configure_allowed(self):
         # PROTECTED REGION ID(SubarrayNode.is_Configure_allowed) ENABLED START #
