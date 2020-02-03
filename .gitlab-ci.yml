@@ -279,6 +279,27 @@ build SdpMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/SdpMaster/dist/
 
+unit tests:
+  image: nexus.engageska-portugal.pt/tango-example/tmcprototype:latest
+  stage: test
+  tags:
+    - docker-executor
+  script:
+    - mkdir test_results
+    - |-
+      for path in `find ./tmcprototype/*/test  -type d -name unit`; do
+        export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
+        echo "+++ Trying tests for ${TMC_ELEMENT}"
+        pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
+          --cov=tmcprototype/${TMC_ELEMENT} \
+          --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
+          --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
+          --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
+      done
+  artifacts:
+    paths:
+      - ./test_results
+
 run tests:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   stage: test
