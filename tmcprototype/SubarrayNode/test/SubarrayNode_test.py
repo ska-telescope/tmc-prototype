@@ -38,6 +38,8 @@ import time
 #
 # Look at devicetest examples for more advanced testing
 
+QUERY = '''CREATE TABLE pet (name VARCHAR(20), owner VARCHAR(20),
+        species VARCHAR(20), sex CHAR(1), birth DATE, death DATE);'''
 
 # Device test case
 @pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy", "mysql_proc")
@@ -103,8 +105,14 @@ class TestSubarrayNode(object):
 
     def test_proc(mysql_proc):
         """Check first, basic server fixture factory."""
-        print ("In here", mysql_proc.running())
-        assert False
+        assert mysql_proc.running()
+
+    def test_mysql(mysql):
+        """Check first, basic client fixture factory."""
+        cursor = mysql.cursor()
+        cursor.execute(QUERY)
+        mysql.commit()
+        cursor.close()
 
     #
     # def test_mysql_newfixture(mysql, mysql2,query,query2):
