@@ -1,8 +1,8 @@
 import contextlib
 import importlib
 import sys
-from unittest import mock
-from unittest.mock import Mock
+import mock
+from mock import Mock
 
 from CONST import ENUM_DEGRADED
 from CentralNode import CentralNode
