@@ -85,12 +85,21 @@ services:
         /bin/bash -c "
            sleep 25;
            wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             sudo chmod 777 /configure_hdbpp.py;
              /venv/bin/python /configure_hdbpp.py \
               --cm=tango://tmcprototype-1234-databaseds:10000/archiving/hdbpp/confmanager01 \
               --es=tango://tmcprototype-1234-databaseds:10000/archiving/hdbpp/eventsubscriber01 \
               --attrfile=/attribute_fqdn.txt \
               v4"
+#        /bin/bash -c "
+#           sleep 25;
+#           wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#             sudo chmod 777 /configure_hdbpp.py;
+#             /venv/bin/python /configure_hdbpp.py \
+#              --cm=tango://tmcprototype-1234-databaseds:10000/archiving/hdbpp/confmanager01 \
+#              --es=tango://tmcprototype-1234-databaseds:10000/archiving/hdbpp/eventsubscriber01 \
+#              --attrfile=/attribute_fqdn.txt \
+#              v4"
+
 
   archiver-dsconfig:
     image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
