@@ -79,7 +79,8 @@ function getVersion() {
 #	  result="$result-dirty"
 #  fi
   test -n "$(git status -s .)"
-	echo $result
+  git status .
+  echo $result
 }
 
 function nextPatchLevel() {
