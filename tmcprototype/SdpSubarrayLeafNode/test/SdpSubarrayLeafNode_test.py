@@ -27,7 +27,6 @@ from tango import DevState, EventType, DeviceProxy
 from SdpSubarrayLeafNode.SdpSubarrayLeafNode import SdpSubarrayLeafNode
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
-import SdpSubarrayLeafNode
 import pytest
 
 

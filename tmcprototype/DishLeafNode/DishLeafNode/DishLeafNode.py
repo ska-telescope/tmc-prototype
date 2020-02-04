@@ -88,13 +88,16 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self.logger.debug(CONST.STR_DISH_OPERATE_MODE)
                     self._read_activity_message = CONST.STR_DISH_OPERATE_MODE
                 else:
-                    self.logger.debug(CONST.STR_DISH_UNKNOWN_MODE + str(evt))
+                    log_msg = CONST.STR_DISH_UNKNOWN_MODE + str(evt)
+                    self.logger.debug(log_msg)
                     self._read_activity_message = CONST.STR_DISH_UNKNOWN_MODE + str(evt)
             except Exception as except_occurred:
-                self.logger.error(CONST.ERR_DISH_MODE_CB + str(except_occurred.message))
+                log_msg = CONST.ERR_DISH_MODE_CB + str(except_occurred.message)
+                self.logger.error(log_msg)
                 self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_MODE_CB)
         else:
-            self.logger.debug(CONST.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors))
+            log_msg = CONST.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
+            self.logger.debug(log_msg)
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
             self.logger.error(CONST.ERR_ON_SUBS_DISH_MODE_ATTR)
 
@@ -117,13 +120,16 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self.logger.debug(CONST.STR_DISH_CAPTURING_FALSE)
                     self._read_activity_message = CONST.STR_DISH_CAPTURING_FALSE
                 else:
-                    self.logger.debug(CONST.STR_DISH_CAPTURING_UNKNOWN + str(evt))
+                    log_msg = CONST.STR_DISH_CAPTURING_UNKNOWN + str(evt)
+                    self.logger.debug(log_msg)
                     self._read_activity_message = CONST.STR_DISH_CAPTURING_UNKNOWN + str(evt)
             except Exception as except_occurred:
-                self.logger.error(CONST.ERR_DISH_CAPTURING_CB + str(except_occurred.message))
+                log_msg = CONST.ERR_DISH_CAPTURING_CB + str(except_occurred.message)
+                self.logger.error(log_msg)
                 self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_CAPTURING_CB)
         else:
-            self.logger.error(CONST.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors))
+            log_msg = CONST.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
             self.logger.error(CONST.ERR_SUBSR_CAPTURING_ATTR)
 
@@ -139,13 +145,16 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         if evt.err is False:
             try:
                 self._achieved_pointing = evt.attr_value.value
-                self.logger.debug(CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing))
+                log_msg = CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
+                self.logger.debug(log_msg)
                 self._read_activity_message = CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
             except Exception as except_occurred:
-                self.logger.error(CONST.ERR_DISH_ACHVD_POINT + str(except_occurred.message))
+                log_msg = CONST.ERR_DISH_ACHVD_POINT + str(except_occurred.message)
+                self.logger.error(log_msg)
                 self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_ACHVD_POINT)
         else:
-            self.logger.error(CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors))
+            log_msg = CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
             self.logger.error(CONST.ERR_ON_SUBS_DISH_ACHVD_ATTR)
 
@@ -161,13 +170,16 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         if evt.err is False:
             try:
                 self._desired_pointing = evt.attr_value.value
-                self.logger.error(CONST.STR_DESIRED_POINTING + str(self._desired_pointing))
+                log_msg = CONST.STR_DESIRED_POINTING + str(self._desired_pointing)
+                self.logger.error(log_msg)
                 self._read_activity_message = CONST.STR_DESIRED_POINTING + str(self._desired_pointing)
             except Exception as except_occurred:
-                self.logger.error(CONST.ERR_DISH_DESIRED_POINT + str(except_occurred.message))
+                log_msg = CONST.ERR_DISH_DESIRED_POINT + str(except_occurred.message)
+                self.logger.error(log_msg)
                 self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_DISH_DESIRED_POINT)
         else:
-            self.logger.error(CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors))
+            log_msg = CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
             self.logger.error(CONST.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR)
 
@@ -351,7 +363,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._handle_generic_exception(except_occurred, [], 0, CONST.ERR_EXE_TRACK)
 
     def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
-        self.logger.error(read_actvity_msg + str(exception))
+        log_msg = read_actvity_msg + str(exception)
+        self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(exception)
         except_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -418,19 +431,22 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self.observer_altitude = 570
         self.el_limit = False
         try:
-            self.logger.debug(CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN))
+            log_msg = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
+            self.logger.debug(log_msg)
             self._read_activity_message = CONST.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
             self._dish_proxy = DeviceProxy(str(self.DishMasterFQDN))   #Creating proxy to the DishMaster
             self.event_track_time = threading.Event()
         except DevFailed as dev_failed:
-            self.logger.error(CONST.ERR_IN_CREATE_PROXY_DM + str(dev_failed))
+            log_msg = CONST.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
             self.set_state(DevState.FAULT)
         self._admin_mode = 0                                    #Setting adminMode to "ONLINE"
         self._health_state = 0                                  #Setting healthState to "OK"
         self._simulation_mode = False                           #Enabling the simulation mode
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-        self.logger.error(CONST.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model()))
+        log_msg = CONST.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+        self.logger.error(log_msg)
         self._read_activity_message = CONST.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
         # Subscribing to DishMaster Attributes
         try:
@@ -448,7 +464,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.set_status(CONST.STR_DISH_INIT_SUCCESS)
             self.logger.info(CONST.STR_DISH_INIT_SUCCESS)
         except DevFailed as dev_failed:
-            self.logger.error(CONST.ERR_SUBS_DISH_ATTR + str(dev_failed))
+            log_msg = CONST.ERR_SUBS_DISH_ATTR + str(dev_failed)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_SUBS_DISH_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
             self.set_status(CONST.ERR_DISH_INIT)
@@ -490,7 +507,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def SetStowMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStowMode) ENABLED START #
-        """ Triggers the DishMaster to transit into Stow Mode """
+        """ Triggers the DishMaster to transit into Stow Mode. """
         self._dish_proxy.command_inout_asynch(CONST.CMD_SET_STOW_MODE, self.commandCallback)
         # PROTECTED REGION END #    //  DishLeafNode.SetStowMode
 
@@ -504,7 +521,7 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @DebugIt()
     def SetStandByLPMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStandByLPMode) ENABLED START #
-        """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State) """
+        """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State). """
         self._dish_proxy.command_inout_asynch(CONST.CMD_SET_STANDBYLP_MODE, self.commandCallback)
         # PROTECTED REGION END #    //  DishLeafNode.SetStandByLPMode
 
@@ -560,7 +577,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                                       argin, self.commandCallback)
                 self.logger.debug(CONST.STR_OUT_SCAN)
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_EXE_SCAN_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error))
+            log_msg = CONST.ERR_EXE_SCAN_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_EXE_SCAN_CMD + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
             exception_message.append(self._read_activity_message)
@@ -598,7 +616,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE,
                                                       argin, self.commandCallback)
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_EXE_END_SCAN_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error))
+            log_msg = CONST.ERR_EXE_END_SCAN_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_EXE_END_SCAN_CMD + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
             exception_message.append(self._read_activity_message)
@@ -619,8 +638,11 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
         """
         Configures the Dish by setting pointing coordinates for a given observation.
+        This function accepts the input json and calculate pointing parameters of Dish- Azimuth
+        and Elevation Angle.Calculated parameters again converted to json and fed to the dish master.
 
-        :param argin: A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
+        :param argin:
+        A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
 
             Example:
             {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
@@ -662,23 +684,27 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except ValueError as value_error:
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
-            self.logger.error(CONST.ERR_INVALID_JSON + str(value_error))
+            log_msg = CONST.ERR_INVALID_JSON + str(value_error)
+            self.logger.error(log_msg)
             exception_message.append(CONST.ERR_INVALID_JSON + str(value_error))
             exception_count += 1
 
         except KeyError as key_error:
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.logger.error(log_msg)
             exception_message.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             exception_count += 1
 
         except DevFailed as dev_failed:
             self._read_activity_message = CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
-            self.logger.error(CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed))
+            log_msg = CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
+            self.logger.error(log_msg)
             exception_message.append(CONST.ERR_EXE_CONFIGURE_CMD + str(dev_failed))
 
         except Exception as except_occurred:
-            self.logger.error(CONST.ERR_EXE_CONFIGURE_CMD + str(except_occurred))
+            log_msg = CONST.ERR_EXE_CONFIGURE_CMD + str(except_occurred)
+            self.logger.error(log_msg)
             [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, CONST.ERR_EXE_CONFIGURE_CMD)
 
@@ -715,7 +741,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._dish_proxy.command_inout_asynch(CONST.CMD_START_CAPTURE,
                                                       argin, self.commandCallback)
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_EXE_START_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error))
+            log_msg = CONST.ERR_EXE_START_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_EXE_START_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
             exception_message.append(self._read_activity_message)
@@ -748,7 +775,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_STOP_CAPTURE, argin, self.commandCallback)
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_EXE_STOP_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error))
+            log_msg = CONST.ERR_EXE_STOP_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_EXE_STOP_CAPTURE_CMD + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
             exception_message.append(self._read_activity_message)
@@ -794,7 +822,8 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(CONST.CMD_DISH_SLEW, argin, self.commandCallback)
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_EXE_SLEW_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error))
+            log_msg = CONST.ERR_EXE_SLEW_CMD + CONST.ERR_INVALID_DATATYPE + str(value_error)
+            self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_EXE_SLEW_CMD + "\n" + CONST.ERR_INVALID_DATATYPE +\
                                           str(value_error)
             self.logger.error(CONST.ERR_EXE_SLEW_CMD)
@@ -850,13 +879,15 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except ValueError as value_error:
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
-            self.logger.error(CONST.ERR_INVALID_JSON + str(value_error))
+            log_msg = CONST.ERR_INVALID_JSON + str(value_error)
+            self.logger.error(log_msg)
             exception_message.append(CONST.ERR_INVALID_JSON + str(value_error))
             exception_count += 1
 
         except KeyError as key_error:
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.logger.error(log_msg)
             exception_message.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             exception_count += 1
 
@@ -888,11 +919,13 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except DevFailed as dev_failed:
             self._read_activity_message = CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)
-            self.logger.error(CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed))
+            log_msg = CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)
+            self.logger.error(log_msg)
             exception_message.append(CONST.ERR_EXE_STOP_TRACK_CMD + str(dev_failed))
 
         except Exception as except_occurred:
-            self.logger.error(CONST.ERR_EXE_STOP_TRACK_CMD + str(except_occurred))
+            log_msg = CONST.ERR_EXE_STOP_TRACK_CMD + str(except_occurred)
+            self.logger.error(log_msg)
             [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, CONST.ERR_EXE_STOP_TRACK_CMD)
 
