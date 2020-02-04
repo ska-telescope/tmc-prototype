@@ -407,3 +407,6 @@ release docker image:
   script:
     - make push-versioned-image #Publish tagged version on Nexus
   when: manual
+  only:
+    refs:
+      - master
