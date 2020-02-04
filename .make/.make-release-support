@@ -75,11 +75,9 @@ function getVersion() {
 #		result="$result-$(git log -n 1 --format=%h .)"
 #	fi
 # TODO: For Future Use
-#	if hasChanges -eq 1; then
-#	  result="$result-dirty"
-#  fi
-  test -n "$(git status -s .)"
-  git status .
+	if hasChanges -eq 1; then
+	  result="$result-dirty"
+  fi
   echo $result
 }
 
