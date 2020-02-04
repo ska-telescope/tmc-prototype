@@ -308,9 +308,9 @@ run tests:
   tags:
     - docker-executor
   script:
+    - make push
     - make test
     - make lint
-    - make push
   retry: 2
 
 linting:
