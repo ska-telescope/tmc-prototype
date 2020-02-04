@@ -69,6 +69,51 @@ class SubarrayHealthState:
             return HealthState.UNKNOWN
 
 
+class ConfigDictBuilder:
+
+    @staticmethod
+    def build_up_scan_config(scan_config_copy, attr):
+        scan_config_copy.pop("pointing", None)
+        scan_config_copy.pop("dish", None)
+        scan_config_copy.pop("csp", None)
+        sdp_scan_config = scan_config_copy.get("sdp", {})
+
+        if sdp_scan_config:
+            sdp_config = sdp_scan_config.get("configure")
+            if sdp_config:
+                sdp_scan_config["configure"] = sdp_config[0]
+                sdp_scan_config["configure"][CONST.STR_CSP_CBFOUTLINK] = attr
+                cmd_data = tango.DeviceData()
+                cmd_data.insert(tango.DevString, json.dumps(scan_config_copy))
+            else:
+                msg = "SDP Subarray reconfiguration command is not invoked."
+                return msg
+        else:
+            msg = 'SDP configuration is empty. Aborting SDP configuration.'
+            return msg
+        return cmd_data
+
+    @staticmethod
+    def build_up_csp_scan_config(scan_config_copy, scan_id, attr_map):
+        attr_map_keys = list(attr_map.keys())
+
+        scan_config_copy.pop("dish", None)
+        scan_config_copy.pop("sdp", None)
+        csp_scan_config = scan_config_copy.get("csp", {})
+
+        if csp_scan_config:
+            csp_scan_config[attr_map_keys[0]] = attr_map[attr_map_keys[0]]
+            csp_scan_config[attr_map_keys[1]] = attr_map[attr_map_keys[1]]
+            csp_scan_config["pointing"] = scan_config_copy["pointing"]
+            csp_scan_config["scanID"] = scan_id
+            cmd_data = tango.DeviceData()
+            cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
+        else:
+            msg = "CSP configuration is empty. Aborting CSP configuration."
+            return msg
+        return cmd_data
+
+
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
 
@@ -1115,78 +1160,29 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # --------
 
     def _configure_sdp(self):
-        if "sdp" in self._scanConfiguration:
-            sdpConfiguration = self._scanConfiguration.copy()
-            # Keep configuration specific to SDP and delete configuration of other nodes
-            sdpConfiguration.pop("pointing", None)
-            sdpConfiguration.pop("dish", None)
-            sdpConfiguration.pop("csp", None)
-            # Check if 'sdp' is not empty
-            if sdpConfiguration["sdp"]:
-                # Add cspCbfOutlinkAddress to SDP configuration
-                if "configure" in sdpConfiguration["sdp"]:
-                    # for sdp_config_array_item in sdpConfiguration["sdp"]["configure"]:
-                    #     sdp_config_array_item[CONST.STR_CSP_CBFOUTLINK] \
-                    #         = self.CspSubarrayFQDN + "/cbfOutputLink"
-                    # Zeroth index fix
-                    sdp = sdpConfiguration["sdp"]["configure"][0]
-                    sdpConfiguration["sdp"]["configure"] = sdp
-                    sdpConfiguration["sdp"]["configure"][CONST.STR_CSP_CBFOUTLINK] = (
-                        self.CspSubarrayFQDN + "/cbfOutputLink")
-                    self.logger.debug("sdpConfiguration: " + str(sdpConfiguration))
-                    cmdData = tango.DeviceData()
-                    cmdData.insert(tango.DevString, json.dumps(sdpConfiguration))
-                    self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmdData)
-                    self.logger.debug("SDP Configuration is initiated.")
-                else:
-                    msg = 'SDP Subarray reconfiguration command is not invoked.'
-                    self._read_activity_message = msg
-                    self.logger.debug(msg)
-
-            else:
-                msg = 'SDP configuration is empty. Aborting SDP configuration.'
-                self._read_activity_message = msg
-                self.logger.debug(msg)
+        scan_configuration_copy = self._scanConfiguration.copy()
+        attr = self.CspSubarrayFQDN + "/cbfOutputLink"
+        cmd_data = ConfigDictBuilder.build_up_scan_config(scan_configuration_copy, attr)
+        if isinstance(cmd_data, str):
+            self._read_activity_message = cmd_data
+            self.logger.debug(cmd_data)
         else:
-            msg = "'sdp' must be given. Aborting SDP configuration."
-            # this is a fatal error
-            self.logger.debug(msg)
-            self._read_activity_message = msg
-            self.logger.debug(msg)
+            self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmd_data)
+            self.logger.debug("SDP Configuration is initiated.")
 
     def _configure_csp(self):
-        if "csp" in self._scanConfiguration:
-            # Configuration of CSP
-            cspConfiguration = self._scanConfiguration.copy()
-            # Keep configuration specific to CSP and delete configuration of other nodes
-            cspConfiguration.pop("dish", None)
-            cspConfiguration.pop("sdp", None)
-            if cspConfiguration["csp"]:
-                # Add delayModelSubscriptionPoint and visDestinationAddressSubscriptionPoint into
-                # cspConfiguration
-                cspConfiguration["csp"][CONST.STR_DELAY_MODEL_SUB_POINT] = (
-                    self.CspSubarrayLNFQDN + "/delayModel")
-                cspConfiguration["csp"][CONST.STR_VIS_DESTIN_ADDR_SUB_POINT] = (
-                    self.SdpSubarrayFQDN + "/receiveAddresses")
-
-                csp_config = cspConfiguration["csp"]
-                csp_config["pointing"] = cspConfiguration["pointing"]
-                csp_config["scanID"] = self._scan_id
-
-                cmdData = tango.DeviceData()
-                cmdData.insert(tango.DevString, json.dumps(csp_config))
-
-                self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmdData)
-                self.logger.debug("CSP Configuration is initiated.")
-            else:
-                msg = "CSP configuration is empty. Aborting CSP configuration."
-                self._read_activity_message = msg
-                self.logger.debug(msg)
+        attr_map = {
+            CONST.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
+            CONST.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
+        }
+        scan_configuration_copy = self._scanConfiguration.copy()
+        cmd_data = ConfigDictBuilder.build_up_csp_scan_config(scan_configuration_copy, self._scan_id, attr_map)
+        if isinstance(cmd_data, str):
+            self._read_activity_message = cmd_data
+            self.logger.debug(cmd_data)
         else:
-            msg = "'csp' must be given. Aborting CSP configuration."
-            # this is a fatal error
-            self._read_activity_message = msg
-            self.logger.debug(msg)
+            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmd_data)
+            self.logger.debug("CSP Configuration is initiated.")
 
     def _configure_dsh(self, argin):
         if "sdp" not in self._scanConfiguration and "csp" not in self._scanConfiguration \
