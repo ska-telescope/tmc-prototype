@@ -21,9 +21,9 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-import time
 import json
 import pytest
+import time
 import tango
 from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
@@ -101,26 +101,29 @@ class TestConfigDictBuilder:
                              '{"fieldId":0,"intervalMs":1400}}}]}}')
 
     # build_up_scan_config tests
-
-    @pytest.fixture(params=[scan_config.copy()])
-    def valid_dict(self, request):
-        input_dict = request.param
-        return input_dict, "sdp/attribute"
-
+    @pytest.mark.parametrize("valid_dict", [scan_config.copy()])
     def test_build_up_scan_config_with_valid_dict(self, valid_dict):
-        input_dict, attr = valid_dict
-        output_device_data = ConfigDictBuilder.build_up_scan_config(input_dict, attr)
+        output_device_data = (
+        ConfigDictBuilder.build_up_scan_config(valid_dict, "sdp/attribute"))
+        expected_string_dict = ('{"scanID": 12345, "sdp": {"configure": '
+                                '{"id": "realtime-20190627-0001", "sbiId": "20190627-0001", '
+                                '"workflow": {"id": "vis_ingest", "type": "realtime", '
+                                '"version": "0.1.0"}, "parameters": {"numStations": 4, '
+                                '"numChannels": 372, "numPolarisations": 4, '
+                                '"freqStartHz": 350000000.0, "freqEndHz": 1050000000.0, '
+                                '"fields": {"0": {"system": "ICRS", "name": "Polaris", '
+                                '"ra": 0.662432049839445, "dec": 1.5579526053855042}}}, '
+                                '"scanParameters": {"12345": {"fieldId": 0, '
+                                '"intervalMs": 1400}}, '
+                                '"cspCbfOutlinkAddress": "sdp/attribute"}}}')
+
+        assert expected_string_dict == output_device_data.extract()
         assert isinstance(output_device_data, tango.DeviceData)
 
-    @pytest.fixture(params=[scan_config.copy()])
-    def invalid_dict(self, request):
-        input_dict = request.param
-        input_dict.pop("sdp")
-        return input_dict, "sdp/attribute", "SDP configuration is empty. Aborting SDP configuration."
-
+    @pytest.mark.parametrize("invalid_dict", [scan_config.copy().pop("sdp")])
     def test_build_up_scan_config_with_invalid_dict(self, invalid_dict):
-        input_dict, attr, expected_msg = invalid_dict
-        output_msg = ConfigDictBuilder.build_up_scan_config(input_dict, attr)
+        output_msg = ConfigDictBuilder.build_up_scan_config(invalid_dict, "sdp/attribute")
+        expected_msg = "SDP configuration is empty. Aborting SDP configuration."
         assert output_msg == expected_msg
 
     @pytest.fixture(params=[scan_config.copy()])
