@@ -22,13 +22,14 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import time
+import json
 import pytest
 import tango
 from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 from CONST import AdminMode, HealthState, ObsState, ObsMode
-from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
+from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState, ConfigDictBuilder
 
 
 @pytest.fixture(scope="function",
@@ -85,17 +86,70 @@ class TestSubarrayHealthState:
         assert result == expected_health_state
 
 
-# Note:
-#
-# Since the device uses an inner thread, it is necessary to
-# wait during the tests in order the let the device update itself.
-# Hence, the sleep calls have to be secured enough not to produce
-# any inconsistent behavior. However, the unittests need to run fast.
-# Here, we use a factor 3 between the read period and the sleep calls.
-#
-# Look at devicetest examples for more advanced testing
+class TestConfigDictBuilder:
+    scan_config = json.loads('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                             '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                             '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                             '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                             '"corrBandwidth":0}]},"sdp":{"configure":'
+                             '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                             '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                             '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                             '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                             '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                             '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                             '{"fieldId":0,"intervalMs":1400}}}]}}')
 
-# Device test case
+    # build_up_scan_config tests
+
+    @pytest.fixture(params=[scan_config.copy()])
+    def valid_dict(self, request):
+        input_dict = request.param
+        return input_dict, "sdp/attribute"
+
+    def test_build_up_scan_config_with_valid_dict(self, valid_dict):
+        input_dict, attr = valid_dict
+        output_device_data = ConfigDictBuilder.build_up_scan_config(input_dict, attr)
+        assert isinstance(output_device_data, tango.DeviceData)
+
+    @pytest.fixture(params=[scan_config.copy()])
+    def invalid_dict(self, request):
+        input_dict = request.param
+        input_dict.pop("sdp")
+        return input_dict, "sdp/attribute", "SDP configuration is empty. Aborting SDP configuration."
+
+    def test_build_up_scan_config_with_invalid_dict(self, invalid_dict):
+        input_dict, attr, expected_msg = invalid_dict
+        output_msg = ConfigDictBuilder.build_up_scan_config(input_dict, attr)
+        assert output_msg == expected_msg
+
+    @pytest.fixture(params=[scan_config.copy()])
+    def empty_dict(self, request):
+        input_dict = request.param
+        input_dict["sdp"]["configure"] = {}
+        return input_dict, "sdp/attribute", "SDP Subarray reconfiguration command is not invoked."
+
+    def test_build_up_scan_config_with_empty_configure_dict(self, empty_dict):
+        input_dict, attr, expected_msg = empty_dict
+        output_msg = ConfigDictBuilder.build_up_scan_config(input_dict, attr)
+        assert output_msg == expected_msg
+
+
+     # build_up_csp_scan_config tests
+    def test_build_up_csp_scan_config(self):
+        pass
+
+Note:
+
+Since the device uses an inner thread, it is necessary to
+wait during the tests in order the let the device update itself.
+Hence, the sleep calls have to be secured enough not to produce
+any inconsistent behavior. However, the unittests need to run fast.
+Here, we use a factor 3 between the read period and the sleep calls.
+
+Look at devicetest examples for more advanced testing
+
+Device test case
 @pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy")
 
 class TestSubarrayNode(object):

@@ -89,7 +89,7 @@ class ConfigDictBuilder:
                 msg = "SDP Subarray reconfiguration command is not invoked."
                 return msg
         else:
-            msg = 'SDP configuration is empty. Aborting SDP configuration.'
+            msg = "SDP configuration is empty. Aborting SDP configuration."
             return msg
         return cmd_data
 
