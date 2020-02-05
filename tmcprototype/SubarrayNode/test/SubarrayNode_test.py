@@ -164,7 +164,7 @@ class TestElementDeviceData:
         invalid_scan_config = example_scan_configuration.pop("csp")
         scan_id, attr_map = func_args
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, scan_id, attr_map)
-        assert output is None
+        assert csp_cmd_data is None
 
 
 # Note:
