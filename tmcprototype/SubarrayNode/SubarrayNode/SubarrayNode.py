@@ -72,7 +72,8 @@ class SubarrayHealthState:
 class ElementDeviceData:
 
     @staticmethod
-    def build_up_sdp_cmd_data(scan_config, attribute_name):
+    def build_up_sdp_cmd_data(scan_config, cbf_out_link):
+        scan_config = scan_config.copy()
         scan_config.pop("pointing", None)
         scan_config.pop("dish", None)
         scan_config.pop("csp", None)
@@ -82,32 +83,44 @@ class ElementDeviceData:
             sdp_config = sdp_scan_config.get("configure")
             if sdp_config:
                 sdp_scan_config["configure"] = sdp_config[0]
-                sdp_scan_config["configure"][CONST.STR_CSP_CBFOUTLINK] = attribute_name
+                sdp_scan_config["configure"][CONST.STR_CSP_CBFOUTLINK] = cbf_out_link
                 cmd_data = tango.DeviceData()
                 cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
-                return None
+                raise KeyError("SDP Subarray reconfiguration command is not invoked.")
         else:
-            return None
+            raise KeyError("SDP configuration is empty. Aborting SDP configuration.")
         return cmd_data
 
     @staticmethod
-    def build_up_csp_cmd_data(scan_config, scan_id, attr_map):
-        attr_map_keys = list(attr_map.keys())
-
+    def build_up_csp_cmd_data(scan_config, scan_id, attr_name_map):
+        scan_config = scan_config.copy()
         scan_config.pop("dish", None)
         scan_config.pop("sdp", None)
         csp_scan_config = scan_config.get("csp", {})
+        attr_name_map_keys = list(attr_name_map.keys())
 
         if csp_scan_config:
-            csp_scan_config[attr_map_keys[0]] = attr_map[attr_map_keys[0]]
-            csp_scan_config[attr_map_keys[1]] = attr_map[attr_map_keys[1]]
+            for key, attribute_name in attr_name_map.items():
+                csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
             csp_scan_config["scanID"] = scan_id
             cmd_data = tango.DeviceData()
             cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
-            return None
+            raise KeyError("CSP configuration is empty. Aborting CSP configuration.")
+        return cmd_data
+
+    @staticmethod
+    def build_up_dsh_cmd_data(scan_config, only_dishconfig_flag):
+        scan_config = scan_config.copy()
+        if set(["pointing", "dish"]).issubset(scan_config.keys()) or only_dishconfig_flag:
+            scan_config.pop("sdp")
+            scan_config.pop("csp")
+            cmd_data = tango.DeviceData()
+            cmd_data.insert(tango.DevString, json.dumps(scan_config))
+        else:
+            raise KeyError("Dish configuration must be given. Aborting Dish configuration.")
         return cmd_data
 
 
@@ -213,7 +226,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 ObsState.IDLE:
             if len(self.dishPointingStateMap.values()) != 0:
                 if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                    if self.only_dishconfi_flag == True:
+                    if self.only_dishconfig_flag == True:
                         if self.isScanning == True:
                             self._obs_state = ObsState.SCANNING
                         else:
@@ -1038,7 +1051,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
         self._csp_sa_obs_state = ObsState.IDLE
         self._sdp_sa_obs_state = ObsState.IDLE
-        self.only_dishconfi_flag = False
+        self.only_dishconfig_flag = False
         self._endscan_stop = False
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
 
@@ -1157,58 +1170,54 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # --------
 
     def _configure_sdp(self):
-        scan_configuration_copy = self._scanConfiguration.copy()
-        attr = self.CspSubarrayFQDN + "/cbfOutputLink"
-        cmd_data = ElementDeviceData.build_up_sdp_cmd_data(scan_configuration_copy, attr)
-        if cmd_data:
-            self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmd_data)
-            self.logger.debug("SDP Configuration is initiated.")
-        else:
-            msg = "SDP configuration is empty. Aborting SDP configuration."
+        cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
+        try:
+            cmd_data = ElementDeviceData.build_up_sdp_cmd_data(self._scanConfiguration, cbf_out_link)
+        except KeyError as exception:
+            msg = exception.message
             self._read_activity_message = msg
             self.logger.debug(msg)
+        else:
+            self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmd_data)
+            self.logger.debug("SDP Configuration is initiated.")
 
     def _configure_csp(self):
-        attr_map = {
+        attr_name_map = {
             CONST.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
             CONST.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
         }
-        scan_configuration_copy = self._scanConfiguration.copy()
-        cmd_data = ElementDeviceData.build_up_csp_cmd_data(scan_configuration_copy, self._scan_id, attr_map)
-        if cmd_data:
-            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmd_data)
-            self.logger.debug("CSP Configuration is initiated.")
-        else:
-            msg = "CSP configuration is empty. Aborting CSP configuration."
+
+        try:
+            cmd_data = ElementDeviceData.build_up_csp_cmd_data(self._scanConfiguration, self._scan_id, attr_name_map)
+        except KeyError as exception:
+            msg = exception.message
             self._read_activity_message = msg
             self.logger.debug(msg)
+        else:
+            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmd_data)
+            self.logger.debug("CSP Configuration is initiated.")
 
     def _configure_dsh(self, argin):
-        if "sdp" not in self._scanConfiguration and "csp" not in self._scanConfiguration \
-                and "dish" in self._scanConfiguration:
-            self.only_dishconfi_flag = True
+        config_keys = self._scanConfiguration.keys()
+        if  not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
+            self.only_dishconfig_flag = True
 
-        if ("pointing" in self._scanConfiguration and "dish" in self._scanConfiguration) \
-            or (self.only_dishconfi_flag == True):
-            # Configuration of Dish
-            dishConfiguration = self._scanConfiguration.copy()
-            # Keep configuration specific to DISH and delete configuration of other nodes
-            dishConfiguration.pop("sdp")
-            dishConfiguration.pop("csp")
-            cmdData = tango.DeviceData()
-            cmdData.insert(tango.DevString, json.dumps(dishConfiguration))
-            # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
-            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmdData)
-            self.logger.debug("Dish Configuration is initiated.")
-            # Invoke Track command on the group of Dishes assigned to the Subarray
-            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
-            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmdData)
-            self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
-        else:
-            msg = "Dish configuration must be given. Aborting Dish configuration."
+        try:
+            cmd_data = ElementDeviceData.build_up_dsh_cmd_data(self._scanConfiguration,
+                                                               self.only_dishconfig_flag)
+        except KeyError as exception:
+            msg = exception.message
             # this is a fatal error
             self._read_activity_message = msg
             self.logger.error (msg)
+        else:
+            # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
+            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmd_data)
+            self.logger.debug("Dish Configuration is initiated.")
+            # Invoke Track command on the group of Dishes assigned to the Subarray
+            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
+            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmd_data)
+            self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
 
     @command(
         dtype_in='str',
