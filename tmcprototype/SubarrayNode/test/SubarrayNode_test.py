@@ -86,25 +86,38 @@ class TestSubarrayHealthState:
         assert result == expected_health_state
 
 
+@pytest.fixture(scope="function")
+def example_scan_configuration():
+    scan_config= json.loads('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                            '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                            '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                            '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                            '"corrBandwidth":0}]},"sdp":{"configure":'
+                            '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                            '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                            '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                            '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                            '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                            '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                            '{"fieldId":0,"intervalMs":1400}}}]}}')
+    return scan_config
+
+@pytest.fixture(scope="function")
+def func_args():
+    scan_id = 1
+    attr_map = {
+        "string1": "attr1",
+        "string2": "attr2"
+    }
+    return scan_id, attr_map
+
 class TestConfigDictBuilder:
-    scan_config = json.loads('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
-                             '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
-                             '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
-                             '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
-                             '"corrBandwidth":0}]},"sdp":{"configure":'
-                             '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
-                             '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
-                             '{"numStations":4,"numChannels":372,"numPolarisations":4,'
-                             '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
-                             '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
-                             '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
-                             '{"fieldId":0,"intervalMs":1400}}}]}}')
 
     # build_up_scan_config tests
-    @pytest.mark.parametrize("valid_dict", [scan_config.copy()])
-    def test_build_up_scan_config_with_valid_dict(self, valid_dict):
+    def test_build_up_scan_config_with_valid_dict(self, example_scan_configuration):
+        valid_dict = example_scan_configuration
         output_device_data = (
-        ConfigDictBuilder.build_up_scan_config(valid_dict, "sdp/attribute"))
+            ConfigDictBuilder.build_up_scan_config(valid_dict, "sdp/attribute"))
         expected_string_dict = ('{"scanID": 12345, "sdp": {"configure": '
                                 '{"id": "realtime-20190627-0001", "sbiId": "20190627-0001", '
                                 '"workflow": {"id": "vis_ingest", "type": "realtime", '
@@ -120,27 +133,43 @@ class TestConfigDictBuilder:
         assert expected_string_dict == output_device_data.extract()
         assert isinstance(output_device_data, tango.DeviceData)
 
-    @pytest.mark.parametrize("invalid_dict", [scan_config.copy().pop("sdp")])
-    def test_build_up_scan_config_with_invalid_dict(self, invalid_dict):
+    def test_build_up_scan_config_with_invalid_dict(self, example_scan_configuration):
+        invalid_dict = example_scan_configuration.pop("sdp")
         output_msg = ConfigDictBuilder.build_up_scan_config(invalid_dict, "sdp/attribute")
         expected_msg = "SDP configuration is empty. Aborting SDP configuration."
         assert output_msg == expected_msg
 
-    @pytest.fixture(params=[scan_config.copy()])
-    def empty_dict(self, request):
-        input_dict = request.param
-        input_dict["sdp"]["configure"] = {}
-        return input_dict, "sdp/attribute", "SDP Subarray reconfiguration command is not invoked."
-
-    def test_build_up_scan_config_with_empty_configure_dict(self, empty_dict):
-        input_dict, attr, expected_msg = empty_dict
-        output_msg = ConfigDictBuilder.build_up_scan_config(input_dict, attr)
+    def test_build_up_scan_config_with_empty_configure_dict(self, example_scan_configuration):
+        modified_dict = example_scan_configuration
+        modified_dict["sdp"]["configure"] = {}
+        output_msg = ConfigDictBuilder.build_up_scan_config(modified_dict, "sdp/attribute")
+        expected_msg = "SDP Subarray reconfiguration command is not invoked."
         assert output_msg == expected_msg
 
-
      # build_up_csp_scan_config tests
-    def test_build_up_csp_scan_config(self):
-        pass
+
+    def test_build_up_csp_scan_config_with_valid_dict(self, example_scan_configuration, func_args):
+        valid_dict = example_scan_configuration
+        scan_id, attr_map = func_args
+        output_device_data = (
+            ConfigDictBuilder.build_up_csp_scan_config(valid_dict, scan_id, attr_map))
+        expected_string_dict = ('{"frequencyBand": "1", "fsp": [{"fspID": 1, '
+                                '"functionMode": "CORR", "frequencySliceID": 1, '
+                                '"integrationTime": 1400, "corrBandwidth": 0}], '
+                                '"string1": "attr1", "string2": "attr2", "pointing": '
+                                '{"target": {"system": "ICRS", "name": "Polaris", "RA": '
+                                '"02:31:49.0946", "dec": "+89:15:50.7923"}}, "scanID": 1}')
+
+        assert expected_string_dict == output_device_data.extract()
+        assert isinstance(output_device_data, tango.DeviceData)
+
+    def test_build_up_csp_scan_config_with_invalid_or_empty_dict(self, example_scan_configuration, func_args):
+        invalid_dict = example_scan_configuration.pop("csp")
+        scan_id, attr_map = func_args
+        output_msg = ConfigDictBuilder.build_up_csp_scan_config(invalid_dict, scan_id, attr_map)
+        expected_msg = "CSP configuration is empty. Aborting CSP configuration."
+        assert output_msg == expected_msg
+
 
 # Note:
 
