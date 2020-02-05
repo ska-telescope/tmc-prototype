@@ -88,18 +88,18 @@ class TestSubarrayHealthState:
 
 @pytest.fixture(scope="function")
 def example_scan_configuration():
-    scan_config= json.loads('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
-                            '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
-                            '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
-                            '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
-                            '"corrBandwidth":0}]},"sdp":{"configure":'
-                            '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
-                            '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
-                            '{"numStations":4,"numChannels":372,"numPolarisations":4,'
-                            '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
-                            '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
-                            '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
-                            '{"fieldId":0,"intervalMs":1400}}}]}}')
+    scan_config = json.loads('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                             '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                             '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                             '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                             '"corrBandwidth":0}]},"sdp":{"configure":'
+                             '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                             '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                             '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                             '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                             '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                             '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                             '{"fieldId":0,"intervalMs":1400}}}]}}')
     return scan_config
 
 @pytest.fixture(scope="function")
@@ -135,16 +135,14 @@ class TestConfigDictBuilder:
 
     def test_build_up_scan_config_with_invalid_dict(self, example_scan_configuration):
         invalid_dict = example_scan_configuration.pop("sdp")
-        output_msg = ConfigDictBuilder.build_up_scan_config(invalid_dict, "sdp/attribute")
-        expected_msg = "SDP configuration is empty. Aborting SDP configuration."
-        assert output_msg == expected_msg
+        output = ConfigDictBuilder.build_up_scan_config(invalid_dict, "sdp/attribute")
+        assert output is None
 
     def test_build_up_scan_config_with_empty_configure_dict(self, example_scan_configuration):
         modified_dict = example_scan_configuration
         modified_dict["sdp"]["configure"] = {}
-        output_msg = ConfigDictBuilder.build_up_scan_config(modified_dict, "sdp/attribute")
-        expected_msg = "SDP Subarray reconfiguration command is not invoked."
-        assert output_msg == expected_msg
+        output = ConfigDictBuilder.build_up_scan_config(modified_dict, "sdp/attribute")
+        assert output is None
 
      # build_up_csp_scan_config tests
 
@@ -166,9 +164,8 @@ class TestConfigDictBuilder:
     def test_build_up_csp_scan_config_with_invalid_or_empty_dict(self, example_scan_configuration, func_args):
         invalid_dict = example_scan_configuration.pop("csp")
         scan_id, attr_map = func_args
-        output_msg = ConfigDictBuilder.build_up_csp_scan_config(invalid_dict, scan_id, attr_map)
-        expected_msg = "CSP configuration is empty. Aborting CSP configuration."
-        assert output_msg == expected_msg
+        output = ConfigDictBuilder.build_up_csp_scan_config(invalid_dict, scan_id, attr_map)
+        assert output is None
 
 
 # Note:
