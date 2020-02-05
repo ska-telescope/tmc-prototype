@@ -160,7 +160,13 @@ class TestElementDeviceData:
         assert expected_string_dict == csp_cmd_data.extract()
         assert isinstance(csp_cmd_data, tango.DeviceData)
 
-    def test_build_up_csp_cmd_data_with_invalid_or_empty__scan_configuration(self, example_scan_configuration, func_args):
+    def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, func_args):
+        empty_scan_config = {}
+        scan_id, attr_map = func_args
+        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(empty_scan_config, scan_id, attr_map)
+        assert csp_cmd_data is None
+
+    def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration, func_args):
         invalid_scan_config = example_scan_configuration.pop("csp")
         scan_id, attr_map = func_args
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, scan_id, attr_map)

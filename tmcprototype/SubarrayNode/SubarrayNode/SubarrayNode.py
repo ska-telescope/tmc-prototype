@@ -72,11 +72,11 @@ class SubarrayHealthState:
 class ElementDeviceData:
 
     @staticmethod
-    def build_up_sdp_cmd_data(scan_config_copy, attribute_name):
-        scan_config_copy.pop("pointing", None)
-        scan_config_copy.pop("dish", None)
-        scan_config_copy.pop("csp", None)
-        sdp_scan_config = scan_config_copy.get("sdp", {})
+    def build_up_sdp_cmd_data(scan_config, attribute_name):
+        scan_config.pop("pointing", None)
+        scan_config.pop("dish", None)
+        scan_config.pop("csp", None)
+        sdp_scan_config = scan_config.get("sdp", {})
 
         if sdp_scan_config:
             sdp_config = sdp_scan_config.get("configure")
@@ -84,7 +84,7 @@ class ElementDeviceData:
                 sdp_scan_config["configure"] = sdp_config[0]
                 sdp_scan_config["configure"][CONST.STR_CSP_CBFOUTLINK] = attribute_name
                 cmd_data = tango.DeviceData()
-                cmd_data.insert(tango.DevString, json.dumps(scan_config_copy))
+                cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
                 return None
         else:
@@ -92,17 +92,17 @@ class ElementDeviceData:
         return cmd_data
 
     @staticmethod
-    def build_up_csp_cmd_data(scan_config_copy, scan_id, attr_map):
+    def build_up_csp_cmd_data(scan_config, scan_id, attr_map):
         attr_map_keys = list(attr_map.keys())
 
-        scan_config_copy.pop("dish", None)
-        scan_config_copy.pop("sdp", None)
-        csp_scan_config = scan_config_copy.get("csp", {})
+        scan_config.pop("dish", None)
+        scan_config.pop("sdp", None)
+        csp_scan_config = scan_config.get("csp", {})
 
         if csp_scan_config:
             csp_scan_config[attr_map_keys[0]] = attr_map[attr_map_keys[0]]
             csp_scan_config[attr_map_keys[1]] = attr_map[attr_map_keys[1]]
-            csp_scan_config["pointing"] = scan_config_copy["pointing"]
+            csp_scan_config["pointing"] = scan_config["pointing"]
             csp_scan_config["scanID"] = scan_id
             cmd_data = tango.DeviceData()
             cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
