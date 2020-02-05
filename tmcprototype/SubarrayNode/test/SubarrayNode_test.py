@@ -139,17 +139,17 @@ class TestConfigDictBuilder:
     def test_build_up_csp_scan_config(self):
         pass
 
-Note:
+# Note:
 
-Since the device uses an inner thread, it is necessary to
-wait during the tests in order the let the device update itself.
-Hence, the sleep calls have to be secured enough not to produce
-any inconsistent behavior. However, the unittests need to run fast.
-Here, we use a factor 3 between the read period and the sleep calls.
+# Since the device uses an inner thread, it is necessary to
+# wait during the tests in order the let the device update itself.
+# Hence, the sleep calls have to be secured enough not to produce
+# any inconsistent behavior. However, the unittests need to run fast.
+# Here, we use a factor 3 between the read period and the sleep calls.
 
-Look at devicetest examples for more advanced testing
+# Look at devicetest examples for more advanced testing
 
-Device test case
+# Device test case
 @pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy")
 
 class TestSubarrayNode(object):
