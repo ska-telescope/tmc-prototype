@@ -69,10 +69,10 @@ class SubarrayHealthState:
             return HealthState.UNKNOWN
 
 
-class ConfigDictBuilder:
+class ElementDeviceData:
 
     @staticmethod
-    def build_up_scan_config(scan_config_copy, attribute_name):
+    def build_up_sdp_cmd_data(scan_config_copy, attribute_name):
         scan_config_copy.pop("pointing", None)
         scan_config_copy.pop("dish", None)
         scan_config_copy.pop("csp", None)
@@ -92,7 +92,7 @@ class ConfigDictBuilder:
         return cmd_data
 
     @staticmethod
-    def build_up_csp_scan_config(scan_config_copy, scan_id, attr_map):
+    def build_up_csp_cmd_data(scan_config_copy, scan_id, attr_map):
         attr_map_keys = list(attr_map.keys())
 
         scan_config_copy.pop("dish", None)
@@ -1159,7 +1159,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def _configure_sdp(self):
         scan_configuration_copy = self._scanConfiguration.copy()
         attr = self.CspSubarrayFQDN + "/cbfOutputLink"
-        cmd_data = ConfigDictBuilder.build_up_scan_config(scan_configuration_copy, attr)
+        cmd_data = ElementDeviceData.build_up_sdp_cmd_data(scan_configuration_copy, attr)
         if cmd_data:
             self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmd_data)
             self.logger.debug("SDP Configuration is initiated.")
@@ -1174,7 +1174,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             CONST.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
         }
         scan_configuration_copy = self._scanConfiguration.copy()
-        cmd_data = ConfigDictBuilder.build_up_csp_scan_config(scan_configuration_copy, self._scan_id, attr_map)
+        cmd_data = ElementDeviceData.build_up_csp_cmd_data(scan_configuration_copy, self._scan_id, attr_map)
         if cmd_data:
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmd_data)
             self.logger.debug("CSP Configuration is initiated.")

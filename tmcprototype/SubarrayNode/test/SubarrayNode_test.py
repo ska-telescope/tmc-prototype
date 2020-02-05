@@ -29,7 +29,7 @@ from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 from CONST import AdminMode, HealthState, ObsState, ObsMode
-from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState, ConfigDictBuilder
+from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState, ElementDeviceData
 
 
 @pytest.fixture(scope="function",
@@ -111,13 +111,13 @@ def func_args():
     }
     return scan_id, attr_map
 
-class TestConfigDictBuilder:
 
-    # build_up_scan_config tests
-    def test_build_up_scan_config_with_valid_dict(self, example_scan_configuration):
-        valid_dict = example_scan_configuration
-        output_device_data = (
-            ConfigDictBuilder.build_up_scan_config(valid_dict, "sdp/attribute"))
+class TestElementDeviceData:
+
+    # build_up_sdp_cmd_data tests
+    def test_build_up_sdp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
+        valid_scan_config = example_scan_configuration
+        sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config, "sdp/attribute")
         expected_string_dict = ('{"scanID": 12345, "sdp": {"configure": '
                                 '{"id": "realtime-20190627-0001", "sbiId": "20190627-0001", '
                                 '"workflow": {"id": "vis_ingest", "type": "realtime", '
@@ -130,27 +130,26 @@ class TestConfigDictBuilder:
                                 '"intervalMs": 1400}}, '
                                 '"cspCbfOutlinkAddress": "sdp/attribute"}}}')
 
-        assert expected_string_dict == output_device_data.extract()
-        assert isinstance(output_device_data, tango.DeviceData)
+        assert expected_string_dict == sdp_cmd_data.extract()
+        assert isinstance(sdp_cmd_data, tango.DeviceData)
 
-    def test_build_up_scan_config_with_invalid_dict(self, example_scan_configuration):
-        invalid_dict = example_scan_configuration.pop("sdp")
-        output = ConfigDictBuilder.build_up_scan_config(invalid_dict, "sdp/attribute")
-        assert output is None
+    def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
+        invalid_scan_config = example_scan_configuration.pop("sdp")
+        sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config, "sdp/attribute")
+        assert sdp_cmd_data is None
 
-    def test_build_up_scan_config_with_empty_configure_dict(self, example_scan_configuration):
-        modified_dict = example_scan_configuration
-        modified_dict["sdp"]["configure"] = {}
-        output = ConfigDictBuilder.build_up_scan_config(modified_dict, "sdp/attribute")
-        assert output is None
+    def test_build_up_sdp_cmd_data_with_modified_scan_configuration(self, example_scan_configuration):
+        modified_scan_config = example_scan_configuration
+        modified_scan_config["sdp"]["configure"] = {}
+        sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(modified_scan_config, "sdp/attribute")
+        assert sdp_cmd_data is None
 
-     # build_up_csp_scan_config tests
+     # build_up_csp_cmd_data tests
 
-    def test_build_up_csp_scan_config_with_valid_dict(self, example_scan_configuration, func_args):
-        valid_dict = example_scan_configuration
+    def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, func_args):
+        valid_scan_config = example_scan_configuration
         scan_id, attr_map = func_args
-        output_device_data = (
-            ConfigDictBuilder.build_up_csp_scan_config(valid_dict, scan_id, attr_map))
+        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, scan_id, attr_map)
         expected_string_dict = ('{"frequencyBand": "1", "fsp": [{"fspID": 1, '
                                 '"functionMode": "CORR", "frequencySliceID": 1, '
                                 '"integrationTime": 1400, "corrBandwidth": 0}], '
@@ -158,13 +157,13 @@ class TestConfigDictBuilder:
                                 '{"target": {"system": "ICRS", "name": "Polaris", "RA": '
                                 '"02:31:49.0946", "dec": "+89:15:50.7923"}}, "scanID": 1}')
 
-        assert expected_string_dict == output_device_data.extract()
-        assert isinstance(output_device_data, tango.DeviceData)
+        assert expected_string_dict == csp_cmd_data.extract()
+        assert isinstance(csp_cmd_data, tango.DeviceData)
 
-    def test_build_up_csp_scan_config_with_invalid_or_empty_dict(self, example_scan_configuration, func_args):
-        invalid_dict = example_scan_configuration.pop("csp")
+    def test_build_up_csp_cmd_data_with_invalid_or_empty__scan_configuration(self, example_scan_configuration, func_args):
+        invalid_scan_config = example_scan_configuration.pop("csp")
         scan_id, attr_map = func_args
-        output = ConfigDictBuilder.build_up_csp_scan_config(invalid_dict, scan_id, attr_map)
+        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, scan_id, attr_map)
         assert output is None
 
 
