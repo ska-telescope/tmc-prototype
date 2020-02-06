@@ -1166,18 +1166,29 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # --------
     # Commands
     # --------
-
-    def _configure_sdp(self, scan_configuration):
-        cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
+    def _configure_leaf_nodes(self, proxy, cmd_name, cmd_data):
         try:
-            cmd_data = ElementDeviceData.build_up_sdp_cmd_data(scan_configuration, cbf_out_link)
+            proxy.command_inout(cmd_name, cmd_data)
+            self.logger.debug("Leaf node configured ..")
+        except DevFailed as df:
+            self.logger.error("Failed to configure ....")
+
+    def _create_cmd_data(self, method_name, scan_config, *args):
+        try:
+            method = getattr(ElementDeviceData, method_name)
+            cmd_data = method(scan_config, *args)
         except KeyError as exception:
             msg = exception.message
             self._read_activity_message = msg
             self.logger.debug(msg)
-        else:
-            self._sdp_subarray_ln_proxy.Configure(cmd_data)
-            self.logger.debug("SDP Configuration is initiated.")
+            return
+        return cmd_data
+
+
+    def _configure_sdp(self, scan_configuration):
+        cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
+        cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration, cbf_out_link)
+        self._configure_leaf_nodes(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
         attr_name_map = {
@@ -1185,37 +1196,24 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             CONST.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
         }
 
-        try:
-            cmd_data = ElementDeviceData.build_up_csp_cmd_data(scan_configuration, self._scan_id, attr_name_map)
-        except KeyError as exception:
-            msg = exception.message
-            self._read_activity_message = msg
-            self.logger.debug(msg)
-        else:
-            self._csp_subarray_ln_proxy.ConfigureScan(cmd_data)
-            self.logger.debug("CSP Configuration is initiated.")
+        cmd_data = self._create_cmd_data(
+            "build_up_csp_cmd_data", scan_configuration, self._scan_id, attr_name_map)
+        self._configure_leaf_nodes(self._csp_subarray_ln_proxy, "ConfigureScan", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
-        config_keys = scan_configurationn.keys()
+        config_keys = scan_configuration.keys()
         if  not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
             self.only_dishconfig_flag = True
 
+        cmd_data = self._create_cmd_data(
+            "build_up_dsh_cmd_data", scan_configuration, self.only_dishconfig_flag)
+        self._configure_leaf_nodes(self._dish_leaf_node_group, "Configure", cmd_data)
+        
         try:
-            cmd_data = ElementDeviceData.build_up_dsh_cmd_data(scan_configuration,
-                                                               self.only_dishconfig_flag)
-        except KeyError as exception:
-            msg = exception.message
-            # this is a fatal error
-            self._read_activity_message = msg
-            self.logger.error (msg)
-        else:
-            # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
-            self._dish_leaf_node_group.Configure(cmd_data)
-            self.logger.debug("Dish Configuration is initiated.")
-            # Invoke Track command on the group of Dishes assigned to the Subarray
-            self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
-            self._dish_leaf_node_group.Track(cmd_data)
+            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmd_data)
             self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
+        except DevFailed as df:
+            self.logger.error("Failed to execute Track command on DSH Leaf Nodes.")
 
     @command(
         dtype_in='str',
@@ -1250,7 +1248,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         if self._obs_state != ObsState.IDLE:
             return
-        
+
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
