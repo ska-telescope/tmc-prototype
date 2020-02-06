@@ -1167,10 +1167,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # Commands
     # --------
 
-    def _configure_sdp(self):
+    def _configure_sdp(self, scan_configuration):
         cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
         try:
-            cmd_data = ElementDeviceData.build_up_sdp_cmd_data(self._scanConfiguration, cbf_out_link)
+            cmd_data = ElementDeviceData.build_up_sdp_cmd_data(scan_configuration, cbf_out_link)
         except KeyError as exception:
             msg = exception.message
             self._read_activity_message = msg
@@ -1179,14 +1179,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmd_data)
             self.logger.debug("SDP Configuration is initiated.")
 
-    def _configure_csp(self):
+    def _configure_csp(self, scan_configuration):
         attr_name_map = {
             CONST.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
             CONST.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
         }
 
         try:
-            cmd_data = ElementDeviceData.build_up_csp_cmd_data(self._scanConfiguration, self._scan_id, attr_name_map)
+            cmd_data = ElementDeviceData.build_up_csp_cmd_data(scan_configuration, self._scan_id, attr_name_map)
         except KeyError as exception:
             msg = exception.message
             self._read_activity_message = msg
@@ -1195,13 +1195,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmd_data)
             self.logger.debug("CSP Configuration is initiated.")
 
-    def _configure_dsh(self, argin):
-        config_keys = self._scanConfiguration.keys()
+    def _configure_dsh(self, scan_configuration, argin):
+        config_keys = scan_configurationn.keys()
         if  not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
             self.only_dishconfig_flag = True
 
         try:
-            cmd_data = ElementDeviceData.build_up_dsh_cmd_data(self._scanConfiguration,
+            cmd_data = ElementDeviceData.build_up_dsh_cmd_data(scan_configuration,
                                                                self.only_dishconfig_flag)
         except KeyError as exception:
             msg = exception.message
@@ -1252,7 +1252,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             return
         
         try:
-            self._scanConfiguration = json.loads(argin)
+            scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = CONST.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
@@ -1263,27 +1263,27 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
         self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
         
-        if "scanID" not in self._scanConfiguration:
+        if "scanID" not in scan_configuration:
             log_message = "'scanID' must be given. Aborting configuration."
             self.logger.error(log_message)
             self._read_activity_message = log_message
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, log_message,
                                          CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
 
-        self._scan_id = str(self._scanConfiguration["scanID"])
+        self._scan_id = str(scan_configuration["scanID"])
         self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
                                 for _ in range(4))
         self.logger.info(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
 
-        self._configure_csp()
+        self._configure_csp(scan_configuration)
 
         time.sleep(2)
 
         # Configuration of SDP
-        self._configure_sdp()
+        self._configure_sdp(scan_configuration)
 
         # To check Dishonly configuration
-        self._configure_dsh(argin)
+        self._configure_dsh(scan_configuration, argin)
 
         ## PROTECTED REGION END #    //  SubarrayNode.Configure
 
