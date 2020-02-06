@@ -685,7 +685,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 Mandatory JSON object consisting of
 
                 receptorIDList:
-                    DevVarStringArray
+                    DevVarString
                     The individual string should contain dish numbers in string format
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
         Example:

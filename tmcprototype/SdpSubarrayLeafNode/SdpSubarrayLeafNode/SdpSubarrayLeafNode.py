@@ -107,7 +107,8 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     receiveAddresses = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
-        doc='This is a forwarded attribute from SDP Master which depicts State of the SDP.'
+        doc='This attribute is used for testing purposes. In the unit test cases, '
+            'it is used to provide FQDN of receiveAddresses attribute from SDP.',
     )
 
     sdpSubarrayHealthState = attribute(
@@ -124,7 +125,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     activeProcessingBlocks = attribute(
         dtype='str',
-        doc='This is a forwarded attribute from SDP Subarray which depicts the active Processing Blocks in '
+        doc='This is a attribute from SDP Subarray which depicts the active Processing Blocks in '
             'the SDP Subarray.',
     )
 
@@ -287,7 +288,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
         """
         Assigns resources to given SDP subarray.
-        For PI#3 this command will be provided as a noop placeholder from SDP subarray.
+        This command is provided as a noop placeholder from SDP subarray.
         Eventually this will likely take a JSON string specifying the resource request.
 
         :param argin: The string in JSON format. The JSON contains following values:
@@ -306,7 +307,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 }
             Note: Enter input without spaces  as:{"processingBlockIdList": ["0001", "0002"]}
 
-        :return: None.
+        :return: Empty String.
         """
         exception_message = []
         exception_count = 0
