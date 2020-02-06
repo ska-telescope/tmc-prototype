@@ -74,33 +74,31 @@ class ElementDeviceData:
     @staticmethod
     def build_up_sdp_cmd_data(scan_config, cbf_out_link):
         scan_config = scan_config.copy()
-        scan_config.pop("pointing", None)
-        scan_config.pop("dish", None)
-        scan_config.pop("csp", None)
         sdp_scan_config = scan_config.get("sdp", {})
 
         if sdp_scan_config:
             sdp_config = sdp_scan_config.get("configure")
             if sdp_config:
+                scan_config.pop("pointing", None)
+                scan_config.pop("dish", None)
+                scan_config.pop("csp", None)
                 sdp_scan_config["configure"] = sdp_config[0]
                 sdp_scan_config["configure"][CONST.STR_CSP_CBFOUTLINK] = cbf_out_link
                 cmd_data = tango.DeviceData()
                 cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
-                raise KeyError("SDP Subarray reconfiguration command is not invoked.")
+                raise KeyError("SDP Subarray configuration is empty. Command data not built up")
         else:
-            raise KeyError("SDP configuration is empty. Aborting SDP configuration.")
+            raise KeyError("SDP configuration must be given. Aborting SDP configuration.")
         return cmd_data
 
     @staticmethod
     def build_up_csp_cmd_data(scan_config, scan_id, attr_name_map):
         scan_config = scan_config.copy()
-        scan_config.pop("dish", None)
-        scan_config.pop("sdp", None)
         csp_scan_config = scan_config.get("csp", {})
-        attr_name_map_keys = list(attr_name_map.keys())
 
         if csp_scan_config:
+            attr_name_map_keys = list(attr_name_map.keys())
             for key, attribute_name in attr_name_map.items():
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
@@ -108,7 +106,7 @@ class ElementDeviceData:
             cmd_data = tango.DeviceData()
             cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
-            raise KeyError("CSP configuration is empty. Aborting CSP configuration.")
+            raise KeyError("CSP configuration must be given. Aborting CSP configuration.")
         return cmd_data
 
     @staticmethod
@@ -1249,8 +1247,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :return: None
         """
-        exception_count = 0
-        exception_message = []
 
         if self._obs_state != ObsState.IDLE:
             return

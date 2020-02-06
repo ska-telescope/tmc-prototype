@@ -214,7 +214,7 @@ class TestElementDeviceData:
         invalid_scan_config = example_scan_configuration.pop("sdp")
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config, "cbf/attribute")
-        expected_msg = "SDP configuration is empty. Aborting SDP configuration."
+        expected_msg = "SDP configuration must be given. Aborting SDP configuration."
         assert exception.value.args[0] == expected_msg
 
     def test_build_up_sdp_cmd_data_with_modified_scan_configuration(self, example_scan_configuration):
@@ -222,7 +222,7 @@ class TestElementDeviceData:
         modified_scan_config["sdp"]["configure"] = {}
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_sdp_cmd_data(modified_scan_config, "cbf/attribute")
-        expected_msg = "SDP Subarray reconfiguration command is not invoked."
+        expected_msg = "SDP configuration must be given. Aborting SDP configuration."
         assert exception.value.args[0] == expected_msg
 
      # tests for build_up_csp_cmd_data
@@ -265,7 +265,7 @@ class TestElementDeviceData:
         scan_id, attr_name_map = csp_func_args
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_csp_cmd_data(empty_scan_config, scan_id, attr_name_map)
-        expected_msg = "CSP configuration is empty. Aborting CSP configuration."
+        expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
     def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration, csp_func_args):
@@ -273,7 +273,7 @@ class TestElementDeviceData:
         scan_id, attr_name_map = csp_func_args
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, scan_id, attr_name_map)
-        expected_msg = "CSP configuration is empty. Aborting CSP configuration."
+        expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
     # tests for build_up_dsh_cmd_data
