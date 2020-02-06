@@ -1,3 +1,55 @@
+# ENUMS
+from enum import IntEnum, unique
+
+@unique
+class HealthState(IntEnum):
+    OK = 0
+    DEGRADED = 1
+    FAILED = 2
+    UNKNOWN = 3
+
+
+@unique
+class PointingState(IntEnum):
+    READY = 0
+    SLEW = 1
+    TRACK = 2
+    SCAN = 3
+    RESERVED = 4
+
+
+@unique
+class AdminMode(IntEnum):
+    ONLINE = 0
+    OFFLINE = 1
+    MAINTENANCE = 2
+    NOTIFIED = 3
+    RESERVED = 4
+
+
+@unique
+class ObsState(IntEnum):
+    IDLE = 0
+    CONFIGURING = 1
+    READY = 2
+    SCANNING = 3
+    PAUSED = 4
+    ABORTED = 5
+    FAULT = 6
+
+
+@unique
+class ObsMode(IntEnum):
+    IDLE = 0
+    IMAGING = 1
+    PULSARSEARCH = 2
+    PULSARTIMING = 3
+    DYNAMICSPECTRUM = 4
+    TRANSIENTSEARCH = 5
+    VLBI = 6
+    CALIBRATION = 7
+
+
 # In/Out command constants
 CMD_SET_STOW_MODE = "SetStowMode"
 CMD_SET_STANDBY_MODE = "SetStandbyLPMode"
@@ -75,10 +127,5 @@ ENUM_LAB_DEGRADED = "DEGRADED"
 ENUM_LAB_FAILED = "FAILED"
 ENUM_LAB_UNKNOWN = "UNKNOWN"
 
-#ENUMS
-# healthState
-ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
-# adminMode
-ENUM_ONLINE, ENUM_OFFLINE, ENUM_MAINTENANCE, ENUM_NOTFITTED, ENUM_RESERVED = list(range(0, 5))
 #INTEGERS
 INT_SKA_LEVEL = 1
