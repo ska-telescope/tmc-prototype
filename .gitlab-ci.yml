@@ -23,7 +23,6 @@ stages:
   - linting
   - publish
   - pages
-  - trigger
 
 build CentralNode wheel for publication: # Executed on a tag
   stage: build
@@ -366,11 +365,3 @@ create ci metrics:
   artifacts:
     paths:
       - ./build
-
-trigger:
-  image: appropriate/curl
-  stage: trigger
-  tags:
-  - docker-executor
-  script:
-  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH -F "variables[HELM_CHART]=tmc-proto" https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
