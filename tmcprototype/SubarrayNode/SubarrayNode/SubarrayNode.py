@@ -1176,7 +1176,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._read_activity_message = msg
             self.logger.debug(msg)
         else:
-            self._sdp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURE, cmd_data)
+            self._sdp_subarray_ln_proxy.Configure(cmd_data)
             self.logger.debug("SDP Configuration is initiated.")
 
     def _configure_csp(self, scan_configuration):
@@ -1192,7 +1192,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._read_activity_message = msg
             self.logger.debug(msg)
         else:
-            self._csp_subarray_ln_proxy.command_inout(CONST.CMD_CONFIGURESCAN, cmd_data)
+            self._csp_subarray_ln_proxy.ConfigureScan(cmd_data)
             self.logger.debug("CSP Configuration is initiated.")
 
     def _configure_dsh(self, scan_configuration, argin):
@@ -1210,11 +1210,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.error (msg)
         else:
             # Invoke CONFIGURE command on the group of Dishes assigned to the Subarray
-            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmd_data)
+            self._dish_leaf_node_group.Configure(cmd_data)
             self.logger.debug("Dish Configuration is initiated.")
             # Invoke Track command on the group of Dishes assigned to the Subarray
             self._read_activity_message = CONST.STR_TRACK_IP_ARG + argin[0]
-            self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmd_data)
+            self._dish_leaf_node_group.Track(cmd_data)
             self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
 
     @command(
