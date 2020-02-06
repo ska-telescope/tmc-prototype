@@ -1596,21 +1596,21 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         '''
         Iniialises connection with database
         '''
-        # self.logger.info(os.environ['MYSQL_HOST'])
-        # connection = mysql.connector.connect(
-        #     host=os.environ['MYSQL_HOST'],
-        #     user=os.environ['MYSQL_USER'],
-        #     passwd=os.environ['MYSQL_PASSWORD'],
-        #     database=os.environ['MYSQL_DATABASE'],
-        #     connect_timeout=60000
-        #     )
+        self.logger.info(os.environ['MYSQL_HOST'])
         connection = mysql.connector.connect(
-            host="tmc-db",
-            user="tango",
-            passwd="tango",
-            database="tmc_recoverability"#,
-            # connect_timeout=60000
-        )
+            host=os.environ['MYSQL_HOST'],
+            user=os.environ['MYSQL_USER'],
+            passwd=os.environ['MYSQL_PASSWORD'],
+            database=os.environ['MYSQL_DATABASE'],
+            connect_timeout=600000
+            )
+        # connection = mysql.connector.connect(
+        #     host="tmc-db",
+        #     user="tango",
+        #     passwd="tango",
+        #     database="tmc_recoverability",
+        #     connect_timeout=200
+        # )
         self.logger.info("Database connection is successful.")
         return connection
 
