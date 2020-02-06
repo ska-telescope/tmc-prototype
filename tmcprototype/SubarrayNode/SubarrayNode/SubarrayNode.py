@@ -37,7 +37,7 @@ from future.utils import with_metaclass
 
 # Additional import
 import CONST
-from CONST import AdminMode, HealthState, ObsMode, ObsState, PointingState
+from .CONST import AdminMode, HealthState, ObsMode, ObsState, PointingState
 from skabase.SKASubarray.SKASubarray import SKASubarray
 
 
