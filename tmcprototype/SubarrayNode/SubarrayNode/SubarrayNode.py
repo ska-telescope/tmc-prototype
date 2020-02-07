@@ -1166,9 +1166,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # --------
     # Commands
     # --------
-    def _configure_leaf_nodes(self, proxy, cmd_name, cmd_data):
+    def _configure_leaf_nodes(self, device_proxy, cmd_name, cmd_data):
         try:
-            proxy.command_inout(cmd_name, cmd_data)
+            device_proxy.command_inout(cmd_name, cmd_data)
             self.logger.debug("{} configured succesfully.".format(proxy.dev_name()))
         except DevFailed as df:
             log_message = df[0].desc
