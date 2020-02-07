@@ -1274,13 +1274,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.logger.info(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
 
         self._configure_csp(scan_configuration)
-
         time.sleep(2)
-
-        # Configuration of SDP
         self._configure_sdp(scan_configuration)
-
-        # To check Dishonly configuration
         self._configure_dsh(scan_configuration, argin)
 
         ## PROTECTED REGION END #    //  SubarrayNode.Configure
