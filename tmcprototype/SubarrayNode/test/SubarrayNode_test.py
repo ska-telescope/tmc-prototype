@@ -163,7 +163,6 @@ def csp_func_args():
 
 class TestElementDeviceData:
 
-    # tests for build_up_sdp_cmd_data
     def test_build_up_sdp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
         valid_scan_config = example_scan_configuration
         sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config, "cbf/attribute")
@@ -207,8 +206,8 @@ class TestElementDeviceData:
 
         expected_string_dict = json.dumps(expected_string_dict)
 
-        assert expected_string_dict == sdp_cmd_data.extract()
         assert isinstance(sdp_cmd_data, tango.DeviceData)
+        assert expected_string_dict == sdp_cmd_data.extract()
 
     def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
         invalid_scan_config = example_scan_configuration.pop("sdp")
@@ -225,7 +224,6 @@ class TestElementDeviceData:
         expected_msg = "SDP Subarray configuration is empty. Command data not built up"
         assert exception.value.args[0] == expected_msg
 
-     # tests for build_up_csp_cmd_data
     def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, csp_func_args):
         valid_scan_config = example_scan_configuration
         scan_id, attr_name_map = csp_func_args
@@ -257,8 +255,8 @@ class TestElementDeviceData:
 
         expected_string_dict = json.dumps(expected_string_dict)
 
-        assert expected_string_dict == csp_cmd_data.extract()
         assert isinstance(csp_cmd_data, tango.DeviceData)
+        assert expected_string_dict == csp_cmd_data.extract()
 
     def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, csp_func_args):
         empty_scan_config = {}
@@ -276,7 +274,6 @@ class TestElementDeviceData:
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
-    # tests for build_up_dsh_cmd_data
     def test_build_up_dsh_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
         valid_scan_config = example_scan_configuration
         dsh_cmd_data = ElementDeviceData.build_up_dsh_cmd_data(valid_scan_config, True)
@@ -284,8 +281,8 @@ class TestElementDeviceData:
         valid_scan_config.pop("csp")
         expected_string_dict = json.dumps(valid_scan_config)
 
-        assert expected_string_dict == dsh_cmd_data.extract()
         assert isinstance(dsh_cmd_data, tango.DeviceData)
+        assert expected_string_dict == dsh_cmd_data.extract()
 
     def test_build_up_dsh_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
         invalid_scan_config = example_scan_configuration.pop("dish")
