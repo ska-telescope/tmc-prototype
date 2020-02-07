@@ -76,7 +76,6 @@ function getVersion() {
 #	fi
 
 	if hasChanges -eq 1; then
-	  git status .
 	  result="$result-dirty"
   fi
   echo $result
