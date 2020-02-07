@@ -222,7 +222,7 @@ class TestElementDeviceData:
         modified_scan_config["sdp"]["configure"] = {}
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_sdp_cmd_data(modified_scan_config, "cbf/attribute")
-        expected_msg = "SDP configuration must be given. Aborting SDP configuration."
+        expected_msg = "SDP Subarray configuration is empty. Command data not built up"
         assert exception.value.args[0] == expected_msg
 
      # tests for build_up_csp_cmd_data
