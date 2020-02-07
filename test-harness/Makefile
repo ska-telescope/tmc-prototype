@@ -36,6 +36,7 @@ test:
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
 #	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
+
 #	cd /app/tmcprototype/DishMaster && python setup.py test | tee setup_py_test.stdout
 #	mv /app/tmcprototype/DishMaster/dishmaster_coverage /build/dishmaster_coverage
 #	cd /app/tmcprototype/DishLeafNode && python setup.py test | tee setup_py_test.stdout
@@ -49,8 +50,9 @@ test:
 #	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test | tee setup_py_test.stdout
 #	mv /app/tmcprototype/SdpSubarrayLeafNode/sdpsubarrayleafnode_coverage /build/sdpsubarrayleafnode_coverage
 	cd /app/tmcprototype/SubarrayNode && python setup.py test | tee setup_py_test.stdout
+
 	mv /app/tmcprototype/SubarrayNode/subarraynode_coverage /build/subarraynode_coverage
-	cd /app/tmcprototype/CentralNode && python setup.py test | tee setup_py_test.stdout
+	cd /app/tmcprototype/CentralNode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/CentralNode/centralnode_coverage /build/centralnode_coverage
 	# Combine raw output from the coverage files of all the packages/devices and export to XML file
 	cd /build && coverage combine dishmaster_coverage dishleafnode_coverage cspmasterleafnode_coverage \

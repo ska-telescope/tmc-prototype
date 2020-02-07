@@ -21,12 +21,71 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
+# Imports
+import time
+import pytest
 import tango
 from tango import DevState
-import pytest
-from SubarrayNode.SubarrayNode import SubarrayNode
+from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
-import time
+from CONST import AdminMode, HealthState, ObsState, ObsMode
+from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
+
+
+
+@pytest.fixture(scope="function",
+                params=[HealthState.OK, HealthState.DEGRADED,
+                        HealthState.FAILED, HealthState.UNKNOWN])
+def valid_health_state(request):
+    return request.param
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ([HealthState.OK], HealthState.OK),
+        ([HealthState.FAILED], HealthState.FAILED),
+        ([HealthState.DEGRADED], HealthState.DEGRADED),
+        ([HealthState.UNKNOWN], HealthState.UNKNOWN),
+        ([HealthState.OK, HealthState.FAILED], HealthState.FAILED),
+        ([HealthState.OK, HealthState.DEGRADED], HealthState.DEGRADED),
+        ([HealthState.OK, HealthState.UNKNOWN], HealthState.UNKNOWN),
+        ([HealthState.FAILED, HealthState.DEGRADED], HealthState.FAILED),
+        ([HealthState.FAILED, HealthState.UNKNOWN], HealthState.FAILED),
+        ([HealthState.DEGRADED, HealthState.UNKNOWN], HealthState.DEGRADED),
+        ([HealthState.OK, HealthState.FAILED, HealthState.DEGRADED], HealthState.FAILED),
+        ([HealthState.OK, HealthState.FAILED, HealthState.UNKNOWN], HealthState.FAILED),
+        ([HealthState.OK, HealthState.UNKNOWN, HealthState.DEGRADED],
+         HealthState.DEGRADED),
+        ([HealthState.FAILED, HealthState.UNKNOWN, HealthState.DEGRADED],
+         HealthState.FAILED),
+        ([HealthState.OK, HealthState.FAILED, HealthState.UNKNOWN, HealthState.DEGRADED],
+         HealthState.FAILED),
+                ])
+def health_states_and_expected_aggregate(request):
+    states_in, expected_state_out = request.param
+    return states_in, expected_state_out
+
+
+class TestSubarrayHealthState:
+
+    def test_generate_health_state_log_msg_valid(self, valid_health_state):
+        msg = SubarrayHealthState.generate_health_state_log_msg(
+            valid_health_state, "my/dev/name", None
+        )
+        assert msg == "healthState of my/dev/name :-> {}".format(valid_health_state.name)
+
+    def test_generate_health_state_log_msg_invalid(self):
+        msg = SubarrayHealthState.generate_health_state_log_msg(
+            "not a health state enum", "my/dev/name", None
+        )
+        assert msg == "healthState event returned unknown value \nNone"
+
+    def test_calculate_health_state(self, health_states_and_expected_aggregate):
+        health_states, expected_health_state = health_states_and_expected_aggregate
+        result = SubarrayHealthState.calculate_health_state(health_states)
+        assert result == expected_health_state
+
 
 # Note:
 #
@@ -37,6 +96,7 @@ import time
 # Here, we use a factor 3 between the read period and the sleep calls.
 #
 # Look at devicetest examples for more advanced testing
+
 
 QUERY = '''CREATE TABLE pet (name VARCHAR(20), owner VARCHAR(20),
         species VARCHAR(20), sex CHAR(1), birth DATE, death DATE);'''
@@ -493,6 +553,5 @@ class TestSubarrayNode(object):
     #     tango_context.device.loggingTargets = ['console::cout']
     #     assert 'console::cout' in tango_context.device.loggingTargets
     #     # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
-    #
     #
     #
