@@ -113,8 +113,8 @@ class ElementDeviceData:
     def build_up_dsh_cmd_data(scan_config, only_dishconfig_flag):
         scan_config = scan_config.copy()
         if set(["pointing", "dish"]).issubset(scan_config.keys()) or only_dishconfig_flag:
-            scan_config.pop("sdp")
-            scan_config.pop("csp")
+            scan_config.pop("sdp", None)
+            scan_config.pop("csp", None)
             cmd_data = tango.DeviceData()
             cmd_data.insert(tango.DevString, json.dumps(scan_config))
         else:
