@@ -1171,7 +1171,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             proxy.command_inout(cmd_name, cmd_data)
             self.logger.debug("{} configured succesfully.".format(proxy.dev_name()))
         except DevFailed as df:
-            log_message = df
+            log_message = df[0].desc
             self._read_activity_message = log_message
             self.logger.error("Failed to configure {}.".format(proxy.dev_name()))
             raise
@@ -1181,12 +1181,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             method = getattr(ElementDeviceData, method_name)
             cmd_data = method(scan_config, *args)
         except KeyError as kerr:
-            log_message = kerr
+            log_message = kerr.args[0]
             self._read_activity_message = log_message
             self.logger.debug(log_message)
             raise
         return cmd_data
-
 
     def _configure_sdp(self, scan_configuration):
         cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
@@ -1214,15 +1213,17 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         try:
             self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmd_data)
         except DevFailed as df:
-            msg = "Dish configuration must be given. Aborting Dish configuration."
-            self._read_activity_message = msg
-            self.logger.error (msg)
+            log_message = "Dish configuration must be given. Aborting Dish configuration."
+            self._read_activity_message = log_message
+            self.logger.error (log_message)
 
         try:
             self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmd_data)
             self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
         except DevFailed as df:
-            self.logger.error("Failed to execute Track command on DSH Leaf Nodes.")
+            log_message = "Failed to execute Track command on DSH Leaf Nodes."
+            self._read_activity_message = log_message
+            self.logger.error(log_message)
 
     @command(
         dtype_in='str',
