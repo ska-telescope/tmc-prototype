@@ -1169,19 +1169,22 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def _configure_leaf_nodes(self, proxy, cmd_name, cmd_data):
         try:
             proxy.command_inout(cmd_name, cmd_data)
-            self.logger.debug("Leaf node configured ..")
+            self.logger.debug("{} configured succesfully.".format(proxy.dev_name()))
         except DevFailed as df:
-            self.logger.error("Failed to configure ....")
+            log_message = df
+            self._read_activity_message = log_message
+            self.logger.error("Failed to configure {}.".format(proxy.dev_name()))
+            raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
         try:
             method = getattr(ElementDeviceData, method_name)
             cmd_data = method(scan_config, *args)
-        except KeyError as exception:
-            msg = exception.message
-            self._read_activity_message = msg
-            self.logger.debug(msg)
-            return
+        except KeyError as kerr:
+            log_message = kerr
+            self._read_activity_message = log_message
+            self.logger.debug(log_message)
+            raise
         return cmd_data
 
 
@@ -1207,8 +1210,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         cmd_data = self._create_cmd_data(
             "build_up_dsh_cmd_data", scan_configuration, self.only_dishconfig_flag)
-        self._configure_leaf_nodes(self._dish_leaf_node_group, "Configure", cmd_data)
-        
+
+        try:
+            self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmd_data)
+        except DevFailed as df:
+            msg = "Dish configuration must be given. Aborting Dish configuration."
+            self._read_activity_message = msg
+            self.logger.error (msg)
+
         try:
             self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmd_data)
             self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
