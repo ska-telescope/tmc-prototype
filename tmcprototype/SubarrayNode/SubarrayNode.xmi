@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
   <classes name="SubarrayNode" pogoRevision="9.6">
-    <description description="Provides the monitoring and control interface required by users as well as &#xA;other TM Components (such as OET, Central Node) for a Subarray." title="Subarray Node" sourcePath="/home/user/Desktop/SubarrayXmi" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
+    <description description="Provides the monitoring and control interface required by users as well as &#xA;other TM Components (such as OET, Central Node) for a Subarray." title="Subarray Node" sourcePath="/home/user/Desktop" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
-      <inheritances classname="SKAObsDevice" sourcePath="../../projects/tmc-prototype/tmcprototype/SubarrayNode"/>
+      <inheritances classname="SKAObsDevice" sourcePath="../projects/tmc-prototype/tmcprototype/SubarrayNode"/>
       <inheritances classname="SKASubarray" sourcePath="/home/user/projects/lmc-base-classes/skabase/SKASubarray"/>
       <identification contact="at gmail.com - jyotin.ska" author="jyotin.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
     </description>
