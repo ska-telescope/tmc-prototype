@@ -1204,7 +1204,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     def _configure_dsh(self, scan_configuration, argin):
         config_keys = scan_configuration.keys()
-        if  not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
+        if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
             self.only_dishconfig_flag = True
 
         cmd_data = self._create_cmd_data(
