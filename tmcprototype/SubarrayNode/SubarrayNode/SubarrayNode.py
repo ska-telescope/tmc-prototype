@@ -1166,14 +1166,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     # --------
     # Commands
     # --------
-    def _configure_leaf_nodes(self, device_proxy, cmd_name, cmd_data):
+    def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         try:
             device_proxy.command_inout(cmd_name, cmd_data)
-            self.logger.debug("{} configured succesfully.".format(proxy.dev_name()))
+            self.logger.debug("{} configured succesfully.".format(device_proxy.dev_name()))
         except DevFailed as df:
             log_message = df[0].desc
             self._read_activity_message = log_message
-            self.logger.error("Failed to configure {}.".format(proxy.dev_name()))
+            self.logger.error("Failed to configure {}. {}".format(device_proxy.dev_name(), df))
             raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
@@ -1190,7 +1190,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     def _configure_sdp(self, scan_configuration):
         cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration, cbf_out_link)
-        self._configure_leaf_nodes(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
+        self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
         attr_name_map = {
@@ -1200,7 +1200,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         cmd_data = self._create_cmd_data(
             "build_up_csp_cmd_data", scan_configuration, self._scan_id, attr_name_map)
-        self._configure_leaf_nodes(self._csp_subarray_ln_proxy, "ConfigureScan", cmd_data)
+        self._configure_leaf_node(self._csp_subarray_ln_proxy, "ConfigureScan", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
         config_keys = scan_configuration.keys()
@@ -1212,18 +1212,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         try:
             self._dish_leaf_node_group.command_inout(CONST.CMD_CONFIGURE, cmd_data)
-        except DevFailed as df:
-            log_message = "Dish configuration must be given. Aborting Dish configuration."
-            self._read_activity_message = log_message
-            self.logger.error (log_message)
-
-        try:
             self._dish_leaf_node_group.command_inout(CONST.CMD_TRACK, cmd_data)
-            self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
         except DevFailed as df:
-            log_message = "Failed to execute Track command on DSH Leaf Nodes."
-            self._read_activity_message = log_message
-            self.logger.error(log_message)
+            self._read_activity_message = df[0].desc
+            self.logger.error(df)
+            raise
 
     @command(
         dtype_in='str',
@@ -1255,6 +1248,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         :return: None
         """
+        self.logger.info(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
+        self.logger.info(CONST.STR_CONFIGURE_IP_ARG + str(argin))
+        self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
+        self._read_activity_message = CONST.STR_CONFIGURE_CMD_INVOKED_SA
 
         if self._obs_state != ObsState.IDLE:
             return
@@ -1268,9 +1265,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             tango.Except.throw_exception(CONST.STR_CMD_FAILED, log_message,
                                          CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
 
-        self.set_status(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
-        self._read_activity_message = CONST.STR_CONFIGURE_IP_ARG + str(argin)
-        
         if "scanID" not in scan_configuration:
             log_message = "'scanID' must be given. Aborting configuration."
             self.logger.error(log_message)
@@ -1281,14 +1275,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._scan_id = str(scan_configuration["scanID"])
         self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
                                 for _ in range(4))
-        self.logger.info(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
 
         self._configure_csp(scan_configuration)
         # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
         time.sleep(2)
         self._configure_sdp(scan_configuration)
         self._configure_dsh(scan_configuration, argin)
-
         ## PROTECTED REGION END #    //  SubarrayNode.Configure
 
     def is_Configure_allowed(self):
