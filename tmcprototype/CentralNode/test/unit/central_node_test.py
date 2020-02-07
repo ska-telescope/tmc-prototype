@@ -4,7 +4,7 @@ import sys
 import mock
 from mock import Mock
 
-from CONST import ENUM_DEGRADED
+from CONST import HealthState
 from CentralNode import CentralNode
 from tango.test_context import DeviceTestContext
 
@@ -34,14 +34,14 @@ def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degrade
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.telescopeHealthState == ENUM_DEGRADED
+        assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
 
 
 def create_dummy_event(csp_master_fqdn):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{csp_master_fqdn}/healthState"
-    fake_event.attr_value.value = ENUM_DEGRADED
+    fake_event.attr_value.value = HealthState.DEGRADED
     return fake_event
 
 
