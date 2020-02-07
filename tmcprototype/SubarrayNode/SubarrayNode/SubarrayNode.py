@@ -1284,6 +1284,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.logger.info(CONST.STR_CONFIGURE_CMD_INVOKED_SA)
 
         self._configure_csp(scan_configuration)
+        # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
         time.sleep(2)
         self._configure_sdp(scan_configuration)
         self._configure_dsh(scan_configuration, argin)
