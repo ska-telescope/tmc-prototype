@@ -147,7 +147,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt))
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
             self.logger.critical(CONST.ERR_SUBSR_CSPSDPSA_OBS_STATE)
-            self._obs_state = CONST.OBS_STATE_ENUM_IDLE
+            self._obs_state = ObsState.IDLE
 
     def calculate_observation_state(self):
         """
@@ -1521,9 +1521,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             connect_timeout=600000
             )
         # connection = mysql.connector.connect(
-        #     host="tmc-db",
-        #     user="tango",
-        #     passwd="tango",
+        #     host="localhost",
+        #     user="handes",
+        #     passwd="",
         #     database="tmc_recoverability",
         #     connect_timeout=200
         # )
@@ -1567,7 +1567,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self.connection.commit()
         self.logger.info("receptor_id is stored in database as:- " + str(self._receptor_id_list))
         query ="update device_attribute_value set value= %s where id=%s and attribute='obs_state'"
-        sql_obsState = (self._obs_state, self.subarray_id[0],)
+        sql_obsState = (str(self._obs_state), self.subarray_id[0],)
         cursor.execute(query,sql_obsState)
         self.connection.commit()
         self.logger.info("obs_state stored in database as:- " + str(self._obs_state))
@@ -1593,7 +1593,14 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         cursor.execute("""select value from device_attribute_value where id=%s and attribute='obs_state'""",
                                self.subarray_id)
         sql_obsState =cursor.fetchone()[0]
-        self._obs_state = sql_obsState
+        if sql_obsState == 'ObsState.IDLE':
+            self._obs_state = ObsState.IDLE
+        elif sql_obsState == 'ObsState.READY':
+            self._obs_state = ObsState.READY
+        elif sql_obsState == 'ObsState.CONFIGURING':
+            self._obs_state = ObsState.CONFIGURING
+        elif sql_obsState == 'ObsState.SCANNING':
+            self._obs_state = ObsState.SCANNING
         self.logger.info("after restoring obs state : " + str(sql_obsState))
         cursor.execute("""select value from device_attribute_value where id=%s and attribute='receptor_id'""",
                               self.subarray_id)
