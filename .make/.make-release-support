@@ -70,15 +70,15 @@ function differsFromRelease() {
 
 function getVersion() {
 	result=$(getRelease)
-
-	if differsFromRelease; then
-		result="$result-$(git log -n 1 --format=%h .)"
-	fi
+# TODO: For Future Use
+#	if differsFromRelease; then
+#		result="$result-$(git log -n 1 --format=%h .)"
+#	fi
 
 	if hasChanges -eq 1; then
 	  result="$result-dirty"
   fi
-	echo $result
+  echo $result
 }
 
 function nextPatchLevel() {

@@ -49,6 +49,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
+
         if evt.err is False:
             try:
                 health_state = evt.attr_value.value
@@ -98,43 +99,37 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self.logger.info(CONST.STR_HEALTH_STATE_UNKNOWN_VAL)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
+
+
                 # Aggregated Health State
                 failed_health_count = 0
                 degraded_health_count = 0
                 unknown_health_count = 0
                 ok_health_count = 0
 
-                # Check the health state of CSP and SDP Master Leaf Nodes
-                if (self._csp_master_leaf_health == CONST.ENUM_OK or
-                        self._sdp_master_leaf_health == CONST.ENUM_OK ):
-                    ok_health_count = 1
-                elif (self._csp_master_leaf_health == CONST.ENUM_DEGRADED or
-                        self._sdp_master_leaf_health == CONST.ENUM_DEGRADED):
-                    degraded_health_count = 1
-                elif (self._csp_master_leaf_health == CONST.ENUM_FAILED or
-                        self._sdp_master_leaf_health == CONST.ENUM_FAILED ):
-                    failed_health_count = 1
-                else:
-                    unknown_health_count = 1
+                counts = {
+                        CONST.ENUM_OK: 0,
+                        CONST.ENUM_DEGRADED: 0,
+                        CONST.ENUM_FAILED: 0,
+                        CONST.ENUM_UNKNOWN: 0
+                }
 
-                for value in list(self.subarray_health_state_map.values()):
-                    if value == CONST.ENUM_FAILED:
-                        failed_health_count = failed_health_count + 1
-                        break
-                    elif value == CONST.ENUM_DEGRADED:
-                        degraded_health_count = degraded_health_count + 1
-                    elif value == CONST.ENUM_UNKNOWN:
-                        unknown_health_count = unknown_health_count + 1
-                    else:
-                        ok_health_count = ok_health_count + 1
-                if ok_health_count == len(list(self.subarray_health_state_map.values())) + 2:
+                for subsystem_health_field_name in ['csp_master_leaf_health', 'sdp_master_leaf_health']:
+                    health_state = getattr(self, f"_{subsystem_health_field_name}")
+                    counts[health_state] += 1
+                    
+                for subarray_health_state in list(self.subarray_health_state_map.values()):
+                    counts[subarray_health_state] += 1
+
+                if counts[CONST.ENUM_OK] == len(list(self.subarray_health_state_map.values())) + 2:
                     self._telescope_health_state = CONST.ENUM_OK
-                elif failed_health_count != 0:
+                elif counts[CONST.ENUM_FAILED] != 0:
                     self._telescope_health_state = CONST.ENUM_FAILED
-                elif degraded_health_count != 0:
+                elif counts[CONST.ENUM_DEGRADED] != 0:
                     self._telescope_health_state = CONST.ENUM_DEGRADED
                 else:
                     self._telescope_health_state = CONST.ENUM_UNKNOWN
+
             except KeyError as key_error:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
@@ -191,6 +186,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     TMMidSubarrayNodes = device_property(
         dtype=('str',), doc="List of TM Mid Subarray Node devices",
+        default_value=tuple()
     )
 
     NumDishes = device_property(
@@ -199,7 +195,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     DishLeafNodePrefix = device_property(
-        dtype='str', doc="Device name prefix for Dish Leaf Node"
+        dtype='str', default_value='', doc="Device name prefix for Dish Leaf Node"
     )
 
     CspMasterLeafNodeFQDN = device_property(
@@ -257,6 +253,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._subarray1_health_state = CONST.ENUM_OK
             self._subarray2_health_state = CONST.ENUM_OK
             self._subarray3_health_state = CONST.ENUM_OK
+            self._sdp_master_leaf_health = CONST.ENUM_OK
+            self._csp_master_leaf_health = CONST.ENUM_OK
             self.set_state(DevState.ON)
             # Initialise Attributes
             self._health_state = CONST.ENUM_OK
