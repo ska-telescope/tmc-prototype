@@ -21,14 +21,15 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-import time
+import json
 import pytest
+import time
 import tango
 from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 from CONST import AdminMode, HealthState, ObsState, ObsMode
-from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState
+from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState, ElementDeviceData
 
 
 @pytest.fixture(scope="function",
@@ -85,14 +86,220 @@ class TestSubarrayHealthState:
         assert result == expected_health_state
 
 
+@pytest.fixture(scope="function")
+def example_scan_configuration():
+    scan_config = {
+        "scanID": 123,
+        "pointing": {
+            "target": {
+                "system": "ICRS",
+                "name": "Polaris",
+                "RA": "02:31:49.0946",
+                "dec": "+89:15:50.7923"
+            }
+        },
+        "dish": {
+            "receiverBand": "1"
+        },
+        "csp": {
+            "frequencyBand": "1",
+            "fsp": [
+                {
+                    "fspID": 1,
+                    "functionMode": "CORR",
+                    "frequencySliceID": 1,
+                    "integrationTime": 1400,
+                    "corrBandwidth": 0
+                }
+            ]
+        },
+        "sdp": {
+            "configure": [
+                {
+                    "id": "realtime-20190627-0001",
+                    "sbiId": "20190627-0001",
+                    "workflow": {
+                        "id": "vis_ingest",
+                        "type": "realtime",
+                        "version": "0.1.0"
+                    },
+                    "parameters": {
+                        "numStations": 4,
+                        "numChannels": 372,
+                        "numPolarisations": 4,
+                        "freqStartHz": 0.35e9,
+                        "freqEndHz": 1.05e9,
+                        "fields": {
+                            "0": {
+                                "system": "ICRS",
+                                "name": "Polaris",
+                                "ra": 0.662432049839445,
+                                "dec": 1.5579526053855042
+                            }
+                        }
+                    },
+                    "scanParameters": {
+                        "123": {
+                            "fieldId": 0,
+                            "intervalMs": 1400
+                        }
+                    }
+                }
+            ]
+        }
+    }
+
+    return scan_config
+
+@pytest.fixture(scope="function")
+def csp_func_args():
+    scan_id = 1
+    attr_name_map = {
+        "string1": "attr1",
+        "string2": "attr2"
+    }
+    return scan_id, attr_name_map
+
+
+class TestElementDeviceData:
+
+    def test_build_up_sdp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
+        valid_scan_config = example_scan_configuration
+        sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config, "cbf/attribute")
+
+        expected_string_dict = {
+            "scanID": 123,
+            "sdp": {
+                "configure": {
+                    "id": "realtime-20190627-0001",
+                    "sbiId": "20190627-0001",
+                    "workflow": {
+                        "id": "vis_ingest",
+                        "type": "realtime",
+                        "version": "0.1.0"
+                    },
+                    "parameters": {
+                        "numStations": 4,
+                        "numChannels": 372,
+                        "numPolarisations": 4,
+                        "freqStartHz": 350000000.0,
+                        "freqEndHz": 1050000000.0,
+                        "fields": {
+                            "0": {
+                                "system": "ICRS",
+                                "name": "Polaris",
+                                "ra": 0.662432049839445,
+                                "dec": 1.5579526053855042
+                            }
+                        }
+                    },
+                    "scanParameters": {
+                        "123": {
+                            "fieldId": 0,
+                            "intervalMs": 1400
+                        }
+                    },
+                    "cspCbfOutlinkAddress": "cbf/attribute"
+                }
+            }
+        }
+
+        expected_string_dict = json.dumps(expected_string_dict)
+
+        assert isinstance(sdp_cmd_data, tango.DeviceData)
+        assert expected_string_dict == sdp_cmd_data.extract()
+
+    def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
+        invalid_scan_config = example_scan_configuration.pop("sdp")
+        with pytest.raises(KeyError) as exception:
+            ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config, "cbf/attribute")
+        expected_msg = "SDP configuration must be given. Aborting SDP configuration."
+        assert exception.value.args[0] == expected_msg
+
+    def test_build_up_sdp_cmd_data_with_modified_scan_configuration(self, example_scan_configuration):
+        modified_scan_config = example_scan_configuration
+        modified_scan_config["sdp"]["configure"] = {}
+        with pytest.raises(KeyError) as exception:
+            ElementDeviceData.build_up_sdp_cmd_data(modified_scan_config, "cbf/attribute")
+        expected_msg = "SDP Subarray configuration is empty. Command data not built up"
+        assert exception.value.args[0] == expected_msg
+
+    def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, csp_func_args):
+        valid_scan_config = example_scan_configuration
+        scan_id, attr_name_map = csp_func_args
+        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, scan_id, attr_name_map)
+
+        expected_string_dict = {
+            "frequencyBand": "1",
+            "fsp": [
+                {
+                    "fspID": 1,
+                    "functionMode": "CORR",
+                    "frequencySliceID": 1,
+                    "integrationTime": 1400,
+                    "corrBandwidth": 0
+                }
+            ],
+            "string1": "attr1",
+            "string2": "attr2",
+            "pointing": {
+                "target": {
+                    "system": "ICRS",
+                    "name": "Polaris",
+                    "RA": "02:31:49.0946",
+                    "dec": "+89:15:50.7923"
+                }
+            },
+            "scanID": 1
+        }
+
+        expected_string_dict = json.dumps(expected_string_dict)
+
+        assert isinstance(csp_cmd_data, tango.DeviceData)
+        assert expected_string_dict == csp_cmd_data.extract()
+
+    def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, csp_func_args):
+        empty_scan_config = {}
+        scan_id, attr_name_map = csp_func_args
+        with pytest.raises(KeyError) as exception:
+            ElementDeviceData.build_up_csp_cmd_data(empty_scan_config, scan_id, attr_name_map)
+        expected_msg = "CSP configuration must be given. Aborting CSP configuration."
+        assert exception.value.args[0] == expected_msg
+
+    def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration, csp_func_args):
+        invalid_scan_config = example_scan_configuration.pop("csp")
+        scan_id, attr_name_map = csp_func_args
+        with pytest.raises(KeyError) as exception:
+            ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, scan_id, attr_name_map)
+        expected_msg = "CSP configuration must be given. Aborting CSP configuration."
+        assert exception.value.args[0] == expected_msg
+
+    def test_build_up_dsh_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
+        valid_scan_config = example_scan_configuration
+        dsh_cmd_data = ElementDeviceData.build_up_dsh_cmd_data(valid_scan_config, True)
+        valid_scan_config.pop("sdp")
+        valid_scan_config.pop("csp")
+        expected_string_dict = json.dumps(valid_scan_config)
+
+        assert isinstance(dsh_cmd_data, tango.DeviceData)
+        assert expected_string_dict == dsh_cmd_data.extract()
+
+    def test_build_up_dsh_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
+        invalid_scan_config = example_scan_configuration.pop("dish")
+        with pytest.raises(KeyError) as exception:
+            ElementDeviceData.build_up_dsh_cmd_data(invalid_scan_config, False)
+        expected_msg = "Dish configuration must be given. Aborting Dish configuration."
+        assert exception.value.args[0] == expected_msg
+
+
 # Note:
-#
+
 # Since the device uses an inner thread, it is necessary to
 # wait during the tests in order the let the device update itself.
 # Hence, the sleep calls have to be secured enough not to produce
 # any inconsistent behavior. However, the unittests need to run fast.
 # Here, we use a factor 3 between the read period and the sleep calls.
-#
+
 # Look at devicetest examples for more advanced testing
 
 # Device test case
@@ -506,4 +713,3 @@ class TestSubarrayNode(object):
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
         # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
-
