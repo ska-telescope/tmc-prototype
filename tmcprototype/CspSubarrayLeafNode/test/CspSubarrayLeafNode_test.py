@@ -348,12 +348,6 @@ class TestCspSubarrayLeafNode(object):
         assert tango_context.device.visDestinationAddress == "test"
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_visDestinationAddress
 
-    def test_opState(self, tango_context):
-        """Test for opState"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_opState) ENABLED START #
-        assert tango_context.device.opState == 0
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_opState
-
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_activityMessage) ENABLED START #
