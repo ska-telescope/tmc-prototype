@@ -116,11 +116,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         access=AttrWriteType.READ_WRITE,
     )
 
-    opState = attribute(
-        dtype='DevEnum',
-        enum_labels=["INIT", "OFF", "ON", "ALARM", "DISABLE", "FAULT", "UNKNOWN", ],
-    )
-
     cspsubarrayHealthState = attribute(name="cspsubarrayHealthState", label="cspsubarrayHealthState",
                                        forwarded=True
                                       )
@@ -468,11 +463,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_write
 
-    def read_opState(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.opState_read) ENABLED START #
-        '''Internal construct of TANGO. Returns the OpState.'''
-        return self._opstate
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.opState_read
 
     # --------
     # Commands
