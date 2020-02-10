@@ -23,6 +23,8 @@ stages:
   - linting
   - publish
   - pages
+  - release
+  - trigger
 
 build CentralNode wheel for publication: # Executed on a tag
   stage: build
@@ -277,6 +279,27 @@ build SdpMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/SdpMaster/dist/
 
+unit tests:
+  image: nexus.engageska-portugal.pt/tango-example/tmcprototype:latest
+  stage: test
+  tags:
+    - docker-executor
+  script:
+    - mkdir test_results
+    - |-
+      for path in `find ./tmcprototype/*/test  -type d -name unit`; do
+        export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
+        echo "+++ Trying tests for ${TMC_ELEMENT}"
+        pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
+          --cov=tmcprototype/${TMC_ELEMENT} \
+          --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
+          --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
+          --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
+      done
+  artifacts:
+    paths:
+      - ./test_results
+
 run tests:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   stage: test
@@ -286,8 +309,8 @@ run tests:
     - docker-executor
   script:
     - make test
-    - make push
     - make lint
+    - make push
   retry: 2
 
 linting:
@@ -365,3 +388,25 @@ create ci metrics:
   artifacts:
     paths:
       - ./build
+
+#trigger:
+#  image: appropriate/curl
+#  stage: trigger
+#  tags:
+#  - docker-executor
+#  script:
+#  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH -F "variables[HELM_CHART]=tmc-proto" https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
+
+release docker image:
+  stage: release
+  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+  before_script:
+  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
+  tags:
+    - docker-executor
+  script:
+    - make push-versioned-image #Publish tagged version on Nexus
+  when: manual
+  only:
+    refs:
+      - master

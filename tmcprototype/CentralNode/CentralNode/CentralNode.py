@@ -27,6 +27,7 @@ from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 import CONST
+from CONST import AdminMode, HealthState
 from future.utils import with_metaclass
 import json
 # PROTECTED REGION END #    //  CentralNode.additional_import
@@ -49,6 +50,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
+
         if evt.err is False:
             try:
                 health_state = evt.attr_value.value
@@ -70,25 +72,25 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     # TODO: For future reference
                     # self._read_activity_message = CONST.EVT_UNKNOWN
 
-                if health_state == CONST.ENUM_OK:
+                if health_state == HealthState.OK:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
                     self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_OK
-                elif health_state == CONST.ENUM_DEGRADED:
+                elif health_state == HealthState.DEGRADED:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
                     self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_DEGRADED
-                elif health_state == CONST.ENUM_FAILED:
+                elif health_state == HealthState.FAILED:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
                     self.logger.info(str_log)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
                     #                                                            ) + CONST.STR_FAILED
-                elif health_state == CONST.ENUM_UNKNOWN:
+                elif health_state == HealthState.UNKNOWN:
                     str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
                     self.logger.info(str_log)
                     # TODO: For future reference
@@ -98,43 +100,37 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self.logger.info(CONST.STR_HEALTH_STATE_UNKNOWN_VAL)
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
+
+
                 # Aggregated Health State
                 failed_health_count = 0
                 degraded_health_count = 0
                 unknown_health_count = 0
                 ok_health_count = 0
 
-                # Check the health state of CSP and SDP Master Leaf Nodes
-                if (self._csp_master_leaf_health == CONST.ENUM_OK or
-                        self._sdp_master_leaf_health == CONST.ENUM_OK ):
-                    ok_health_count = 1
-                elif (self._csp_master_leaf_health == CONST.ENUM_DEGRADED or
-                        self._sdp_master_leaf_health == CONST.ENUM_DEGRADED):
-                    degraded_health_count = 1
-                elif (self._csp_master_leaf_health == CONST.ENUM_FAILED or
-                        self._sdp_master_leaf_health == CONST.ENUM_FAILED ):
-                    failed_health_count = 1
-                else:
-                    unknown_health_count = 1
+                counts = {
+                        HealthState.OK: 0,
+                        HealthState.DEGRADED: 0,
+                        HealthState.FAILED: 0,
+                        HealthState.UNKNOWN: 0
+                }
 
-                for value in list(self.subarray_health_state_map.values()):
-                    if value == CONST.ENUM_FAILED:
-                        failed_health_count = failed_health_count + 1
-                        break
-                    elif value == CONST.ENUM_DEGRADED:
-                        degraded_health_count = degraded_health_count + 1
-                    elif value == CONST.ENUM_UNKNOWN:
-                        unknown_health_count = unknown_health_count + 1
-                    else:
-                        ok_health_count = ok_health_count + 1
-                if ok_health_count == len(list(self.subarray_health_state_map.values())) + 2:
-                    self._telescope_health_state = CONST.ENUM_OK
-                elif failed_health_count != 0:
-                    self._telescope_health_state = CONST.ENUM_FAILED
-                elif degraded_health_count != 0:
-                    self._telescope_health_state = CONST.ENUM_DEGRADED
+                for subsystem_health_field_name in ['csp_master_leaf_health', 'sdp_master_leaf_health']:
+                    health_state = getattr(self, f"_{subsystem_health_field_name}")
+                    counts[health_state] += 1
+                    
+                for subarray_health_state in list(self.subarray_health_state_map.values()):
+                    counts[subarray_health_state] += 1
+
+                if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 2:
+                    self._telescope_health_state = HealthState.OK
+                elif counts[HealthState.FAILED] != 0:
+                    self._telescope_health_state = HealthState.FAILED
+                elif counts[HealthState.DEGRADED] != 0:
+                    self._telescope_health_state = HealthState.DEGRADED
                 else:
-                    self._telescope_health_state = CONST.ENUM_UNKNOWN
+                    self._telescope_health_state = HealthState.UNKNOWN
+
             except KeyError as key_error:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
@@ -191,6 +187,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
     TMMidSubarrayNodes = device_property(
         dtype=('str',), doc="List of TM Mid Subarray Node devices",
+        default_value=tuple()
     )
 
     NumDishes = device_property(
@@ -199,7 +196,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
 
     DishLeafNodePrefix = device_property(
-        dtype='str', doc="Device name prefix for Dish Leaf Node"
+        dtype='str', default_value='', doc="Device name prefix for Dish Leaf Node"
     )
 
     CspMasterLeafNodeFQDN = device_property(
@@ -254,14 +251,16 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             SKABaseDevice.init_device(self)
             self.logger.info("Device initialisating...")
-            self._subarray1_health_state = CONST.ENUM_OK
-            self._subarray2_health_state = CONST.ENUM_OK
-            self._subarray3_health_state = CONST.ENUM_OK
+            self._subarray1_health_state = HealthState.OK
+            self._subarray2_health_state = HealthState.OK
+            self._subarray3_health_state = HealthState.OK
+            self._sdp_master_leaf_health = HealthState.OK
+            self._csp_master_leaf_health = HealthState.OK
             self.set_state(DevState.ON)
             # Initialise Attributes
-            self._health_state = CONST.ENUM_OK
-            self._admin_mode = CONST.ENUM_ONLINE
-            self._telescope_health_state = CONST.ENUM_OK
+            self._health_state = HealthState.OK
+            self._admin_mode = AdminMode.ONLINE
+            self._telescope_health_state = HealthState.OK
             self.subarray_health_state_map = {}
             self._dish_leaf_node_devices = []
             self._leaf_device_proxy = []

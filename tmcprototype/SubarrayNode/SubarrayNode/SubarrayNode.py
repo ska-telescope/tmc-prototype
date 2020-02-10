@@ -1230,7 +1230,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         extracted out of the input configuration string and relayed to the respective underlying devices (SDP
         Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
 
-        :param argin: DevStringArray.
+        :param argin: DevString.
         JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
         Configuration and SDP Configuration parameters.
 
