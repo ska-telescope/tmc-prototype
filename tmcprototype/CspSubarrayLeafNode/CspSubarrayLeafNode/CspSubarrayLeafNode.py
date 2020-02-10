@@ -386,7 +386,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
             self._csp_subarray_health_state = CONST.ENUM_OK
-            self._opstate = CONST.ENUM_INIT
             self.logger.info(CONST.STR_CSPSALN_INIT_SUCCESS)
 
         except DevFailed as dev_failed:
