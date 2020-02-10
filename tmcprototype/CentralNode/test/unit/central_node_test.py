@@ -2,13 +2,15 @@ import contextlib
 import importlib
 import sys
 import mock
+import pytest
 from mock import Mock
 
-from CONST import HealthState
+from CONST import HealthState, CMD_SET_STOW_MODE
 from CentralNode import CentralNode
 from tango.test_context import DeviceTestContext
 
 
+@pytest.mark.skip
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
     device_under_test = CentralNode
@@ -37,6 +39,27 @@ def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degrade
         assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
 
 
+def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
+    # arrange:
+    device_under_test = CentralNode()
+    initial_dut_properties = {
+        'DishLeafNodePrefix': "ska_mid/tm_leaf_node/d"
+    }
+    leaf_node_device_name = "0001"
+
+    leaf_node_device_proxy_mock = Mock()
+    proxies_to_mock = {
+        f"{initial_dut_properties['DishLeafNodePrefix']}{leaf_node_device_name}": leaf_node_device_proxy_mock
+    }
+
+    # act:
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock):
+        device_under_test.StowAntennas(argin=[leaf_node_device_name])
+    
+    # assert:
+    leaf_node_device_proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
+
+
 def create_dummy_event(csp_master_fqdn):
     fake_event = Mock()
     fake_event.err = False
@@ -53,7 +76,9 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
 
-    device_under_test = getattr(patched_module, device_under_test.__name__)
+    if type(device_under_test) is not type:
+        dut_pyclass = device_under_test.__class__
+    device_under_test = getattr(patched_module, dut_pyclass.__name__)
 
     device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
     device_test_context.start()
