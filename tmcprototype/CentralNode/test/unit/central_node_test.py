@@ -38,36 +38,32 @@ def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degrade
         assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
 
 
-def test_stow_antennas_should_set_stow_mode_on_leaf_node():
+def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
     device_under_test = CentralNode
+    fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
-        'DishLeafNodePrefix': "ska_mid/tm_leaf_node/d"
+        'DishLeafNodePrefix': fqdn_prefix
     }
-    leaf_node_device_name = "0001"
-
-    leaf_node_device_proxy_mock = Mock()
-    proxies_to_mock = {
-        f"{initial_dut_properties['DishLeafNodePrefix']}{leaf_node_device_name}": leaf_node_device_proxy_mock
-    }
+    device_ids = [str(i).zfill(4) for i in range(1,10)]
+    proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in device_ids }
 
     # act:
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
-        tango_context.device.StowAntennas([leaf_node_device_name])
+        device_fqdn_list = list(proxies_to_mock.keys())
+        tango_context.device.StowAntennas(device_ids)
     
     # assert:
-    leaf_node_device_proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
+    for proxy_mock in proxies_to_mock.values():
+        proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
 
 
 def test_activity_message_attribute_captures_the_last_received_command():
     # arrange:
     device_under_test = CentralNode
-    initial_dut_properties = {
-        'ActivityMessage': 'nothing yet'
-    }
 
     # act & assert:
-    with fake_tango_system(device_under_test, initial_dut_properties) as tango_context:
+    with fake_tango_system(device_under_test)as tango_context:
         dut = tango_context.device
         dut.StartUpTelescope() 
         assert_activity_message(dut, STR_STARTUP_CMD_ISSUED)
