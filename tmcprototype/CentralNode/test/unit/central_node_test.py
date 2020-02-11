@@ -5,7 +5,7 @@ import mock
 import pytest
 from mock import Mock
 
-from CONST import HealthState, CMD_SET_STOW_MODE
+from CONST import HealthState, CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from CentralNode import CentralNode
 from tango.test_context import DeviceTestContext
 
@@ -57,6 +57,27 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_node():
     
     # assert:
     leaf_node_device_proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
+
+
+def test_activity_message_attribute_captures_the_last_received_command():
+    # arrange:
+    device_under_test = CentralNode
+    initial_dut_properties = {
+        'ActivityMessage': 'nothing yet'
+    }
+
+    # act & assert:
+    with fake_tango_system(device_under_test, initial_dut_properties) as tango_context:
+        dut = tango_context.device
+        dut.StartUpTelescope() 
+        assert_activity_message(dut, STR_STARTUP_CMD_ISSUED)
+
+        dut.StandByTelescope()
+        assert_activity_message(dut, STR_STANDBY_CMD_ISSUED)
+
+
+def assert_activity_message(dut, expected_message):
+    assert dut.activityMessage == expected_message # reads tango attribute
 
 
 def create_dummy_event(csp_master_fqdn):
