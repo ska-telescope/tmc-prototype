@@ -40,12 +40,13 @@ def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degrade
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
     device_under_test = CentralNode
+    dish_device_ids = [str(i).zfill(4) for i in range(1,10)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
         'DishLeafNodePrefix': fqdn_prefix
+        'NumDishes': len(dish_device_ids)
     }
-    device_ids = [str(i).zfill(4) for i in range(1,10)]
-    proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in device_ids }
+    proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in dish_device_ids }
 
     # act:
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
