@@ -22,5 +22,6 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.1.7
-tag=0.1.7
+release=9.9.9
+tag=9.9.9
+description="This is done for testing purpose."
