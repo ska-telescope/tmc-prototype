@@ -33,6 +33,7 @@ IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
 
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
+DESCRIPTION=$(shell . $(RELEASE_SUPPORT); getDescription)
 
 SHELL=/bin/bash
 
@@ -40,7 +41,7 @@ DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
 .PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
-	push pre-push do-push post-push push-versioned-image
+	push pre-push do-push post-push push-versioned-image create-tag create-publish-tag push-tag-and-versioned-image
 
 build: pre-build docker-build post-build  ## build the application image
 
@@ -69,8 +70,9 @@ docker-build: .release
 	@echo "tag=$(NAME)-0.0.0" >> .release
 	@echo INFO: .release created
 	@cat .release
+	@echo DESCRIPTION
 
-release: check-status check-release build push
+release: check-status check-release build create-tag push
 
 push: pre-push do-push post-push ## push the image to the Docker registry
 
@@ -119,3 +121,13 @@ check-release: .release
 push-versioned-image:
 	docker push $(IMAGE):$(VERSION)
 	
+create-tag: .release
+	git tag -a $(TAG) -m $(DESCRIPTION)
+
+create-publish-tag:
+	create-tag
+	git push origin $(TAG)
+
+push-tag-and-versioned-image:
+	create-publish-tag
+	push-versioned-image
