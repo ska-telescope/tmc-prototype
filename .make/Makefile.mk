@@ -41,7 +41,7 @@ DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
 .PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
-	push pre-push do-push post-push push-versioned-image create-tag create-publish-tag push-tag-and-versioned-image
+	push pre-push do-push post-push push-versioned-image create-tag create-publish-tag push-tag-and-versioned-image push-tag
 
 build: pre-build docker-build post-build  ## build the application image
 
@@ -124,10 +124,9 @@ push-versioned-image:
 create-tag: .release
 	git tag -a $(TAG) -m $(DESCRIPTION)
 
-create-publish-tag:
-	create-tag
+push-tag: .release
 	git push origin $(TAG)
 
-push-tag-and-versioned-image:
-	create-publish-tag
-	push-versioned-image
+create-publish-tag: create-tag push-tag
+
+push-tag-and-versioned-image: create-publish-tag push-versioned-image
