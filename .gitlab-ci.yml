@@ -397,7 +397,7 @@ create ci metrics:
 #  script:
 #  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH -F "variables[HELM_CHART]=tmc-proto" https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
 
-release docker image:
+release new tmc version:
   stage: release
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   before_script:
@@ -405,8 +405,10 @@ release docker image:
   tags:
     - docker-executor
   script:
-    - make push-versioned-image #Publish tagged version on Nexus
+    - make push-tag-and-versioned-image # Publish tag on the gitlab and tagged image on Nexus
+#    - make push-versioned-image #Publish tagged version on Nexus
+#    - make publish-tag # Publish tag on Gitlab
   when: manual
-  only:
-    refs:
-      - master
+#  only:
+#    refs:
+#      - master
