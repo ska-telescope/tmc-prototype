@@ -136,7 +136,7 @@ config-git:
 	git config --global user.email $(EMAILID)
 	git config --global user.name $(USERNAME)
 
-push-tag-and-versioned-image: config-git create-publish-tag push-versioned-image
+push-tag-and-versioned-image: config-git push-versioned-image create-publish-tag
 #	@echo $(USERNAME)
 #	@echo $(EMAILID)
 #
