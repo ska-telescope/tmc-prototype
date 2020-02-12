@@ -127,7 +127,8 @@ create-tag: .release
 	git tag -a $(TAG) -m $(DESCRIPTION)
 
 push-tag: .release
-	git push origin $(TAG)
+	git push https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git $(TAG)
+#	git push origin $(TAG)
 
 create-publish-tag: create-tag push-tag
 
