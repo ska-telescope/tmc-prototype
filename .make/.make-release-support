@@ -108,10 +108,10 @@ function getDescription(){
 	awk -F= '/^description=/{print $2}' .release
 }
 
-function getName() {
-  awk -F= '/^name=/{print $2}' .release
-}
-
-function getEmail() {
-  awk -F= '/^email=/{print $2}' .release
-}
+#function getName() {
+#  awk -F= '/^user=/{print $2}' .release
+#}
+#
+#function getEmail() {
+#  awk -F= '/^emailid=/{print $2}' .release
+#}

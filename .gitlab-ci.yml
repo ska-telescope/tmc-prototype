@@ -405,7 +405,7 @@ release new tmc version:
   tags:
     - docker-executor
   script:
-    - make push-tag-and-versioned-image # Publish tag on the gitlab and tagged image on Nexus
+    - make push-tag-and-versioned-image $GITLAB_USER_NAME, $GITLAB_USER_EMAIL # Publish tag on the gitlab and tagged image on Nexus
 #    - make push-versioned-image #Publish tagged version on Nexus
 #    - make publish-tag # Publish tag on Gitlab
   when: manual

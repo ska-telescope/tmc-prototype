@@ -34,8 +34,8 @@ IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
 DESCRIPTION=$(shell . $(RELEASE_SUPPORT); getDescription)
-NAME=$(shell . $(RELEASE_SUPPORT); getName)
-EMAIL=$(shell . $(RELEASE_SUPPORT); getEmail)
+#NAME=$(shell . $(RELEASE_SUPPORT); getName)
+#EMAIL=$(shell . $(RELEASE_SUPPORT); getEmail)
 
 SHELL=/bin/bash
 
@@ -124,8 +124,6 @@ push-versioned-image:
 	docker push $(IMAGE):$(VERSION)
 	
 create-tag: .release
-	git config --global user.email $(EMAIL)
-	git config --global user.name $(NAME)
 	git tag -a $(TAG) -m $(DESCRIPTION)
 
 push-tag: .release
@@ -133,4 +131,13 @@ push-tag: .release
 
 create-publish-tag: create-tag push-tag
 
-push-tag-and-versioned-image: create-publish-tag push-versioned-image
+config-git:
+	git config --global user.email $(EMAILID)
+	git config --global user.name $(USERNAME)
+
+push-tag-and-versioned-image: config-git create-publish-tag push-versioned-image
+#	@echo $(USERNAME)
+#	@echo $(EMAILID)
+#
+#	@. create-publish-tag
+#	push-versioned-image
