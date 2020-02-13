@@ -15,7 +15,7 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
     # arrange:
     device_under_test = CspSubarrayLeafNode
     csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
-    initial_dut_properties = {
+    dut_properties = {
         'CspSubarrayFQDN': csp_subarray_fqdn
     }
 
@@ -26,8 +26,8 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
         csp_subarray_fqdn: csp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=initial_dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_config = { 'scandDuration': 10.0 }
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+        scan_config = { 'scanDuration': 10.0 }
         # act:
         tango_context.device.StartScan([json.dumps(scan_config)])
 
