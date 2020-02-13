@@ -50,7 +50,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
 
     # act:
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
-        tango_context.device.StowAntennas(device_ids)
+        tango_context.device.StowAntennas(dish_device_ids)
     
     # assert:
     for proxy_mock in proxies_to_mock.values():
