@@ -43,7 +43,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     dish_device_ids = [str(i).zfill(4) for i in range(1,10)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
-        'DishLeafNodePrefix': fqdn_prefix
+        'DishLeafNodePrefix': fqdn_prefix,
         'NumDishes': len(dish_device_ids)
     }
     proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in dish_device_ids }
