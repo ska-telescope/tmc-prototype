@@ -7,13 +7,13 @@ import mock
 from mock import Mock
 
 from tango.test_context import DeviceTestContext
-from CspSubarrayLeafNode import CspSubarrayLeafNode
+from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
 from CONST import CMD_STARTSCAN, ENUM_READY
 
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
     # arrange:
-    device_under_test = CspSubArrayLeafNode
+    device_under_test = CspSubarrayLeafNode
     csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
     initial_dut_properties = {
         'CspSubarrayFQDN': csp_subarray_fqdn
