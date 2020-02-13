@@ -3,6 +3,7 @@ import importlib
 import sys
 import json
 import mock
+import types
 
 from mock import Mock
 
@@ -32,9 +33,19 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
         tango_context.device.StartScan([json.dumps(scan_config)])
 
         # assert:
-        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CMD_STARTSCAN)
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CMD_STARTSCAN, '0', any_method(with_name='commandCallback'))
 
     
+def any_method(with_name=None):
+    class AnyMethod():
+        def __eq__(self, other):
+            if not isinstance(other, types.MethodType):
+                return False
+            
+            return other.__func__.__name__ == with_name if with_name else True
+        
+    return AnyMethod()
+
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
