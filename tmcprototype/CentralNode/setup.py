@@ -53,6 +53,7 @@ setup(name=name,
           'coverage',
           'pytest-json-report',
           'pycodestyle',
+          'pytest-forked',
       ],
       extras_require={
           'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
