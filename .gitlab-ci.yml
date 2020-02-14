@@ -312,7 +312,6 @@ run tests:
     - docker-executor
   script:
     - make test
-    - make lint
     - make push
   retry: 2
 
@@ -325,6 +324,7 @@ linting:
     - apt-get -y update
     - apt-get install -y python3-pip python3-setuptools python3-wheel --no-install-recommends
     - make lint
+  allow_failure: true
   artifacts:
     paths:
       - ./build
