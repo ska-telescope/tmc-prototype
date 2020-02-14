@@ -72,12 +72,6 @@ class TestSdpSubarrayLeafNode(object):
         assert tango_context.device.State() == DevState.ALARM
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_State
 
-    def test_sdpSubarrayHealthState(self, tango_context, create_sdpsubarray_proxy):
-        """Test for sdpSubarrayHealthState"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_sdpSubarrayHealthState) ENABLED START #
-        assert create_sdpsubarray_proxy.healthState == 0
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_sdpSubarrayHealthState
-
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Status) ENABLED START #

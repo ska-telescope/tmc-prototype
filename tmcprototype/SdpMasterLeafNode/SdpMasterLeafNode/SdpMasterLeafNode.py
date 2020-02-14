@@ -111,18 +111,6 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ----------
 
 
-    SDPState = attribute(
-        dtype='DevEnum',
-        doc="This is a forwarded attribute from SDP Master which depicts State of the SDP.",
-        enum_labels=["INIT", "STANDBY", "DISABLE", "ON", "ALARM", "FAULT", "UNKNOWN", ],
-    )
-
-    SDPAdminMode = attribute(
-        dtype='DevEnum',
-        doc="This is a forwarded attribute from SDP Master which depicts Admin Mode of the SDP.",
-        enum_labels=["ONLINE", "OFFLINE", "MAINTENANCE", "RESERVED", "NOTFITTED", ],
-    )
-
     versionInfo = attribute(
         dtype='str',
         doc="Version information of TANGO device.",
@@ -191,19 +179,6 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ------------------
     # Attributes methods
     # ------------------
-
-    def read_SDPState(self):
-        # PROTECTED REGION ID(SdpMasterLeafNode.SDPState_read) ENABLED START #
-        """ Internal construct of TANGO. This is a forwarded attribute from SDP Master which depicts State of the SDP."""
-        return self._sdp_state
-        # PROTECTED REGION END #    //  SdpMasterLeafNode.SDPState_read
-
-    def read_SDPAdminMode(self):
-        # PROTECTED REGION ID(SdpMasterLeafNode.SDPAdminMode_read) ENABLED START #
-        """ Internal construct of TANGO.
-        This is a forwarded attribute from SDP Master which depicts Admin Mode of the SDP."""
-        return self._sdp_admin_mode
-        # PROTECTED REGION END #    //  SdpMasterLeafNode.SDPAdminMode_read
 
     def read_versionInfo(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.versionInfo_read) ENABLED START #
