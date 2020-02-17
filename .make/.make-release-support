@@ -119,19 +119,16 @@ function createGitTag(){
 
 function getSha(){
   tag=${1:-$(getTag)}
-  tag=0.1.6
+  tag=$tag
   images="$(docker images --format {{.Repository}}:{{.Tag}}:{{.Digest}})"
-#  sha1=$(docker images --format {{.Repository}}_{{.Tag}}_{{.Digest}} | grep tmcprototype | grep $tag)
-#  sha=$(echo $sha1 | awk -F_ '/nexus.engageska-portugal.pt/tango-example/tmcprototype_$tag_ {print $3}')
-#  sha1=$(docker images --format {{.Repository}}_{{.Tag}}_{{.Digest}} | grep tmcprototype | grep $tag)
   sha=$(docker images --format {{.Repository}}_{{.Tag}}_{{.Digest}} | grep tmcprototype | grep $tag | awk -F_ '/nexus.engageska-portugal.pt/tango-example/tmcprototype_$tag_ {print $3}')
   echo $sha
 }
 
 function deleteImageFromNexus(){
   sha=$(getSha)
-#  sha=sha256:15573367d74b2304d38155b4bbe110fd59e3af6490d17c9f2c0540b8a41fe9df
+  echo $sha
 #  deleteReq="/v2/tango-example/tmcprototype/manifests/$sha"
   result=$(curl -X "DELETE" -u ci-cd:ci-cd-pipeline-8237 https://nexus.engageska-portugal.pt/v2/tango-example/tmcprototype/manifests/$sha --verbose)
-  echo $result
+#  echo $result
 }
