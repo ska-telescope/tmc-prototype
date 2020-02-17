@@ -128,7 +128,7 @@ delete-image-from-nexus:
 	@. $(RELEASE_SUPPORT) ; deleteImageFromNexus
 
 push-tag: .release
-	git push https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git $(TAG)
+	git push https://JayantKumbhar:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git $(TAG)
 
 create-publish-tag: create-tag push-tag
 
