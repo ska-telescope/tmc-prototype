@@ -34,16 +34,14 @@ IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
 DESCRIPTION=$(shell . $(RELEASE_SUPPORT); getDescription)
-#NAME=$(shell . $(RELEASE_SUPPORT); getName)
-#EMAIL=$(shell . $(RELEASE_SUPPORT); getEmail)
-
+SHA=$(shell . $(RELEASE_SUPPORT); getSha)
 SHELL=/bin/bash
 
 DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
 .PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
-	push pre-push do-push post-push push-versioned-image create-tag create-publish-tag push-tag-and-versioned-image push-tag
+	push pre-push do-push post-push push-versioned-image create-tag create-publish-tag push-tag-and-versioned-image push-tag config-git
 
 build: pre-build docker-build post-build  ## build the application image
 
@@ -122,13 +120,15 @@ check-release: .release
 
 push-versioned-image:
 	docker push $(IMAGE):$(VERSION)
-	
+
 create-tag: .release
-	git tag -a $(TAG) -m $(DESCRIPTION)
+	@. $(RELEASE_SUPPORT) ; createGitTag || (echo "ERROR: Some error in creating tag" >&2 && delete-image-from-nexus && exit 1) ;
+
+delete-image-from-nexus:
+	@. $(RELEASE_SUPPORT) ; deleteImageFromNexus
 
 push-tag: .release
 	git push https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git $(TAG)
-#	git push origin $(TAG)
 
 create-publish-tag: create-tag push-tag
 
@@ -137,8 +137,3 @@ config-git:
 	git config --global user.name $(USERNAME)
 
 push-tag-and-versioned-image: config-git push-versioned-image create-publish-tag
-#	@echo $(USERNAME)
-#	@echo $(EMAILID)
-#
-#	@. create-publish-tag
-#	push-versioned-image
