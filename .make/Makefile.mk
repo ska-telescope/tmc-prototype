@@ -35,6 +35,7 @@ VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
 DESCRIPTION=$(shell . $(RELEASE_SUPPORT); getDescription)
 SHA=$(shell . $(RELEASE_SUPPORT); getSha)
+GITPUSH=$(shell . $(RELEASE_SUPPORT); gitPush)
 SHELL=/bin/bash
 
 DOCKER_BUILD_CONTEXT=.
@@ -128,7 +129,11 @@ delete-image-from-nexus:
 	@. $(RELEASE_SUPPORT) ; deleteImageFromNexus
 
 push-tag: .release
-	git push https://adityadangeska:qeFgyixVQE69zoYT#123@gitlab.com/ska-telescope/tmc-prototype.git $(TAG)
+	@. $(RELEASE_SUPPORT) ; gitPush
+
+ifneq ($(GITPUSH), 0)
+	delete-image-from-nexus
+endif
 
 create-publish-tag: create-tag push-tag
 
