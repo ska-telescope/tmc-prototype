@@ -135,6 +135,6 @@ function deleteImageFromNexus(){
 
 function gitPush() {
   tag=${1:-$(getTag)}
-  $(git push https://adityadangeska:qeFgyixVQE69zoYTnHHz#123@gitlab.com/ska-telescope/tmc-prototype.git $tag)
+  $(git push https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git $tag)
   echo $?
 }
