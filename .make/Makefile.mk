@@ -130,9 +130,9 @@ delete-image-from-nexus:
 
 push-tag: .release
 	@. $(RELEASE_SUPPORT) ; gitPush
-ifneq ($(GITPUSH), 0)
-	@. $(RELEASE_SUPPORT) ; deleteImageFromNexus
-endif
+#ifneq ($(GITPUSH), 0)
+#	@. $(RELEASE_SUPPORT) ; deleteImageFromNexus
+#endif
 
 create-publish-tag: create-tag push-tag
 
