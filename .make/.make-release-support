@@ -113,7 +113,7 @@ function createGitTag(){
 	description=${1:-$(getDescription)}
 	echo $tag
 	echo $description
-	result="$(git tag -a $tag -m $$description)"
+	result="$(git tag -a $tag -m $description)"
 	echo $result
 }
 
@@ -130,7 +130,6 @@ function deleteImageFromNexus(){
   echo $sha
 #  deleteReq="/v2/tango-example/tmcprototype/manifests/$sha"
   result=$(curl -X "DELETE" -u ci-cd:ci-cd-pipeline-8237 https://nexus.engageska-portugal.pt/v2/tango-example/tmcprototype/manifests/$sha --verbose)
-#  echo $result
 }
 
 function gitPush() {

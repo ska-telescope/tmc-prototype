@@ -33,9 +33,6 @@ IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
 
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
-DESCRIPTION=$(shell . $(RELEASE_SUPPORT); getDescription)
-SHA=$(shell . $(RELEASE_SUPPORT); getSha)
-GITPUSH=$(shell . $(RELEASE_SUPPORT); gitPush)
 SHELL=/bin/bash
 
 DOCKER_BUILD_CONTEXT=.
@@ -130,9 +127,6 @@ delete-image-from-nexus:
 
 push-tag: .release
 	@. $(RELEASE_SUPPORT) ; gitPush
-#ifneq ($(GITPUSH), 0)
-#	@. $(RELEASE_SUPPORT) ; deleteImageFromNexus
-#endif
 
 create-publish-tag: create-tag push-tag
 
