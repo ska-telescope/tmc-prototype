@@ -137,7 +137,7 @@ function gitPush() {
   $(git push https://adityadangeska:qeFgyixVQE69zoYTnHHz#123@gitlab.com/ska-telescope/tmc-prototype.git $tag)
   result=$(echo $?)
   if [ $result -ne 0 ];
-    echo "Error while pushing tag...Deleting pushed image.."
+  then
     deleteImageFromNexus
   fi
 }
