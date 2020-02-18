@@ -120,7 +120,7 @@ push-versioned-image:
 	docker push $(IMAGE):$(VERSION)
 
 create-tag: .release
-	@. $(RELEASE_SUPPORT) ; createGitTag || (echo "ERROR: Some error in creating tag" >&2 && delete-image-from-nexus && exit 1) ;
+	@. $(RELEASE_SUPPORT) ; createGitTag || (echo "ERROR: Some error in creating tag" >&2 && exit 1) ;
 
 delete-image-from-nexus:
 	@. $(RELEASE_SUPPORT) ; deleteImageFromNexus

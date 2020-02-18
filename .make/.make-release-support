@@ -109,12 +109,12 @@ function getDescription(){
 }
 
 function createGitTag(){
-	tag=${1:-$(getTag)}
-	description=${1:-$(getDescription)}
+	tag=$(getTag)
 	echo $tag
+	description=$(getDescription)
 	echo $description
-	result="$(git tag -a $tag -m getDescription)"
-	echo $result
+	git tag -a $tag -m "$description"
+	# $(git tag -a $tag -m $description)
 }
 
 function getSha(){
@@ -134,13 +134,10 @@ function deleteImageFromNexus(){
 
 function gitPush() {
   tag=${1:-$(getTag)}
-  $(git push https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git $tag)
+  $(git push https://adityadangeska:qeFgyixVQE69zoYTnHHz#123@gitlab.com/ska-telescope/tmc-prototype.git $tag)
   result=$(echo $?)
-  if [ $result -eq 0 ];
-  then
-    echo "Publishing an image..."
-  else
-    echo "Deleting an image..."
+  if [ $result -ne 0 ];
+    echo "Error while pushing tag...Deleting pushed image.."
     deleteImageFromNexus
   fi
 }
