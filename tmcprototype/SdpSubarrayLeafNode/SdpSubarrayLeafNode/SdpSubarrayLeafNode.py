@@ -111,12 +111,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             'it is used to provide FQDN of receiveAddresses attribute from SDP.',
     )
 
-    sdpSubarrayHealthState = attribute(
-        dtype='DevEnum',
-        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
-        doc='This is a forwarded attribute from SDP Subarray which depicts Health State of the SDP Subarray.',
-    )
-
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
@@ -190,13 +184,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         receiveAddresses is a forwarded attribute from SDP Master which depicts State of the SDP."""
         self._receive_addresses = value
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
-
-    def read_sdpSubarrayHealthState(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.sdpSubarrayHealthState_read) ENABLED START #
-        """ Internal construct of TANGO. Returns SDP Subarray Health State.
-        sdpSubarrayHealthState is a forwarded attribute from SDP Subarray which depicts Health State of the SDP Subarray."""
-        return self._sdp_subarray_health_state
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.sdpSubarrayHealthState_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_read) ENABLED START #
