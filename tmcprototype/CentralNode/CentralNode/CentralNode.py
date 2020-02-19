@@ -266,6 +266,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._leaf_device_proxy = []
             self.subarray_FQDN_dict = {}
             self._subarray_allocation = {}
+            self._read_activity_message = ""
             self.set_status(CONST.STR_INIT_SUCCESS)
             self.logger.debug(CONST.STR_INIT_SUCCESS)
         except DevFailed as dev_failed:

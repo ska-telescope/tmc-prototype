@@ -103,3 +103,37 @@ function nextMajorLevel() {
 	version=$(printf "%d.0.0" $(($major + 1)))
 	echo $version
 }
+
+function getDescription(){
+	awk -F= '/^description=/{print $2}' .release
+}
+
+function createGitTag(){
+	tag=$(getTag)
+	echo $tag
+	description=$(getDescription)
+	git tag -a $tag -m "$description"
+}
+
+function getSha(){
+  tag=${1:-$(getTag)}
+  tag=$tag
+  images="$(docker images --format {{.Repository}}:{{.Tag}}:{{.Digest}})"
+  sha=$(docker images --format {{.Repository}}_{{.Tag}}_{{.Digest}} | grep tmcprototype | grep $tag | awk -F_ '/nexus.engageska-portugal.pt/tango-example/tmcprototype_$tag_ {print $3}')
+  echo $sha
+}
+
+function deleteImageFromNexus(){
+  sha=$(getSha)
+  result=$(curl -X "DELETE" -u ci-cd:ci-cd-pipeline-8237 https://nexus.engageska-portugal.pt/v2/tango-example/tmcprototype/manifests/$sha --verbose)
+}
+
+function gitPush() {
+  tag=${1:-$(getTag)}
+  $(git push https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git $tag)
+  result=$(echo $?)
+  if [ $result -ne 0 ];
+  then
+    deleteImageFromNexus
+  fi
+}

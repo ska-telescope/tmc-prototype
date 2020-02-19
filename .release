@@ -24,3 +24,4 @@ copyright = """"""
 
 release=0.1.7
 tag=0.1.7
+description=Increment patch version to support delay calculation using KATPoint library.

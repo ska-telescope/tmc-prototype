@@ -33,14 +33,13 @@ IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
 
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
-
 SHELL=/bin/bash
 
 DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
 .PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
-	push pre-push do-push post-push push-versioned-image
+	push pre-push do-push post-push push-versioned-image create-tag create-publish-tag push-tag-and-versioned-image push-tag config-git
 
 build: pre-build docker-build post-build  ## build the application image
 
@@ -69,8 +68,9 @@ docker-build: .release
 	@echo "tag=$(NAME)-0.0.0" >> .release
 	@echo INFO: .release created
 	@cat .release
+	@echo DESCRIPTION
 
-release: check-status check-release build push
+release: check-status check-release build create-tag push
 
 push: pre-push do-push post-push ## push the image to the Docker registry
 
@@ -118,4 +118,20 @@ check-release: .release
 
 push-versioned-image:
 	docker push $(IMAGE):$(VERSION)
-	
+
+create-tag: .release
+	@. $(RELEASE_SUPPORT) ; createGitTag || (echo "ERROR: Some error in creating tag" >&2 && exit 1) ;
+
+delete-image-from-nexus:
+	@. $(RELEASE_SUPPORT) ; deleteImageFromNexus
+
+push-tag: .release
+	@. $(RELEASE_SUPPORT) ; gitPush
+
+create-publish-tag: create-tag push-tag
+
+config-git:
+	git config --global user.email $(EMAILID)
+	git config --global user.name $(USERNAME)
+
+push-tag-and-versioned-image: config-git push-versioned-image create-publish-tag
