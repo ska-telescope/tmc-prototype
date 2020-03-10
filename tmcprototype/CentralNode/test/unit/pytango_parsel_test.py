@@ -1,5 +1,8 @@
+import types
+
 from tango.server import Device, device_property, is_tango_object
 from tango.server import attribute as tango_attribute
+from tango.server import command as tango_command
 
 from CentralNode.CentralNode import CentralNode
 
@@ -19,6 +22,10 @@ class RootDevice(Device):
     def read_baseTangoAttribute(self):
         return self._base_tango_attribute
 
+    @tango_command
+    def BaseNoOpCommand(self):
+        pass
+
 
 class LeafDevice(RootDevice):
     LeafDeviceProperty = device_property(
@@ -35,6 +42,10 @@ class LeafDevice(RootDevice):
     def read_telescopeHealthState(self):
         return self._telescope_health_state
 
+    @tango_command(dtype_in='str', dtype_out='str', )
+    def EchoCommand(self, argin):
+        print(argin)
+
 
 class PyTangoParsel():
     def __init__(self, pytango_device):
@@ -47,6 +58,10 @@ class PyTangoParsel():
     def extract_tango_attributes(self):
         return [o for o in self._device.__dict__.values() if is_tango_object(o)
                 and isinstance(o, tango_attribute)]
+
+    def extract_tango_commands(self):
+        return [o for o in self._device.__dict__.values() if is_tango_object(o)
+                and isinstance(o, types.FunctionType)]
 
 
 def test_parsel_should_parse_device_properties_from_tango_device_and_all_its_parents():
@@ -69,7 +84,20 @@ def test_parsel_should_parse_device_properties_from_tango_device_and_all_its_par
     expected_attributes = [
         RootDevice.baseTangoAttribute,
         LeafDevice.telescopeHealthState]
-    
+
     assert len(device_attributes) == len(expected_attributes)
     assert set(device_attributes) == set(expected_attributes)
+
+
+def test_parsel_should_parse_device_commands_from_tango_device_and_all_its_parents():
+    parsel = PyTangoParsel(LeafDevice)
+
+    device_commands = parsel.extract_tango_commands()
+
+    expected_commands = [
+            RootDevice.BaseNoOpCommand,
+            LeafDevice.EchoCommand]
+
+    assert len(device_commands) == len(expected_commands)
+    assert set(device_commands) == set(expected_commands)
 
