@@ -21,10 +21,10 @@ readme_filename = os.path.join(setup_dir, 'README.rst')
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, 'CentralNode', 'release.py')
+release_filename = os.path.join(setup_dir, 'src', 'release.py')
 exec(open(release_filename).read())
 
-pack = ['CentralNode']
+pack = ['centralnode']
 
 setup(name=name,
       version=version,
@@ -32,7 +32,7 @@ setup(name=name,
       packages=pack,
       include_package_data=True,
       test_suite="test",
-      entry_points={'console_scripts': ['CentralNode = CentralNode:main']},
+      entry_points={'console_scripts': ['CentralNode = central_node:main']},
       author='apurva.ska',
       author_email='apurva.ska at gmail.com',
       license='BSD-3-Clause',

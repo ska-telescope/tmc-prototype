@@ -294,11 +294,11 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
 * Navigate to the CentralNode folder:
 
-    `cd tmcprototype/CentralNode/CentralNode`
+    `cd tmcprototype/centralnode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=CentralNode test/`
+    `py.test --cov=CentralNode test/CentralNode_test.py`
 
 # 5: Running tmc-prototype inside Docker containers
 

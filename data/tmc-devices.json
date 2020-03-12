@@ -7,7 +7,7 @@
                 }
             }
         },
-        "CentralNode": {
+        "central_node": {
             "01": {
                 "CentralNode": {
                     "ska_mid/tm_central/central_node": {

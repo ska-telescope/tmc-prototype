@@ -8,5 +8,5 @@
 # See LICENSE.txt for more info.
 
 from __future__ import absolute_import
-from .CentralNode import main
+from .central_node import main
 main()

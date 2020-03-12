@@ -15,7 +15,7 @@ init-hook='
     sys.path.append("./tmcprototype/SdpSubarrayLeafNode");
     sys.path.append("./tmcprototype/SdpMasterLeafNode");
     sys.path.append("./tmcprototype/SubarrayNode");
-    sys.path.append("./tmcprototype/CentralNode");
+    sys.path.append("./tmcprototype/centralnode");
     sys.path.append("/usr/local/lib/python3.5/dist-packages");
     sys.path.append("/venv/lib/python3.5/site-packages")'
 

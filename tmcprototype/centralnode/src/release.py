@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """tangods-centralnode"""
+name = """centralnode"""
 version = "0.1.0"
 version_info = version.split(".")
 description = """Central Node is a coordinator of the complete M&C system."""

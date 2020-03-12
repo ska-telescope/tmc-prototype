@@ -1,9 +1,8 @@
-recursive-include CentralNode *.py
+recursive-include src *.py
 recursive-include test *.py
+recursive-include pogo CentralNode.xmi
 include *.rst
-include CentralNode.xmi
 include *.txt
 graft docs
-
 global-exclude *.pyc
 global-exclude *.pyo

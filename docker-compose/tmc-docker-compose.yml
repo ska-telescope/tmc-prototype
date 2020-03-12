@@ -365,7 +365,7 @@ services:
              tango_admin --ping-device ska_mid/tm_subarray_node/1 10 &&\
              tango_admin --ping-device ska_mid/tm_subarray_node/2 10 &&\
              tango_admin --ping-device ska_mid/tm_subarray_node/3 10 &&\
-             /venv/bin/python -u /app/tmcprototype/CentralNode/CentralNode/CentralNode.py 01 v5"
+             /venv/bin/python -u /app/tmcprototype/centralnode/src/central_node.py 01 v5"
 
   tm-alarmhandler:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmalarmhandler:latest
