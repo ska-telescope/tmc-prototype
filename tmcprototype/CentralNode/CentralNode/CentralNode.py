@@ -32,7 +32,7 @@ from future.utils import with_metaclass
 import json
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
-__all__ = ["CentralNode", "main"]
+# __all__ = ["CentralNode", "main"]
 
 
 class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
