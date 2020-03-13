@@ -28,6 +28,7 @@ import tango
 from tango import DevState, EventType, DeviceProxy
 from SdpMasterLeafNode.SdpMasterLeafNode import SdpMasterLeafNode
 from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.control_model import HealthState
 import CONST
 import pytest
 import time
@@ -123,7 +124,7 @@ class TestSdpMasterLeafNode(object):
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == CONST.ENUM_OK
+        assert tango_context.device.healthState == HealthState.OK
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_healthState
 
     def test_adminMode(self, tango_context):

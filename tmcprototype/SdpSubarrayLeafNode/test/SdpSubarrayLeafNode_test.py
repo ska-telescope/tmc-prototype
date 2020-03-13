@@ -26,6 +26,7 @@ import tango
 from tango import DevState, EventType, DeviceProxy
 from SdpSubarrayLeafNode.SdpSubarrayLeafNode import SdpSubarrayLeafNode
 from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.control_model import ObsState
 import CONST
 import pytest
 
@@ -149,7 +150,7 @@ class TestSdpSubarrayLeafNode(object):
                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
         tango_context.device.Configure(test_input)
         time.sleep(1)
-        assert create_sdpsubarray_proxy.obsState == CONST.ENUM_READY
+        assert create_sdpsubarray_proxy.obsState == ObsState.READY
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Configure
 
     def test_Configure_invalid_key(self, tango_context):
@@ -220,13 +221,13 @@ class TestSdpSubarrayLeafNode(object):
         test_input = '{"scanDuration":0}'
         tango_context.device.Scan(test_input)
         time.sleep(1)
-        assert create_sdpsubarray_proxy.obsState == CONST.ENUM_SCANNING
+        assert create_sdpsubarray_proxy.obsState == ObsState.SCANNING
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
 
     def test_EndScan(self, tango_context, create_sdpsubarray_proxy):
         """Test for EndScan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndScan) ENABLED START #
-        create_sdpsubarray_proxy.obsState = CONST.ENUM_SCANNING
+        create_sdpsubarray_proxy.obsState = ObsState.SCANNING
         time.sleep(2)
         tango_context.device.EndScan()
         tango_context.device.status()
@@ -239,7 +240,7 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
         tango_context.device.EndSB()
         time.sleep(2)
-        assert create_sdpsubarray_proxy.ObsState == CONST.ENUM_IDLE
+        assert create_sdpsubarray_proxy.ObsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
 
     def test_EndSB_device_not_ready(self, tango_context):
