@@ -39,7 +39,7 @@ test:
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
-	cd /app/tmcprototype/DishMaster && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	cd /app/tmcprototype/dishmaster && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/dishmaster/dishmaster_coverage /build/dishmaster_coverage
 	cd /app/tmcprototype/DishLeafNode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/DishLeafNode/dishleafnode_coverage /build/dishleafnode_coverage
