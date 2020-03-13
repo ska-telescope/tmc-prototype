@@ -5,7 +5,7 @@ import mock
 from mock import Mock
 from skabase.control_model import HealthState
 from CONST import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
-from CentralNode.CentralNode import CentralNode
+from CentralNode import CentralNode
 from tango.test_context import DeviceTestContext
 
 
