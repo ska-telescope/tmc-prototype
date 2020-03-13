@@ -5,7 +5,7 @@ import mock
 from mock import Mock
 
 from CONST import HealthState, CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
-from src.central_node import CentralNode
+from central_node import CentralNode
 from tango.test_context import DeviceTestContext
 
 
