@@ -244,26 +244,26 @@ build DishMaster wheel for publication: # Executed on a tag
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/DishMaster
+    - cd ./tmcprototype/dishmaster
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/DishMaster/dist/
+      - ./tmcprototype/dishmaster/dist/
 
 build DishMaster wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/DishMaster
+    - cd ./tmcprototype/dishmaster
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/DishMaster/dist/
+      - ./tmcprototype/dishmaster/dist/
 
 # For development purpose only when testing locally in docker env.
 build SdpMaster wheel for development: # Executed on a commit
@@ -343,7 +343,7 @@ publish to nexus:
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/DishLeafNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspMasterLeafNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpMasterLeafNode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/DishMaster/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishmaster/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpSubarrayLeafNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspSubarrayLeafNode/dist/*
 

@@ -9,5 +9,5 @@
 """ main.py file of DishMaster project"""
 
 from __future__ import absolute_import
-from .DishMaster import main
+from .dish_master import main
 main()

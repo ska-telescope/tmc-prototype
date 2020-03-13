@@ -48,7 +48,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python -u /app/tmcprototype/DishMaster/DishMaster/DishMaster.py 01 v5"
+             /venv/bin/python -u /app/tmcprototype/dishmaster/src/dish_master.py 01 v5"
 
   dishmaster2:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -61,7 +61,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python -u /app/tmcprototype/DishMaster/DishMaster/DishMaster.py 02 v5"
+             /venv/bin/python -u /app/tmcprototype/dishmaster/src/dish_master.py 02 v5"
 
   dishmaster3:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -74,7 +74,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python -u /app/tmcprototype/DishMaster/DishMaster/DishMaster.py 03 v5"
+             /venv/bin/python -u /app/tmcprototype/dishmaster/src/dish_master.py 03 v5"
 
   dishmaster4:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -87,7 +87,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python -u /app/tmcprototype/DishMaster/DishMaster/DishMaster.py 04 v5"
+             /venv/bin/python -u /app/tmcprototype/dishmaster/src/dish_master.py 04 v5"
 
   dishleafnode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest

@@ -163,7 +163,7 @@
                 }
             },
             "sa2": {
-                "SubarrayNode": {
+                "subarray_node": {
                     "ska_mid/tm_subarray_node/2": {
                         "attribute_properties": {
                             "adminMode": {
@@ -246,7 +246,7 @@
                 }
             },
             "sa3": {
-                "SubarrayNode": {
+                "subarray_node": {
                     "ska_mid/tm_subarray_node/3": {
                         "attribute_properties": {
                             "adminMode": {
@@ -1064,7 +1064,7 @@
                 }
             }
         },
-        "DishMaster": {
+        "dish_master": {
             "01": {
                 "DishMaster": {
                     "mid_d0001/elt/master": {
@@ -1153,7 +1153,7 @@
                 }
             },
             "02": {
-                "DishMaster": {
+                "dish_master": {
                     "mid_d0002/elt/master": {
                         "attribute_properties": {
                             "ConfiguredBand": {
@@ -1240,7 +1240,7 @@
                 }
             },
             "03": {
-                "DishMaster": {
+                "dish_master": {
                     "mid_d0003/elt/master": {
                         "attribute_properties": {
                             "ConfiguredBand": {
@@ -1327,7 +1327,7 @@
                 }
             },
             "04": {
-                "DishMaster": {
+                "dish_master": {
                     "mid_d0004/elt/master": {
                         "attribute_properties": {
                             "ConfiguredBand": {

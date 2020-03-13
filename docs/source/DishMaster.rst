@@ -6,6 +6,6 @@
 tmcprototype.DishMaster.DishMaster
 ==================================
 
-.. automodule:: tmcprototype.DishMaster.DishMaster
+.. automodule:: tmcprototype.dishmaster.src
    :members:
    :undoc-members:

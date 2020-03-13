@@ -40,7 +40,7 @@ test:
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
 	cd /app/tmcprototype/DishMaster && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-	mv /app/tmcprototype/DishMaster/dishmaster_coverage /build/dishmaster_coverage
+	mv /app/tmcprototype/dishmaster/dishmaster_coverage /build/dishmaster_coverage
 	cd /app/tmcprototype/DishLeafNode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/DishLeafNode/dishleafnode_coverage /build/dishleafnode_coverage
 	cd /app/tmcprototype/CspMasterLeafNode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
@@ -77,8 +77,8 @@ test:
 	 central-node-unit-tests.xml csp-master-leaf-node-unit-tests.xml csp-subarray-leaf-node-unit-tests.xml \
 	 sdp-master-leaf-node-unit-tests.xml sdp-subarray-leaf-node-unit-tests.xml subarraynode-unit-tests.xml
 
-	mv /app/tmcprototype/DishMaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
-	mv /app/tmcprototype/DishMaster/htmlcov /build/dishmaster_htmlcov; \
+	mv /app/tmcprototype/dishmaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
+	mv /app/tmcprototype/dishmaster/htmlcov /build/dishmaster_htmlcov; \
 	mv /app/tmcprototype/CspSubarrayLeafNode/setup_py_test.stdout /build/cspsubarrayleafnode_setup_py_test.stdout; \
 	mv /app/tmcprototype/CspSubarrayLeafNode/htmlcov /build/cspsubarrayleafnode_htmlcov; \
 	mv /app/tmcprototype/DishLeafNode/setup_py_test.stdout /build/dishleafnode_setup_py_test.stdout; \

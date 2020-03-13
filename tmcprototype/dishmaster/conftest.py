@@ -26,7 +26,7 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format(package_name, module_name))
     # klass = getattr(module, class_name)
-    dishmaster_module = importlib.import_module("{}.{}".format('DishMaster', 'DishMaster'))
+    dishmaster_module = importlib.import_module("{}.{}".format('src', 'dish_master'))
     klass = getattr(dishmaster_module, 'DishMaster')
     properties = {'GroupDefinitions': ''}
     tango_context = DeviceTestContext(klass, process=False, properties=properties)

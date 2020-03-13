@@ -23,4 +23,4 @@ run python setup.py test
 Now you can start your device server in any
 Terminal or console by calling it :
 
-DishMaster instance_name
+dish_master instance_name
