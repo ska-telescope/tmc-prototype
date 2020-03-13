@@ -79,7 +79,7 @@
                 }
             }
         },
-        "SubarrayNode": {
+        "subarray_node": {
             "sa1": {
                 "SubarrayNode": {
                     "ska_mid/tm_subarray_node/1": {

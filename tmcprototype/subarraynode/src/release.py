@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """tangods-subarraynode"""
+name = """subarraynode"""
 version = "0.1.0"
 version_info = version.split(".")
 description = """Provides the monitoring and control interface required by users as well as

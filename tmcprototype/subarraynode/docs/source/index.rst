@@ -1,6 +1,6 @@
 Subarray Node
 *************
-.. automodule:: SubarrayNode.SubarrayNode
+.. automodule:: src.subarray_node
 
 
 .. autoclass:: SubarrayNode

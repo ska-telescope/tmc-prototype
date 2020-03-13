@@ -10,5 +10,5 @@
 """ main.py file of SubarrayNode project"""
 
 from __future__ import absolute_import
-from .SubarrayNode import main
+from .subarray_node import main
 main()

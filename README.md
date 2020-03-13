@@ -283,11 +283,11 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
 * Navigate to the SubarrayNode folder:
 
-    `cd tmcprototype/SubarrayNode/SubarrayNode`
+    `cd tmcprototype/subarraynode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=SubarrayNode test/`
+    `py.test --cov=SubarrayNode test/SubarrayNode_test.py`
 
 ### 4.8 Testing CentralNode
 **Prerequisite:** All instances of SubarrayNodes, all TMC LeafNodes, DishMaster, CSPMaster, CSPSubarray, SDPMaster and SDPSubarray TANGO Devices should be up and running.

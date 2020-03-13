@@ -1,9 +1,8 @@
-recursive-include SubarrayNode *.py
+recursive-include src *.py
 recursive-include test *.py
+recursive-include pogo SubarrayNode.xmi
 include *.rst
-include SubarrayNode.xmi
 include *.txt
 graft docs
-
 global-exclude *.pyc
 global-exclude *.pyo

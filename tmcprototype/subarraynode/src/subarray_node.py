@@ -21,7 +21,7 @@ import time
 import threading
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/src"
 sys.path.insert(0, module_path)
 
 import random
