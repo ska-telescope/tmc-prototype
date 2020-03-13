@@ -29,7 +29,7 @@ from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 from CONST import AdminMode, HealthState, ObsState, ObsMode
-from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState, ElementDeviceData
+from src.subarray_node import SubarrayNode, SubarrayHealthState, ElementDeviceData
 
 
 @pytest.fixture(scope="function",
