@@ -2,9 +2,7 @@ recursive-include src *.py
 recursive-include test *.py
 recursive-include pogo DishMaster.xmi
 include *.rst
-include DishMaster.xmi
 include *.txt
 graft docs
-
 global-exclude *.pyc
 global-exclude *.pyo

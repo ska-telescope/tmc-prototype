@@ -217,11 +217,11 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 ### 4.1 Testing DishMaster
 * Navigate to the DishMaster folder:
 
-    `cd tmcprototype/dishMaster/src`
+    `cd tmcprototype/dishmaster/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=DishMaster test/dish_master.py`
+    `py.test --cov=DishMaster test/DishMaster_test.py`
 
 ### 4.2 Testing DishLeafNode
 **Prerequisite:** DishMaster TANGO Device should be up and running.
