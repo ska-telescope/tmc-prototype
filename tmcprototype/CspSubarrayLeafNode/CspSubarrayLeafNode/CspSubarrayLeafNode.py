@@ -30,6 +30,7 @@ import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+from skabase.control_model import HealthState, ObsState
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 from future.utils import with_metaclass
@@ -272,9 +273,9 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # list of bands
         _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
         while not self._stop_delay_model_event.isSet():
-            if(self.CspSubarrayProxy.obsState == CONST.ENUM_CONFIGURING
-                    or self.CspSubarrayProxy.obsState == CONST.ENUM_READY
-                    or self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING):
+            if(self.CspSubarrayProxy.obsState == ObsState.CONFIGURING
+                    or self.CspSubarrayProxy.obsState == ObsState.READY
+                    or self.CspSubarrayProxy.obsState == ObsState.SCANNING):
                 self.logger.info("Calculating delays.")
                 time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
                 time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
@@ -385,7 +386,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.delay_model_calculator_thread.start()
             self.set_state(DevState.ON)
             self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
-            self._csp_subarray_health_state = CONST.ENUM_OK
+            self._csp_subarray_health_state = HealthState.OK
             self.logger.info(CONST.STR_CSPSALN_INIT_SUCCESS)
 
         except DevFailed as dev_failed:
@@ -562,7 +563,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             json_scan_duration = json.loads(argin[0])
             scan_duration = json_scan_duration["scanDuration"]
             #Check if CspSubarray is in READY state
-            if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
+            if self.CspSubarrayProxy.obsState == ObsState.READY:
                 #Invoke StartScan command on CspSubarray
                 self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_STARTSCAN, "0", self.commandCallback)
                 self._read_activity_message = CONST.STR_STARTSCAN_SUCCESS
@@ -600,7 +601,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            if self.CspSubarrayProxy.obsState == CONST.ENUM_SCANNING:
+            if self.CspSubarrayProxy.obsState == ObsState.SCANNING:
                 # Invoke EndScan command on CspSubarray
                 self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSCAN, self.commandCallback)
                 self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
@@ -748,7 +749,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
+            if self.CspSubarrayProxy.obsState == ObsState.READY:
                 self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
                 self._read_activity_message = CONST.STR_ENDSB_SUCCESS
                 self.logger.info(CONST.STR_ENDSB_SUCCESS)

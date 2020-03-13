@@ -26,6 +26,7 @@ sys.path.insert(0, os.path.abspath(path))
 from tango import DevState, EventType, DeviceProxy
 from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
 from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.control_model import HealthState, ObsState
 import CONST
 import pytest
 import json
@@ -148,7 +149,7 @@ class TestCspSubarrayLeafNode(object):
             tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(1)
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
-        assert create_cspsubarray1_proxy.obsState is not CONST.ENUM_READY
+        assert create_cspsubarray1_proxy.obsState is not ObsState.READY
 
     def test_StartScan_generic_exception(self, tango_context):
         """
@@ -180,7 +181,7 @@ class TestCspSubarrayLeafNode(object):
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
         time.sleep(10)
-        assert create_cspsubarray1_proxy.obsState == CONST.ENUM_READY
+        assert create_cspsubarray1_proxy.obsState == ObsState.READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
 
     def test_delayModel(self, tango_context):
@@ -240,7 +241,7 @@ class TestCspSubarrayLeafNode(object):
         tango_context.device.StartScan(startscan_input)
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
-        assert obs_state == CONST.ENUM_SCANNING
+        assert obs_state == ObsState.SCANNING
         # assert CONST.STR_STARTSCAN_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan
 
@@ -250,7 +251,7 @@ class TestCspSubarrayLeafNode(object):
         tango_context.device.EndScan()
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
-        assert obs_state == CONST.ENUM_READY
+        assert obs_state == ObsState.READY
         # assert CONST.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage \
         #        and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
@@ -261,7 +262,7 @@ class TestCspSubarrayLeafNode(object):
         tango_context.device.EndSB()
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
-        assert obs_state == CONST.ENUM_IDLE
+        assert obs_state == ObsState.IDLE
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
 
     def test_EndScan_Invalid_state(self, tango_context):

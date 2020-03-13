@@ -61,9 +61,5 @@ STR_CSPSA_FQDN = "CspSubarrayFQDN :-> "
 STR_ENDSB_SUCCESS = "EndSB command is invoked successfully on CspSubarray."
 STR_ENDSB_EXEC = "EndSB command execution"
 
-ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
-ENUM_INIT, ENUM_OFF, ENUM_ON, ENUM_ALARM, ENUM_DISABLE, ENUM_FAULT, ENUM_UNKNOWN = list(range(0, 7))
-ENUM_IDLE, ENUM_CONFIGURING, ENUM_READY, ENUM_SCANNING = list(range(0, 4))
-
 #INTEGERS
 INT_SKA_LEVEL = 3
