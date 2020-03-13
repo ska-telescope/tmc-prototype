@@ -14,7 +14,7 @@ from __future__ import print_function
 import sys
 import os
 file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SubarrayNode"
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/src"
 sys.path.insert(0, module_path)
 
 path = os.path.join(os.path.dirname(__file__), os.pardir)
@@ -29,7 +29,7 @@ from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 from CONST import AdminMode, HealthState, ObsState, ObsMode
-from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState, ElementDeviceData
+from src.subarray_node import SubarrayNode, SubarrayHealthState, ElementDeviceData
 
 
 @pytest.fixture(scope="function",
