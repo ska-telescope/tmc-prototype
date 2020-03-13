@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.abspath(path))
 import tango
 from tango import DevState
 from CspMasterLeafNode.CspMasterLeafNode import CspMasterLeafNode
-from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
 import CONST
 import pytest
 import time

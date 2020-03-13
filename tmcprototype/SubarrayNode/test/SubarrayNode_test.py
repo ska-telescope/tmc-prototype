@@ -26,7 +26,7 @@ import pytest
 import time
 import tango
 from tango import DevState
-from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
 import CONST
 from CONST import AdminMode, HealthState, ObsState, ObsMode
 from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState, ElementDeviceData

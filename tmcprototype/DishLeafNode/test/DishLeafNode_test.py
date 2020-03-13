@@ -26,8 +26,7 @@ import tango
 from tango import DevState, EventType
 import pytest
 from DishLeafNode.DishLeafNode import DishLeafNode
-from skabase.SKABaseDevice import TangoLoggingLevel
-import CONST
+from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
 # Note:
 #
 # Since the device uses an inner thread, it is necessary to

@@ -27,7 +27,7 @@ from mock import MagicMock
 import tango
 from tango import DevState, EventType, DeviceProxy
 from SdpMasterLeafNode.SdpMasterLeafNode import SdpMasterLeafNode
-from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
 import CONST
 import pytest
 import time
