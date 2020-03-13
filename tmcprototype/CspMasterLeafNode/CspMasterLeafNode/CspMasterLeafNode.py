@@ -232,7 +232,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._admin_mode = CONST.ENUM_ADMIN_MODE_ONLINE  # Setting adminMode to "ONLINE"
             self._health_state = CONST.ENUM_HEALTH_OK  # Setting healthState to "OK"
             self._simulation_mode = False  # Enabling the simulation mode
-            self._test_mode = "False"
+            self._test_mode = 0
 
         except DevFailed as dev_failed:
             self.logger.error(CONST.ERR_INIT_PROP_ATTR)

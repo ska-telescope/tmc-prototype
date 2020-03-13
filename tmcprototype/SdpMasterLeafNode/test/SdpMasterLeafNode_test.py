@@ -111,13 +111,13 @@ class TestSdpMasterLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.4.1, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == '0.2.0'
+        assert tango_context.device.versionId == '0.4.1'
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_versionId
 
     def test_healthState(self, tango_context):
@@ -151,7 +151,7 @@ class TestSdpMasterLeafNode(object):
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_testMode) ENABLED START #
-        test_mode = CONST.STR_FALSE
+        test_mode = 0
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_testMode
@@ -186,7 +186,7 @@ class TestSdpMasterLeafNode(object):
     def test_off_devfailed_exception(self, tango_context):
         """Negative test for Off command"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_off_devfailed_exception) ENABLED START #
-        tango_context.device.testMode = CONST.STR_TRUE
+        tango_context.device.testMode = 1
         tango_context.device.Off()
         assert CONST.ERR_MSG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_off_devfailed_exception

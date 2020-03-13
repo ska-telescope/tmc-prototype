@@ -236,13 +236,13 @@ class TestDishMaster(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishMaster.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.4.1, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  DishMaster.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(DishMaster.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.2.0"
+        assert tango_context.device.versionId == "0.4.1"
         # PROTECTED REGION END #    //  DishMaster.test_versionId
 
     def test_healthState(self, tango_context):
@@ -276,7 +276,7 @@ class TestDishMaster(object):
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(DishMaster.test_testMode) ENABLED START #
-        test_mode = CONST.STR_FALSE
+        test_mode = 0
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  DishMaster.test_testMode
