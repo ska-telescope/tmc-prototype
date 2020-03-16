@@ -53,7 +53,7 @@ load-plugins=
 disable=C,R,attribute-defined-outside-init,invalid-name,no-init,no-member,no-self-use,
 	no-name-in-module,unused-argument,undefined-variable,
 	syntax-error,import-error,exec-used,protected-access,fixme,broad-except,
-	redefined-builtin,redefined-outer-name,unused-variable,relative-import
+	redefined-builtin,redefined-outer-name,unused-variable
 
 
 [REPORTS]
