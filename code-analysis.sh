@@ -8,7 +8,7 @@ echo "---------------"
 pylint --rcfile=.pylintrc tmcprototype/dishmaster/src
 pylint --rcfile=.pylintrc tmcprototype/CspSubarrayLeafNode/CspSubarrayLeafNode
 pylint --rcfile=.pylintrc tmcprototype/DishLeafNode/DishLeafNode
-pylint --rcfile=.pylintrc tmcprototype/CspMasterLeafNode/CspMasterLeafNode
+pylint --rcfile=.pylintrc tmcprototype/cspmasterleafnode/src
 pylint --rcfile=.pylintrc tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode
 pylint --rcfile=.pylintrc tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode
 pylint --rcfile=.pylintrc tmcprototype/subarraynode/src
@@ -19,7 +19,7 @@ echo "--------------"
 pylint --rcfile=.pylintrc tmcprototype/dishmaster/test
 pylint --rcfile=.pylintrc tmcprototype/CspSubarrayLeafNode/test
 pylint --rcfile=.pylintrc tmcprototype/DishLeafNode/test
-pylint --rcfile=.pylintrc tmcprototype/CspMasterLeafNode/test
+pylint --rcfile=.pylintrc tmcprototype/cspmasterleafnode/test
 pylint --rcfile=.pylintrc tmcprototype/SdpSubarrayLeafNode/test
 pylint --rcfile=.pylintrc tmcprototype/SdpMasterLeafNode/test
 pylint --rcfile=.pylintrc tmcprototype/subarraynode/test

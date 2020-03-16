@@ -10,5 +10,5 @@
 """ main.py file of CspMasterLeafNode project"""
 
 from __future__ import absolute_import
-from .CspMasterLeafNode import main
+from .csp_master_leaf_node import main
 main()

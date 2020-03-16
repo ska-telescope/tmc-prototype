@@ -1,6 +1,6 @@
 CSP Master Leaf Node
 **********************
-.. automodule:: CspMasterLeafNode.CspMasterLeafNode
+.. automodule:: src.csp_master_leaf_node
 
 .. autoclass:: CspMasterLeafNode
    :members:

@@ -203,7 +203,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_csp/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/CspMasterLeafNode/CspMasterLeafNode/CspMasterLeafNode.py 01 v5"
+             /venv/bin/python -u /app/tmcprototype/cspmasterleafnode/src/csp_master_leaf_node.py 01 v5"
 
   sdpsubarrayleafnode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
