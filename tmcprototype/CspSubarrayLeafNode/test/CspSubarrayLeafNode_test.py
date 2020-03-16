@@ -26,7 +26,7 @@ sys.path.insert(0, os.path.abspath(path))
 from tango import DevState, EventType, DeviceProxy
 from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
 from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import HealthState, ObsState
+from skabase.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode
 import CONST
 import pytest
 import json
@@ -309,19 +309,19 @@ class TestCspSubarrayLeafNode(object):
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == 0
+        assert tango_context.device.healthState == HealthState.OK
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_healthState
 
     def test_adminMode(self, tango_context):
         """Test for adminMode"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_adminMode) ENABLED START #
-        assert tango_context.device.adminMode == 0
+        assert tango_context.device.adminMode == AdminMode.ONLINE
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_adminMode
 
     def test_controlMode(self, tango_context):
         """Test for controlMode"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_controlMode) ENABLED START #
-        control_mode = 0
+        control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_controlMode
@@ -329,7 +329,7 @@ class TestCspSubarrayLeafNode(object):
     def test_simulationMode(self, tango_context):
         """Test for simulationMode"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_simulationMode) ENABLED START #
-        simulation_mode = 0
+        simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_simulationMode
@@ -337,7 +337,7 @@ class TestCspSubarrayLeafNode(object):
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_testMode) ENABLED START #
-        test_mode = 0
+        test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_testMode
