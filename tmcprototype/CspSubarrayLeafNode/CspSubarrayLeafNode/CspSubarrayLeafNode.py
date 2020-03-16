@@ -354,7 +354,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 # create CspSubarray Proxy
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
-            except:
+            except Exception:
                 self.logger.debug(CONST.ERR_IN_CREATE_PROXY_CSPSA)
 
             # create CspSubarray Proxy
