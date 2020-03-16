@@ -750,7 +750,7 @@
                 }
             }
         },
-        "SdpSubarrayLeafNode": {
+        "sdp_subarray_leaf_node": {
             "01": {
                 "SdpSubarrayLeafNode": {
                     "ska_mid/tm_leaf_node/sdp_subarray01": {

@@ -12,7 +12,7 @@ init-hook='
     sys.path.append("./tmcprototype/cspsubarrayleafnode");
     sys.path.append("./tmcprototype/dishleafnode");
     sys.path.append("./tmcprototype/cspmasterleafnode");
-    sys.path.append("./tmcprototype/SdpSubarrayLeafNode");
+    sys.path.append("./tmcprototype/sdpsubarrayleafnode");
     sys.path.append("./tmcprototype/sdpmasterleafnode");
     sys.path.append("./tmcprototype/subarraynode");
     sys.path.append("./tmcprototype/centralnode");

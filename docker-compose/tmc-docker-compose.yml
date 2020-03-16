@@ -218,7 +218,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_sdp/elt/subarray_1 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 01 v5"
+             /venv/bin/python -u /app/tmcprototype/sdpsubarrayleafnode/src/sdp_subarray_leaf_node.py 01 v5"
 
   sdpsubarrayleafnode2:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -233,7 +233,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_sdp/elt/subarray_2 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 02 v5"
+             /venv/bin/python -u /app/tmcprototype/sdpsubarrayleafnode/src/sdp_subarray_leaf_node.py 02 v5"
 
   sdpsubarrayleafnode3:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -248,7 +248,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_sdp/elt/subarray_3 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 03 v5"
+             /venv/bin/python -u /app/tmcprototype/sdpsubarrayleafnode/src/sdp_subarray_leaf_node.py 03 v5"
 
   sdpmasterleafnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
