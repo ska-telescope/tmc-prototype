@@ -26,6 +26,7 @@ from tango import DevState
 import pytest
 from DishMaster.DishMaster import DishMaster
 from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.control_model import HealthState, AdminMode
 import CONST
 import json
 
@@ -83,7 +84,7 @@ class TestDishMaster(object):
         """Test for SetStowMode"""
         # PROTECTED REGION ID(DishMaster.test_SetStowMode) ENABLED START #
         tango_context.device.SetStowMode()
-        assert tango_context.device.adminMode == 1
+        assert tango_context.device.adminMode == AdminMode.OFFLINE
         assert tango_context.device.dishMode == 6
         assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  DishMaster.test_SetStowMode
@@ -100,7 +101,7 @@ class TestDishMaster(object):
         """Test for SetMaintenanceMode"""
         # PROTECTED REGION ID(DishMaster.test_SetMaintenanceMode) ENABLED START #
         tango_context.device.SetMaintenanceMode()
-        assert tango_context.device.adminMode == 2
+        assert tango_context.device.adminMode == AdminMode.MAINTENANCE
         assert tango_context.device.dishMode == 5
         assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  DishMaster.test_SetMaintenanceMode
@@ -110,7 +111,7 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_SetOperateMode) ENABLED START #
         tango_context.device.SetStandbyLPMode()
         tango_context.device.SetOperateMode()
-        assert tango_context.device.adminMode == 0
+        assert tango_context.device.adminMode == AdminMode.ONLINE
         assert tango_context.device.dishMode == 8
         assert tango_context.device.State() == DevState.ON
         # PROTECTED REGION END #    //  DishMaster.test_SetOperateMode
@@ -248,13 +249,13 @@ class TestDishMaster(object):
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(DishMaster.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == 0
+        assert tango_context.device.healthState == HealthState.OK
         # PROTECTED REGION END #    //  DishMaster.test_healthState
 
     def test_adminMode(self, tango_context):
         """Test for adminMode"""
         # PROTECTED REGION ID(DishMaster.test_adminMode) ENABLED START #
-        assert tango_context.device.adminMode == 0
+        assert tango_context.device.adminMode == AdminMode.ONLINE
         # PROTECTED REGION END #    //  DishMaster.test_adminMode
 
     def test_controlMode(self, tango_context):
