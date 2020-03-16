@@ -21,10 +21,10 @@ readme_filename = os.path.join(setup_dir, 'README.rst')
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, 'SdpMasterLeafNode', 'release.py')
+release_filename = os.path.join(setup_dir, 'src', 'release.py')
 exec(open(release_filename).read())
 
-pack = ['SdpMasterLeafNode']
+pack = ['src']
 
 setup(
     name=name,

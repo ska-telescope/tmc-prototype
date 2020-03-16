@@ -47,8 +47,8 @@ test:
 	mv /app/tmcprototype/cspmasterleafnode/cspmasterleafnode_coverage /build/cspmasterleafnode_coverage
 	cd /app/tmcprototype/cspsubarrayleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/cspsubarrayleafnode/cspsubarrayleafnode_coverage /build/cspsubarrayleafnode_coverage
-	cd /app/tmcprototype/SdpMasterLeafNode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-	mv /app/tmcprototype/SdpMasterLeafNode/sdpmasterleafnode_coverage /build/sdpmasterleafnode_coverage
+	cd /app/tmcprototype/sdpmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	mv /app/tmcprototype/sdpmasterleafnode/sdpmasterleafnode_coverage /build/sdpmasterleafnode_coverage
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/SdpSubarrayLeafNode/sdpsubarrayleafnode_coverage /build/sdpsubarrayleafnode_coverage
 	cd /app/tmcprototype/subarraynode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
@@ -87,8 +87,8 @@ test:
 	mv /app/tmcprototype/SdpSubarrayLeafNode/htmlcov /build/sdpsubarrayleafnode_htmlcov; \
 	mv /app/tmcprototype/cspmasterleafnode/setup_py_test.stdout /build/cspmasterleafnode_setup_py_test.stdout; \
 	mv /app/tmcprototype/cspmasterleafnode/htmlcov /build/cspmasterleafnode_htmlcov; \
-	mv /app/tmcprototype/SdpMasterLeafNode/setup_py_test.stdout /build/sdpmasterleafnode_setup_py_test.stdout; \
-	mv /app/tmcprototype/SdpMasterLeafNode/htmlcov /build/sdpmasterleafnode_htmlcov; \
+	mv /app/tmcprototype/sdpmasterleafnode/setup_py_test.stdout /build/sdpmasterleafnode_setup_py_test.stdout; \
+	mv /app/tmcprototype/sdpmasterleafnode/htmlcov /build/sdpmasterleafnode_htmlcov; \
 	mv /app/tmcprototype/subarraynode/setup_py_test.stdout /build/subarraynode_setup_py_test.stdout; \
 	mv /app/tmcprototype/subarraynode/htmlcov /build/subarraynode_htmlcov; \
 	mv /app/tmcprototype/centralnode/setup_py_test.stdout /build/centralnode_setup_py_test.stdout; \
@@ -103,7 +103,7 @@ lint:
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/DishLeafNode | tee /build/dish-leaf-node-code_analysis.stdout;
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/SdpSubarrayLeafNode | tee /build/sdp-subarray-leaf-code_analysis.stdout; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/cspmasterleafnode | tee /build/csp-master-leaf-node-code_analysis.stdout; \
-	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/SdpMasterLeafNode | tee /build/sdp-master-leaf-node-code_analysis.stdout; \
+	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/sdpmasterleafnode | tee /build/sdp-master-leaf-node-code_analysis.stdout; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/subarraynode | tee /build/subarray-node-code_analysis.stdout; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/centralnode | tee /build/central-node-code_analysis.stdout; \
 # Generate device-linting.xml files for all the devices/packages
@@ -112,7 +112,7 @@ lint:
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/DishLeafNode > /build/dish-leaf-node-linting.xml; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/SdpSubarrayLeafNode > /build/sdp-subarray-leaf-linting.xml; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/cspmasterleafnode > /build/csp-master-leaf-node-linting.xml; \
-	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/SdpMasterLeafNode > /build/sdp-master-leaf-node-linting.xml; \
+	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/sdpmasterleafnode > /build/sdp-master-leaf-node-linting.xml; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/subarraynode > /build/subarray-node-linting.xml; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/centralnode > /build/central-node-linting.xml; \
 # Merge device-linting.xml files of all the packages/devices into single linting.xml file

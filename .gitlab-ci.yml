@@ -177,13 +177,13 @@ build SdpMasterLeafNode wheel for publication: # Executed on a tag
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/SdpMasterLeafNode
+    - cd ./tmcprototype/sdpmasterleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/SdpMasterLeafNode/dist/
+      - ./tmcprototype/sdpmasterleafnode/dist/
 
 
 build SdpMasterLeafNode wheel for development: # Executed on a commit
@@ -191,13 +191,13 @@ build SdpMasterLeafNode wheel for development: # Executed on a commit
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/SdpMasterLeafNode
+    - cd ./tmcprototype/sdpmasterleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/SdpMasterLeafNode/dist/
+      - ./tmcprototype/sdpmasterleafnode/dist/
 
 build CspSubarrayLeafNode wheel for development: # Executed on a commit
   stage: build
@@ -342,7 +342,7 @@ publish to nexus:
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/subarraynode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishleafnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/cspmasterleafnode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpMasterLeafNode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/sdpmasterleafnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishmaster/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpSubarrayLeafNode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/cspsubarrayleafnode/dist/*

@@ -7,5 +7,5 @@
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-from SdpMasterLeafNode import main
+from .sdp_master_leaf_node import main
 main()

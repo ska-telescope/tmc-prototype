@@ -15,9 +15,9 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 """
 
 from . import release
-from .SdpMasterLeafNode import SdpMasterLeafNode, main
+from .sdp_master_leaf_node import SdpMasterLeafNode, main
 
-__all__ = ["SdpMasterLeafNode", "CONST", "release"]
+__all__ = ["sdp_master_leaf_node", "CONST", "release"]
 
 __version__ = release.version
 __version_info__ = release.version_info

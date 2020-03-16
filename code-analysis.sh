@@ -10,7 +10,7 @@ pylint --rcfile=.pylintrc tmcprototype/cspsubarrayleafnode/src
 pylint --rcfile=.pylintrc tmcprototype/dishleafnode/src
 pylint --rcfile=.pylintrc tmcprototype/cspmasterleafnode/src
 pylint --rcfile=.pylintrc tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode
-pylint --rcfile=.pylintrc tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode
+pylint --rcfile=.pylintrc tmcprototype/sdpmasterleafnode/src
 pylint --rcfile=.pylintrc tmcprototype/subarraynode/src
 pylint --rcfile=.pylintrc tmcprototype/centralnode/src
 
@@ -21,6 +21,6 @@ pylint --rcfile=.pylintrc tmcprototype/cspsubarrayleafnode/test
 pylint --rcfile=.pylintrc tmcprototype/dishleafnode/test
 pylint --rcfile=.pylintrc tmcprototype/cspmasterleafnode/test
 pylint --rcfile=.pylintrc tmcprototype/SdpSubarrayLeafNode/test
-pylint --rcfile=.pylintrc tmcprototype/SdpMasterLeafNode/test
+pylint --rcfile=.pylintrc tmcprototype/sdpmasterleafnode/test
 pylint --rcfile=.pylintrc tmcprototype/subarraynode/test
 pylint --rcfile=.pylintrc tmcprototype/centralnode/test

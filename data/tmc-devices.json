@@ -712,7 +712,7 @@
                 }
             }
         },
-        "SdpMasterLeafNode": {
+        "sdp_master_leaf_node": {
             "01": {
                 "SdpMasterLeafNode": {
                     "ska_mid/tm_leaf_node/sdp_master": {

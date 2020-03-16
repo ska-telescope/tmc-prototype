@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """tangods-sdpmasterleafnode"""
+name = """sdpmasterleafnode"""
 version = "0.1.0"
 version_info = version.split(".")
 description = """ The primary responsibility of the SDP Subarray 

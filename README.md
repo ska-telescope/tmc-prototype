@@ -261,11 +261,11 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
 * Navigate to the SdpMasterLeafNode folder:
 
-    `cd tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode`
+    `cd tmcprototype/sdpmasterleafnode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=SdpMasterLeafNode test/`
+    `py.test --cov=SdpMasterLeafNode test/SdpMasterLeafNode_test.py`
 
 ### 4.6 Testing SdpSubarrayLeafNode
 **Prerequisite:** SdpSubarray TANGO Device should be up and running.

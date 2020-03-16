@@ -8,7 +8,6 @@ import pytest
 import importlib
 from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
-# from .SdpSubarrayLeafNode import CONST as CONST
 
 @pytest.fixture(scope="class")
 def tango_context(request):
@@ -24,12 +23,11 @@ def tango_context(request):
     # fq_test_class_name_details = fq_test_class_name.split(".")
     # package_name = fq_test_class_name_details[1]
     # class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format("SdpSubarrayLeafNode", "SdpSubarrayLeafNode"))
-    klass = getattr(module, "SdpSubarrayLeafNode")
-    properties = {'SkaLevel': '3', 'MetricList': 'healthState', 'GroupDefinitions': '',
-                  'LoggingTargetsDefault': 'console::cout',
-                  'LoggingLevelDefault': '4',
-                  'SdpSubarrayFQDN': "mid_sdp/elt/subarray_1"
+    module = importlib.import_module("{}.{}".format("src", "sdp_master_leaf_node"))
+    klass = getattr(module, "SdpMasterLeafNode")
+    properties = {'SkaLevel': '4', 'GroupDefinitions': '',
+                  'SdpMasterFQDN': 'mid_sdp/elt/master',
+                  'LoggingLevelDefault': '4', 'LoggingTargetsDefault': 'console::cout'
                   }
     tango_context = DeviceTestContext(klass, properties=properties, process=False)
     tango_context.start()
@@ -50,6 +48,6 @@ def initialize_device(tango_context):
 
 
 @pytest.fixture(scope="class")
-def create_sdpsubarray_proxy():
-    subarray1_proxy = DeviceProxy("mid_sdp/elt/subarray_1")
-    return subarray1_proxy
+def create_sdp_master_proxy():
+    sdp_master_proxy = DeviceProxy("mid_sdp/elt/master")
+    return sdp_master_proxy
