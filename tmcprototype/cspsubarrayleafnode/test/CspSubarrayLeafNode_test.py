@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 from tango import DevState, EventType, DeviceProxy
-from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
+from src.csp_subarray_leaf_node import CspSubarrayLeafNode
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
 import pytest
