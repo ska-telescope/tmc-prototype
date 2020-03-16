@@ -98,7 +98,6 @@ class ElementDeviceData:
         csp_scan_config = scan_config.get("csp", {})
 
         if csp_scan_config:
-            attr_name_map_keys = list(attr_name_map.keys())
             for key, attribute_name in attr_name_map.items():
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
@@ -248,7 +247,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
                 proxy_created_flag = True
                 break
-            except Exception as ex:
+            except Exception:
                 retry += 1
                 continue
 
@@ -1056,10 +1055,10 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
-        result = self.create_csp_ln_proxy()
+        self.create_csp_ln_proxy()
         # Create proxy for SDP Subarray Leaf Node
         self._sdp_subarray_ln_proxy = None
-        result = self.create_sdp_ln_proxy()
+        self.create_sdp_ln_proxy()
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)

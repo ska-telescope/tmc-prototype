@@ -300,8 +300,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_count = 0
 
         try:
-            jsonArgument = json.loads(argin)
-            processingBlockIDList = jsonArgument[CONST.STR_PROCESSINGBLOCKID_LIST]
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ASSIGN_RESOURCES,
                                                                           argin, self.commandCallback)
@@ -417,10 +415,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_count = 0
 
         try:
-            # TODO : For Future Implementation
-            # JSON argument scan_duration is maintained for future use.
-            jsonArgument = json.loads(argin)
-            scan_duration = jsonArgument["scanDuration"]
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
             # Check if SDP Subarray obsState is READY
             if sdp_subarray_obs_state == CONST.ENUM_READY:

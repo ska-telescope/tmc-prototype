@@ -153,7 +153,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         delay_corrections_v_array_t3 = []
         delay_corrections_v_array_t4 = []
         delay_corrections_v_array_t5 = []
-        delay_corrections_v_array_dict = {}
 
         # Delays are calculated for the timestamps between "t0 - 25" to "t0 + 25" at an interval of 10
         # seconds.
@@ -269,8 +268,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         delay_update_interval = argin
 
-        # list of bands
-        _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
+        # list of bands (commented since unused currently, gives pylint warning)
+        #_bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
         while not self._stop_delay_model_event.isSet():
             if(self.CspSubarrayProxy.obsState == CONST.ENUM_CONFIGURING
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_READY
@@ -559,8 +558,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            json_scan_duration = json.loads(argin[0])
-            scan_duration = json_scan_duration["scanDuration"]
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
                 #Invoke StartScan command on CspSubarray
