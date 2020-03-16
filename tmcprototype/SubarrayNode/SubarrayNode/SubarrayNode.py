@@ -202,13 +202,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
-        """can be represented with a function as well"""
+        # ToDo :can be represented with a function as well
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == PointingState.SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
-        """several if elif blocks here.. can something be done about it?"""
+        # ToDo :several if elif blocks here.. can something be done about it?
         if self._csp_sa_obs_state == ObsState.SCANNING and self._sdp_sa_obs_state ==\
                 ObsState.SCANNING:
             self._obs_state = ObsState.SCANNING
