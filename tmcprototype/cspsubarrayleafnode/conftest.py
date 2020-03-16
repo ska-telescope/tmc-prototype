@@ -29,7 +29,7 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format(package_name, module_name))
     # klass = getattr(module, class_name)
-    module = importlib.import_module("{}.{}".format("CspSubarrayLeafNode", "CspSubarrayLeafNode"))
+    module = importlib.import_module("{}.{}".format("src", "csp_subarray_leaf_node"))
     klass = getattr(module, "CspSubarrayLeafNode")
     properties = {'SkaLevel': '3', 'GroupDefinitions': '',
                   'LoggingLevelDefault': '4', 'LoggingTargetsDefault': 'console::cout',

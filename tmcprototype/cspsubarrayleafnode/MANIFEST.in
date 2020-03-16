@@ -1,9 +1,8 @@
 recursive-include CspSubarrayLeafNode *.py
 recursive-include test *.py
+recursive-include pogo CspSubarrayLeafNode.xmi
 include *.rst
-include CspSubarrayLeafNode.xmi
 include *.txt
 graft docs
-
 global-exclude *.pyc
 global-exclude *.pyo

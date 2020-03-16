@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """tangods-cspsubarrayleafnode"""
+name = """cspsubarrayleafnode"""
 version = "1.0.0"
 version_info = version.split(".")
 description = """"""

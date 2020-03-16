@@ -12,5 +12,5 @@ __main__ file for CspSubarrayLeafNode
 """
 
 from __future__ import absolute_import
-from .CspSubarrayLeafNode import main
+from .csp_subarray_leaf_node import main
 main()

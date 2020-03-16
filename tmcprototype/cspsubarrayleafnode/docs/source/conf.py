@@ -13,5 +13,5 @@ extensions = ['sphinx.ext.autodoc', 'devicedoc']
 master_doc = 'index'
 
 # Data
-project = u'CspSubarrayLeafNode'
+project = u'cspsubarrayleafnode'
 copyright = u""""""

@@ -557,7 +557,7 @@
                 }
             }
         },
-        "CspSubarrayLeafNode": {
+        "csp_subarray_leaf_node": {
             "01": {
                 "CspSubarrayLeafNode": {
                     "ska_mid/tm_leaf_node/csp_subarray01": {

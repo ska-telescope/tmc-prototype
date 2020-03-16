@@ -22,4 +22,4 @@ run python setup.py test
 Now you can start your device server in any
 Terminal or console by calling it :
 
-CspSubarrayLeafNode instance_name
+csp_subarray_leaf_node instance_name

@@ -20,7 +20,7 @@ import katpoint
 import numpy as np
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/src"
 sys.path.insert(0, module_path)
 print("sys.path: ", sys.path)
 ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pardir),os.pardir)) \

@@ -45,8 +45,8 @@ test:
 	mv /app/tmcprototype/DishLeafNode/dishleafnode_coverage /build/dishleafnode_coverage
 	cd /app/tmcprototype/cspmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/cspmasterleafnode/cspmasterleafnode_coverage /build/cspmasterleafnode_coverage
-	cd /app/tmcprototype/CspSubarrayLeafNode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-	mv /app/tmcprototype/CspSubarrayLeafNode/cspsubarrayleafnode_coverage /build/cspsubarrayleafnode_coverage
+	cd /app/tmcprototype/cspsubarrayleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	mv /app/tmcprototype/cspsubarrayleafnode/cspsubarrayleafnode_coverage /build/cspsubarrayleafnode_coverage
 	cd /app/tmcprototype/SdpMasterLeafNode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/SdpMasterLeafNode/sdpmasterleafnode_coverage /build/sdpmasterleafnode_coverage
 	cd /app/tmcprototype/SdpSubarrayLeafNode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
@@ -79,8 +79,8 @@ test:
 
 	mv /app/tmcprototype/dishmaster/setup_py_test.stdout /build/dishmaster_setup_py_test.stdout; \
 	mv /app/tmcprototype/dishmaster/htmlcov /build/dishmaster_htmlcov; \
-	mv /app/tmcprototype/CspSubarrayLeafNode/setup_py_test.stdout /build/cspsubarrayleafnode_setup_py_test.stdout; \
-	mv /app/tmcprototype/CspSubarrayLeafNode/htmlcov /build/cspsubarrayleafnode_htmlcov; \
+	mv /app/tmcprototype/cspsubarrayleafnode/setup_py_test.stdout /build/cspsubarrayleafnode_setup_py_test.stdout; \
+	mv /app/tmcprototype/cspsubarrayleafnode/htmlcov /build/cspsubarrayleafnode_htmlcov; \
 	mv /app/tmcprototype/DishLeafNode/setup_py_test.stdout /build/dishleafnode_setup_py_test.stdout; \
 	mv /app/tmcprototype/DishLeafNode/htmlcov /build/dishleafnode_htmlcov; \
 	mv /app/tmcprototype/SdpSubarrayLeafNode/setup_py_test.stdout /build/sdpsubarrayleafnode_setup_py_test.stdout; \
@@ -99,7 +99,7 @@ lint:
 	mkdir -p /build/reports; \
 # Code analysis of all the devices/packages using pylint
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/DishMaster | tee /build/dish-master-code_analysis.stdout; \
-	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/CspSubarrayLeafNode | tee /build/csp-subarray-leaf-node-code_analysis.stdout; \
+	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/cspsubarrayleafnode | tee /build/csp-subarray-leaf-node-code_analysis.stdout; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/DishLeafNode | tee /build/dish-leaf-node-code_analysis.stdout;
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/SdpSubarrayLeafNode | tee /build/sdp-subarray-leaf-code_analysis.stdout; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/cspmasterleafnode | tee /build/csp-master-leaf-node-code_analysis.stdout; \
@@ -108,7 +108,7 @@ lint:
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/centralnode | tee /build/central-node-code_analysis.stdout; \
 # Generate device-linting.xml files for all the devices/packages
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/DishMaster > /build/dish-master-linting.xml; \
-	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/CspSubarrayLeafNode > /build/csp-subarray-leaf-node-linting.xml; \
+	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/cspsubarrayleafnode > /build/csp-subarray-leaf-node-linting.xml; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/DishLeafNode > /build/dish-leaf-node-linting.xml; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/SdpSubarrayLeafNode > /build/sdp-subarray-leaf-linting.xml; \
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/cspmasterleafnode > /build/csp-master-leaf-node-linting.xml; \

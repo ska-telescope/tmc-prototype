@@ -9,7 +9,7 @@ init-hook='
     import sys;
     sys.path.append("./tmcprototype/dishmaster");
     sys.path.append("./tmcprototype/dishmaster/src");
-    sys.path.append("./tmcprototype/CspSubarrayLeafNode");
+    sys.path.append("./tmcprototype/cspsubarrayleafnode");
     sys.path.append("./tmcprototype/DishLeafNode");
     sys.path.append("./tmcprototype/cspmasterleafnode");
     sys.path.append("./tmcprototype/SdpSubarrayLeafNode");
