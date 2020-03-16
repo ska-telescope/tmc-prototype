@@ -7,8 +7,8 @@ import types
 
 from mock import Mock
 
-from csp_subarray_leaf_node import CspSubarrayLeafNode
-from CONST import CMD_STARTSCAN, ENUM_READY
+from cspsubarrayleafnode.src.csp_subarray_leaf_node import CspSubarrayLeafNode
+from src.CONST import CMD_STARTSCAN, ENUM_READY
 from tango.test_context import DeviceTestContext
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
