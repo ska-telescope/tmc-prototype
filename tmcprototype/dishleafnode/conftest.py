@@ -52,7 +52,7 @@ def tango_context(request): #, dishmaster_context):
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format(package_name, module_name))
     # klass = getattr(module, class_name)
-    module = importlib.import_module("{}.{}".format("DishLeafNode", "DishLeafNode"))
+    module = importlib.import_module("{}.{}".format("src", "dish_leaf_node"))
     klass = getattr(module, "DishLeafNode")
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'LoggingTargetsDefault': 'console::cout',

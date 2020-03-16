@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-tmcprototype.DishLeafNode.DishLeafNode
+tmcprototype.dishleafnode.src
 ======================================
 
 .. automodule:: tmcprototype.DishLeafNode.DishLeafNode

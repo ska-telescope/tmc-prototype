@@ -1,6 +1,6 @@
 Dish Leaf Node
 **************
-.. automodule:: DishLeafNode.DishLeafNode
+.. automodule:: src.dish_leaf_node
 
 
 .. autoclass:: DishLeafNode

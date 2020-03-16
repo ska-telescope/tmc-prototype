@@ -228,11 +228,11 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
 * Navigate to the DishLeafNode folder:
 
-    `cd tmcprototype/DishLeafNode/DishLeafNode`
+    `cd tmcprototype/dishleafnode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=DishLeafNode test/`
+    `py.test --cov=DishLeafNode test/DishLeafNode_test.py`
 
 ### 4.3 Testing CspMasterLeafNode
 **Prerequisite:** CspMaster TANGO Device should be up and running.

@@ -8,5 +8,5 @@
 # See LICENSE.txt for more info.
 
 from __future__ import absolute_import
-from .DishLeafNode import main
+from .dish_leaf_node import main
 main()

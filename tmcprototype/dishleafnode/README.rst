@@ -23,4 +23,4 @@ run python setup.py test
 Now you can start your device server in any
 Terminal or console by calling it :
 
-DishLeafNode instance_name
+dish_leaf_node instance_name

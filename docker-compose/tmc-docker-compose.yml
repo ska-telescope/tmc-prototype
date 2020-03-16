@@ -101,7 +101,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_d0001/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py 01 v5"
+             /venv/bin/python -u /app/tmcprototype/dishleafnode/src/dish_leaf_node.py 01 v5"
 
   dishleafnode2:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -115,7 +115,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_d0002/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py 02 v5"
+             /venv/bin/python -u /app/tmcprototype/dishleafnode/src/dish_leaf_node.py 02 v5"
 
   dishleafnode3:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -129,7 +129,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_d0003/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py 03 v5"
+             /venv/bin/python -u /app/tmcprototype/dishleafnode/src/dish_leaf_node.py 03 v5"
 
   dishleafnode4:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -143,7 +143,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_d0004/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py 04 v5"
+             /venv/bin/python -u /app/tmcprototype/dishleafnode/src/dish_leaf_node.py 04 v5"
 
   cspsubarrayleafnode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest

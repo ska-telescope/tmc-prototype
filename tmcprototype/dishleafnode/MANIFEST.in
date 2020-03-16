@@ -1,7 +1,8 @@
 recursive-include DishLeafNode *.py
 recursive-include test *.py
+recursive-include pogo DishLeafNode.xmi
 include *.rst
-include DishLeafNode.xmi
+
 include *.txt
 graft docs
 
