@@ -27,7 +27,7 @@ ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pard
                     + "/ska_antennas.txt"
 # PyTango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import

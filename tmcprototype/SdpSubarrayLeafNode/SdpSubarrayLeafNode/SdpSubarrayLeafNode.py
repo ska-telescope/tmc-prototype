@@ -21,7 +21,7 @@ module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/SdpSubarra
 sys.path.insert(0, module_path)
 # PyTango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional imports

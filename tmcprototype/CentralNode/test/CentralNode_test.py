@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import tango
-from tango import DevState, EventType, DeviceProxy
+from tango import DevState
 from CentralNode.CentralNode import CentralNode
 from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
 import CONST

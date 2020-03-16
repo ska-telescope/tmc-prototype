@@ -18,8 +18,6 @@ from __future__ import absolute_import
 
 import os
 import sys
-import random
-import string
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
 # Tango imports
@@ -30,7 +28,7 @@ import string
 # from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 from future.utils import with_metaclass

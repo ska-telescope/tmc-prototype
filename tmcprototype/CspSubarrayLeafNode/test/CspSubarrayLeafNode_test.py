@@ -23,7 +23,7 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-from tango import DevState, EventType, DeviceProxy
+from tango import DevState
 from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
 from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
 import CONST
