@@ -16,7 +16,7 @@ import os
 # sys.path.insert(0, os.path.abspath(path))
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/CspSubarrayLeafNode"
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/src"
 sys.path.insert(0, module_path)
 
 path = os.path.join(os.path.dirname(__file__), os.pardir)

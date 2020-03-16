@@ -8,7 +8,7 @@ import types
 from mock import Mock
 
 from tango.test_context import DeviceTestContext
-from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
+from csp_subarray_leaf_node import CspSubarrayLeafNode
 from CONST import CMD_STARTSCAN, ENUM_READY
 
 
