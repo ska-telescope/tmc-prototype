@@ -28,7 +28,7 @@ import tango
 from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
-from skabase.control_model import AdminMode, HealthState, ObsState, ObsMode
+from skabase.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode
 from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState, ElementDeviceData
 
 
@@ -640,7 +640,7 @@ class TestSubarrayNode(object):
     def test_simulationMode(self, tango_context):
         """Test for simulationMode"""
         # PROTECTED REGION ID(SubarrayNode.test_simulationMode) ENABLED START #
-        simulation_mode = False
+        simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_simulationMode
@@ -648,7 +648,7 @@ class TestSubarrayNode(object):
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(SubarrayNode.test_testMode) ENABLED START #
-        test_mode = 0
+        test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_testMode

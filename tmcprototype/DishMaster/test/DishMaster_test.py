@@ -26,7 +26,7 @@ from tango import DevState
 import pytest
 from DishMaster.DishMaster import DishMaster
 from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import HealthState, AdminMode
+from skabase.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 import CONST
 import json
 
@@ -261,7 +261,7 @@ class TestDishMaster(object):
     def test_controlMode(self, tango_context):
         """Test for controlMode"""
         # PROTECTED REGION ID(DishMaster.test_controlMode) ENABLED START #
-        control_mode = 0
+        control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
         # PROTECTED REGION END #    //  DishMaster.test_controlMode
@@ -269,7 +269,7 @@ class TestDishMaster(object):
     def test_simulationMode(self, tango_context):
         """Test for simulationMode"""
         # PROTECTED REGION ID(DishMaster.test_simulationMode) ENABLED START #
-        simulation_mode = 0
+        simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  DishMaster.test_simulationMode
@@ -277,7 +277,7 @@ class TestDishMaster(object):
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(DishMaster.test_testMode) ENABLED START #
-        test_mode = 0
+        test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  DishMaster.test_testMode

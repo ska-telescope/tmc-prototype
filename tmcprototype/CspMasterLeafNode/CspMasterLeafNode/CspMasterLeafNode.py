@@ -21,7 +21,7 @@ import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-from skabase.control_model import HealthState, AdminMode
+from skabase.control_model import HealthState, AdminMode, SimulationMode, TestMode
 # Additional import
 
 # PROTECTED REGION ID(CspMasterLeafNode.additionnal_import) ENABLED START #
@@ -231,8 +231,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.SkaLevel = CONST.INT_SKA_LEVEL
             self._admin_mode = AdminMode.ONLINE  # Setting adminMode to "ONLINE"
             self._health_state = HealthState.OK # Setting healthState to "OK"
-            self._simulation_mode = False  # Enabling the simulation mode
-            self._test_mode = 0
+            self._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
+            self._test_mode = TestMode.NONE
 
         except DevFailed as dev_failed:
             self.logger.error(CONST.ERR_INIT_PROP_ATTR)
