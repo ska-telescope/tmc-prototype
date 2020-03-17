@@ -21,11 +21,8 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-from time import sleep
-from mock import MagicMock
 # from devicetest import DeviceTestCase, main
-import tango
-from tango import DevState, EventType, DeviceProxy
+from tango import DevState
 from SdpMasterLeafNode.SdpMasterLeafNode import SdpMasterLeafNode
 from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
 import CONST

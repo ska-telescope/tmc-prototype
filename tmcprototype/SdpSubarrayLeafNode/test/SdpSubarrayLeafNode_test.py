@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath(path))
 
 # Imports
 import tango
-from tango import DevState, EventType, DeviceProxy
+from tango import DevState
 from SdpSubarrayLeafNode.SdpSubarrayLeafNode import SdpSubarrayLeafNode
 from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
 import CONST
@@ -89,7 +89,7 @@ class TestSdpSubarrayLeafNode(object):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
         test_input = '{"processingBlockIdList": ["0001", "0002"]}'
-        retVal = tango_context.device.AssignResources(test_input)
+        tango_context.device.AssignResources(test_input)
         assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
@@ -123,7 +123,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseAllResources) ENABLED START #
-        retVal = tango_context.device.ReleaseAllResources()
+        tango_context.device.ReleaseAllResources()
         assert CONST.STR_REL_RESOURCES in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseAllResources
 

@@ -21,7 +21,6 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.insert(0, os.path.abspath(path))
 
 # Imports
-import tango
 from tango import DevState
 from CspMasterLeafNode.CspMasterLeafNode import CspMasterLeafNode
 from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel

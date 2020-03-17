@@ -9,33 +9,33 @@ import mock
 import pytest
 
 
-from tango import DeviceProxy, DevFailed
+from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
 
 
 # TODO: Dish Master context might be used in future
 
-'''@pytest.fixture(scope="class")
-def dishmaster_context():
-    """Creates and returns a TANGO DeviceTestContext object.
-    Parameters
-    ----------
-    request: _pytest.fixtures.SubRequest
-        A request object gives access to the requesting test context.
-    """
-    ###########################
-    dishmaster_module = importlib.import_module("{}.{}".format('DishMaster', 'DishMaster'))
-    dishmaster_klass = getattr(dishmaster_module, 'DishMaster')
-    dishmaster_context = DeviceTestContext(dishmaster_klass , process= True) #,
-    device_name="mid_d0001/elt/master")
-    ##########################
-    dishmaster_context.start()
-    dishmaster_klass.get_name = mock.Mock(side_effect=dishmaster_context.get_device_access)
-    print "In dishMaster context", dishmaster_context.device_name
-    print "Host and Port name are: ", dishmaster_context.host, dishmaster_context.port
-    yield dishmaster_context
-    #dishmaster_context.stop()
-'''
+# '''@pytest.fixture(scope="class")
+# def dishmaster_context():
+#     """Creates and returns a TANGO DeviceTestContext object.
+#     Parameters
+#     ----------
+#     request: _pytest.fixtures.SubRequest
+#         A request object gives access to the requesting test context.
+#     """
+#     ###########################
+#     dishmaster_module = importlib.import_module("{}.{}".format('DishMaster', 'DishMaster'))
+#     dishmaster_klass = getattr(dishmaster_module, 'DishMaster')
+#     dishmaster_context = DeviceTestContext(dishmaster_klass , process= True) #,
+#     device_name="mid_d0001/elt/master")
+#     ##########################
+#     dishmaster_context.start()
+#     dishmaster_klass.get_name = mock.Mock(side_effect=dishmaster_context.get_device_access)
+#     print "In dishMaster context", dishmaster_context.device_name
+#     print "Host and Port name are: ", dishmaster_context.host, dishmaster_context.port
+#     yield dishmaster_context
+#     #dishmaster_context.stop()
+# '''
 
 @pytest.fixture(scope="class")
 def tango_context(request): #, dishmaster_context):
