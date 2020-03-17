@@ -93,32 +93,32 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
-    def test_AssignResources_invalid_key(self, tango_context):
-        """Test for AssignResources_invalid_key"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
-        test_input = '{"processingBlock": ["0001", "0002"]}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
-        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+    # def test_AssignResources_invalid_key(self, tango_context):
+    #     """Test for AssignResources_invalid_key"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+    #     test_input = '{"processingBlock": ["0001", "0002"]}'
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.AssignResources(test_input)
+    #     assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
-    def test_AssignResources_invalid_format(self, tango_context):
-        """Test for AssignResources_invalid_format"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
-        test_input = '{"abc"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
-        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
+    # def test_AssignResources_invalid_format(self, tango_context):
+    #     """Test for AssignResources_invalid_format"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
+    #     test_input = '{"abc"}'
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.AssignResources(test_input)
+    #     assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
-    def test_AssignResources_generic_exception(self, tango_context):
-        """Test for AssignResources_invalid_format"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources_generic_exception) ENABLED START #
-        test_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
-        assert CONST.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources_generic_exception
+    # def test_AssignResources_generic_exception(self, tango_context):
+    #     """Test for AssignResources_invalid_format"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources_generic_exception) ENABLED START #
+    #     test_input = '[123]'
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.AssignResources(test_input)
+    #     assert CONST.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources_generic_exception
 
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""
@@ -184,34 +184,34 @@ class TestSdpSubarrayLeafNode(object):
         assert CONST.ERR_CONFIGURE in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Configure_generic_exception
 
-    def test_Scan_invalid_json_format(self, tango_context):
-        """Test for Scan"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_invalid_json_format) ENABLED START #
-        test_input = '{"abc"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan(test_input)
-        time.sleep(1)
-        assert CONST.ERR_INVALID_JSON_SCAN in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_invalid_json_format
+    # def test_Scan_invalid_json_format(self, tango_context):
+    #     """Test for Scan"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_invalid_json_format) ENABLED START #
+    #     test_input = '{"abc"}'
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.Scan(test_input)
+    #     time.sleep(1)
+    #     assert CONST.ERR_INVALID_JSON_SCAN in tango_context.device.activityMessage
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_invalid_json_format
 
-    def test_Scan_key_error(self, tango_context):
-        """Test for Scan"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_key_error) ENABLED START #
-        test_input = '{"Duration":10}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan(test_input)
-        time.sleep(1)
-        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_key_error
+    # def test_Scan_key_error(self, tango_context):
+    #     """Test for Scan"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_key_error) ENABLED START #
+    #     test_input = '{"Duration":10}'
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.Scan(test_input)
+    #     time.sleep(1)
+    #     assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_key_error
 
-    def test_Scan_generic_exception(self, tango_context):
-        """Test for Configure command with invalid_format"""
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_generic_exception) ENABLED START #
-        test_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan(test_input)
-        assert CONST.ERR_SCAN in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_generic_exception
+    # def test_Scan_generic_exception(self, tango_context):
+    #     """Test for Configure command with invalid_format"""
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_generic_exception) ENABLED START #
+    #     test_input = '[123]'
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.Scan(test_input)
+    #     assert CONST.ERR_SCAN in tango_context.device.activityMessage
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_generic_exception
 
     def test_Scan(self, tango_context, create_sdpsubarray_proxy):
         """Test for Scan"""
