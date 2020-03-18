@@ -40,6 +40,7 @@ import math
 
 __all__ = ["DishMaster", "main"]
 
+# pylint: disable=no-init
 class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 # class DishMaster(SKAMaster):
     """

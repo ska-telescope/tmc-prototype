@@ -39,6 +39,7 @@ import json
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
+# pylint: disable=protected-access
 class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
