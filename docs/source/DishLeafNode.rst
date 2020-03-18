@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-tmcprototype.dishleafnode.src
+Dish Leaf Node
 ======================================
 
-.. automodule:: tmcprototype.DishLeafNode.DishLeafNode
+.. automodule:: tmcprototype.dishleafnode.src.dish_leaf_node
    :members:
    :undoc-members:

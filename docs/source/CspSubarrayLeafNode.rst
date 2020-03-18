@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-tmcprototype.cspsubarrayleafnode.src
+CSP Subarray Leaf Node
 ====================================================
 
-.. automodule:: tmcprototype.cspsubarrayleafnode.src
+.. automodule:: tmcprototype.cspsubarrayleafnode.src.csp_subarray_leaf_node
    :members:
    :undoc-members:
