@@ -7,4 +7,3 @@ Central Node
 ************
 .. automodule:: tmcprototype.centralnode.src.central_node
    :members:
-    :undoc-members:
