@@ -6,6 +6,6 @@
 tmcprototype.cspmasterleafnode.src
 ===================================================
 
-.. automodule:: tmcprototype.cspmasterleafnode.src
+.. automodule:: tmcprototype.cspmasterleafnode.src.csp_master_leaf_node
    :members:
    :undoc-members:
