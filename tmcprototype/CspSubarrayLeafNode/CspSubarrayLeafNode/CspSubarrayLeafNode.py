@@ -471,11 +471,11 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         dtype_in='str',
     )
     @DebugIt()
-    def ConfigureScan(self, argin):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.ConfigureScan) ENABLED START #
+    def Configure(self, argin):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Configure) ENABLED START #
         """
         This command configures the scan. It accepts configuration capabilities in JSON string format and
-        invokes ConfigureScan command on CspSubarray with configuration capabilities in JSON string as an
+        invokes Configure command on CspSubarray with configuration capabilities in JSON string as an
         input argument.
 
         :param argin: The string in JSON format. The JSON contains following values:
@@ -513,10 +513,10 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
 
-            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, cmdData,
+            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURE, cmdData,
                                                        self.commandCallback)
-            self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
-            self.logger.info(CONST.STR_CONFIGURESCAN_SUCCESS)
+            self._read_activity_message = CONST.STR_CONFIGURE_SUCCESS
+            self.logger.info(CONST.STR_CONFIGURE_SUCCESS)
             self.logger.debug(argin)
 
         except ValueError as value_error:
@@ -528,17 +528,17 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         except DevFailed as dev_failed:
             [exception_count,exception_message] = self._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
+                                exception_message, exception_count, CONST.ERR_CONFIGURE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception( except_occurred,
-                                    exception_message, exception_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
+                                    exception_message, exception_count, CONST.ERR_CONFIGURE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, CONST.STR_CONFIG_SCAN_EXEC)
 
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.ConfigureScan
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.Configure
 
     @command(
         dtype_in=('str',),
