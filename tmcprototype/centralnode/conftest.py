@@ -24,7 +24,8 @@ def tango_context(request):
     # fq_test_class_name_details = fq_test_class_name.split(".")
     # package_name = fq_test_class_name_details[1]
     # class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format("src","centralnode","central_node"))
+    # module = importlib.import_module("{}.{}".format("src","centralnode","central_node"))
+    module = importlib.import_module("{}.{}.{}".format("src","centralnode","central_node"))
     klass = getattr(module, "CentralNode")
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralAlarmHandler': '', 'TMAlarmHandler': '',
