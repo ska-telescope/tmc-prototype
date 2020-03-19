@@ -10,4 +10,4 @@ RUN DEBIAN_FRONTEND=noninteractive pip3 install https://nexus.engageska-portugal
 
 USER tango
 
-CMD ["/venv/bin/python", "/app/tmcprototype/centralnode/src/central_node.py"]
+CMD ["/venv/bin/python", "/app/tmcprototype/centralnode/src/centralnode/central_node.py"]

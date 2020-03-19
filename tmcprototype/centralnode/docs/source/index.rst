@@ -1,6 +1,6 @@
 Central Node
 ************
-.. automodule:: src.central_node
+.. automodule:: src.centralnode.central_node
 
 .. autoclass:: CentralNode
    :members:

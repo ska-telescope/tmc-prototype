@@ -8,7 +8,7 @@ import pytest
 import importlib
 from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
-from .src import CONST as CONST
+from .src.centralnode import CONST as CONST
 
 @pytest.fixture(scope="class")
 def tango_context(request):
@@ -24,7 +24,7 @@ def tango_context(request):
     # fq_test_class_name_details = fq_test_class_name.split(".")
     # package_name = fq_test_class_name_details[1]
     # class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format("src", "central_node"))
+    module = importlib.import_module("{}.{}".format("src","centralnode","central_node"))
     klass = getattr(module, "CentralNode")
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralAlarmHandler': '', 'TMAlarmHandler': '',

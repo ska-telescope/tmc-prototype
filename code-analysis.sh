@@ -12,7 +12,7 @@ pylint --rcfile=.pylintrc tmcprototype/cspmasterleafnode/src
 pylint --rcfile=.pylintrc tmcprototype/sdpsubarrayleafnode/src
 pylint --rcfile=.pylintrc tmcprototype/sdpmasterleafnode/src
 pylint --rcfile=.pylintrc tmcprototype/subarraynode/src
-pylint --rcfile=.pylintrc tmcprototype/centralnode/src
+pylint --rcfile=.pylintrc tmcprototype/centralnode/src/centralnode
 
 echo "TESTS ANALYSIS"
 echo "--------------"
