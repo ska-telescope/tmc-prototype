@@ -17,7 +17,7 @@ from __future__ import absolute_import
 import sys
 import os
 file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "centralnode"
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/centralnode"
 sys.path.insert(0, module_path)
 # Tango imports
 import tango
