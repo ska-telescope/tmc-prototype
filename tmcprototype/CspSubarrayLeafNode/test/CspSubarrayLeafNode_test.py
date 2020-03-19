@@ -174,7 +174,7 @@ class TestCspSubarrayLeafNode(object):
                               '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
                               '"dec": "-30:52:17.3"}}, "scanID": "123"}'
         time.sleep(4)
-        tango_context.device.Configure(configure_input)
+        tango_context.device.ConfigureScan(configure_input)
         time.sleep(10)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
                                                                         '"receiveAddresses":'
