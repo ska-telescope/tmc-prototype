@@ -156,7 +156,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.debug(log_message)
             self._read_activity_message = log_message
 
-    def deviceStateCallback(self, evt):
+    def device_state_callback(self, evt):
         """
                 Retrieves the subscribed CSP_Subarray AND SDP_Subarray  deviceState.
                 :param evt: A TANGO_CHANGE event on CSP and SDP Subarray deviceState.
@@ -166,25 +166,20 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         exception_count = 0
         if evt.err is False:
             try:
-                self._device_state = evt.attr_value.value
                 if self.CspSubarrayFQDN in evt.attr_name:
-                    self._csp_sa_device_state = self._device_state
+                    self._csp_sa_device_state = evt.attr_value.value
                 elif self.SdpSubarrayFQDN in evt.attr_name:
-                    self._sdp_sa_device_state = self._device_state
+                    self._sdp_sa_device_state = evt.attr_value.value
                 else:
                     self.logger.debug(CONST.EVT_UNKNOWN)
                     self._read_activity_message = CONST.EVT_UNKNOWN
                 self.calculate_device_state()
-            except KeyError as key_error:
-                self.logger.error(CONST.ERR_CSPSDP_SUBARRAY_DEVICE_STATE + str(key_error))
-                self._read_activity_message = CONST.ERR_CSPSDP_SUBARRAY_DEVICE_STATE + str(key_error)
-                self.logger.critical(CONST.ERR_CSPSDP_SUBARRAY_DEVICE_STATE)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
             except Exception as except_occured:
                 [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                            exception_message, exception_count, CONST.ERR_AGGR_OBS_STATE)
+                                            exception_message, exception_count, CONST.ERR_AGGR_DEVICE_STATE)
         else:
             self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt))
             self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
@@ -379,7 +374,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # self.logger.debug(CONST.STR_HS_EVNT_ID +str(self._health_event_id))
                 # self._read_activity_message = CONST.STR_HS_EVNT_ID + str(self._health_event_id)
                 # Set state = ON
-                # self.set_state(DevState.ON)
                 # set obsState to "IDLE"
                 self._obs_state = ObsState.IDLE
                 self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
@@ -1122,7 +1116,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
             self._csp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-                                                        self.deviceStateCallback, stateless=True)
+                                                        self.device_state_callback, stateless=True)
 
             self.set_status(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
             self.logger.info(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
@@ -1144,7 +1138,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
             self._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-                                               self.deviceStateCallback, stateless=True)
+                                               self.device_state_callback, stateless=True)
             self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
             self.logger.error(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed))
