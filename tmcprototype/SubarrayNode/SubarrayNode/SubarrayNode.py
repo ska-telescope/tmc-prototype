@@ -156,6 +156,48 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.debug(log_message)
             self._read_activity_message = log_message
 
+    def device_state_callback(self, evt):
+        """
+                Retrieves the subscribed CSP_Subarray AND SDP_Subarray  deviceState.
+                :param evt: A TANGO_CHANGE event on CSP and SDP Subarray deviceState.
+                :return: None
+                """
+        exception_message = []
+        exception_count = 0
+        if evt.err is False:
+            try:
+                if self.CspSubarrayFQDN in evt.attr_name:
+                    self._csp_sa_device_state = evt.attr_value.value
+                elif self.SdpSubarrayFQDN in evt.attr_name:
+                    self._sdp_sa_device_state = evt.attr_value.value
+                else:
+                    self.logger.debug(CONST.EVT_UNKNOWN)
+                    self._read_activity_message = CONST.EVT_UNKNOWN
+                self.calculate_device_state()
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, CONST.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
+            except Exception as except_occured:
+                [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                            exception_message, exception_count, CONST.ERR_AGGR_DEVICE_STATE)
+        else:
+            self.logger.debug(CONST.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt))
+            self._read_activity_message = CONST.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
+            self.logger.critical(CONST.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
+
+    def calculate_device_state(self):
+        """
+        Calculates aggregated device state of Subarray.
+        """
+        if self.get_state() is not DevState.ON:
+            if self._csp_sa_device_state==DevState.ON and self._sdp_sa_device_state == DevState.ON :
+                self.set_state(DevState.ON)
+            else:
+                self.logger.info("CSP and SDP subarray are not in ON state")
+        else:
+            self.logger.info("Subarray is already in On state")
+
+
     def obsStateCallback(self, evt):
         """
                 Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
@@ -332,7 +374,6 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 # self.logger.debug(CONST.STR_HS_EVNT_ID +str(self._health_event_id))
                 # self._read_activity_message = CONST.STR_HS_EVNT_ID + str(self._health_event_id)
                 # Set state = ON
-                self.set_state(DevState.ON)
                 # set obsState to "IDLE"
                 self._obs_state = ObsState.IDLE
                 self.set_status(CONST.STR_ASSIGN_RES_SUCCESS)
@@ -1049,6 +1090,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
         self._csp_sa_obs_state = ObsState.IDLE
         self._sdp_sa_obs_state = ObsState.IDLE
+        self._csp_sa_device_state = DevState.DISABLE
+        self._sdp_sa_device_state = DevState.OFF
         self.only_dishconfig_flag = False
         self._endscan_stop = False
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
@@ -1060,6 +1103,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # Create proxy for SDP Subarray Leaf Node
         self._sdp_subarray_ln_proxy = None
         result = self.create_sdp_ln_proxy()
+        self._csp_sa_proxy = DeviceProxy(self.CspSubarrayFQDN)
+        self._sdp_sa_proxy = DeviceProxy(self.SdpSubarrayFQDN)
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
@@ -1070,6 +1115,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
             self._csp_subarray_ln_proxy.subscribe_event(CONST.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
+            self._csp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
+                                                        self.device_state_callback, stateless=True)
 
             self.set_status(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
             self.logger.info(CONST.STR_CSP_SA_LEAF_INIT_SUCCESS)
@@ -1090,6 +1137,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(CONST.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
+            self._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
+                                               self.device_state_callback, stateless=True)
             self.set_status(CONST.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
             self.logger.error(CONST.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed))
