@@ -58,21 +58,21 @@ def tango_context(request): #, dishmaster_context):
                   'LoggingTargetsDefault': 'console::cout',
                   'LoggingLevelDefault': '4','DishMasterFQDN': "mid_d0001/elt/master", 'TrackDuration': 1,
                   }
-    tango_context = DeviceTestContext(klass, properties=properties, process=False)
-    tango_context.start()
-    klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
-    yield tango_context
-    tango_context.stop()
+    tango_context_dishln = DeviceTestContext(klass, properties=properties, process=False)
+    tango_context_dishln.start()
+    klass.get_name = mock.Mock(side_effect=tango_context_dishln.get_device_access)
+    yield tango_context_dishln
+    tango_context_dishln.stop()
 
 @pytest.fixture(scope="class")
-def initialize_device(tango_context):
+def initialize_device(tango_context_init):
     """Re-initializes the device.
     Parameters
     ----------
     tango_context: tango.test_context.DeviceTestContext
         Context to run a device without a database.
     """
-    yield tango_context.device.Init()
+    yield tango_context_init.device.Init()
 
 @pytest.fixture(scope="class")
 def create_dish_proxy():

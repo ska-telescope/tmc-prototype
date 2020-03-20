@@ -29,14 +29,14 @@ def tango_context(request):
                   'CspMasterFQDN': 'mid_csp/elt/master',
                   'LoggingLevelDefault': '4', 'LoggingTargetsDefault': 'console::cout'
                   }
-    tango_context = DeviceTestContext(klass, properties=properties, process= False)
-    tango_context.start()
-    klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
-    yield tango_context
-    tango_context.stop()
+    tango_context_cspmasterln = DeviceTestContext(klass, properties=properties, process= False)
+    tango_context_cspmasterln.start()
+    klass.get_name = mock.Mock(side_effect=tango_context_cspmasterln.get_device_access)
+    yield tango_context_cspmasterln
+    tango_context_cspmasterln.stop()
 
 @pytest.fixture(scope="function")
-def initialize_device(tango_context):
+def initialize_device(tango_context_init):
     """Re-initializes the device.
 
     Parameters
@@ -44,11 +44,11 @@ def initialize_device(tango_context):
     tango_context: tango.test_context.DeviceTestContext
         Context to run a device without a database.
     """
-    yield tango_context.device.Init()
+    yield tango_context_init.device.Init()
 
 @pytest.fixture(scope="class")
 def create_cspmaster_proxy():
-    create_cspmaster_proxy = DeviceProxy("mid_csp/elt/master")
-    return create_cspmaster_proxy
+    create_cspmaster_device_proxy = DeviceProxy("mid_csp/elt/master")
+    return create_cspmaster_device_proxy
 
 

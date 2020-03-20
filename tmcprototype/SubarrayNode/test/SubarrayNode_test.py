@@ -27,7 +27,6 @@ import time
 import tango
 from tango import DevState
 from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
-import CONST
 from CONST import AdminMode, HealthState, ObsState, ObsMode
 from SubarrayNode.SubarrayNode import SubarrayNode, SubarrayHealthState, ElementDeviceData
 
@@ -65,7 +64,7 @@ def health_states_and_expected_aggregate(request):
     states_in, expected_state_out = request.param
     return states_in, expected_state_out
 
-
+#@pytest.mark.usefixtures("valid_health_state", "health_states_and_expected_aggregate")
 class TestSubarrayHealthState:
 
     def test_generate_health_state_log_msg_valid(self, valid_health_state):
@@ -160,7 +159,7 @@ def csp_func_args():
     }
     return scan_id, attr_name_map
 
-
+#@pytest.mark.usefixtures("example_scan_configuration", "csp_func_args")
 class TestElementDeviceData:
 
     def test_build_up_sdp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):

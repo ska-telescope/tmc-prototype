@@ -123,7 +123,7 @@ class ElementDeviceData:
 
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
-# pylint: disable=no-init
+# pylint: disable=no-init,redefined-outer-name
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
     Provides the monitoring and control interface required by users as well as
