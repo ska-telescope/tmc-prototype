@@ -37,7 +37,7 @@ setup(
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     include_package_data=True,
     test_suite="test",
-    entry_points={'console_scripts':['CspSubarrayLeafNode = CspSubarrayLeafNode:main']},
+    entry_points={'console_scripts': ['CspSubarrayLeafNode=cspsubarrayleafnode.csp_subarray_leaf_node:main']},
     author='jayant.ska',
     author_email='jayant.ska at gmail.com',
     license='BSD-3-Clause',

@@ -20,9 +20,6 @@ import katpoint
 import numpy as np
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/cspsubarrayleafnode"
-sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
 ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pardir),os.pardir)) \
                     + "/ska_antennas.txt"
 # PyTango imports
@@ -32,9 +29,9 @@ from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
-from future.utils import with_metaclass
-import CONST
 import json
+from future.utils import with_metaclass
+from . import CONST
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]
