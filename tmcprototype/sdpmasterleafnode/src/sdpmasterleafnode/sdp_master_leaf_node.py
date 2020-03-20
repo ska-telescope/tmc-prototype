@@ -36,7 +36,7 @@ from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 from future.utils import with_metaclass
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/src"
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/sdpmasterleafnode"
 sys.path.insert(0, module_path)
 
 # Additional import

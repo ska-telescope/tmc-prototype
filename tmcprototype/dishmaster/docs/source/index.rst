@@ -1,6 +1,6 @@
 Dish Master
 ************
-.. automodule:: src.dish_master
+.. automodule:: src.dishmaster.dish_master
 
 
 Properties

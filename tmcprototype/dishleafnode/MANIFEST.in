@@ -1,10 +1,8 @@
-recursive-include DishLeafNode *.py
+recursive-include src/dishleafnode *.py
 recursive-include test *.py
 recursive-include pogo DishLeafNode.xmi
 include *.rst
-
 include *.txt
 graft docs
-
 global-exclude *.pyc
 global-exclude *.pyo

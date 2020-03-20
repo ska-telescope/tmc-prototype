@@ -1,9 +1,8 @@
-recursive-include CspMasterLeafNode *.py
+recursive-include src/cspmasterleafnode *.py
 recursive-include test *.py
+recursive-include pogo CspMasterLeafNode.xmi
 include *.rst
-include CspMasterLeafNode.xmi
 include *.txt
 graft docs
-
 global-exclude *.pyc
 global-exclude *.pyo

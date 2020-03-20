@@ -32,7 +32,7 @@ def tango_context(request):
                   'DishLeafNodePrefix': 'ska_mid/tm_leaf_node/d',
                   'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_1',
                   'CspSubarrayFQDN': 'mid_csp/elt/subarray_01'}
-    module = importlib.import_module("{}.{}".format("src", "subarray_node"))
+    module = importlib.import_module("{}.{}.{}".format("src", "subarraynode", "subarray_node"))
     klass = getattr(module, "SubarrayNode")
     tango_context = DeviceTestContext(klass, properties=properties)
     tango_context.start()

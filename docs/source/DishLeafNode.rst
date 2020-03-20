@@ -6,6 +6,6 @@
 Dish Leaf Node
 ======================================
 
-.. automodule:: tmcprototype.dishleafnode.src.dish_leaf_node
+.. automodule:: tmcprototype.dishleafnode.src.dishleafnode.dish_leaf_node
    :members:
    :undoc-members:

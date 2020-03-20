@@ -6,6 +6,6 @@
 SDP Subarray Leaf Node
 ========================================================
 
-.. automodule:: tmcprototype.sdpsubarrayleafnode.src.sdp_subarray_leaf_node
+.. automodule:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.sdp_subarray_leaf_node
    :members:
    :undoc-members:

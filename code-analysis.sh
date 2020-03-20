@@ -5,13 +5,13 @@ echo
 
 echo "MODULE ANALYSIS"
 echo "---------------"
-pylint --rcfile=.pylintrc tmcprototype/dishmaster/src
-pylint --rcfile=.pylintrc tmcprototype/cspsubarrayleafnode/src
-pylint --rcfile=.pylintrc tmcprototype/dishleafnode/src
-pylint --rcfile=.pylintrc tmcprototype/cspmasterleafnode/src
-pylint --rcfile=.pylintrc tmcprototype/sdpsubarrayleafnode/src
-pylint --rcfile=.pylintrc tmcprototype/sdpmasterleafnode/src
-pylint --rcfile=.pylintrc tmcprototype/subarraynode/src
+pylint --rcfile=.pylintrc tmcprototype/dishmaster/src/dishmaster
+pylint --rcfile=.pylintrc tmcprototype/cspsubarrayleafnode/src/cspsubarrayleafnode
+pylint --rcfile=.pylintrc tmcprototype/dishleafnode/src/dishleafnode
+pylint --rcfile=.pylintrc tmcprototype/cspmasterleafnode/src/cspmasterleafnode
+pylint --rcfile=.pylintrc tmcprototype/sdpsubarrayleafnode/src/sdpsubarrayleafnode
+pylint --rcfile=.pylintrc tmcprototype/sdpmasterleafnode/src/sdpmasterleafnode
+pylint --rcfile=.pylintrc tmcprototype/subarraynode/src/subarraynode
 pylint --rcfile=.pylintrc tmcprototype/centralnode/src/centralnode
 
 echo "TESTS ANALYSIS"

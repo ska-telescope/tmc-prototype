@@ -23,7 +23,7 @@ def tango_context(request):
     # fq_test_class_name_details = fq_test_class_name.split(".")
     # package_name = fq_test_class_name_details[1]
     # class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format("src", "csp_master_leaf_node"))
+    module = importlib.import_module("{}.{}.{}".format("src", "cspmasterleafnode", "csp_master_leaf_node"))
     klass = getattr(module, "CspMasterLeafNode")
     properties = {'SkaLevel': '3', 'GroupDefinitions': '',
                   'CspMasterFQDN': 'mid_csp/elt/master',

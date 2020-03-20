@@ -10,7 +10,9 @@
 
 import os
 import sys
-from setuptools import setup
+from glob import glob
+from os.path import basename, splitext
+from setuptools import setup, find_packages
 
 setup_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,7 +23,7 @@ readme_filename = os.path.join(setup_dir, 'README.rst')
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, 'src', 'release.py')
+release_filename = os.path.join(setup_dir, 'src', 'sdpsubarrayleafnode', 'release.py')
 exec(open(release_filename).read())
 
 pack = ['src']
@@ -29,7 +31,9 @@ pack = ['src']
 setup(name=name,
       version=version,
       description='A Leaf control node for DishMaster.',
-      packages=pack,
+      packages=find_packages(where='src'),
+      package_dir={'': 'src'},
+      py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
       include_package_data=True,
       test_suite="test",
       entry_points={'console_scripts': ['SdpSubarrayLeafNode = SdpSubarrayLeafNode:main']},

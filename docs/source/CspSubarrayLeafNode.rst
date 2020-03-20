@@ -6,6 +6,6 @@
 CSP Subarray Leaf Node
 ====================================================
 
-.. automodule:: tmcprototype.cspsubarrayleafnode.src.csp_subarray_leaf_node
+.. automodule:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node
    :members:
    :undoc-members:

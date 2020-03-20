@@ -10,7 +10,9 @@
 
 import os
 import sys
-from setuptools import setup
+from glob import glob
+from os.path import basename, splitext
+from setuptools import setup, find_packages
 
 setup_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,7 +23,7 @@ readme_filename = os.path.join(setup_dir, 'README.rst')
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, 'src', 'release.py')
+release_filename = os.path.join(setup_dir, 'src', 'subarraynode', 'release.py')
 exec(open(release_filename).read())
 
 pack = ['src']
@@ -31,7 +33,9 @@ setup(
     version=version,
     description='Provides the monitoring and control interface required by users as well as \n'
                 'other TM Components (such as OET, Central Node) for a Subarray.',
-    packages=pack,
+    packages=find_packages(where='src'),
+    package_dir={'': 'src'},
+    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     include_package_data=True,
     test_suite="test",
     entry_points={'console_scripts':['SubarrayNode = SubarrayNode:main']},

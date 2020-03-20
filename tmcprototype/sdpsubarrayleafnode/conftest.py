@@ -24,7 +24,7 @@ def tango_context(request):
     # fq_test_class_name_details = fq_test_class_name.split(".")
     # package_name = fq_test_class_name_details[1]
     # class_name = module_name = fq_test_class_name_details[1]
-    module = importlib.import_module("{}.{}".format("src", "sdp_subarray_leaf_node"))
+    module = importlib.import_module("{}.{}.{}".format("src", "sdpsubarrayleafnode", "sdp_subarray_leaf_node"))
     klass = getattr(module, "SdpSubarrayLeafNode")
     properties = {'SkaLevel': '3', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'LoggingTargetsDefault': 'console::cout',

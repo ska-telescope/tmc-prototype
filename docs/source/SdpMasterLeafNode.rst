@@ -6,6 +6,6 @@
 SDP Master Leaf Node
 ================================================
 
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdp_master_leaf_node
+.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.sdp_master_leaf_node
    :members:
    :undoc-members:

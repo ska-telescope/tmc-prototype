@@ -17,7 +17,7 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 import sys
 import os
 file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/src"
+module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/sdpsubarrayleafnode"
 sys.path.insert(0, module_path)
 # PyTango imports
 import tango

@@ -1,4 +1,4 @@
-recursive-include SdpMasterLeafNode *.py
+recursive-include src/sdpmasterleafnode *.py
 recursive-include test *.py
 recursive-include pogo SdpMasterLeafNode.xmi
 include *.rst
