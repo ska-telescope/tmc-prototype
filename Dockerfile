@@ -25,4 +25,4 @@ RUN python3 -m pip install \
 USER tango
 
 
-CMD ["/venv/bin/python", "/app/tmcprototype/centralnode/src/centralnode/central_node.py"]
+CMD ["/venv/bin/CentralNodeDS"]
