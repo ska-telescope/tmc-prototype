@@ -195,7 +195,7 @@ class CspSubarray(SKASubarray):
     dtype_in='str', 
     )
     @DebugIt()
-    def ConfigureScan(self, argin):
+    def Configure(self, argin):
         # PROTECTED REGION ID(CspSubarray.ConfigureScan) ENABLED START #
         self._obs_state = 1                 # Set ObsState to CONFIGURING
         print("ConfigureScan is invoked successfully on CspSubarray. Argin:", argin)
