@@ -1102,6 +1102,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # Create proxy for SDP Subarray Leaf Node
         self._sdp_subarray_ln_proxy = None
         self.create_sdp_ln_proxy()
+        self._csp_sa_proxy = DeviceProxy(self.CspSubarrayFQDN)
+        self._sdp_sa_proxy = DeviceProxy(self.SdpSubarrayFQDN)
 
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy.dev_name()] = (
