@@ -27,7 +27,7 @@ ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pard
                     + "/ska_antennas.txt"
 # PyTango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
@@ -39,6 +39,7 @@ import json
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
+# pylint: disable=protected-access
 class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
@@ -153,7 +154,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         delay_corrections_v_array_t3 = []
         delay_corrections_v_array_t4 = []
         delay_corrections_v_array_t5 = []
-        delay_corrections_v_array_dict = {}
 
         # Delays are calculated for the timestamps between "t0 - 25" to "t0 + 25" at an interval of 10
         # seconds.
@@ -269,8 +269,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         delay_update_interval = argin
 
-        # list of bands
-        _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
+        # list of bands (commented since unused currently, gives pylint warning)
+        #_bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
         while not self._stop_delay_model_event.isSet():
             if(self.CspSubarrayProxy.obsState == CONST.ENUM_CONFIGURING
                     or self.CspSubarrayProxy.obsState == CONST.ENUM_READY
@@ -354,7 +354,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 # create CspSubarray Proxy
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
-            except:
+            except Exception:
                 self.logger.debug(CONST.ERR_IN_CREATE_PROXY_CSPSA)
 
             # create CspSubarray Proxy
@@ -559,8 +559,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            json_scan_duration = json.loads(argin[0])
-            scan_duration = json_scan_duration["scanDuration"]
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == CONST.ENUM_READY:
                 #Invoke StartScan command on CspSubarray

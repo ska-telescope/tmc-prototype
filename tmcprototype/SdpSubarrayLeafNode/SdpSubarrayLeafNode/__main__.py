@@ -6,6 +6,6 @@
 #
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
-
-from SdpSubarrayLeafNode import main
+from __future__ import absolute_import
+from .SdpSubarrayLeafNode import main
 main()

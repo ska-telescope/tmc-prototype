@@ -25,7 +25,7 @@ import tango
 from tango import DevState
 import pytest
 from DishMaster.DishMaster import DishMaster
-from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
 import CONST
 import json
 

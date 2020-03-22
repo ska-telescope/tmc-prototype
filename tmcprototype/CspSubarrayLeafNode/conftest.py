@@ -7,10 +7,9 @@ from __future__ import absolute_import
 import importlib
 import mock
 import pytest
-import tango
 
 
-from tango import DeviceProxy, DevFailed
+from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
 
 
@@ -35,14 +34,14 @@ def tango_context(request):
                   'LoggingLevelDefault': '4', 'LoggingTargetsDefault': 'console::cout',
                   'CspSubarrayFQDN': 'mid_csp/elt/subarray_01'
                   }
-    tango_context = DeviceTestContext(klass, properties=properties, process=False)
-    tango_context.start()
-    klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
-    yield tango_context
-    tango_context.stop()
+    tango_context_cspsaln = DeviceTestContext(klass, properties=properties, process=False)
+    tango_context_cspsaln.start()
+    klass.get_name = mock.Mock(side_effect=tango_context_cspsaln.get_device_access)
+    yield tango_context_cspsaln
+    tango_context_cspsaln.stop()
 
 @pytest.fixture(scope="class")
-def initialize_device(tango_context):
+def initialize_device(tango_context_init):
     """Re-initializes the device.
 
     Parameters
@@ -50,7 +49,7 @@ def initialize_device(tango_context):
     tango_context: tango.test_context.DeviceTestContext
         Context to run a device without a database.
     """
-    yield tango_context.device.Init()
+    yield tango_context_init.device.Init()
 
 @pytest.fixture(scope="class")
 def create_cspsubarray1_proxy():
