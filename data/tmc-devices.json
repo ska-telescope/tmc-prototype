@@ -1064,7 +1064,7 @@
                 }
             }
         },
-        "dish_master": {
+        "DishMasterDS": {
             "01": {
                 "DishMaster": {
                     "mid_d0001/elt/master": {
