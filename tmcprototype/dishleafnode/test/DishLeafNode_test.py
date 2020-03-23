@@ -10,25 +10,14 @@
 """Contain the tests for DishLeafNode."""
 from __future__ import print_function
 
-# Path
-import sys
-import os
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/dishleafnode"
-sys.path.insert(0, module_path)
-
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
-
 # Imports
 import time
 import tango
 from tango import DevState, EventType
 import pytest
-from src.dish_leaf_node import DishLeafNode
+from dishleafnode import DishLeafNode, CONST
 from skabase.SKABaseDevice import TangoLoggingLevel
 from skabase.control_model import HealthState, AdminMode, SimulationMode, TestMode, ControlMode
-import CONST
 # Note:
 #
 # Since the device uses an inner thread, it is necessary to

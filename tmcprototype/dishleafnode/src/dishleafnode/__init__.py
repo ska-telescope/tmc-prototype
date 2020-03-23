@@ -13,9 +13,9 @@ A Leaf control node for DishMaster.
 """
 
 from . import release, CONST
-from .dish_leaf_node import DishLeafNode, main
+from .dish_leaf_node import DishLeafNode
 
-__all__ = ["dish_leaf_node", "CONST", "release"]
+__all__ = ["DishLeafNode", "CONST", "release"]
 
 __version__ = release.version
 __version_info__ = release.version_info

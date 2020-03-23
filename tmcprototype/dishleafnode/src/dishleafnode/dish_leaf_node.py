@@ -13,13 +13,7 @@ A Leaf control node for DishMaster.
 from __future__ import print_function
 from __future__ import absolute_import
 
-import sys
-import os
 import json
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/dishleafnode"
-sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
@@ -31,7 +25,7 @@ from skabase.control_model import AdminMode, HealthState, SimulationMode
 # Additional import
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 import threading
-import CONST
+from . import CONST
 from future.utils import with_metaclass
 import math
 import katpoint

@@ -329,7 +329,7 @@
                 }
             }
         },
-        "dish_leaf_node": {
+        "DishLeafNodeDS": {
             "01": {
                 "DishLeafNode": {
                     "ska_mid/tm_leaf_node/d0001": {
