@@ -24,4 +24,4 @@ run python setup.py test
 Now you can start your device server in any
 Terminal or console by calling it :
 
-subarray_node instance_name
+SubarrayNodeDS instance_name

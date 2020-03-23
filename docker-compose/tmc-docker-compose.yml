@@ -288,7 +288,7 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01 10 &&\
-             /venv/bin/python -u /app/tmcprototype/subarraynode/src/subarraynode/subarray_node.py sa1 v5"
+             /venv/bin/SubarrayNodeDS sa1 v5"
 
   subarraynode2:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -313,7 +313,7 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray02 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray02 10 &&\
-             /venv/bin/python -u /app/tmcprototype/subarraynode/src/subarraynode/subarray_node.py sa2 v5"
+             /venv/bin/SubarrayNodeDS sa2 v5"
 
   subarraynode3:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -338,7 +338,7 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray03 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray03 10 &&\
-             /venv/bin/python -u /app/tmcprototype/subarraynode/src/subarraynode/subarray_node.py sa3 v5"
+             /venv/bin/SubarrayNodeDS sa3 v5"
 
   centralnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest

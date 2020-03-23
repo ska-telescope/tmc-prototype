@@ -9,17 +9,6 @@
 # See LICENSE.txt for more info.
 """Contain the tests for the Subarray Node."""
 from __future__ import print_function
-
-# Path
-import sys
-import os
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/subarraynode"
-sys.path.insert(0, module_path)
-
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
-
 # Imports
 import json
 import pytest
@@ -27,8 +16,7 @@ import time
 import tango
 from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
-import CONST
-from src.subarray_node import SubarrayNode, SubarrayHealthState, ElementDeviceData
+from subarraynode import SubarrayNode, SubarrayHealthState, ElementDeviceData, CONST
 from skabase.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode
 
 @pytest.fixture(scope="function",
