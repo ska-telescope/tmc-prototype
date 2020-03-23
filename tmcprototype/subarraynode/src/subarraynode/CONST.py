@@ -5,15 +5,6 @@ This file is part of the SubarrayNode project and defines variables used
 
 # ENUMS
 from enum import IntEnum, unique
-
-@unique
-class HealthState(IntEnum):
-    OK = 0
-    DEGRADED = 1
-    FAILED = 2
-    UNKNOWN = 3
-
-
 @unique
 class PointingState(IntEnum):
     READY = 0
@@ -21,39 +12,6 @@ class PointingState(IntEnum):
     TRACK = 2
     SCAN = 3
     RESERVED = 4
-
-
-@unique
-class AdminMode(IntEnum):
-    ONLINE = 0
-    OFFLINE = 1
-    MAINTENANCE = 2
-    NOTIFIED = 3
-    RESERVED = 4
-
-
-@unique
-class ObsState(IntEnum):
-    IDLE = 0
-    CONFIGURING = 1
-    READY = 2
-    SCANNING = 3
-    PAUSED = 4
-    ABORTED = 5
-    FAULT = 6
-
-
-@unique
-class ObsMode(IntEnum):
-    IDLE = 0
-    IMAGING = 1
-    PULSARSEARCH = 2
-    PULSARTIMING = 3
-    DYNAMICSPECTRUM = 4
-    TRANSIENTSEARCH = 5
-    VLBI = 6
-    CALIBRATION = 7
-
 
 #Events
 EVT_DISH_HEALTH_STATE = "dishHealthState"
@@ -180,6 +138,7 @@ ERR_RELEASE_RES_CMD = "Exception occurred in ReleaseAllResources command."
 ERR_AGGR_HEALTH_STATE = "Error while aggregating healthState \n"
 ERR_AGGR_POINTING_STATE = "Error while aggregating pointingState \n"
 ERR_AGGR_OBS_STATE = "Error while aggregating obsState \n"
+ERR_AGGR_DEVICE_STATE = "Error while aggregating deviceState \n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
 ERR_SUBSR_DSH_POINTING_STATE = "Error in subscribing Dish pointingState \n"
 ERR_CONFIGURE_CMD = "Exception in Configure command: \n "
@@ -206,12 +165,10 @@ ERR_SUBSR_CSPSDPSA_HEALTH_STATE = "Error in subscribing CSP/SDP Subarray healthS
                                   "LeafNodes. \n"
 ERR_DEVICE_NOT_READY = "Subarray Node is not in Ready observation state."
 ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on Subarray Node."
-
-
 ERR_CSPSDP_SUBARRAY_OBS_STATE = "Key Error occurred while setting CSP/SDP Subarray obsState"
 ERR_SUBSR_CSPSDPSA_OBS_STATE = "Error in subscribing CSP/SDP Subarray obsState on respective " \
                                   "LeafNodes. \n"
-
+ERR_SUBSR_CSPSDPSA_DEVICE_STATE = "Error in subscribing CSP/SDP Subarray Device state"
 ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarray attribute"
 ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
 

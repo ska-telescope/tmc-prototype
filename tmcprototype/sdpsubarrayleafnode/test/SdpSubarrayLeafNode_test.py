@@ -26,6 +26,7 @@ import tango
 from tango import DevState, EventType, DeviceProxy
 from src.sdp_subarray_leaf_node import SdpSubarrayLeafNode
 from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 import CONST
 import pytest
 
@@ -149,7 +150,7 @@ class TestSdpSubarrayLeafNode(object):
                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
         tango_context.device.Configure(test_input)
         time.sleep(1)
-        assert create_sdpsubarray_proxy.obsState == CONST.ENUM_READY
+        assert create_sdpsubarray_proxy.obsState == ObsState.READY
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Configure
 
     def test_Configure_invalid_key(self, tango_context):
@@ -220,13 +221,13 @@ class TestSdpSubarrayLeafNode(object):
         test_input = '{"scanDuration":0}'
         tango_context.device.Scan(test_input)
         time.sleep(1)
-        assert create_sdpsubarray_proxy.obsState == CONST.ENUM_SCANNING
+        assert create_sdpsubarray_proxy.obsState == ObsState.SCANNING
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
 
     def test_EndScan(self, tango_context, create_sdpsubarray_proxy):
         """Test for EndScan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndScan) ENABLED START #
-        create_sdpsubarray_proxy.obsState = CONST.ENUM_SCANNING
+        create_sdpsubarray_proxy.obsState = ObsState.SCANNING
         time.sleep(2)
         tango_context.device.EndScan()
         tango_context.device.status()
@@ -239,7 +240,7 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
         tango_context.device.EndSB()
         time.sleep(2)
-        assert create_sdpsubarray_proxy.ObsState == CONST.ENUM_IDLE
+        assert create_sdpsubarray_proxy.ObsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
 
     def test_EndSB_device_not_ready(self, tango_context):
@@ -262,7 +263,7 @@ class TestSdpSubarrayLeafNode(object):
         """Test for versionId"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_versionId) ENABLED START #
         # self.device.versionId
-        assert tango_context.device.versionId == "0.2.0"
+        assert tango_context.device.versionId == "0.4.1"
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_versionId
 
     def test_loggingLevel(self, tango_context):
@@ -275,19 +276,19 @@ class TestSdpSubarrayLeafNode(object):
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == 0
+        assert tango_context.device.healthState == HealthState.OK
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_healthState
 
     def test_adminMode(self, tango_context):
         """Test for adminMode"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_adminMode) ENABLED START #
-        assert tango_context.device.adminMode == 0
+        assert tango_context.device.adminMode == AdminMode.ONLINE
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_adminMode
 
     def test_controlMode(self, tango_context):
         """Test for controlMode"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_controlMode) ENABLED START #
-        control_mode = 0
+        control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_controlMode
@@ -295,7 +296,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_simulationMode(self, tango_context):
         """Test for simulationMode"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_simulationMode) ENABLED START #
-        simulation_mode = 0
+        simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_simulationMode
@@ -303,7 +304,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_testMode) ENABLED START #
-        test_mode = CONST.STR_FALSE
+        test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_testMode

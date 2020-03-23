@@ -24,6 +24,7 @@ import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+from skabase.control_model import HealthState, ObsState
 # Additional imports
 import CONST
 from future.utils import with_metaclass
@@ -141,7 +142,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.set_state(DevState.ON) # set State=On
             # Initialise attributes
             self._receive_addresses = ""
-            self._sdp_subarray_health_state = CONST.ENUM_OK
+            self._sdp_subarray_health_state = HealthState.OK
             self._read_activity_message = ""
             self._active_processing_block = ""
             # Initialise Device status
@@ -423,7 +424,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             scan_duration = jsonArgument["scanDuration"]
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
             # Check if SDP Subarray obsState is READY
-            if sdp_subarray_obs_state == CONST.ENUM_READY:
+            if sdp_subarray_obs_state == ObsState.READY:
                 self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_SCAN, self.commandCallback)
                 self._read_activity_message = CONST.STR_SCAN_SUCCESS
                 self.logger.info(CONST.STR_SCAN_SUCCESS)
@@ -472,7 +473,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            if self._sdp_subarray_proxy.obsState == CONST.ENUM_SCANNING:
+            if self._sdp_subarray_proxy.obsState == ObsState.SCANNING:
                 self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSCAN, self.commandCallback)
                 self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
                 self.logger.info(CONST.STR_ENDSCAN_SUCCESS)
@@ -504,7 +505,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            if self._sdp_subarray_proxy.obsState == CONST.ENUM_READY:
+            if self._sdp_subarray_proxy.obsState == ObsState.READY:
                 self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
                 self._read_activity_message = CONST.STR_ENDSB_SUCCESS
                 self.logger.info(CONST.STR_ENDSB_SUCCESS)

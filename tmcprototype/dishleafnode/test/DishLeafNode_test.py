@@ -27,6 +27,7 @@ from tango import DevState, EventType
 import pytest
 from src.dish_leaf_node import DishLeafNode
 from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.control_model import HealthState, AdminMode, SimulationMode, TestMode, ControlMode
 import CONST
 # Note:
 #
@@ -293,31 +294,31 @@ class TestDishLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.4.1, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  DishLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(DishLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.2.0"
+        assert tango_context.device.versionId == "0.4.1"
         # PROTECTED REGION END #    //  DishLeafNode.test_versionId
 
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(DishLeafNode.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == 0
+        assert tango_context.device.healthState == HealthState.OK
         # PROTECTED REGION END #    //  DishLeafNode.test_healthState
 
     def test_adminMode(self, tango_context):
         """Test for adminMode"""
         # PROTECTED REGION ID(DishLeafNode.test_adminMode) ENABLED START #
-        assert tango_context.device.adminMode == 0
+        assert tango_context.device.adminMode == AdminMode.ONLINE
         # PROTECTED REGION END #    //  DishLeafNode.test_adminMode
 
     def test_controlMode(self, tango_context):
         """Test for controlMode"""
         # PROTECTED REGION ID(DishLeafNode.test_controlMode) ENABLED START #
-        control_mode = 0
+        control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
         # PROTECTED REGION END #    //  DishLeafNode.test_controlMode
@@ -325,7 +326,7 @@ class TestDishLeafNode(object):
     def test_simulationMode(self, tango_context):
         """Test for simulationMode"""
         # PROTECTED REGION ID(DishLeafNode.test_simulationMode) ENABLED START #
-        simulation_mode = 0
+        simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  DishLeafNode.test_simulationMode
@@ -333,7 +334,7 @@ class TestDishLeafNode(object):
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(DishLeafNode.test_testMode) ENABLED START #
-        test_mode = CONST.STR_FALSE
+        test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  DishLeafNode.test_testMode

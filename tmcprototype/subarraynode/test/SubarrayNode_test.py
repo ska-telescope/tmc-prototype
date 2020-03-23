@@ -28,9 +28,8 @@ import tango
 from tango import DevState
 from skabase.SKABaseDevice import TangoLoggingLevel
 import CONST
-from CONST import AdminMode, HealthState, ObsState, ObsMode
 from src.subarray_node import SubarrayNode, SubarrayHealthState, ElementDeviceData
-
+from skabase.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode
 
 @pytest.fixture(scope="function",
                 params=[HealthState.OK, HealthState.DEGRADED,
@@ -602,7 +601,7 @@ class TestSubarrayNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SubarrayNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.2.0, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.4.1, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SubarrayNode.test_buildState
 
     def test_configurationDelayExpected(self, tango_context):
@@ -640,7 +639,7 @@ class TestSubarrayNode(object):
     def test_simulationMode(self, tango_context):
         """Test for simulationMode"""
         # PROTECTED REGION ID(SubarrayNode.test_simulationMode) ENABLED START #
-        simulation_mode = False
+        simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_simulationMode
@@ -648,7 +647,7 @@ class TestSubarrayNode(object):
     def test_testMode(self, tango_context):
         """Test for testMode"""
         # PROTECTED REGION ID(SubarrayNode.test_testMode) ENABLED START #
-        test_mode = CONST.STR_FALSE
+        test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  SubarrayNode.test_testMode
@@ -656,7 +655,7 @@ class TestSubarrayNode(object):
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(SubarrayNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.2.0"
+        assert tango_context.device.versionId == "0.4.1"
         # PROTECTED REGION END #    //  SubarrayNode.test_versionId
 
     def test_scanID(self, tango_context):
