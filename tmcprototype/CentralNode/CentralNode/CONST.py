@@ -1,55 +1,3 @@
-# ENUMS
-from enum import IntEnum, unique
-
-@unique
-class HealthState(IntEnum):
-    OK = 0
-    DEGRADED = 1
-    FAILED = 2
-    UNKNOWN = 3
-
-
-@unique
-class PointingState(IntEnum):
-    READY = 0
-    SLEW = 1
-    TRACK = 2
-    SCAN = 3
-    RESERVED = 4
-
-
-@unique
-class AdminMode(IntEnum):
-    ONLINE = 0
-    OFFLINE = 1
-    MAINTENANCE = 2
-    NOTIFIED = 3
-    RESERVED = 4
-
-
-@unique
-class ObsState(IntEnum):
-    IDLE = 0
-    CONFIGURING = 1
-    READY = 2
-    SCANNING = 3
-    PAUSED = 4
-    ABORTED = 5
-    FAULT = 6
-
-
-@unique
-class ObsMode(IntEnum):
-    IDLE = 0
-    IMAGING = 1
-    PULSARSEARCH = 2
-    PULSARTIMING = 3
-    DYNAMICSPECTRUM = 4
-    TRANSIENTSEARCH = 5
-    VLBI = 6
-    CALIBRATION = 7
-
-
 # In/Out command constants
 CMD_SET_STOW_MODE = "SetStowMode"
 CMD_SET_STANDBY_MODE = "SetStandbyLPMode"
@@ -65,7 +13,6 @@ EVT_UNKNOWN = "Event from the Unknown device!"
 EVT_SUBSR_HEALTH_STATE = "healthState"
 EVT_SUBSR_CSP_MASTER_HEALTH = "cspHealthState"
 EVT_SUBSR_SDP_MASTER_HEALTH = "sdpHealthState"
-EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
 
 #Error messages
 ERR_AGGR_HEALTH_STATE = "Error while aggregating Subarray healthState \n"
@@ -122,10 +69,7 @@ PROP_DEF_VAL_TM_MID_SA2 = "ska_mid/tm_subarray_node/2"
 PROP_DEF_VAL_TM_MID_SA3 = "ska_mid/tm_subarray_node/3"
 PROP_DEF_VAL_LEAF_NODE_PREFIX = "ska_mid/tm_leaf_node/d"
 GET_DEVICE_LIST_TANGO_DB = "ska_mid/tm_leaf_node/d000*"
-ENUM_LAB_OK = "OK"
-ENUM_LAB_DEGRADED = "DEGRADED"
-ENUM_LAB_FAILED = "FAILED"
-ENUM_LAB_UNKNOWN = "UNKNOWN"
+
 
 #INTEGERS
 INT_SKA_LEVEL = 1
