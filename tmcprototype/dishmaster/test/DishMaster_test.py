@@ -9,26 +9,15 @@
 # See LICENSE.txt for more info.
 """Contain the tests for the DishMaster Simulator."""
 
-# Path
-import sys
-import os
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/dishmaster"
-sys.path.insert(0, module_path)
-
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
-
 # Imports
+import json
+import pytest
 import time
 import tango
 from tango import DevState
-import pytest
-from src.dishmaster.dish_master import DishMaster
+from dishmaster import DishMaster, CONST
 from skabase.SKABaseDevice import TangoLoggingLevel
 from skabase.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
-import CONST
-import json
 
 # Note:
 #

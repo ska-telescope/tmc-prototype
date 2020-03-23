@@ -5,10 +5,7 @@ tests.
 import mock
 import pytest
 import importlib
-
-
 from tango.test_context import DeviceTestContext
-
 
 @pytest.fixture(scope="class")
 def tango_context(request):
@@ -26,7 +23,7 @@ def tango_context(request):
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format(package_name, module_name))
     # klass = getattr(module, class_name)
-    dishmaster_module = importlib.import_module("{}.{}.{}".format('src', 'dishmaster', 'dish_master'))
+    dishmaster_module = importlib.import_module('dishmaster')
     klass = getattr(dishmaster_module, 'DishMaster')
     properties = {'GroupDefinitions': ''}
     tango_context = DeviceTestContext(klass, process=False, properties=properties)

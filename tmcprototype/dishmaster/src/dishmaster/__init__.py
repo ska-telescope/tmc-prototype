@@ -12,9 +12,9 @@
 SKA Dish Master TANGO device server
 """
 from . import release, CONST
-from .dish_master import DishMaster, main
+from .dish_master import DishMaster
 
-__all__ = ["dish_master", "CONST", "release"]
+__all__ = ["CONST", "release", "DishMaster"]
 
 __version__ = release.version
 __version_info__ = release.version_info

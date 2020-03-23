@@ -12,12 +12,6 @@ SKA Dish Master TANGO device server
 """
 from __future__ import print_function
 from __future__ import absolute_import
-import sys
-import os
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/dishmaster"
-sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
 
 # PROTECTED REGION ID(DishMaster.additionnal_import) ENABLED START #
 import time
@@ -33,11 +27,11 @@ from skabase.SKAMaster.SKAMaster import SKAMaster
 from skabase.control_model import HealthState, AdminMode
 
 # Additional import
-import CONST
 from future.utils import with_metaclass
 import numpy
 import math
 import enum
+from . import CONST
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
