@@ -7,7 +7,7 @@
                 }
             }
         },
-        "central_node": {
+        "CentralNodeDS": {
             "01": {
                 "CentralNode": {
                     "ska_mid/tm_central/central_node": {
@@ -557,7 +557,7 @@
                 }
             }
         },
-        "csp_subarray_leaf_node": {
+        "CspSubarrayLeafNodeDS": {
             "01": {
                 "CspSubarrayLeafNode": {
                     "ska_mid/tm_leaf_node/csp_subarray01": {

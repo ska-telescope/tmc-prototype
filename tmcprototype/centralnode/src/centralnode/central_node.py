@@ -14,11 +14,6 @@ of state and mode attributes defined by the SKA Control Model.
 from __future__ import print_function
 from __future__ import absolute_import
 
-import sys
-import os
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/centralnode"
-sys.path.insert(0, module_path)
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
@@ -26,10 +21,10 @@ from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-import CONST
-from CONST import AdminMode, HealthState
-from future.utils import with_metaclass
 import json
+from future.utils import with_metaclass
+from . import CONST
+from .CONST import AdminMode, HealthState
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
@@ -118,7 +113,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 for subsystem_health_field_name in ['csp_master_leaf_health', 'sdp_master_leaf_health']:
                     health_state = getattr(self, f"_{subsystem_health_field_name}")
                     counts[health_state] += 1
-                    
+
                 for subarray_health_state in list(self.subarray_health_state_map.values()):
                     counts[subarray_health_state] += 1
 
@@ -788,4 +783,3 @@ def main(args=None, **kwargs):
 
 if __name__ == '__main__':
     main()
-

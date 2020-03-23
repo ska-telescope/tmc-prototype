@@ -7,11 +7,10 @@ import types
 
 from mock import Mock
 
-# from cspsubarrayleafnode.src.csp_subarray_leaf_node import CspSubarrayLeafNode
-# from cspsubarrayleafnode.src.CONST import CMD_STARTSCAN, ENUM_READY
-from cspsubarrayleafnode.csp_subarray_leaf_node import CspSubarrayLeafNode
+from cspsubarrayleafnode import CspSubarrayLeafNode
 from cspsubarrayleafnode.CONST import CMD_STARTSCAN, ENUM_READY
 from tango.test_context import DeviceTestContext
+
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
     # arrange:
@@ -36,15 +35,15 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
         # assert:
         csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CMD_STARTSCAN, '0', any_method(with_name='commandCallback'))
 
-    
+
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
             if not isinstance(other, types.MethodType):
                 return False
-            
+
             return other.__func__.__name__ == with_name if with_name else True
-        
+
     return AnyMethod()
 
 

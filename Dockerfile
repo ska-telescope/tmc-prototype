@@ -6,8 +6,23 @@ RUN ipython profile create
 
 #install lmc-base-classes
 USER root
-RUN DEBIAN_FRONTEND=noninteractive pip3 install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.2.0+6bb55a6e/lmcbaseclasses-0.2.0+6bb55a6e.tar.gz
+RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.2.0+6bb55a6e/lmcbaseclasses-0.2.0+6bb55a6e.tar.gz
+
+# install all local TMC packages
+RUN python3 -m pip install \
+    /app/tmcprototype/centralnode \
+    /app/tmcprototype/cspmasterleafnode \
+    /app/tmcprototype/CspSubarray \
+    /app/tmcprototype/cspsubarrayleafnode \
+    /app/tmcprototype/dishleafnode \
+    /app/tmcprototype/dishmaster \
+    /app/tmcprototype/SdpMaster \
+    /app/tmcprototype/sdpmasterleafnode \
+    /app/tmcprototype/SdpSubarray \
+    /app/tmcprototype/sdpsubarrayleafnode \
+    /app/tmcprototype/subarraynode
 
 USER tango
 
-CMD ["/venv/bin/python", "/app/tmcprototype/centralnode/src/centralnode/central_node.py"]
+
+CMD ["/venv/bin/CentralNodeDS"]

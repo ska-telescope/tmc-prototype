@@ -12,9 +12,10 @@
 """
 
 from . import release
-from .csp_subarray_leaf_node import CspSubarrayLeafNode, main
+from . import CONST
+from .csp_subarray_leaf_node import CspSubarrayLeafNode
 
-__all__ = ["csp_subarray_leaf_node", "CONST", "release"]
+__all__ = ["release", "CONST", "CspSubarrayLeafNode"]
 
 __version__ = release.version
 __version_info__ = release.version_info

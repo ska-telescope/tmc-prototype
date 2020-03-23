@@ -8,7 +8,7 @@ import pytest
 import importlib
 from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
-from .src.centralnode import CONST as CONST
+from centralnode import CONST
 
 @pytest.fixture(scope="class")
 def tango_context(request):
@@ -25,7 +25,7 @@ def tango_context(request):
     # package_name = fq_test_class_name_details[1]
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format("src","centralnode","central_node"))
-    module = importlib.import_module("{}.{}.{}".format("src","centralnode","central_node"))
+    module = importlib.import_module("centralnode")
     klass = getattr(module, "CentralNode")
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'CentralAlarmHandler': '', 'TMAlarmHandler': '',
@@ -72,4 +72,3 @@ def create_leafNode1_proxy():
 def create_dish_proxy():
     dish_proxy = DeviceProxy("mid_d0001/elt/master")
     return dish_proxy
-

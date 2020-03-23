@@ -4,10 +4,8 @@ import sys
 import mock
 from mock import Mock
 
-from centralnode.CONST import HealthState, CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
-from centralnode.central_node import CentralNode
-# from centralnode.src.CONST import HealthState, CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
-# from centralnode.src.central_node import CentralNode
+from centralnode import CentralNode
+from centralnode.CONST import HealthState, CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STANDBY_CMD_ISSUED
 from tango.test_context import DeviceTestContext
 
 
@@ -53,7 +51,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # act:
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         tango_context.device.StowAntennas(dish_device_ids)
-    
+
     # assert:
     for proxy_mock in proxies_to_mock.values():
         proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
@@ -66,7 +64,7 @@ def test_activity_message_attribute_captures_the_last_received_command():
     # act & assert:
     with fake_tango_system(device_under_test)as tango_context:
         dut = tango_context.device
-        dut.StartUpTelescope() 
+        dut.StartUpTelescope()
         assert_activity_message(dut, STR_STARTUP_CMD_ISSUED)
 
         dut.StandByTelescope()
@@ -99,4 +97,3 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
-
