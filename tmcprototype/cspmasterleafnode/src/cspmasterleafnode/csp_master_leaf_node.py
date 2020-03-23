@@ -15,8 +15,6 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 # Tango imports
-import sys
-import os
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
@@ -26,12 +24,8 @@ from skabase.control_model import HealthState, AdminMode, SimulationMode, TestMo
 
 # PROTECTED REGION ID(CspMasterLeafNode.additionnal_import) ENABLED START #
 from future.utils import with_metaclass
-import CONST
+from . import CONST
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/cspmasterleafnode"
-sys.path.insert(0, module_path)
-print("sys.path: ", sys.path)
 # PROTECTED REGION END #    //  CspMasterLeafNode.additionnal_import
 
 __all__ = ["CspMasterLeafNode", "main"]

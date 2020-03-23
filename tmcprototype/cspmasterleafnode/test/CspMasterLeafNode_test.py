@@ -9,24 +9,12 @@
 # See LICENSE.txt for more info.
 """Contain the tests for the CspMasterLeafNode."""
 
-# Path
-import sys
-import os
-
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/cspmasterleafnode"
-sys.path.insert(0, module_path)
-
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
-
 # Imports
 import tango
 from tango import DevState
-from src.csp_master_leaf_node import CspMasterLeafNode
+from cspmasterleafnode import CspMasterLeafNode, CONST
 from skabase.SKABaseDevice import TangoLoggingLevel
 from skabase.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
-import CONST
 import pytest
 import time
 

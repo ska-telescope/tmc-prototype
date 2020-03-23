@@ -519,7 +519,7 @@
                 }
             }
         },
-        "csp_master_leaf_node": {
+        "CspMasterLeafNodeDS": {
             "01": {
                 "CspMasterLeafNode": {
                     "ska_mid/tm_leaf_node/csp_master": {

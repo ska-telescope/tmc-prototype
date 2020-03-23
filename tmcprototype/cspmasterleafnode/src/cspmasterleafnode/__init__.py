@@ -12,9 +12,10 @@
 """
 
 from . import release
-from .csp_master_leaf_node import CspMasterLeafNode, main
+from . import CONST
+from .csp_master_leaf_node import CspMasterLeafNode
 
-__all__ = ["csp_master_leaf_node", "CONST", "release"]
+__all__ = ["CspMasterLeafNode", "CONST", "release"]
 
 __version__ = release.version
 __version_info__ = release.version_info
