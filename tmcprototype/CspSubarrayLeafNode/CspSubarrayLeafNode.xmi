@@ -55,7 +55,7 @@
       </argout>
       <status abstract="false" inherited="true" concrete="true"/>
     </commands>
-    <commands name="ConfigureScan" description="" execMethod="configure_scan" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+    <commands name="Configure" description="" execMethod="configure" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
         <type xsi:type="pogoDsl:StringType"/>
       </argin>
