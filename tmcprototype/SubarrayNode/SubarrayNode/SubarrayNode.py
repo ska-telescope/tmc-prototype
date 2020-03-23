@@ -1249,7 +1249,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         cmd_data = self._create_cmd_data(
             "build_up_csp_cmd_data", scan_configuration, self._scan_id, attr_name_map)
-        self._configure_leaf_node(self._csp_subarray_ln_proxy, "ConfigureScan", cmd_data)
+        self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
         config_keys = scan_configuration.keys()
