@@ -24,7 +24,7 @@ import time
 import tango
 from tango import DevState
 import pytest
-from src.dish_master import DishMaster
+from src.dishmaster.dish_master import DishMaster
 from skabase.SKABaseDevice import TangoLoggingLevel
 from skabase.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 import CONST

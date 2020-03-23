@@ -9,29 +9,17 @@
 # See LICENSE.txt for more info.
 """Contain the tests for the SdpMasterLeafNode."""
 
-# Path
-import sys
-import os
-
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/sdpmasterleafnode"
-sys.path.insert(0, module_path)
-
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
-
 # Imports
 from time import sleep
 from mock import MagicMock
 # from devicetest import DeviceTestCase, main
 import tango
-from tango import DevState, EventType, DeviceProxy
-from src.sdp_master_leaf_node import SdpMasterLeafNode
-from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
-import CONST
 import pytest
 import time
+from tango import DevState, EventType, DeviceProxy
+from sdpmasterleafnode import SdpMasterLeafNode, CONST
+from skabase.SKABaseDevice import TangoLoggingLevel
+from skabase.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 
 # Note:
 #

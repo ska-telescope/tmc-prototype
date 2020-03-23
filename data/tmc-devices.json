@@ -712,7 +712,7 @@
                 }
             }
         },
-        "sdp_master_leaf_node": {
+        "SdpMasterLeafNodeDS": {
             "01": {
                 "SdpMasterLeafNode": {
                     "ska_mid/tm_leaf_node/sdp_master": {
@@ -750,7 +750,7 @@
                 }
             }
         },
-        "sdp_subarray_leaf_node": {
+        "SdpSubarrayLeafNodeDS": {
             "01": {
                 "SdpSubarrayLeafNode": {
                     "ska_mid/tm_leaf_node/sdp_subarray01": {

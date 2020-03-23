@@ -15,9 +15,6 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 
 from __future__ import print_function
 from __future__ import absolute_import
-
-import os
-import sys
 import random
 import string
 
@@ -29,12 +26,8 @@ from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 from skabase.control_model import AdminMode, HealthState, TestMode
 from future.utils import with_metaclass
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-module_path = os.path.abspath(os.path.join(file_path, os.pardir)) + "/sdpmasterleafnode"
-sys.path.insert(0, module_path)
-
 # Additional import
-import CONST
+from . import CONST
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
