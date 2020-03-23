@@ -22,7 +22,7 @@ from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 from skabase.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-import CONST
+from . import CONST
 from future.utils import with_metaclass
 import json
 # PROTECTED REGION END #    //  CentralNode.additional_import
