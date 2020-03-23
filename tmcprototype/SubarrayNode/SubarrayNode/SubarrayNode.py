@@ -37,7 +37,8 @@ from future.utils import with_metaclass
 
 # Additional import
 import CONST
-from CONST import AdminMode, HealthState, ObsMode, ObsState, PointingState
+from CONST import PointingState
+from skabase.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
 from skabase.SKASubarray.SKASubarray import SKASubarray
 
 
@@ -1074,7 +1075,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         self._health_state = HealthState.OK
         self._obs_state = ObsState.IDLE
         self._obs_mode = ObsMode.IDLE
-        self._simulation_mode = False
+        self._simulation_mode = SimulationMode.FALSE
         self.isScanning = False
         self._scan_id = ""
         self._sb_id = ""

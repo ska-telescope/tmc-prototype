@@ -21,7 +21,7 @@ import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-
+from skabase.control_model import HealthState, AdminMode, SimulationMode, TestMode
 # Additional import
 
 # PROTECTED REGION ID(CspMasterLeafNode.additionnal_import) ENABLED START #
@@ -61,13 +61,13 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         if evt.err is False:
             try:
                 self._csp_cbf_health = evt.attr_value.value
-                if self._csp_cbf_health == CONST.ENUM_HEALTH_OK:
+                if self._csp_cbf_health == HealthState.OK:
                     self.logger.debug(CONST.STR_CSP_CBF_HEALTH_OK)
                     self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_OK
-                elif self._csp_cbf_health == CONST.ENUM_HEALTH_DEGRADED:
+                elif self._csp_cbf_health == HealthState.DEGRADED:
                     self.logger.debug(CONST.STR_CSP_CBF_HEALTH_DEGRADED)
                     self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_DEGRADED
-                elif self._csp_cbf_health == CONST.ENUM_HEALTH_FAILED:
+                elif self._csp_cbf_health == HealthState.FAILED:
                     self.logger.debug(CONST.STR_CSP_CBF_HEALTH_FAILED)
                     self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_FAILED
                 else:
@@ -94,13 +94,13 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         if evt.err is False:
             try:
                 self._csp_pss_health = evt.attr_value.value
-                if self._csp_pss_health == CONST.ENUM_HEALTH_OK:
+                if self._csp_pss_health == HealthState.OK:
                     self.logger.debug(CONST.STR_CSP_PSS_HEALTH_OK)
                     self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_OK
-                elif self._csp_pss_health == CONST.ENUM_HEALTH_DEGRADED:
+                elif self._csp_pss_health == HealthState.DEGRADED:
                     self.logger.debug(CONST.STR_CSP_PSS_HEALTH_DEGRADED)
                     self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_DEGRADED
-                elif self._csp_pss_health == CONST.ENUM_HEALTH_FAILED:
+                elif self._csp_pss_health == HealthState.FAILED:
                     self.logger.debug(CONST.STR_CSP_PSS_HEALTH_FAILED)
                     self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_FAILED
                 else:
@@ -127,13 +127,13 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         if evt.err is False:
             try:
                 self._csp_pst_health = evt.attr_value.value
-                if self._csp_pst_health == CONST.ENUM_HEALTH_OK:
+                if self._csp_pst_health == HealthState.OK:
                     self.logger.debug(CONST.STR_CSP_PST_HEALTH_OK)
                     self._read_activity_message = CONST.STR_CSP_PST_HEALTH_OK
-                elif self._csp_pst_health == CONST.ENUM_HEALTH_DEGRADED:
+                elif self._csp_pst_health == HealthState.DEGRADED:
                     self.logger.debug(CONST.STR_CSP_PST_HEALTH_DEGRADED)
                     self._read_activity_message = CONST.STR_CSP_PST_HEALTH_DEGRADED
-                elif self._csp_pst_health == CONST.ENUM_HEALTH_FAILED:
+                elif self._csp_pst_health == HealthState.FAILED:
                     self.logger.debug(CONST.STR_CSP_PST_HEALTH_FAILED)
                     self._read_activity_message = CONST.STR_CSP_PST_HEALTH_FAILED
                 else:
@@ -229,10 +229,10 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             self._read_activity_message = CONST.STR_CSP_INIT_LEAF_NODE
             self.SkaLevel = CONST.INT_SKA_LEVEL
-            self._admin_mode = CONST.ENUM_ADMIN_MODE_ONLINE  # Setting adminMode to "ONLINE"
-            self._health_state = CONST.ENUM_HEALTH_OK  # Setting healthState to "OK"
-            self._simulation_mode = False  # Enabling the simulation mode
-            self._test_mode = "False"
+            self._admin_mode = AdminMode.ONLINE  # Setting adminMode to "ONLINE"
+            self._health_state = HealthState.OK # Setting healthState to "OK"
+            self._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
+            self._test_mode = TestMode.NONE
 
         except DevFailed as dev_failed:
             self.logger.error(CONST.ERR_INIT_PROP_ATTR)
