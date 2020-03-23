@@ -6,10 +6,9 @@ import mock
 import types
 
 from mock import Mock
-from cspsubarrayleafnode import CspSubarrayLeafNode
+from cspsubarrayleafnode import CspSubarrayLeafNode, CONST
 from tango.test_context import DeviceTestContext
 from skabase.control_model import ObsState
-from CONST import CMD_STARTSCAN
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
     # arrange:
@@ -32,7 +31,7 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
         tango_context.device.StartScan([json.dumps(scan_config)])
 
         # assert:
-        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CMD_STARTSCAN, '0', any_method(with_name='commandCallback'))
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_STARTSCAN, '0', any_method(with_name='commandCallback'))
 
 
 def any_method(with_name=None):
