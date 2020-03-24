@@ -727,6 +727,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                                          exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
 
         # throw exception:
+        print("exception_count -----------------------------: ", exception_count, type(exception_count))
         if exception_count > 0:
             self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
 
