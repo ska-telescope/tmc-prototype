@@ -739,9 +739,9 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     )
     @DebugIt()
     def GoToIdle(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.EndSB) ENABLED START #
+        # PROTECTED REGION ID(CspSubarrayLeafNode.GoToIdle) ENABLED START #
         """
-        This command invokes EndSB command on CSP Subarray in order to end current scheduling block.
+        This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
 
         :return: None.
 
@@ -751,24 +751,24 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             if self.CspSubarrayProxy.obsState == ObsState.READY:
                 self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_GOTOIDLE, self.commandCallback)
-                self._read_activity_message = CONST.STR_ENDSB_SUCCESS
-                self.logger.info(CONST.STR_ENDSB_SUCCESS)
+                self._read_activity_message = CONST.STR_GOTOIDLE_SUCCESS
+                self.logger.info(CONST.STR_GOTOIDLE_SUCCESS)
             else:
                 self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
                 self.logger.error(CONST.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
+                                            exception_message, exception_count, CONST.ERR_GOTOIDLE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
+                                            exception_message, exception_count, CONST.ERR_GOTOIDLE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_ENDSB_EXEC)
+            self.throw_exception(exception_message, CONST.STR_GOTOIDLE_EXEC)
 
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndSB
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
 
 # ----------
 # Run server

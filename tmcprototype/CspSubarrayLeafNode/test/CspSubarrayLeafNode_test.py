@@ -99,6 +99,7 @@ class TestCspSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assignresources_input)
         time.sleep(1)
+        print("state of csp subarray is:", create_cspsubarray1_proxy.state() )
         assert create_cspsubarray1_proxy.state() == DevState.OFF
         assert CONST.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
 
@@ -256,14 +257,14 @@ class TestCspSubarrayLeafNode(object):
         #        and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
 
-    def test_EndSB(self, tango_context, create_cspsubarray1_proxy):
-        """Test for EndSB command."""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndSB) ENABLED START #
+    def test_GoToIdle(self, tango_context, create_cspsubarray1_proxy):
+        """Test for GoToIdle command."""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_GoToIdle) ENABLED START #
         tango_context.device.GoToIdle()
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == ObsState.IDLE
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_GoToIdle
 
     def test_EndScan_Invalid_state(self, tango_context):
         """Test for  Invalid EndScan"""
@@ -275,13 +276,13 @@ class TestCspSubarrayLeafNode(object):
                and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
 
-    def test_EndSB_device_not_ready(self, tango_context):
-        """Test for EndSB when CSP Subarray is not in Ready state command."""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndSB) ENABLED START #
+    def test_GoToIdle_device_not_ready(self, tango_context):
+        """Test for GoToIdle when CSP Subarray is not in Ready state command."""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_GoToIdle) ENABLED START #
         tango_context.device.GoToIdle()
         time.sleep(2)
         assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_GoToIdle
 
     def test_ReleaseAllResources(self, tango_context, create_cspsubarray1_proxy):
         """Test for ReleaseResources"""

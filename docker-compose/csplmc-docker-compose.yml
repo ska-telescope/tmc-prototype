@@ -4,7 +4,7 @@ volumes:
 
 services:
   cspmaster:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspmaster
     depends_on:
