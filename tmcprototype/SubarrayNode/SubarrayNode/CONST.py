@@ -33,6 +33,7 @@ CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 CMD_CONFIGURESCAN = "ConfigureScan"
 CMD_ENDSB = "EndSB"
+CMD_GOTOIDLE = "GoToIdle"
 
 
 #GROUPS

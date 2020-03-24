@@ -259,7 +259,7 @@ class TestCspSubarrayLeafNode(object):
     def test_EndSB(self, tango_context, create_cspsubarray1_proxy):
         """Test for EndSB command."""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndSB) ENABLED START #
-        tango_context.device.EndSB()
+        tango_context.device.GoToIdle()
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == ObsState.IDLE
@@ -278,7 +278,7 @@ class TestCspSubarrayLeafNode(object):
     def test_EndSB_device_not_ready(self, tango_context):
         """Test for EndSB when CSP Subarray is not in Ready state command."""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndSB) ENABLED START #
-        tango_context.device.EndSB()
+        tango_context.device.GoToIdle()
         time.sleep(2)
         assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB

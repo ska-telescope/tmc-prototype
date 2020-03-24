@@ -4,7 +4,7 @@ volumes:
 
 services:
   cspmaster:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspmaster
     depends_on:
@@ -19,7 +19,7 @@ services:
              /venv/bin/python /app/csplmc/CspMaster/CspMaster/CspMaster.py csp"
 
   cspsubarray1:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
     depends_on:
       - databaseds
       - csp-dsconfig
@@ -35,7 +35,7 @@ services:
              /venv/bin/python /app/csplmc/CspSubarray/CspSubarray/CspSubarray.py sub1"
 
   cspsubarray2:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
     depends_on:
       - databaseds
       - csp-dsconfig
@@ -49,7 +49,7 @@ services:
              /venv/bin/python /app/csplmc/CspSubarray/CspSubarray/CspSubarray.py sub2"
 
   cspsubarray3:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/csplmc:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
     depends_on:
       - databaseds
       - csp-dsconfig
