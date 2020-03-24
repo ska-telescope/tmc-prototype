@@ -30,15 +30,27 @@ import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKAMaster.SKAMaster import SKAMaster
+from skabase.control_model import HealthState, AdminMode
 
 # Additional import
 import CONST
 from future.utils import with_metaclass
 import numpy
 import math
+import enum
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
+
+class PointingState(enum.IntEnum):
+    """
+    Pointing state of the dish
+    """
+    READY = 0
+    SLEW = 1
+    TRACK = 2
+    SCAN = 3
+
 
 class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 # class DishMaster(SKAMaster):
@@ -61,7 +73,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self.change_elevation_thread = threading.Thread(None, self.elevation, 'DishMaster')
                 self.change_azimuth_thread.start()
                 self.change_elevation_thread.start()
-                self._pointing_state = 1
+                self._pointing_state = PointingState.SLEW
             except Exception as except_occured:
                 log_msg = CONST.ERR_EXE_POINT_FN + str(self.ReceptorNumber)
                 self.logger.debug(log_msg)
@@ -74,7 +86,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def azimuth(self):
         """ Calculates the azimuth angle difference. """
         #time.sleep(1)
-        self._pointing_state = 1
+        self._pointing_state = PointingState.SLEW
         azimuth_index = 1
         if self._azimuth_difference > 0.00:
             self.increment_position([azimuth_index, self._azimuth_difference])
@@ -83,7 +95,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
     def elevation(self):
         """ Calculates the elevation angle difference. """
-        self._pointing_state = 1
+        self._pointing_state = PointingState.SLEW
         elevation_index = 2
         if self._elevation_difference > 0.00:
             self.increment_position([elevation_index, self._elevation_difference])
@@ -109,11 +121,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         if input_increment == max_increment:
             input_increment = input_increment + 0.01
         self.set_status(CONST.STR_DISH_POINT_INPROG)
-        self._pointing_state = 1
+        self._pointing_state = PointingState.SLEW
         self.logger.debug(CONST.STR_DISH_POINT_INPROG)
         for position in numpy.arange(0, input_increment, 0.01):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
-            self._pointing_state = 1
+            self._pointing_state = PointingState.SLEW
             if position == input_increment:
                 self.logger.info("position == input_increment. Breaking the loop")
                 break
@@ -121,13 +133,13 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 time.sleep(0.01)
                 if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                         self._achieved_pointing[2] == self._desired_pointing[2]):
-                    self._pointing_state = 0
+                    self._pointing_state = PointingState.READY
                     self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                     self.logger.info(CONST.STR_DISH_POINT_SUCCESS)
                 else:
                     self.set_status(CONST.STR_DISH_POINT_INPROG)
                     self.logger.info(CONST.STR_DISH_POINT_INPROG)
-                    self._pointing_state = 1
+                    self._pointing_state = PointingState.SLEW
                     self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
 
     def decrement_position(self, argin):
@@ -151,10 +163,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
         self.set_status(CONST.STR_DISH_POINT_INPROG)
         self.logger.debug(CONST.STR_DISH_POINT_INPROG)
-        self._pointing_state = 1
+        self._pointing_state = PointingState.SLEW
         for position in numpy.arange(0, input_decrement, 0.01):
             self.set_status(CONST.STR_DISH_POINT_INPROG)
-            self._pointing_state = 1
+            self._pointing_state = PointingState.SLEW
 
             if position == input_decrement:
                 break
@@ -162,13 +174,13 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 time.sleep(0.01)
                 if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                         self._achieved_pointing[2] == self._desired_pointing[2]):
-                    self._pointing_state = 0
+                    self._pointing_state = PointingState.READY
                     self.set_status(CONST.STR_DISH_POINT_SUCCESS)
                     self.logger.info(CONST.STR_DISH_POINT_SUCCESS)
                 else:
                     self.set_status(CONST.STR_DISH_POINT_INPROG)
                     self.logger.info(CONST.STR_DISH_POINT_INPROG)
-                    self._pointing_state = 1
+                    self._pointing_state = PointingState.SLEW
                     self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] - 0.01), 2)
 
     def check_slew(self):
@@ -178,11 +190,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         :return: None
         """
         while True:
-            if self._pointing_state != 1:
-                self._admin_mode = 1                        # Set adminMode to OFFLINE
+            if self._pointing_state != PointingState.SLEW:
+                self._admin_mode = AdminMode.OFFLINE                        # Set adminMode to OFFLINE
                 self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
                 self._dish_mode = 6                         # Set dishMode to STOW
-                self._health_state = 0                      # Set healthState to OK
+                self._health_state = HealthState.OK                      # Set healthState to OK
                 self.set_status(CONST.STR_DISH_STOW_SUCCESS)
                 self.logger.info(CONST.STR_DISH_STOW_SUCCESS)
                 break
@@ -212,7 +224,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.logger.debug(log_msg)
             time.sleep(2)
         # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
-        self._pointing_state = 2
+        self._pointing_state = PointingState.TRACK
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -234,10 +246,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     )
 
     pointingState = attribute(
-        dtype='DevEnum',
-        enum_labels=["READY", "SLEW", "TRACK", "SCAN", ],
-        doc="Pointing state of the dish",
-
+        dtype=PointingState,
     )
 
     band1SamplerFrequency = attribute(
@@ -336,10 +345,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             # Initialise Properties
             self.SkaLevel = 1                           # Set SkaLevel to 1
             # Initialise Attributes
-            self._health_state = 0                      # Set healthState to OK
-            self._admin_mode = 0                        # Set adminMode to ONLINE
+            self._health_state = HealthState.OK         # Set healthState to OK
+            self._admin_mode = AdminMode.ONLINE         # Set adminMode to ONLINE
             self._dish_mode = 3                         # Set dishMode to STANDBY-LP Mode
-            self._pointing_state = 0                    # Set pointingState to READY Mode
+            self._pointing_state = PointingState.READY  # Set pointingState to READY Mode
             self._band1_sampler_frequency = 0           # Set Band 1 Sampler Frequency to 0
             self._band2_sampler_frequency = 0           # Set Band 2 Sampler Frequency to 0
             self._band3_sampler_frequency = 0           # Set Band 3 Sampler Frequency to 0
@@ -630,7 +639,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
     def is_SetStandbyLPMode_allowed(self):
         # PROTECTED REGION ID(DishMaster.is_SetMaintenanceMode_allowed) ENABLED START #
         """ Checks if the SetStandbyLPMode is allowed in the current pointing state of DishMaster. """
-        return self._pointing_state not in [1, 2, 3]
+        return self._pointing_state not in [PointingState.SLEW, PointingState.TRACK, PointingState.SCAN]
         # PROTECTED REGION END #    //  DishMaster.is_SetMaintenanceMode_allowed
 
     @command(
@@ -647,7 +656,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         excpt_msg = []
         try:
             # Command to set Dish to MAINTENANCE Mode
-            self._admin_mode = 2                        # Set adminMode to MAINTENANCE
+            self._admin_mode = AdminMode.MAINTENANCE                        # Set adminMode to MAINTENANCE
             self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
             self._dish_mode = 5                         # set dishMode to MAINTENANCE
             self.set_status(CONST.STR_DISH_MAINT_MODE)
@@ -690,7 +699,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         excpt_msg = []
         try:
             # Command to set Dish to OPERATE Mode
-            self._admin_mode = 0                        # Set adminMode to ONLINE
+            self._admin_mode = AdminMode.ONLINE                        # Set adminMode to ONLINE
             self.set_state(DevState.ON)                 # Set STATE to ON
             self._dish_mode = 8                         # set dishMode to OPERATE
             self.set_status(CONST.STR_DISH_OPERATE_MODE)
@@ -740,7 +749,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         excpt_msg = []
         try:
             # Command to start SCAN
-            if self._pointing_state == 0:
+            if self._pointing_state == PointingState.READY:
                 self._current_time = time.time()
                 self._scan_execution_time = float(argin)
                 self._scan_delta_t = self._scan_execution_time - self._current_time
@@ -797,7 +806,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 if self._capturing is False:
                     # Command to start Data Capturing
                     self._capturing = True                      # set Capturing to True
-                    self._pointing_state = 3                    # set pointingState to SCAN
+                    self._pointing_state = PointingState.SCAN   # set pointingState to SCAN
                     self.set_status(CONST.STR_DATA_CAPTURE_STRT)
                     self.logger.info(CONST.STR_DATA_CAPTURE_STRT)
                 else:
@@ -849,7 +858,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 if self._capturing is True:
                     # Command to stop Data Capturing
                     self._capturing = False                     # set Capturing to FALSE
-                    self._pointing_state = 0                    # set pointingState to READY
+                    self._pointing_state = PointingState.READY  # set pointingState to READY
                     self.set_status(CONST.STR_DATA_CAPTURE_STOP)
                     self.logger.info(CONST.STR_DATA_CAPTURE_STOP)
                 else:
@@ -993,11 +1002,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             if(float(actual_az_lim) <= self.preconfig_az_lim and
                float(actual_el_lim) <= self.preconfig_el_lim) is True:
             #if dish is within the preconfigured limit then dish will slew slowly (TRACK).
-                self._pointing_state = 2                    # Set pointingState to TRACK Mode
+                self._pointing_state = PointingState.TRACK                    # Set pointingState to TRACK Mode
                 # Inject fault in DishMaster1 if toggle_fault is enabled as a part of Subarray Isolation
                 if self._toggle_fault and 'd0001' in self.device_name:
                     # Set PointingState to SCAN to inject fault in DishMaster
-                    self._pointing_state = 3
+                    self._pointing_state = PointingState.SCAN
                 self._achieved_pointing[1] = self._desired_pointing[1]
                 self._achieved_pointing[2] = self._desired_pointing[2]
                 log_msg = CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
@@ -1005,7 +1014,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self.logger.debug("Dish is TRACKING.")
             else:
             #if dish is out of preconfigured limit then dish will slew fast (Slew).
-                self._pointing_state = 1                   # Set pointingState to SLEW Mode
+                self._pointing_state = PointingState.SLEW                   # Set pointingState to SLEW Mode
                 self.track_slew_thread = threading.Thread(None, self.track_slew, CONST.THREAD_TRACK)
                 self.track_slew_thread.start()
 
@@ -1019,7 +1028,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         # PROTECTED REGION ID(DishMaster.is_Track_allowed) ENABLED START #
         """ Checks if the Track is allowed in the current pointing state of DishMaster. Ignore the TRACK
         command while Dish is slewing."""
-        return self._pointing_state not in [1]
+        return self._pointing_state not in [PointingState.SLEW]
 
     # PROTECTED REGION END #    //  DishMaster.is_Track_allowed
 
@@ -1107,8 +1116,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         excpt_msg = []
         excpt_count = 0
         try:
-            if (self._pointing_state == 1 or self._pointing_state == 2):
-                self._pointing_state = 0
+            if (self._pointing_state == PointingState.SLEW or self._pointing_state == PointingState.TRACK):
+                self._pointing_state = PointingState.READY
         except DevFailed as dev_failed:
             log_msg = CONST.ERR_CONFIG_DM + str(dev_failed)
             self.logger.error(log_msg)

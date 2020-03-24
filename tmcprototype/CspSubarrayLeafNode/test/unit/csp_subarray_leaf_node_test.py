@@ -9,7 +9,8 @@ from mock import Mock
 
 from tango.test_context import DeviceTestContext
 from CspSubarrayLeafNode.CspSubarrayLeafNode import CspSubarrayLeafNode
-from CONST import CMD_STARTSCAN, ENUM_READY
+from skabase.control_model import ObsState
+from CONST import CMD_STARTSCAN
 
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
@@ -21,7 +22,7 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
     }
 
     csp_subarray_proxy_mock = Mock()
-    csp_subarray_proxy_mock.obsState = ENUM_READY
+    csp_subarray_proxy_mock.obsState = ObsState.READY
 
     proxies_to_mock = {
         csp_subarray_fqdn: csp_subarray_proxy_mock

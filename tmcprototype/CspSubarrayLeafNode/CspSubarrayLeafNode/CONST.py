@@ -25,7 +25,7 @@ ERR_MSG = "Error message is: "
 ERR_RELEASE_ALL_RESOURCES = "Error while invoking ReleaseAllResources command on CSP Subarray."
 ERR_CONFIGURE_INVOKING_CMD = "Error while invoking Configure command on CSP Subarray."
 ERR_ENDSCAN_INVOKING_CMD = "Error while invoking EndScan command on CSP Subarray."
-ERR_INVALID_JSON_CONFIG_SCAN = "Invalid JSON format while invoking Configure command on CspSubarray."
+ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command on CspSubarray."
 ERR_INVALID_JSON_ASSIGN_RES = "Invalid JSON format while invoking AddReceptors command on CspSubarray."
 ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarray."
 ERR_DEVICE_NOT_READY = "Csp subarray is not in ready state."
@@ -47,7 +47,7 @@ STR_CSPSALN_INIT_SUCCESS = "CspSubarrayLeafNode initialized successfully."
 STR_CMD_FAILED = "CspSubarrayLeafNode_CommandFailed"
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
 STR_RELEASE_RES_EXEC = "ReleaseResources command execution"
-STR_CONFIG_SCAN_EXEC = "Configure command execution"
+STR_CONFIG_EXEC = "Configure command execution"
 STR_ENDSCAN_EXEC = "EndScan command execution"
 STR_INVOKE_SUCCESS = " invoked successfully."
 STR_COMMAND = "Command :-> "
@@ -60,10 +60,6 @@ STR_START_SCAN_EXEC = "StartScan command execution"
 STR_CSPSA_FQDN = "CspSubarrayFQDN :-> "
 STR_ENDSB_SUCCESS = "EndSB command is invoked successfully on CspSubarray."
 STR_ENDSB_EXEC = "EndSB command execution"
-
-ENUM_OK, ENUM_DEGRADED, ENUM_FAILED, ENUM_UNKNOWN = list(range(0, 4))
-ENUM_INIT, ENUM_OFF, ENUM_ON, ENUM_ALARM, ENUM_DISABLE, ENUM_FAULT, ENUM_UNKNOWN = list(range(0, 7))
-ENUM_IDLE, ENUM_CONFIGURING, ENUM_READY, ENUM_SCANNING = list(range(0, 4))
 
 #INTEGERS
 INT_SKA_LEVEL = 3

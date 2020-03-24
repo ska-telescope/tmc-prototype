@@ -26,6 +26,7 @@ import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+from skabase.control_model import AdminMode, HealthState, SimulationMode
 
 # Additional import
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
@@ -441,9 +442,9 @@ class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
             self.set_state(DevState.FAULT)
-        self._admin_mode = 0                                    #Setting adminMode to "ONLINE"
-        self._health_state = 0                                  #Setting healthState to "OK"
-        self._simulation_mode = False                           #Enabling the simulation mode
+        self._admin_mode = AdminMode.ONLINE                                    #Setting adminMode to "ONLINE"
+        self._health_state = HealthState.OK                                    #Setting healthState to "OK"
+        self._simulation_mode = SimulationMode.FALSE                           #Enabling the simulation mode
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
         log_msg = CONST.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
         self.logger.error(log_msg)
