@@ -689,6 +689,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
+            print("CSP Suabrray LN TRY BLOCK")
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
             self.receptorIDList_str = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
