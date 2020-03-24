@@ -738,7 +738,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     @command(
     )
     @DebugIt()
-    def EndSB(self):
+    def GoToIdle(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.EndSB) ENABLED START #
         """
         This command invokes EndSB command on CSP Subarray in order to end current scheduling block.
@@ -750,7 +750,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_count = 0
         try:
             if self.CspSubarrayProxy.obsState == ObsState.READY:
-                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
+                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_GOTOIDLE, self.commandCallback)
                 self._read_activity_message = CONST.STR_ENDSB_SUCCESS
                 self.logger.info(CONST.STR_ENDSB_SUCCESS)
             else:

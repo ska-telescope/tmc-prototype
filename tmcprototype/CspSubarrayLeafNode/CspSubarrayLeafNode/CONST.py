@@ -7,7 +7,7 @@ CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
 CMD_ENDSCAN = "EndScan"
 CMD_CONFIGURESCAN = "ConfigureScan"
 CMD_STARTSCAN = "Scan"
-CMD_ENDSB = "EndSB"
+CMD_GOTOIDLE = "GoToIdle"
 
 #Event messages
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
