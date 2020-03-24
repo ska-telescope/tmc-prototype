@@ -428,7 +428,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             arg_list.append(json.dumps(json_argument))
             print("self._csp_subarray_ln_proxy *****************", self._csp_subarray_ln_proxy)
             print("CONST.CMD_ASSIGN_RESOURCES ******************", CONST.CMD_ASSIGN_RESOURCES)
-            print("arg_list *******************", arg_list)
+            print("arg_list *******************", arg_list, type(arg_list))
+            print("PING **********", self._csp_subarray_ln_proxy.ping())
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
             argout = argin
         except DevFailed as df:
