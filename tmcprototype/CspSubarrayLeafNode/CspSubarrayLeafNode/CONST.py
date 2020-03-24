@@ -5,7 +5,7 @@ CONST file for CspSubarrayLeafNode
 CMD_ADD_RECEPTORS = "AddReceptors"
 CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
 CMD_ENDSCAN = "EndScan"
-CMD_CONFIGURESCAN = "ConfigureScan"
+CMD_CONFIGURESCAN = "Configure"
 CMD_STARTSCAN = "Scan"
 CMD_GOTOIDLE = "GoToIdle"
 
