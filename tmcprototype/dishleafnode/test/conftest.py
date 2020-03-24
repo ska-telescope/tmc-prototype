@@ -7,8 +7,6 @@ from __future__ import absolute_import
 import importlib
 import mock
 import pytest
-
-
 from tango import DeviceProxy, DevFailed
 from tango.test_context import DeviceTestContext
 
@@ -52,7 +50,7 @@ def tango_context(request): #, dishmaster_context):
     # class_name = module_name = fq_test_class_name_details[1]
     # module = importlib.import_module("{}.{}".format(package_name, module_name))
     # klass = getattr(module, class_name)
-    module = importlib.import_module("{}.{}.{}".format("src", "dishleafnode", "dish_leaf_node"))
+    module = importlib.import_module("dishleafnode")
     klass = getattr(module, "DishLeafNode")
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'LoggingTargetsDefault': 'console::cout',
