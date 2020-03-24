@@ -432,6 +432,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
             argout = argin
         except DevFailed as df:
+            print("df error ***********", df)
             self.logger.error(CONST.ERR_CSP_CMD)
             self.logger.debug(df)
 
