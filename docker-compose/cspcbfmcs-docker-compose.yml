@@ -4,7 +4,7 @@ volumes:
 
 services:
   cbfmaster:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.4.0
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cbfmaster
     depends_on:
@@ -25,7 +25,7 @@ services:
              /venv/bin/python /app/tangods/CbfMaster/CbfMaster/CbfMaster.py master"
 
   cbfsubarray01:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.4.0
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cbfsubarray01
     depends_on:
@@ -43,7 +43,7 @@ services:
              /venv/bin/python /app/tangods/CbfSubarray/CbfSubarrayMulti/CbfSubarrayMulti.py cbfSubarray-01"
 
   cbfsubarray02:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.4.0
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cbfsubarray02
     depends_on:
@@ -61,7 +61,7 @@ services:
              /venv/bin/python /app/tangods/CbfSubarray/CbfSubarrayMulti/CbfSubarrayMulti.py cbfSubarray-02"
 
   cbfsubarray03:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.4.0
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cbfsubarray03
     depends_on:
@@ -79,7 +79,7 @@ services:
              /venv/bin/python /app/tangods/CbfSubarray/CbfSubarrayMulti/CbfSubarrayMulti.py cbfSubarray-03"
 
   vcc001:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.4.0
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}vcc001
     depends_on:
@@ -92,7 +92,7 @@ services:
              /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-001"
 
   vcc002:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.4.0
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}vcc002
     depends_on:
@@ -105,7 +105,7 @@ services:
              /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-002"
 
   vcc003:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.4.0
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}vcc003
     depends_on:
@@ -118,7 +118,7 @@ services:
              /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-003"
 
   vcc004:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.4.0
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}vcc004
     depends_on:
@@ -131,7 +131,7 @@ services:
              /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-004"
 
   fsp01:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.2.1
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-cbf-mcs:0.4.0
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}fsp01
     depends_on:
