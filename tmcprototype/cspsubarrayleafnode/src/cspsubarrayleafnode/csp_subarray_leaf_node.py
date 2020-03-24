@@ -739,8 +739,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                   type(exception_count))
 
         # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
+        # if exception_count > 0:
+        #     self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
 
