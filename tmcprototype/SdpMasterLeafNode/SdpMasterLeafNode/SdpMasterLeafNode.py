@@ -22,11 +22,17 @@ import random
 import string
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
+# Tango imports
+# import tango
+# from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy
+# from tango.server import run, DeviceMeta, attribute, command, device_property
+# from future.utils import with_metaclass
+# from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
+
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-from skabase.control_model import AdminMode, HealthState, TestMode
 from future.utils import with_metaclass
 
 file_path = os.path.dirname(os.path.abspath(__file__))
@@ -133,14 +139,15 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         # PROTECTED REGION ID(SdpMasterLeafNode.init_device) ENABLED START #
         try:
             self.set_state(DevState.ON)
-            self._sdp_admin_mode = AdminMode.ONLINE # Setting adminMode to "ONLINE"
+            self._sdp_state = CONST.ENUM_STATE_INIT # Setting SDP State to "INIT"
+            self._sdp_admin_mode = CONST.ENUM_ADMIN_MODE_ONLINE # Setting adminMode to "ONLINE"
             self._version_info = "1.0"
             self._processing_block_list = "test"
             self._read_activity_message = 'OK'
             self.set_status(CONST.STR_INIT_SUCCESS)
-            self._health_state = HealthState.OK
-            self._admin_mode = AdminMode.ONLINE
-            self._test_mode = TestMode.NONE
+            self._health_state = CONST.ENUM_OK
+            self._admin_mode = 0
+            self._test_mode = "False"
 
         except DevFailed as dev_failed:
             self._handle_devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR)
@@ -240,7 +247,7 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         self._read_activity_message = CONST.STR_OFF_CMD_SUCCESS
 
         # This code is written only to improve code coverage
-        if self._test_mode == TestMode.TEST:
+        if self._test_mode == "True":
             self._handle_devfailed_exception(DevFailed, CONST.ERR_OFF_CMD_FAIL)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Off
 
