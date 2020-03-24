@@ -283,7 +283,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         proxy_created_flag = False
         while retry < 3:
             try:
+                print("self.CspSubarrayLNFQDN ************", self.CspSubarrayLNFQDN)
                 self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
+                print("self._csp_subarray_ln_proxy from init *************", self._csp_subarray_ln_proxy)
                 proxy_created_flag = True
                 break
             except Exception as ex:
