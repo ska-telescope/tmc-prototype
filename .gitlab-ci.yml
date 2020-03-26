@@ -292,7 +292,7 @@ run tests:
   retry: 2
 
 unit tests:
-  image: nexus.engageska-portugal.pt/tango-example/tmcprototype:latest
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-runtime:0.2.2
   stage: test
   tags:
     - docker-executor
@@ -304,7 +304,7 @@ unit tests:
       for path in `find ./tmcprototype/*/test  -type d -name unit`; do
         export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
         echo "+++ Installing ${TMC_ELEMENT} for tests"
-        python3 -m pip install -U tmcprototype/${TMC_ELEMENT}
+        python3 -m pip install -U tmcprototype/${TMC_ELEMENT} --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple
         echo "+++ Trying tests for ${TMC_ELEMENT}"
         pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
           --forked \

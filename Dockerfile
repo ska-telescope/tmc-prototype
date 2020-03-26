@@ -9,8 +9,6 @@ USER root
 RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-logging/0.2.1/ska_logging-0.2.1.tar.gz
 RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.4.1+14ff4f1b/lmcbaseclasses-0.4.1+14ff4f1b.tar.gz
 
-USER tango
-
 # install all local TMC packages
 RUN python3 -m pip install \
     /app/tmcprototype/centralnode \
@@ -24,5 +22,7 @@ RUN python3 -m pip install \
     /app/tmcprototype/SdpSubarray \
     /app/tmcprototype/sdpsubarrayleafnode \
     /app/tmcprototype/subarraynode
+
+USER tango
 
 CMD ["/venv/bin/CentralNodeDS"]
