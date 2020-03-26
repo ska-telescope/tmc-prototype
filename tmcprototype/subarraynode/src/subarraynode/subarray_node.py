@@ -283,9 +283,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         proxy_created_flag = False
         while retry < 3:
             try:
-                print("self.CspSubarrayLNFQDN ************", self.CspSubarrayLNFQDN)
                 self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
-                print("self._csp_subarray_ln_proxy from init *************", self._csp_subarray_ln_proxy)
                 proxy_created_flag = True
                 break
             except Exception as ex:
@@ -426,14 +424,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             dish[CONST.STR_KEY_RECEPTOR_ID_LIST] = argin
             json_argument[CONST.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
-            print("self._csp_subarray_ln_proxy *****************", self._csp_subarray_ln_proxy)
-            print("CONST.CMD_ASSIGN_RESOURCES ******************", CONST.CMD_ASSIGN_RESOURCES)
-            print("arg_list *******************", arg_list, type(arg_list))
-            print("PING **********", self._csp_subarray_ln_proxy.ping())
             self._csp_subarray_ln_proxy.command_inout(CONST.CMD_ASSIGN_RESOURCES, arg_list)
             argout = argin
         except DevFailed as df:
-            print("df error ***********", df)
             self.logger.error(CONST.ERR_CSP_CMD)
             self.logger.debug(df)
 

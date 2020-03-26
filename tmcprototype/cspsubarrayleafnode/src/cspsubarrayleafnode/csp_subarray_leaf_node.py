@@ -20,8 +20,9 @@ import katpoint
 import numpy as np
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-ska_antennas_path = os.path.abspath(os.path.join(os.path.join(os.path.join(file_path, os.pardir),os.pardir), os.pardir)) \
-                    + "/ska_antennas.txt"
+# ska_antennas_path = os.path.abspath(os.path.join(os.path.join(os.path.join(file_path, os.pardir),os.pardir), os.pardir)) \
+#                     + "/ska_antennas.txt"
+ska_antennas_path = "/app/tmcprototype/ska_antennas.txt"
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
@@ -689,7 +690,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            print("CSP Suabrray LN TRY BLOCK")
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
             self.receptorIDList_str = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
@@ -711,36 +711,25 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
-            print("value error: ------------", value_error)
-            print("exception_count ----------------------------- in value error: ", exception_count, type(exception_count))
         except KeyError as key_error:
             log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.error(log_msg)
             self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
-            print("key error: ------------", key_error)
-            print("exception_count ----------------------------- in key error: ", exception_count,
-                  type(exception_count))
 
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
                                          exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
-            print("devfailed error: ------------", dev_failed)
-            print("exception_count ----------------------------- in devfailed error: ", exception_count,
-                  type(exception_count))
 
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
                                          exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
-            print("exception error: ------------", except_occurred)
-            print("exception_count ----------------------------- in exception error: ", exception_count,
-                  type(exception_count))
 
         # throw exception:
-        # if exception_count > 0:
-        #     self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
+        if exception_count > 0:
+            self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
 

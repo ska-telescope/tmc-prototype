@@ -14,6 +14,7 @@ import tango
 from skabase.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 import pytest
 import json
+import time
 from tango import DevState
 from centralnode import CentralNode, CONST
 from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
