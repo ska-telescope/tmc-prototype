@@ -304,7 +304,8 @@ unit tests:
       for path in `find ./tmcprototype/*/test  -type d -name unit`; do
         export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
         echo "+++ Installing ${TMC_ELEMENT} for tests"
-
+        echo python3 -m pip list
+        echo python3 -m pip search centralnode
         echo "+++ Trying tests for ${TMC_ELEMENT}"
         pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
           --forked \
