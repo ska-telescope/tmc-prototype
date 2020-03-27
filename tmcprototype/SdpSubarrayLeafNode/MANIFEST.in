@@ -1,9 +1,0 @@
-recursive-include SdpSubarrayLeafNode *.py
-recursive-include test *.py
-include *.rst
-include SdpSubarrayLeafNode.xmi
-include *.txt
-graft docs
-
-global-exclude *.pyc
-global-exclude *.pyo

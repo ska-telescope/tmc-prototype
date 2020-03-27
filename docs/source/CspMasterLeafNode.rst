@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-tmcprototype.CspMasterLeafNode.CspMasterLeafNode
+CSP Master Leaf Node
 ===================================================
 
-.. automodule:: tmcprototype.CspMasterLeafNode.CspMasterLeafNode
+.. automodule:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.csp_master_leaf_node
    :members:
    :undoc-members:

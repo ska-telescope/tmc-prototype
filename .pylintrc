@@ -7,15 +7,15 @@
 # pygtk.require().
 init-hook='
     import sys;
-    sys.path.append("./tmcprototype/DishMaster");
-    sys.path.append("./tmcprototype/DishMaster/DishMaster");
-    sys.path.append("./tmcprototype/CspSubarrayLeafNode");
-    sys.path.append("./tmcprototype/DishLeafNode");
-    sys.path.append("./tmcprototype/CspMasterLeafNode");
-    sys.path.append("./tmcprototype/SdpSubarrayLeafNode");
-    sys.path.append("./tmcprototype/SdpMasterLeafNode");
-    sys.path.append("./tmcprototype/SubarrayNode");
-    sys.path.append("./tmcprototype/CentralNode");
+    sys.path.append("./tmcprototype/dishmaster");
+    sys.path.append("./tmcprototype/dishmaster/src");
+    sys.path.append("./tmcprototype/cspsubarrayleafnode");
+    sys.path.append("./tmcprototype/dishleafnode");
+    sys.path.append("./tmcprototype/cspmasterleafnode");
+    sys.path.append("./tmcprototype/sdpsubarrayleafnode");
+    sys.path.append("./tmcprototype/sdpmasterleafnode");
+    sys.path.append("./tmcprototype/subarraynode");
+    sys.path.append("./tmcprototype/centralnode");
     sys.path.append("/usr/local/lib/python3.5/dist-packages");
     sys.path.append("/venv/lib/python3.5/site-packages")'
 
@@ -52,7 +52,8 @@ load-plugins=
 # --disable=W"
 disable=C,R,attribute-defined-outside-init,invalid-name,no-member,no-self-use,unused-argument,
         undefined-variable,syntax-error,no-name-in-module,exec-used,fixme,broad-except,
-        redefined-builtin,import-error
+        redefined-builtin,import-error,pointless-string-statement,redefined-outer-name,
+        unused-variable,unused-import,bare-except,redefined-outer-name
 
 
 [REPORTS]
