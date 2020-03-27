@@ -25,7 +25,7 @@ services:
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
              json2tango -w -a -u /tmc-prototype/data/midcsplmc_dsconfig.json && sleep infinity"
     volumes:
-      - .:/csplmc
+      - ..:/tmc-prototype
 
   midcsp_dumpdsconfig:
     image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
@@ -40,7 +40,7 @@ services:
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
              python -m dsconfig.dump > /tmc-prototype/data/config_result.json && sleep infinity "
     volumes:
-      - .:/csplmc
+      - ..:/tmc-prototype
 
   midcspsubarray01:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
