@@ -292,7 +292,7 @@ run tests:
   retry: 2
 
 unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/ska-python-runtime:0.2.2
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
   stage: test
   tags:
     - docker-executor
