@@ -13,13 +13,10 @@ RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/p
 RUN python3 -m pip install \
     /app/tmcprototype/centralnode \
     /app/tmcprototype/cspmasterleafnode \
-    /app/tmcprototype/CspSubarray \
     /app/tmcprototype/cspsubarrayleafnode \
     /app/tmcprototype/dishleafnode \
     /app/tmcprototype/dishmaster \
-    /app/tmcprototype/SdpMaster \
     /app/tmcprototype/sdpmasterleafnode \
-    /app/tmcprototype/SdpSubarray \
     /app/tmcprototype/sdpsubarrayleafnode \
     /app/tmcprototype/subarraynode
 
