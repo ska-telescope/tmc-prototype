@@ -19,7 +19,7 @@
 #   - tango-docker-compose.yml
 #
 # TODO: Some of the containers and part is commented out for future use
-version: '2'
+version: '2.2'
 volumes:
   tangodb: {}
 
