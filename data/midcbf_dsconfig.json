@@ -10,9 +10,9 @@
                                     "-1", 
                                     "1"
                                 ],
-				"__value":[
-				    "0"
-				]
+                            "__value":[
+				                "0"
+                            ]
                             }, 
                             "healthState": {
                                 "abs_change": [
@@ -24,7 +24,8 @@
                         "properties": {
                             "CbfSubarray": [
                                 "mid_csp_cbf/sub_elt/subarray_01", 
-                                "mid_csp_cbf/sub_elt/subarray_02"
+                                "mid_csp_cbf/sub_elt/subarray_02",
+                                "mid_csp_cbf/sub_elt/subarray_03"
                             ], 
                             "FSP": [
                                 "mid_csp_cbf/fsp/01", 
@@ -35,7 +36,7 @@
                             "MaxCapabilities": [
                                 "VCC:4", 
                                 "FSP:4", 
-                                "Subarray:2"
+                                "Subarray:3"
                             ], 
                             "VCC": [
                                 "mid_csp_cbf/vcc/001", 
@@ -327,6 +328,122 @@
                         }
                     }
                 }
+            },
+            "cbfSubarray-03": {
+                "CbfSubarray": {
+                    "mid_csp_cbf/sub_elt/subarray_03": {
+                        "attribute_properties": {
+                            "adminMode": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "obsState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "scanID": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            }
+                        },
+                        "properties": {
+                            "CbfMasterAddress": [
+                                "mid_csp_cbf/sub_elt/master"
+                            ],
+                            "FSP": [
+                                "mid_csp_cbf/fsp/01",
+                                "mid_csp_cbf/fsp/02",
+                                "mid_csp_cbf/fsp/03",
+                                "mid_csp_cbf/fsp/04"
+                            ],
+                            "FspSubarray": [
+                                "mid_csp_cbf/fspSubarray/01_03",
+                                "mid_csp_cbf/fspSubarray/02_03",
+                                "mid_csp_cbf/fspSubarray/03_03",
+                                "mid_csp_cbf/fspSubarray/04_03"
+                            ],
+                            "SW1Address": [
+                                "mid_csp_cbf/sw1/03"
+                            ],
+                            "SW2Address": [
+                                "mid_csp_cbf/sw2/03"
+                            ],
+                            "PssConfigAddress": [
+                                "mid_csp_cbf/pssconfig/03"
+                            ],
+                            "SubID": [
+                                "3"
+                            ],
+                            "VCC": [
+                                "mid_csp_cbf/vcc/001",
+                                "mid_csp_cbf/vcc/002",
+                                "mid_csp_cbf/vcc/003",
+                                "mid_csp_cbf/vcc/004"
+                            ],
+                            "polled_attr": [
+                                "scanid",
+                                "1000",
+                                "healthstate",
+                                "1000",
+                                "state",
+                                "1000",
+                                "obsstate",
+                                "1000",
+                                "obsmode",
+                                "1000",
+                                "vcchealthstate",
+                                "1000",
+                                "adminmode",
+                                "1000",
+                                "fspstate",
+                                "1000",
+                                "fsphealthstate",
+                                "1000",
+                                "vccstate",
+                                "1000",
+				"outputLinksDistribution",
+				"1000"
+                            ]
+                        }
+                    }
+                },
+                "SearchWindow": {
+                    "mid_csp_cbf/sw1/03": {},
+                    "mid_csp_cbf/sw2/03": {}
+                },
+                "CbfSubarrayPssConfig": {
+                    "mid_csp_cbf/pssConfig/03": {
+                        "properties": {
+                            "FSP": [
+                                "mid_csp_cbf/fsp/01",
+                                "mid_csp_cbf/fsp/02",
+                                "mid_csp_cbf/fsp/03",
+                                "mid_csp_cbf/fsp/04"
+                            ],
+                            "FspSubarray": [
+                                "mid_csp_cbf/fspSubarray/01_03",
+                                "mid_csp_cbf/fspSubarray/02_03",
+                                "mid_csp_cbf/fspSubarray/03_03",
+                                "mid_csp_cbf/fspSubarray/04_03"
+                            ],
+                            "CbfMasterAddress": [
+                                "mid_csp_cbf/sub_elt/master"
+                            ]
+                        }
+                    }
+                }
             }
         }, 
         "DataBaseds": {
@@ -378,7 +495,8 @@
                             ],
                             "FspSubarray": [
                                 "mid_csp_cbf/fspSubarray/01_01",
-                                "mid_csp_cbf/fspSubarray/01_02"
+                                "mid_csp_cbf/fspSubarray/01_02",
+                                "mid_csp_cbf/fspSubarray/01_03"
                             ],
                             "polled_attr": [
                                 "adminmode", 
@@ -443,6 +561,28 @@
                                 "mid_csp_cbf/vcc/001", 
                                 "mid_csp_cbf/vcc/002", 
                                 "mid_csp_cbf/vcc/003", 
+                                "mid_csp_cbf/vcc/004"
+                            ]
+                        }
+                    },
+                    "mid_csp_cbf/fspSubarray/01_03": {
+                        "properties": {
+                            "CbfMasterAddress": [
+                                "mid_csp_cbf/sub_elt/master"
+                            ],
+                            "CbfSubarrayAddress": [
+                                "mid_csp_cbf/sub_elt/subarray_03"
+                            ],
+                            "FspID": [
+                                "1"
+                            ],
+                            "SubID": [
+                                "3"
+                            ],
+                            "VCC": [
+                                "mid_csp_cbf/vcc/001",
+                                "mid_csp_cbf/vcc/002",
+                                "mid_csp_cbf/vcc/003",
                                 "mid_csp_cbf/vcc/004"
                             ]
                         }
@@ -1113,70 +1253,6 @@
                     "mid_csp_cbf/vcc_sw2/004": {}
                 }
             }
-        },
-        "TmCspSubarrayLeafNodeTest": {
-            "tm": {
-                "TmCspSubarrayLeafNodeTest": {
-                    "ska_mid/tm_leaf_node/csp_subarray_01": {
-                        "attribute_properties": {
-                            "dopplerPhaseCorrection": {
-                                "abs_change": [
-                                    "-1", 
-                                    "1"
-                                ] 
-                            } 
-                        }, 
-                        "properties": {
-			    "CbfMasterAddress": [
-		                "mid_csp_cbf/sub_elt/master"
-			    ],
-			    "CbfSubarrayAddress": [
-		                "mid_csp_cbf/sub_elt/subarray_01"
-			    ],
-
-                            "polled_attr": [
-                                "delaymodel", 
-                                "1000", 
-                                "visdestinationaddress", 
-                                "1000", 
-                                "dopplerphasecorrection", 
-                                "1000"
-                            ]
-                        }
-                    }
-                }
-            },
-            "tm2": {
-                "TmCspSubarrayLeafNodeTest": {
-                    "ska_mid/tm_leaf_node/csp_subarray_02": {
-                        "attribute_properties": {
-                            "dopplerPhaseCorrection": {
-                                "abs_change": [
-                                    "-1", 
-                                    "1"
-                                ] 
-                            } 
-                        }, 
-                        "properties": {
-			    "CbfMasterAddress": [
-		                "mid_csp_cbf/sub_elt/master"
-			    ],
-			    "CbfSubarrayAddress": [
-		                "mid_csp_cbf/sub_elt/subarray_02"
-			    ],
-
-                            "polled_attr": [
-                                "delaymodel", 
-                                "1000", 
-                                "visdestinationaddress", 
-                                "1000", 
-                                "dopplerphasecorrection", 
-                                "1000"
-                            ]
-                        }
-                    }
-                }
-            }
-        } 
+        }
     }
 }
