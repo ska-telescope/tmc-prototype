@@ -265,7 +265,8 @@
                             ], 
                             "CspSubarrays": [
                                 "mid_csp/elt/subarray_01", 
-                                "mid_csp/elt/subarray_02"
+                                "mid_csp/elt/subarray_02",
+                                "mid_csp/elt/subarray_03"
                             ], 
                             "MaxCapabilities": [
                                 "Receptors:197", 
@@ -635,7 +636,151 @@
                     }
                 }
             }
-        }, 
+        },
+        "subarray3": {
+                "MidCspSubarrayBase": {
+                    "mid_csp/elt/subarray_03": {
+                        "attribute_properties": {
+                            "assignedFspHealthState": {
+                                "__root_att": [
+                                    "mid_csp_cbf/sub_elt/subarray_03/fspHealthState"
+                                ]
+                            },
+                            "assignedFspState": {
+                                "__root_att": [
+                                    "mid_csp_cbf/sub_elt/subarray_03/fspState"
+                                ]
+                            },
+                            "assignedReceptors": {
+                                "__root_att": [
+                                    "mid_csp_cbf/sub_elt/subarray_03/receptors"
+                                ]
+                            },
+                            "assignedVccHealthState": {
+                                "__root_att": [
+                                    "mid_csp_cbf/sub_elt/subarray_03/vccHealthState"
+                                ]
+                            },
+                            "assignedVccState": {
+                                "__root_att": [
+                                    "mid_csp_cbf/sub_elt/subarray_03/vccState"
+                                ]
+                            },
+                            "cbfOutputLink": {
+                                "__root_att": [
+                                    "mid_csp_cbf/sub_elt/subarray_03/outputLinksDistribution"
+                                ]
+                            }
+                        },
+                        "properties": {
+                            "CbfSubarray": [
+                                "mid_csp_cbf/sub_elt/subarray_03"
+                            ],
+                            "CspMaster": [
+                                "mid_csp/elt/master"
+                            ],
+                            "PssSubarray": [
+                                "mid_csp_pss/sub_elt/subarray_03"
+                            ],
+                            "SkaLevel": [
+                                "2"
+                            ],
+                            "SubID": [
+                                "3"
+                            ],
+                            "SubarrayProcModeCorrelation": [
+                                "mid_csp/elt/correlation-03"
+                            ],
+                            "SubarrayProcModePss": [
+                                "mid_csp/elt/pss-03"
+                            ],
+                            "SubarrayProcModePst": [
+                                "mid_csp/elt/pst-03"
+                            ],
+                            "SubarrayProcModeVlbi": [
+                                "mid_csp/elt/cvlbi-03"
+                            ],
+                            "polled_attr": [
+                                "alarmraisedflag",
+                                "1000",
+                                "timeoutexpiredflag",
+                                "1500",
+                                "scancmdprogress",
+                                "1500",
+                                "removeresourcescmdprogress",
+                                "1500",
+                                "addresourcescmdprogress",
+                                "1500",
+                                "endscancmdprogress",
+                                "1500",
+                                "endsbcmdprogress",
+                                "1500"
+                            ]
+                        }
+                    }
+                },
+                "MidCspSubarrayProcModeCorrelation": {
+                    "mid_csp/elt/correlation-03": {
+                        "properties": {
+                            "CapID": [
+                                "1"
+                            ],
+                            "CapType": [
+                                "CORRELATION"
+                            ],
+                            "subID": [
+                                "3"
+                            ]
+                        }
+                    }
+                },
+                "MidCspSubarrayProcModePss": {
+                    "mid_csp/elt/pss-03": {
+                        "properties": {
+                            "CapID": [
+                                "1"
+                            ],
+                            "CapType": [
+                                "PSS"
+                            ],
+                            "subID": [
+                                "3"
+                            ]
+                        }
+                    }
+                },
+                "MidCspSubarrayProcModePst": {
+                    "mid_csp/elt/pst-03": {
+                        "properties": {
+                            "CapID": [
+                                "1"
+                            ],
+                            "CapType": [
+                                "PST"
+                            ],
+                            "subID": [
+                                "3"
+                            ]
+                        }
+                    }
+                },
+                "MidCspSubarrayProcModeVlbi": {
+                    "mid_csp/elt/vlbi-03": {
+                        "properties": {
+                            "CapID": [
+                                "1"
+                            ],
+                            "CapType": [
+                                "VLBI"
+                            ],
+                            "subID": [
+                                "3"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "PssMasterSimulator": {
             "midpss": {
                 "PssMasterSimulator": {
@@ -806,4 +951,3 @@
             }
         } 
     }
-}

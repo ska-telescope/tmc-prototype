@@ -179,7 +179,7 @@ services:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
       - databaseds
-      - cspsubarray3
+      - midcspsubarray03
       - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspsubarrayleafnode3
@@ -194,7 +194,7 @@ services:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
     depends_on:
       - databaseds
-      - cspmaster
+      - midcspmaster
       - tmc-dsconfig
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}cspmasterleafnode

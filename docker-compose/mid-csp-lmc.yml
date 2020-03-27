@@ -10,7 +10,7 @@
 # Requires:
 #   - None
 #
-version: '2.2'
+version: '2.0'
 
 services:
   midcsp_dsconfig:
@@ -43,7 +43,7 @@ services:
       - .:/csplmc
 
   midcspsubarray01:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-csp-lmc:latest
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}midcspsubarray01
     depends_on:
@@ -62,7 +62,7 @@ services:
       - rsyslog-csplmc:rw
 
   midcspsubarray02:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-csp-lmc:latest
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}midcspsubarray02
     depends_on:
@@ -80,8 +80,27 @@ services:
     volumes_from:
       - rsyslog-csplmc:rw
 
+  midcspsubarray03:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}midcspsubarray03
+    depends_on:
+      - midcsp_dsconfig
+      - midcspmaster
+      - rsyslog-csplmc
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_03 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp/elt/master &&\
+             /venv/bin/python /app/csp_lmc_mid/MidCspSubarray.py subarray3"
+    volumes_from:
+      - rsyslog-csplmc:rw
+
   midcspmaster:
-   image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-csp-lmc:latest
+   image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
    network_mode: ${NETWORK_MODE}
    container_name: ${CONTAINER_NAME_PREFIX}midcspmaster
    depends_on:
@@ -99,7 +118,7 @@ services:
      - rsyslog-csplmc:rw
 
   midcapabilitymonitor:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-csp-lmc:latest
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}midcapabilitymonitor
     depends_on:
