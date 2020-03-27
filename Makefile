@@ -145,8 +145,8 @@ ifneq ($(NETWORK_MODE),host)
 endif
 	$(DOCKER_COMPOSE_ARGS) docker-compose \
 	-f docker-compose/tango-docker-compose.yml \
-	-f docker-compose/csplmc-docker-compose.yml \
-	-f docker-compose/cspcbfmcs-docker-compose.yml \
+	-f docker-compose/mid-csp-lmc.yml \
+	-f docker-compose/mid-cbf-mcs.yml \
 	-f docker-compose/sdp-docker-compose.yml \
 	-f docker-compose/tmc-docker-compose.yml \
 	-f docker-compose/archiver-docker-compose.yml \
@@ -165,8 +165,8 @@ down:  ## stop develop/test environment and any interactive session
 	docker ps | grep $(CONTAINER_NAME_PREFIX)dev && docker stop $(PROJECT)-dev || true
 	$(DOCKER_COMPOSE_ARGS) docker-compose \
 	-f docker-compose/tango-docker-compose.yml \
-	-f docker-compose/csplmc-docker-compose.yml \
-	-f docker-compose/cspcbfmcs-docker-compose.yml \
+	-f docker-compose/mid-csp-lmc.yml \
+	-f docker-compose/mid-cbf-mcs.yml \
 	-f docker-compose/sdp-docker-compose.yml \
 	-f docker-compose/tmc-docker-compose.yml \
 	-f docker-compose/archiver-docker-compose.yml \

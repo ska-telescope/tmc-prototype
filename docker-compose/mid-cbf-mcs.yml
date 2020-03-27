@@ -1,0 +1,288 @@
+#
+# Docker compose file for TANGO database and database device server
+#
+# Defines:
+#   - tangodb: MariaDB database with TANGO schema
+#   - databaseds: TANGO database device server
+#   - rsyslog-cbf-csplmc: rsyslog-cbf service for logger
+#   - cspmaster: CspMaster device
+#
+# Requires:
+#   - None
+#
+version: '2.2'
+
+services:
+  cbf_dsconfig:
+    image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}cbf_dsconfig
+    depends_on:
+      - databaseds
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             json2tango -w -a -u  csplmc/config/midcbf_dsconfig.json  && sleep infinity"
+    volumes:
+      - .:/csplmc
+
+  cbfmaster:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}cbfmaster
+    depends_on:
+      - databaseds
+      - cbf_dsconfig
+      - vcc001
+      - vcc002
+      - vcc003
+      - vcc004
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/vcc/001 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/vcc/002 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/vcc/003 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/vcc/004 &&\
+             /venv/bin/python /app/tangods/CbfMaster/CbfMaster/CbfMaster.py master"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+
+  cbfsubarray01:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}cbfsubarray01
+    depends_on:
+      - cbf_dsconfig
+      - vcc001
+      - vcc002
+      - vcc003
+      - vcc004
+      - cbfmaster
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
+             /venv/bin/python /app/tangods/CbfSubarray/CbfSubarrayMulti/CbfSubarrayMulti.py cbfSubarray-01"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+
+  cbfsubarray02:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}cbfsubarray02
+    depends_on:
+      - cbf_dsconfig
+      - vcc001
+      - vcc002
+      - vcc003
+      - vcc004
+      - cbfmaster
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
+             /venv/bin/python /app/tangods/CbfSubarray/CbfSubarrayMulti/CbfSubarrayMulti.py cbfSubarray-02"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+
+  vcc001:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}vcc001
+    depends_on:
+      - databaseds
+      - cbf_dsconfig
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/01 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/02 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/03 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/04 &&\
+             /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-001"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+
+  vcc002:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}vcc002
+    depends_on:
+      - databaseds
+      - cbf_dsconfig
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/01 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/02 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/03 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/04 &&\
+             /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-002"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+
+  vcc003:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}vcc003
+    depends_on:
+      - databaseds
+      - cbf_dsconfig
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/01 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/02 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/03 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/04 &&\
+             /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-003"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+
+  vcc004:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}vcc004
+    depends_on:
+      - databaseds
+      - cbf_dsconfig
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/01 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/02 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/03 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/fsp/04 &&\
+             /venv/bin/python /app/tangods/Vcc/VccMulti/VccMulti.py vcc-004"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+
+  fsp01:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}fsp01
+    depends_on:
+      - databaseds
+      - cbf_dsconfig
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             /venv/bin/python /app/tangods/Fsp/FspMulti/FspMulti.py  fsp-01"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+  fsp02:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}fsp02
+    depends_on:
+      - databaseds
+      - cbf_dsconfig
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             /venv/bin/python /app/tangods/Fsp/FspMulti/FspMulti.py  fsp-02"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+  fsp03:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}fsp03
+    depends_on:
+      - databaseds
+      - cbf_dsconfig
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             /venv/bin/python /app/tangods/Fsp/FspMulti/FspMulti.py  fsp-03"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+
+  fsp04:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}fsp04
+    depends_on:
+      - databaseds
+      - cbf_dsconfig
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             /venv/bin/python /app/tangods/Fsp/FspMulti/FspMulti.py  fsp-04"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+
+  tmcspsubarrayleafnodetest:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}tmcspsubarrayleafnodetest
+    depends_on:
+      - cbfsubarray01
+      - databaseds
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_01 &&
+             /venv/bin/python /app/tangods/TmCspSubarrayLeafNodeTest/TmCspSubarrayLeafNodeTest.py tm"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+  tmcspsubarrayleafnodetest2:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-cbf-mcs:0.4.0
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}tmcspsubarrayleafnodetest2
+    depends_on:
+      - cbfsubarray02
+      - databaseds
+      - rsyslog-cbf
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             retry --max=10 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_02 &&
+             /venv/bin/python /app/tangods/TmCspSubarrayLeafNodeTest/TmCspSubarrayLeafNodeTest.py tm2"
+    volumes_from:
+      - rsyslog-cbf:rw
+
+  rsyslog-cbf:
+    image: jumanjiman/rsyslog
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}rsyslog-cbf
+
+
