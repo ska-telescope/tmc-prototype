@@ -66,7 +66,6 @@ class TestCspMasterLeafNode(object):
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_Status) ENABLED START #
-        print("tango_context.device.Status()", tango_context.device.Status())
         assert CONST.STR_DEV_ALARM in tango_context.device.Status()
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_Status
 

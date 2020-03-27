@@ -31,7 +31,7 @@ def cm_configure_attributes():
                 # SetEventPeriod
                 conf_manager_proxy.write_attribute("SetPeriodEvent", 3000)
             except Exception as except_occured:
-                print("Exception while setting configuration manage arrtibutes: ", except_occured)
+                print("Exception while setting configuration manager arrtibutes: ", except_occured)
                 configure_fail_count += 1
                 continue
 

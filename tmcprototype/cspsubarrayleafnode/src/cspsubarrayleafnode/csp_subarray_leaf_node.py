@@ -20,13 +20,14 @@ import katpoint
 import numpy as np
 
 file_path = os.path.dirname(os.path.abspath(__file__))
-# ska_antennas_path = os.path.abspath(os.path.join(os.path.join(os.path.join(file_path, os.pardir),os.pardir), os.pardir)) \
-#                     + "/ska_antennas.txt"
-ska_antennas_path = "/app/tmcprototype/ska_antennas.txt"
+
+SRC_ROOT_DIR = "/app"
+TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
+ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
-from tango.server import run, DeviceMeta, attribute, command, device_property
+from tango.server import run, DeviceMeta, attribute, command, device_property8
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 from skabase.control_model import HealthState, ObsState
 # Additional import
@@ -493,7 +494,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
-            print("argin configure: ", argin)
             argin_json = json.loads(argin)
             # Used to extract FSP IDs
             self.fsp_ids_object = argin_json["fsp"]
