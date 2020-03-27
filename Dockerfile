@@ -6,9 +6,20 @@ RUN ipython profile create
 
 #install lmc-base-classes
 USER root
-RUN DEBIAN_FRONTEND=noninteractive pip3 install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-logging/0.2.1/ska_logging-0.2.1.tar.gz
-RUN DEBIAN_FRONTEND=noninteractive pip3 install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.4.1+14ff4f1b/lmcbaseclasses-0.4.1+14ff4f1b.tar.gz
+RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-logging/0.2.1/ska_logging-0.2.1.tar.gz
+RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.4.1+14ff4f1b/lmcbaseclasses-0.4.1+14ff4f1b.tar.gz
+
+# install all local TMC packages
+RUN python3 -m pip install \
+    /app/tmcprototype/centralnode \
+    /app/tmcprototype/cspmasterleafnode \
+    /app/tmcprototype/cspsubarrayleafnode \
+    /app/tmcprototype/dishleafnode \
+    /app/tmcprototype/dishmaster \
+    /app/tmcprototype/sdpmasterleafnode \
+    /app/tmcprototype/sdpsubarrayleafnode \
+    /app/tmcprototype/subarraynode
 
 USER tango
 
-CMD ["/venv/bin/python", "/app/tmcprototype/CentralNode/CentralNode/CentralNode.py"]
+CMD ["/venv/bin/CentralNodeDS"]

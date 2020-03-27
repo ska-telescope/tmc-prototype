@@ -1,0 +1,8 @@
+recursive-include src/cspsubarrayleafnode *.py
+recursive-include test *.py
+recursive-include pogo CspSubarrayLeafNode.xmi
+include *.rst
+include *.txt
+graft docs
+global-exclude *.pyc
+global-exclude *.pyo

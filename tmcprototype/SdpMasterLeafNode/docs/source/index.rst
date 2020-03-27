@@ -1,2 +1,0 @@
-.. automodule:: SdpMasterLeafNode
-    :members: SdpMasterLeafNode

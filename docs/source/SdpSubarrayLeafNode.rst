@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-tmcprototype.SdpSubarrayLeafNode.SdpSubarrayLeafNode
+SDP Subarray Leaf Node
 ========================================================
 
-.. automodule:: tmcprototype.SdpSubarrayLeafNode.SdpSubarrayLeafNode
+.. automodule:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.sdp_subarray_leaf_node
    :members:
    :undoc-members:
