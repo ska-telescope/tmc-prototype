@@ -16,7 +16,26 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_csp_cbf/sub_elt/master 10 &&\
-             /venv/bin/python /app/csplmc/CspMaster/CspMaster/CspMaster.py csp"
+             /venv/bin/python /app/csp_lmc_mid/MidCspMaster.py master"
+
+
+#  midcspmaster:
+#   image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mid-csp-lmc:latest
+#   network_mode: ${NETWORK_MODE}
+#   container_name: ${CONTAINER_NAME_PREFIX}midcspmaster
+#   depends_on:
+#     - midcsp_dsconfig
+#     - cbfmaster
+#     - rsyslog-csplmc
+#   environment:
+#     - TANGO_HOST=${TANGO_HOST}
+#   command: >
+#     sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#            retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
+#            retry --max=5 -- tango_admin --ping-device mid_csp/capability_monitor/search_beams &&\
+#            /venv/bin/python /app/csp_lmc_mid/MidCspMaster.py master"
+#   volumes_from:
+#     - rsyslog-csplmc:rw
 
   cspsubarray1:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
@@ -32,7 +51,7 @@ services:
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_csp/elt/master 10 &&\
              tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_01 10 &&\
-             /venv/bin/python /app/csplmc/CspSubarray/CspSubarray/CspSubarray.py sub1"
+             /venv/bin/python /app/csp_lmc_mid/MidCspSubarray.py subarray1"
 
   cspsubarray2:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
@@ -46,7 +65,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python /app/csplmc/CspSubarray/CspSubarray/CspSubarray.py sub2"
+             /venv/bin/python /app/csp_lmc_mid/MidCspSubarray.py subarray2"
 
   cspsubarray3:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
@@ -60,7 +79,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python /app/csplmc/CspSubarray/CspSubarray/CspSubarray.py sub3"
+             /venv/bin/python /app/csp_lmc_mid/MidCspSubarray.py subarray3"
 
   csp-dsconfig:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-dsconfig:latest

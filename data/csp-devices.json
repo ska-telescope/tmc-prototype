@@ -12,9 +12,9 @@
     	}
     },
     "servers": {
-        "CspMaster": {
-            "csp": {
-                "CspMaster": {
+        "MidCspMaster": {
+            "master": {
+                "MidCspMaster": {
                     "mid_csp/elt/master": {
                         "attribute_properties": {
                             "adminMode": {
@@ -80,7 +80,7 @@
 			    "CspMidPst": [
 				"mid_csp_pst/sub_elt/master"
 			    ],
-                            "CspSubarrays": [
+                            "MidCspSubarrays": [
                                 "mid_csp/elt/subarray_01",
                                 "mid_csp/elt/subarray_02",
                                 "mid_csp/elt/subarray_03"
@@ -124,9 +124,9 @@
                 }
             }
         },
-        "CspSubarray": {
-            "sub1": {
-                "CspSubarray": {
+        "MidCspSubarray": {
+            "subarray1": {
+                "MidCspSubarray": {
                     "mid_csp/elt/subarray_01": {
                         "attribute_properties": {
                             "adminMode": {
@@ -169,7 +169,7 @@
                             }
                         },
                         "properties": {
-                            "CspMaster": [
+                            "MidCspMaster": [
                                 "mid_csp/elt/master"
                             ],
                             "SubID": [
@@ -191,8 +191,8 @@
                     }
                 }
             },
-            "sub2": {
-                "CspSubarray": {
+            "subarray2": {
+                "MidCspSubarray": {
                     "mid_csp/elt/subarray_02": {
                         "attribute_properties": {
                             "adminMode": {
@@ -235,7 +235,7 @@
                             }
                         },
                         "properties": {
-                            "CspMaster": [
+                            "MidCspMaster": [
                                 "mid_csp/elt/master"
                             ],
                             "SubID": [
@@ -257,8 +257,8 @@
                     }
                 }
             },
-            "sub3": {
-                "CspSubarray": {
+            "subarray3": {
+                "MidCspSubarray": {
                     "mid_csp/elt/subarray_03": {
                         "attribute_properties": {
                             "adminMode": {
@@ -301,7 +301,7 @@
                             }
                         },
                         "properties": {
-                            "CspMaster": [
+                            "MidCspMaster": [
                                 "mid_csp/elt/master"
                             ],
                             "SubID": [
