@@ -12,7 +12,7 @@
 
 """Release information for Python Package"""
 
-name = """tangods-tmcprototype"""
+name = """tmcprototype"""
 version = "0.1.4"
 version_info = version.split(".")
 description = """TMC Prototype"""

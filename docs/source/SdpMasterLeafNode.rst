@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-tmcprototype.SdpMasterLeafNode.SdpMasterLeafNode
+SDP Master Leaf Node
 ================================================
 
-.. automodule:: tmcprototype.SdpMasterLeafNode.SdpMasterLeafNode
+.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.sdp_master_leaf_node
    :members:
    :undoc-members:

@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-tmcprototype.SubarrayNode.SubarrayNode
+Subarray Node
 ======================================
 
-.. automodule:: tmcprototype.SubarrayNode.SubarrayNode
+.. automodule:: tmcprototype.subarraynode.src.subarraynode.subarray_node
    :members:
    :undoc-members:

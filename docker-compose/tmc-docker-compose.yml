@@ -48,7 +48,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python -u /app/tmcprototype/DishMaster/DishMaster/DishMaster.py 01 v5"
+             /venv/bin/DishMasterDS 01 v5"
 
   dishmaster2:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -61,7 +61,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python -u /app/tmcprototype/DishMaster/DishMaster/DishMaster.py 02 v5"
+             /venv/bin/DishMasterDS 02 v5"
 
   dishmaster3:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -74,7 +74,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python -u /app/tmcprototype/DishMaster/DishMaster/DishMaster.py 03 v5"
+             /venv/bin/DishMasterDS 03 v5"
 
   dishmaster4:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -87,7 +87,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /venv/bin/python -u /app/tmcprototype/DishMaster/DishMaster/DishMaster.py 04 v5"
+             /venv/bin/DishMasterDS 04 v5"
 
   dishleafnode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -101,7 +101,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_d0001/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py 01 v5"
+             /venv/bin/DishLeafNodeDS 01 v5"
 
   dishleafnode2:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -115,7 +115,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_d0002/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py 02 v5"
+             /venv/bin/DishLeafNodeDS 02 v5"
 
   dishleafnode3:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -129,7 +129,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_d0003/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py 03 v5"
+             /venv/bin/DishLeafNodeDS 03 v5"
 
   dishleafnode4:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -143,7 +143,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_d0004/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/DishLeafNode/DishLeafNode/DishLeafNode.py 04 v5"
+             /venv/bin/DishLeafNodeDS 04 v5"
 
   cspsubarrayleafnode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -158,7 +158,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_csp/elt/subarray_01 10 &&\
-             /venv/bin/python -u /app/tmcprototype/CspSubarrayLeafNode/CspSubarrayLeafNode/CspSubarrayLeafNode.py 01 v5"
+             /venv/bin/CspSubarrayLeafNodeDS 01 v5"
 
   cspsubarrayleafnode2:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -173,7 +173,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_csp/elt/subarray_02 10 &&\
-             /venv/bin/python -u /app/tmcprototype/CspSubarrayLeafNode/CspSubarrayLeafNode/CspSubarrayLeafNode.py 02 v5"
+             /venv/bin/CspSubarrayLeafNodeDS 02 v5"
 
   cspsubarrayleafnode3:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -188,7 +188,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_csp/elt/subarray_03 10 &&\
-             /venv/bin/python -u /app/tmcprototype/CspSubarrayLeafNode/CspSubarrayLeafNode/CspSubarrayLeafNode.py 03 v5"
+             /venv/bin/CspSubarrayLeafNodeDS 03 v5"
 
   cspmasterleafnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -203,7 +203,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_csp/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/CspMasterLeafNode/CspMasterLeafNode/CspMasterLeafNode.py 01 v5"
+             /venv/bin/CspMasterLeafNodeDS 01 v5 "
 
   sdpsubarrayleafnode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -218,7 +218,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_sdp/elt/subarray_1 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 01 v5"
+             /venv/bin/SdpSubarrayLeafNodeDS 01 v5"
 
   sdpsubarrayleafnode2:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -233,7 +233,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_sdp/elt/subarray_2 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 02 v5"
+             /venv/bin/SdpSubarrayLeafNodeDS 02 v5"
 
   sdpsubarrayleafnode3:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -248,7 +248,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_sdp/elt/subarray_3 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode/SdpSubarrayLeafNode.py 03 v5"
+             /venv/bin/SdpSubarrayLeafNodeDS 03 v5"
 
   sdpmasterleafnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -263,7 +263,7 @@ services:
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              tango_admin --ping-device mid_sdp/elt/master 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode/SdpMasterLeafNode.py 01 v5"
+             /venv/bin/SdpMasterLeafNodeDS 01 v5"
 
   subarraynode1:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -288,7 +288,7 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa1 v5"
+             /venv/bin/SubarrayNodeDS sa1 v5"
 
   subarraynode2:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -313,7 +313,7 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray02 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray02 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa2 v5"
+             /venv/bin/SubarrayNodeDS sa2 v5"
 
   subarraynode3:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -338,7 +338,7 @@ services:
              tango_admin --ping-device ska_mid/tm_leaf_node/d0004 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray03 10 &&\
              tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray03 10 &&\
-             /venv/bin/python -u /app/tmcprototype/SubarrayNode/SubarrayNode/SubarrayNode.py sa3 v5"
+             /venv/bin/SubarrayNodeDS sa3 v5"
 
   centralnode:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmcprototype:latest
@@ -365,7 +365,7 @@ services:
              tango_admin --ping-device ska_mid/tm_subarray_node/1 10 &&\
              tango_admin --ping-device ska_mid/tm_subarray_node/2 10 &&\
              tango_admin --ping-device ska_mid/tm_subarray_node/3 10 &&\
-             /venv/bin/python -u /app/tmcprototype/CentralNode/CentralNode/CentralNode.py 01 v5"
+             /venv/bin/CentralNodeDS 01 v5"
 
   tm-alarmhandler:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tmalarmhandler:latest
