@@ -27,7 +27,7 @@ ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
-from tango.server import run, DeviceMeta, attribute, command, device_property8
+from tango.server import run, DeviceMeta, attribute, command, device_property
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 from skabase.control_model import HealthState, ObsState
 # Additional import
