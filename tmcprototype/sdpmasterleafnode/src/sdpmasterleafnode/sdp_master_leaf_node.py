@@ -15,8 +15,6 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 
 from __future__ import print_function
 from __future__ import absolute_import
-import random
-import string
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
 import tango

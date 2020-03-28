@@ -52,8 +52,7 @@ load-plugins=
 # --disable=W"
 disable=C,R,attribute-defined-outside-init,invalid-name,no-member,no-self-use,unused-argument,
         undefined-variable,syntax-error,no-name-in-module,exec-used,fixme,broad-except,
-        redefined-builtin,import-error,pointless-string-statement,redefined-outer-name,
-        unused-variable,unused-import,bare-except,redefined-outer-name
+        redefined-builtin,import-error
 
 
 [REPORTS]
