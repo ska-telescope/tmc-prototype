@@ -51,7 +51,7 @@ load-plugins=
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
 disable=C,R,attribute-defined-outside-init,invalid-name,no-member,no-self-use,
-        undefined-variable,syntax-error,exec-used,fixme,broad-except,redefined-builtin
+        syntax-error,fixme,broad-except,redefined-builtin
 
 
 [REPORTS]
