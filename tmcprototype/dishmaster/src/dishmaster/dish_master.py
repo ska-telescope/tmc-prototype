@@ -45,7 +45,6 @@ class PointingState(enum.IntEnum):
     TRACK = 2
     SCAN = 3
 
-# pylint: disable=no-init
 class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 # class DishMaster(SKAMaster):
     """
