@@ -28,7 +28,7 @@ from . import CONST
 
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
-
+# pylint: disable=unused-argument
 class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.

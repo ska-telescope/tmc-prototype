@@ -38,7 +38,7 @@ from . import CONST
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
-# pylint: disable=protected-access
+# pylint: disable=protected-access,unused-argument
 class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
