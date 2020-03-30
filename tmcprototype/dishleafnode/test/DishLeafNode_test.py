@@ -16,8 +16,7 @@ import tango
 from tango import DevState, EventType
 import pytest
 from dishleafnode import DishLeafNode, CONST
-import ska.base.control_model.LoggingLevel
-from ska.base.control_model import HealthState, AdminMode, SimulationMode, TestMode, ControlMode
+from ska.base.control_model import HealthState, AdminMode, SimulationMode, TestMode, ControlMode, LoggingLevel
 # Note:
 #
 # Since the device uses an inner thread, it is necessary to
@@ -373,8 +372,8 @@ class TestDishLeafNode(object):
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(DishLeafNode.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO 
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  DishLeafNode.test_loggingLevel
 
     def test_loggingTargets(self, tango_context):

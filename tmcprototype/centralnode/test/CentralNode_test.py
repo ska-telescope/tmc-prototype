@@ -16,8 +16,7 @@ import json
 import time
 from tango import DevState
 from centralnode import CentralNode, CONST
-from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
-import ska.base.control_model.LoggingLevel
+from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode, LoggingLevel
 
 # Note:
 #
@@ -173,8 +172,8 @@ class TestCentralNode(object):
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(CentralNode.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  CentralNode.test_loggingLevel
 
     def test_healthState(self, tango_context):

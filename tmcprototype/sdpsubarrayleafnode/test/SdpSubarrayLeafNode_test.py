@@ -14,8 +14,7 @@ import pytest
 import time
 from tango import DevState, EventType, DeviceProxy
 from sdpsubarrayleafnode import SdpSubarrayLeafNode, CONST
-import ska.base.control_model.LoggingLevel
-from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
+from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:
 # Since the device uses an inner thread, it is necessary to
@@ -255,8 +254,8 @@ class TestSdpSubarrayLeafNode(object):
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_loggingLevel
 
     def test_healthState(self, tango_context):

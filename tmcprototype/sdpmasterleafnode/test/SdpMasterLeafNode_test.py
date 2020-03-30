@@ -18,8 +18,7 @@ import pytest
 import time
 from tango import DevState, EventType, DeviceProxy
 from sdpmasterleafnode import SdpMasterLeafNode, CONST
-import ska.base.control_model.LoggingLevel
-from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
+from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:
 #
@@ -190,8 +189,8 @@ class TestSdpMasterLeafNode(object):
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  DishMaster.test_loggingLevel
 
     def test_loggingTargets(self, tango_context):

@@ -13,8 +13,7 @@
 import tango
 from tango import DevState
 from cspmasterleafnode import CspMasterLeafNode, CONST
-import ska.base.control_model.LoggingLevel
-from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
+from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode, LoggingLevel
 import pytest
 import time
 
@@ -175,8 +174,8 @@ class TestCspMasterLeafNode(object):
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  DishMaster.test_loggingLevel
 
     def test_loggingTargets(self, tango_context):

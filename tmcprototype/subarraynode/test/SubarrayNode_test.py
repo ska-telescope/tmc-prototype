@@ -15,9 +15,8 @@ import pytest
 import time
 import tango
 from tango import DevState
-import ska.base.control_model.LoggingLevel
 from subarraynode import SubarrayNode, SubarrayHealthState, ElementDeviceData, CONST
-from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode
+from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, LoggingLevel
 
 @pytest.fixture(scope="function",
                 params=[HealthState.OK, HealthState.DEGRADED,
@@ -690,8 +689,8 @@ class TestSubarrayNode(object):
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(SubarrayNode.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  SubarrayNode.test_loggingLevel
 
     def test_loggingTargets(self, tango_context):
