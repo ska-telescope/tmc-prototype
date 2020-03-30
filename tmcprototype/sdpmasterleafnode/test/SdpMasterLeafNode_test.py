@@ -18,8 +18,8 @@ import pytest
 import time
 from tango import DevState, EventType, DeviceProxy
 from sdpmasterleafnode import SdpMasterLeafNode, CONST
-from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
+import ska.base.control_model.LoggingLevel
+from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 
 # Note:
 #

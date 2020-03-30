@@ -14,8 +14,8 @@ import pytest
 import time
 from tango import DevState, EventType, DeviceProxy
 from sdpsubarrayleafnode import SdpSubarrayLeafNode, CONST
-from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
+import ska.base.control_model.LoggingLevel
+from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 
 # Note:
 # Since the device uses an inner thread, it is necessary to

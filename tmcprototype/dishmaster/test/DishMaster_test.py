@@ -16,8 +16,8 @@ import time
 import tango
 from tango import DevState
 from dishmaster import DishMaster, CONST
-from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
+import ska.base.control_model.LoggingLevel
+from ska.base.control_mode import HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 
 # Note:
 #
