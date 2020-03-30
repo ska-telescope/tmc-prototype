@@ -137,17 +137,17 @@ class TestCspSubarrayLeafNode(object):
         assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
         assert create_cspsubarray1_proxy.obsState is not ObsState.READY
 
-    # def test_StartScan_generic_exception(self, tango_context):
-    #     """
-    #     Test case to check generic exception (Negative test case)
-    #     :param tango_context:
-    #     :return:
-    #     """
-    #     StartScan_input = '[123]'
-    #     with pytest.raises(tango.DevFailed):
-    #         tango_context.device.StartScan(StartScan_input)
-    #     time.sleep(1)
-    #     assert CONST.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
+    def test_StartScan_generic_exception(self, tango_context):
+        """
+        Test case to check generic exception (Negative test case)
+        :param tango_context:
+        :return:
+        """
+        StartScan_input = '[123]'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StartScan(StartScan_input)
+        time.sleep(1)
+        assert CONST.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
     def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
         """Test for ConfigureScan"""

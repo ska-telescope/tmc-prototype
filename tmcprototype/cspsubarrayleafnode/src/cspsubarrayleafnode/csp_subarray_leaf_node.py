@@ -38,7 +38,7 @@ from . import CONST
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
-# pylint: disable=protected-access,unused-argument
+# pylint: disable=protected-access,unused-argument,unused-variable
 class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
@@ -557,6 +557,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         exception_count = 0
         try:
+            json_scan_duration = json.loads(argin[0])
+            scan_duration = json_scan_duration["scanDuration"]
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == ObsState.READY:
                 #Invoke StartScan command on CspSubarray
