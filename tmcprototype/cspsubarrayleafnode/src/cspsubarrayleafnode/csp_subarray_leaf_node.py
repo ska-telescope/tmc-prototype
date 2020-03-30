@@ -268,8 +268,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         delay_update_interval = argin
 
-        # list of bands (commented since unused currently, gives pylint warning)
-        #_bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
         while not self._stop_delay_model_event.isSet():
             if(self.CspSubarrayProxy.obsState == ObsState.CONFIGURING
                     or self.CspSubarrayProxy.obsState == ObsState.READY
