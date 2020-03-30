@@ -15,9 +15,9 @@ import pytest
 import time
 import tango
 from tango import DevState
-from skabase.SKABaseDevice import TangoLoggingLevel
+import ska.base.control_model.LoggingLevel
 from subarraynode import SubarrayNode, SubarrayHealthState, ElementDeviceData, CONST
-from skabase.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode
+from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode
 
 @pytest.fixture(scope="function",
                 params=[HealthState.OK, HealthState.DEGRADED,
@@ -589,7 +589,7 @@ class TestSubarrayNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SubarrayNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.4.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SubarrayNode.test_buildState
 
     def test_configurationDelayExpected(self, tango_context):
@@ -643,7 +643,7 @@ class TestSubarrayNode(object):
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(SubarrayNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.4.1"
+        assert tango_context.device.versionId == "0.5.1"
         # PROTECTED REGION END #    //  SubarrayNode.test_versionId
 
     def test_scanID(self, tango_context):

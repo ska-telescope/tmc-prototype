@@ -249,7 +249,7 @@ class TestSdpSubarrayLeafNode(object):
         """Test for versionId"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_versionId) ENABLED START #
         # self.device.versionId
-        assert tango_context.device.versionId == "0.4.1"
+        assert tango_context.device.versionId == "0.5.1"
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_versionId
 
     def test_loggingLevel(self, tango_context):
