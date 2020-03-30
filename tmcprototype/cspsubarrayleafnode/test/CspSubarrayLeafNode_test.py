@@ -12,8 +12,8 @@
 # Imports
 from tango import DevState, EventType, DeviceProxy
 from cspsubarrayleafnode import CspSubarrayLeafNode, CONST
-from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode
+import ska.base.control_model.LoggingLevel
+from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode
 import pytest
 import json
 import time

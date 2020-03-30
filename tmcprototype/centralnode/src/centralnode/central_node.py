@@ -19,7 +19,7 @@ import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
 from ska.base import SKABaseDevice
-from skabase.control_model import AdminMode, HealthState
+from ska.base.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from . import CONST

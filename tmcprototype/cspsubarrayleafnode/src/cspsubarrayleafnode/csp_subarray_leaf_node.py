@@ -28,8 +28,8 @@ ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
-from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-from skabase.control_model import HealthState, ObsState
+from ska.base import SKABaseDevice
+from ska.base.control_model import HealthState, ObsState
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 import json

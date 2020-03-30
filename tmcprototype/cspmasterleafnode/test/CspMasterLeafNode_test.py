@@ -13,8 +13,8 @@
 import tango
 from tango import DevState
 from cspmasterleafnode import CspMasterLeafNode, CONST
-from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
+import ska.base.control_model.LoggingLevel
+from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 import pytest
 import time
 

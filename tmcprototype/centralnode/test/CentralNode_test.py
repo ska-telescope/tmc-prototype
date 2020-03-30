@@ -17,7 +17,7 @@ import json
 import time
 from tango import DevState
 from centralnode import CentralNode, CONST
-from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
+import ska.base.control_model.LoggingLevel
 
 # Note:
 #

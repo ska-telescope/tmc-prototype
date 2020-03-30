@@ -16,8 +16,8 @@ import tango
 from tango import DevState, EventType
 import pytest
 from dishleafnode import DishLeafNode, CONST
-from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import HealthState, AdminMode, SimulationMode, TestMode, ControlMode
+import ska.base.control_model.LoggingLevel
+from ska.base.control_model import HealthState, AdminMode, SimulationMode, TestMode, ControlMode
 # Note:
 #
 # Since the device uses an inner thread, it is necessary to
