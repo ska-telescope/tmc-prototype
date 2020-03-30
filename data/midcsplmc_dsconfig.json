@@ -418,6 +418,8 @@
                                 "1000",
                                 "timeoutexpiredflag",
                                 "1000",
+                                "state",
+                                "1000",
                                 "scancmdprogress",
                                 "1500",
                                 "removeresourcescmdprogress",
@@ -558,6 +560,8 @@
                             ],
                             "polled_attr": [
                                 "alarmraisedflag",
+                                "1000",
+                                "state",
                                 "1000",
                                 "timeoutexpiredflag",
                                 "1500",
@@ -701,6 +705,8 @@
                             ],
                             "polled_attr": [
                                 "alarmraisedflag",
+                                "1000",
+                                "state",
                                 "1000",
                                 "timeoutexpiredflag",
                                 "1500",
