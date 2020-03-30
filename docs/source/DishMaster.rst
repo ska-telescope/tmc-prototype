@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-tmcprototype.DishMaster.DishMaster
+Dish Master
 ==================================
 
-.. automodule:: tmcprototype.DishMaster.DishMaster
+.. automodule:: tmcprototype.dishmaster.src.dishmaster.dish_master
    :members:
    :undoc-members:

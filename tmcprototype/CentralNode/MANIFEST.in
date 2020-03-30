@@ -1,9 +1,0 @@
-recursive-include CentralNode *.py
-recursive-include test *.py
-include *.rst
-include CentralNode.xmi
-include *.txt
-graft docs
-
-global-exclude *.pyc
-global-exclude *.pyo

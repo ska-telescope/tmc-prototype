@@ -217,88 +217,88 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 ### 4.1 Testing DishMaster
 * Navigate to the DishMaster folder:
 
-    `cd tmcprototype/DishMaster/DishMaster`
+    `cd tmcprototype/dishmaster/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=DishMaster test/`
+    `py.test --cov=DishMaster test/DishMaster_test.py`
 
 ### 4.2 Testing DishLeafNode
 **Prerequisite:** DishMaster TANGO Device should be up and running.
 
 * Navigate to the DishLeafNode folder:
 
-    `cd tmcprototype/DishLeafNode/DishLeafNode`
+    `cd tmcprototype/dishleafnode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=DishLeafNode test/`
+    `py.test --cov=DishLeafNode test/DishLeafNode_test.py`
 
 ### 4.3 Testing CspMasterLeafNode
 **Prerequisite:** CspMaster TANGO Device should be up and running.
 
 * Navigate to the CspMasterLeafNode folder:
 
-    `cd tmcprototype/CspMasterLeafNode/CspMasterLeafNode`
+    `cd tmcprototype/cspmasterleafnode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=CspMasterLeafNode test/`
+    `py.test --cov=CspMasterLeafNode test/CspMasterLeafNode_test.py`
 
 ### 4.4 Testing CspSubarrayLeafNode
 **Prerequisite:** CspSubarray TANGO Device should be up and running.
 
 * Navigate to the CspSubarrayLeafNode folder:
 
-    `cd tmcprototype/CspSubarrayLeafNode/CspSubarrayLeafNode`
+    `cd tmcprototype/cspsubarrayleafnode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=CspSubarrayLeafNode test/`
+    `py.test --cov=CspSubarrayLeafNode test/CspSubarrayLeafNode_test.py`
 
 ### 4.5 Testing SdpMasterLeafNode
 **Prerequisite:** SdpMaster TANGO Device should be up and running.
 
 * Navigate to the SdpMasterLeafNode folder:
 
-    `cd tmcprototype/SdpMasterLeafNode/SdpMasterLeafNode`
+    `cd tmcprototype/sdpmasterleafnode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=SdpMasterLeafNode test/`
+    `py.test --cov=SdpMasterLeafNode test/SdpMasterLeafNode_test.py`
 
 ### 4.6 Testing SdpSubarrayLeafNode
 **Prerequisite:** SdpSubarray TANGO Device should be up and running.
 
 * Navigate to the SdpSubarrayLeafNode folder:
 
-    `cd tmcprototype/SdpSubarrayLeafNode/SdpSubarrayLeafNode`
+    `cd tmcprototype/sdpsubarrayleafnode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=SdpSubarrayLeafNode test/`
+    `py.test --cov=SdpSubarrayLeafNode test/SdpSubarrayLeafNode_test.py`
 
 ### 4.7 Testing SubarrayNode
 **Prerequisite:** All TMC LeafNodes, DishMaster, CSPMaster, CSPSubarray, SDPMaster and SDPSubarray TANGO Devices should be up and running.
 
 * Navigate to the SubarrayNode folder:
 
-    `cd tmcprototype/SubarrayNode/SubarrayNode`
+    `cd tmcprototype/subarraynode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=SubarrayNode test/`
+    `py.test --cov=SubarrayNode test/SubarrayNode_test.py`
 
 ### 4.8 Testing CentralNode
 **Prerequisite:** All instances of SubarrayNodes, all TMC LeafNodes, DishMaster, CSPMaster, CSPSubarray, SDPMaster and SDPSubarray TANGO Devices should be up and running.
 
 * Navigate to the CentralNode folder:
 
-    `cd tmcprototype/CentralNode/CentralNode`
+    `cd tmcprototype/centralnode/src`
 
 * To execute test cases, run:
 
-    `py.test --cov=CentralNode test/`
+    `py.test --cov=CentralNode test/CentralNode_test.py`
 
 # 5: Running tmc-prototype inside Docker containers
 
