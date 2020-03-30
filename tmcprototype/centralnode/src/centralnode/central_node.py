@@ -119,18 +119,21 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 else:
                     self._telescope_health_state = HealthState.UNKNOWN
 
-            except KeyError:
+            except KeyError as key_error:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
                 self.logger.critical(CONST.ERR_SUBARRAY_HEALTHSTATE)
-            except DevFailed:
+                self.logger.critical(str(key_error))
+            except DevFailed as dev_failed:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
                 self.logger.error(CONST.ERR_SUBSR_SA_HEALTH_STATE)
-            except Exception:
+                self.logger.error(str(dev_failed))
+            except Exception as except_occured:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
                 self.logger.critical(CONST.ERR_AGGR_HEALTH_STATE)
+                self.logger.critical(str(except_occured))
         else:
             # TODO: For future reference
             # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)

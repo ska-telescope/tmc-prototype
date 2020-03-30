@@ -69,8 +69,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_UNKNOWN
             except DevFailed as dev_failed:
                 self._handle_devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_CBF_HEALTH)
-            except Exception:
-                self._handle_generic_exception(CONST.ERR_CSP_CBF_HEALTH_CB)
+            except Exception as except_occurred:
+                self._handle_generic_exception(CONST.ERR_CSP_CBF_HEALTH_CB + ": " + str(except_occurred))
         else:
             log_msg = CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
             self.logger.error(log_msg)
@@ -102,8 +102,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_UNKNOWN
             except DevFailed as dev_failed:
                 self._handle_devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
-            except Exception:
-                self._handle_generic_exception(CONST.ERR_CSP_PSS_HEALTH_CB)
+            except Exception as except_occurred:
+                self._handle_generic_exception(CONST.ERR_CSP_PSS_HEALTH_CB + ": " + str(except_occurred))
         else:
             log_msg = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
             self.logger.error(log_msg)
@@ -135,8 +135,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     self._read_activity_message = CONST.STR_CSP_PST_HEALTH_UNKNOWN
             except DevFailed as dev_failed:
                 self._handle_devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
-            except Exception:
-                self._handle_generic_exception(CONST.ERR_CSP_PST_HEALTH_CB)
+            except Exception as except_occurred:
+                self._handle_generic_exception(CONST.ERR_CSP_PST_HEALTH_CB + ": " + str(except_occurred))
         else:
             log_msg = CONST.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
             self.logger.error(log_msg)
@@ -163,8 +163,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             else:
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
-        except Exception:
-            self._handle_generic_exception(CONST.ERR_EXCEPT_CMD_CB)
+        except Exception as except_occurred:
+            self._handle_generic_exception(CONST.ERR_EXCEPT_CMD_CB + ": " + str(except_occurred))
             exception_message.append(self._read_activity_message)
             exception_count += 1
 

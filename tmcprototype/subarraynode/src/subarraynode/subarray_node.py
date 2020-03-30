@@ -94,7 +94,8 @@ class ElementDeviceData:
         csp_scan_config = scan_config.get("csp", {})
 
         if csp_scan_config:
-            for key, attribute_name in attr_name_map.items():
+            csp_scan_config_items = attr_name_map.items()
+            for key, attribute_name in csp_scan_config_items:
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
             csp_scan_config["scanID"] = scan_id
@@ -238,13 +239,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
-        # ToDo :can be represented with a function as well
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == PointingState.SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
-        # ToDo :several if elif blocks here.. can something be done about it?
         if self._csp_sa_obs_state == ObsState.SCANNING and self._sdp_sa_obs_state ==\
                 ObsState.SCANNING:
             self._obs_state = ObsState.SCANNING
