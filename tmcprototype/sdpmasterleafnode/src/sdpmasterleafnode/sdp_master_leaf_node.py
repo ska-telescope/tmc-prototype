@@ -15,12 +15,10 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 
 from __future__ import print_function
 from __future__ import absolute_import
-import random
-import string
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
 from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
 from skabase.control_model import AdminMode, HealthState, TestMode
