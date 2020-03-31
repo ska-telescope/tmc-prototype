@@ -804,31 +804,47 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # 1. Argument validation
         try:
             # Allocation success and failure lists
-            for leafId in range(0, len(argin)):
-                float(argin[leafId])
-                self.logger.debug("assign_resource_argin",argin)
-        except ValueError as value_error:
-            str_log = CONST.ERR_SCAN_CMD +"\n" + str(value_error) + CONST.ERR_INVALID_DATATYPE
-            self.logger.error(str_log)
-            self.logger.error(CONST.ERR_INVALID_DATATYPE)
-            self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+
+            # for leafId in range(0, len(argin)):
+            #     float(argin[leafId])
+
+            Central_out = json.loads(argin)
+            Assign_str  = Central_out.get("dish")
+            Assign_DISH = Assign_str.get("receptorIDList")
+            Assign_SDP = Central_out.get("sdp")
+
+        except json.JSONDecodeError as jerror:
+            log_message = CONST.ERR_INVALID_JSON + str(jerror)
+            self.logger.error(log_message)
+            self._read_activity_message = log_message
+            tango.Except.throw_exception(CONST.STR_CMD_FAILED, log_message,
+                                         CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+
+            self.logger.debug("assign_resource_argin",argin)
+        # except ValueError as value_error:
+        #     str_log = CONST.ERR_SCAN_CMD +"\n" + str(value_error) + CONST.ERR_INVALID_DATATYPE
+        #     self.logger.error(str_log)
+        #     self.logger.error(CONST.ERR_INVALID_DATATYPE)
+        #     self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
+        #     exception_message.append(self._read_activity_message)
+        #     exception_count += 1
 
         with exception_count is 0 and ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
             self.logger.info(CONST.STR_DISH_ALLOCATION)
-            dish_allocation_status = executor.submit(self.add_receptors_in_group, argin)
+            dish_allocation_status = executor.submit(self.add_receptors_in_group, Assign_DISH)
 
             # 2.2. Add resources in CSP subarray
             self.logger.info(CONST.STR_CSP_ALLOCATION)
-            csp_allocation_status = executor.submit(self.assign_csp_resources, argin)
+            csp_allocation_status = executor.submit(self.assign_csp_resources, Assign_DISH)
 
             # 2.3. Add resources in SDP subarray
             # For PI#3, TMC sends dummy resources to SDP.
             self.logger.info(CONST.STR_SDP_ALLOCATION)
-            dummy_sdp_resources = ["PB1", "PB2"]
-            sdp_allocation_status = executor.submit(self.assign_sdp_resources, dummy_sdp_resources)
+
+            #dummy_sdp_resources = ["PB1", "PB2"]
+
+            sdp_allocation_status = executor.submit(self.assign_sdp_resources, Assign_SDP)
 
             # 2.4 wait for result
             while (dish_allocation_status.done() is False or
