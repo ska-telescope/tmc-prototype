@@ -85,7 +85,6 @@ class TestCspSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assignresources_input)
         time.sleep(1)
-        print("state of csp subarray is:", create_cspsubarray1_proxy.state() )
         assert create_cspsubarray1_proxy.state() == DevState.OFF
         assert CONST.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
 

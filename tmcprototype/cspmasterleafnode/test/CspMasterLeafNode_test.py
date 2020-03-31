@@ -84,16 +84,7 @@ class TestCspMasterLeafNode(object):
         """Test for On"""
         tango_context.device.On(["a/b/c"])
         time.sleep(1)
-        print("Activity msggg is ::", tango_context.device.activityMessage)
-        print("errr ms is ::", CONST.ERR_INVOKING_CMD)
-        print("state is::", create_cspmaster_proxy.State())
         assert create_cspmaster_proxy.State() == DevState.STANDBY
-        # assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
-        # assert ((CONST.ERR_INVOKING_CMD in tango_context.device.activityMessage) or (
-        #         CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
-        #         (CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
-        #         (CONST.STR_CSP_CBF_HEALTH_UNKNOWN in tango_context.device.activityMessage)
-        #         )
 
     def test_buildState(self, tango_context):
         """Test for buildState"""
