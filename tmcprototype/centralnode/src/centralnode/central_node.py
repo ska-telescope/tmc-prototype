@@ -124,11 +124,10 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
                 log_msg = CONST.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
                 self.logger.critical(log_msg)
-            except DevFailed as dev_failed:
+            except DevFailed:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                log_msg = CONST.ERR_SUBSR_SA_HEALTH_STATE + ": " + str(dev_failed)
-                self.logger.error(log_msg)
+                self.logger.exception(CONST.ERR_HEALTH_STATE_CB, evt)
             except Exception as except_occured:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)

@@ -527,6 +527,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Abort command. Not yet implememnted."""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
+# pylint: enable=unused-argument,unused-variable
 # ----------
 # Run server
 # ----------

@@ -1133,6 +1133,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
 
         # PROTECTED REGION END #    //  DishMaster.StopTrack
+# pylint: enable=unused-argument
 
 # ----------
 # Run server

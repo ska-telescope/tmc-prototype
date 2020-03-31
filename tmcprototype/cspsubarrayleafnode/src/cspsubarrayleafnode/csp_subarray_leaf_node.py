@@ -765,6 +765,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndSB
 
+# pylint: enable=protected-access,unused-argument,unused-variable
+
 # ----------
 # Run server
 # ----------

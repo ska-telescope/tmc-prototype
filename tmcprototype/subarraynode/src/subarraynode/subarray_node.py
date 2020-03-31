@@ -94,8 +94,7 @@ class ElementDeviceData:
         csp_scan_config = scan_config.get("csp", {})
 
         if csp_scan_config:
-            csp_scan_config_items = attr_name_map.items()
-            for key, attribute_name in csp_scan_config_items:
+            for key, attribute_name in attr_name_map.items():
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
             csp_scan_config["scanID"] = scan_id
