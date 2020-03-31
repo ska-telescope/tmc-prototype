@@ -20,8 +20,8 @@ from __future__ import absolute_import
 import tango
 from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
-from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-from skabase.control_model import AdminMode, HealthState, TestMode
+from ska.base import SKABaseDevice
+from ska.base.control_model import AdminMode, HealthState, TestMode
 from future.utils import with_metaclass
 
 # Additional import
