@@ -7,7 +7,7 @@
                 }
             }
         },
-        "CentralNode": {
+        "CentralNodeDS": {
             "01": {
                 "CentralNode": {
                     "ska_mid/tm_central/central_node": {
@@ -79,7 +79,7 @@
                 }
             }
         },
-        "SubarrayNode": {
+        "SubarrayNodeDS": {
             "sa1": {
                 "SubarrayNode": {
                     "ska_mid/tm_subarray_node/1": {
@@ -329,7 +329,7 @@
                 }
             }
         },
-        "DishLeafNode": {
+        "DishLeafNodeDS": {
             "01": {
                 "DishLeafNode": {
                     "ska_mid/tm_leaf_node/d0001": {
@@ -519,7 +519,7 @@
                 }
             }
         },
-        "CspMasterLeafNode": {
+        "CspMasterLeafNodeDS": {
             "01": {
                 "CspMasterLeafNode": {
                     "ska_mid/tm_leaf_node/csp_master": {
@@ -557,7 +557,7 @@
                 }
             }
         },
-        "CspSubarrayLeafNode": {
+        "CspSubarrayLeafNodeDS": {
             "01": {
                 "CspSubarrayLeafNode": {
                     "ska_mid/tm_leaf_node/csp_subarray01": {
@@ -712,7 +712,7 @@
                 }
             }
         },
-        "SdpMasterLeafNode": {
+        "SdpMasterLeafNodeDS": {
             "01": {
                 "SdpMasterLeafNode": {
                     "ska_mid/tm_leaf_node/sdp_master": {
@@ -750,7 +750,7 @@
                 }
             }
         },
-        "SdpSubarrayLeafNode": {
+        "SdpSubarrayLeafNodeDS": {
             "01": {
                 "SdpSubarrayLeafNode": {
                     "ska_mid/tm_leaf_node/sdp_subarray01": {
@@ -1064,7 +1064,7 @@
                 }
             }
         },
-        "DishMaster": {
+        "DishMasterDS": {
             "01": {
                 "DishMaster": {
                     "mid_d0001/elt/master": {

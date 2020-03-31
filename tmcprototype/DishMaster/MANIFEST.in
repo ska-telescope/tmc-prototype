@@ -1,9 +1,0 @@
-recursive-include DishMaster *.py
-recursive-include test *.py
-include *.rst
-include DishMaster.xmi
-include *.txt
-graft docs
-
-global-exclude *.pyc
-global-exclude *.pyo

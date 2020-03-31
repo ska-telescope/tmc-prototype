@@ -31,52 +31,52 @@ build CentralNode wheel for publication: # Executed on a tag
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/CentralNode
+    - cd ./tmcprototype/centralnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/CentralNode/dist/
+      - ./tmcprototype/centralnode/dist/
 
 build CentralNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/CentralNode
+    - cd ./tmcprototype/centralnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/CentralNode/dist/
+      - ./tmcprototype/centralnode/dist/
 
 build SubarrayNode wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/SubarrayNode
+    - cd ./tmcprototype/subarraynode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/SubarrayNode/dist/
+      - ./tmcprototype/subarraynode/dist/
 
 build SubarrayNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/SubarrayNode
+    - cd ./tmcprototype/subarraynode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/SubarrayNode/dist/
+      - ./tmcprototype/subarraynode/dist/
 
 # For development purpose only when testing locally in docker env.
 build CspSubarray wheel for development: # Executed on a commit
@@ -111,65 +111,65 @@ build DishLeafNode wheel for publication: # Executed on a tag
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/DishLeafNode
+    - cd ./tmcprototype/dishleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/DishLeafNode/dist/
+      - ./tmcprototype/dishleafnode/dist/
 
 build DishLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/DishLeafNode
+    - cd ./tmcprototype/dishleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/DishLeafNode/dist/
+      - ./tmcprototype/dishleafnode/dist/
 
 build CspMasterLeafNode wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/CspMasterLeafNode
+    - cd ./tmcprototype/cspmasterleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/CspMasterLeafNode/dist/
+      - ./tmcprototype/cspmasterleafnode/dist/
 
 build CspMasterLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/CspMasterLeafNode
+    - cd ./tmcprototype/cspmasterleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/CspMasterLeafNode/dist/
+      - ./tmcprototype/cspmasterleafnode/dist/
 
 build CspSubarrayLeafNode wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/CspSubarrayLeafNode
+    - cd ./tmcprototype/cspsubarrayleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/CspSubarrayLeafNode/dist/
+      - ./tmcprototype/cspsubarrayleafnode/dist/
 
 
 build SdpMasterLeafNode wheel for publication: # Executed on a tag
@@ -177,13 +177,13 @@ build SdpMasterLeafNode wheel for publication: # Executed on a tag
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/SdpMasterLeafNode
+    - cd ./tmcprototype/sdpmasterleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/SdpMasterLeafNode/dist/
+      - ./tmcprototype/sdpmasterleafnode/dist/
 
 
 build SdpMasterLeafNode wheel for development: # Executed on a commit
@@ -191,52 +191,52 @@ build SdpMasterLeafNode wheel for development: # Executed on a commit
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/SdpMasterLeafNode
+    - cd ./tmcprototype/sdpmasterleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/SdpMasterLeafNode/dist/
+      - ./tmcprototype/sdpmasterleafnode/dist/
 
 build CspSubarrayLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/CspSubarrayLeafNode
+    - cd ./tmcprototype/cspsubarrayleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/CspSubarrayLeafNode/dist/
+      - ./tmcprototype/cspsubarrayleafnode/dist/
 
 build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/SdpSubarrayLeafNode
+    - cd ./tmcprototype/sdpsubarrayleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/SdpSubarrayLeafNode/dist/
+      - ./tmcprototype/sdpsubarrayleafnode/dist/
 
 build SdpSubarrayLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/SdpSubarrayLeafNode
+    - cd ./tmcprototype/sdpsubarrayleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/SdpSubarrayLeafNode/dist/
+      - ./tmcprototype/sdpsubarrayleafnode/dist/
 
 
 build DishMaster wheel for publication: # Executed on a tag
@@ -244,26 +244,26 @@ build DishMaster wheel for publication: # Executed on a tag
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/DishMaster
+    - cd ./tmcprototype/dishmaster
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/DishMaster/dist/
+      - ./tmcprototype/dishmaster/dist/
 
 build DishMaster wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./tmcprototype/DishMaster
+    - cd ./tmcprototype/dishmaster
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./tmcprototype/DishMaster/dist/
+      - ./tmcprototype/dishmaster/dist/
 
 # For development purpose only when testing locally in docker env.
 build SdpMaster wheel for development: # Executed on a commit
@@ -279,30 +279,6 @@ build SdpMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/SdpMaster/dist/
 
-unit tests:
-  image: nexus.engageska-portugal.pt/tango-example/tmcprototype:latest
-  stage: test
-  tags:
-    - docker-executor
-  before_script:
-    - pipenv install --dev
-  script:
-    - mkdir test_results
-    - |-
-      for path in `find ./tmcprototype/*/test  -type d -name unit`; do
-        export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
-        echo "+++ Trying tests for ${TMC_ELEMENT}"
-        pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
-          --forked \
-          --cov=tmcprototype/${TMC_ELEMENT} \
-          --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
-          --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
-          --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
-      done
-  artifacts:
-    paths:
-      - ./test_results
-
 run tests:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   stage: test
@@ -314,6 +290,32 @@ run tests:
     - make test
     - make push
   retry: 2
+
+unit tests:
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
+  stage: test
+  tags:
+    - docker-executor
+  before_script:
+    - pipenv install --dev
+  script:
+    - mkdir test_results
+    - |-
+      for path in `find ./tmcprototype/*/test  -type d -name unit`; do
+        export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
+        echo "+++ Installing ${TMC_ELEMENT} for tests"
+        python3 -m pip install -U tmcprototype/${TMC_ELEMENT} --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple/
+        echo "+++ Trying tests for ${TMC_ELEMENT}"
+        pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
+          --forked \
+          --cov=tmcprototype/${TMC_ELEMENT} \
+          --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
+          --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
+          --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
+      done
+  artifacts:
+    paths:
+      - ./test_results
 
 linting:
   stage: linting
@@ -338,14 +340,14 @@ publish to nexus:
     TWINE_PASSWORD: $TWINE_PASSWORD
   script:
     - pip install twine
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CentralNode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SubarrayNode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/DishLeafNode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspMasterLeafNode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpMasterLeafNode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/DishMaster/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/SdpSubarrayLeafNode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/CspSubarrayLeafNode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/centralnode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/subarraynode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishleafnode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/cspmasterleafnode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/sdpmasterleafnode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishmaster/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/sdpsubarrayleafnode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/cspsubarrayleafnode/dist/*
 
   only:
     variables:
