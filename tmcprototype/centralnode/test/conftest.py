@@ -36,14 +36,14 @@ def tango_context(request):
                   'CspMasterLeafNodeFQDN': 'ska_mid/tm_leaf_node/csp_master',
                   'SdpMasterLeafNodeFQDN': 'ska_mid/tm_leaf_node/sdp_master'
                   }
-    tango_context_centralnode = DeviceTestContext(klass, properties=properties, process=False)
-    tango_context_centralnode.start()
-    klass.get_name = mock.Mock(side_effect=tango_context_centralnode.get_device_access)
-    yield tango_context_centralnode
-    tango_context_centralnode.stop()
+    tango_context = DeviceTestContext(klass, properties=properties, process=False)
+    tango_context.start()
+    klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
+    yield tango_context
+    tango_context.stop()
 
 @pytest.fixture(scope="function")
-def initialize_device(tango_context_init):
+def initialize_device(tango_context):
     """Re-initializes the device.
 
     Parameters
@@ -51,7 +51,7 @@ def initialize_device(tango_context_init):
     tango_context: tango.test_context.DeviceTestContext
         Context to run a device without a database.
     """
-    yield tango_context_init.device.Init()
+    yield tango_context.device.Init()
 
 @pytest.fixture(scope="class")
 def create_subarray1_proxy():

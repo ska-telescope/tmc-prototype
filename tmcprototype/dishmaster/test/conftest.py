@@ -26,14 +26,14 @@ def tango_context(request):
     dishmaster_module = importlib.import_module('dishmaster')
     klass = getattr(dishmaster_module, 'DishMaster')
     properties = {'GroupDefinitions': ''}
-    tango_context_dishmaster = DeviceTestContext(klass, process=False, properties=properties)
-    tango_context_dishmaster.start()
-    klass.get_name = mock.Mock(side_effect=tango_context_dishmaster.get_device_access)
-    yield tango_context_dishmaster
-    tango_context_dishmaster.stop()
+    tango_context = DeviceTestContext(klass, process=False, properties=properties)
+    tango_context.start()
+    klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
+    yield tango_context
+    tango_context.stop()
 
 @pytest.fixture(scope="class")
-def initialize_device(tango_context_init):
+def initialize_device(tango_context):
     """Re-initializes the device.
 
     Parameters
@@ -41,4 +41,4 @@ def initialize_device(tango_context_init):
     tango_context_init: tango.test_context.DeviceTestContext
         Context to run a device without a database.
     """
-    yield tango_context_init.device.Init()
+    yield tango_context.device.Init()
