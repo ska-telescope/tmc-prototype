@@ -14,12 +14,8 @@
 #
 
 autodoc_mock_imports = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta', 'command',
-                 'future', 'future.utils','ska.base',
-                 'ska.base.SKABaseDevice', 'SKABaseDevice',
-                 'ska.base.SKAMaster', 'SKAMaster',
-                 'ska.base.SKASubarray', 'SKASubarray', 'katpoint', 'numpy'
+                 'future', 'future.utils','ska.base', 'SKABaseDevice', 'SKAMaster', 'SKASubarray', 'katpoint', 'numpy'
                  ]
-
 
 import os
 import sys
