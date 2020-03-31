@@ -94,7 +94,6 @@ class ElementDeviceData:
         csp_scan_config = scan_config.get("csp", {})
 
         if csp_scan_config:
-            attr_name_map_keys = list(attr_name_map.keys())
             for key, attribute_name in attr_name_map.items():
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
@@ -119,7 +118,6 @@ class ElementDeviceData:
 
 
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
-
 
 class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
     """
@@ -240,13 +238,11 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         """
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
-        """can be represented with a function as well"""
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == PointingState.SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
-        """several if elif blocks here.. can something be done about it?"""
         if self._csp_sa_obs_state == ObsState.SCANNING and self._sdp_sa_obs_state ==\
                 ObsState.SCANNING:
             self._obs_state = ObsState.SCANNING
@@ -286,7 +282,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                 self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
                 proxy_created_flag = True
                 break
-            except Exception as ex:
+            except Exception:
                 retry += 1
                 continue
 
@@ -1095,12 +1091,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
-        result = self.create_csp_ln_proxy()
+        self.create_csp_ln_proxy()
         # Create proxy for SDP Subarray Leaf Node
         self._sdp_subarray_ln_proxy = None
-        result = self.create_sdp_ln_proxy()
+        self.create_sdp_ln_proxy()
         self._csp_sa_proxy = DeviceProxy(self.CspSubarrayFQDN)
         self._sdp_sa_proxy = DeviceProxy(self.SdpSubarrayFQDN)
+
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)

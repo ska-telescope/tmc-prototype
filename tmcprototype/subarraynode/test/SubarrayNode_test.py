@@ -51,7 +51,6 @@ def health_states_and_expected_aggregate(request):
     states_in, expected_state_out = request.param
     return states_in, expected_state_out
 
-
 class TestSubarrayHealthState:
 
     def test_generate_health_state_log_msg_valid(self, valid_health_state):
@@ -145,7 +144,6 @@ def csp_func_args():
         "string2": "attr2"
     }
     return scan_id, attr_name_map
-
 
 class TestElementDeviceData:
 

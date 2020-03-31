@@ -225,7 +225,7 @@ class TestCentralNode(object):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
         tango_context.device.StartUpTelescope()
         time.sleep(10)
-        retVal = json.loads(tango_context.device.AssignResources(test_input))
+        json.loads(tango_context.device.AssignResources(test_input))
         time.sleep(3)
         result = create_subarray1_proxy.receptorIDList
         create_subarray1_proxy.ReleaseAllResources()

@@ -96,13 +96,6 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     # TODO: For future reference
                     # self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
 
-
-                # Aggregated Health State
-                failed_health_count = 0
-                degraded_health_count = 0
-                unknown_health_count = 0
-                ok_health_count = 0
-
                 counts = {
                         HealthState.OK: 0,
                         HealthState.DEGRADED: 0,
@@ -129,15 +122,17 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             except KeyError as key_error:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-                self.logger.critical(CONST.ERR_SUBARRAY_HEALTHSTATE)
-            except DevFailed as dev_failed:
+                log_msg = CONST.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+                self.logger.critical(log_msg)
+            except DevFailed:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                self.logger.error(CONST.ERR_SUBSR_SA_HEALTH_STATE)
+                self.logger.exception(CONST.ERR_HEALTH_STATE_CB, evt)
             except Exception as except_occured:
                 # TODO: For future reference
                 # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
-                self.logger.critical(CONST.ERR_AGGR_HEALTH_STATE)
+                log_msg = CONST.ERR_AGGR_HEALTH_STATE + ": " + str(except_occured)
+                self.logger.critical(log_msg)
         else:
             # TODO: For future reference
             # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)

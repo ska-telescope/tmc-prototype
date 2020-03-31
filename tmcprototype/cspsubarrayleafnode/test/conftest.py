@@ -7,10 +7,9 @@ from __future__ import absolute_import
 import importlib
 import mock
 import pytest
-import tango
 
 
-from tango import DeviceProxy, DevFailed
+from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
 
 

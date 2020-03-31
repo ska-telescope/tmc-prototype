@@ -48,7 +48,7 @@ def initialize_device(tango_context):
 
 @pytest.fixture(scope="class")
 def create_cspmaster_proxy():
-    create_cspmaster_proxy = DeviceProxy("mid_csp/elt/master")
-    return create_cspmaster_proxy
+    create_cspmaster_device_proxy = DeviceProxy("mid_csp/elt/master")
+    return create_cspmaster_device_proxy
 
 
