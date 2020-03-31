@@ -163,6 +163,7 @@ class TestCspMasterLeafNode(object):
     def test_Standby(self, tango_context, create_cspmaster_proxy):
         """Test for Standby"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_Standby) ENABLED START #
+        time.sleep(1)
         tango_context.device.Standby([])
         time.sleep(1)
         # assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
