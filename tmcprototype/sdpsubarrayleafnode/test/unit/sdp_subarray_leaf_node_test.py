@@ -26,9 +26,9 @@ def test_start_scan_should_command_sdp_subarray_master_to_start_its_scan_when_it
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_config = { 'scanDuration': 10.0 }
+        scan_config = '{"scanDuration":0}'
         # act:
-        tango_context.device.Scan([json.dumps(scan_config)])
+        tango_context.device.Scan(scan_config)
 
         # assert:
         sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_STARTSCAN, '0', any_method(with_name='commandCallback'))
