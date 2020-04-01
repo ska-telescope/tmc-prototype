@@ -7,7 +7,7 @@
                         "attribute_properties": {
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
+                                    "-1",
                                     "1"
                                 ],
                             "__value":[
@@ -16,17 +16,17 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
+                                    "-1",
                                     "1"
                                 ]
                             }
-                        }, 
+                        },
                         "properties": {
                             "CbfSubarray": [
-                                "mid_csp_cbf/sub_elt/subarray_01", 
+                                "mid_csp_cbf/sub_elt/subarray_01",
                                 "mid_csp_cbf/sub_elt/subarray_02",
                                 "mid_csp_cbf/sub_elt/subarray_03"
-                            ], 
+                            ],
                             "FSP": [
                                 "mid_csp_cbf/fsp/01", 
                                 "mid_csp_cbf/fsp/02", 

@@ -25,20 +25,9 @@ from skabase.control_model import AdminMode, HealthState
 from . import CONST
 from future.utils import with_metaclass
 import json
-import enum
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
-
-class TelescopeHealthState(enum.IntEnum):
-    """
-    Health state of Telescope
-    """
-    OK = 0
-    DEGRADED = 1
-    FAILED = 2
-    UNKNOWN = 3
-
 
 
 class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
@@ -218,7 +207,9 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     # ----------
 
     telescopeHealthState = attribute(
-        dtype=TelescopeHealthState
+        dtype='DevEnum',
+        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
+        doc="Health state of Telescope",
     )
 
     subarray1HealthState = attribute(
