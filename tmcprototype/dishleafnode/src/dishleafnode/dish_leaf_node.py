@@ -19,8 +19,8 @@ import json
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
-from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-from skabase.control_model import AdminMode, HealthState, SimulationMode
+from ska.base import SKABaseDevice
+from ska.base.control_model import AdminMode, HealthState, SimulationMode
 
 # Additional import
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #

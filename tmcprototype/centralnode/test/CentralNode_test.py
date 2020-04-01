@@ -11,13 +11,12 @@
 
 # Imports
 import tango
-from skabase.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 import pytest
 import json
 import time
 from tango import DevState
 from centralnode import CentralNode, CONST
-from skabase.SKABaseDevice.SKABaseDevice import TangoLoggingLevel
+from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode, LoggingLevel
 
 # Note:
 #
@@ -161,20 +160,20 @@ class TestCentralNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(CentralNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.4.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  CentralNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(CentralNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.4.1"
+        assert tango_context.device.versionId == "0.5.1"
         # PROTECTED REGION END #    //  CentralNode.test_versionId
 
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(CentralNode.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  CentralNode.test_loggingLevel
 
     def test_healthState(self, tango_context):
@@ -226,7 +225,7 @@ class TestCentralNode(object):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
         tango_context.device.StartUpTelescope()
         time.sleep(10)
-        retVal = json.loads(tango_context.device.AssignResources(test_input))
+        json.loads(tango_context.device.AssignResources(test_input))
         time.sleep(3)
         result = create_subarray1_proxy.receptorIDList
         create_subarray1_proxy.ReleaseAllResources()

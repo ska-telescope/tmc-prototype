@@ -16,8 +16,7 @@ import tango
 from tango import DevState, EventType
 import pytest
 from dishleafnode import DishLeafNode, CONST
-from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import HealthState, AdminMode, SimulationMode, TestMode, ControlMode
+from ska.base.control_model import HealthState, AdminMode, SimulationMode, TestMode, ControlMode, LoggingLevel
 # Note:
 #
 # Since the device uses an inner thread, it is necessary to
@@ -283,13 +282,13 @@ class TestDishLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.4.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  DishLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(DishLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.4.1"
+        assert tango_context.device.versionId == "0.5.1"
         # PROTECTED REGION END #    //  DishLeafNode.test_versionId
 
     def test_healthState(self, tango_context):
@@ -373,8 +372,8 @@ class TestDishLeafNode(object):
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(DishLeafNode.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO 
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  DishLeafNode.test_loggingLevel
 
     def test_loggingTargets(self, tango_context):

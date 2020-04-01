@@ -14,8 +14,7 @@ import pytest
 import time
 from tango import DevState, EventType, DeviceProxy
 from sdpsubarrayleafnode import SdpSubarrayLeafNode, CONST
-from skabase.SKABaseDevice import TangoLoggingLevel
-from skabase.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
+from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:
 # Since the device uses an inner thread, it is necessary to
@@ -76,7 +75,7 @@ class TestSdpSubarrayLeafNode(object):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
         test_input = '{"processingBlockIdList": ["0001", "0002"]}'
-        retVal = tango_context.device.AssignResources(test_input)
+        tango_context.device.AssignResources(test_input)
         assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
@@ -110,7 +109,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseAllResources) ENABLED START #
-        retVal = tango_context.device.ReleaseAllResources()
+        tango_context.device.ReleaseAllResources()
         assert CONST.STR_REL_RESOURCES in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseAllResources
 
@@ -249,14 +248,14 @@ class TestSdpSubarrayLeafNode(object):
         """Test for versionId"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_versionId) ENABLED START #
         # self.device.versionId
-        assert tango_context.device.versionId == "0.4.1"
+        assert tango_context.device.versionId == "0.5.1"
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_versionId
 
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_loggingLevel
 
     def test_healthState(self, tango_context):

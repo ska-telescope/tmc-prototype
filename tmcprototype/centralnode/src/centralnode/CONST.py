@@ -34,6 +34,7 @@ ERR_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting Subarray healthStat
 ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray \n"
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 ERR_STOW_ARGIN = "Invalid StowAntennas arguments \n"
+ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
 
 #strings
 #General strings
