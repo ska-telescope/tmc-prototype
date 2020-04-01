@@ -214,6 +214,14 @@ class TestCentralNode(object):
 
     def test_AssignResources_Failure_Before_Startup(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+        # test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]} "sdp":{"id":"sbi-mvp01-20200325-00001",
+        #                 "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771",
+        #                 "dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,
+        #                 "input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
+        #                 "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}]}'
+
+        # the above test_input string has only 1 set of parameters for all the required fields. same input can be passed
+        # in all the other methods.
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
         result = create_subarray1_proxy.receptorIDList
@@ -257,7 +265,8 @@ class TestCentralNode(object):
             result = tango_context.device.AssignResources(test_input)
         time.sleep(1)
         assert 'a' in result
-
+    # need to create new method as "def test_AssignResources_key_not_found(self, tango_context):" to verify if
+    # json contains the SDP block key
     def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
         time.sleep(2)

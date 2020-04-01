@@ -533,11 +533,11 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
         """
-        Assigns resources to given subarray. It accepts the subarray id and
-        receptor id list in JSON string format. Upon successful execution, the
+        Assigns resources to given subarray. It accepts the subarray id,
+        receptor id list and SDP block in JSON string format. Upon successful execution, the
         'receptorIDList' attribute of the given subarray is populated with the given
         receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throwout
-        error message regarding t he prior existence of resource.
+        error message regarding the prior existence of resource.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -573,12 +573,16 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         DevString
                     Dec:
                         DevString
-                    freq_min:
-                        DevDouble
-                    freq_max:
-                        DevDouble
-                    nchan:
-                        DevDouble
+                    subbands:
+                        freq_min:
+                            DevDouble
+                        freq_max:
+                            DevDouble
+                        nchan:
+                            DevDouble
+                        input_link_map:
+                            Array of DevVarDoubleArray
+
                 processing_blocks:
                     array of the blocks each consisting following parameters
                     id:
@@ -595,17 +599,19 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                         {}
 
             Example:
-                {"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]}, "sdp":{"id":"sbi-mvp01-20200318-0001",
-                "max_length":21600.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"00:00:00.00",
-                "dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000},{"id":"calibration_B","coordinate_system"
-                :"ICRS","ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000}],
-                "processing_blocks":[{"id":"pb-mvp01-20200318-0001","workflow":{"type":"realtime","id":"vis_receive",
-                "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime",
-                "id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0003","workflow":{
-                "type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":
-                "pb-mvp01-20200318-0001","type":["visibilities"]}]},{"id":"pb-mvp01-20200318-0004","workflow":{
-                "type":"batch","id":"dpreb","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":
-                "pb-mvp01-20200318-0003","type":["calibration"]}]}]}}
+                {"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",
+                "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771",
+                "dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,
+                "input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":"ICRS",
+                "ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,
+                "input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
+                "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},
+                {"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
+                "parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical",
+                "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",
+                "type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
+                "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",
+                "type":["calibration"]}]}]}}
 
         Note: From Jive, enter above input string without any space.
 
@@ -649,8 +655,14 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     duplicate_allocation_dish_ids.append(dish_ID)
                     duplicate_allocation_count = duplicate_allocation_count + 1
             if duplicate_allocation_count == 0:
+                # Remove Subarray Id key from input json argument and send the json with
+                # receptor Id list and SDP block to TMC Subarray Node
+                input_json_subarray = jsonArgument.copy
+                input_json_subarray.pop("subarrayID")
+                cmd_data = tango.DeviceData()
+                cmd_data.insert(json.dumps(input_json_subarray))
                 self._resources_allocated = subarrayProxy.command_inout(
-                    CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
+                    CONST.CMD_ASSIGN_RESOURCES, cmd_data)
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
