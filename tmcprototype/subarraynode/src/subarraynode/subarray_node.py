@@ -771,30 +771,54 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     @command(
         dtype_in=('str',),
-        doc_in="List of Resources to add to subarray.",
+        doc_in="String of Resources to add to subarray.",
         dtype_out=('str',),
-        doc_out="A list of Resources added to the subarray.",
+        doc_out="String of Resources added to the subarray.",
     )
     @DebugIt()
     def AssignResources(self, argin):
         """
-        Assigns resources to the subarray. It accepts receptor id list as an array of
-        DevStrings. Upon successful execution, the 'receptorIDList' attribute of the
-        subarray is updated with the list of receptors, and returns list of assigned
-        resources as array of DevStrings.
+        Assigns resources to the subarray. It accepts receptor id list as well as SDP Configure string
+        as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
+        subarray is updated with the list of receptors and SDP Configure string is pass to SDPLeafNode,
+        and returns list of assigned resources as well as passed SDP string as a DevString.
 
         Note: Resource allocation for CSP and SDP resources is also implemented but
-        currently CSP accepts only receptorIDList and SDP accepts only dummy resources.
+        currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
 
         :param argin:
-            DevVarStringArray. List of receptor IDs to be allocated to subarray.
+            DevVarString.
 
-            Example: ['0001', '0002'] as argin
+            Example:
+            {"dish":{"receptorIDList":["0001","0002"]}, "sdp":{"id":"sbi-mvp01-20200318-0001","max_length":21600.0,
+            "scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"00:00:00.00","dec":"00:00:00.0",
+            "freq_min":0.0,"freq_max":0.0,"nchan":1000},{"id":"calibration_B","coordinate_system":"ICRS",
+            "ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000}],"processing_blocks":
+            [{"id":"pb-mvp01-20200318-0001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},
+            "parameters":{}},{"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime","id":"test_realtime",
+            "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0003","workflow":{"type":"batch","id":"ical",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0001","type":
+            ["visibilities"]}]},{"id":"pb-mvp01-20200318-0004","workflow":{"type":"batch","id":"dpreb",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0003",
+            "type":["calibration"]}]}]}}
+
 
         :return:
-            DevVarStringArray. List of Resources added to the Subarray.
+            DevVarString. String of Resources added to the Subarray.
 
-            Example: ['0001', '0002'] as argout if allocation successful
+            Example:
+            {"dish":{"receptorIDList":["0001","0002"]}, "sdp":{"id":"sbi-mvp01-20200318-0001","max_length":21600.0,
+            "scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"00:00:00.00","dec":"00:00:00.0",
+            "freq_min":0.0,"freq_max":0.0,"nchan":1000},{"id":"calibration_B","coordinate_system":"ICRS",
+            "ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000}],"processing_blocks":
+            [{"id":"pb-mvp01-20200318-0001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},
+            "parameters":{}},{"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime","id":"test_realtime",
+            "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0003","workflow":{"type":"batch","id":"ical",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0001","type":
+            ["visibilities"]}]},{"id":"pb-mvp01-20200318-0004","workflow":{"type":"batch","id":"dpreb",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0003",
+            "type":["calibration"]}]}]}}
+            as argout if allocation successful
 
                 [] as argout if allocation unsuccessful
         """
@@ -809,8 +833,7 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             #     float(argin[leafId])
 
             Central_out = json.loads(argin)
-            Assign_str  = Central_out.get("dish")
-            Assign_DISH = Assign_str.get("receptorIDList")
+            Assign_DISH = Central_out["dish"]["receptorIDList"]
             Assign_SDP = Central_out.get("sdp")
 
         except json.JSONDecodeError as jerror:
@@ -869,19 +892,19 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             dish_allocation_result.sort()
             csp_allocation_result.sort()
             sdp_allocation_result.sort()
-            argin.sort()
-            dummy_sdp_resources.sort()
+            Assign_DISH.sort()
+            Assign_SDP.sort()
 
-            if(dish_allocation_result == argin and
-                csp_allocation_result == argin and
-                sdp_allocation_result == dummy_sdp_resources
+            if(dish_allocation_result == Assign_DISH and
+                csp_allocation_result == Assign_DISH and
+                sdp_allocation_result == Assign_SDP
               ):
-                # Currently sending only dish allocation results.
-                argout = dish_allocation_result
+                # Currently sending dish allocation and SDP allocation results.
+                argout = (dish_allocation_result + sdp_allocation_result)
             else:
                 #TODO: Need to add code to revert allocated resources
                 argout = []
-        # return dish_allocation_result
+        # return dish_allocation_result and SDP allocation results.
         self.logger.debug("assign_resource_argout",argout)
         return argout
 
