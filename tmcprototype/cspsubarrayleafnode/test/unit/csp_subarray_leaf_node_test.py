@@ -8,7 +8,7 @@ import types
 from mock import Mock
 from cspsubarrayleafnode import CspSubarrayLeafNode, CONST
 from tango.test_context import DeviceTestContext
-from skabase.control_model import ObsState
+from ska.base.control_model import ObsState
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
     # arrange:

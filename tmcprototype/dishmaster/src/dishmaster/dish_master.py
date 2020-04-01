@@ -23,8 +23,8 @@ import json
 import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
-from skabase.SKAMaster.SKAMaster import SKAMaster
-from skabase.control_model import HealthState, AdminMode
+from ska.base import SKAMaster
+from ska.base.control_model import HealthState, AdminMode
 
 # Additional import
 from future.utils import with_metaclass

@@ -33,8 +33,8 @@ from future.utils import with_metaclass
 # Additional import
 from . import CONST
 from .CONST import PointingState
-from skabase.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
-from skabase.SKASubarray.SKASubarray import SKASubarray
+from ska.base.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
+from ska.base import SKASubarray
 
 
 __all__ = ["SubarrayNode", "main"]
