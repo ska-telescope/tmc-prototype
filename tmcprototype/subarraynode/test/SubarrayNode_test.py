@@ -15,9 +15,8 @@ import pytest
 import time
 import tango
 from tango import DevState
-from skabase.SKABaseDevice import TangoLoggingLevel
 from subarraynode import SubarrayNode, SubarrayHealthState, ElementDeviceData, CONST
-from skabase.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode
+from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, LoggingLevel
 
 @pytest.fixture(scope="function",
                 params=[HealthState.OK, HealthState.DEGRADED,
@@ -51,7 +50,6 @@ def valid_health_state(request):
 def health_states_and_expected_aggregate(request):
     states_in, expected_state_out = request.param
     return states_in, expected_state_out
-
 
 class TestSubarrayHealthState:
 
@@ -146,7 +144,6 @@ def csp_func_args():
         "string2": "attr2"
     }
     return scan_id, attr_name_map
-
 
 class TestElementDeviceData:
 
@@ -589,7 +586,7 @@ class TestSubarrayNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SubarrayNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.4.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SubarrayNode.test_buildState
 
     def test_configurationDelayExpected(self, tango_context):
@@ -643,7 +640,7 @@ class TestSubarrayNode(object):
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(SubarrayNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.4.1"
+        assert tango_context.device.versionId == "0.5.1"
         # PROTECTED REGION END #    //  SubarrayNode.test_versionId
 
     def test_scanID(self, tango_context):
@@ -690,8 +687,8 @@ class TestSubarrayNode(object):
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(SubarrayNode.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingLevel = TangoLoggingLevel.INFO
-        assert tango_context.device.loggingLevel == TangoLoggingLevel.INFO
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
         # PROTECTED REGION END #    //  SubarrayNode.test_loggingLevel
 
     def test_loggingTargets(self, tango_context):

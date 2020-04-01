@@ -23,8 +23,8 @@ import json
 import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
-from skabase.SKAMaster.SKAMaster import SKAMaster
-from skabase.control_model import HealthState, AdminMode
+from ska.base import SKAMaster
+from ska.base.control_model import HealthState, AdminMode
 
 # Additional import
 from future.utils import with_metaclass
@@ -44,8 +44,7 @@ class PointingState(enum.IntEnum):
     SLEW = 1
     TRACK = 2
     SCAN = 3
-
-
+# pylint: disable=unused-argument
 class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 # class DishMaster(SKAMaster):
     """
@@ -204,7 +203,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         el_diff = abs(self._desired_pointing[2] - self._achieved_pointing[2])
         az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
         el_increament = el_diff / 10           #Dish will move in 10 steps to desired el.
-        for i in range(10):
+        for _ in range(10):
             if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
                 self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
             else:
@@ -1134,6 +1133,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
 
 
         # PROTECTED REGION END #    //  DishMaster.StopTrack
+# pylint: enable=unused-argument
 
 # ----------
 # Run server

@@ -18,8 +18,8 @@ from __future__ import absolute_import
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, DeviceMeta, command, device_property, attribute
-from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-from skabase.control_model import HealthState, AdminMode, SimulationMode, TestMode
+from ska.base import SKABaseDevice
+from ska.base.control_model import HealthState, AdminMode, SimulationMode, TestMode
 # Additional import
 
 # PROTECTED REGION ID(CspMasterLeafNode.additionnal_import) ENABLED START #
@@ -70,7 +70,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             except DevFailed as dev_failed:
                 self._handle_devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_CBF_HEALTH)
             except Exception as except_occurred:
-                self._handle_generic_exception(CONST.ERR_CSP_CBF_HEALTH_CB)
+                self._handle_generic_exception(CONST.ERR_CSP_CBF_HEALTH_CB + ": " + str(except_occurred))
         else:
             log_msg = CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
             self.logger.error(log_msg)
@@ -103,7 +103,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             except DevFailed as dev_failed:
                 self._handle_devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
             except Exception as except_occurred:
-                self._handle_generic_exception(CONST.ERR_CSP_PSS_HEALTH_CB)
+                self._handle_generic_exception(CONST.ERR_CSP_PSS_HEALTH_CB + ": " + str(except_occurred))
         else:
             log_msg = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
             self.logger.error(log_msg)
@@ -136,7 +136,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             except DevFailed as dev_failed:
                 self._handle_devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
             except Exception as except_occurred:
-                self._handle_generic_exception(CONST.ERR_CSP_PST_HEALTH_CB)
+                self._handle_generic_exception(CONST.ERR_CSP_PST_HEALTH_CB + ": " + str(except_occurred))
         else:
             log_msg = CONST.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
             self.logger.error(log_msg)
@@ -164,7 +164,7 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
         except Exception as except_occurred:
-            self._handle_generic_exception(CONST.ERR_EXCEPT_CMD_CB)
+            self._handle_generic_exception(CONST.ERR_EXCEPT_CMD_CB + ": " + str(except_occurred))
             exception_message.append(self._read_activity_message)
             exception_count += 1
 

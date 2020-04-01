@@ -11,7 +11,6 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
 import datetime
-import sys
 import os
 import threading
 from datetime import datetime, timedelta
@@ -26,10 +25,10 @@ TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
 ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 # PyTango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
 from tango.server import run, DeviceMeta, attribute, command, device_property
-from skabase.SKABaseDevice.SKABaseDevice import SKABaseDevice
-from skabase.control_model import HealthState, ObsState
+from ska.base import SKABaseDevice
+from ska.base.control_model import HealthState, ObsState
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 import json
@@ -39,6 +38,7 @@ from . import CONST
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
+# pylint: disable=protected-access,unused-argument,unused-variable
 class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
@@ -153,7 +153,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         delay_corrections_v_array_t3 = []
         delay_corrections_v_array_t4 = []
         delay_corrections_v_array_t5 = []
-        delay_corrections_v_array_dict = {}
 
         # Delays are calculated for the timestamps between "t0 - 25" to "t0 + 25" at an interval of 10
         # seconds.
@@ -269,8 +268,6 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """
         delay_update_interval = argin
 
-        # list of bands
-        _bands_list = ["band1", "band2", "band3", "band4", "band5a", "band5b"]
         while not self._stop_delay_model_event.isSet():
             if(self.CspSubarrayProxy.obsState == ObsState.CONFIGURING
                     or self.CspSubarrayProxy.obsState == ObsState.READY
@@ -354,7 +351,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 # create CspSubarray Proxy
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
-            except:
+            except Exception:
                 self.logger.debug(CONST.ERR_IN_CREATE_PROXY_CSPSA)
 
             # create CspSubarray Proxy
@@ -767,6 +764,8 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.throw_exception(exception_message, CONST.STR_GOTOIDLE_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
+
+# pylint: enable=protected-access,unused-argument,unused-variable
 
 # ----------
 # Run server
