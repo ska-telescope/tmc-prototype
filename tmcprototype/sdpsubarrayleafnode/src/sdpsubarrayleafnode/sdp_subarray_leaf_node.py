@@ -275,19 +275,41 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :param argin: The string in JSON format. The JSON contains following values:
 
-            Processing Block ID List:
+            SBI ID and maximum length of the SBI:
                 Mandatory JSON object consisting of
 
-                processingBlockIdList:
+                SBI ID :
                     DevVarStringArray
-                    The individual string should contain PB numbers in string format
-                    with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+
+                    length of the SBI:
+                        Seconds
+
+            Scan types:
+                Consist of Scan type id name
+
+                scan_type:
+                    DevVarStringArray
+
+            Processing blocks:
+                Mandatory JSON object consisting of
+
+                    processing_blocks:
+                        DevVarStringArray
 
             Example:
-                {
-                "processingBlockIdList": ["0001", "0002"]
-                }
-            Note: Enter input without spaces  as:{"processingBlockIdList": ["0001", "0002"]}
+                {"id":"sbi-mvp01-20200318-0001","max_length":21600.0,"scan_types":[{"id":"science_A","coordinate_system"
+                :"ICRS","ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000},
+                {"id":"calibration_B","coordinate_system":"ICRS","ra":"00:00:00.00","dec":"00:00:00.0",
+                "freq_min":0.0,"freq_max":0.0,"nchan":1000}],"processing_blocks":[{"id":"pb-mvp01-20200318-0001",
+                "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},
+                {"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
+                "parameters":{}},{"id":"pb-mvp01-20200318-0003","workflow":{"type":"batch","id":"ical","version":
+                "0.1.0"},
+                "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0001","type":["visibilities"]}]},
+                {"id":"pb-mvp01-20200318-0004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},
+                "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0003","type":["calibration"]}]}]}}
+
+            Note: Enter input without spaces
 
         :return: Empty String.
         """
@@ -295,8 +317,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_count = 0
 
         try:
-            jsonArgument = json.loads(argin)
-            processingBlockIDList = jsonArgument[CONST.STR_PROCESSINGBLOCKID_LIST]
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(CONST.CMD_ASSIGN_RESOURCES,
                                                                           argin, self.commandCallback)
