@@ -6,7 +6,8 @@ import mock
 import types
 
 from mock import Mock
-from sdpsubarrayleafnode import SdpSubarrayLeafNode, CONST
+from sdpsubarrayleafnode import SdpSubarrayLeafNode
+from sdpsubarrayleafnode.CONST import CMD_STARTSCAN
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
 
@@ -26,7 +27,7 @@ def test_start_scan_should_command_sdp_subarray_master_to_start_its_scan_when_it
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_config = '{"scanDuration":0}'
+        scan_config = '{"scanDuration":10}'
         # act:
         tango_context.device.Scan(scan_config)
 
