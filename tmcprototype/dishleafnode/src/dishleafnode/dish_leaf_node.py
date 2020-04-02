@@ -27,7 +27,7 @@ from ska.base.control_model import AdminMode, HealthState, SimulationMode
 import threading
 
 
-from . import CONST
+from . import const
 import math
 import katpoint
 import re
