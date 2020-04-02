@@ -6,8 +6,7 @@ import mock
 import types
 
 from mock import Mock
-from sdpsubarrayleafnode import SdpSubarrayLeafNode
-from sdpsubarrayleafnode.CONST import CMD_SCAN
+from sdpsubarrayleafnode import SdpSubarrayLeafNode, CONST
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
 
