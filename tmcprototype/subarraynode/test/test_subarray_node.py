@@ -377,7 +377,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         receptor_list = ['0001']
         tango_context.device.AssignResources(receptor_list)
-        time.sleep(20)
+        time.sleep(10)
         assert tango_context.device.State() == DevState.ON
         assert len(tango_context.device.receptorIDList) == 1
         assert tango_context.device.obsState == ObsState.IDLE

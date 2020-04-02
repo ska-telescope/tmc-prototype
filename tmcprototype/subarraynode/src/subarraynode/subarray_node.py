@@ -1236,11 +1236,13 @@ class SubarrayNode(SKASubarray):
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         try:
             device_proxy.command_inout(cmd_name, cmd_data)
-            self.logger.debug("%s configured succesfully." % device_proxy.dev_name())
+            log_msg = "%s configured succesfully." %device_proxy.dev_name()
+            self.logger.debug(log_msg)
         except DevFailed as df:
             log_message = df[0].desc
             self._read_activity_message = log_message
-            self.logger.error("Failed to configure %s. %s" %(device_proxy.dev_name() , df))
+            log_msg = "Failed to configure %s. %s" %(device_proxy.dev_name(), df)
+            self.logger.error(log_msg)
             raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
