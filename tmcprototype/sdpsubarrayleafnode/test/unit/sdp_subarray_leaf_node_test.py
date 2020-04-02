@@ -33,6 +33,28 @@ def test_start_scan_should_command_sdp_subarray_master_to_start_its_scan_when_it
         # assert:
         sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_SCAN, any_method(with_name='commandCallback'))
 
+def test_assign_resources():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray_fqdn
+    }
+
+    sdp_subarray_proxy_mock = Mock()
+    # sdp_subarray_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        sdp_subarray_fqdn: sdp_subarray_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+        assign_config = '{"processingBlockIdList": ["0001", "0002"]}'
+        # act:
+        tango_context.device.AssignResources(assign_config)
+
+        # assert:
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES, any_method(with_name='commandCallback'))
 
 def any_method(with_name=None):
     class AnyMethod():
