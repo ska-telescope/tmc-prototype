@@ -12,7 +12,7 @@
 # Imports
 import tango
 from tango import DevState
-from cspmasterleafnode import CspMasterLeafNode, CONST
+from cspmasterleafnode import CspMasterLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode, LoggingLevel
 import pytest
 import time
@@ -65,7 +65,7 @@ class TestCspMasterLeafNode(object):
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_Status) ENABLED START #
-        assert CONST.STR_DEV_ALARM in tango_context.device.Status()
+        assert const.STR_DEV_ALARM in tango_context.device.Status()
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_Status
 
     def test_GetVersionInfo(self):
@@ -83,10 +83,10 @@ class TestCspMasterLeafNode(object):
         """Test for On"""
         tango_context.device.On(["a/b/c"])
         time.sleep(1)
-        assert ((CONST.ERR_INVOKING_CMD in tango_context.device.activityMessage) or (
-                CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
-                (CONST.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
-                (CONST.STR_CSP_CBF_HEALTH_UNKNOWN in tango_context.device.activityMessage)
+        assert ((const.ERR_INVOKING_CMD in tango_context.device.activityMessage) or (
+                const.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
+                (const.STR_CSP_PSS_HEALTH_UNKNOWN in tango_context.device.activityMessage) or
+                (const.STR_CSP_CBF_HEALTH_UNKNOWN in tango_context.device.activityMessage)
                 )
 
     def test_buildState(self, tango_context):
@@ -150,7 +150,7 @@ class TestCspMasterLeafNode(object):
         # PROTECTED REGION ID(CspMasterLeafNode.test_On) ENABLED START #
         tango_context.device.On([])
         time.sleep(1)
-        assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert create_cspmaster_proxy.state() == DevState.ON
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_On
 
@@ -159,7 +159,7 @@ class TestCspMasterLeafNode(object):
         # PROTECTED REGION ID(CspMasterLeafNode.test_Standby) ENABLED START #
         tango_context.device.Standby([])
         time.sleep(1)
-        assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert create_cspmaster_proxy.state() == DevState.STANDBY
         time.sleep(1)
         tango_context.device.On([])

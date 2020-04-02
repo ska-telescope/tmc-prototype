@@ -14,10 +14,10 @@ other TM Components (such as OET, Central Node) for a Subarray.
 """
 
 from . import release
-from . import CONST
+from . import const
 from .subarray_node import SubarrayNode, ElementDeviceData, SubarrayHealthState
 
-__all__ = ["SubarrayNode", "ElementDeviceData", "SubarrayHealthState", "CONST", "release"]
+__all__ = ["SubarrayNode", "ElementDeviceData", "SubarrayHealthState", "const", "release"]
 
 __version__ = release.version
 __version_info__ = release.version_info

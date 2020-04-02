@@ -25,7 +25,7 @@ from ska.base.control_model import AdminMode, HealthState, TestMode
 from future.utils import with_metaclass
 
 # Additional import
-from . import CONST
+from . import const
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
@@ -51,19 +51,19 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         try:
             if event.err:
-                log = CONST.ERR_INVOKING_CMD + event.cmd_name
-                log_msg = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                log = const.ERR_INVOKING_CMD + event.cmd_name
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
                 self.logger.error(log)
             else:
-                log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
                 self.logger.info(log)
         except Exception as except_occurred:
-            self._read_activity_message = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
-            log_msg = CONST.ERR_EXCEPT_CMD_CB + str(except_occurred)
+            self._read_activity_message = const.ERR_EXCEPT_CMD_CB + str(except_occurred)
+            log_msg = const.ERR_EXCEPT_CMD_CB + str(except_occurred)
             self.logger.error(log_msg)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -73,13 +73,13 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             err_msg = ''
             for item in exception_message:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_SDP_CMD_CALLBK, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_SDP_CMD_CALLBK, tango.ErrSeverity.ERR)
 
     #Throw devfailed exception
     def _handle_devfailed_exception(self, df, actvity_msg):
         self._read_activity_message = actvity_msg
-        self._read_activity_message = CONST.ERR_MSG + str(df)
+        self._read_activity_message = const.ERR_MSG + str(df)
         self.logger.error(actvity_msg)
     # PROTECTED REGION END #    //  SdpMasterLeafNode.class_variable
 
@@ -128,24 +128,24 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._version_info = "1.0"
             self._processing_block_list = "test"
             self._read_activity_message = 'OK'
-            self.set_status(CONST.STR_INIT_SUCCESS)
+            self.set_status(const.STR_INIT_SUCCESS)
             self._health_state = HealthState.OK
             self._admin_mode = AdminMode.ONLINE
             self._test_mode = TestMode.NONE
 
         except DevFailed as dev_failed:
-            self._handle_devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR)
+            self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR)
 
         try:
-            self._read_activity_message = CONST.STR_SDPMASTER_FQDN + str(self.SdpMasterFQDN)
+            self._read_activity_message = const.STR_SDPMASTER_FQDN + str(self.SdpMasterFQDN)
             # Creating proxy to the SDPMaster
             self._sdp_proxy = DeviceProxy(str(self.SdpMasterFQDN))
         except DevFailed as dev_failed:
             self.set_state(DevState.FAULT)
-            self._handle_devfailed_exception(dev_failed, CONST.ERR_IN_CREATE_PROXY_SDP_MASTER)
+            self._handle_devfailed_exception(dev_failed, const.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-        self._read_activity_message = CONST.STR_SETTING_CB_MODEL + str(
+        self._read_activity_message = const.STR_SETTING_CB_MODEL + str(
             ApiUtil.instance().get_asynch_cb_sub_model())
 
         # PROTECTED REGION END #    //  SdpMasterLeafNode.init_device
@@ -210,8 +210,8 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None.
 
         """
-        self._sdp_proxy.command_inout_asynch(CONST.CMD_ON, self.commandCallback)
-        log_msg = CONST.CMD_ON + CONST.STR_COMMAND + CONST.STR_INVOKE_SUCCESS
+        self._sdp_proxy.command_inout_asynch(const.CMD_ON, self.commandCallback)
+        log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.On
 
@@ -227,12 +227,12 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
          :return: None.
 
          """
-        self.logger.debug(CONST.STR_OFF_CMD_SUCCESS)
-        self._read_activity_message = CONST.STR_OFF_CMD_SUCCESS
+        self.logger.debug(const.STR_OFF_CMD_SUCCESS)
+        self._read_activity_message = const.STR_OFF_CMD_SUCCESS
 
         # This code is written only to improve code coverage
         if self._test_mode == TestMode.TEST:
-            self._handle_devfailed_exception(DevFailed, CONST.ERR_OFF_CMD_FAIL)
+            self._handle_devfailed_exception(DevFailed, const.ERR_OFF_CMD_FAIL)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Off
 
     @command(
@@ -247,8 +247,8 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
          :return: None.
 
          """
-        self.logger.debug(CONST.STR_DISABLE_CMS_SUCCESS)
-        self._read_activity_message = CONST.STR_DISABLE_CMS_SUCCESS
+        self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
+        self._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Disableon
 
     @command(
@@ -265,8 +265,8 @@ class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         :return: None.
 
         """
-        self._sdp_proxy.command_inout_asynch(CONST.CMD_STANDBY, self.commandCallback)
-        log_msg = CONST.CMD_STANDBY + CONST.STR_COMMAND + CONST.STR_INVOKE_SUCCESS
+        self._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.commandCallback)
+        log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Standby
 

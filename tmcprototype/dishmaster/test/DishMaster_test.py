@@ -15,7 +15,7 @@ import pytest
 import time
 import tango
 from tango import DevState
-from dishmaster import DishMaster, CONST
+from dishmaster import DishMaster, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:
@@ -59,7 +59,7 @@ class TestDishMaster(object):
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(DishMaster.test_Status) ENABLED START #
-        assert tango_context.device.Status() == CONST.STR_DISH_INIT_SUCCESS
+        assert tango_context.device.Status() == const.STR_DISH_INIT_SUCCESS
         # PROTECTED REGION END #    //  DishMaster.test_Status
 
     def test_Reset(self, tango_context):
@@ -120,7 +120,7 @@ class TestDishMaster(object):
         assert tango_context.device.capturing is True
         # Testing if the Scan is already in progress
         tango_context.device.Scan("0")
-        assert tango_context.device.Status() == CONST.STR_DISH_NOT_READY
+        assert tango_context.device.Status() == const.STR_DISH_NOT_READY
         # PROTECTED REGION END #    //  DishMaster.test_Scan
 
     def test_StopCapture(self, tango_context):
@@ -138,7 +138,7 @@ class TestDishMaster(object):
         assert tango_context.device.pointingState == 0
         # Testing if data capturing is already stopped
         tango_context.device.StopCapture("0")
-        assert tango_context.device.Status() == CONST.STR_DATA_CAPTURE_ALREADY_STOPPED
+        assert tango_context.device.Status() == const.STR_DATA_CAPTURE_ALREADY_STOPPED
         # PROTECTED REGION END #    //  DishMaster.test_StopCapture
 
     def test_StartCapture(self, tango_context):
@@ -156,7 +156,7 @@ class TestDishMaster(object):
         assert tango_context.device.capturing is True
         # Testing if data capturing is already started
         tango_context.device.StartCapture("0")
-        assert tango_context.device.Status() == CONST.STR_DATA_CAPTURE_ALREADY_STARTED
+        assert tango_context.device.Status() == const.STR_DATA_CAPTURE_ALREADY_STARTED
         # PROTECTED REGION END #    //  DishMaster.test_StartCapture
 
     def test_Slew(self, tango_context):

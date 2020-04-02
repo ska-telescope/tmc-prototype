@@ -15,7 +15,7 @@ import pytest
 import time
 import tango
 from tango import DevState
-from subarraynode import SubarrayNode, SubarrayHealthState, ElementDeviceData, CONST
+from subarraynode import SubarrayNode, SubarrayHealthState, ElementDeviceData, const
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, LoggingLevel
 
 @pytest.fixture(scope="function",
@@ -338,7 +338,7 @@ class TestSubarrayNode(object):
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(SubarrayNode.test_Status) ENABLED START #
-        assert tango_context.device.Status() == CONST.STR_SA_INIT_SUCCESS
+        assert tango_context.device.Status() == const.STR_SA_INIT_SUCCESS
         # PROTECTED REGION END #    //  SubarrayNode.test_Status
 
     def test_State(self, tango_context):
@@ -410,7 +410,7 @@ class TestSubarrayNode(object):
                                            '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                            '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(5)
-        # assert CONST.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
+        # assert const.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
         assert tango_context.device.obsState == ObsState.IDLE
         # create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
@@ -420,7 +420,7 @@ class TestSubarrayNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
         time.sleep(3)
-        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
     def test_Configure(self, tango_context, create_dish_proxy):
         """Test for Configure"""
@@ -515,7 +515,7 @@ class TestSubarrayNode(object):
         test_input = '{"scan_Duration": "10"}'
         tango_context.device.Scan(test_input)
         time.sleep(5)
-        assert CONST.ERR_SCAN_CMD in tango_context.device.activityMessage
+        assert const.ERR_SCAN_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan_Negative_InvalidDataType
 
     def test_EndSB(self, tango_context):
@@ -543,7 +543,7 @@ class TestSubarrayNode(object):
         assert tango_context.device.State() == DevState.OFF
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseAllResources()
-        assert CONST.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
+        assert const.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
 
     def test_ReleaseResources(self, tango_context):
@@ -658,7 +658,7 @@ class TestSubarrayNode(object):
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(SubarrayNode.test_activityMessage) ENABLED START #
-        message = CONST.STR_OK
+        message = const.STR_OK
         tango_context.device.activityMessage = message
         assert tango_context.device.activityMessage == message
         # PROTECTED REGION END #    //  SubarrayNode.test_activityMessage
@@ -680,7 +680,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_Track) ENABLED START #
         track_argin = "radec|2:31:50.91|89:15:51.4"
         tango_context.device.Track(track_argin)
-        assert CONST.STR_TRACK_IP_ARG in tango_context.device.activityMessage
+        assert const.STR_TRACK_IP_ARG in tango_context.device.activityMessage
         create_dishln_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Track
 

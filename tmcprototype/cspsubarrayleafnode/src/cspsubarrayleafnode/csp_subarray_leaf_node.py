@@ -33,7 +33,7 @@ from ska.base.control_model import HealthState, ObsState
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 import json
 from future.utils import with_metaclass
-from . import CONST
+from . import const
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]
@@ -64,21 +64,21 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         try:
             if event.err:
-                self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
-                log = CONST.ERR_INVOKING_CMD + event.cmd_name
+                log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
-                log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
                 self.logger.info(log)
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, CONST.ERR_EXCEPT_CMD_CB)
+                                                exception_message, exception_count, const.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_CMD_CALLBK)
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
 
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.class_variable
 
@@ -337,7 +337,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         err_msg = ''
         for item in except_msg_list:
             err_msg += item + "\n"
-        tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
     def init_device(self):
         """
@@ -352,7 +352,7 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 # create CspSubarray Proxy
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             except Exception:
-                self.logger.debug(CONST.ERR_IN_CREATE_PROXY_CSPSA)
+                self.logger.debug(const.ERR_IN_CREATE_PROXY_CSPSA)
 
             # create CspSubarray Proxy
             # self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
@@ -381,15 +381,15 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 daemon=False)
             self.delay_model_calculator_thread.start()
             self.set_state(DevState.ON)
-            self.set_status(CONST.STR_CSPSALN_INIT_SUCCESS)
+            self.set_status(const.STR_CSPSALN_INIT_SUCCESS)
             self._csp_subarray_health_state = HealthState.OK
-            self.logger.info(CONST.STR_CSPSALN_INIT_SUCCESS)
+            self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
 
         except DevFailed as dev_failed:
-            self._handle_devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR_CSPSALN, 0,
-                                                                CONST.STR_ERR_MSG)
-            self.logger.debug(CONST.ERR_INIT_PROP_ATTR_CSPSALN)
-            self.logger.debug(CONST.STR_ERR_MSG, dev_failed)
+            self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR_CSPSALN, 0,
+                                                                const.STR_ERR_MSG)
+            self.logger.debug(const.ERR_INIT_PROP_ATTR_CSPSALN)
+            self.logger.debug(const.STR_ERR_MSG, dev_failed)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -509,30 +509,30 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
 
-            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_CONFIGURESCAN, cmdData,
+            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURESCAN, cmdData,
                                                        self.commandCallback)
-            self._read_activity_message = CONST.STR_CONFIGURESCAN_SUCCESS
-            self.logger.info(CONST.STR_CONFIGURESCAN_SUCCESS)
+            self._read_activity_message = const.STR_CONFIGURESCAN_SUCCESS
+            self.logger.info(const.STR_CONFIGURESCAN_SUCCESS)
             self.logger.debug(argin)
 
         except ValueError as value_error:
-            log_msg = CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
+            log_msg = const.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
             self.logger.error(log_msg)
-            self._read_activity_message = CONST.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
+            self._read_activity_message = const.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except DevFailed as dev_failed:
             [exception_count,exception_message] = self._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
+                                exception_message, exception_count, const.ERR_CONFIGURESCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception( except_occurred,
-                                    exception_message, exception_count, CONST.ERR_CONFIGURESCAN_INVOKING_CMD)
+                                    exception_message, exception_count, const.ERR_CONFIGURESCAN_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_CONFIG_SCAN_EXEC)
+            self.throw_exception(exception_message, const.STR_CONFIG_SCAN_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ConfigureScan
 
@@ -560,24 +560,24 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == ObsState.READY:
                 #Invoke StartScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_STARTSCAN, "0", self.commandCallback)
-                self._read_activity_message = CONST.STR_STARTSCAN_SUCCESS
-                self.logger.info(CONST.STR_STARTSCAN_SUCCESS)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", self.commandCallback)
+                self._read_activity_message = const.STR_STARTSCAN_SUCCESS
+                self.logger.info(const.STR_STARTSCAN_SUCCESS)
             else:
-                self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
-                self.logger.error(CONST.ERR_DEVICE_NOT_READY)
+                self._read_activity_message = const.ERR_DEVICE_NOT_READY
+                self.logger.error(const.ERR_DEVICE_NOT_READY)
 
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, CONST.ERR_STARTSCAN_RESOURCES)
+                                        exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, CONST.ERR_STARTSCAN_RESOURCES)
+                                        exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_START_SCAN_EXEC)
+            self.throw_exception(exception_message, const.STR_START_SCAN_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
@@ -598,24 +598,24 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             if self.CspSubarrayProxy.obsState == ObsState.SCANNING:
                 # Invoke EndScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSCAN, self.commandCallback)
-                self._read_activity_message = CONST.STR_ENDSCAN_SUCCESS
-                self.logger.info(CONST.STR_ENDSCAN_SUCCESS)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, self.commandCallback)
+                self._read_activity_message = const.STR_ENDSCAN_SUCCESS
+                self.logger.info(const.STR_ENDSCAN_SUCCESS)
             else:
-                self._read_activity_message = CONST.ERR_DEVICE_NOT_IN_SCAN
-                self.logger.error(CONST.ERR_DEVICE_NOT_IN_SCAN)
+                self._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
+                self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
 
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
+                                        exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, CONST.ERR_ENDSCAN_INVOKING_CMD)
+                                        exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_ENDSCAN_EXEC)
+            self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndScan
 
@@ -637,20 +637,20 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.receptorIDList = []
             self.fsids_list = []
             self.update_config_params()
-            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
-            self._read_activity_message = CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS
-            self.logger.info(CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+            self.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
+            self._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
+            self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, CONST.ERR_RELEASE_ALL_RESOURCES)
+                                        exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, CONST.ERR_RELEASE_ALL_RESOURCES)
+                                        exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_RELEASE_RES_EXEC)
+            self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ReleaseResources
 
@@ -689,44 +689,44 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         try:
             #Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
-            self.receptorIDList_str = jsonArgument[CONST.STR_DISH][CONST.STR_RECEPTORID_LIST]
+            self.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
             #convert receptorIDList from list of string to list of int
             for i in range(0, len(self.receptorIDList_str)):
                 self.receptorIDList.append(int(self.receptorIDList_str[i]))
             self.update_config_params()
 
             #Invoke AddReceptors command on CspSubarray
-            self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ADD_RECEPTORS, self.receptorIDList,
+            self.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, self.receptorIDList,
                                                        self.commandCallback)
 
-            self._read_activity_message = CONST.STR_ADD_RECEPTORS_SUCCESS
-            self.logger.info(CONST.STR_ADD_RECEPTORS_SUCCESS)
+            self._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
+            self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
         except ValueError as value_error:
-            log_msg = CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
+            log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             self.logger.error(log_msg)
-            self._read_activity_message = CONST.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
+            self._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.error(log_msg)
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
-                                         exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
+                                         exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                         exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
+                                         exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
 
@@ -745,23 +745,23 @@ class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_count = 0
         try:
             if self.CspSubarrayProxy.obsState == ObsState.READY:
-                self.CspSubarrayProxy.command_inout_asynch(CONST.CMD_ENDSB, self.commandCallback)
-                self._read_activity_message = CONST.STR_ENDSB_SUCCESS
-                self.logger.info(CONST.STR_ENDSB_SUCCESS)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSB, self.commandCallback)
+                self._read_activity_message = const.STR_ENDSB_SUCCESS
+                self.logger.info(const.STR_ENDSB_SUCCESS)
             else:
-                self._read_activity_message = CONST.ERR_DEVICE_NOT_READY
-                self.logger.error(CONST.ERR_DEVICE_NOT_READY)
+                self._read_activity_message = const.ERR_DEVICE_NOT_READY
+                self.logger.error(const.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
+                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, CONST.ERR_ENDSB_INVOKING_CMD)
+                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_ENDSB_EXEC)
+            self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndSB
 

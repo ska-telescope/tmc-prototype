@@ -11,7 +11,7 @@
 
 # Imports
 from tango import DevState, EventType, DeviceProxy
-from cspsubarrayleafnode import CspSubarrayLeafNode, CONST
+from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode, LoggingLevel
 import pytest
 import json
@@ -59,7 +59,7 @@ class TestCspSubarrayLeafNode(object):
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_Status) ENABLED START #
-        assert tango_context.device.Status() != CONST.STR_CSPSALN_INIT_SUCCESS
+        assert tango_context.device.Status() != const.STR_CSPSALN_INIT_SUCCESS
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Status
 
     def test_GetVersionInfo(self, tango_context):
@@ -85,7 +85,7 @@ class TestCspSubarrayLeafNode(object):
             tango_context.device.AssignResources(assignresources_input)
         time.sleep(1)
         assert create_cspsubarray1_proxy.state() == DevState.OFF
-        assert CONST.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
 
     def test_AssignResources_key_not_found(self, tango_context, create_cspsubarray1_proxy):
         """
@@ -99,7 +99,7 @@ class TestCspSubarrayLeafNode(object):
             tango_context.device.AssignResources(assignresources_input)
         time.sleep(1)
         assert create_cspsubarray1_proxy.state() == DevState.OFF
-        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
     def test_AssignResources(self, tango_context,  create_cspsubarray1_proxy):
         """Test for AssignResources"""
@@ -110,7 +110,7 @@ class TestCspSubarrayLeafNode(object):
         tango_context.device.status()
         time.sleep(1)
         assert create_cspsubarray1_proxy.state() == DevState.ON
-        assert CONST.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
+        assert const.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
                and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_AssignResources
 
@@ -120,7 +120,7 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(2)
         tango_context.device.StartScan(['{"scanDuration": 10.0}'])
         time.sleep(1)
-        assert CONST.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
+        assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan_Device_Not_Ready
 
     def test_ConfigureScan_invalid_json(self, tango_context, create_cspsubarray1_proxy):
@@ -133,7 +133,7 @@ class TestCspSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.ConfigureScan(configurescan_input)
         time.sleep(1)
-        assert CONST.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
         assert create_cspsubarray1_proxy.obsState is not ObsState.READY
 
     def test_StartScan_generic_exception(self, tango_context):
@@ -146,7 +146,7 @@ class TestCspSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.StartScan(StartScan_input)
         time.sleep(1)
-        assert CONST.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
+        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
     def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
         """Test for ConfigureScan"""
@@ -227,7 +227,7 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == ObsState.SCANNING
-        # assert CONST.STR_STARTSCAN_SUCCESS in tango_context.device.activityMessage
+        # assert const.STR_STARTSCAN_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan
 
     def test_EndScan(self, tango_context, create_cspsubarray1_proxy):
@@ -237,7 +237,7 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == ObsState.READY
-        # assert CONST.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage \
+        # assert const.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage \
         #        and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
 
@@ -256,7 +256,7 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(1)
         res = tango_context.device.EndScan()
         time.sleep(1)
-        assert CONST.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage \
+        assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage \
                and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
 
@@ -265,7 +265,7 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndSB) ENABLED START #
         tango_context.device.EndSB()
         time.sleep(2)
-        assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
+        assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
 
     def test_ReleaseAllResources(self, tango_context, create_cspsubarray1_proxy):
@@ -274,7 +274,7 @@ class TestCspSubarrayLeafNode(object):
         tango_context.device.status()
         time.sleep(1)
         assert create_cspsubarray1_proxy.state() == DevState.OFF
-        assert CONST.STR_REMOVE_ALL_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
+        assert const.STR_REMOVE_ALL_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
                and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ReleaseResources
 

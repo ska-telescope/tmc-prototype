@@ -24,7 +24,7 @@ from ska.base.control_model import HealthState, AdminMode, SimulationMode, TestM
 
 # PROTECTED REGION ID(CspMasterLeafNode.additionnal_import) ENABLED START #
 from future.utils import with_metaclass
-from . import CONST
+from . import const
 
 # PROTECTED REGION END #    //  CspMasterLeafNode.additionnal_import
 
@@ -56,26 +56,26 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 self._csp_cbf_health = evt.attr_value.value
                 if self._csp_cbf_health == HealthState.OK:
-                    self.logger.debug(CONST.STR_CSP_CBF_HEALTH_OK)
-                    self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_OK
+                    self.logger.debug(const.STR_CSP_CBF_HEALTH_OK)
+                    self._read_activity_message = const.STR_CSP_CBF_HEALTH_OK
                 elif self._csp_cbf_health == HealthState.DEGRADED:
-                    self.logger.debug(CONST.STR_CSP_CBF_HEALTH_DEGRADED)
-                    self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_DEGRADED
+                    self.logger.debug(const.STR_CSP_CBF_HEALTH_DEGRADED)
+                    self._read_activity_message = const.STR_CSP_CBF_HEALTH_DEGRADED
                 elif self._csp_cbf_health == HealthState.FAILED:
-                    self.logger.debug(CONST.STR_CSP_CBF_HEALTH_FAILED)
-                    self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_FAILED
+                    self.logger.debug(const.STR_CSP_CBF_HEALTH_FAILED)
+                    self._read_activity_message = const.STR_CSP_CBF_HEALTH_FAILED
                 else:
-                    self.logger.debug(CONST.STR_CSP_CBF_HEALTH_UNKNOWN)
-                    self._read_activity_message = CONST.STR_CSP_CBF_HEALTH_UNKNOWN
+                    self.logger.debug(const.STR_CSP_CBF_HEALTH_UNKNOWN)
+                    self._read_activity_message = const.STR_CSP_CBF_HEALTH_UNKNOWN
             except DevFailed as dev_failed:
-                self._handle_devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_CBF_HEALTH)
+                self._handle_devfailed_exception(dev_failed, const.ERR_ON_SUBS_CSP_CBF_HEALTH)
             except Exception as except_occurred:
-                self._handle_generic_exception(CONST.ERR_CSP_CBF_HEALTH_CB + ": " + str(except_occurred))
+                self._handle_generic_exception(const.ERR_CSP_CBF_HEALTH_CB + ": " + str(except_occurred))
         else:
-            log_msg = CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
+            log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
             self.logger.error(log_msg)
-            self._read_activity_message = CONST.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
-            self.logger.error(CONST.ERR_ON_SUBS_CSP_CBF_HEALTH)
+            self._read_activity_message = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
+            self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
 
     def cspPssHealthCallback(self, evt):
         """
@@ -89,26 +89,26 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 self._csp_pss_health = evt.attr_value.value
                 if self._csp_pss_health == HealthState.OK:
-                    self.logger.debug(CONST.STR_CSP_PSS_HEALTH_OK)
-                    self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_OK
+                    self.logger.debug(const.STR_CSP_PSS_HEALTH_OK)
+                    self._read_activity_message = const.STR_CSP_PSS_HEALTH_OK
                 elif self._csp_pss_health == HealthState.DEGRADED:
-                    self.logger.debug(CONST.STR_CSP_PSS_HEALTH_DEGRADED)
-                    self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_DEGRADED
+                    self.logger.debug(const.STR_CSP_PSS_HEALTH_DEGRADED)
+                    self._read_activity_message = const.STR_CSP_PSS_HEALTH_DEGRADED
                 elif self._csp_pss_health == HealthState.FAILED:
-                    self.logger.debug(CONST.STR_CSP_PSS_HEALTH_FAILED)
-                    self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_FAILED
+                    self.logger.debug(const.STR_CSP_PSS_HEALTH_FAILED)
+                    self._read_activity_message = const.STR_CSP_PSS_HEALTH_FAILED
                 else:
-                    self.logger.debug(CONST.STR_CSP_PSS_HEALTH_UNKNOWN)
-                    self._read_activity_message = CONST.STR_CSP_PSS_HEALTH_UNKNOWN
+                    self.logger.debug(const.STR_CSP_PSS_HEALTH_UNKNOWN)
+                    self._read_activity_message = const.STR_CSP_PSS_HEALTH_UNKNOWN
             except DevFailed as dev_failed:
-                self._handle_devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
+                self._handle_devfailed_exception(dev_failed, const.ERR_ON_SUBS_CSP_PSS_HEALTH)
             except Exception as except_occurred:
-                self._handle_generic_exception(CONST.ERR_CSP_PSS_HEALTH_CB + ": " + str(except_occurred))
+                self._handle_generic_exception(const.ERR_CSP_PSS_HEALTH_CB + ": " + str(except_occurred))
         else:
-            log_msg = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
+            log_msg = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
             self.logger.error(log_msg)
-            self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
-            self.logger.error(CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
+            self._read_activity_message = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
+            self.logger.error(const.ERR_ON_SUBS_CSP_PSS_HEALTH)
 
     def cspPstHealthCallback(self, evt):
         """
@@ -122,26 +122,26 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             try:
                 self._csp_pst_health = evt.attr_value.value
                 if self._csp_pst_health == HealthState.OK:
-                    self.logger.debug(CONST.STR_CSP_PST_HEALTH_OK)
-                    self._read_activity_message = CONST.STR_CSP_PST_HEALTH_OK
+                    self.logger.debug(const.STR_CSP_PST_HEALTH_OK)
+                    self._read_activity_message = const.STR_CSP_PST_HEALTH_OK
                 elif self._csp_pst_health == HealthState.DEGRADED:
-                    self.logger.debug(CONST.STR_CSP_PST_HEALTH_DEGRADED)
-                    self._read_activity_message = CONST.STR_CSP_PST_HEALTH_DEGRADED
+                    self.logger.debug(const.STR_CSP_PST_HEALTH_DEGRADED)
+                    self._read_activity_message = const.STR_CSP_PST_HEALTH_DEGRADED
                 elif self._csp_pst_health == HealthState.FAILED:
-                    self.logger.debug(CONST.STR_CSP_PST_HEALTH_FAILED)
-                    self._read_activity_message = CONST.STR_CSP_PST_HEALTH_FAILED
+                    self.logger.debug(const.STR_CSP_PST_HEALTH_FAILED)
+                    self._read_activity_message = const.STR_CSP_PST_HEALTH_FAILED
                 else:
-                    self.logger.debug(CONST.STR_CSP_PST_HEALTH_UNKNOWN)
-                    self._read_activity_message = CONST.STR_CSP_PST_HEALTH_UNKNOWN
+                    self.logger.debug(const.STR_CSP_PST_HEALTH_UNKNOWN)
+                    self._read_activity_message = const.STR_CSP_PST_HEALTH_UNKNOWN
             except DevFailed as dev_failed:
-                self._handle_devfailed_exception(dev_failed, CONST.ERR_ON_SUBS_CSP_PSS_HEALTH)
+                self._handle_devfailed_exception(dev_failed, const.ERR_ON_SUBS_CSP_PSS_HEALTH)
             except Exception as except_occurred:
-                self._handle_generic_exception(CONST.ERR_CSP_PST_HEALTH_CB + ": " + str(except_occurred))
+                self._handle_generic_exception(const.ERR_CSP_PST_HEALTH_CB + ": " + str(except_occurred))
         else:
-            log_msg = CONST.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
+            log_msg = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
             self.logger.error(log_msg)
-            self._read_activity_message = CONST.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
-            self.logger.error(CONST.ERR_ON_SUBS_CSP_PST_HEALTH)
+            self._read_activity_message = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
+            self.logger.error(const.ERR_ON_SUBS_CSP_PST_HEALTH)
 
     def commandCallback(self, event):
         """
@@ -155,16 +155,16 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         exception_message = []
         try:
             if event.err:
-                log = CONST.ERR_INVOKING_CMD + event.cmd_name
-                log_msg = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                log = const.ERR_INVOKING_CMD + event.cmd_name
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = CONST.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
             else:
-                log = CONST.STR_COMMAND + event.cmd_name + CONST.STR_INVOKE_SUCCESS
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
         except Exception as except_occurred:
-            self._handle_generic_exception(CONST.ERR_EXCEPT_CMD_CB + ": " + str(except_occurred))
+            self._handle_generic_exception(const.ERR_EXCEPT_CMD_CB + ": " + str(except_occurred))
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
@@ -173,8 +173,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             err_msg = ''
             for item in exception_message:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_CSP_CMD_CALLBK, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_CSP_CMD_CALLBK, tango.ErrSeverity.ERR)
 
     #Exception handling
     def _handle_devfailed_exception(self, df, read_actvity_msg):
@@ -221,56 +221,56 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(CspMasterLeafNode.init_device) ENABLED START #
         try:
-            self._read_activity_message = CONST.STR_CSP_INIT_LEAF_NODE
-            self.SkaLevel = CONST.INT_SKA_LEVEL
+            self._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
+            self.SkaLevel = const.INT_SKA_LEVEL
             self._admin_mode = AdminMode.ONLINE  # Setting adminMode to "ONLINE"
             self._health_state = HealthState.OK # Setting healthState to "OK"
             self._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             self._test_mode = TestMode.NONE
 
         except DevFailed as dev_failed:
-            self.logger.error(CONST.ERR_INIT_PROP_ATTR)
-            self._read_activity_message = CONST.ERR_INIT_PROP_ATTR
-            self._handle_devfailed_exception(dev_failed, CONST.ERR_INIT_PROP_ATTR)
+            self.logger.error(const.ERR_INIT_PROP_ATTR)
+            self._read_activity_message = const.ERR_INIT_PROP_ATTR
+            self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR)
 
         try:
-            self._read_activity_message = CONST.STR_CSPMASTER_FQDN + str(self.CspMasterFQDN)
+            self._read_activity_message = const.STR_CSPMASTER_FQDN + str(self.CspMasterFQDN)
             # Creating proxy to the CSPMaster
             log_msg = "CSP Master name: " + str(self.CspMasterFQDN)
             self.logger.debug(log_msg)
             self._csp_proxy = DeviceProxy(str(self.CspMasterFQDN))
         except DevFailed as dev_failed:
-            log_msg = CONST.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
+            log_msg = const.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
             self.logger.error(log_msg)
-            self._read_activity_message = CONST.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
+            self._read_activity_message = const.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
             self.set_state(DevState.FAULT)
-            self._handle_devfailed_exception(dev_failed, CONST.ERR_IN_CREATE_PROXY_CSP_MASTER)
+            self._handle_devfailed_exception(dev_failed, const.ERR_IN_CREATE_PROXY_CSP_MASTER)
 
         # Subscribing to CSPMaster Attributes
         try:
-            self._csp_proxy.subscribe_event(CONST.EVT_CBF_HEALTH, EventType.CHANGE_EVENT,
+            self._csp_proxy.subscribe_event(const.EVT_CBF_HEALTH, EventType.CHANGE_EVENT,
                                             self.cspCbfHealthCallback, stateless=True)
-            self._csp_proxy.subscribe_event(CONST.EVT_PSS_HEALTH, EventType.CHANGE_EVENT,
+            self._csp_proxy.subscribe_event(const.EVT_PSS_HEALTH, EventType.CHANGE_EVENT,
                                             self.cspPssHealthCallback, stateless=True)
-            self._csp_proxy.subscribe_event(CONST.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
+            self._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
                                             self.cspPstHealthCallback, stateless=True)
 
             self.set_state(DevState.ON)
-            self.set_status(CONST.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
-            self.logger.info(CONST.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
+            self.set_status(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
+            self.logger.info(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = CONST.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
+            log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
             self.logger.error(log_msg)
-            self._read_activity_message = CONST.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
+            self._read_activity_message = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
-            self.set_status(CONST.ERR_CSP_MASTER_LEAF_INIT)
-            self.logger.error(CONST.ERR_CSP_MASTER_LEAF_INIT)
+            self.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
+            self.logger.error(const.ERR_CSP_MASTER_LEAF_INIT)
 
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-        log_msg = CONST.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+        log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
         self.logger.debug(log_msg)
-        self._read_activity_message = CONST.STR_SETTING_CB_MODEL + str(
+        self._read_activity_message = const.STR_SETTING_CB_MODEL + str(
             ApiUtil.instance().get_asynch_cb_sub_model())
         # PROTECTED REGION END #    //  CspMasterLeafNode.init_device
 
@@ -322,8 +322,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
-        self._csp_proxy.command_inout_asynch(CONST.CMD_ON, argin, self.commandCallback)
-        self.logger.debug(CONST.STR_ON_CMD_ISSUED)
+        self._csp_proxy.command_inout_asynch(const.CMD_ON, argin, self.commandCallback)
+        self.logger.debug(const.STR_ON_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.On
 
@@ -344,8 +344,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
-        self._csp_proxy.command_inout_asynch(CONST.CMD_OFF, argin, self.commandCallback)
-        self.logger.debug(CONST.STR_OFF_CMD_ISSUED)
+        self._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, self.commandCallback)
+        self.logger.debug(const.STR_OFF_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Off
 
@@ -368,8 +368,8 @@ class CspMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
         :return: None
         """
-        self._csp_proxy.command_inout_asynch(CONST.CMD_STANDBY, argin, self.commandCallback)
-        self.logger.debug(CONST.STR_STANDBY_CMD_ISSUED)
+        self._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.commandCallback)
+        self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
 

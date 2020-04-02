@@ -1,5 +1,5 @@
 """
-CONST file for CspSubarrayLeafNode
+const file for CspSubarrayLeafNode
 """
 # In/Out command constants
 CMD_ADD_RECEPTORS = "AddReceptors"

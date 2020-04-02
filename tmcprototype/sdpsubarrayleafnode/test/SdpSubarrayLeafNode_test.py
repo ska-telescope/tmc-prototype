@@ -13,7 +13,7 @@ import tango
 import pytest
 import time
 from tango import DevState, EventType, DeviceProxy
-from sdpsubarrayleafnode import SdpSubarrayLeafNode, CONST
+from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:
@@ -61,7 +61,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Status) ENABLED START #
-        assert tango_context.device.Status() != CONST.STR_INIT_SUCCESS
+        assert tango_context.device.Status() != const.STR_INIT_SUCCESS
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Status
 
     def test_Reset(self, tango_context):
@@ -76,7 +76,7 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
         test_input = '{"processingBlockIdList": ["0001", "0002"]}'
         tango_context.device.AssignResources(test_input)
-        assert CONST.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
     def test_AssignResources_invalid_key(self, tango_context):
@@ -85,7 +85,7 @@ class TestSdpSubarrayLeafNode(object):
         test_input = '{"processingBlock": ["0001", "0002"]}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
-        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
     def test_AssignResources_invalid_format(self, tango_context):
@@ -94,7 +94,7 @@ class TestSdpSubarrayLeafNode(object):
         test_input = '{"abc"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
-        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
     def test_AssignResources_generic_exception(self, tango_context):
@@ -103,14 +103,14 @@ class TestSdpSubarrayLeafNode(object):
         test_input = '[123]'
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
-        assert CONST.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
+        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources_generic_exception
 
     def test_ReleaseAllResources(self, tango_context):
         """Test for ReleaseAllResources"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_ReleaseAllResources) ENABLED START #
         tango_context.device.ReleaseAllResources()
-        assert CONST.STR_REL_RESOURCES in tango_context.device.activityMessage
+        assert const.STR_REL_RESOURCES in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_ReleaseAllResources
 
     def test_Scan_device_not_ready(self, tango_context, create_sdpsubarray_proxy):
@@ -119,7 +119,7 @@ class TestSdpSubarrayLeafNode(object):
         test_input = '{"scanDuration":0}'
         tango_context.device.Scan(test_input)
         time.sleep(1)
-        assert CONST.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
+        assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan
 
     def test_Configure(self, tango_context, create_sdpsubarray_proxy):
@@ -149,7 +149,7 @@ class TestSdpSubarrayLeafNode(object):
                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
-        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
     def test_Configure_invalid_format(self, tango_context):
@@ -158,7 +158,7 @@ class TestSdpSubarrayLeafNode(object):
         test_input = '{"abc"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
-        assert CONST.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
 
     def test_Configure_generic_exception(self, tango_context):
@@ -167,7 +167,7 @@ class TestSdpSubarrayLeafNode(object):
         test_input = '[123]'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
-        assert CONST.ERR_CONFIGURE in tango_context.device.activityMessage
+        assert const.ERR_CONFIGURE in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Configure_generic_exception
 
     def test_Scan_invalid_json_format(self, tango_context):
@@ -177,7 +177,7 @@ class TestSdpSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(test_input)
         time.sleep(1)
-        assert CONST.ERR_INVALID_JSON_SCAN in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON_SCAN in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_invalid_json_format
 
     def test_Scan_key_error(self, tango_context):
@@ -187,7 +187,7 @@ class TestSdpSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(test_input)
         time.sleep(1)
-        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_key_error
 
     def test_Scan_generic_exception(self, tango_context):
@@ -196,7 +196,7 @@ class TestSdpSubarrayLeafNode(object):
         test_input = '[123]'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(test_input)
-        assert CONST.ERR_SCAN in tango_context.device.activityMessage
+        assert const.ERR_SCAN in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_Scan_generic_exception
 
     def test_Scan(self, tango_context, create_sdpsubarray_proxy):
@@ -217,7 +217,7 @@ class TestSdpSubarrayLeafNode(object):
         tango_context.device.EndScan()
         tango_context.device.status()
         time.sleep(2)
-        assert CONST.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndScan
 
     def test_EndSB(self, tango_context, create_sdpsubarray_proxy):
@@ -233,7 +233,7 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndSB) ENABLED START #
         tango_context.device.EndSB()
         time.sleep(2)
-        assert tango_context.device.activityMessage == CONST.ERR_DEVICE_NOT_READY
+        assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndSB
 
     def test_EndScan_Invalid_State(self, tango_context):
@@ -241,7 +241,7 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_EndScan_Invalid_State) ENABLED START #
         tango_context.device.EndScan()
         time.sleep(2)
-        assert CONST.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
+        assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_EndScan
 
     def test_versionId(self, tango_context):

@@ -15,7 +15,7 @@ import pytest
 import json
 import time
 from tango import DevState
-from centralnode import CentralNode, CONST
+from centralnode import CentralNode, const
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode, LoggingLevel
 
 # Note:
@@ -61,7 +61,7 @@ class TestCentralNode(object):
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(CentralNode.test_Status) ENABLED START #
-        assert tango_context.device.Status() == CONST.STR_INIT_SUCCESS
+        assert tango_context.device.Status() == const.STR_INIT_SUCCESS
         # PROTECTED REGION END #    //  CentralNode.test_Status
 
     def test_GetMetrics(self, tango_context):
@@ -90,14 +90,14 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         tango_context.device.StartUpTelescope()
         time.sleep(10)
-        assert tango_context.device.activityMessage == CONST.STR_STARTUP_CMD_ISSUED
+        assert tango_context.device.activityMessage == const.STR_STARTUP_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
     def test_StartUpTelescope_Negative(self, tango_context):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         tango_context.device.StartUpTelescope()
-        assert CONST.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
+        assert const.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
     def test_StowAntennas_invalid_argument(self, tango_context):
@@ -106,7 +106,7 @@ class TestCentralNode(object):
         argin = ["a", ]
         with pytest.raises(tango.DevFailed) :
             tango_context.device.StowAntennas(argin)
-        assert CONST.ERR_STOW_ARGIN in tango_context.device.activityMessage
+        assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
     def test_StowAntennas_invalid_functionality(self, tango_context):
@@ -116,7 +116,7 @@ class TestCentralNode(object):
         tango_context.device.StartUpTelescope()
         with pytest.raises(tango.DevFailed) :
             tango_context.device.StowAntennas(argin)
-        assert CONST.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
+        assert const.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
     def test_StowAntennas(self, tango_context, create_leafNode1_proxy):
@@ -125,7 +125,7 @@ class TestCentralNode(object):
         argin = ["0001",]
         create_leafNode1_proxy.SetStandByLPMode()
         tango_context.device.StowAntennas(argin)
-        assert tango_context.device.activityMessage == CONST.STR_STOW_CMD_ISSUED_CN
+        assert tango_context.device.activityMessage == const.STR_STOW_CMD_ISSUED_CN
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
     def test_StowAntennas_ValueErr(self, tango_context, create_leafNode1_proxy):
@@ -135,7 +135,7 @@ class TestCentralNode(object):
         create_leafNode1_proxy.SetStandByLPMode()
         with pytest.raises(tango.DevFailed):
             tango_context.device.StowAntennas(argin)
-        assert CONST.ERR_STOW_ARGIN in tango_context.device.activityMessage
+        assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas_ValueErr
 
     def test_StandByTelescope(self, tango_context):
@@ -143,7 +143,7 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
         tango_context.device.StandByTelescope()
         time.sleep(2)
-        assert tango_context.device.activityMessage == CONST.STR_STANDBY_CMD_ISSUED
+        assert tango_context.device.activityMessage == const.STR_STANDBY_CMD_ISSUED
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
     def test_StandByTelescope_invalid_functionality(self, tango_context, create_leafNode1_proxy):
@@ -153,7 +153,7 @@ class TestCentralNode(object):
         create_leafNode1_proxy.Scan("0")
         time.sleep(1)
         tango_context.device.StandByTelescope()
-        assert CONST.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
+        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
     def test_buildState(self, tango_context):
@@ -272,21 +272,21 @@ class TestCentralNode(object):
         test_input = '{"subarrayID":1,"releaseALL":false,"receptorIDList":[]}'
         tango_context.device.ReleaseResources(test_input)
         time.sleep(1)
-        assert tango_context.device.activityMessage == CONST.STR_FALSE_TAG
+        assert tango_context.device.activityMessage == const.STR_FALSE_TAG
 
     def test_ReleaseResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseResources(test_input)
         time.sleep(1)
-        assert CONST.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
     def test_ReleaseResources_key_not_found(self, tango_context):
         test_input = '{"releaseALL":true,"receptorIDList":[]}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseResources(test_input)
         time.sleep(1)
-        assert CONST.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
     def test_telescopeHealthState(self, tango_context):
