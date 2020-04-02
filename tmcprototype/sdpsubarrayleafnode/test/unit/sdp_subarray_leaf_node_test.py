@@ -42,8 +42,6 @@ def test_assign_resources():
     }
 
     sdp_subarray_proxy_mock = Mock()
-    # sdp_subarray_proxy_mock.obsState = ObsState.READY
-
     proxies_to_mock = {
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
     }
@@ -54,7 +52,7 @@ def test_assign_resources():
         tango_context.device.AssignResources(assign_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES, any_method(with_name='commandCallback'))
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
 
 def any_method(with_name=None):
     class AnyMethod():
