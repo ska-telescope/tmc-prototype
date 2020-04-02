@@ -57,6 +57,61 @@ def test_assign_resources():
         # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
         assert_activity_message(dut, CONST.STR_ASSIGN_RESOURCES_SUCCESS)
 
+def test_release_resources():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray_fqdn
+    }
+
+    sdp_subarray_proxy_mock = Mock()
+    proxies_to_mock = {
+        sdp_subarray_fqdn: sdp_subarray_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+        assign_config = '{"processingBlockIdList": ["0001", "0002"]}'
+        dut = tango_context.device
+        # act:
+        dut.ReleaseAllResources(assign_config)
+
+        # assert:
+        # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
+        assert_activity_message(dut, CONST.STR_REL_RESOURCES)
+
+def test_configure_resources():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray_fqdn
+    }
+
+    sdp_subarray_proxy_mock = Mock()
+
+    sdp_subarray_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray_fqdn: sdp_subarray_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+        test_input_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
+                     '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
+                     '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
+                     '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
+                     ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
+                     ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
+        dut = tango_context.device
+        # act:
+        dut.Configure(test_input_config)
+
+        # assert:
+        # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
+        # assert_activity_message(dut, CONST.STR_REL_RESOURCES)
+        assert dut.obsState == ObsState.READY
+
+
 def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
 
