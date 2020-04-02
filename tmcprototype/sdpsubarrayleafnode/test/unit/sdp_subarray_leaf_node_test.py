@@ -106,10 +106,9 @@ def test_configure_resources():
         dut.Configure(test_input_config)
 
         # assert:
-        # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_CONFIGURE,'0', any_method(with_name='commandCallback'))
         # assert_activity_message(dut, CONST.STR_REL_RESOURCES)
-        assert sdp_subarray_proxy_mock.obsState == ObsState.READY
-
+        # assert sdp_subarray_proxy_mock.obsState == ObsState.READY
 
 def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
