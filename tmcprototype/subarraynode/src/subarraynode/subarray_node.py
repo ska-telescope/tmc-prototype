@@ -174,7 +174,8 @@ class SubarrayNode(SKASubarray):
                 [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                             exception_message, exception_count, const.ERR_AGGR_DEVICE_STATE)
         else:
-            self.logger.debug(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt))
+            log_msg = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
+            self.logger.debug(log_msg)
             self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
             self.logger.critical(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
 
@@ -217,7 +218,8 @@ class SubarrayNode(SKASubarray):
                 self.calculate_observation_state()
 
             except KeyError as key_error:
-                self.logger.error(const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error))
+                log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
+                self.logger.error(log_msg)
                 self._read_activity_message = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
                 self.logger.critical(const.ERR_CSPSDP_SUBARRAY_OBS_STATE)
             except DevFailed as dev_failed:
@@ -227,7 +229,8 @@ class SubarrayNode(SKASubarray):
                 [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                 exception_message, exception_count, const.ERR_AGGR_OBS_STATE)
         else:
-            self.logger.debug(const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt))
+            log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
+            self.logger.debug(log_msg)
             self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
             self.logger.critical(const.ERR_SUBSR_CSPSDPSA_OBS_STATE)
 
@@ -344,7 +347,8 @@ class SubarrayNode(SKASubarray):
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
                 self._health_event_id.append(self._event_id)
                 self.subarray_ln_health_state_map[devProxy.dev_name()] = HealthState.UNKNOWN
-                self.logger.debug(const.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID))
+                log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID)
+                self.logger.debug(log_msg)
 
                 # Subscribe Dish Pointing State
                 self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
@@ -354,7 +358,8 @@ class SubarrayNode(SKASubarray):
                 self._dishLnVsPointingStateEventID[devProxy] = self._event_id
                 self._pointing_state_event_id.append(self._event_id)
                 self.dishPointingStateMap[devProxy] = -1
-                self.logger.debug(const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID))
+                log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID)
+                self.logger.debug(log_msg)
                 self._receptor_id_list.append(int(str_leafId))
                 self._read_activity_message = const.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
@@ -503,7 +508,8 @@ class SubarrayNode(SKASubarray):
             return
         
         try:
-            self.logger.debug(const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True)))
+            log_msg = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
+            self.logger.debug(log_msg)
             self._dish_leaf_node_group.remove_all()
             log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
             self.logger.debug(log_message)
@@ -514,11 +520,16 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = log_message
             return
 
-        self.logger.debug(const.STR_DISH_PROXY_LIST + str(self._dish_leaf_node_proxy))
-        self.logger.debug(const.STR_HEALTH_ID + str(self._health_event_id))
-        self.logger.debug(const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID))
-        self.logger.debug(const.STR_POINTING_STATE_ID + str(self._pointing_state_event_id))
-        self.logger.debug(const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID +str(self._dishLnVsPointingStateEventID))
+        log_msg = const.STR_DISH_PROXY_LIST + str(self._dish_leaf_node_proxy)
+        self.logger.debug(log_msg)
+        log_msg = const.STR_HEALTH_ID + str(self._health_event_id)
+        self.logger.debug(log_msg)
+        log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID)
+        self.logger.debug(log_msg)
+        log_msg = const.STR_POINTING_STATE_ID + str(self._pointing_state_event_id)
+        self.logger.debug(log_msg)
+        log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID +str(self._dishLnVsPointingStateEventID)
+        self.logger.debug(log_msg)
 
         self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
         self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
@@ -661,7 +672,8 @@ class SubarrayNode(SKASubarray):
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_err:
-            self.logger.error(const.ERR_SCAN_CMD + str(key_err))
+            log_msg = const.ERR_SCAN_CMD + str(key_err)
+            self.logger.error(log_msg)
             self._read_activity_message = const.ERR_SCAN_CMD + str(key_err)
             self.logger.error(const.ERR_SCAN_CMD)
         except DevFailed as dev_failed:
@@ -961,10 +973,12 @@ class SubarrayNode(SKASubarray):
                     self._read_activity_message = const.STR_POINTING_STATE_UNKNOWN_VAL + str(evt)
                 self.calculate_observation_state()
             except KeyError as key_err:
-                self.logger.error(const.ERR_SETPOINTING_CALLBK + str(key_err))
+                log_msg = const.ERR_SETPOINTING_CALLBK + str(key_err)
+                self.logger.error(log_msg)
                 self._read_activity_message = const.ERR_SETPOINTING_CALLBK + str(key_err)
             except Exception as except_occurred:
-                self.logger.error(const.ERR_AGGR_POINTING_STATE + str(except_occurred.message))
+                log_msg = const.ERR_AGGR_POINTING_STATE + str(except_occurred.message)
+                self.logger.error(log_msg)
                 self._read_activity_message = const.ERR_AGGR_POINTING_STATE + str(except_occurred.message)
         else:
             self.logger.debug(const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors))
