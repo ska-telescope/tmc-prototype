@@ -355,8 +355,20 @@ class TestSubarrayNode(object):
 
     def test_AssignResourcesfailure_before_startup(self, tango_context):
         """Test for AssignResources"""
-        # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        receptor_list = ['0001']
+        #PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
+        receptor_list = {"dish":{"receptorIDList":["0001","0002"]},"sdp":
+            {"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",
+            "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[
+            {"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},
+            {"id":"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",
+            "subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],
+            "processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",
+            "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":
+            "test_realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":
+            "batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",
+            "type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",
+            "type":["calibration"]}]}]}}
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(receptor_list)
         time.sleep(10)
@@ -375,20 +387,32 @@ class TestSubarrayNode(object):
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        receptor_list = ['0001']
+        receptor_list = {"dish":{"receptorIDList":["0001","0002"]},"sdp":
+            {"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",
+            "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[
+            {"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},
+            {"id":"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",
+            "subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],
+            "processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",
+            "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":
+            "test_realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":
+            "batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",
+            "type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",
+            "type":["calibration"]}]}]}}
         tango_context.device.AssignResources(receptor_list)
         time.sleep(20)
         assert tango_context.device.State() == DevState.ON
-        assert len(tango_context.device.receptorIDList) == 1
+        #assert len(tango_context.device.receptorIDList) == 1
         assert tango_context.device.obsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
     def test_AssignResources_ValueError(self, tango_context):
         """Negative Test for AssignResources_ValueError"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        receptor_list = ['abc']
+        test_input = '{"invalid_key"}'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(receptor_list)
+            tango_context.device.AssignResources(test_input)
         time.sleep(10)
         assert tango_context.device.obsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources_ValueError
