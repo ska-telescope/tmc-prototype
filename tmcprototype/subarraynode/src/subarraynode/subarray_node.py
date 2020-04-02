@@ -971,14 +971,16 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
 
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
-        self.logger.error(read_actvity_msg + str(exception))
+        log_msg=read_actvity_msg + str(exception)
+        self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(exception)
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
         return [excpt_msg_list, exception_count]
 
     def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
-        self.logger.error(read_actvity_msg + str(df))
+        log_msg=read_actvity_msg + str(df)
+        self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(df)
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
@@ -1113,7 +1115,8 @@ class SubarrayNode(SKASubarray):
             self.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
             self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
-            self.logger.error(const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed))
+            log_msg=const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
+            self.logger.error(log_msg)
             self._read_activity_message = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
             _state_fault_flag = True
@@ -1133,7 +1136,8 @@ class SubarrayNode(SKASubarray):
                                                self.device_state_callback, stateless=True)
             self.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
-            self.logger.error(const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed))
+            log_msg=const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
+            self.logger.error(log_msg)
             self._read_activity_message = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
             self.set_state(DevState.FAULT)
             _state_fault_flag = True
@@ -1290,7 +1294,8 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        self.logger.info(const.STR_CONFIGURE_IP_ARG + str(argin))
+        log_msg=const.STR_CONFIGURE_IP_ARG + str(argin)
+        self.logger.info(log_msg)
         self.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
         self._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
 
