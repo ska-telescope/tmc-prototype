@@ -108,7 +108,7 @@ class TestCspSubarrayLeafNode(object):
         assignresources_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
         res = tango_context.device.AssignResources(assignresources_input)
         tango_context.device.status()
-        time.sleep(2)
+        time.sleep(1)
         assert create_cspsubarray1_proxy.state() == DevState.ON
         assert CONST.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
                and res is None

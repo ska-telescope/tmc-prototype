@@ -85,6 +85,14 @@ class TestCspMasterLeafNode(object):
         time.sleep(1)
         assert create_cspmaster_proxy.State() == DevState.STANDBY
 
+    def test_On(self, tango_context, create_cspmaster_proxy):
+        """Test for On"""
+        # PROTECTED REGION ID(CspMasterLeafNode.test_On) ENABLED START #
+        tango_context.device.On([])
+        time.sleep(1)
+        assert create_cspmaster_proxy.State() == DevState.ON
+        # PROTECTED REGION END #    //  CspMasterLeafNode.test_On
+
     def test_buildState(self, tango_context):
         """Test for buildState"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_buildState) ENABLED START #
@@ -141,22 +149,12 @@ class TestCspMasterLeafNode(object):
         assert  tango_context.device.activityMessage == "text"
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_activityMessage
 
-    def test_On(self, tango_context, create_cspmaster_proxy):
-        """Test for On"""
-        # PROTECTED REGION ID(CspMasterLeafNode.test_On) ENABLED START #
-        tango_context.device.On([])
-        time.sleep(1)
-        # assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
-        assert create_cspmaster_proxy.State() == DevState.ON
-        # PROTECTED REGION END #    //  CspMasterLeafNode.test_On
-
     def test_Standby(self, tango_context, create_cspmaster_proxy):
         """Test for Standby"""
         # PROTECTED REGION ID(CspMasterLeafNode.test_Standby) ENABLED START #
         time.sleep(1)
         tango_context.device.Standby([])
         time.sleep(1)
-        # assert CONST.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert create_cspmaster_proxy.State() == DevState.STANDBY
         time.sleep(1)
         tango_context.device.On([])
