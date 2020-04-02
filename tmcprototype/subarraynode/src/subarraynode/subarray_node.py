@@ -770,9 +770,9 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                         DevState.STANDBY]
 
     @command(
-        dtype_in=('str',),
+        dtype_in='str',
         doc_in="String of Resources to add to subarray.",
-        dtype_out=('str',),
+        dtype_out='str',
         doc_out="String of Resources added to the subarray.",
     )
     @DebugIt()
