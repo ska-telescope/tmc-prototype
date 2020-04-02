@@ -33,6 +33,7 @@ def test_start_scan_should_command_sdp_subarray_master_to_start_its_scan_when_it
         # assert:
         sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_SCAN, any_method(with_name='commandCallback'))
 
+
 def test_assign_resources():
     # arrange:
     device_under_test = SdpSubarrayLeafNode
@@ -48,11 +49,16 @@ def test_assign_resources():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
         assign_config = '{"processingBlockIdList": ["0001", "0002"]}'
+        dut = tango_context.device
         # act:
-        tango_context.device.AssignResources(assign_config)
+        dut.AssignResources(assign_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
+        # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
+        assert_activity_message(dut, CONST.STR_ASSIGN_RESOURCES_SUCCESS)
+
+def assert_activity_message(dut, expected_message):
+    assert dut.activityMessage == expected_message # reads tango attribute
 
 def any_method(with_name=None):
     class AnyMethod():
