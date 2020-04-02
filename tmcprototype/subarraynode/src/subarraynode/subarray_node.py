@@ -330,7 +330,8 @@ class SubarrayNode(SKASubarray):
         allocation_success = []
         allocation_failure = []
         # Add each dish into the tango group
-        self.logger.debug("add_receptors_in_group::",argin)
+        log_msg = "add_receptors_in_group::",argin
+        self.logger.debug(log_msg)
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
@@ -395,7 +396,8 @@ class SubarrayNode(SKASubarray):
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
-        self.logger.debug("add_receptors_in_group::",allocation_success)
+        log_msg = "add_receptors_in_group::",allocation_success
+        self.logger.debug(log_msg)
         return allocation_success
 
     def assign_csp_resources(self, argin):
@@ -432,7 +434,8 @@ class SubarrayNode(SKASubarray):
 
         # For this PI CSP Subarray Leaf Node does not return anything. So this function is
         # looping the receptor ids back.
-        self.logger.debug("assign_csp_resources::",argout)
+        log_msg = "assign_csp_resources::",argout
+        self.logger.debug(log_msg)
         return argout
 
     def assign_sdp_resources(self, argin):
@@ -465,7 +468,8 @@ class SubarrayNode(SKASubarray):
 
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
-        self.logger.debug("assign_sdp_resources::",argout)
+        log_msg = "assign_sdp_resources::",argout
+        self.logger.debug(log_msg)
         return argout
 
     def _remove_subarray_dish_lns_health_states(self):
@@ -817,7 +821,8 @@ class SubarrayNode(SKASubarray):
             # Allocation success and failure lists
             for leafId in range(0, len(argin)):
                 float(argin[leafId])
-                self.logger.debug("assign_resource_argin",argin)
+                log_msg = "assign_resource_argin",argin
+                self.logger.debug(log_msg)
         except ValueError as value_error:
             str_log = const.ERR_SCAN_CMD +"\n" + str(value_error) + const.ERR_INVALID_DATATYPE
             self.logger.error(str_log)
@@ -877,7 +882,8 @@ class SubarrayNode(SKASubarray):
                 #TODO: Need to add code to revert allocated resources
                 argout = []
         # return dish_allocation_result
-        self.logger.debug("assign_resource_argout",argout)
+        log_msg = "assign_resource_argout",argout
+        self.logger.debug(log_msg)
         return argout
 
     def is_AssignResources_allowed(self):
@@ -929,8 +935,8 @@ class SubarrayNode(SKASubarray):
         self._obs_state = ObsState.IDLE
 
         argout = self._dish_leaf_node_group.get_device_list(True)
-
-        self.logger.debug("Release_all_resources:",argout)
+        log_msg = "Release_all_resources:",argout
+        self.logger.debug(log_msg)
         return argout
 
     def is_ReleaseAllResources_allowed(self):
@@ -981,7 +987,8 @@ class SubarrayNode(SKASubarray):
                 self.logger.error(log_msg)
                 self._read_activity_message = const.ERR_AGGR_POINTING_STATE + str(except_occurred.message)
         else:
-            self.logger.debug(const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors))
+            log_msg = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
+            self.logger.debug(log_msg)
             self._read_activity_message = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
 
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
@@ -1190,7 +1197,8 @@ class SubarrayNode(SKASubarray):
         Where 123 is a Scan ID from configuration json string.
         """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
-        self.logger.debug("read_scanID",self._scan_id)
+        log_msg = "read_scanID",self._scan_id
+        self.logger.debug(log_msg)
         return self._scan_id
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
@@ -1228,11 +1236,11 @@ class SubarrayNode(SKASubarray):
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         try:
             device_proxy.command_inout(cmd_name, cmd_data)
-            self.logger.debug("{} configured succesfully.".format(device_proxy.dev_name()))
+            self.logger.debug("%s configured succesfully.", device_proxy.dev_name())
         except DevFailed as df:
             log_message = df[0].desc
             self._read_activity_message = log_message
-            self.logger.error("Failed to configure {}. {}".format(device_proxy.dev_name(), df))
+            self.logger.error("Failed to configure %s. %s", device_proxy.dev_name(), df)
             raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
@@ -1408,7 +1416,8 @@ class SubarrayNode(SKASubarray):
         """
         exception_message= []
         exception_count = 0
-        self.logger.debug("Track:",argin)
+        log_msg = "Track:",argin
+        self.logger.debug(log_msg)
         try:
             self._read_activity_message = const.STR_TRACK_IP_ARG + argin
             # set obsState to CONFIGURING when the configuration is started
