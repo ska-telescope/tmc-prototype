@@ -71,10 +71,9 @@ def test_release_resources():
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_config = '{"processingBlockIdList": ["0001", "0002"]}'
         dut = tango_context.device
         # act:
-        dut.ReleaseAllResources(assign_config)
+        dut.ReleaseAllResources()
 
         # assert:
         # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
@@ -109,7 +108,7 @@ def test_configure_resources():
         # assert:
         # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
         # assert_activity_message(dut, CONST.STR_REL_RESOURCES)
-        assert dut.obsState == ObsState.READY
+        assert sdp_subarray_proxy_mock.obsState == ObsState.READY
 
 
 def assert_activity_message(dut, expected_message):
