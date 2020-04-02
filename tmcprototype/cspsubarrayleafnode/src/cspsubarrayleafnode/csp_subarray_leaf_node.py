@@ -26,20 +26,19 @@ ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
-from tango.server import run, DeviceMeta, attribute, command, device_property
+from tango.server import run,attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 import json
-from future.utils import with_metaclass
 from . import const
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
 # pylint: disable=protected-access,unused-argument,unused-variable
-class CspSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
+class CspSubarrayLeafNode(SKABaseDevice):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
     """

@@ -27,8 +27,7 @@ import json
 # Tango imports
 import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
-from tango.server import run, DeviceMeta, attribute, command, device_property
-from future.utils import with_metaclass
+from tango.server import run,attribute, command, device_property
 
 # Additional import
 from . import const
@@ -119,7 +118,7 @@ class ElementDeviceData:
 
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
 
-class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
+class SubarrayNode(SKASubarray):
     """
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.

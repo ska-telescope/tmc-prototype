@@ -19,10 +19,9 @@ from __future__ import absolute_import
 # PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
 import tango
 from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, DeviceMeta, command, device_property, attribute
+from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import AdminMode, HealthState, TestMode
-from future.utils import with_metaclass
 
 # Additional import
 from . import const
@@ -32,7 +31,7 @@ from . import const
 __all__ = ["SdpMasterLeafNode", "main"]
 
 
-class SdpMasterLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
+class SdpMasterLeafNode(SKABaseDevice):
     """
     The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.

@@ -16,12 +16,11 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 # PyTango imports
 import tango
 from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, DeviceMeta, command, device_property, attribute
+from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 # Additional imports
 import json
-from future.utils import with_metaclass
 from . import const
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
@@ -29,7 +28,7 @@ from . import const
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 # pylint: disable=unused-argument,unused-variable
-class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
+class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
     """

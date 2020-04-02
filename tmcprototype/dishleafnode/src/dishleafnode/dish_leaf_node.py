@@ -18,15 +18,16 @@ import json
 # PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, DeviceMeta, command, device_property, attribute
+from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import AdminMode, HealthState, SimulationMode
 
 # Additional import
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 import threading
-from . import const
-from future.utils import with_metaclass
+
+
+from . import CONST
 import math
 import katpoint
 import re
@@ -36,7 +37,7 @@ import time
 
 __all__ = ["DishLeafNode", "main"]
 
-class DishLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
+class DishLeafNode(SKABaseDevice):
 #class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.

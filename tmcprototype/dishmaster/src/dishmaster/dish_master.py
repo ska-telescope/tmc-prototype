@@ -22,12 +22,11 @@ import json
 # PyTango imports
 import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, DeviceMeta, attribute, command, device_property
+from tango.server import run,attribute, command, device_property
 from ska.base import SKAMaster
 from ska.base.control_model import HealthState, AdminMode
 
 # Additional import
-from future.utils import with_metaclass
 import numpy
 import math
 import enum
@@ -45,14 +44,12 @@ class PointingState(enum.IntEnum):
     TRACK = 2
     SCAN = 3
 # pylint: disable=unused-argument
-class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
+class DishMaster(SKAMaster):
 # class DishMaster(SKAMaster):
     """
     SKA Dish Master TANGO device server
     """
     # PROTECTED REGION ID(DishMaster.class_variable) ENABLED START #
-
-    # __metaclass__ =  SKAMaster
 
     # Function to set achieved pointing attribute to the desired pointing attribute
     def point(self):

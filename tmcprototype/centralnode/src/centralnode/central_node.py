@@ -17,20 +17,20 @@ from __future__ import absolute_import
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
-from tango.server import run, DeviceMeta, attribute, command, device_property
+from tango.server import run,attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from . import const
-from future.utils import with_metaclass
+
 import json
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
 
 
-class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
+class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
     """
