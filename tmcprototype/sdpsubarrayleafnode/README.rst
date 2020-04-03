@@ -1,6 +1,5 @@
 ## SdpSubarrayLeafNode
 
-
 ## Requirement
 
 - PyTango >= 8.1.6

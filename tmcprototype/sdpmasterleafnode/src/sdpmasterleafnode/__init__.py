@@ -14,10 +14,10 @@ actions during an observation. It also acts as a SDP contact point for Subarray 
 execution. There is one to one mapping between SDP Subarray Leaf Node and SDP subarray.
 """
 
-from . import release, CONST
+from . import release, const
 from .sdp_master_leaf_node import SdpMasterLeafNode
 
-__all__ = ["CONST", "release", "SdpMasterLeafNode"]
+__all__ = ["const", "release", "SdpMasterLeafNode"]
 
 __version__ = release.version
 __version_info__ = release.version_info
