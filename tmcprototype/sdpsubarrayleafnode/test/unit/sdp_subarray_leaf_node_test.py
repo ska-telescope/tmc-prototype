@@ -95,7 +95,7 @@ def test_configure_resources():
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
-        test_input_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
+        sdp_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
                      '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
                      '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
@@ -103,10 +103,10 @@ def test_configure_resources():
                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
         dut = tango_context.device
         # act:
-        dut.Configure(test_input_config)
+        dut.Configure(sdp_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_CONFIGURE,'0', any_method(with_name='commandCallback'))
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_CONFIGURE, json.dumps(sdp_config), any_method(with_name='commandCallback'))
         # assert_activity_message(dut, CONST.STR_REL_RESOURCES)
         # assert sdp_subarray_proxy_mock.obsState == ObsState.READY
 

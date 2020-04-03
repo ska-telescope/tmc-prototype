@@ -266,7 +266,7 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         dtype_out='str',
     )
     @DebugIt()
-    def AssignResources(self, argin):
+    def f(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
         """
         Assigns resources to given SDP subarray.
