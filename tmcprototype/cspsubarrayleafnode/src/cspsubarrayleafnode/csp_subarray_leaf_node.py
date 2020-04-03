@@ -522,11 +522,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_count,exception_message] = self._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count, const.ERR_CONFIGURESCAN_INVOKING_CMD)
+                                exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception( except_occurred,
-                                    exception_message, exception_count, const.ERR_CONFIGURESCAN_INVOKING_CMD)
+                                    exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
