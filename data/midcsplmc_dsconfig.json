@@ -342,7 +342,9 @@
                                 "standbycmdfailure",
                                 "2000",
                                 "cspcbfstate",
-                                "3000"
+                                "3000",
+                                "healthstate",
+                                "1000"
                             ]
                         }
                     }
