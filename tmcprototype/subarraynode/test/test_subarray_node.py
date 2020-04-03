@@ -410,9 +410,7 @@ class TestSubarrayNode(object):
                                            '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                            '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(5)
-        # assert const.ERR_CONFIGURE_CMD_GROUP in tango_context.device.activityMessage
         assert tango_context.device.obsState == ObsState.IDLE
-        # create_dish_proxy.StopTrack()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
     def test_Configure_Negative_InvalidJson(self, tango_context):

@@ -227,7 +227,6 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == ObsState.SCANNING
-        # assert const.STR_STARTSCAN_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan
 
     def test_EndScan(self, tango_context, create_cspsubarray1_proxy):
@@ -237,8 +236,6 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == ObsState.READY
-        # assert const.STR_ENDSCAN_SUCCESS in tango_context.device.activityMessage \
-        #        and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
 
     def test_EndSB(self, tango_context, create_cspsubarray1_proxy):

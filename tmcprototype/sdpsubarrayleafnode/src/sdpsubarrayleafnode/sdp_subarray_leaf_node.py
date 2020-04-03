@@ -47,9 +47,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         try:
             if event.err:
-                log = const.ERR_INVOKING_CMD + event.cmd_name
-                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self._read_activity_message = log
                 self.logger.error(log)
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
@@ -310,7 +309,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         except KeyError as key_error:
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.error(log_msg)
-            # self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -375,7 +373,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         except KeyError as key_error:
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.error(log_msg)
-            # self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
             exception_count += 1
