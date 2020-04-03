@@ -292,13 +292,13 @@ class TestCentralNode(object):
     def test_telescopeHealthState(self, tango_context):
         """Test for telescopeHealthState"""
         # PROTECTED REGION ID(CentralNode.test_telescopeHealthState) ENABLED START #
-        assert tango_context.device.telescopeHealthState == HealthState.UNKNOWN
+        assert tango_context.device.telescopeHealthState == HealthState.OK
         # PROTECTED REGION END #    //  CentralNode.test_telescopeHealthState
 
     def test_subarray1HealthState(self, tango_context):
         """Test for subarray1HealthState"""
         # PROTECTED REGION ID(CentralNode.test_subarray1HealthState) ENABLED START #
-        assert tango_context.device.subarray1HealthState == HealthState.UNKNOWN
+        assert tango_context.device.subarray1HealthState == HealthState.OK
         # PROTECTED REGION END #    //  CentralNode.test_subarray1HealthState
 
     def test_subarray2HealthState(self, tango_context):
