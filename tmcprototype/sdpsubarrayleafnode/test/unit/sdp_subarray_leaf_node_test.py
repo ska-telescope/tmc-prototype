@@ -106,7 +106,12 @@ def test_configure():
         dut.Configure(sdp_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_CONFIGURE, json.dumps(sdp_config),
+        jsonArgument = json.loads(sdp_config)
+        sdp_arg = jsonArgument["sdp"]
+        sdpConfiguration = sdp_arg.copy()
+        if "configureScan" in sdpConfiguration:
+            del sdpConfiguration["configureScan"]
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                                         any_method(with_name='commandCallback'))
 
 def assert_activity_message(dut, expected_message):
