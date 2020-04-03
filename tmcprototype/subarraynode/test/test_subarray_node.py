@@ -350,7 +350,7 @@ class TestSubarrayNode(object):
     def test_healthState(self, tango_context):
         """Test for healthState"""
         # PROTECTED REGION ID(SubarrayNode.test_healthState) ENABLED START #
-        assert tango_context.device.healthState == HealthState.DEGRADED
+        assert tango_context.device.healthState == HealthState.OK
         # PROTECTED REGION END #    //  SubarrayNode.test_healthState
 
     def test_AssignResourcesfailure_before_startup(self, tango_context):
@@ -520,7 +520,7 @@ class TestSubarrayNode(object):
         """Test for EndSB command."""
         # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
         tango_context.device.EndSB()
-        time.sleep(2)
+        time.sleep(5)
         assert tango_context.device.ObsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 

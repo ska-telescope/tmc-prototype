@@ -25,8 +25,6 @@ from ska.base.control_model import AdminMode, HealthState, SimulationMode
 # Additional import
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 import threading
-
-
 from . import const
 import math
 import katpoint

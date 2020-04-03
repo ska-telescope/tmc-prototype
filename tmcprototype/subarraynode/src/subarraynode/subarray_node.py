@@ -1269,7 +1269,7 @@ class SubarrayNode(SKASubarray):
 
         cmd_data = self._create_cmd_data(
             "build_up_csp_cmd_data", scan_configuration, self._scan_id, attr_name_map)
-        self._configure_leaf_node(self._csp_subarray_ln_proxy, "ConfigureScan", cmd_data)
+        self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
         config_keys = scan_configuration.keys()
@@ -1377,7 +1377,7 @@ class SubarrayNode(SKASubarray):
             self.logger.debug("EndSB invoked on SubarrayNode.")
             if self._obs_state == ObsState.READY:
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
-                self._csp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
+                self._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
                 self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
