@@ -54,7 +54,7 @@ def test_assign_resources():
         dut.AssignResources(assign_config)
 
         # assert:
-        # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,assign_config , any_method(with_name='commandCallback'))
         assert_activity_message(dut, CONST.STR_ASSIGN_RESOURCES_SUCCESS)
 
 def test_release_resources():
@@ -76,7 +76,7 @@ def test_release_resources():
         dut.ReleaseAllResources()
 
         # assert:
-        # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_RELEASE_RESOURCES,'{"dummy_key": "dummy_value}"', any_method(with_name='commandCallback'))
         assert_activity_message(dut, CONST.STR_REL_RESOURCES)
 
 def test_configure():
@@ -106,9 +106,8 @@ def test_configure():
         dut.Configure(sdp_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_CONFIGURE, json.dumps(sdp_config), any_method(with_name='commandCallback'))
-        # assert_activity_message(dut, CONST.STR_REL_RESOURCES)
-        # assert sdp_subarray_proxy_mock.obsState == ObsState.READY
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_CONFIGURE, json.dumps(sdp_config),
+                                                                        any_method(with_name='commandCallback'))
 
 def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
