@@ -79,7 +79,7 @@ def test_release_resources():
         # sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,'0', any_method(with_name='commandCallback'))
         assert_activity_message(dut, CONST.STR_REL_RESOURCES)
 
-def test_configure_resources():
+def test_configure():
     # arrange:
     device_under_test = SdpSubarrayLeafNode
     sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
