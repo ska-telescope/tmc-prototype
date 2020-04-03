@@ -742,23 +742,23 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             if self.CspSubarrayProxy.obsState == ObsState.READY:
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSB, self.commandCallback)
-                self._read_activity_message = const.STR_ENDSB_SUCCESS
-                self.logger.info(const.STR_ENDSB_SUCCESS)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, self.commandCallback)
+                self._read_activity_message = const.STR_GOTOIDLE_SUCCESS
+                self.logger.info(const.STR_GOTOIDLE_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+                                            exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+                                            exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+            self.throw_exception(exception_message, const.STR_GOTOIDLE_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
 
