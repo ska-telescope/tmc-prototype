@@ -10,8 +10,6 @@
 
 import os
 import sys
-from glob import glob
-from os.path import basename, splitext
 from setuptools import setup, find_packages
 
 setup_dir = os.path.dirname(os.path.abspath(__file__))
@@ -25,8 +23,6 @@ with open(readme_filename) as file:
 
 release_filename = os.path.join(setup_dir, 'src', 'centralnode', 'release.py')
 exec(open(release_filename).read())
-
-pack = ['src']
 
 setup(name=name,
       version=version,
