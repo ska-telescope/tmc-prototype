@@ -113,6 +113,53 @@ def test_configure():
             del sdpConfiguration["configureScan"]
         sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                                         any_method(with_name='commandCallback'))
+def test_endscan():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray_fqdn
+    }
+
+    sdp_subarray_proxy_mock = Mock()
+
+    sdp_subarray_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {
+        sdp_subarray_fqdn: sdp_subarray_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+        dut = tango_context.device
+        # act:
+        dut.EndScan()
+
+        # assert:
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ENDSCAN,
+                                                                        any_method(with_name='commandCallback'))
+
+def test_endsb():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray_fqdn
+    }
+
+    sdp_subarray_proxy_mock = Mock()
+
+    sdp_subarray_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {
+        sdp_subarray_fqdn: sdp_subarray_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+        dut = tango_context.device
+        # act:
+        dut.EndSB()
+
+        # assert:
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ENDSB,
+                                                                        any_method(with_name='commandCallback'))
 
 def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
