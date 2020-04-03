@@ -431,7 +431,9 @@
                                 "endscancmdprogress",
                                 "1500",
                                 "endsbcmdprogress",
-                                "1500"
+                                "1500",
+                                "healthstate",
+                                "1000"
                             ]
                         }
                     }
@@ -576,7 +578,9 @@
                                 "endscancmdprogress",
                                 "1500",
                                 "endsbcmdprogress",
-                                "1500"
+                                "1500",
+                                "healthstate",
+                                "1000"
                             ]
                         }
                     }
@@ -721,7 +725,9 @@
                                 "endscancmdprogress",
                                 "1500",
                                 "endsbcmdprogress",
-                                "1500"
+                                "1500",
+                                "healthstate",
+                                "1000"
                             ]
                         }
                     }
