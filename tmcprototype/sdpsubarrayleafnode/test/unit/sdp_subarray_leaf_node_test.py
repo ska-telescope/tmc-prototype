@@ -6,7 +6,7 @@ import mock
 import types
 
 from mock import Mock
-from sdpsubarrayleafnode import SdpSubarrayLeafNode, CONST
+from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
 
@@ -31,7 +31,7 @@ def test_start_scan_should_command_sdp_subarray_master_to_start_its_scan_when_it
         tango_context.device.Scan(scan_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_SCAN, any_method(with_name='commandCallback'))
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, any_method(with_name='commandCallback'))
 
 
 def test_assign_resources():
@@ -54,8 +54,8 @@ def test_assign_resources():
         dut.AssignResources(assign_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ASSIGN_RESOURCES,assign_config , any_method(with_name='commandCallback'))
-        assert_activity_message(dut, CONST.STR_ASSIGN_RESOURCES_SUCCESS)
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,assign_config , any_method(with_name='commandCallback'))
+        assert_activity_message(dut, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 def test_release_resources():
     # arrange:
@@ -76,8 +76,8 @@ def test_release_resources():
         dut.ReleaseAllResources()
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_RELEASE_RESOURCES,'{"dummy_key": "dummy_value}"', any_method(with_name='commandCallback'))
-        assert_activity_message(dut, CONST.STR_REL_RESOURCES)
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RELEASE_RESOURCES,'{"dummy_key": "dummy_value}"', any_method(with_name='commandCallback'))
+        assert_activity_message(dut, const.STR_REL_RESOURCES)
 
 def test_configure():
     # arrange:
@@ -111,7 +111,7 @@ def test_configure():
         sdpConfiguration = sdp_arg.copy()
         if "configureScan" in sdpConfiguration:
             del sdpConfiguration["configureScan"]
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_CONFIGURE, json.dumps(sdpConfiguration),
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                                         any_method(with_name='commandCallback'))
 def test_endscan():
     # arrange:
@@ -134,7 +134,7 @@ def test_endscan():
         dut.EndScan()
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ENDSCAN,
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
                                                                         any_method(with_name='commandCallback'))
 
 def test_endsb():
@@ -158,7 +158,7 @@ def test_endsb():
         dut.EndSB()
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(CONST.CMD_ENDSB,
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSB,
                                                                         any_method(with_name='commandCallback'))
 
 def assert_activity_message(dut, expected_message):
