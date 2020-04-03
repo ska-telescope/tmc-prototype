@@ -133,7 +133,7 @@ class TestCspSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(configure_input)
         time.sleep(1)
-        assert const.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
         assert create_cspsubarray1_proxy.obsState is not ObsState.READY
 
     def test_StartScan_generic_exception(self, tango_context):
