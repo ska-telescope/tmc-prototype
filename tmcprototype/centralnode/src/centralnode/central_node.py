@@ -17,20 +17,20 @@ from __future__ import absolute_import
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
-from tango.server import run, DeviceMeta, attribute, command, device_property
+from tango.server import run,attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-from . import CONST
-from future.utils import with_metaclass
+from . import const
+
 import json
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
 
 
-class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
+class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
     """
@@ -49,13 +49,13 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         if evt.err is False:
             try:
                 health_state = evt.attr_value.value
-                if CONST.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
+                if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     self._subarray1_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
-                elif CONST.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
+                elif const.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
                     self._subarray2_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
-                elif CONST.PROP_DEF_VAL_TM_MID_SA3 in evt.attr_name:
+                elif const.PROP_DEF_VAL_TM_MID_SA3 in evt.attr_name:
                     self._subarray3_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
                 elif self.CspMasterLeafNodeFQDN in evt.attr_name:
@@ -63,38 +63,38 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 elif self.SdpMasterLeafNodeFQDN in evt.attr_name:
                     self._sdp_master_leaf_health = health_state
                 else:
-                    self.logger.debug(CONST.EVT_UNKNOWN)
+                    self.logger.debug(const.EVT_UNKNOWN)
                     # TODO: For future reference
-                    # self._read_activity_message = CONST.EVT_UNKNOWN
+                    # self._read_activity_message = const.EVT_UNKNOWN
 
                 if health_state == HealthState.OK:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_OK
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
                     self.logger.info(str_log)
                     # TODO: For future reference
-                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                    #                                                            ) + CONST.STR_OK
+                    # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                    #                                                            ) + const.STR_OK
                 elif health_state == HealthState.DEGRADED:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_DEGRADED
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
                     self.logger.info(str_log)
                     # TODO: For future reference
-                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                    #                                                            ) + CONST.STR_DEGRADED
+                    # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                    #                                                            ) + const.STR_DEGRADED
                 elif health_state == HealthState.FAILED:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_FAILED
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
                     self.logger.info(str_log)
                     # TODO: For future reference
-                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(evt.device
-                    #                                                            ) + CONST.STR_FAILED
+                    # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                    #                                                            ) + const.STR_FAILED
                 elif health_state == HealthState.UNKNOWN:
-                    str_log = CONST.STR_HEALTH_STATE + str(evt.device) + CONST.STR_UNKNOWN
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
                     self.logger.info(str_log)
                     # TODO: For future reference
-                    # self._read_activity_message = CONST.STR_HEALTH_STATE + str(
-                    #     evt.device) + CONST.STR_UNKNOWN
+                    # self._read_activity_message = const.STR_HEALTH_STATE + str(
+                    #     evt.device) + const.STR_UNKNOWN
                 else:
-                    self.logger.info(CONST.STR_HEALTH_STATE_UNKNOWN_VAL)
+                    self.logger.info(const.STR_HEALTH_STATE_UNKNOWN_VAL)
                     # TODO: For future reference
-                    # self._read_activity_message = CONST.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
+                    # self._read_activity_message = const.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
 
                 counts = {
                         HealthState.OK: 0,
@@ -121,22 +121,22 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
 
             except KeyError as key_error:
                 # TODO: For future reference
-                # self._read_activity_message = CONST.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-                log_msg = CONST.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+                # self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+                log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
                 self.logger.critical(log_msg)
             except DevFailed:
                 # TODO: For future reference
-                # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                self.logger.exception(CONST.ERR_HEALTH_STATE_CB, evt)
+                # self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                self.logger.exception(const.ERR_HEALTH_STATE_CB, evt)
             except Exception as except_occured:
                 # TODO: For future reference
-                # self._read_activity_message = CONST.ERR_AGGR_HEALTH_STATE + str(except_occured)
-                log_msg = CONST.ERR_AGGR_HEALTH_STATE + ": " + str(except_occured)
+                # self._read_activity_message = const.ERR_AGGR_HEALTH_STATE + str(except_occured)
+                log_msg = const.ERR_AGGR_HEALTH_STATE + ": " + str(except_occured)
                 self.logger.critical(log_msg)
         else:
             # TODO: For future reference
-            # self._read_activity_message = CONST.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
-            self.logger.critical(CONST.ERR_SUBSR_SA_HEALTH_STATE)
+            # self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
+            self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
     def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
@@ -159,8 +159,8 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         err_msg = ''
         for item in excpt_msg_list:
             err_msg += item + "\n"
-        tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
-        self.logger.error(CONST.STR_CMD_FAILED)
+        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+        self.logger.error(const.STR_CMD_FAILED)
 
     # -----------------
     # Device Properties
@@ -253,24 +253,24 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self.subarray_FQDN_dict = {}
             self._subarray_allocation = {}
             self._read_activity_message = ""
-            self.set_status(CONST.STR_INIT_SUCCESS)
-            self.logger.debug(CONST.STR_INIT_SUCCESS)
+            self.set_status(const.STR_INIT_SUCCESS)
+            self.logger.debug(const.STR_INIT_SUCCESS)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
-                                                                    exception_count,CONST.ERR_INIT_PROP_ATTR_CN)
+                                                                    exception_count,const.ERR_INIT_PROP_ATTR_CN)
 
         #  Get Dish Leaf Node devices List
         # TODO: Getting DishLeafNode devices list from TANGO DB
         # self.tango_db = PyTango.Database()
         # try:
-        #     self.dev_dbdatum = self.tango_db.get_device_exported(CONST.GET_DEVICE_LIST_TANGO_DB)
+        #     self.dev_dbdatum = self.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
         #     self._dish_leaf_node_devices.extend(self.dev_bdatum.value_string)
         #     print self._dish_leaf_node_devices
         #
         # except Exception as except_occured:
-        #     print CONST.ERR_IN_READ_DISH_LN_DEVS, except_occured
-        #     self._read_activity_message = CONST.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
-        #     self.dev_logging(CONST.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
+        #     print const.ERR_IN_READ_DISH_LN_DEVS, except_occured
+        #     self._read_activity_message = const.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
+        #     self.dev_logging(const.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
 
 
         for dish in range(1, (self.NumDishes+1)):
@@ -287,35 +287,35 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
             except (DevFailed, KeyError) as except_occurred:
                 [exception_message, exception_count] = self._handle_devfailed_exception(except_occurred,
-                                                exception_message, exception_count,CONST.ERR_IN_CREATE_PROXY)
+                                                exception_message, exception_count,const.ERR_IN_CREATE_PROXY)
 
         # Create device proxy for CSP Master Leaf Node
         try:
             self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN)
-            self._csp_master_leaf_proxy.subscribe_event(CONST.EVT_SUBSR_CSP_MASTER_HEALTH,
+            self._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
                                                         EventType.CHANGE_EVENT,
                                                         self.healthStateCallback, stateless=True)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                    exception_message, exception_count,CONST.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
+                                    exception_message, exception_count,const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
 
 
         # Create device proxy for SDP Master Leaf Node
         try:
             self._sdp_master_leaf_proxy = DeviceProxy(self.SdpMasterLeafNodeFQDN)
-            self._sdp_master_leaf_proxy.subscribe_event(CONST.EVT_SUBSR_SDP_MASTER_HEALTH,
+            self._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
                                                         EventType.CHANGE_EVENT,
                                                         self.healthStateCallback, stateless=True)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count,CONST.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
+                                exception_message, exception_count,const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
 
         # Create device proxy for Subarray Node
         for subarray in range(0, len(self.TMMidSubarrayNodes)):
             try:
                 subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
                 self.subarray_health_state_map[subarray_proxy] = -1
-                subarray_proxy.subscribe_event(CONST.EVT_SUBSR_HEALTH_STATE,
+                subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
                                                EventType.CHANGE_EVENT,
                                                self.healthStateCallback, stateless=True)
 
@@ -325,7 +325,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                 self.subarray_FQDN_dict[subarrayID] = subarray_proxy
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count,CONST.ERR_SUBSR_SA_HEALTH_STATE)
+                                        exception_message, exception_count,const.ERR_SUBSR_SA_HEALTH_STATE)
 
 
         # PROTECTED REGION END #    //  CentralNode.init_device
@@ -404,33 +404,33 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             for leafId in range(0, len(argin)):
                 if type(float(argin[leafId])) == float:
                     pass
-            self.logger.info(CONST.STR_STOW_CMD_ISSUED_CN)
-            self._read_activity_message = CONST.STR_STOW_CMD_ISSUED_CN
+            self.logger.info(const.STR_STOW_CMD_ISSUED_CN)
+            self._read_activity_message = const.STR_STOW_CMD_ISSUED_CN
             for i in range(0, len(argin)):
                 device_name = self.DishLeafNodePrefix + argin[i]
                 try:
                     device_proxy = DeviceProxy(device_name)
-                    device_proxy.command_inout(CONST.CMD_SET_STOW_MODE)
+                    device_proxy.command_inout(const.CMD_SET_STOW_MODE)
                 except DevFailed as dev_failed:
                     [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                exception_message, exception_count,  CONST.ERR_EXE_STOW_CMD)
+                                                exception_message, exception_count,  const.ERR_EXE_STOW_CMD)
 
                 # throw exception:
                 if exception_count > 0:
-                    self.throw_exception(exception_message, CONST.STR_STOW_ANTENNA_EXEC)
+                    self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
 
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_STOW_ARGIN)
-            self._read_activity_message = CONST.ERR_STOW_ARGIN + str(value_error)
+            self.logger.error(const.ERR_STOW_ARGIN)
+            self._read_activity_message = const.ERR_STOW_ARGIN + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                exception_message, exception_count, CONST.ERR_EXE_STOW_CMD)
+                                                exception_message, exception_count, const.ERR_EXE_STOW_CMD)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_STOW_ANTENNA_EXEC)
+            self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
         # PROTECTED REGION END #    //  CentralNode.stow_antennas
 
     @command(
@@ -441,36 +441,36 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         """ Set the Elements into STANDBY state (i.e. Low Power State). """
         exception_count =0
         exception_message =[]
-        self.logger.info(CONST.STR_STANDBY_CMD_ISSUED)
-        self._read_activity_message = CONST.STR_STANDBY_CMD_ISSUED
+        self.logger.info(const.STR_STANDBY_CMD_ISSUED)
+        self._read_activity_message = const.STR_STANDBY_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
-                self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_STANDBY_MODE)
+                self._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
+                                            exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
 
         try:
-            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY, [])
+            self._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
+                                            exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
 
         try:
-            self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STANDBY)
+            self._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
+                                            exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
 
         try:
             for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
-                self.subarray_FQDN_dict[subarrayID].command_inout(CONST.CMD_STANDBY)
+                self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STANDBY)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
+                                        exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, CONST.STR_STANDBY_EXEC)
+                self.throw_exception(exception_message, const.STR_STANDBY_EXEC)
         # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
     @command(
@@ -482,35 +482,35 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
         model.Set the Elements into ON state from STANDBY state. """
         exception_count =0
         exception_message = []
-        self.logger.info(CONST.STR_STARTUP_CMD_ISSUED)
-        self._read_activity_message = CONST.STR_STARTUP_CMD_ISSUED
+        self.logger.info(const.STR_STARTUP_CMD_ISSUED)
+        self._read_activity_message = const.STR_STARTUP_CMD_ISSUED
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
-                self._leaf_device_proxy[name].command_inout(CONST.CMD_SET_OPERATE_MODE)
+                self._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
+                                            exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
 
         try:
-            self._csp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP,[])
+            self._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP,[])
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
+                                            exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
         try:
-            self._sdp_master_leaf_proxy.command_inout(CONST.CMD_STARTUP)
+            self._sdp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, CONST.ERR_EXE_STARTUP_CMD)
+                                            exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
 
         try:
             for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
-                self.subarray_FQDN_dict[subarrayID].command_inout(CONST.CMD_STARTUP)
+                self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STARTUP)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, CONST.ERR_EXE_STANDBY_CMD)
+                                            exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, CONST.STR_STARTUP_EXEC)
+                self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
 
@@ -601,7 +601,7 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     duplicate_allocation_count = duplicate_allocation_count + 1
             if duplicate_allocation_count == 0:
                 self._resources_allocated = subarrayProxy.command_inout(
-                    CONST.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
+                    const.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
@@ -609,43 +609,43 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
                     dish_ID = "dish" + (self._resources_allocated[dish])
                     self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
                     receptorIDList.append(self._resources_allocated[dish])
-                self._read_activity_message = CONST.STR_ASSIGN_RESOURCES_SUCCESS
-                self.logger.info(CONST.STR_ASSIGN_RESOURCES_SUCCESS)
+                self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+                self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
                 argout = {
                     "dish": {
                         "receptorIDList_success": receptorIDList
                     }
                 }
             else:
-                self._read_activity_message = CONST.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
+                self._read_activity_message = const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
                 argout = {
                     "dish": {
                         "receptorIDList_success": receptorIDList
                     }
                 }
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_INVALID_JSON)
-            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            self.logger.error(const.ERR_INVALID_JSON)
+            self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except KeyError as key_error:
-            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND)
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
+            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                exception_message, exception_count,CONST.ERR_ASSGN_RESOURCES)
+                                                exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
+                                            exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
         #throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_ASSIGN_RES_EXEC)
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
             argout = '{"dish": {"receptorIDList_success": []}}'
 
         # For future reference
@@ -717,39 +717,39 @@ class CentralNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
-                res_not_released = subarrayProxy.command_inout(CONST.CMD_RELEASE_RESOURCES)
-                self._read_activity_message = CONST.STR_REL_RESOURCES
+                res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
+                self._read_activity_message = const.STR_REL_RESOURCES
 
-                self.logger.info(CONST.STR_REL_RESOURCES)
+                self.logger.info(const.STR_REL_RESOURCES)
                 if not res_not_released:
                     release_success = True
                     for Dish_ID, Dish_Status in self._subarray_allocation.items():
                         if Dish_Status == subarray_name:
                             self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                 else:
-                    self._read_activity_message = CONST.STR_LIST_RES_NOT_REL \
+                    self._read_activity_message = const.STR_LIST_RES_NOT_REL \
                                                   + res_not_released
                     release_success = False
             else:
-                self._read_activity_message = CONST.STR_FALSE_TAG
+                self._read_activity_message = const.STR_FALSE_TAG
         except ValueError as value_error:
-            self.logger.error(CONST.ERR_INVALID_JSON)
-            self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
+            self.logger.error(const.ERR_INVALID_JSON)
+            self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            self.logger.error(CONST.ERR_JSON_KEY_NOT_FOUND)
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
+            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count,  CONST.ERR_RELEASE_RESOURCES)
+                                        exception_message, exception_count,  const.ERR_RELEASE_RESOURCES)
 
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, CONST.STR_RELEASE_RES_EXEC)
+            self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
 
         argout = {
             "ReleaseAll" : release_success,

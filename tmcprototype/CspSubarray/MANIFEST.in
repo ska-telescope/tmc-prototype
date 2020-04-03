@@ -1,9 +1,0 @@
-recursive-include CspSubarray *.py
-recursive-include test *.py
-include *.rst
-include CspSubarray.xmi
-include *.txt
-graft docs
-
-global-exclude *.pyc
-global-exclude *.pyo

@@ -11,10 +11,10 @@
 SdpSubarrayLeafNode
 """
 
-from . import release, CONST
+from . import release, const
 from .sdp_subarray_leaf_node import SdpSubarrayLeafNode
 
-__all__ = ["CONST", "release", "SdpSubarrayLeafNode"]
+__all__ = ["const", "release", "SdpSubarrayLeafNode"]
 
 __version__ = release.version
 __version_info__ = release.version_info
