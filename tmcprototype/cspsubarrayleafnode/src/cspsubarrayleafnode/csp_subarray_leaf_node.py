@@ -507,10 +507,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
-            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURESCAN, cmdData,
+            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, cmdData,
                                                        self.commandCallback)
-            self._read_activity_message = const.STR_CONFIGURESCAN_SUCCESS
-            self.logger.info(const.STR_CONFIGURESCAN_SUCCESS)
+            self._read_activity_message = const.STR_CONFIGURE_SUCCESS
+            self.logger.info(const.STR_CONFIGURE_SUCCESS)
             self.logger.debug(argin)
 
         except ValueError as value_error:
