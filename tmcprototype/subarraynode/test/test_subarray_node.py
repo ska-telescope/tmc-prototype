@@ -520,7 +520,7 @@ class TestSubarrayNode(object):
         """Test for EndSB command."""
         # PROTECTED REGION ID(SubarrayNode.test_EndSB) ENABLED START #
         tango_context.device.EndSB()
-        time.sleep(2)
+        time.sleep(5)
         assert tango_context.device.ObsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_EndSB
 
