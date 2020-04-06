@@ -22,16 +22,15 @@ import json
 # PyTango imports
 import tango
 from tango import DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, DeviceMeta, attribute, command, device_property
+from tango.server import run,attribute, command, device_property
 from ska.base import SKAMaster
 from ska.base.control_model import HealthState, AdminMode
 
 # Additional import
-from future.utils import with_metaclass
 import numpy
 import math
 import enum
-from . import CONST
+from . import const
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
@@ -45,14 +44,12 @@ class PointingState(enum.IntEnum):
     TRACK = 2
     SCAN = 3
 # pylint: disable=unused-argument
-class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
+class DishMaster(SKAMaster):
 # class DishMaster(SKAMaster):
     """
     SKA Dish Master TANGO device server
     """
     # PROTECTED REGION ID(DishMaster.class_variable) ENABLED START #
-
-    # __metaclass__ =  SKAMaster
 
     # Function to set achieved pointing attribute to the desired pointing attribute
     def point(self):
@@ -68,13 +65,13 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self.change_elevation_thread.start()
                 self._pointing_state = PointingState.SLEW
             except Exception as except_occured:
-                log_msg = CONST.ERR_EXE_POINT_FN + str(self.ReceptorNumber)
+                log_msg = const.ERR_EXE_POINT_FN + str(self.ReceptorNumber)
                 self.logger.debug(log_msg)
-                log_msg = CONST.ERR_MSG + str(except_occured)
+                log_msg = const.ERR_MSG + str(except_occured)
                 self.logger.error(log_msg)
         else:
-            self.set_status(CONST.STR_DISH_POINT_ALREADY)
-            self.logger.info(CONST.STR_DISH_POINT_ALREADY)
+            self.set_status(const.STR_DISH_POINT_ALREADY)
+            self.logger.info(const.STR_DISH_POINT_ALREADY)
 
     def azimuth(self):
         """ Calculates the azimuth angle difference. """
@@ -113,11 +110,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             max_increment = input_increment
         if input_increment == max_increment:
             input_increment = input_increment + 0.01
-        self.set_status(CONST.STR_DISH_POINT_INPROG)
+        self.set_status(const.STR_DISH_POINT_INPROG)
         self._pointing_state = PointingState.SLEW
-        self.logger.debug(CONST.STR_DISH_POINT_INPROG)
+        self.logger.debug(const.STR_DISH_POINT_INPROG)
         for position in numpy.arange(0, input_increment, 0.01):
-            self.set_status(CONST.STR_DISH_POINT_INPROG)
+            self.set_status(const.STR_DISH_POINT_INPROG)
             self._pointing_state = PointingState.SLEW
             if position == input_increment:
                 self.logger.info("position == input_increment. Breaking the loop")
@@ -127,11 +124,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                         self._achieved_pointing[2] == self._desired_pointing[2]):
                     self._pointing_state = PointingState.READY
-                    self.set_status(CONST.STR_DISH_POINT_SUCCESS)
-                    self.logger.info(CONST.STR_DISH_POINT_SUCCESS)
+                    self.set_status(const.STR_DISH_POINT_SUCCESS)
+                    self.logger.info(const.STR_DISH_POINT_SUCCESS)
                 else:
-                    self.set_status(CONST.STR_DISH_POINT_INPROG)
-                    self.logger.info(CONST.STR_DISH_POINT_INPROG)
+                    self.set_status(const.STR_DISH_POINT_INPROG)
+                    self.logger.info(const.STR_DISH_POINT_INPROG)
                     self._pointing_state = PointingState.SLEW
                     self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] + 0.01), 2)
 
@@ -154,11 +151,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         if input_decrement == max_decrement:
             input_decrement = input_decrement + 0.01
 
-        self.set_status(CONST.STR_DISH_POINT_INPROG)
-        self.logger.debug(CONST.STR_DISH_POINT_INPROG)
+        self.set_status(const.STR_DISH_POINT_INPROG)
+        self.logger.debug(const.STR_DISH_POINT_INPROG)
         self._pointing_state = PointingState.SLEW
         for position in numpy.arange(0, input_decrement, 0.01):
-            self.set_status(CONST.STR_DISH_POINT_INPROG)
+            self.set_status(const.STR_DISH_POINT_INPROG)
             self._pointing_state = PointingState.SLEW
 
             if position == input_decrement:
@@ -168,11 +165,11 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 if (self._achieved_pointing[1] == self._desired_pointing[1]) and (
                         self._achieved_pointing[2] == self._desired_pointing[2]):
                     self._pointing_state = PointingState.READY
-                    self.set_status(CONST.STR_DISH_POINT_SUCCESS)
-                    self.logger.info(CONST.STR_DISH_POINT_SUCCESS)
+                    self.set_status(const.STR_DISH_POINT_SUCCESS)
+                    self.logger.info(const.STR_DISH_POINT_SUCCESS)
                 else:
-                    self.set_status(CONST.STR_DISH_POINT_INPROG)
-                    self.logger.info(CONST.STR_DISH_POINT_INPROG)
+                    self.set_status(const.STR_DISH_POINT_INPROG)
+                    self.logger.info(const.STR_DISH_POINT_INPROG)
                     self._pointing_state = PointingState.SLEW
                     self._achieved_pointing[argin[0]] = round((self._achieved_pointing[argin[0]] - 0.01), 2)
 
@@ -188,8 +185,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
                 self._dish_mode = 6                         # Set dishMode to STOW
                 self._health_state = HealthState.OK                      # Set healthState to OK
-                self.set_status(CONST.STR_DISH_STOW_SUCCESS)
-                self.logger.info(CONST.STR_DISH_STOW_SUCCESS)
+                self.set_status(const.STR_DISH_STOW_SUCCESS)
+                self.logger.info(const.STR_DISH_STOW_SUCCESS)
                 break
 
     def track_slew(self):
@@ -213,7 +210,7 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
             else:
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
-            log_msg = CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
+            log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
             self.logger.debug(log_msg)
             time.sleep(2)
         # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
@@ -366,10 +363,10 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self._azeloffset = [0, 0]
             self._azimuthoverwrap = False
             self._toggle_fault = False
-            self.set_status(CONST.STR_DISH_INIT_SUCCESS)
+            self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
         except Exception as except_occured:
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
         # PROTECTED REGION END #    //  DishMaster.always_executed_hook
 
@@ -571,18 +568,18 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self.stow_thread = threading.Thread(None, self.check_slew, 'DishMaster')
             self.stow_thread.start()
         except Exception as except_occured:
-            excpt_msg.append(CONST.ERR_EXE_SET_STOW_MODE_CMD + str(self.ReceptorNumber))
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            excpt_msg.append(const.ERR_EXE_SET_STOW_MODE_CMD + str(self.ReceptorNumber))
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
+            excpt_msg.append(const.ERR_MSG + str(except_occured))
 
         # Throw Exception
         if excpt_count > 0:
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_SET_STOWMODE_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_SET_STOWMODE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetStowMode
 
@@ -608,15 +605,15 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             # Command to set Dish to STANDBY-LP Mode
             self.set_state(DevState.STANDBY)             # Set STATE to STANDBY
             self._dish_mode = 3                          # set dishMode to STANDBYLP
-            self.set_status(CONST.STR_DISH_STANDBYLP_MODE)
-            self.logger.info(CONST.STR_DISH_STANDBYLP_MODE)
+            self.set_status(const.STR_DISH_STANDBYLP_MODE)
+            self.logger.info(const.STR_DISH_STANDBYLP_MODE)
         except Exception as except_occured:
-            excpt_msg.append(CONST.ERR_EXE_SET_STNBYLP_MODE_CMD + str(self.ReceptorNumber))
+            excpt_msg.append(const.ERR_EXE_SET_STNBYLP_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
             self.set_status(str(except_occured))
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
+            excpt_msg.append(const.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -624,8 +621,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_SET_STANDBYLPMODE_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_SET_STANDBYLPMODE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetStandbyLPMode
 
@@ -652,14 +649,14 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self._admin_mode = AdminMode.MAINTENANCE                        # Set adminMode to MAINTENANCE
             self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
             self._dish_mode = 5                         # set dishMode to MAINTENANCE
-            self.set_status(CONST.STR_DISH_MAINT_MODE)
-            self.logger.info(CONST.STR_DISH_MAINT_MODE)
+            self.set_status(const.STR_DISH_MAINT_MODE)
+            self.logger.info(const.STR_DISH_MAINT_MODE)
         except Exception as except_occured:
-            excpt_msg.append(CONST.ERR_EXE_SET_MAINT_MODE_CMD + str(self.ReceptorNumber))
+            excpt_msg.append(const.ERR_EXE_SET_MAINT_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
+            excpt_msg.append(const.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -667,8 +664,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_SET_MAINTENANCEMODE_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_SET_MAINTENANCEMODE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetMaintenanceMode
 
@@ -695,14 +692,14 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             self._admin_mode = AdminMode.ONLINE                        # Set adminMode to ONLINE
             self.set_state(DevState.ON)                 # Set STATE to ON
             self._dish_mode = 8                         # set dishMode to OPERATE
-            self.set_status(CONST.STR_DISH_OPERATE_MODE)
-            self.logger.info(CONST.STR_DISH_OPERATE_MODE)
+            self.set_status(const.STR_DISH_OPERATE_MODE)
+            self.logger.info(const.STR_DISH_OPERATE_MODE)
         except Exception as except_occured:
-            excpt_msg.append(CONST.ERR_EXE_SET_OPERATE_MODE_CMD + str(self.ReceptorNumber))
+            excpt_msg.append(const.ERR_EXE_SET_OPERATE_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
+            excpt_msg.append(const.ERR_MSG + str(except_occured))
             excpt_count += 1
 
             # Throw Exception
@@ -710,8 +707,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 err_msg = ' '
                 for item in excpt_msg:
                     err_msg += item + "\n"
-                tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                             CONST.STR_SET_OPERATEMODE_EXEC, tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                             const.STR_SET_OPERATEMODE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetOperateMode
 
@@ -748,16 +745,16 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._scan_delta_t = self._scan_execution_time - self._current_time
                 schedule_scan_thread = Timer(self._scan_delta_t, self.StartCapture, [argin])
                 schedule_scan_thread.start()
-                self.logger.info(CONST.STR_SCAN_INPROG)
+                self.logger.info(const.STR_SCAN_INPROG)
             else:
-                self.set_status(CONST.STR_DISH_NOT_READY)
-                self.logger.info(CONST.STR_DISH_NOT_READY)
+                self.set_status(const.STR_DISH_NOT_READY)
+                self.logger.info(const.STR_DISH_NOT_READY)
         except Exception as except_occured:
-            excpt_msg.append(CONST.ERR_EXE_SCAN_CMD + str(self.ReceptorNumber))
+            excpt_msg.append(const.ERR_EXE_SCAN_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
+            excpt_msg.append(const.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -765,8 +762,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.Scan
 
@@ -800,17 +797,17 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                     # Command to start Data Capturing
                     self._capturing = True                      # set Capturing to True
                     self._pointing_state = PointingState.SCAN   # set pointingState to SCAN
-                    self.set_status(CONST.STR_DATA_CAPTURE_STRT)
-                    self.logger.info(CONST.STR_DATA_CAPTURE_STRT)
+                    self.set_status(const.STR_DATA_CAPTURE_STRT)
+                    self.logger.info(const.STR_DATA_CAPTURE_STRT)
                 else:
-                    self.set_status(CONST.STR_DATA_CAPTURE_ALREADY_STARTED)
-                    self.logger.info(CONST.STR_DATA_CAPTURE_ALREADY_STARTED)
+                    self.set_status(const.STR_DATA_CAPTURE_ALREADY_STARTED)
+                    self.logger.info(const.STR_DATA_CAPTURE_ALREADY_STARTED)
         except Exception as except_occured:
-            excpt_msg.append(CONST.ERR_EXE_STRT_CAPTURE_CMD + str(self.ReceptorNumber))
+            excpt_msg.append(const.ERR_EXE_STRT_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
+            excpt_msg.append(const.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -818,8 +815,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_STARTCAPTURE_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_STARTCAPTURE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.StartCapture
 
@@ -852,17 +849,17 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                     # Command to stop Data Capturing
                     self._capturing = False                     # set Capturing to FALSE
                     self._pointing_state = PointingState.READY  # set pointingState to READY
-                    self.set_status(CONST.STR_DATA_CAPTURE_STOP)
-                    self.logger.info(CONST.STR_DATA_CAPTURE_STOP)
+                    self.set_status(const.STR_DATA_CAPTURE_STOP)
+                    self.logger.info(const.STR_DATA_CAPTURE_STOP)
                 else:
-                    self.set_status(CONST.STR_DATA_CAPTURE_ALREADY_STOPPED)
-                    self.logger.info(CONST.STR_DATA_CAPTURE_ALREADY_STOPPED)
+                    self.set_status(const.STR_DATA_CAPTURE_ALREADY_STOPPED)
+                    self.logger.info(const.STR_DATA_CAPTURE_ALREADY_STOPPED)
         except Exception as except_occured:
-            excpt_msg.append(CONST.ERR_EXE_STOP_CAPTURE_CMD + str(self.ReceptorNumber))
+            excpt_msg.append(const.ERR_EXE_STOP_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
+            excpt_msg.append(const.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -870,8 +867,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_STOPCAPTURE_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_STOPCAPTURE_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.StopCapture
 
@@ -898,14 +895,14 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             # Command to set Dish to STANDBY-FP Mode
             self.set_state(DevState.STANDBY)            # set STATE to STANDBY
             self._dish_mode = 4                         # set dishMode to STANDBY-FP
-            self.set_status(CONST.STR_DISH_STANDBYFP_MODE)
-            self.logger.info(CONST.STR_DISH_STANDBYFP_MODE)
+            self.set_status(const.STR_DISH_STANDBYFP_MODE)
+            self.logger.info(const.STR_DISH_STANDBYFP_MODE)
         except Exception as except_occured:
-            excpt_msg.append(CONST.ERR_EXE_SET_STNBYFP_MODE_CMD + str(self.ReceptorNumber))
+            excpt_msg.append(const.ERR_EXE_SET_STNBYFP_MODE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
+            excpt_msg.append(const.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -913,8 +910,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_SETSTANDBYFP_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_SETSTANDBYFP_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.SetStandbyFPMode
 
@@ -948,13 +945,13 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                 self._point_delta_t = self._point_execution_time - self._current_time
                 schedule_slew_thread = Timer(self._point_delta_t, self.point)
                 schedule_slew_thread.start()
-                self.logger.info(CONST.STR_DISH_SLEW)
+                self.logger.info(const.STR_DISH_SLEW)
         except Exception as except_occured:
-            excpt_msg.append(CONST.ERR_EXE_SLEW_CMD + str(self.ReceptorNumber))
+            excpt_msg.append(const.ERR_EXE_SLEW_CMD + str(self.ReceptorNumber))
             excpt_count += 1
-            log_msg = CONST.ERR_MSG + str(except_occured)
+            log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_MSG + str(except_occured))
+            excpt_msg.append(const.ERR_MSG + str(except_occured))
             excpt_count += 1
 
         # Throw Exception
@@ -962,8 +959,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_SLEW_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_SLEW_EXEC, tango.ErrSeverity.ERR)
         # PROTECTED REGION END #    //  DishMaster.Slew
 
     @command(
@@ -1002,17 +999,17 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
                     self._pointing_state = PointingState.SCAN
                 self._achieved_pointing[1] = self._desired_pointing[1]
                 self._achieved_pointing[2] = self._desired_pointing[2]
-                log_msg = CONST.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
+                log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
                 self.logger.debug(log_msg)
                 self.logger.debug("Dish is TRACKING.")
             else:
             #if dish is out of preconfigured limit then dish will slew fast (Slew).
                 self._pointing_state = PointingState.SLEW                   # Set pointingState to SLEW Mode
-                self.track_slew_thread = threading.Thread(None, self.track_slew, CONST.THREAD_TRACK)
+                self.track_slew_thread = threading.Thread(None, self.track_slew, const.THREAD_TRACK)
                 self.track_slew_thread.start()
 
         except Exception as except_occured:
-            self.logger.error(CONST.ERR_MSG, except_occured)
+            self.logger.error(const.ERR_MSG, except_occured)
 
         # PROTECTED REGION END #    //  DishMaster.Track
 
@@ -1057,35 +1054,35 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
         excpt_count = 0
         try:
             jsonArgument_DM_Config = json.loads(argin)
-            AZ = jsonArgument_DM_Config[CONST.STR_POINTING]["AZ"]
-            EL = jsonArgument_DM_Config[CONST.STR_POINTING]["EL"]
+            AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
+            EL = jsonArgument_DM_Config[const.STR_POINTING]["EL"]
             self._desired_pointing[1] = AZ
             self._desired_pointing[2] = EL
             receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
             self._configured_band = int(receiverBand)
-            self.logger.info(CONST.STR_CONFIG_SUCCESS)
+            self.logger.info(const.STR_CONFIG_SUCCESS)
 
         except ValueError as value_error:
-            log_msg = CONST.ERR_INVALID_JSON + str(value_error)
+            log_msg = const.ERR_INVALID_JSON + str(value_error)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_INVALID_JSON + str(value_error))
+            excpt_msg.append(const.ERR_INVALID_JSON + str(value_error))
             excpt_count += 1
 
         except KeyError as key_error:
-            log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            excpt_msg.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             excpt_count += 1
 
         except DevFailed as dev_failed:
-            log_msg = CONST.ERR_CONFIG_DM + str(dev_failed)
+            log_msg = const.ERR_CONFIG_DM + str(dev_failed)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_CONFIG_DM + str(dev_failed))
+            excpt_msg.append(const.ERR_CONFIG_DM + str(dev_failed))
 
         except Exception as except_occurred:
-            log_msg = CONST.ERR_CONFIG_DM + str(except_occurred)
+            log_msg = const.ERR_CONFIG_DM + str(except_occurred)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_CONFIG_DM + str(except_occurred))
+            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
             excpt_count += 1
 
         # throw exception:
@@ -1093,8 +1090,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureScan
 
@@ -1112,14 +1109,14 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             if (self._pointing_state == PointingState.SLEW or self._pointing_state == PointingState.TRACK):
                 self._pointing_state = PointingState.READY
         except DevFailed as dev_failed:
-            log_msg = CONST.ERR_CONFIG_DM + str(dev_failed)
+            log_msg = const.ERR_CONFIG_DM + str(dev_failed)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_CONFIG_DM + str(dev_failed))
+            excpt_msg.append(const.ERR_CONFIG_DM + str(dev_failed))
 
         except Exception as except_occurred:
-            log_msg = CONST.ERR_CONFIG_DM + str(except_occurred)
+            log_msg = const.ERR_CONFIG_DM + str(except_occurred)
             self.logger.error(log_msg)
-            excpt_msg.append(CONST.ERR_CONFIG_DM + str(except_occurred))
+            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
             excpt_count += 1
 
         # throw exception:
@@ -1127,8 +1124,8 @@ class DishMaster(with_metaclass(DeviceMeta, SKAMaster)):
             err_msg = ' '
             for item in excpt_msg:
                 err_msg += item + "\n"
-            tango.Except.throw_exception(CONST.STR_CMD_FAILED, err_msg,
-                                         CONST.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
 
 
 

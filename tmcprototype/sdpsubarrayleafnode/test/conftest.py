@@ -8,7 +8,6 @@ import pytest
 import importlib
 from tango import DeviceProxy
 from tango.test_context import DeviceTestContext
-# from .SdpSubarrayLeafNode import CONST as CONST
 
 @pytest.fixture(scope="class")
 def tango_context(request):
