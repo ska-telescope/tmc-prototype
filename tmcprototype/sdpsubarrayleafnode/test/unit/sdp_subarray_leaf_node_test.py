@@ -10,7 +10,7 @@ from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
 
-
+sdp_subarray_proxy_mock = Mock()
 def test_scan():
     # arrange:
     device_under_test = SdpSubarrayLeafNode
@@ -19,7 +19,6 @@ def test_scan():
         'SdpSubarrayFQDN': sdp_subarray_fqdn
     }
 
-    sdp_subarray_proxy_mock = Mock()
     sdp_subarray_proxy_mock.obsState = ObsState.READY
 
     proxies_to_mock = {
@@ -29,8 +28,9 @@ def test_scan():
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         scan_config = '{"scanDuration":10}'
+        dut = tango_context.device
         # act:
-        tango_context.device.Scan(scan_config)
+        dut.Scan(scan_config)
 
         # assert:
         sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN,
@@ -45,7 +45,6 @@ def test_assign_resources():
         'SdpSubarrayFQDN': sdp_subarray_fqdn
     }
 
-    sdp_subarray_proxy_mock = Mock()
     sdp_subarray_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
@@ -72,7 +71,6 @@ def test_release_resources():
         'SdpSubarrayFQDN': sdp_subarray_fqdn
     }
 
-    sdp_subarray_proxy_mock = Mock()
     sdp_subarray_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
@@ -98,8 +96,6 @@ def test_configure():
     dut_properties = {
         'SdpSubarrayFQDN': sdp_subarray_fqdn
     }
-
-    sdp_subarray_proxy_mock = Mock()
 
     sdp_subarray_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {
@@ -137,8 +133,6 @@ def test_endscan():
         'SdpSubarrayFQDN': sdp_subarray_fqdn
     }
 
-    sdp_subarray_proxy_mock = Mock()
-
     sdp_subarray_proxy_mock.obsState = ObsState.SCANNING
     proxies_to_mock = {
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
@@ -162,8 +156,6 @@ def test_endsb():
     dut_properties = {
         'SdpSubarrayFQDN': sdp_subarray_fqdn
     }
-
-    sdp_subarray_proxy_mock = Mock()
 
     sdp_subarray_proxy_mock.obsState = ObsState.READY
     proxies_to_mock = {
