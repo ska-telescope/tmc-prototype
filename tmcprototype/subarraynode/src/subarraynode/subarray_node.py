@@ -819,9 +819,13 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             resource_jason = json.loads(argin)
             receptor_list = resource_jason["dish"]["receptorIDList"]
             sdp_resources = resource_jason.get("sdp")
+            self.logger.debug("assign_resource_whole_jason", resource_jason)
+            self.logger.debug("assign_resource_receptor", receptor_list)
+            self.logger.debug("assign_resource_SDP_resources", sdp_resources)
+
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
-            #validation of SDP and CSP resources yet to be implemented as of now reources are not present.
+            # validation of SDP and CSP resources yet to be implemented as of now reources are not present.
 
         except json.JSONDecodeError as jerror:
             log_message = CONST.ERR_INVALID_JSON + str(jerror)
