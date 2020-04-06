@@ -10,7 +10,8 @@ from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
 
-def test_start_scan_should_command_sdp_subarray_master_to_start_its_scan_when_it_is_ready():
+
+def test_scan():
     # arrange:
     device_under_test = SdpSubarrayLeafNode
     sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
@@ -25,13 +26,15 @@ def test_start_scan_should_command_sdp_subarray_master_to_start_its_scan_when_it
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
         scan_config = '{"scanDuration":10}'
         # act:
         tango_context.device.Scan(scan_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, any_method(with_name='commandCallback'))
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN,
+                                                                        any_method(with_name='commandCallback'))
 
 
 def test_assign_resources():
@@ -43,19 +46,23 @@ def test_assign_resources():
     }
 
     sdp_subarray_proxy_mock = Mock()
+    sdp_subarray_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
         assign_config = '{"processingBlockIdList": ["0001", "0002"]}'
         dut = tango_context.device
         # act:
         dut.AssignResources(assign_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,assign_config , any_method(with_name='commandCallback'))
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,assign_config,
+                                                                        any_method(with_name='commandCallback'))
         assert_activity_message(dut, const.STR_ASSIGN_RESOURCES_SUCCESS)
+
 
 def test_release_resources():
     # arrange:
@@ -66,18 +73,23 @@ def test_release_resources():
     }
 
     sdp_subarray_proxy_mock = Mock()
+    sdp_subarray_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
         dut = tango_context.device
         # act:
         dut.ReleaseAllResources()
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RELEASE_RESOURCES,'{"dummy_key": "dummy_value}"', any_method(with_name='commandCallback'))
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RELEASE_RESOURCES,
+                                                                        '{"dummy_key": "dummy_value}"',
+                                                                        any_method(with_name='commandCallback'))
         assert_activity_message(dut, const.STR_REL_RESOURCES)
+
 
 def test_configure():
     # arrange:
@@ -94,7 +106,8 @@ def test_configure():
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
         sdp_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
                      '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
@@ -106,13 +119,16 @@ def test_configure():
         dut.Configure(sdp_config)
 
         # assert:
-        jsonArgument = json.loads(sdp_config)
-        sdp_arg = jsonArgument["sdp"]
-        sdpConfiguration = sdp_arg.copy()
-        if "configureScan" in sdpConfiguration:
-            del sdpConfiguration["configureScan"]
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
+        json_argument = json.loads(sdp_config)
+        sdp_arg = json_argument["sdp"]
+        sdp_configuration = sdp_arg.copy()
+        if "configureScan" in sdp_configuration:
+            del sdp_configuration["configureScan"]
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
+                                                                        json.dumps(sdp_configuration),
                                                                         any_method(with_name='commandCallback'))
+
+
 def test_endscan():
     # arrange:
     device_under_test = SdpSubarrayLeafNode
@@ -128,7 +144,8 @@ def test_endscan():
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
         dut = tango_context.device
         # act:
         dut.EndScan()
@@ -136,6 +153,7 @@ def test_endscan():
         # assert:
         sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
                                                                         any_method(with_name='commandCallback'))
+
 
 def test_endsb():
     # arrange:
@@ -152,7 +170,8 @@ def test_endsb():
         sdp_subarray_fqdn: sdp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
         dut = tango_context.device
         # act:
         dut.EndSB()
@@ -161,8 +180,10 @@ def test_endsb():
         sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSB,
                                                                         any_method(with_name='commandCallback'))
 
+
 def assert_activity_message(dut, expected_message):
-    assert dut.activityMessage == expected_message # reads tango attribute
+    assert dut.activityMessage == expected_message  # reads tango attribute
+
 
 def any_method(with_name=None):
     class AnyMethod():
