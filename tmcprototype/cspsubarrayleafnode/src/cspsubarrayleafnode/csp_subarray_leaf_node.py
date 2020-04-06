@@ -467,11 +467,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
         dtype_in='str',
     )
     @DebugIt()
-    def ConfigureScan(self, argin):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.ConfigureScan) ENABLED START #
+    def Configure(self, argin):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Configure) ENABLED START #
         """
         This command configures the scan. It accepts configuration capabilities in JSON string format and
-        invokes ConfigureScan command on CspSubarray with configuration capabilities in JSON string as an
+        invokes Configure command on CspSubarray with configuration capabilities in JSON string as an
         input argument.
 
         :param argin: The string in JSON format. The JSON contains following values:
@@ -507,11 +507,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
-
-            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURESCAN, cmdData,
+            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, cmdData,
                                                        self.commandCallback)
-            self._read_activity_message = const.STR_CONFIGURESCAN_SUCCESS
-            self.logger.info(const.STR_CONFIGURESCAN_SUCCESS)
+            self._read_activity_message = const.STR_CONFIGURE_SUCCESS
+            self.logger.info(const.STR_CONFIGURE_SUCCESS)
             self.logger.debug(argin)
 
         except ValueError as value_error:
@@ -523,17 +522,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_count,exception_message] = self._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count, const.ERR_CONFIGURESCAN_INVOKING_CMD)
+                                exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception( except_occurred,
-                                    exception_message, exception_count, const.ERR_CONFIGURESCAN_INVOKING_CMD)
+                                    exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_CONFIG_SCAN_EXEC)
-
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.ConfigureScan
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.Configure
 
     @command(
         dtype_in=('str',),
@@ -732,10 +730,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @command(
     )
     @DebugIt()
-    def EndSB(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.EndSB) ENABLED START #
+    def GoToIdle(self):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.GoToIdle) ENABLED START #
         """
-        This command invokes EndSB command on CSP Subarray in order to end current scheduling block.
+        This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
 
         :return: None.
 
@@ -744,25 +742,25 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             if self.CspSubarrayProxy.obsState == ObsState.READY:
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSB, self.commandCallback)
-                self._read_activity_message = const.STR_ENDSB_SUCCESS
-                self.logger.info(const.STR_ENDSB_SUCCESS)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, self.commandCallback)
+                self._read_activity_message = const.STR_GOTOIDLE_SUCCESS
+                self.logger.info(const.STR_GOTOIDLE_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
             [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+                                            exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+                                            exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+            self.throw_exception(exception_message, const.STR_GOTOIDLE_EXEC)
 
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndSB
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
 
 # pylint: enable=protected-access,unused-argument,unused-variable
 

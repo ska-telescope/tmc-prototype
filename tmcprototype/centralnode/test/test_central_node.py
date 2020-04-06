@@ -292,25 +292,25 @@ class TestCentralNode(object):
     def test_telescopeHealthState(self, tango_context):
         """Test for telescopeHealthState"""
         # PROTECTED REGION ID(CentralNode.test_telescopeHealthState) ENABLED START #
-        assert tango_context.device.telescopeHealthState == 1
+        assert tango_context.device.telescopeHealthState == HealthState.OK
         # PROTECTED REGION END #    //  CentralNode.test_telescopeHealthState
 
     def test_subarray1HealthState(self, tango_context):
         """Test for subarray1HealthState"""
         # PROTECTED REGION ID(CentralNode.test_subarray1HealthState) ENABLED START #
-        assert tango_context.device.subarray1HealthState == 1
+        assert tango_context.device.subarray1HealthState == HealthState.OK
         # PROTECTED REGION END #    //  CentralNode.test_subarray1HealthState
 
     def test_subarray2HealthState(self, tango_context):
         """Test for subarray2HealthState"""
         # PROTECTED REGION ID(CentralNode.test_subarray2HealthState) ENABLED START #
-        assert tango_context.device.subarray2HealthState == 0
+        assert tango_context.device.subarray2HealthState == HealthState.OK
         # PROTECTED REGION END #    //  CentralNode.test_subarray2HealthState
 
     def test_subarray3HealthState(self, tango_context):
         """Test for subarray3HealthState"""
         # PROTECTED REGION ID(CentralNode.test_subarray3HealthState) ENABLED START #
-        assert tango_context.device.subarray3HealthState == 0
+        assert tango_context.device.subarray3HealthState == HealthState.OK
         # PROTECTED REGION END #    //  CentralNode.test_subarray3HealthState
 
     def test_activityMessage(self, tango_context):

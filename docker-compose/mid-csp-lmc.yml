@@ -1,0 +1,153 @@
+#
+# Docker compose file for TANGO database and database device server
+#
+# Defines:
+#   - tangodb: MariaDB database with TANGO schema
+#   - databaseds: TANGO database device server
+#   - rsyslog-csplmc: rsyslog service for logger
+#   - midcspmaster: MidCspMaster device
+#
+# Requires:
+#   - None
+#
+version: '2.2'
+
+services:
+  midcsp_dsconfig:
+    image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}mid-csp_dsconfig
+    depends_on:
+      - databaseds
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             json2tango -w -a -u /tmc-prototype/data/midcsplmc_dsconfig.json && sleep infinity"
+    volumes:
+      - ..:/tmc-prototype
+
+  midcsp_dumpdsconfig:
+    image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}midcsp_dumpdsconfig
+    depends_on:
+      - databaseds
+      - midcspsubarray01
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+             python -m dsconfig.dump > /tmc-prototype/data/config_result.json && sleep infinity "
+    volumes:
+      - ..:/tmc-prototype
+
+  midcspsubarray01:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}midcspsubarray01
+    depends_on:
+      - midcsp_dsconfig
+      - midcspmaster
+      - rsyslog-csplmc
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_01 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp/elt/master &&\
+             /venv/bin/python /app/csp_lmc_mid/MidCspSubarray.py subarray1"
+    volumes_from:
+      - rsyslog-csplmc:rw
+
+  midcspsubarray02:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}midcspsubarray02
+    depends_on:
+      - midcsp_dsconfig
+      - midcspmaster
+      - rsyslog-csplmc
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_02 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp/elt/master &&\
+             /venv/bin/python /app/csp_lmc_mid/MidCspSubarray.py subarray2"
+    volumes_from:
+      - rsyslog-csplmc:rw
+
+  midcspsubarray03:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}midcspsubarray03
+    depends_on:
+      - midcsp_dsconfig
+      - midcspmaster
+      - rsyslog-csplmc
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/subarray_03 &&\
+             retry --max=5 -- tango_admin --ping-device mid_csp/elt/master &&\
+             /venv/bin/python /app/csp_lmc_mid/MidCspSubarray.py subarray3"
+    volumes_from:
+      - rsyslog-csplmc:rw
+
+  midcspmaster:
+   image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
+   network_mode: ${NETWORK_MODE}
+   container_name: ${CONTAINER_NAME_PREFIX}midcspmaster
+   depends_on:
+     - midcsp_dsconfig
+     - cbfmaster
+     - rsyslog-csplmc
+   environment:
+     - TANGO_HOST=${TANGO_HOST}
+   command: >
+     sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+            retry --max=5 -- tango_admin --ping-device mid_csp_cbf/sub_elt/master &&\
+            retry --max=5 -- tango_admin --ping-device mid_csp/capability_monitor/search_beams &&\
+            /venv/bin/python /app/csp_lmc_mid/MidCspMaster.py master"
+   volumes_from:
+     - rsyslog-csplmc:rw
+
+  midcapabilitymonitor:
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.3
+    network_mode: ${NETWORK_MODE}
+    container_name: ${CONTAINER_NAME_PREFIX}midcapabilitymonitor
+    depends_on:
+      - midcsp_dsconfig
+      - rsyslog-csplmc
+    environment:
+      - TANGO_HOST=${TANGO_HOST}
+    command: >
+      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+             /venv/bin/python /app/csp_lmc_mid/MidCspCapabilityMonitor.py monitor"
+    volumes_from:
+      - rsyslog-csplmc:rw
+
+#  midpssmaster:
+#   image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/csp-lmc-common:latest
+#   network_mode: ${NETWORK_MODE}
+#   container_name: ${CONTAINER_NAME_PREFIX}midpssmaster
+#   depends_on:
+#     - midcsp_dsconfig
+#     - rsyslog-csplmc
+#   environment:
+#     - TANGO_HOST=${TANGO_HOST}
+#   command: >
+#     sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
+#           /venv/bin/python /app/simulators/DeviceTestMaster/PssMasterSimulator.py midpss"
+#   volumes_from:
+#     - rsyslog-csplmc:rw
+
+  rsyslog-csplmc: 
+    image: jumanjiman/rsyslog
+    container_name: ${CONTAINER_NAME_PREFIX}rsyslog-csplmc
+    network_mode: ${NETWORK_MODE}

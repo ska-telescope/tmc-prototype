@@ -202,25 +202,21 @@ class CentralNode(SKABaseDevice):
     # ----------
 
     telescopeHealthState = attribute(
-        dtype='DevEnum',
-        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
+        dtype=HealthState,
         doc="Health state of Telescope",
     )
 
     subarray1HealthState = attribute(
-        dtype='DevEnum',
-        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
+        dtype=HealthState,
         doc="Health state of Subarray1",
     )
 
     subarray2HealthState = attribute(
-        dtype='DevEnum',
-        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
+        dtype=HealthState,
         doc="Health state of Subarray2",
     )
     subarray3HealthState = attribute(
-        dtype='DevEnum',
-        enum_labels=["OK", "DEGRADED", "FAILED", "UNKNOWN", ],
+        dtype=HealthState,
     )
 
     activityMessage = attribute(

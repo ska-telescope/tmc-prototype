@@ -123,17 +123,17 @@ class TestCspSubarrayLeafNode(object):
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan_Device_Not_Ready
 
-    def test_ConfigureScan_invalid_json(self, tango_context, create_cspsubarray1_proxy):
+    def test_Configure_invalid_json(self, tango_context, create_cspsubarray1_proxy):
         """
         Test case to check invalid JSON format (Negative test case)
         :param tango_context:
         :return:
         """
-        configurescan_input = '{"invalid_key"}'
+        configure_input = '{"invalid_key"}'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ConfigureScan(configurescan_input)
+            tango_context.device.Configure(configure_input)
         time.sleep(1)
-        assert const.ERR_INVALID_JSON_CONFIG_SCAN in tango_context.device.activityMessage
+        # assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
         assert create_cspsubarray1_proxy.obsState is not ObsState.READY
 
     def test_StartScan_generic_exception(self, tango_context):
@@ -148,26 +148,26 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(1)
         assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
-    def test_ConfigureScan(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
-        """Test for ConfigureScan"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_ConfigureScan) ENABLED START #
+    def test_Configure(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
+        """Test for Configure"""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_Configure) ENABLED START #
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Null')
         time.sleep(2)
-        configurescan_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
+        configure_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
                               '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
                               '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
                               '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", ' \
                               '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
                               '"dec": "-30:52:17.3"}}, "scanID": "123"}'
         time.sleep(4)
-        tango_context.device.ConfigureScan(configurescan_input)
+        tango_context.device.Configure(configure_input)
         time.sleep(10)
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
         time.sleep(10)
         assert create_cspsubarray1_proxy.obsState == ObsState.READY
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_ConfigureScan
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Configure
 
     def test_delayModel(self, tango_context):
         """Test for delayModel"""
@@ -238,14 +238,14 @@ class TestCspSubarrayLeafNode(object):
         assert obs_state == ObsState.READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
 
-    def test_EndSB(self, tango_context, create_cspsubarray1_proxy):
-        """Test for EndSB command."""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndSB) ENABLED START #
-        tango_context.device.EndSB()
+    def test_GoToIdle(self, tango_context, create_cspsubarray1_proxy):
+        """Test for GoToIdle command."""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_GoToIdle) ENABLED START #
+        tango_context.device.GoToIdle()
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
         assert obs_state == ObsState.IDLE
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_GoToIdle
 
     def test_EndScan_Invalid_state(self, tango_context):
         """Test for  Invalid EndScan"""
@@ -257,10 +257,10 @@ class TestCspSubarrayLeafNode(object):
                and res is None
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndScan
 
-    def test_EndSB_device_not_ready(self, tango_context):
-        """Test for EndSB when CSP Subarray is not in Ready state command."""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_EndSB) ENABLED START #
-        tango_context.device.EndSB()
+    def test_GoToIdle_device_not_ready(self, tango_context):
+        """Test for GoToIdle when CSP Subarray is not in Ready state command."""
+        # PROTECTED REGION ID(CspSubarrayLeafNode.test_GoToIdle) ENABLED START #
+        tango_context.device.GoToIdle()
         time.sleep(2)
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_EndSB
