@@ -771,16 +771,16 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
 
     @command(
         dtype_in='str',
-        doc_in="String of Resources to add to subarray.",
+        doc_in="String in JSON format consisting of Resources to add to subarray.",
         dtype_out='str',
-        doc_out="String of Resources added to the subarray.",
+        doc_out="String in JSON format consisting of Resources added to the subarray.",
     )
     @DebugIt()
     def AssignResources(self, argin):
         """
-        Assigns resources to the subarray. It accepts receptor id list as well as SDP Configure string
+        Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
         as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
-        subarray is updated with the list of receptors and SDP Configure string is pass to SDPLeafNode,
+        subarray is updated with the list of receptors and SDP resources string is pass to SDPLeafNode,
         and returns list of assigned resources as well as passed SDP string as a DevString.
 
         Note: Resource allocation for CSP and SDP resources is also implemented but
@@ -807,20 +807,8 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             DevVarString. String of Resources added to the Subarray.
 
             Example:
-            {"dish":{"receptorIDList":["0001","0002"]}, "sdp":{"id":"sbi-mvp01-20200318-0001","max_length":21600.0,
-            "scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"00:00:00.00","dec":"00:00:00.0",
-            "freq_min":0.0,"freq_max":0.0,"nchan":1000},{"id":"calibration_B","coordinate_system":"ICRS",
-            "ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000}],"processing_blocks":
-            [{"id":"pb-mvp01-20200318-0001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},
-            "parameters":{}},{"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime","id":"test_realtime",
-            "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0003","workflow":{"type":"batch","id":"ical",
-            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0001","type":
-            ["visibilities"]}]},{"id":"pb-mvp01-20200318-0004","workflow":{"type":"batch","id":"dpreb",
-            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0003",
-            "type":["calibration"]}]}]}}
-            as argout if allocation successful
-
-                [] as argout if allocation unsuccessful
+            ["0001","0002"]
+            as argout if allocation successful.
         """
         exception_count = 0
         exception_message = []
@@ -828,13 +816,12 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
         # 1. Argument validation
         try:
             # Allocation success and failure lists
-
-            # for leafId in range(0, len(argin)):
-            #     float(argin[leafId])
-
-            Central_out = json.loads(argin)
-            Assign_DISH = Central_out["dish"]["receptorIDList"]
-            Assign_SDP = Central_out.get("sdp")
+            resource_jason = json.loads(argin)
+            receptor_list = resource_jason["dish"]["receptorIDList"]
+            sdp_resources = resource_jason.get("sdp")
+            for leafId in range(0, len(receptor_list)):
+                float(receptor_list[leafId])
+            #validation of SDP and CSP resources yet to be implemented as of now reources are not present.
 
         except json.JSONDecodeError as jerror:
             log_message = CONST.ERR_INVALID_JSON + str(jerror)
@@ -844,30 +831,27 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
                                          CONST.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
 
             self.logger.debug("assign_resource_argin",argin)
-        # except ValueError as value_error:
-        #     str_log = CONST.ERR_SCAN_CMD +"\n" + str(value_error) + CONST.ERR_INVALID_DATATYPE
-        #     self.logger.error(str_log)
-        #     self.logger.error(CONST.ERR_INVALID_DATATYPE)
-        #     self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
-        #     exception_message.append(self._read_activity_message)
-        #     exception_count += 1
+
+        except ValueError as value_error:
+            str_log = CONST.ERR_SCAN_CMD +"\n" + str(value_error) + CONST.ERR_INVALID_DATATYPE
+            self.logger.error(str_log)
+            self.logger.error(CONST.ERR_INVALID_DATATYPE)
+            self._read_activity_message = CONST.ERR_INVALID_DATATYPE + str(value_error)
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
 
         with exception_count is 0 and ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
             self.logger.info(CONST.STR_DISH_ALLOCATION)
-            dish_allocation_status = executor.submit(self.add_receptors_in_group, Assign_DISH)
+            dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
 
             # 2.2. Add resources in CSP subarray
             self.logger.info(CONST.STR_CSP_ALLOCATION)
-            csp_allocation_status = executor.submit(self.assign_csp_resources, Assign_DISH)
+            csp_allocation_status = executor.submit(self.assign_csp_resources, receptor_list)
 
             # 2.3. Add resources in SDP subarray
-            # For PI#3, TMC sends dummy resources to SDP.
             self.logger.info(CONST.STR_SDP_ALLOCATION)
-
-            #dummy_sdp_resources = ["PB1", "PB2"]
-
-            sdp_allocation_status = executor.submit(self.assign_sdp_resources, Assign_SDP)
+            sdp_allocation_status = executor.submit(self.assign_sdp_resources, sdp_resources)
 
             # 2.4 wait for result
             while (dish_allocation_status.done() is False or
@@ -890,21 +874,17 @@ class SubarrayNode(with_metaclass(DeviceMeta, SKASubarray)):
             self.logger.debug(log_msg)
 
             dish_allocation_result.sort()
-            csp_allocation_result.sort()
-            sdp_allocation_result.sort()
-            Assign_DISH.sort()
-            Assign_SDP.sort()
+            receptor_list.sort()
 
-            if(dish_allocation_result == Assign_DISH and
-                csp_allocation_result == Assign_DISH and
-                sdp_allocation_result == Assign_SDP
+            if(dish_allocation_result == receptor_list and
+                csp_allocation_result == receptor_list and
+                sdp_allocation_result == ""
               ):
                 # Currently sending dish allocation and SDP allocation results.
-                argout = (dish_allocation_result + sdp_allocation_result)
+                argout = dish_allocation_result
             else:
-                #TODO: Need to add code to revert allocated resources
                 argout = []
-        # return dish_allocation_result and SDP allocation results.
+        # return dish_allocation_result.
         self.logger.debug("assign_resource_argout",argout)
         return argout
 
