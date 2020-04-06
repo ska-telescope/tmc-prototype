@@ -13,7 +13,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.1.4"
+version = "0.1.9"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -22,6 +22,6 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.1.8
-tag=0.1.8
-description=Mapped git release with docker image version, Initialized read_activityMessage in CentralNode, Added On and Standby commands in xmi file of SubarrayNode and code cleanup.
+release=0.1.9
+tag=0.1.9
+description=Imported enum attributes from lmcbaseclasses control_model, Restructured TMC Prototype to remove duplicate names across folder, file and class, Removed system path modifications, Fixed the import statements to reflect the correct paths, Utilised the installed TMC device packages to run the respective device containers and execute unit test cases, Resolved Pylint warnings and errors, Removed DeviceMeta inheritance from each device package, Updated tmc-prototype to use the lmcbaseclasses version 0.5.1, Updated SubarrayNode.EndSB command to execute GoToIdle command on CSP Subarray, Changed ConfigureScan command of CSP Subarray to Configure.
