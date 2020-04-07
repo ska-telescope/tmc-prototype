@@ -9,6 +9,9 @@ from mock import Mock
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
+from tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node import TMC_ROOT_DIR
+ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
     # arrange:
