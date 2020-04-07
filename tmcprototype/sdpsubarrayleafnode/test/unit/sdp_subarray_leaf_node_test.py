@@ -64,7 +64,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def test_release_resources__with_dummy_data_when_sdp_subarray_is_idle():
+def test_release_resources_with_dummy_data_when_sdp_subarray_is_idle():
     # arrange:
     device_under_test = SdpSubarrayLeafNode
     sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
