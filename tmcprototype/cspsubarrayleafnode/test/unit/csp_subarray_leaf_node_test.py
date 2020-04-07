@@ -1,6 +1,7 @@
 import contextlib
 import importlib
 import sys
+import os
 import json
 import mock
 import types
@@ -9,7 +10,11 @@ from mock import Mock
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
-ska_antennas_path = "/app/tmcprototype/ska_antennas.txt"
+file_path = os.path.dirname(os.path.abspath(__file__))
+
+SRC_ROOT_DIR = "/app"
+TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
+ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
