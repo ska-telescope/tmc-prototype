@@ -52,11 +52,18 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
         assign_config='{"dish": {"receptorIDList": ["0001", "0002"]}}'
         device_proxy=tango_context.device
+        receptorIDList=[]
+        jsonArgument = json.loads(assign_config)
+        receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
+        # convert receptorIDList from list of string to list of int
+        for i in range(0, len(receptorIDList_str)):
+            receptorIDList.append(int(receptorIDList_str[i]))
+
         #act
         device_proxy.AssignResources(assign_config)
 
         #assert
-        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,assign_config,
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,receptorIDList,
                                                                         any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
