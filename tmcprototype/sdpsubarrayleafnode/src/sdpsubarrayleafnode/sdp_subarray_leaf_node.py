@@ -328,13 +328,6 @@ class SdpSubarrayLeafNode(with_metaclass(DeviceMeta, SKABaseDevice)):
             self._read_activity_message = CONST.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
-        except KeyError as key_error:
-            log_msg = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
-            # self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self._read_activity_message = CONST.ERR_JSON_KEY_NOT_FOUND
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, CONST.ERR_ASSGN_RESOURCES)
