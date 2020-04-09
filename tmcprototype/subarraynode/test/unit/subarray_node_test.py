@@ -18,6 +18,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
     sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+
     dut_properties = {
         'CspSubarrayLNFQDN': csp_subarray_ln_fqdn,
         'CspSubarrayFQDN': csp_subarray_fqdn,
@@ -32,6 +33,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
 
     csp_subarray_proxy_mock.obsState = ObsState.READY
     sdp_subarray_proxy_mock.obsState = ObsState.READY
+    tango_context.device.State() == DevState.ON
 
     proxies_to_mock = {
         csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
