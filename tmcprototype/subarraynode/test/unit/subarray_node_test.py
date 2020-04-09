@@ -47,7 +47,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         # tango_context.device.state = DevState.ON
         scan_config = '{"scanDuration":10}'
         # act:
-        tango_context.device.set_state(DevState.ON)
+        tango_context.device.State = DevState.ON
         tango_context.device.Scan(scan_config)
         cmdData = tango.DeviceData()
         cmdData.insert(tango.DevString, scan_config)
