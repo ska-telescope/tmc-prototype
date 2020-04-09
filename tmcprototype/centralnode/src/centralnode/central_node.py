@@ -637,9 +637,13 @@ class CentralNode(SKABaseDevice):
         try:
             # serialize the json
             jsonArgument = json.loads(argin)
+            print("Argin is :", argin)
+            print("jsonArgument is:", jsonArgument)
+            print("type of argin {} and jsonarg {}:".format(type(argin),type(jsonArgument)))
             # Create subarray proxy
             subarrayID = int(jsonArgument['subarrayID'])
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
+            print("Subarray Proxy is:", subarrayProxy)
             # Check for the duplicate receptor allocation
             duplicate_allocation_count = 0
             duplicate_allocation_dish_ids = []
@@ -653,12 +657,19 @@ class CentralNode(SKABaseDevice):
             if duplicate_allocation_count == 0:
                 # Remove Subarray Id key from input json argument and send the json with
                 # receptor Id list and SDP block to TMC Subarray Node
-                input_json_subarray = jsonArgument.copy
-                input_json_subarray.pop("subarrayID")
-                cmd_data = tango.DeviceData()
-                cmd_data.insert(json.dumps(input_json_subarray))
+                input_json_subarray = jsonArgument.copy()
+                print("Snehals input_json_subarray:", input_json_subarray)
+                del input_json_subarray["subarrayID"]
+                print("Snehal's after delete json:", input_json_subarray)
+                input_to_sa = json.dumps(input_json_subarray)
+                print("Input to subarray from cn as assign:",input_to_sa)
+                print("type of dumped dict:", type(input_to_sa))
+                # cmd_data = tango.DeviceData()
+                # cmd_data.insert(tango.DevString, json.dumps(input_json_subarray))
+                # print("cmdData is :", cmd_data)
                 self._resources_allocated = subarrayProxy.command_inout(
-                    const.CMD_ASSIGN_RESOURCES, cmd_data)
+                    const.CMD_ASSIGN_RESOURCES, input_to_sa)
+                print("Assign resiource executed successfully from centralNode")
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
@@ -673,6 +684,7 @@ class CentralNode(SKABaseDevice):
                         "receptorIDList_success": receptorIDList
                     }
                 }
+                print("argout:", argout)
             else:
                 self._read_activity_message = const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
                 argout = {
@@ -681,22 +693,26 @@ class CentralNode(SKABaseDevice):
                     }
                 }
         except ValueError as value_error:
+            print("Error on CentralNode value_error:", value_error)
             self.logger.error(const.ERR_INVALID_JSON)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except KeyError as key_error:
+            print("Error on CentralNode KeyError:", key_error)
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except DevFailed as dev_failed:
+            print("Error on CentralNode devfailed:", dev_failed)
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
 
         except Exception as except_occurred:
+            print("generic exception in central node dusring assignR:", except_occurred)
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 

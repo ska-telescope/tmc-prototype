@@ -186,6 +186,7 @@ class SubarrayNode(SKASubarray):
         if self.get_state() is not DevState.ON:
             if self._csp_sa_device_state==DevState.ON and self._sdp_sa_device_state == DevState.ON :
                 self.set_state(DevState.ON)
+                print("subarray state is on and assignreaources executes successgully:")
             else:
                 self.logger.info("CSP and SDP subarray are not in ON state")
         else:
@@ -830,13 +831,15 @@ class SubarrayNode(SKASubarray):
 
         # 1. Argument validation
         try:
+            print("Before assign to TMCsubarray type of argin {} and argin {} :".format(type(argin), argin))
             # Allocation success and failure lists
             resource_jason = json.loads(argin)
             receptor_list = resource_jason["dish"]["receptorIDList"]
             sdp_resources = resource_jason.get("sdp")
-            self.logger.debug("assign_resource_whole_jason", resource_jason)
-            self.logger.debug("assign_resource_receptor", receptor_list)
-            self.logger.debug("assign_resource_SDP_resources", sdp_resources)
+            print("assign_resource_whole_jason", resource_jason)
+            print("assign_resource_receptor", receptor_list)
+            print("assign_resource_SDP_resources", sdp_resources)
+            print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
 
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
@@ -904,7 +907,7 @@ class SubarrayNode(SKASubarray):
             else:
                 argout = []
         # return dish_allocation_result.
-        self.logger.debug("assign_resource_argout",argout)
+        print("assign_resource_argout",argout)
         return argout
 
     def is_AssignResources_allowed(self):
