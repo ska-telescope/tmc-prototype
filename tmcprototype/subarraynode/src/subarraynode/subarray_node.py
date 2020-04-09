@@ -785,33 +785,45 @@ class SubarrayNode(SKASubarray):
                                         DevState.STANDBY]
 
     @command(
-        dtype_in=('str',),
-        doc_in="List of Resources to add to subarray.",
-        dtype_out=('str',),
-        doc_out="A list of Resources added to the subarray.",
+        dtype_in='str',
+        doc_in="String in JSON format consisting of Resources to add to subarray.",
+        dtype_out='str',
+        doc_out="String in JSON format consisting of Resources added to the subarray.",
     )
     @DebugIt()
     def AssignResources(self, argin):
         """
-        Assigns resources to the subarray. It accepts receptor id list as an array of
-        DevStrings. Upon successful execution, the 'receptorIDList' attribute of the
-        subarray is updated with the list of receptors, and returns list of assigned
-        resources as array of DevStrings.
+        Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
+        as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
+        subarray is updated with the list of receptors and SDP resources string is pass to SDPLeafNode,
+        and returns list of assigned resources as well as passed SDP string as a DevString.
 
         Note: Resource allocation for CSP and SDP resources is also implemented but
-        currently CSP accepts only receptorIDList and SDP accepts only dummy resources.
+        currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
 
         :param argin:
-            DevVarStringArray. List of receptor IDs to be allocated to subarray.
+            DevVarString.
 
-            Example: ['0001', '0002'] as argin
+            Example:
+            {"dish":{"receptorIDList":["0001","0002"]}, "sdp":{"id":"sbi-mvp01-20200318-0001","max_length":21600.0,
+            "scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"00:00:00.00","dec":"00:00:00.0",
+            "freq_min":0.0,"freq_max":0.0,"nchan":1000},{"id":"calibration_B","coordinate_system":"ICRS",
+            "ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000}],"processing_blocks":
+            [{"id":"pb-mvp01-20200318-0001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},
+            "parameters":{}},{"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime","id":"test_realtime",
+            "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0003","workflow":{"type":"batch","id":"ical",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0001","type":
+            ["visibilities"]}]},{"id":"pb-mvp01-20200318-0004","workflow":{"type":"batch","id":"dpreb",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0003",
+            "type":["calibration"]}]}]}}
+
 
         :return:
-            DevVarStringArray. List of Resources added to the Subarray.
+            DevVarString. String of Resources added to the Subarray.
 
-            Example: ['0001', '0002'] as argout if allocation successful
-
-                [] as argout if allocation unsuccessful
+            Example:
+            ["0001","0002"]
+            as argout if allocation successful.
         """
         exception_count = 0
         exception_message = []
@@ -819,10 +831,26 @@ class SubarrayNode(SKASubarray):
         # 1. Argument validation
         try:
             # Allocation success and failure lists
-            for leafId in range(0, len(argin)):
-                float(argin[leafId])
-                log_msg = "assign_resource_argin",argin
-                self.logger.debug(log_msg)
+            resource_jason = json.loads(argin)
+            receptor_list = resource_jason["dish"]["receptorIDList"]
+            sdp_resources = resource_jason.get("sdp")
+            self.logger.debug("assign_resource_whole_jason", resource_jason)
+            self.logger.debug("assign_resource_receptor", receptor_list)
+            self.logger.debug("assign_resource_SDP_resources", sdp_resources)
+
+            for leafId in range(0, len(receptor_list)):
+                float(receptor_list[leafId])
+            # validation of SDP and CSP resources yet to be implemented as of now reources are not present.
+
+        except json.JSONDecodeError as jerror:
+            log_message = const.ERR_INVALID_JSON + str(jerror)
+            self.logger.error(log_message)
+            self._read_activity_message = log_message
+            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+
+            self.logger.debug("assign_resource_argin",argin)
+
         except ValueError as value_error:
             str_log = const.ERR_SCAN_CMD +"\n" + str(value_error) + const.ERR_INVALID_DATATYPE
             self.logger.error(str_log)
@@ -834,17 +862,15 @@ class SubarrayNode(SKASubarray):
         with exception_count is 0 and ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
             self.logger.info(const.STR_DISH_ALLOCATION)
-            dish_allocation_status = executor.submit(self.add_receptors_in_group, argin)
+            dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
 
             # 2.2. Add resources in CSP subarray
             self.logger.info(const.STR_CSP_ALLOCATION)
-            csp_allocation_status = executor.submit(self.assign_csp_resources, argin)
+            csp_allocation_status = executor.submit(self.assign_csp_resources, receptor_list)
 
             # 2.3. Add resources in SDP subarray
-            # For PI#3, TMC sends dummy resources to SDP.
             self.logger.info(const.STR_SDP_ALLOCATION)
-            dummy_sdp_resources = ["PB1", "PB2"]
-            sdp_allocation_status = executor.submit(self.assign_sdp_resources, dummy_sdp_resources)
+            sdp_allocation_status = executor.submit(self.assign_sdp_resources, sdp_resources)
 
             # 2.4 wait for result
             while (dish_allocation_status.done() is False or
@@ -867,23 +893,18 @@ class SubarrayNode(SKASubarray):
             self.logger.debug(log_msg)
 
             dish_allocation_result.sort()
-            csp_allocation_result.sort()
-            sdp_allocation_result.sort()
-            argin.sort()
-            dummy_sdp_resources.sort()
+            receptor_list.sort()
 
-            if(dish_allocation_result == argin and
-                csp_allocation_result == argin and
-                sdp_allocation_result == dummy_sdp_resources
+            if(dish_allocation_result == receptor_list and
+                csp_allocation_result == receptor_list and
+                sdp_allocation_result == ""
               ):
-                # Currently sending only dish allocation results.
+                # Currently sending dish allocation and SDP allocation results.
                 argout = dish_allocation_result
             else:
-                #TODO: Need to add code to revert allocated resources
                 argout = []
-        # return dish_allocation_result
-        log_msg = "assign_resource_argout",argout
-        self.logger.debug(log_msg)
+        # return dish_allocation_result.
+        self.logger.debug("assign_resource_argout",argout)
         return argout
 
     def is_AssignResources_allowed(self):
