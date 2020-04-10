@@ -114,7 +114,7 @@ def test_assignResource_should_command_subarray_AssignResource():
         print("device state of subarray state:", tango_context.device.state())
         # act:
         # tango_context.device.set_state(DevState.ON)
-        tango_context.device.Scan(assign_str)
+        tango_context.device.AssignResources(assign_str)
         # cmdData = tango.DeviceData()
         # cmdData.insert(tango.DevString, scan_config)
 
