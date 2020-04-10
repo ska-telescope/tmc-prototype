@@ -15,6 +15,11 @@ from ska.base.control_model import ObsState
 def test_On_should_command_subarray_to_On():
     # arrange:
     device_under_test = SubarrayNode
+    dut_properties = {
+    }
+    proxies_to_mock = {
+    }
+
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         # act:
