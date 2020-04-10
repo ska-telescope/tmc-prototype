@@ -49,6 +49,8 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
 
     csp_subarray_proxy_mock.obsState = ObsState.READY
     sdp_subarray_proxy_mock.obsState = ObsState.READY
+    csp_subarray_proxy_mock.set_state(DevState.ON)
+    sdp_subarray_proxy_mock.set_state(DevState.ON)
 
     proxies_to_mock = {
         csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
@@ -61,8 +63,9 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
             as tango_context:
         # tango_context.device.state = DevState.ON
         scan_config = '{"scanDuration":10}'
+        print("device state of subarray state:", tango_context.device.state())
         # act:
-        tango_context.device.State = DevState.ON
+        # tango_context.device.State = DevState.ON
         tango_context.device.Scan(scan_config)
         cmdData = tango.DeviceData()
         cmdData.insert(tango.DevString, scan_config)
