@@ -12,6 +12,16 @@ from subarraynode import SubarrayNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
 
+def test_On_should_command_subarray_to_On():
+    # arrange:
+    device_under_test = SubarrayNode
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.On()
+        # assert:
+        assert tango_context.device.state() == DevState.OFF
+
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # arrange:
     device_under_test = SubarrayNode
