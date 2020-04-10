@@ -27,6 +27,7 @@ def test_On_should_command_subarray_to_On():
         # assert:
         assert tango_context.device.state() == DevState.OFF
 
+
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # arrange:
     device_under_test = SubarrayNode
@@ -65,10 +66,57 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         scan_config = '{"scanDuration":10}'
         print("device state of subarray state:", tango_context.device.state())
         # act:
-        tango_context.device.set_state(DevState.ON)
+        # tango_context.device.set_state(DevState.ON)
         tango_context.device.Scan(scan_config)
-        cmdData = tango.DeviceData()
-        cmdData.insert(tango.DevString, scan_config)
+        # cmdData = tango.DeviceData()
+        # cmdData.insert(tango.DevString, scan_config)
+
+        # assert:
+        # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, cmdData)
+        # csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, cmdData)
+
+def test_assignResource_should_command_subarray_AssignResource():
+    # arrange:
+    device_under_test = SubarrayNode
+    csp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray_fqdn
+    }
+
+    csp_subarray_ln_proxy_mock = Mock()
+    csp_subarray_proxy_mock = Mock()
+    sdp_subarray_ln_proxy_mock = Mock()
+    sdp_subarray_proxy_mock = Mock()
+
+    # csp_subarray_proxy_mock.obsState = ObsState.READY
+    # sdp_subarray_proxy_mock.obsState = ObsState.READY
+    csp_subarray_proxy_mock.set_state(DevState.OFF)
+    sdp_subarray_proxy_mock.set_state(DevState.OFF)
+
+    proxies_to_mock = {
+        csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
+        csp_subarray_fqdn : csp_subarray_proxy_mock,
+        sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
+        sdp_subarray_fqdn : sdp_subarray_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # tango_context.device.state = DevState.ON
+        assign_str = ['0001', '0002']
+        print("device state of subarray state:", tango_context.device.state())
+        # act:
+        # tango_context.device.set_state(DevState.ON)
+        tango_context.device.Scan(assign_str)
+        # cmdData = tango.DeviceData()
+        # cmdData.insert(tango.DevString, scan_config)
 
         # assert:
         sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
