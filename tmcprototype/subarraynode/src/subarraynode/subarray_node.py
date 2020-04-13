@@ -615,6 +615,9 @@ class SubarrayNode(SKASubarray):
                 self.isScanning = True
                 # Invoke Scan command on SDP Subarray Leaf Node
                 cmdData = tango.DeviceData()
+                # Invoke scan command on Sdp Subarray Leaf Node with input argument as scan id
+                # TODO: get scan id here by using self._scan_id
+
                 cmdData.insert(tango.DevString, argin)
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, cmdData)
                 self.logger.debug(const.STR_SDP_SCAN_INIT)

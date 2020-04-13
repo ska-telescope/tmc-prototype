@@ -411,10 +411,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # TODO : For Future Implementation
             # JSON argument scan_duration is maintained for future use.
             jsonArgument = json.loads(argin)
+            # TODO: Received scan_if from Sdp Subarray Leaf Node and parse it and save it as scan_id
             scan_duration = jsonArgument["scanDuration"]
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
             # Check if SDP Subarray obsState is READY
             if sdp_subarray_obs_state == ObsState.READY:
+                # TODO : Pass scan_id as a string argument to sdp Subarray Scan command
+
                 self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, self.commandCallback)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
                 self.logger.info(const.STR_SCAN_SUCCESS)
@@ -496,6 +499,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             if self._sdp_subarray_proxy.obsState == ObsState.READY:
+                # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
                 self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSB, self.commandCallback)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
