@@ -20,20 +20,19 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     }
 
     dish_proxy_mock = Mock()
+    dish_proxy_mock.obsState = ObsState.READY
 
     proxies_to_mock = {
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
         scan_config = '0'
         # act:
         tango_context.device.Scan(scan_config)
 
         # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN,float(scan_config),
-                                                                        any_method(with_name='commandCallback'))
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, any_method(with_name='commandCallback'))
 
 '''
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
@@ -167,10 +166,10 @@ def test_track_should_command_dish_to_start_tracking():
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.THREAD_TRACK,radec_value,
                                                                 any_method(with_name='commandCallback'))
 '''
-
+'''
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute
-
+'''
 
 def any_method(with_name=None):
     class AnyMethod():
