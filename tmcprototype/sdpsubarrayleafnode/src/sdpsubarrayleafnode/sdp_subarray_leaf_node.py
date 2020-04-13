@@ -228,7 +228,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         try:
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                          '{"dummy_key": "dummy_value}"',
                                                                           self.commandCallback)
 
             # Update the status of command execution status in activity message
