@@ -908,7 +908,8 @@ class SubarrayNode(SKASubarray):
                 argout = []
         # return dish_allocation_result.
         print("assign_resource_argout",argout)
-        return argout
+        cmdDataReturn1 = json.dumps(argout)
+        return cmdDataReturn1
 
     def is_AssignResources_allowed(self):
         """Checks if AssignResources is allowed in the current state of SubarrayNode."""
