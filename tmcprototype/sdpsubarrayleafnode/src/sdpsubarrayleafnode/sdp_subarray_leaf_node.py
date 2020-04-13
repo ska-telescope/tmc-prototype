@@ -228,7 +228,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         try:
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                          '{"dummy_key": "dummy_value}"',
                                                                           self.commandCallback)
 
             # Update the status of command execution status in activity message
@@ -354,11 +353,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         Example:
 
-        {"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":
-        {"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChanels":
-        372,"numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS",
-        "name":"NGC6251","ra":1.0,"dec":1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},
-        "configureScan":{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}
+        {"sdp":{ "scan_type": "science_A" }}
 
         :return: None.
         """
@@ -371,8 +366,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             jsonArgument = json.loads(argin)
             sdp_arg = jsonArgument["sdp"]
             sdpConfiguration = sdp_arg.copy()
-            if "configureScan" in sdpConfiguration:
-                del sdpConfiguration["configureScan"]
             self._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                           self.commandCallback)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS

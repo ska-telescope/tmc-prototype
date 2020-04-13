@@ -133,12 +133,7 @@ class TestSdpSubarrayLeafNode(object):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Configure) ENABLED START #
         create_sdpsubarray_proxy.toggleReadCbfOutLink = False
         time.sleep(2)
-        test_input = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
-                     '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
-                     '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
-                     '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
-                     ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
-                     ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
+        test_input = '{"sdp":{ "scan_type": "science_A" }}'
         tango_context.device.Configure(test_input)
         time.sleep(1)
         assert create_sdpsubarray_proxy.obsState == ObsState.READY
