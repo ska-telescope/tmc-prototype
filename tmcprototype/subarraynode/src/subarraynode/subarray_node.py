@@ -72,23 +72,25 @@ class ElementDeviceData:
         sdp_scan_config = scan_config.get("sdp", {})
 
         if sdp_scan_config:
-            sdp_config = sdp_scan_config.get("configure")
+            sdp_config = sdp_scan_config.get("scan_type")
             if sdp_config:
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
                 scan_config.pop("csp", None)
-                sdp_scan_config["configure"] = sdp_config[0]
-                sdp_scan_config["configure"][const.STR_CSP_CBFOUTLINK] = cbf_out_link
+                scan_config.pop("tmc", None)
+                sdp_scan_config["scan_type"] = sdp_config[0]
                 cmd_data = tango.DeviceData()
                 cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
-                raise KeyError("SDP Subarray configuration is empty. Command data not built up")
+                raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
         else:
+            # Need to check if sdp already has scan type if yes then msg showing continue with old scan .
+            # and if no earlier scan exist throw error as below.
             raise KeyError("SDP configuration must be given. Aborting SDP configuration.")
         return cmd_data
 
     @staticmethod
-    def build_up_csp_cmd_data(scan_config, scan_id, attr_name_map):
+    def build_up_csp_cmd_data(scan_config, attr_name_map):
         scan_config = scan_config.copy()
         csp_scan_config = scan_config.get("csp", {})
 
@@ -96,7 +98,6 @@ class ElementDeviceData:
             for key, attribute_name in attr_name_map.items():
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
-            csp_scan_config["scanID"] = scan_id
             cmd_data = tango.DeviceData()
             cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
@@ -834,9 +835,12 @@ class SubarrayNode(SKASubarray):
             resource_jason = json.loads(argin)
             receptor_list = resource_jason["dish"]["receptorIDList"]
             sdp_resources = resource_jason.get("sdp")
+            self._sb_id = resource_jason["sdp"]["id"]
+            print("_sb_id : ",self._sb_id)
             self.logger.debug("assign_resource_whole_jason", resource_jason)
             self.logger.debug("assign_resource_receptor", receptor_list)
             self.logger.debug("assign_resource_SDP_resources", sdp_resources)
+
 
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
@@ -1279,18 +1283,18 @@ class SubarrayNode(SKASubarray):
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
-        cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
-        cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration, cbf_out_link)
+        cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
+        # Need to confirm if CSP required SDP receive address
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
             const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
         }
 
         cmd_data = self._create_cmd_data(
-            "build_up_csp_cmd_data", scan_configuration, self._scan_id, attr_name_map)
+            "build_up_csp_cmd_data", scan_configuration, attr_name_map)
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
@@ -1326,14 +1330,20 @@ class SubarrayNode(SKASubarray):
         Configuration and SDP Configuration parameters.
 
         JSON string example is:
+        {"pointing":{"target":{"system":"ICRS","name":"NGC1068","RA":0.70984,"dec":0.000233},},
+        "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",
+        "fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth
+        ":0,"channelAveragingMap":[[1,2],[745,0]],"outputLinkMap":[[1,0],[201,1]]},{"fspID":2,"functionMode
+        ":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0},]},"sdp":{"scan_type":
+        "science_A"},"tmc":{"scanDuration":10.0,}}
 
-        {"scanID":123,"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946","dec":
-        "+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode"
-        :"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},"sdp":{"configure":[{"id":
-        "realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest","type":"realtime","version"
-        :"0.1.0"},"parameters":{"numStations":4,"numChannels":372,"numPolarisations":4,"freqStartHz":0.35e9,
-        "freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"Polaris","ra":0.662432049839445,"dec":
-        1.5579526053855042}}},"scanParameters":{"123":{"fieldId":0,"intervalMs":1400}}}]}}
+        # {"scanID":123,"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946","dec":
+        # "+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode"
+        # :"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},"sdp":{"configure":[{"id":
+        # "realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest","type":"realtime","version"
+        # :"0.1.0"},"parameters":{"numStations":4,"numChannels":372,"numPolarisations":4,"freqStartHz":0.35e9,
+        # "freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"Polaris","ra":0.662432049839445,"dec":
+        # 1.5579526053855042}}},"scanParameters":{"123":{"fieldId":0,"intervalMs":1400}}}]}}
 
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
@@ -1357,16 +1367,16 @@ class SubarrayNode(SKASubarray):
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
 
-        if "scanID" not in scan_configuration:
-            log_message = "'scanID' must be given. Aborting configuration."
-            self.logger.error(log_message)
-            self._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-
-        self._scan_id = str(scan_configuration["scanID"])
-        self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
-                                for _ in range(4))
+        # if "scanID" not in scan_configuration:
+        #     log_message = "'scanID' must be given. Aborting configuration."
+        #     self.logger.error(log_message)
+        #     self._read_activity_message = log_message
+        #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+        #                                  const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+        #
+        # self._scan_id = str(scan_configuration["scanID"])
+        # self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
+        #                         for _ in range(4))
 
         self._configure_csp(scan_configuration)
         # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
