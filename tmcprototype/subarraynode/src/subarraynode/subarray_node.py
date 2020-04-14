@@ -459,8 +459,7 @@ class SubarrayNode(SKASubarray):
         argout = []
         json_argument = {}
         try:
-            json_argument[const.STR_KEY_PB_ID_LIST] = argin
-            str_json_arg = json.dumps(json_argument)
+            str_json_arg = json.dumps(argin)
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
             argout = argin
         except DevFailed as df:
