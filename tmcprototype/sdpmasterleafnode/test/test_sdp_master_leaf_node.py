@@ -82,7 +82,7 @@ class TestSdpMasterLeafNode(object):
         # PROTECTED REGION ID(SdpMasterLeafNode.test_On) ENABLED START #
         tango_context.device.On()
         time.sleep(4)
-        assert create_sdp_master_proxy.OperatingState == 0
+        assert create_sdp_master_proxy.OperatingState == 1
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_On
 
@@ -91,7 +91,7 @@ class TestSdpMasterLeafNode(object):
         # PROTECTED REGION ID(SdpMasterLeafNode.test_Standby) ENABLED START #
         tango_context.device.Standby()
         time.sleep(4)
-        assert create_sdp_master_proxy.OperatingState == 0
+        assert create_sdp_master_proxy.OperatingState == 3
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_Standby
 
