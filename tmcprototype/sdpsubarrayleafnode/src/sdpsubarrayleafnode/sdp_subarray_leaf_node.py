@@ -500,7 +500,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         try:
             if self._sdp_subarray_proxy.obsState == ObsState.READY:
                 # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSB, self.commandCallback)
+                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.commandCallback)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
             else:
