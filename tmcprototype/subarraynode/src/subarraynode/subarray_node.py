@@ -588,16 +588,16 @@ class SubarrayNode(SKASubarray):
     @DebugIt()
     def Scan(self, argin):
         """
-        This command accepts time interval as input. And it Schedule scan on subarray
+        This command accepts id as input. And it Schedule scan on subarray
         from where scan command is invoked on respective CSP and SDP subarray node for the
         provided interval of time. It checks whether the scan is already in progress. If yes it
         throws error showing duplication of command.
 
-        :param argin: DevVarStringArray. JSON string containing scan duration.
+        :param argin: DevVarStringArray. JSON string containing id.
 
         JSON string example as follows:
 
-        {"scanDuration": 10.0}
+        {"id": 1}
 
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
@@ -606,8 +606,13 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         exception_message = []
         try:
-            json_scan_duration = json.loads(argin)
-            self.scan_duration = int(json_scan_duration['scanDuration'])
+            # json_scan_duration = json.loads(argin)
+            # self.scan_duration = int(json_scan_duration['scanDuration'])
+            # TODO: Get the scan duration from configure command
+            self.scan_duration = {"scanDuration": 10.0}
+            json_id = json.loads(argin)
+            self.id = int(json_id['id'])
+
             self.logger.debug(const.STR_SCAN_IP_ARG, argin)
             assert self._obs_state != ObsState.SCANNING, const.SCAN_ALREADY_IN_PROGRESS
             if self._obs_state == ObsState.READY:
@@ -616,16 +621,16 @@ class SubarrayNode(SKASubarray):
                 # Invoke Scan command on SDP Subarray Leaf Node
                 cmdData = tango.DeviceData()
                 # Invoke scan command on Sdp Subarray Leaf Node with input argument as scan id
-                # TODO: get scan id here by using self._scan_id
+                # TODO: Pass id recived as a input
 
-                cmdData.insert(tango.DevString, self._scan_id)
+                cmdData.insert(tango.DevString, self.id)
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, cmdData)
                 self.logger.debug(const.STR_SDP_SCAN_INIT)
                 self._read_activity_message = const.STR_SDP_SCAN_INIT
 
                 # Invoke Scan command on CSP Subarray Leaf Node
                 csp_argin = []
-                csp_argin.append(argin)
+                csp_argin.append(self.scan_duration)
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevVarStringArray, csp_argin)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, cmdData)
