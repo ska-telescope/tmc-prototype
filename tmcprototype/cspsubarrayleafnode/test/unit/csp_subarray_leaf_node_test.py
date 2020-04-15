@@ -75,6 +75,33 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
                                                                         any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
+def test_release_resources_with_dummy_data_when_csp_subarray_is_idle():
+    # arrange:
+    device_under_test = CspSubarrayLeafNode
+    csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray_fqdn
+    }
+
+    csp_subarray_proxy_mock = Mock()
+    csp_subarray_proxy_mock.obsState = ObsState.IDLE
+
+    proxies_to_mock = {
+        csp_subarray_fqdn: csp_subarray_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.ReleaseAllResources()
+
+        # assert:
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS,
+                                                                        '{"dummy_key": "dummy_value}"',
+                                                                        any_method(with_name='commandCallback'))
+        assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+
 
 def any_method(with_name=None):
     class AnyMethod():
