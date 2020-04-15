@@ -67,7 +67,7 @@ class SubarrayHealthState:
 class ElementDeviceData:
 
     @staticmethod
-    def build_up_sdp_cmd_data(scan_config, cbf_out_link):
+    def build_up_sdp_cmd_data(scan_config):
         scan_config = scan_config.copy()
         sdp_scan_config = scan_config.get("sdp", {})
 

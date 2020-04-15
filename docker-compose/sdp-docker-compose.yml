@@ -13,7 +13,7 @@ volumes:
 
 services:
   sdpmaster:
-    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_master:0.3.1
+    image: ${DOCKER_REGISTRY_HOST}/sdp-prototype/tangods_sdp_master:0.3.2
     depends_on:
       - databaseds
       - sdp-dsconfig
