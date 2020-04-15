@@ -26,12 +26,12 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_config = '{"scanDuration": 10.0}'
+        scan_config = '0'                #'{"scanDuration": 10.0}'
         # act:
         tango_context.device.StartScan(scan_config)
 
         # assert:
-        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, any_method(with_name='commandCallback'))
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, float(scan_config), any_method(with_name='commandCallback'))
 
 
 def any_method(with_name=None):
