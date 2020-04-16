@@ -99,11 +99,9 @@ def test_release_resources_RemoveAllReceptors_when_csp_subarray_is_idle():
         device_proxy.ReleaseAllResources()
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_REMOVE_ALL_RECEPTORS,
-                                                                        self.commandCallback)
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_REMOVE_ALL_RECEPTORS,
+                                                                        any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
-
-
 
 def any_method(with_name=None):
     class AnyMethod():
