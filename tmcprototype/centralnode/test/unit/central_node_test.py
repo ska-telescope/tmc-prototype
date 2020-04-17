@@ -86,21 +86,6 @@ def create_dummy_event(csp_master_fqdn):
     return fake_event
 
 
-@contextlib.contextmanager
-def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
-                      device_proxy_import_path='tango.DeviceProxy'):
-
-    with mock.patch(device_proxy_import_path) as patched_constructor:
-        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
-        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
-
-    device_under_test = getattr(patched_module, device_under_test.__name__)
-
-    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
-    device_test_context.start()
-    yield device_test_context
-    device_test_context.stop()
-
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
@@ -117,7 +102,7 @@ def test_assign_resources_should_send_json_to_subarraynode():
     device_under_test = CentralNode
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
-        'SubarrayFQDN': subarray_fqdn
+        'TMMidSubarrayNodes': subarray_fqdn
     }
 
     subarray_proxy_mock = Mock()
@@ -128,11 +113,11 @@ def test_assign_resources_should_send_json_to_subarraynode():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        assign_command = '["0001", "0002"]'
+        assign_command = {"dish": {"receptorIDList_success": ["0001", "0002"]}}
         tango_context.device.AssignResources(assign_command)
 
         # assert:
-        subarray_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_command)
+        subarray_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, ["0001", "0002"])
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
@@ -142,7 +127,7 @@ def test_release_resources_when_subarray_is_idle():
     device_under_test = CentralNode
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
-        'SubarrayFQDN': subarray_fqdn
+        'TMMidSubarrayNodes': subarray_fqdn
     }
 
     subarray_proxy_mock = Mock()
@@ -160,3 +145,18 @@ def test_release_resources_when_subarray_is_idle():
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
         assert_activity_message(tango_context.device, const.STR_REL_RESOURCES)
 
+
+@contextlib.contextmanager
+def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
+                      device_proxy_import_path='tango.DeviceProxy'):
+
+    with mock.patch(device_proxy_import_path) as patched_constructor:
+        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
+        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+
+    device_under_test = getattr(patched_module, device_under_test.__name__)
+
+    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
+    device_test_context.start()
+    yield device_test_context
+    device_test_context.stop()
