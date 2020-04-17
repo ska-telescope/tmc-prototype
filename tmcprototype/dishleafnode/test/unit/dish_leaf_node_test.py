@@ -27,12 +27,12 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_config = '0'
+        scan_config = 0.0
         # act:
         tango_context.device.Scan(scan_config)
 
         # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, float(0.0), any_method(with_name='commandCallback'))
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, 0.0, any_method(with_name='commandCallback'))
 
 
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
