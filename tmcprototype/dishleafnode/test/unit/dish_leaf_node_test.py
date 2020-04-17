@@ -34,7 +34,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
         # assert:
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, float(scan_config), any_method(with_name='commandCallback'))
 
-'''
+
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
     # arrange:
     device_under_test = DishLeafNode
@@ -57,7 +57,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
 
         # assert:
         json_argument = json.loads(dish_config)
-        dish_arg = json_argument["dish"]
+        dish_arg = json_argument["pointing"]
         dish_configuration = dish_arg.copy()
         if "configureScan" in dish_configuration:
             del dish_configuration["configureScan"]
@@ -99,7 +99,7 @@ def test_standby_lp_mode_should_command_dish_to_standby():
     }
 
     dish_proxy_mock = Mock()
-    dish_proxy_mock.obsState = ObsState.DISABLE  #referred from devstate of dishmaster standby
+    #dish_proxy_mock.obsState = ObsState.DISABLE
     proxies_to_mock = {
         dish_master_fqdn: dish_proxy_mock
     }
@@ -165,11 +165,7 @@ def test_track_should_command_dish_to_start_tracking():
         # assert:
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.THREAD_TRACK,radec_value,
                                                                 any_method(with_name='commandCallback'))
-'''
-'''
-def assert_activity_message(device_proxy, expected_message):
-    assert device_proxy.activityMessage == expected_message  # reads tango attribute
-'''
+
 
 def any_method(with_name=None):
     class AnyMethod():
