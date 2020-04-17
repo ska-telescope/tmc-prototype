@@ -127,6 +127,69 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
         assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
 
 
+def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle():
+    device_under_test = CspSubarrayLeafNode
+    csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray_fqdn
+    }
+
+    csp_subarray_proxy_mock = Mock()
+    csp_subarray_proxy_mock.obsState = ObsState.IDLE
+
+    proxies_to_mock = {
+        csp_subarray_fqdn: csp_subarray_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        csp_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
+                          '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
+                          '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
+                          '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", ' \
+                          '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
+                          '"dec": "-30:52:17.3"}}, "scanID": "123"}'
+        tango_context.device.Configure(csp_config)
+        argin_json = json.loads(argin)
+        cspConfiguration = argin_json.copy()
+        if "pointing" in cspConfiguration:
+            del cspConfiguration["pointing"]
+        cmdData = tango.DeviceData()
+        cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE, cmdData,
+                                                                        any_method(with_name='commandCallback'))
+        assert_activity_message(device_proxy, const.STR_CONFIGURE_SUCCESS)
+
+
+def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
+    # arrange:
+    device_under_test = CspSubarrayLeafNode
+    csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray_fqdn
+    }
+
+    csp_subarray_proxy_mock = Mock()
+    csp_subarray_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        csp_subarray_fqdn: csp_subarray_proxy_mock
+    }
+
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        tango_context.device.GoToIdle()
+
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_GOTOIDLE,
+                                                                        any_method(with_name='commandCallback'))
+        assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
+
+
+
+
+
+
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
