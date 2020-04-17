@@ -20,7 +20,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     }
 
     dish_proxy_mock = Mock()
-    #dish_proxy_mock.obsState = ObsState.READY
+    dish_proxy_mock.obsState = ObsState.READY
 
     proxies_to_mock = {
         dish_master_fqdn: dish_proxy_mock
@@ -99,7 +99,7 @@ def test_standby_lp_mode_should_command_dish_to_standby():
     }
 
     dish_proxy_mock = Mock()
-    #dish_proxy_mock.obsState = ObsState.DISABLE
+    dish_proxy_mock.obsState = ObsState.DISABLE
     proxies_to_mock = {
         dish_master_fqdn: dish_proxy_mock
     }

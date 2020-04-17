@@ -74,7 +74,7 @@ def test_standby_lp_mode_should_command_dish_master_to_standby():
     }
 
     dish_master_proxy_mock = Mock()
-    #dish_master_proxy_mock.obsState = ObsState.DISABLE
+    dish_master_proxy_mock.obsState = ObsState.DISABLE
     proxies_to_mock = {
         dish_master_fqdn: dish_master_proxy_mock
     }
