@@ -90,6 +90,7 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE,float(scan_config),
                                                                         any_method(with_name='commandCallback'))
 
+
 def test_standby_lp_mode_should_command_dish_to_standby():
     # arrange:
     device_under_test = DishLeafNode

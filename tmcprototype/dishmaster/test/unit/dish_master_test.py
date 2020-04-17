@@ -10,7 +10,6 @@ from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
 
-
 def test_start_scan_should_command_dish_master_to_start_scan_when_it_is_ready():
     # arrange:
     device_under_test = DishMaster
