@@ -10,11 +10,11 @@ from mock import Mock
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
-file_path = os.path.dirname(os.path.abspath(__file__))
-
-SRC_ROOT_DIR = "/app"
-TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
-ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+# file_path = os.path.dirname(os.path.abspath(__file__))
+#
+# SRC_ROOT_DIR = "/app"
+# TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
+# ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
@@ -121,6 +121,7 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
+        device_proxy = tango_context.device
         tango_context.device.EndScan()
         csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
                                                                         any_method(with_name='commandCallback'))
@@ -143,6 +144,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
+        device_proxy = tango_context.device
         csp_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
                           '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
                           '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
@@ -179,6 +181,7 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
+        device_proxy = tango_context.device
         tango_context.device.GoToIdle()
 
         csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_GOTOIDLE,
