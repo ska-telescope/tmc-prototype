@@ -3,7 +3,9 @@ import importlib
 import sys
 import mock
 import types
+import tango
 
+from tango import DevState
 from mock import Mock
 from centralnode import CentralNode,const
 from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
@@ -106,7 +108,7 @@ def test_assign_resources_should_send_json_to_subarraynode():
     }
 
     subarray_proxy_mock = Mock()
-    subarray_proxy_mock.obsState = ObsState.IDLE
+    subarray_proxy_mock.DevState = DevState.OFF
     proxies_to_mock = {
         subarray_fqdn: subarray_proxy_mock
     }
@@ -131,7 +133,7 @@ def test_release_resources_when_subarray_is_idle():
     }
 
     subarray_proxy_mock = Mock()
-    subarray_proxy_mock.obsState = ObsState.IDLE
+    subarray_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
         subarray_fqdn: subarray_proxy_mock
     }
@@ -139,7 +141,8 @@ def test_release_resources_when_subarray_is_idle():
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         # act:
-        tango_context.device.ReleaseResources()
+        release= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        tango_context.device.ReleaseResources(release)
 
         # assert:
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
