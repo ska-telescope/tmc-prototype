@@ -132,7 +132,8 @@ def test_assign_resources_should_send_json_to_subarraynode():
         tango_context.device.AssignResources(assign_command)
 
         # assert:
-        subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_command)
+        subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_command,
+                                                                    any_method(with_name='commandCallback'))
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
@@ -157,6 +158,7 @@ def test_release_resources_when_subarray_is_idle():
         tango_context.device.ReleaseAllResources()
 
         # assert:
-        subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RELEASE_RESOURCES)
+        subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RELEASE_RESOURCES,
+                                                                    any_method(with_name='commandCallback'))
         assert_activity_message(tango_context.device, const.STR_REL_RESOURCES)
 
