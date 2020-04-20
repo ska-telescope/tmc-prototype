@@ -157,7 +157,7 @@ def test_release_resources_when_subarray_is_idle():
         # assert:
         jsonArgument = json.loads(release_input)
         if jsonArgument['releaseALL'] == True:
-            res_not_released = subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
+            res_not_released = json.loads(subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES))
             print ("res_not_released:", res_not_released)
         assert_activity_message(tango_context.device, const.STR_REL_RESOURCES)
 
@@ -178,28 +178,15 @@ def test_standby():
     }
 
     dish_ln_proxy_mock = MagicMock()
-    proxies_to_mock = {
-        dishes_fqdn: dish_ln_proxy_mock
-    }
-
     csp_master_ln_proxy_mock = Mock()
-    # proxies_to_mock = {
-    #     csp_subarray_fqdn: csp_subarray_proxy_mock
-    # }
-    proxies_to_mock.update({csp_master_ln_fqdn: csp_master_ln_proxy_mock})
-
     sdp_master_ln_proxy_mock = Mock()
-    # proxies_to_mock = {
-    #     sdp_subarray_fqdn: sdp_subarray_proxy_mock
-    # }
-    proxies_to_mock.update({sdp_master_ln_fqdn: sdp_master_ln_proxy_mock})
-
     subarray_proxy_mock = MagicMock()
-    subarray_proxy_mock.DevState = DevState.ON
-    # proxies_to_mock_subarray = {
-    #     subarray_fqdn: subarray_proxy_mock
-    # }
-    proxies_to_mock.update({subarray_fqdn: subarray_proxy_mock})
+    proxies_to_mock = {
+        dishes_fqdn: dish_ln_proxy_mock,
+        csp_master_ln_fqdn: csp_master_ln_proxy_mock,
+        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
+        subarray_fqdn: subarray_proxy_mock
+    }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
@@ -233,28 +220,15 @@ def test_startup():
     }
 
     dish_ln_proxy_mock = MagicMock()
-    proxies_to_mock = {
-        dishes_fqdn: dish_ln_proxy_mock
-    }
-
     csp_master_ln_proxy_mock = Mock()
-    # proxies_to_mock = {
-    #     csp_subarray_fqdn: csp_subarray_proxy_mock
-    # }
-    proxies_to_mock.update({csp_master_ln_fqdn: csp_master_ln_proxy_mock})
-
     sdp_master_ln_proxy_mock = Mock()
-    # proxies_to_mock = {
-    #     sdp_subarray_fqdn: sdp_subarray_proxy_mock
-    # }
-    proxies_to_mock.update({sdp_master_ln_fqdn: sdp_master_ln_proxy_mock})
-
     subarray_proxy_mock = MagicMock()
-    subarray_proxy_mock.DevState = DevState.ON
-    # proxies_to_mock_subarray = {
-    #     subarray_fqdn: subarray_proxy_mock
-    # }
-    proxies_to_mock.update({subarray_fqdn: subarray_proxy_mock})
+    proxies_to_mock = {
+        dishes_fqdn: dish_ln_proxy_mock,
+        csp_master_ln_fqdn: csp_master_ln_proxy_mock,
+        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
+        subarray_fqdn: subarray_proxy_mock
+    }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
