@@ -139,7 +139,7 @@ def test_release_resources_when_subarray_is_idle():
         'TMMidSubarrayNodes': subarray_fqdn
     }
 
-    subarray_proxy_mock = MagicMock()
+    subarray_proxy_mock = Mock()
     # subarray_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
         subarray_fqdn: subarray_proxy_mock
@@ -148,8 +148,8 @@ def test_release_resources_when_subarray_is_idle():
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         # act:
-        release= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-        tango_context.device.ReleaseResources(release)
+        release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        tango_context.device.ReleaseResources(release_input)
 
         # assert:
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
@@ -182,21 +182,21 @@ def test_standby():
     # proxies_to_mock = {
     #     csp_subarray_fqdn: csp_subarray_proxy_mock
     # }
-    proxies_to_mock.add(csp_subarray_fqdn, csp_subarray_proxy_mock)
+    proxies_to_mock.update({csp_subarray_fqdn: csp_subarray_proxy_mock})
 
     csp_subarray_proxy_mock = Mock()
     sdp_subarray_proxy_mock.obsState = ObsState.IDLE
     # proxies_to_mock = {
     #     sdp_subarray_fqdn: sdp_subarray_proxy_mock
     # }
-    proxies_to_mock.add(sdp_subarray_fqdn, sdp_subarray_proxy_mock)
+    proxies_to_mock.update({sdp_subarray_fqdn: sdp_subarray_proxy_mock})
 
     subarray_proxy_mock = MagicMock()
     subarray_proxy_mock.DevState = DevState.ON
     # proxies_to_mock_subarray = {
     #     subarray_fqdn: subarray_proxy_mock
     # }
-    proxies_to_mock.add(subarray_fqdn, subarray_proxy_mock)
+    proxies_to_mock.update({subarray_fqdn: subarray_proxy_mock})
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock_dish) \
