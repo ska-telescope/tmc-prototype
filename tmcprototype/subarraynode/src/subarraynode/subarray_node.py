@@ -345,7 +345,7 @@ class SubarrayNode(SKASubarray):
                 print("string leaf id {} and its type {}:::".format(str_leafId, type(str_leafId)))
                 print("prefix {} and its type{}:".format(self.DishLeafNodePrefix, type(self.DishLeafNodePrefix)))
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
-                print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiii after prefix")
+                print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiii after prefix", self.DishLeafNodePrefix+str_leafId)
                 devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
                 print("hiiiiiiiiiiiiiiiiiiiii devProxy:::", devProxy)
                 self._dish_leaf_node_proxy.append(devProxy)

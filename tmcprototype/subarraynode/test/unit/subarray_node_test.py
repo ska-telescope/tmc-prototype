@@ -50,14 +50,15 @@ def test_assignResource_should_command_subarray_AssignResource():
     csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
     sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
-    dish_ln_fqdn = 'ska_mid/tm_leaf_node/d'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+    dish_ln_fqdn = dish_ln_prefix+'0001'
 
     dut_properties = {
         'CspSubarrayLNFQDN': csp_subarray_ln_fqdn,
         'CspSubarrayFQDN': csp_subarray_fqdn,
         'SdpSubarrayLNFQDN': sdp_subarray_ln_fqdn,
         'SdpSubarrayFQDN': sdp_subarray_fqdn,
-        'DishLeafNodePrefix' : dish_ln_fqdn
+        'DishLeafNodePrefix' : dish_ln_prefix
     }
 
     csp_subarray_ln_proxy_mock = Mock()
