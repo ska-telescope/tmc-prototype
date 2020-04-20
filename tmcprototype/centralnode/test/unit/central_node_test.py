@@ -205,12 +205,14 @@ def test_standby():
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
         # act:
+        tango_context.device.StartUpTelescope()
+
         tango_context.device.StandByTelescope()
 
         # assert:
-        dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SET_STANDBY_MODE)
         csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
+        dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SET_STANDBY_MODE)
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
 
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
@@ -261,9 +263,9 @@ def test_startup():
         tango_context.device.StartUpTelescope()
 
         # assert:
-        dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SET_OPERATE_MODE)
         csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
+        dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SET_OPERATE_MODE)
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
 
         assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
