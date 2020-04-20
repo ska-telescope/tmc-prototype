@@ -139,7 +139,7 @@ def test_set_operate_mode_should_command_dish_to_start():
     }
 
     dish_proxy_mock = Mock()
-    
+
     proxies_to_mock = {
         dish_master_fqdn: dish_proxy_mock
     }
@@ -152,7 +152,31 @@ def test_set_operate_mode_should_command_dish_to_start():
         # assert:
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE, any_method(with_name='commandCallback'))
 
+def test_track_should_command_dish_to_start_tracking():
+    # arrange:
+    device_under_test = DishLeafNode
+    dish_master_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {
+        'DishMasterFQDN': dish_master_fqdn
+    }
 
+    dish_proxy_mock = Mock()
+    #dish_proxy_mock.obsState = ObsState.TRACK  # referred from pointing state of dishmaster track
+    proxies_to_mock = {
+        dish_master_fqdn: dish_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        jsonArgument = json.loads(argin)
+        ra_value = (jsonArgument["pointing"]["target"]["RA"])
+        dec_value = (jsonArgument["pointing"]["target"]["dec"])
+        radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
+        # act:
+        tango_context.device.Track(radec_value)
+
+        # assert:
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.THREAD_TRACK,radec_value, any_method(with_name='commandCallback'))
 
 
 def any_method(with_name=None):
