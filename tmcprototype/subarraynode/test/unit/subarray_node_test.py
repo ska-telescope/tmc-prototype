@@ -5,7 +5,7 @@ import json
 import mock
 import types
 import tango
-from tango import DevState
+from tango import DevState, DeviceProxy
 
 from mock import Mock
 from subarraynode import SubarrayNode, const
