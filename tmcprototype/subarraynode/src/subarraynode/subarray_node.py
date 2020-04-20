@@ -334,6 +334,7 @@ class SubarrayNode(SKASubarray):
         allocation_failure = []
         # Add each dish into the tango group
         log_msg = "add_receptors_in_group::",argin
+        print("add receptors in group")
         self.logger.debug(log_msg)
         for leafId in range(0, len(argin)):
             try:
@@ -393,6 +394,7 @@ class SubarrayNode(SKASubarray):
                 if self._dishLnVsPointingStateEventID[devProxy]:
                     devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
             except(DevFailed, Exception) as except_occurred:
+                print("except occured::::in assigning resources:", except_occurred)
                 [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_ASSIGN_RES_CMD)
         # Throw Exception
@@ -995,8 +997,10 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
 
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
-        log_msg=read_actvity_msg + str(exception)
-        self.logger.error(log_msg)
+        # log_msg=read_actvity_msg + str(exception)
+        # self.logger.error(log_msg)
+        print("so called activity msg::", read_actvity_msg)
+        print("exception_occ {} and its type{}::".format(exception, type(exception)))
         self._read_activity_message = read_actvity_msg + str(exception)
         excpt_msg_list.append(self._read_activity_message)
         exception_count += 1
