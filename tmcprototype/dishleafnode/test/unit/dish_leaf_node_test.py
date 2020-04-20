@@ -82,12 +82,12 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        scan_config = '0'
+        scan_config = 0.0
         # act:
-        tango_context.device.EndScan(scan_config)
+        tango_context.device.EndScan(0.0)
 
         # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE,float(scan_config),
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE,0.0,
                                                                         any_method(with_name='commandCallback'))
 
 
@@ -140,32 +140,6 @@ def test_set_operate_mode_should_command_dish_to_start():
                                                                 any_method(with_name='commandCallback'))
 
 
-def test_track_should_command_dish_to_start_tracking():
-    # arrange:
-    device_under_test = DishLeafNode
-    dish_master_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {
-        'DishMasterFQDN': dish_master_fqdn
-    }
-
-    dish_proxy_mock = Mock()
-    dish_proxy_mock.obsState = ObsState.TRACK  # referred from pointing state of dishmaster track
-    proxies_to_mock = {
-        dish_master_fqdn: dish_proxy_mock
-    }
-
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
-        jsonArgument = json.loads(argin)
-        ra_value = (jsonArgument["pointing"]["target"]["RA"])
-        dec_value = (jsonArgument["pointing"]["target"]["dec"])
-        radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
-        # act:
-        tango_context.device.Track(radec_value)
-
-        # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.THREAD_TRACK,radec_value,
-                                                                any_method(with_name='commandCallback'))
 
 
 def any_method(with_name=None):
