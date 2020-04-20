@@ -85,14 +85,21 @@ def test_assignResource_should_command_subarray_AssignResource():
         # act:
         # tango_context.device.set_state(DevState.ON)
         tango_context.device.AssignResources(assign_str)
+        arg_list = []
+        json_argument = {}
+        argout = []
+        dish = {}
+        dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
+        json_argument[const.STR_KEY_DISH] = dish
+        arg_list.append(json.dumps(json_argument))
+
         # cmdData = tango.DeviceData()
         # cmdData.insert(tango.DevString, scan_config)
 
         # assert:
-        # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
-        # csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
-        assert 0
-        
+        # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, cmdData)
+        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
+
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # arrange:
     device_under_test = SubarrayNode
