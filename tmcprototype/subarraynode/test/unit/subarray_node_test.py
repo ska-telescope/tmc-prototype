@@ -140,11 +140,13 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         # print("type of receptor-list on subarray : ", type(receptor_list1))
         # act:
         # tango_context.device.set_state(DevState.ON)
-        tango_context.device.AssignResources(receptor_list)
+        cmdData = tango.DeviceData()
+        cmdData.insert(tango.DevString, receptor_list)
+        tango_context.device.AssignResources(cmdData)
 
         csp_subarray_proxy_mock.obsState = ObsState.READY
         sdp_subarray_proxy_mock.obsState = ObsState.READY
-        
+
         scan_config = '{"scanDuration":10}'
         print("device state of subarray state:", tango_context.device.state())
         # act:
