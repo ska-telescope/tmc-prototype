@@ -63,8 +63,8 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
         receiver_band = int(jsonArgument["dish"]["receiverBand"])
 
         arg_list = {"pointing": {
-            "AZ": 0.0,
-            "EL": 0.0
+            "AZ": 0.3049571750805346,
+            "EL": 19.113236909834765
 
         },
             "dish": {
