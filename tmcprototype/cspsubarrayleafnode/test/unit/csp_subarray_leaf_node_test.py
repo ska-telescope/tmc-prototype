@@ -10,6 +10,10 @@ from mock import Mock
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
+with open(os.path.join(sys.path[0], "ska_antennas.txt"), "r") as f:
+    print(f.read())
+
+
 # file_path = os.path.dirname(os.path.abspath(__file__))
 #
 # SRC_ROOT_DIR = "/app"
