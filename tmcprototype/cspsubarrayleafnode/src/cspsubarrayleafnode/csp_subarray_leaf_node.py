@@ -228,6 +228,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         assigned_receptors =[]
 
         # Load a set of antenna descriptions and construct Antenna objects from them
+        print ("SKA path:", ska_antennas_path)
         with open(ska_antennas_path) as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
@@ -718,7 +719,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                          exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
         # throw exception:
-        if exception_count > 0:
+        if exception_count:
             print ("Exception in AssignResource:", exception_message)
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 

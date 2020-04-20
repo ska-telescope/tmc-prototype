@@ -6,7 +6,7 @@ import json
 import mock
 import types
 
-from mock import Mock
+from mock import Mock, mock_open
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
@@ -67,6 +67,13 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         device_proxy=tango_context.device
 
         #act
+        m = mock_open()
+        fake_antenna_path = "ska_antennas.txt"
+        with patch('__main__.open', m, create=True):
+            with open(fake_antenna_path, 'r') as h:
+                print ("test", h.read)
+
+
         device_proxy.AssignResources(assign_config)
 
         #assert
@@ -211,7 +218,6 @@ def any_method(with_name=None):
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
                       device_proxy_import_path='tango.DeviceProxy'):
-
     with mock.patch(device_proxy_import_path) as patched_constructor:
         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
