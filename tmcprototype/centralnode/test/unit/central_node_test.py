@@ -125,7 +125,8 @@ def test_assign_resources_should_send_json_to_subarraynode():
 
         # assert:
         jsonArgument = json.loads(assign_command)
-        subarray_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
+        subarray_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES,
+                                                             jsonArgument["dish"]["receptorIDList"])
 
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
@@ -139,8 +140,8 @@ def test_release_resources_when_subarray_is_idle():
         'TMMidSubarrayNodes': subarray_fqdn
     }
 
-    subarray_proxy_mock = Mock()
-    # subarray_proxy_mock.DevState = DevState.ON
+    subarray_proxy_mock = MagicMock()
+    #subarray_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
         subarray_fqdn: subarray_proxy_mock
     }
@@ -149,6 +150,7 @@ def test_release_resources_when_subarray_is_idle():
             as tango_context:
         # act:
         assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+        tango_context.device.StartUpTelescope()
         tango_context.device.AssignResources(assign_command)
 
         release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
