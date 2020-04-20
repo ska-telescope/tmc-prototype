@@ -421,18 +421,27 @@ class TestSubarrayNode(object):
         """Negative Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure('{"A":12345,"pointing":{"target":{"system":"ICRS","name":'
-                                           '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
-                                           '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
-                                           '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
-                                           '"corrBandwidth":0}]},"sdp":{"configure":'
-                                           '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
-                                           '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
-                                           '{"numStations":4,"numChannels":372,"numPolarisations":4,'
-                                           '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
-                                           '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
-                                           '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
-                                           '{"fieldId":0,"intervalMs":1400}}}]}}')
+            tango_context.device.Configure('{"A":12345,"pointing":{"target":{"system":"ICRS","name":"NGC1068","RA":0.70984,'
+                                           '"dec":0.000233},},"dish":{"receiverBand":"1"},'
+                                           '"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",'
+                                           '"fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,'
+                                           '"integrationTime":1400,"corrBandwidth":0,'
+                                           '"channelAveragingMap":[[1,2],[745,0]],"outputLinkMap":[[1,0],[201,1]]},'
+                                           '{"fspID":2,"functionMode":"CORR","frequencySliceID":2,'
+                                           '"integrationTime":1400,"corrBandwidth":0},]},'
+                                           '"sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0,}}')
+            # tango_context.device.Configure('{"A":12345,"pointing":{"target":{"system":"ICRS","name":'
+            #                                '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+            #                                '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+            #                                '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+            #                                '"corrBandwidth":0}]},"sdp":{"configure":'
+            #                                '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+            #                                '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+            #                                '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+            #                                '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+            #                                '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+            #                                '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+            #                                '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(5)
         assert tango_context.device.obsState == ObsState.IDLE
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
@@ -447,18 +456,27 @@ class TestSubarrayNode(object):
     def test_Configure(self, tango_context, create_dish_proxy):
         """Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
-        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
-                                       '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
-                                       '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
-                                       '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
-                                       '"corrBandwidth":0}]},"sdp":{"configure":'
-                                       '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
-                                       '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
-                                       '{"numStations":4,"numChannels":372,"numPolarisations":4,'
-                                       '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
-                                       '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
-                                       '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
-                                       '{"fieldId":0,"intervalMs":1400}}}]}}')
+        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"NGC1068","RA":0.70984,'
+                                       '"dec":0.000233},},"dish":{"receiverBand":"1"},'
+                                       '"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",'
+                                       '"fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,'
+                                       '"integrationTime":1400,"corrBandwidth":0,'
+                                       '"channelAveragingMap":[[1,2],[745,0]],"outputLinkMap":[[1,0],[201,1]]},'
+                                       '{"fspID":2,"functionMode":"CORR","frequencySliceID":2,'
+                                       '"integrationTime":1400,"corrBandwidth":0},]},'
+                                       '"sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0,}}')
+        # tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+        #                                '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+        #                                '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+        #                                '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+        #                                '"corrBandwidth":0}]},"sdp":{"configure":'
+        #                                '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+        #                                '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+        #                                '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+        #                                '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+        #                                '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+        #                                '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+        #                                '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(65)
         assert tango_context.device.obsState == ObsState.READY
         create_dish_proxy.StopTrack()
@@ -469,18 +487,27 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
         tango_context.device.Scan('{"scanDuration": 5.0}')
         time.sleep(5)
-        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
-                                           '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
-                                           '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
-                                           '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
-                                           '"corrBandwidth":0}]},"sdp":{"configure":'
-                                           '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
-                                           '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
-                                           '{"numStations":4,"numChannels":372,"numPolarisations":4,'
-                                           '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
-                                           '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
-                                           '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
-                                           '{"fieldId":0,"intervalMs":1400}}}]}}')
+        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":"NGC1068","RA":0.70984,'
+                                       '"dec":0.000233},},"dish":{"receiverBand":"1"},'
+                                       '"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",'
+                                       '"fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,'
+                                       '"integrationTime":1400,"corrBandwidth":0,'
+                                       '"channelAveragingMap":[[1,2],[745,0]],"outputLinkMap":[[1,0],[201,1]]},'
+                                       '{"fspID":2,"functionMode":"CORR","frequencySliceID":2,'
+                                       '"integrationTime":1400,"corrBandwidth":0},]},'
+                                       '"sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0,}}')
+        # tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+        #                                    '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+        #                                    '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+        #                                    '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+        #                                    '"corrBandwidth":0}]},"sdp":{"configure":'
+        #                                    '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+        #                                    '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+        #                                    '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+        #                                    '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+        #                                    '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+        #                                    '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+        #                                    '{"fieldId":0,"intervalMs":1400}}}]}}')
         time.sleep(10)
         assert tango_context.device.obsState == ObsState.READY
         # create_dish_proxy.StopTrack()
