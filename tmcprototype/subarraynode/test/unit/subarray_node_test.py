@@ -65,8 +65,8 @@ def test_assignResource_should_command_subarray_AssignResource():
 
     # csp_subarray_proxy_mock.obsState = ObsState.READY
     # sdp_subarray_proxy_mock.obsState = ObsState.READY
-    csp_subarray_proxy_mock.set_state(DevState.OFF)
-    sdp_subarray_proxy_mock.set_state(DevState.OFF)
+    # csp_subarray_proxy_mock.set_state(DevState.OFF)
+    # sdp_subarray_proxy_mock.set_state(DevState.OFF)
 
     proxies_to_mock = {
         csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
@@ -75,16 +75,13 @@ def test_assignResource_should_command_subarray_AssignResource():
         sdp_subarray_fqdn : sdp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
-        # act:
-        tango_context.device.On()
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         # tango_context.device.state = DevState.ON
+        tango_context.device.On()
         assign_str = ['0001', '0002']
-        print("device state of subarray state:", tango_context.device.state())
+        # print("device state of subarray state:", tango_context.device.state())
         # act:
         # tango_context.device.set_state(DevState.ON)
         tango_context.device.AssignResources(assign_str)
@@ -92,9 +89,10 @@ def test_assignResource_should_command_subarray_AssignResource():
         # cmdData.insert(tango.DevString, scan_config)
 
         # assert:
-        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
-        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
-
+        # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
+        # csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
+        assert 0
+        
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # arrange:
     device_under_test = SubarrayNode
