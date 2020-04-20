@@ -119,10 +119,10 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     sdp_subarray_ln_proxy_mock = Mock()
     sdp_subarray_proxy_mock = Mock()
 
-    csp_subarray_proxy_mock.obsState = ObsState.READY
-    sdp_subarray_proxy_mock.obsState = ObsState.READY
-    csp_subarray_proxy_mock.set_state(DevState.ON)
-    sdp_subarray_proxy_mock.set_state(DevState.ON)
+    # csp_subarray_proxy_mock.obsState = ObsState.READY
+    # sdp_subarray_proxy_mock.obsState = ObsState.READY
+    # csp_subarray_proxy_mock.set_state(DevState.ON)
+    # sdp_subarray_proxy_mock.set_state(DevState.ON)
 
     proxies_to_mock = {
         csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
@@ -134,6 +134,17 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         # tango_context.device.state = DevState.ON
+        tango_context.device.On()
+        receptor_list = ['0001']
+        # receptor_list1 = str(receptor_list)
+        # print("type of receptor-list on subarray : ", type(receptor_list1))
+        # act:
+        # tango_context.device.set_state(DevState.ON)
+        tango_context.device.AssignResources(receptor_list)
+
+        csp_subarray_proxy_mock.obsState = ObsState.READY
+        sdp_subarray_proxy_mock.obsState = ObsState.READY
+        
         scan_config = '{"scanDuration":10}'
         print("device state of subarray state:", tango_context.device.state())
         # act:
