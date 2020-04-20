@@ -51,7 +51,7 @@ def test_assignResource_should_command_subarray_AssignResource():
     sdp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
     sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
     dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
-    dish_ln_fqdn = dish_ln_prefix+'0001'
+    # dish_ln_fqdn = dish_ln_prefix+'0001'
 
     dut_properties = {
         'CspSubarrayLNFQDN': csp_subarray_ln_fqdn,
@@ -65,7 +65,7 @@ def test_assignResource_should_command_subarray_AssignResource():
     csp_subarray_proxy_mock = Mock()
     sdp_subarray_ln_proxy_mock = Mock()
     sdp_subarray_proxy_mock = Mock()
-    # dish_ln_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
     # csp_subarray_proxy_mock.obsState = ObsState.READY
     # sdp_subarray_proxy_mock.obsState = ObsState.READY
     # csp_subarray_proxy_mock.set_state(DevState.OFF)
@@ -76,7 +76,7 @@ def test_assignResource_should_command_subarray_AssignResource():
         csp_subarray_fqdn : csp_subarray_proxy_mock,
         sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
         sdp_subarray_fqdn : sdp_subarray_proxy_mock,
-        # dish_ln_fqdn : dish_ln_proxy_mock
+        dish_ln_prefix+"0001": dish_ln_proxy_mock
     }
 
 
