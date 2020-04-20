@@ -208,24 +208,26 @@ def test_standby():
 def test_startup():
     # arrange:
     device_under_test = CentralNode
-    dishes_fqdn = 'ska_mid/tm_leaf_node/d0001'
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 10)]
+    fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
+    proxies_to_mock = {}
     dut_properties = {
-        'DishLeafNodePrefix': dishes_fqdn,
+        'DishLeafNodePrefix': fqdn_prefix,
         'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
         'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
-        'TMMidSubarrayNodes': subarray_fqdn
+        'TMMidSubarrayNodes': subarray_fqdn,
+        'NumDishes': len(dish_device_ids)
     }
-
     dish_ln_proxy_mock = MagicMock()
     csp_master_ln_proxy_mock = Mock()
     sdp_master_ln_proxy_mock = Mock()
     subarray_proxy_mock = MagicMock()
     proxies_to_mock = {
-        dishes_fqdn: dish_ln_proxy_mock,
+        fqdn_prefix + "0001": dish_ln_proxy_mock,
         csp_master_ln_fqdn: csp_master_ln_proxy_mock,
         sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
         subarray_fqdn: subarray_proxy_mock
@@ -238,9 +240,9 @@ def test_startup():
         tango_context.device.StartUpTelescope()
 
         # assert:
-        csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP,[])
-        sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
         dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SET_OPERATE_MODE)
+        csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP, [])
+        sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
 
         assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
