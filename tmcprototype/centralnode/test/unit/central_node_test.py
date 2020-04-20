@@ -4,6 +4,7 @@ import sys
 import mock
 import types
 import tango
+import json
 
 from tango import DevState
 from mock import Mock
@@ -117,10 +118,13 @@ def test_assign_resources_should_send_json_to_subarraynode():
             as tango_context:
         assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
         device_proxy=tango_context.device
+        # Call Startup command of Central Node
+        device_proxy.StartUpTelescope()
         device_proxy.AssignResources(assign_command)
 
         # assert:
-        subarray_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, ["0001"])
+        jsonArgument = json.loads(assign_command)
+        subarray_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, jsonArgument["dish"]["receptorIDList"])
 
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
