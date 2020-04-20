@@ -115,7 +115,7 @@ def test_standby_lp_mode_should_command_dish_to_standby():
     }
 
     dish_proxy_mock = Mock()
-    dish_proxy_mock.obsState = ObsState.DISABLE
+
     proxies_to_mock = {
         dish_master_fqdn: dish_proxy_mock
     }
@@ -127,8 +127,7 @@ def test_standby_lp_mode_should_command_dish_to_standby():
         tango_context.device.SetStandByLPMode()
 
         # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYLP_MODE,
-                                                                        any_method(with_name='commandCallback'))
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYLP_MODE, any_method(with_name='commandCallback'))
 
 
 def test_set_operate_mode_should_command_dish_to_start():
@@ -140,7 +139,7 @@ def test_set_operate_mode_should_command_dish_to_start():
     }
 
     dish_proxy_mock = Mock()
-    dish_proxy_mock.obsState = ObsState.ON  # referred from devstate of dishmaster setoperate
+    
     proxies_to_mock = {
         dish_master_fqdn: dish_proxy_mock
     }
@@ -151,8 +150,7 @@ def test_set_operate_mode_should_command_dish_to_start():
         tango_context.device.SetOperateMode()
 
         # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE,
-                                                                any_method(with_name='commandCallback'))
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE, any_method(with_name='commandCallback'))
 
 
 
