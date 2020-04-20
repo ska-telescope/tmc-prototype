@@ -80,16 +80,16 @@ def test_assignResource_should_command_subarray_AssignResource():
             as tango_context:
         # tango_context.device.state = DevState.ON
         tango_context.device.On()
-        assign_str = ['0001']
+        receptor_list = ['0001']
         # print("device state of subarray state:", tango_context.device.state())
         # act:
         # tango_context.device.set_state(DevState.ON)
-        tango_context.device.AssignResources(assign_str)
+        tango_context.device.AssignResources(receptor_list)
         arg_list = []
         json_argument = {}
         argout = []
         dish = {}
-        dish[const.STR_KEY_RECEPTOR_ID_LIST] = assign_str
+        dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
         json_argument[const.STR_KEY_DISH] = dish
         arg_list.append(json.dumps(json_argument))
 
