@@ -362,7 +362,7 @@ class SubarrayNode(SKASubarray):
                                                           stateless=True)
                 self._dishLnVsPointingStateEventID[self._dishln_proxy] = self._event_id
                 self._pointing_state_event_id.append(self._event_id)
-                self.dishPointingStateMap[devProxy] = -1
+                self.dishPointingStateMap[self._dishln_proxy] = -1
                 log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID)
                 self.logger.debug(log_msg)
                 self._receptor_id_list.append(int(str_leafId))
@@ -388,11 +388,11 @@ class SubarrayNode(SKASubarray):
                 if group_dishes.contains(self.DishLeafNodePrefix +  str_leafId):
                     self._dish_leaf_node_group.remove(self.DishLeafNodePrefix + str_leafId)
                 # unsubscribe event
-                if self._dishLnVsHealthEventID[devProxy]:
-                    devProxy.unsubscribe_event(self._dishLnVsHealthEventID[devProxy])
+                if self._dishLnVsHealthEventID[self._dishln_proxy]:
+                    self._dishln_proxy.unsubscribe_event(self._dishLnVsHealthEventID[self._dishln_proxy])
 
-                if self._dishLnVsPointingStateEventID[devProxy]:
-                    devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
+                if self._dishLnVsPointingStateEventID[self._dishln_proxy]:
+                    self._dishln_proxy.unsubscribe_event(self._dishLnVsPointingStateEventID[self._dishln_proxy])
             except(DevFailed, Exception) as except_occurred:
                 print("except occured::::in assigning resources:", except_occurred)
                 [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
