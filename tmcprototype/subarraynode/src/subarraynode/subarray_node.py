@@ -343,8 +343,11 @@ class SubarrayNode(SKASubarray):
                 print("Inside try block of add receptor")
                 str_leafId = argin[leafId]
                 print("string leaf id {} and its type {}:::".format(str_leafId, type(str_leafId)))
+                print("prefix {} and its type{}:".format(self.DishLeafNodePrefix, type(self.DishLeafNodePrefix)))
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
+                print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiii after prefix")
                 devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                print("hiiiiiiiiiiiiiiiiiiiii devProxy:::", devProxy)
                 self._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
