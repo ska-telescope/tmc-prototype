@@ -167,7 +167,7 @@ def test_standby():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(4) for i in range(1, 10)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 10)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
 
@@ -179,18 +179,16 @@ def test_standby():
         'TMMidSubarrayNodes': subarray_fqdn,
         'NumDishes': len(dish_device_ids)
     }
-
     dish_ln_proxy_mock = MagicMock()
     csp_master_ln_proxy_mock = Mock()
     sdp_master_ln_proxy_mock = Mock()
     subarray_proxy_mock = MagicMock()
     proxies_to_mock = {
+        fqdn_prefix + "0001": dish_ln_proxy_mock,
         csp_master_ln_fqdn: csp_master_ln_proxy_mock,
         sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
         subarray_fqdn: subarray_proxy_mock
     }
-
-    proxies_to_mock = {fqdn_prefix + device_id: Mock() for device_id in dish_device_ids}
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
@@ -200,8 +198,7 @@ def test_standby():
         tango_context.device.StandByTelescope()
 
         # assert:
-        for proxy_mock in proxies_to_mock.values():
-            proxy_mock.command_inout.assert_called_with(const.CMD_SET_STANDBY_MODE)
+        dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SET_STANDBY_MODE)
         csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY, [])
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
