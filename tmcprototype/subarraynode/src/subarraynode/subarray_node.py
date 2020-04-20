@@ -325,49 +325,39 @@ class SubarrayNode(SKASubarray):
             DevVarStringArray. List of Resources added to the Subarray.
             Example: ['0001', '0002']
         """
-        self.logger.debug(argin)
-        print("argin in dish allocation {} and its type {}:::".format(argin, type(argin)))
-        self.logger.debug(type(argin))
         exception_count = 0
         exception_message = []
         allocation_success = []
         allocation_failure = []
         # Add each dish into the tango group
         log_msg = "add_receptors_in_group::",argin
-        print("add receptors in group")
         self.logger.debug(log_msg)
-        print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
         for leafId in range(0, len(argin)):
-            print("leafID {} and its type {} :".format(leafId, type(leafId)))
             try:
-                print("Inside try block of add receptor")
                 str_leafId = argin[leafId]
-                print("string leaf id {} and its type {}:::".format(str_leafId, type(str_leafId)))
-                print("prefix {} and its type{}:".format(self.DishLeafNodePrefix, type(self.DishLeafNodePrefix)))
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
                 print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiii after prefix", self.DishLeafNodePrefix+str_leafId)
-                devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
-                print("hiiiiiiiiiiiiiiiiiiiii devProxy:::", devProxy)
-                self._dish_leaf_node_proxy.append(devProxy)
+                # devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                self._dish_leaf_node_proxy.append(self._dishln_proxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
                 # Subscribe Dish Health State
-                self._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
+                self._event_id = self._dishln_proxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
                                                           tango.EventType.CHANGE_EVENT,
                                                           self.health_state_cb,
                                                           stateless=True)
-                self._dishLnVsHealthEventID[devProxy] = self._event_id
+                self._dishLnVsHealthEventID[self._dishln_proxy] = self._event_id
                 self._health_event_id.append(self._event_id)
-                self.subarray_ln_health_state_map[devProxy.dev_name()] = HealthState.UNKNOWN
+                self.subarray_ln_health_state_map[self._dishln_proxy.dev_name()] = HealthState.UNKNOWN
                 log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID)
                 self.logger.debug(log_msg)
 
                 # Subscribe Dish Pointing State
-                self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
+                self._event_id = self._dishln_proxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
                                                           tango.EventType.CHANGE_EVENT,
                                                           self.setPointingState,
                                                           stateless=True)
-                self._dishLnVsPointingStateEventID[devProxy] = self._event_id
+                self._dishLnVsPointingStateEventID[self._dishln_proxy] = self._event_id
                 self._pointing_state_event_id.append(self._event_id)
                 self.dishPointingStateMap[devProxy] = -1
                 log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID)
@@ -1135,7 +1125,7 @@ class SubarrayNode(SKASubarray):
         self.create_sdp_ln_proxy()
         self._csp_sa_proxy = DeviceProxy(self.CspSubarrayFQDN)
         self._sdp_sa_proxy = DeviceProxy(self.SdpSubarrayFQDN)
-
+        self._dishln_proxy = tango.DeviceProxy("ska_mid/tm_leaf_node/d0001")
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
