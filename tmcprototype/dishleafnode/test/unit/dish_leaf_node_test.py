@@ -32,7 +32,8 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
         tango_context.device.Scan(scan_config)
 
         # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, 0.0, any_method(with_name='commandCallback'))
+        if type(float(scan_config)) == float:
+            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, scan_config, any_method(with_name='commandCallback'))
 
 
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
