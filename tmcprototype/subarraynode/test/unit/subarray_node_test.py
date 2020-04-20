@@ -84,7 +84,7 @@ def test_assignResource_should_command_subarray_AssignResource():
         # act:
         # tango_context.device.set_state(DevState.ON)
         tango_context.device.On()
-        tango_context.device.AssignResources(receptor_list)
+        tango_context.device.AssignResources(['0001'])
         arg_list = []
         json_argument = {}
         dish = {}
