@@ -346,10 +346,9 @@ class SubarrayNode(SKASubarray):
                 print("prefix {} and its type{}:".format(self.DishLeafNodePrefix, type(self.DishLeafNodePrefix)))
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
                 print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiii after prefix", self.DishLeafNodePrefix+str_leafId)
-                # devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
-                # print("hiiiiiiiiiiiiiiiiiiiii devProxy:::", devProxy)
-                # self._dish_leaf_node_proxy.append(devProxy)
-                self._dish_leaf_node_proxy.append(self._dishln_proxy)
+                devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                print("hiiiiiiiiiiiiiiiiiiiii devProxy:::", devProxy)
+                self._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
                 # Subscribe Dish Health State
@@ -364,11 +363,7 @@ class SubarrayNode(SKASubarray):
                 self.logger.debug(log_msg)
 
                 # Subscribe Dish Pointing State
-                # self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
-                #                                           tango.EventType.CHANGE_EVENT,
-                #                                           self.setPointingState,
-                #                                           stateless=True)
-                self._event_id = self._dishln_proxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
+                self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
                                                           tango.EventType.CHANGE_EVENT,
                                                           self.setPointingState,
                                                           stateless=True)
@@ -1140,7 +1135,7 @@ class SubarrayNode(SKASubarray):
         self.create_sdp_ln_proxy()
         self._csp_sa_proxy = DeviceProxy(self.CspSubarrayFQDN)
         self._sdp_sa_proxy = DeviceProxy(self.SdpSubarrayFQDN)
-        self._dishln_proxy = devProxy = tango.DeviceProxy("ska_mid/tm_leaf_node/d0001")
+
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
