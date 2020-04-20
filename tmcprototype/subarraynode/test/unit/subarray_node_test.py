@@ -78,17 +78,14 @@ def test_assignResource_should_command_subarray_AssignResource():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        # tango_context.device.state = DevState.ON
         tango_context.device.On()
         receptor_list = ['0001']
-        receptor_list1 = json.dumps(receptor_list)
-        # print("device state of subarray state:", tango_context.device.state())
+        print("type of receptor-list on subarray : ", type(receptor_list))
         # act:
         # tango_context.device.set_state(DevState.ON)
-        tango_context.device.AssignResources(receptor_list1)
+        tango_context.device.AssignResources(receptor_list)
         arg_list = []
         json_argument = {}
-        argout = []
         dish = {}
         dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
         json_argument[const.STR_KEY_DISH] = dish
