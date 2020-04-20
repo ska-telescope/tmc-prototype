@@ -152,6 +152,7 @@ def test_set_operate_mode_should_command_dish_to_start():
         # assert:
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE, any_method(with_name='commandCallback'))
 
+'''
 def test_track_should_command_dish_to_start_tracking():
     # arrange:
     device_under_test = DishLeafNode
@@ -179,6 +180,100 @@ def test_track_should_command_dish_to_start_tracking():
         dec_value = (jsonArgument["pointing"]["target"]["dec"])
         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0", any_method(with_name='commandCallback'))
+'''
+def test_stop_track_should_command_dish_to_start_tracking():
+    # arrange:
+    device_under_test = DishLeafNode
+    dish_master_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {
+        'DishMasterFQDN': dish_master_fqdn
+    }
+
+    dish_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        dish_master_fqdn: dish_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.StopTrack()
+
+        # assert:
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_TRACK, any_method(with_name='commandCallback'))
+
+def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinates():
+    device_under_test = DishLeafNode
+    dish_master_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {
+        'DishMasterFQDN': dish_master_fqdn
+    }
+
+    dish_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        dish_master_fqdn: dish_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        slew_arg = "0"
+        # act:
+        tango_context.device.Slew(slew_arg)
+
+        # assert:
+        if type(float(slew_arg)) == float:
+            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW, slew_arg, any_method(with_name='commandCallback'))
+
+
+def test_start_capture_should_command_dish_to_start_capture_on_the_set_configured_band():
+    device_under_test = DishLeafNode
+    dish_master_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {
+        'DishMasterFQDN': dish_master_fqdn
+    }
+
+    dish_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        dish_master_fqdn: dish_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        capture_arg = "0"
+        # act:
+        tango_context.device.StartCapture(capture_arg)
+
+        # assert:
+        if type(float(capture_arg)) == float:
+            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE, capture_arg, any_method(with_name='commandCallback'))
+
+
+def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_band():
+    device_under_test = DishLeafNode
+    dish_master_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {
+        'DishMasterFQDN': dish_master_fqdn
+    }
+
+    dish_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        dish_master_fqdn: dish_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        capture_arg = "0"
+        # act:
+        tango_context.device.StopCapture(capture_arg)
+
+        # assert:
+        if type(float(capture_arg)) == float:
+            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, capture_arg, any_method(with_name='commandCallback'))
+
 
 
 def any_method(with_name=None):
