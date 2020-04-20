@@ -52,18 +52,30 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        dish_config = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}}, "dish":{"receiverBand":"1"}}'
+        dish_config = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
         # act:
         tango_context.device.Configure(dish_config)
 
         # assert:
-        json_argument = json.loads(dish_config)
-        dish_arg = json_argument["pointing"]
-        dish_configuration = dish_arg.copy()
-        if "configureScan" in dish_configuration:
-            del dish_configuration["configureScan"]
+        jsonArgument = json.loads(dish_config)
+        #ra_value = (jsonArgument["pointing"]["target"]["RA"])
+        #dec_value = (jsonArgument["pointing"]["target"]["dec"])
+        receiver_band = int(jsonArgument["dish"]["receiverBand"])
+
+        arg_list = {"pointing": {
+            "AZ": 0.0,
+            "EL": 0.0
+
+        },
+            "dish": {
+                "receiverBand": receiver_band
+            }
+
+        }
+        dish_str_ip = json.dumps(arg_list)
+
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
-                                                                        json.dumps(dish_configuration),
+                                                                        str(dish_str_ip),
                                                                         any_method(with_name='commandCallback'))
 
 
