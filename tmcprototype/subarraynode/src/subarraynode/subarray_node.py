@@ -1125,7 +1125,7 @@ class SubarrayNode(SKASubarray):
         self.create_sdp_ln_proxy()
         self._csp_sa_proxy = DeviceProxy(self.CspSubarrayFQDN)
         self._sdp_sa_proxy = DeviceProxy(self.SdpSubarrayFQDN)
-        self._dishln_proxy = tango.DeviceProxy("ska_mid/tm_leaf_node/d0001")
+        self._dishln_proxy = DeviceProxy("ska_mid/tm_leaf_node/d0001")
         try:
             self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
