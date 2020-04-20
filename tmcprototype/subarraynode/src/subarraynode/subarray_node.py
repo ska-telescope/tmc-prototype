@@ -65,24 +65,34 @@ class SubarrayHealthState:
 
 
 class ElementDeviceData:
-
     @staticmethod
-    def build_up_sdp_cmd_data(scan_config):
+    def build_up_sdp_cmd_data(scan_config, sdp_scan_type_prev):
         scan_config = scan_config.copy()
         sdp_scan_config = scan_config.get("sdp", {})
-
+        # scan_type_configure = sdp_scan_config.get("scan_type")
+        # print("scan type on subarray node insdp elementdevicedata:", scan_type_configure)
         if sdp_scan_config:
-            sdp_config = sdp_scan_config.get("scan_type")
-            if sdp_config:
+            sdp_scan_type = sdp_scan_config.get("scan_type")
+            print("scan type on subarray node in sdp elementdevicedata:", sdp_scan_type)
+            if sdp_scan_type:
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
                 scan_config.pop("csp", None)
                 scan_config.pop("tmc", None)
-                sdp_scan_config["scan_type"] = sdp_config[0]
+                sdp_scan_config["scan_type"] = sdp_scan_type[0]
                 cmd_data = tango.DeviceData()
                 cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
                 raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
+        elif sdp_scan_type_prev:
+            scan_config.pop("pointing", None)
+            scan_config.pop("dish", None)
+            scan_config.pop("csp", None)
+            scan_config.pop("tmc", None)
+            sdp_scan_config["scan_type"] = sdp_scan_type_prev[0]
+            cmd_data = tango.DeviceData()
+            cmd_data.insert(tango.DevString, json.dumps(scan_config))
+
         else:
             # Need to check if sdp already has scan type if yes then msg showing continue with old scan .
             # and if no earlier scan exist throw error as below.
@@ -90,7 +100,7 @@ class ElementDeviceData:
         return cmd_data
 
     @staticmethod
-    def build_up_csp_cmd_data(scan_config, attr_name_map):
+    def build_up_csp_cmd_data(scan_config, scan_id, attr_name_map):
         scan_config = scan_config.copy()
         csp_scan_config = scan_config.get("csp", {})
 
@@ -98,6 +108,7 @@ class ElementDeviceData:
             for key, attribute_name in attr_name_map.items():
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
+            csp_scan_config["scanID"] = scan_id
             cmd_data = tango.DeviceData()
             cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
@@ -1133,6 +1144,7 @@ class SubarrayNode(SKASubarray):
         self._sdp_sa_device_state = DevState.OFF
         self.only_dishconfig_flag = False
         self._endscan_stop = False
+        self._scan_type = ''
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
 
 
@@ -1282,7 +1294,8 @@ class SubarrayNode(SKASubarray):
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
-        cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
+        scan_type = ''
+        cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration, scan_type)
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
@@ -1293,7 +1306,7 @@ class SubarrayNode(SKASubarray):
         }
 
         cmd_data = self._create_cmd_data(
-            "build_up_csp_cmd_data", scan_configuration, attr_name_map)
+            "build_up_csp_cmd_data", scan_configuration, self._scan_id,attr_name_map)
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
@@ -1373,7 +1386,7 @@ class SubarrayNode(SKASubarray):
         #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
         #                                  const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         #
-        # self._scan_id = str(scan_configuration["scanID"])
+        self._scan_id = str(scan_configuration["scanID"])
         # self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
         #                         for _ in range(4))
 
