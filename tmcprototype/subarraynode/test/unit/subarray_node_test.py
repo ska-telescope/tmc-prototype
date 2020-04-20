@@ -80,10 +80,11 @@ def test_assignResource_should_command_subarray_AssignResource():
             as tango_context:
         tango_context.device.On()
         receptor_list = ['0001']
-        print("type of receptor-list on subarray : ", type(receptor_list))
+        receptor_list1 = str(receptor_list)
+        print("type of receptor-list on subarray : ", type(receptor_list1))
         # act:
         # tango_context.device.set_state(DevState.ON)
-        tango_context.device.AssignResources(receptor_list)
+        tango_context.device.AssignResources(receptor_list1)
         arg_list = []
         json_argument = {}
         dish = {}
