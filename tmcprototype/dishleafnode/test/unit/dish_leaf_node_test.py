@@ -169,15 +169,16 @@ def test_track_should_command_dish_to_start_tracking():
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+
+        # act:
+        tango_context.device.Track(input_string)
+
+        # assert:
         jsonArgument = json.loads(input_string)
         ra_value = (jsonArgument["pointing"]["target"]["RA"])
         dec_value = (jsonArgument["pointing"]["target"]["dec"])
         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
-        # act:
-        tango_context.device.Track(radec_value)
-
-        # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.THREAD_TRACK, radec_value, any_method(with_name='commandCallback'))
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0", any_method(with_name='commandCallback'))
 
 
 def any_method(with_name=None):
