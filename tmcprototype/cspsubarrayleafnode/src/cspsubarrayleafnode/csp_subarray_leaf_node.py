@@ -19,6 +19,7 @@ import katpoint
 import numpy as np
 
 file_path = os.path.dirname(os.path.abspath(__file__))
+print ("file_path", file_path)
 
 ska_antennas_path = "ska_antennas.txt"
 # PyTango imports
