@@ -62,8 +62,10 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     sdp_subarray_ln_proxy_mock = Mock()
     sdp_subarray_proxy_mock = Mock()
 
-    # csp_subarray_proxy_mock.set_state(DevState.ON)
-    # sdp_subarray_proxy_mock.set_state(DevState.ON)
+    csp_subarray_proxy_mock.obsState = ObsState.READY
+    sdp_subarray_proxy_mock.obsState = ObsState.READY
+    csp_subarray_proxy_mock.set_state(DevState.ON)
+    sdp_subarray_proxy_mock.set_state(DevState.ON)
 
     proxies_to_mock = {
         csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
@@ -71,23 +73,6 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
         sdp_subarray_fqdn : sdp_subarray_proxy_mock
     }
-
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
-        # act:
-        tango_context.device.On()
-
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
-        # tango_context.device.state = DevState.ON
-        assign_str = ['0001', '0002']
-        print("device state of subarray state:", tango_context.device.state())
-        # act:
-        # tango_context.device.set_state(DevState.ON)
-        tango_context.device.AssignResources(assign_str)
-
-    csp_subarray_proxy_mock.obsState = ObsState.READY
-    sdp_subarray_proxy_mock.obsState = ObsState.READY
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
@@ -135,6 +120,11 @@ def test_assignResource_should_command_subarray_AssignResource():
         sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
         sdp_subarray_fqdn : sdp_subarray_proxy_mock
     }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.On()
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
