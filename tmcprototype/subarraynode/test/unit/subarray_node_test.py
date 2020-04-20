@@ -78,13 +78,13 @@ def test_assignResource_should_command_subarray_AssignResource():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        tango_context.device.On()
         receptor_list = ['0001']
-        receptor_list1 = str(receptor_list)
-        print("type of receptor-list on subarray : ", type(receptor_list1))
+        # receptor_list1 = str(receptor_list)
+        # print("type of receptor-list on subarray : ", type(receptor_list1))
         # act:
         # tango_context.device.set_state(DevState.ON)
-        tango_context.device.AssignResources(receptor_list1)
+        tango_context.device.On()
+        tango_context.device.AssignResources(receptor_list)
         arg_list = []
         json_argument = {}
         dish = {}
@@ -134,21 +134,19 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         # tango_context.device.state = DevState.ON
-        tango_context.device.On()
         receptor_list = ['0001']
         # receptor_list1 = str(receptor_list)
         # print("type of receptor-list on subarray : ", type(receptor_list1))
         # act:
         # tango_context.device.set_state(DevState.ON)
-        cmdData = tango.DeviceData()
-        cmdData.insert(tango.DevString, receptor_list)
-        tango_context.device.AssignResources(cmdData)
+        tango_context.device.On()
+        tango_context.device.AssignResources(receptor_list)
 
         csp_subarray_proxy_mock.obsState = ObsState.READY
         sdp_subarray_proxy_mock.obsState = ObsState.READY
 
         scan_config = '{"scanDuration":10}'
-        print("device state of subarray state:", tango_context.device.state())
+        # print("device state of subarray state:", tango_context.device.state())
         # act:
         # tango_context.device.set_state(DevState.ON)
         tango_context.device.Scan(scan_config)
