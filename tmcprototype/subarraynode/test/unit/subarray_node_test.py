@@ -50,19 +50,21 @@ def test_assignResource_should_command_subarray_AssignResource():
     csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
     sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_fqdn = 'ska_mid/tm_leaf_node/d'
 
     dut_properties = {
         'CspSubarrayLNFQDN': csp_subarray_ln_fqdn,
         'CspSubarrayFQDN': csp_subarray_fqdn,
         'SdpSubarrayLNFQDN': sdp_subarray_ln_fqdn,
-        'SdpSubarrayFQDN': sdp_subarray_fqdn
+        'SdpSubarrayFQDN': sdp_subarray_fqdn,
+        'DishLeafNodePrefix' : dish_ln_fqdn
     }
 
     csp_subarray_ln_proxy_mock = Mock()
     csp_subarray_proxy_mock = Mock()
     sdp_subarray_ln_proxy_mock = Mock()
     sdp_subarray_proxy_mock = Mock()
-
+    dish_ln_proxy_mock = Mock()
     # csp_subarray_proxy_mock.obsState = ObsState.READY
     # sdp_subarray_proxy_mock.obsState = ObsState.READY
     # csp_subarray_proxy_mock.set_state(DevState.OFF)
@@ -72,7 +74,8 @@ def test_assignResource_should_command_subarray_AssignResource():
         csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
         csp_subarray_fqdn : csp_subarray_proxy_mock,
         sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
-        sdp_subarray_fqdn : sdp_subarray_proxy_mock
+        sdp_subarray_fqdn : sdp_subarray_proxy_mock,
+        dish_ln_fqdn : dish_ln_proxy_mock
     }
 
 
@@ -84,10 +87,10 @@ def test_assignResource_should_command_subarray_AssignResource():
         # act:
         # tango_context.device.set_state(DevState.ON)
 
-        cmdData = tango.DeviceData()
-        cmdData.insert(tango.DevVarStringArray, receptor_list)
+        # cmdData = tango.DeviceData()
+        # cmdData.insert(tango.DevVarStringArray, receptor_list)
         tango_context.device.On()
-        tango_context.device.AssignResources(cmdData)
+        tango_context.device.AssignResources(receptor_list)
         arg_list = []
         json_argument = {}
         dish = {}
