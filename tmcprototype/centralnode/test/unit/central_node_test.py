@@ -140,7 +140,7 @@ def test_release_resources_when_subarray_is_idle():
     }
 
     subarray_proxy_mock = MagicMock()
-    subarray_proxy_mock.DevState = DevState.ON
+    # subarray_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
         subarray_fqdn: subarray_proxy_mock
     }
@@ -155,10 +155,11 @@ def test_release_resources_when_subarray_is_idle():
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
         assert_activity_message(tango_context.device, const.STR_REL_RESOURCES)
 
-def test_startup():
+
+def test_standby():
     # arrange:
     device_under_test = CentralNode
-    dishes_fqdn = 'ska_mid/tm_leaf_node/d'
+    dishes_fqdn = 'ska_mid/tm_leaf_node/d0001'
     csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
@@ -172,20 +173,74 @@ def test_startup():
 
     dishes_proxy_mock = MagicMock()
     dishes_proxy_mock.DevState = DevState.ON
-    proxies_to_mock_dish = {
+    proxies_to_mock = {
         dishes_fqdn: dishes_proxy_mock
     }
 
     csp_subarray_proxy_mock = Mock()
     csp_subarray_proxy_mock.obsState = ObsState.READY
-    proxies_to_mock_csp = {
-        csp_subarray_fqdn: csp_subarray_proxy_mock
+    # proxies_to_mock = {
+    #     csp_subarray_fqdn: csp_subarray_proxy_mock
+    # }
+    proxies_to_mock.add(csp_subarray_fqdn, csp_subarray_proxy_mock)
+
+    csp_subarray_proxy_mock = Mock()
+    sdp_subarray_proxy_mock.obsState = ObsState.IDLE
+    # proxies_to_mock = {
+    #     sdp_subarray_fqdn: sdp_subarray_proxy_mock
+    # }
+    proxies_to_mock.add(sdp_subarray_fqdn, sdp_subarray_proxy_mock)
+
+    subarray_proxy_mock = MagicMock()
+    subarray_proxy_mock.DevState = DevState.ON
+    # proxies_to_mock_subarray = {
+    #     subarray_fqdn: subarray_proxy_mock
+    # }
+    proxies_to_mock.add(subarray_fqdn, subarray_proxy_mock)
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock_dish) \
+            as tango_context:
+        # act:
+        tango_context.device.StandByTelescope()
+
+        # assert:
+        dishes_proxy_mock.command_inout.assert_called_with(const.CMD_SET_STANDBY_MODE)
+        csp_subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
+        sdp_subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
+        subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
+
+        assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
+
+def test_startup():
+    # arrange:
+    device_under_test = CentralNode
+    dishes_fqdn = 'ska_mid/tm_leaf_node/d0001'
+    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
+    sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
+    subarray_fqdn = 'ska_mid/tm_subarray_node/1'
+
+    dut_properties = {
+        'DishLeafNodePrefix': dishes_fqdn,
+        'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
+        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
+        'TMMidSubarrayNodes': subarray_fqdn
     }
 
-    sdp_subarray_proxy_mock = Mock()
-    sdp_subarray_proxy_mock.obsState = ObsState.IDLE
+    dish_ln_proxy_mock = MagicMock()
+    # dish_ln_proxy_mock.DevState = DevState.ON
+    proxies_to_mock_dish = {
+        dishes_fqdn: dish_ln_proxy_mock
+    }
+
+    csp_master_ln_proxy_mock = Mock()
+    proxies_to_mock_csp = {
+        csp_subarray_fqdn: csp_master_ln_proxy_mock
+    }
+
+    sdp_master_ln_proxy_mock = Mock()
     proxies_to_mock_sdp = {
-        sdp_subarray_fqdn: sdp_subarray_proxy_mock
+        sdp_subarray_fqdn: sdp_master_ln_proxy_mock
     }
 
     subarray_proxy_mock = MagicMock()
@@ -231,81 +286,7 @@ def test_startup():
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
     assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
 
-def test_standby():
-    # arrange:
-    device_under_test = CentralNode
-    dishes_fqdn = 'ska_mid/tm_leaf_node/d'
-    csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
-    sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
-    subarray_fqdn = 'ska_mid/tm_subarray_node/1'
 
-    dut_properties = {
-        'DishLeafNodePrefix': dishes_fqdn,
-        'SdpSubarrayFQDN': sdp_subarray_fqdn,
-        'CspSubarrayFQDN': csp_subarray_fqdn,
-        'TMMidSubarrayNodes': subarray_fqdn
-    }
-
-    dishes_proxy_mock = MagicMock()
-    dishes_proxy_mock.DevState = DevState.ON
-    proxies_to_mock_dish = {
-        dishes_fqdn: dishes_proxy_mock
-    }
-
-    csp_subarray_proxy_mock = Mock()
-    csp_subarray_proxy_mock.obsState = ObsState.READY
-    proxies_to_mock_csp = {
-        csp_subarray_fqdn: csp_subarray_proxy_mock
-    }
-
-    sdp_subarray_proxy_mock = Mock()
-    sdp_subarray_proxy_mock.obsState = ObsState.IDLE
-    proxies_to_mock_sdp = {
-        sdp_subarray_fqdn: sdp_subarray_proxy_mock
-    }
-
-    subarray_proxy_mock = MagicMock()
-    subarray_proxy_mock.DevState = DevState.ON
-    proxies_to_mock_subarray = {
-        subarray_fqdn: subarray_proxy_mock
-    }
-
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock_dish) \
-            as tango_context:
-        # act:
-        tango_context.device.StandByTelescope()
-
-        # assert:
-        dishes_proxy_mock.command_inout.assert_called_with(const.CMD_SET_STANDBY_MODE)
-
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock_csp) \
-            as tango_context:
-        # act:
-        tango_context.device.StandByTelescope()
-
-        # assert:
-        csp_subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
-
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock_sdp) \
-            as tango_context:
-        # act:
-        tango_context.device.StandByTelescope()
-
-        # assert:
-        sdp_subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
-
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock_subarray) \
-            as tango_context:
-        # act:
-        tango_context.device.StandByTelescope()
-
-        # assert:
-        subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
-    assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
 
 
 @contextlib.contextmanager
