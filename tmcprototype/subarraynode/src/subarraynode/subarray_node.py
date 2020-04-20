@@ -325,6 +325,9 @@ class SubarrayNode(SKASubarray):
             DevVarStringArray. List of Resources added to the Subarray.
             Example: ['0001', '0002']
         """
+        self.logger.debug(argin)
+        print("argin in dish allocation {} and its type {}:::".format(argin, type(argin)))
+        self.logger.debug(type(argin))
         exception_count = 0
         exception_message = []
         allocation_success = []
