@@ -139,7 +139,7 @@ def test_release_resources_when_subarray_is_idle():
         'TMMidSubarrayNodes': subarray_fqdn
     }
 
-    subarray_proxy_mock = Mock()
+    subarray_proxy_mock = MagicMock()
     # subarray_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
         subarray_fqdn: subarray_proxy_mock
@@ -178,7 +178,6 @@ def test_standby():
     }
 
     dish_ln_proxy_mock = MagicMock()
-    dishes_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
         dishes_fqdn: dish_ln_proxy_mock
     }
@@ -232,7 +231,6 @@ def test_startup():
     }
 
     dish_ln_proxy_mock = MagicMock()
-    dishes_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
         dishes_fqdn: dish_ln_proxy_mock
     }
