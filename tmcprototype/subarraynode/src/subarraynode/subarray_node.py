@@ -336,9 +336,13 @@ class SubarrayNode(SKASubarray):
         log_msg = "add_receptors_in_group::",argin
         print("add receptors in group")
         self.logger.debug(log_msg)
+        print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
         for leafId in range(0, len(argin)):
+            print("leafID {} and its type {} :".format(leafId, type(leafId)))
             try:
+                print("Inside try block of add receptor")
                 str_leafId = argin[leafId]
+                print("string leaf id {} and its type {}:::".format(str_leafId, type(str_leafId)))
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
                 devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
                 self._dish_leaf_node_proxy.append(devProxy)
@@ -433,6 +437,7 @@ class SubarrayNode(SKASubarray):
             arg_list.append(json.dumps(json_argument))
             self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
             argout = argin
+            print("inside csp block and argot:", argout)
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
             self.logger.debug(df)
@@ -467,6 +472,7 @@ class SubarrayNode(SKASubarray):
             str_json_arg = json.dumps(json_argument)
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
             argout = argin
+            print("inside sdp block argout:", argout)
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
             self.logger.debug(df)
