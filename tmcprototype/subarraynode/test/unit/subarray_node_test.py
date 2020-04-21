@@ -186,7 +186,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         #
         # assert:
         # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
-        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
+        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, scan_config)
         # assert tango_context.device.obsState == ObsState.SCANNING
 
 def any_method(with_name=None):

@@ -406,8 +406,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         exception_message = []
         exception_count = 0
-
+        print("argin in sdpsaln:", argin)
         try:
+            print("inside try of sdpsaln")
             # TODO : For Future Implementation
             # JSON argument scan_duration is maintained for future use.
             jsonArgument = json.loads(argin)

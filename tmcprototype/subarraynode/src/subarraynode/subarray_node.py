@@ -603,14 +603,19 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
+        print("Argin in scan command before try:", argin)
         exception_count = 0
         exception_message = []
         try:
+            print("inside try::::::::")
             json_scan_duration = json.loads(argin)
             self.scan_duration = int(json_scan_duration['scanDuration'])
             self.logger.debug(const.STR_SCAN_IP_ARG, argin)
+            print("before scan condition")
             assert self._obs_state != ObsState.SCANNING, const.SCAN_ALREADY_IN_PROGRESS
+            print("after assert state")
             if self._obs_state == ObsState.READY:
+                print("obsState is ready")
                 self._read_activity_message = const.STR_SCAN_IP_ARG + argin
                 self.isScanning = True
                 # Invoke Scan command on SDP Subarray Leaf Node
