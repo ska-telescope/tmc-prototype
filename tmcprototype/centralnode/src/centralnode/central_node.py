@@ -443,10 +443,8 @@ class CentralNode(SKABaseDevice):
         exception_message =[]
         self.logger.info(const.STR_STANDBY_CMD_ISSUED)
         self._read_activity_message = const.STR_STANDBY_CMD_ISSUED
-        print ("len(self._dish_leaf_node_devices :", len(self._dish_leaf_node_devices))
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
-                print ("self._leaf_device_proxy[name]:", self._leaf_device_proxy[name])
                 self._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
@@ -715,18 +713,23 @@ class CentralNode(SKABaseDevice):
             release_success = False
             res_not_released = []
             jsonArgument = json.loads(argin)
+            print("json arg:",jsonArgument)
             subarrayID = jsonArgument['subarrayID']
+            print("subarrayID from json:",subarrayID)
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
             subarray_name = "SA" + str(subarrayID)
+            print("subarrayname join with SA + subarray ID:",subarray_name)
             if jsonArgument['releaseALL'] == True:
                 res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
+                print("res_not_released returned from subarray:", res_not_released)
                 self._read_activity_message = const.STR_REL_RESOURCES
-
                 self.logger.info(const.STR_REL_RESOURCES)
                 if not res_not_released:
+                    print("res_not_released returned from subarray inside if loop:", res_not_released)
                     release_success = True
                     for Dish_ID, Dish_Status in self._subarray_allocation.items():
                         if Dish_Status == subarray_name:
+                            print("Dish_Status inside if loop inside if loop:", Dish_Status)
                             self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                 else:
                     self._read_activity_message = const.STR_LIST_RES_NOT_REL \
@@ -757,6 +760,7 @@ class CentralNode(SKABaseDevice):
             "ReleaseAll" : release_success,
             "receptorIDList" : res_not_released
         }
+        print("Argout of release:",argout)
         return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.ReleaseResource
 # ----------
