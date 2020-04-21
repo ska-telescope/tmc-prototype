@@ -718,6 +718,8 @@ class CentralNode(SKABaseDevice):
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
                 res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
+                print("return of subarray proxy on release:",res_not_released)
+                print("Subarray receptor ID :",subarrayProxy.receptorIDList)
                 self._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
                 if not res_not_released:
