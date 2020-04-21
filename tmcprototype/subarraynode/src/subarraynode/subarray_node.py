@@ -642,6 +642,8 @@ class SubarrayNode(SKASubarray):
                 self.set_status(const.STR_SA_SCANNING)
                 self.logger.info(const.STR_SA_SCANNING)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
+            else:
+                print("obs state of subarray is :", self._obs_state)
 
             self.end_scan_thread = threading.Thread(None, self.waitForEndScan, "SubarrayNode")
             self.end_scan_thread.start()
