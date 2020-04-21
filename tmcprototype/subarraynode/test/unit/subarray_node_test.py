@@ -154,20 +154,6 @@ def test_ReleaseResource_command_subarray():
         # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, cmdData)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
 
-def create_dummy_event_csp_sa(csp_subarray_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{csp_subarray_fqdn}/state"
-    fake_event.attr_value.value = DevState.ON
-    return fake_event
-
-def create_dummy_event_sdp_sa(sdp_subarray_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{sdp_subarray_fqdn}/state"
-    fake_event.attr_value.value = DevState.ON
-    return fake_event
-
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # arrange:
     device_under_test = SubarrayNode
@@ -247,7 +233,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         #
         # assert:
         # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
-        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, scan_config)
+        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
         # assert tango_context.device.obsState == ObsState.SCANNING
 
 def any_method(with_name=None):
