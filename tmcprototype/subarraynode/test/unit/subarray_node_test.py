@@ -165,9 +165,9 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         # act:
         # tango_context.device.set_state(DevState.ON)
         tango_context.device.On()
-        dummy_event = create_dummy_event(csp_subarray_fqdn)
+        dummy_event = create_dummy_event_csp_sa(csp_subarray_fqdn)
         print("state of csp:", csp_subarray_proxy_mock.DevState)
-        dummy_event = create_dummy_event(sdp_subarray_fqdn)
+        dummy_event = create_dummy_event_sdp_sa(sdp_subarray_fqdn)
         print("state of sdp:", sdp_subarray_proxy_mock.DevState)
 
         csp_subarray_proxy_mock.obsState = ObsState.READY
