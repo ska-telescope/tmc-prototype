@@ -26,14 +26,16 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
         scan_config = "0"
         # act:
         tango_context.device.Scan(scan_config)
 
         # assert:
         if type(float(scan_config)) == float:
-            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, scan_config, any_method(with_name='commandCallback'))
+            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, scan_config,
+                                                                    any_method(with_name='commandCallback'))
 
 
 #to do: actual AZ and EL values need to be generated.
@@ -54,7 +56,8 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        dish_config = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        dish_config = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+        "dish":{"receiverBand":"1"}}'
         # act:
         tango_context.device.Configure(dish_config)
 
@@ -103,7 +106,8 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
 
         # assert:
         if type(float(scan_config)) == float:
-            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, scan_config, any_method(with_name='commandCallback'))
+            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, scan_config,
+                                                                    any_method(with_name='commandCallback'))
 
 
 def test_standby_lp_mode_should_command_dish_to_standby():
@@ -127,7 +131,8 @@ def test_standby_lp_mode_should_command_dish_to_standby():
         tango_context.device.SetStandByLPMode()
 
         # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYLP_MODE, any_method(with_name='commandCallback'))
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYLP_MODE,
+                                                                any_method(with_name='commandCallback'))
 
 
 def test_set_operate_mode_should_command_dish_to_start():
@@ -150,7 +155,8 @@ def test_set_operate_mode_should_command_dish_to_start():
         tango_context.device.SetOperateMode()
 
         # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE, any_method(with_name='commandCallback'))
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE,
+                                                                any_method(with_name='commandCallback'))
 
 '''
 def test_track_should_command_dish_to_start_tracking():
@@ -169,7 +175,8 @@ def test_track_should_command_dish_to_start_tracking():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+        "dish":{"receiverBand":"1"}}'
 
         # act:
         tango_context.device.Track(input_string)
@@ -179,7 +186,8 @@ def test_track_should_command_dish_to_start_tracking():
         ra_value = (jsonArgument["pointing"]["target"]["RA"])
         dec_value = (jsonArgument["pointing"]["target"]["dec"])
         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0", any_method(with_name='commandCallback'))
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0", 
+                                                                any_method(with_name='commandCallback'))
 '''
 def test_stop_track_should_command_dish_to_start_tracking():
     # arrange:
@@ -201,7 +209,8 @@ def test_stop_track_should_command_dish_to_start_tracking():
         tango_context.device.StopTrack()
 
         # assert:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_TRACK, any_method(with_name='commandCallback'))
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_TRACK,
+                                                                any_method(with_name='commandCallback'))
 
 def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinates():
     device_under_test = DishLeafNode
@@ -224,7 +233,8 @@ def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinat
 
         # assert:
         if type(float(slew_arg)) == float:
-            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW, slew_arg, any_method(with_name='commandCallback'))
+            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW, slew_arg,
+                                                                    any_method(with_name='commandCallback'))
 
 
 def test_start_capture_should_command_dish_to_start_capture_on_the_set_configured_band():
@@ -248,7 +258,8 @@ def test_start_capture_should_command_dish_to_start_capture_on_the_set_configure
 
         # assert:
         if type(float(capture_arg)) == float:
-            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE, capture_arg, any_method(with_name='commandCallback'))
+            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE, capture_arg,
+                                                                    any_method(with_name='commandCallback'))
 
 
 def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_band():
@@ -272,7 +283,8 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
 
         # assert:
         if type(float(capture_arg)) == float:
-            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, capture_arg, any_method(with_name='commandCallback'))
+            dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, capture_arg,
+                                                                    any_method(with_name='commandCallback'))
 
 
 
@@ -288,7 +300,8 @@ def any_method(with_name=None):
 
 
 @contextlib.contextmanager
-def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={}, device_proxy_import_path='tango.DeviceProxy'):
+def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
+                      device_proxy_import_path='tango.DeviceProxy'):
 
     with mock.patch(device_proxy_import_path) as patched_constructor:
         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
