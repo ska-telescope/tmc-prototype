@@ -148,11 +148,6 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
     sdp_subarray_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
-    print("state of csp:", csp_subarray_proxy_mock.DevState())
-    print("state of sdp:", sdp_subarray_proxy_mock.DevState())
-
-    csp_subarray_proxy_mock.obsState = ObsState.READY
-    sdp_subarray_proxy_mock.obsState = ObsState.READY
 
     proxies_to_mock = {
         csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
@@ -169,7 +164,15 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         # print("type of receptor-list on subarray : ", type(receptor_list1))
         # act:
         # tango_context.device.set_state(DevState.ON)
-        # tango_context.device.On()
+        tango_context.device.On()
+        dummy_event = create_dummy_event(csp_subarray_fqdn)
+        print("state of csp:", csp_subarray_proxy_mock.DevState)
+        dummy_event = create_dummy_event(sdp_subarray_fqdn)
+        print("state of sdp:", sdp_subarray_proxy_mock.DevState)
+
+        csp_subarray_proxy_mock.obsState = ObsState.READY
+        sdp_subarray_proxy_mock.obsState = ObsState.READY
+
         # tango_context.device.AssignResources(receptor_list)
 
         # print("obsstate is:", tango_context.device.obsState())
