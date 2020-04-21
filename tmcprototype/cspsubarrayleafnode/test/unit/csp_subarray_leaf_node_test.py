@@ -1,7 +1,6 @@
 import contextlib
 import importlib
 import sys
-import os
 import json
 import mock
 import types
@@ -10,12 +9,6 @@ from mock import Mock
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
-file_path = os.path.dirname(os.path.abspath(__file__))
-
-SRC_ROOT_DIR = "/app"
-TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
-ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
-
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
     # arrange:
@@ -66,6 +59,3 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
-
-def assert_activity_message(device_proxy, expected_message):
-    assert device_proxy.activityMessage == expected_message  # reads tango attribute
