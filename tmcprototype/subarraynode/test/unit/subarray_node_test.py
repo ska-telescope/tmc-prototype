@@ -169,6 +169,18 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         # print("state of csp:", csp_subarray_proxy_mock.DevState)
         dummy_event = create_dummy_event_sdp_sa(sdp_subarray_fqdn)
         # print("state of sdp:", sdp_subarray_proxy_mock.DevState)
+        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                       '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                       '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                       '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                       '"corrBandwidth":0}]},"sdp":{"configure":'
+                                       '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                       '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                       '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                       '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                       '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                       '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                       '{"fieldId":0,"intervalMs":1400}}}]}}')
 
         csp_subarray_proxy_mock.obsState = ObsState.READY
         sdp_subarray_proxy_mock.obsState = ObsState.READY
