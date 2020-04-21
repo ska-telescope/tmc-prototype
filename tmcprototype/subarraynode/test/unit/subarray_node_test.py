@@ -166,9 +166,9 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         # tango_context.device.set_state(DevState.ON)
         tango_context.device.On()
         dummy_event = create_dummy_event_csp_sa(csp_subarray_fqdn)
-        print("state of csp:", csp_subarray_proxy_mock.DevState)
+        # print("state of csp:", csp_subarray_proxy_mock.DevState)
         dummy_event = create_dummy_event_sdp_sa(sdp_subarray_fqdn)
-        print("state of sdp:", sdp_subarray_proxy_mock.DevState)
+        # print("state of sdp:", sdp_subarray_proxy_mock.DevState)
 
         csp_subarray_proxy_mock.obsState = ObsState.READY
         sdp_subarray_proxy_mock.obsState = ObsState.READY
@@ -185,8 +185,8 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         cmdData.insert(tango.DevString, scan_config)
         #
         # assert:
-        # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, cmdData)
-        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
+        # csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
 
 def any_method(with_name=None):
     class AnyMethod():
