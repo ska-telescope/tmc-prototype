@@ -336,7 +336,9 @@ class SubarrayNode(SKASubarray):
             try:
                 str_leafId = argin[leafId]
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
+                print("Before proxy creation")
                 devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                print("After proxy creation", devProxy)
                 self._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
