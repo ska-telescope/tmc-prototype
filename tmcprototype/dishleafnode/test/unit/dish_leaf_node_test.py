@@ -26,8 +26,8 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         scan_config = "0"
         # act:
         tango_context.device.Scan(scan_config)
@@ -54,9 +54,10 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
-        dish_config = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        dish_config = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",
+                        "dec":"89:15:51.4"}},
         "dish":{"receiverBand":"1"}}'
         # act:
         tango_context.device.Configure(dish_config)
@@ -80,8 +81,8 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
         dish_str_ip = json.dumps(arg_list)
 
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
-                                                                        str(dish_str_ip),
-                                                                        any_method(with_name='commandCallback'))
+                                                                str(dish_str_ip),
+                                                                any_method(with_name='commandCallback'))
 
 '''
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
@@ -98,8 +99,8 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         scan_config = "0"
         # act:
         tango_context.device.EndScan(scan_config)
@@ -124,8 +125,8 @@ def test_standby_lp_mode_should_command_dish_to_standby():
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
 
         # act:
         tango_context.device.SetStandByLPMode()
@@ -149,8 +150,8 @@ def test_set_operate_mode_should_command_dish_to_start():
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         tango_context.device.SetOperateMode()
 
@@ -168,14 +169,15 @@ def test_track_should_command_dish_to_start_tracking():
     }
 
     dish_proxy_mock = Mock()
-    #dish_proxy_mock.obsState = ObsState.TRACK  # referred from pointing state of dishmaster track
+    
     proxies_to_mock = {
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",
+                        "dec":"89:15:51.4"}},
         "dish":{"receiverBand":"1"}}'
 
         # act:
@@ -203,8 +205,8 @@ def test_stop_track_should_command_dish_to_start_tracking():
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         tango_context.device.StopTrack()
 
@@ -225,8 +227,8 @@ def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinat
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         slew_arg = "0"
         # act:
         tango_context.device.Slew(slew_arg)
@@ -250,8 +252,8 @@ def test_start_capture_should_command_dish_to_start_capture_on_the_set_configure
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         capture_arg = "0"
         # act:
         tango_context.device.StartCapture(capture_arg)
@@ -275,8 +277,8 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
         dish_master_fqdn: dish_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         capture_arg = "0"
         # act:
         tango_context.device.StopCapture(capture_arg)
