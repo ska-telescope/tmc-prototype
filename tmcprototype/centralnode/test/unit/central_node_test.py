@@ -5,7 +5,7 @@ import mock
 import types
 import tango
 import json
-
+from subarraynode import receptorIDList
 from tango import DevState
 from mock import MagicMock
 from mock import Mock
@@ -142,6 +142,8 @@ def test_release_resources_when_subarray_is_idle():
 
     subarray_proxy_mock = MagicMock()
     subarray_proxy_mock.DevState = DevState.ON
+    subarray_proxy_mock.receptorIDList = receptorIDList.ON
+
     proxies_to_mock = {
         subarray_fqdn: subarray_proxy_mock
     }

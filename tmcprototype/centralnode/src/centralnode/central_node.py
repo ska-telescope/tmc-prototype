@@ -751,10 +751,9 @@ class CentralNode(SKABaseDevice):
             self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
 
         argout = {
-            "ReleaseAll" : release_success
+            "ReleaseAll" : release_success,
+            "receptorIDList" : res_not_released
         }
-        print("Argout of release:",argout)
-        return argout
         # PROTECTED REGION END #    //  CentralNode.ReleaseResource
 # ----------
 # Run server
