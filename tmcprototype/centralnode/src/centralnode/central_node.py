@@ -715,7 +715,7 @@ class CentralNode(SKABaseDevice):
             jsonArgument = json.loads(argin)
             subarrayID = jsonArgument['subarrayID']
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-            #subarray_name = "SA" + str(subarrayID)
+            subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
                 res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                 print("res_not_released value returned:",res_not_released)
@@ -724,9 +724,9 @@ class CentralNode(SKABaseDevice):
                 self.logger.info(const.STR_REL_RESOURCES)
                 if not res_not_released:
                     release_success = True
-                    for Dish_ID in self._subarray_allocation.items():
-                        #if Dish_Status == subarray_name:
-                        self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
+                    for Dish_ID, Dish_Status in self._subarray_allocation.items():
+                        if Dish_Status == subarray_name:
+                            self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                 else:
                     self._read_activity_message = const.STR_LIST_RES_NOT_REL \
                                                   + res_not_released
