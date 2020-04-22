@@ -222,7 +222,7 @@ def test_Configure_command_subarray():
                           '"visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", ' \
                           '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
                           '"dec": "-30:52:17.3"}}, "scanID": "12345"}'
-        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, json.dumps(csp_configure_input))
+        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_configure_input)
 
         sdp_configure_input = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
@@ -230,11 +230,11 @@ def test_Configure_command_subarray():
                      '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
                      ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
-        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, json.dumps(sdp_configure_input))
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, sdp_configure_input)
 
         dish_configure_input = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",' \
                                '"dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
-        dish_ln_proxy_mock.command_inout.asser_called_with(const.CMD_CONFIGURE, json.dumps(dish_configure_input))
+        dish_ln_proxy_mock.command_inout.asser_called_with(const.CMD_CONFIGURE, dish_configure_input)
 
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # arrange:
