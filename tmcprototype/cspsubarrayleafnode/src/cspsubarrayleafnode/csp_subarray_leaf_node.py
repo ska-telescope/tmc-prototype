@@ -19,10 +19,9 @@ import katpoint
 import numpy as np
 
 file_path = os.path.dirname(os.path.abspath(__file__))
+print ("file_path", file_path)
 
-SRC_ROOT_DIR = "/app"
-TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
-ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+ska_antennas_path = "ska_antennas.txt"
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
@@ -230,6 +229,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         assigned_receptors =[]
 
         # Load a set of antenna descriptions and construct Antenna objects from them
+        print ("SKA path:", ska_antennas_path)
         with open(ska_antennas_path) as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
@@ -529,7 +529,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                     exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
 
         # throw exception:
-        if exception_count > 0:
+        if exception_count:
             self.throw_exception(exception_message, const.STR_CONFIG_SCAN_EXEC)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.Configure
 
@@ -690,12 +690,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             #convert receptorIDList from list of string to list of int
             for i in range(0, len(self.receptorIDList_str)):
                 self.receptorIDList.append(int(self.receptorIDList_str[i]))
-            self.update_config_params()
-
-            #Invoke AddReceptors command on CspSubarray
+            # Invoke AddReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, self.receptorIDList,
-                                                       self.commandCallback)
-
+                                                           self.commandCallback)
+            self.update_config_params()
             self._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
             self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
@@ -722,7 +720,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                          exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
         # throw exception:
-        if exception_count > 0:
+        if exception_count:
+            print ("Exception in AssignResource:", exception_message)
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
