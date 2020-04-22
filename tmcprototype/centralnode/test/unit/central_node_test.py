@@ -150,8 +150,8 @@ def test_release_resources_when_subarray_is_idle():
             as tango_context:
         # act:
         assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
-        tango_context.device.StartUpTelescope()
-        tango_context.device.AssignResources(assign_command)
+        # tango_context.device.StartUpTelescope()
+        # tango_context.device.AssignResources(assign_command)
 
         release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
         tango_context.device.ReleaseResources(release_input)
