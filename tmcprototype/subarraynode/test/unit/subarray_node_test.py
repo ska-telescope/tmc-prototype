@@ -209,8 +209,8 @@ def test_Configure_command_subarray():
                                        '{"fieldId":0,"intervalMs":1400}}}]}}')
 
         # assert:
-        scan_configuration = json.loads(argin)
-        self._scan_id = str(scan_configuration["scanID"])
+        # scan_configuration = json.loads(argin)
+        # self._scan_id = str(scan_configuration["scanID"])
 
         csp_scan_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
                           '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
@@ -277,7 +277,8 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
 
-    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
         # act:
         dummy_event_csp = create_dummy_event_obsstate(csp_subarray_ln_fqdn)
         event_subscription_map[csp_subarray_obsstate_attribute](dummy_event_csp)
