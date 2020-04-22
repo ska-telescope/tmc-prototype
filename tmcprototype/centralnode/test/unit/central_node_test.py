@@ -274,7 +274,7 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
                       device_proxy_import_path='tango.DeviceProxy'):
 
     with mock.patch(device_proxy_import_path) as patched_constructor:
-        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, MagicMock())
+        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
 
     device_under_test = getattr(patched_module, device_under_test.__name__)
