@@ -154,6 +154,88 @@ def test_ReleaseResource_command_subarray():
         # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, cmdData)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
 
+def test_Configure_command_subarray():
+    # arrange:
+    device_under_test = SubarrayNode
+    csp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray_fqdn,
+        'DishLeafNodePrefix' : dish_ln_prefix
+    }
+
+    csp_subarray_ln_proxy_mock = Mock()
+    csp_subarray_proxy_mock = Mock()
+    sdp_subarray_ln_proxy_mock = Mock()
+    sdp_subarray_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
+        csp_subarray_fqdn : csp_subarray_proxy_mock,
+        sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
+        sdp_subarray_fqdn : sdp_subarray_proxy_mock,
+        dish_ln_prefix + "0001" : dish_ln_proxy_mock
+    }
+
+    csp_subarray_proxy_mock.obsState = ObsState.IDLE
+    sdp_subarray_proxy_mock.obsState = ObsState.IDLE
+    # csp_subarray_ln_proxy_mock.obsState = ObsState.IDLE
+    # sdp_subarray_ln_proxy_mock.obsState = ObsState.IDLE
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        tango_context.device.On()
+        receptor_list = ['0001']
+        tango_context.device.AssignResources(receptor_list)
+
+        tango_context.device.Configure('{"scanID":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                       '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                       '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                       '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                       '"corrBandwidth":0}]},"sdp":{"configure":'
+                                       '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                       '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                       '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                       '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                       '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                       '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                       '{"fieldId":0,"intervalMs":1400}}}]}}')
+
+        # assert:
+        scan_configuration = json.loads(argin)
+        self._scan_id = str(scan_configuration["scanID"])
+        attr_name_map = {
+            const.STR_DELAY_MODEL_SUB_POINT: csp_subarray_ln_fqdn + "/delayModel",
+            const.STR_VIS_DESTIN_ADDR_SUB_POINT: sdp_subarray_fqdn + "/receiveAddresses"
+        }
+        csp_configure_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
+                          '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
+                          '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
+                          '"visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", ' \
+                          '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
+                          '"dec": "-30:52:17.3"}}, "scanID": "12345"}'
+        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_configure_input)
+
+        sdp_configure_input = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
+                     '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
+                     '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
+                     '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
+                     ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
+                     ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, sdp_configure_input)
+
+        dish_configure_input = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",' \
+                               '"dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        dish_ln_proxy_mock.command_inout.asser_called_with(const.CMD_CONFIGURE, dish_configure_input)
+        
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # arrange:
     device_under_test = SubarrayNode
