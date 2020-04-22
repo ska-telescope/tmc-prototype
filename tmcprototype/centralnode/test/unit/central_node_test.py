@@ -139,8 +139,9 @@ def test_release_resources_when_subarray_is_idle():
         'TMMidSubarrayNodes': subarray_fqdn
     }
 
-    subarray_proxy_mock = MagicMock(return_value = None)
+    subarray_proxy_mock = MagicMock()
     subarray_proxy_mock.DevState = DevState.ON
+    subarray_proxy_mock.__str__.return_value = 'test'
     subarray_proxy_mock.receptorIDList = [1]
     proxies_to_mock = {
         subarray_fqdn: subarray_proxy_mock
@@ -155,6 +156,7 @@ def test_release_resources_when_subarray_is_idle():
 
         release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
         tango_context.device.ReleaseResources(release_input)
+
 
         # assert:
         jsonArgument = json.loads(release_input)
@@ -251,6 +253,21 @@ def test_startup():
 
 
 
+
+@contextlib.contextmanager
+def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
+                      device_proxy_import_path='tango.DeviceProxy'):
+
+    with mock.patch(device_proxy_import_path) as patched_constructor:
+        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
+        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+
+    device_under_test = getattr(patched_module, device_under_test.__name__)
+
+    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
+    device_test_context.start()
+    yield device_test_context
+    device_test_context.stop()
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
