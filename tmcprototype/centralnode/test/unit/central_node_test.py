@@ -154,13 +154,13 @@ def test_release_resources_when_subarray_is_idle():
         # tango_context.device.AssignResources(assign_command)
 
         release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-        tango_context.device.ReleaseResources(release_input)
+        tango_context.device.__str__.ReleaseResources(release_input)
 
         # assert:
         jsonArgument = json.loads(release_input)
         if jsonArgument['releaseALL'] == True:
-            #subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
-            assert_activity_message(tango_context.device, const.STR_REL_RESOURCES)
+            subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
+        assert_activity_message(tango_context.device, const.STR_REL_RESOURCES)
 
 
 def test_standby():
