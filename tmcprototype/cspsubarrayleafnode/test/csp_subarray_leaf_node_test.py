@@ -67,13 +67,6 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         device_proxy=tango_context.device
 
         #act
-        m = mock_open()
-        fake_antenna_path = "ska_antennas.txt"
-        with mock.patch('__main__.open', m, create=True):
-            with open(fake_antenna_path, 'r') as h:
-                print ("test", h.read)
-
-
         device_proxy.AssignResources(assign_config)
 
         #assert
