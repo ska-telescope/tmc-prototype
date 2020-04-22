@@ -429,6 +429,7 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
         # tango_context.device.Scan('{"scanDuration": 10.0}')
         csp_subarray_proxy_mock.obsState = ObsState.READY
         sdp_subarray_proxy_mock.obsState = ObsState.READY
+        print("obsState of subarray node is:::::::::", tango_context.device.obsState)
         # csp_subarray_ln_proxy_mock.obsState = ObsState.READY
         # sdp_subarray_ln_proxy_mock.obsState = ObsState.READY
         tango_context.device.EndSB()
