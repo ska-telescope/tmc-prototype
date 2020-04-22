@@ -220,6 +220,7 @@ def test_Configure_command_subarray():
                           '"dec": "-30:52:17.3"}}, "scanID": "12345"}'
         cmd_data = tango.DeviceData()
         cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
+        print ("Test csp configure command:",cmd_data, type(cmd_data))
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, cmd_data)
 
         scan_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
@@ -281,7 +282,7 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
             as tango_context:
         # act:
         dummy_event_csp = create_dummy_event_obsstate(csp_subarray_ln_fqdn)
-        event_subscription_map[csp_subarray_obsstate_attribute](dummy_event_csp)
+        csp_subarray_obsstate = dummy_event_csp
 
         # assert:
         assert tango_context.device.obsState == ObsState.CONFIGURING
@@ -290,7 +291,7 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
 def create_dummy_event_obsstate(device_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/ObsState"
+    fake_event.attr_name = f"{device_fqdn}/obsState"
     fake_event.attr_value.value = ObsState.CONFIGURING
     return fake_event
 #

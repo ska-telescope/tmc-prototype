@@ -252,6 +252,7 @@ class SubarrayNode(SKASubarray):
                 pointing_state_count_slew = pointing_state_count_slew + 1
         if self._csp_sa_obs_state == ObsState.SCANNING and self._sdp_sa_obs_state ==\
                 ObsState.SCANNING:
+            print("----------------inside scanning block-------------")
             self._obs_state = ObsState.SCANNING
             # self.isScanning = True
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
@@ -262,6 +263,7 @@ class SubarrayNode(SKASubarray):
                 self._obs_state = ObsState.READY
         elif self._csp_sa_obs_state == ObsState.CONFIGURING or \
                 self._sdp_sa_obs_state == ObsState.CONFIGURING:
+            print("----------------inside configuring  block-------------")
             self._obs_state = ObsState.CONFIGURING
         elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
                 ObsState.IDLE:
@@ -274,10 +276,12 @@ class SubarrayNode(SKASubarray):
                             self._obs_state = ObsState.READY
                     else:
                         self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                        print("----------------inside 1st idle block-------------")
                         self._obs_state = ObsState.IDLE
                 elif pointing_state_count_slew != 0:
                     self._obs_state = ObsState.CONFIGURING
                 else:
+                    print("----------------inside 2nd idle block-------------")
                     self._obs_state = ObsState.IDLE
 
     def create_csp_ln_proxy(self):
@@ -1252,6 +1256,7 @@ class SubarrayNode(SKASubarray):
     # --------
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         try:
+            print ("\n\n **********Command relayed to leaf node",device_proxy , cmd_data, type(cmd_data))
             device_proxy.command_inout(cmd_name, cmd_data)
             log_msg = "%s configured succesfully." %device_proxy.dev_name()
             self.logger.debug(log_msg)
