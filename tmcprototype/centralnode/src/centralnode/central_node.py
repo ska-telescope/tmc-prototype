@@ -718,8 +718,6 @@ class CentralNode(SKABaseDevice):
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
                 res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
-                print("res_not_released value returned:",res_not_released)
-                print("subarray proxy receptor ID list:",subarrayProxy.receptorIDList)
                 self._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
                 if not res_not_released:
@@ -756,7 +754,6 @@ class CentralNode(SKABaseDevice):
             "ReleaseAll" : release_success,
             "receptorIDList" : str(res_not_released)
         }
-        print("argout of release:",argout)
         return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.ReleaseResource
 # ----------
