@@ -756,6 +756,7 @@ class CentralNode(SKABaseDevice):
             "ReleaseAll" : release_success,
             "receptorIDList" : res_not_released
         }
+        print("argout of release:",argout)
         return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.ReleaseResource
 # ----------

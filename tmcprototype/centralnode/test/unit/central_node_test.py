@@ -154,7 +154,7 @@ def test_release_resources_when_subarray_is_idle():
         # tango_context.device.AssignResources(assign_command)
 
         release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-        tango_context.device.__str__.ReleaseResources(release_input)
+        tango_context.device.ReleaseResources(release_input)
 
         # assert:
         jsonArgument = json.loads(release_input)
