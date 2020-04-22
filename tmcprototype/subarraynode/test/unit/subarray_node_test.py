@@ -210,12 +210,12 @@ def test_Configure_command_subarray():
                                        '{"fieldId":0,"intervalMs":1400}}}]}}')
 
         # assert:
-        scan_configuration = json.loads(argin)
-        self._scan_id = str(scan_configuration["scanID"])
-        attr_name_map = {
-            const.STR_DELAY_MODEL_SUB_POINT: csp_subarray_ln_fqdn + "/delayModel",
-            const.STR_VIS_DESTIN_ADDR_SUB_POINT: sdp_subarray_fqdn + "/receiveAddresses"
-        }
+        # scan_configuration = json.loads(argin)
+        # self._scan_id = str(scan_configuration["scanID"])
+        # attr_name_map = {
+        #     const.STR_DELAY_MODEL_SUB_POINT: csp_subarray_ln_fqdn + "/delayModel",
+        #     const.STR_VIS_DESTIN_ADDR_SUB_POINT: sdp_subarray_fqdn + "/receiveAddresses"
+        # }
         csp_configure_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
                           '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
                           '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
@@ -235,7 +235,7 @@ def test_Configure_command_subarray():
         dish_configure_input = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",' \
                                '"dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
         dish_ln_proxy_mock.command_inout.asser_called_with(const.CMD_CONFIGURE, dish_configure_input)
-        
+
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # arrange:
     device_under_test = SubarrayNode
