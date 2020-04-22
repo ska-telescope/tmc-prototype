@@ -200,8 +200,11 @@ class SubarrayNode(SKASubarray):
                 """
         exception_message = []
         exception_count = 0
+        print("outside the if condition of obsState callback")
         if evt.err is False:
+            print("-------inside if of ObsStatecb---------")
             try:
+                print("----------------inside try of obsstCB-------------")
                 self._observetion_state = evt.attr_value.value
 
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
@@ -229,6 +232,7 @@ class SubarrayNode(SKASubarray):
                 [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                 exception_message, exception_count, const.ERR_AGGR_OBS_STATE)
         else:
+            print("------------inside else block of obsSTCB-----------------")
             log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
             self.logger.debug(log_msg)
             self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
@@ -238,6 +242,7 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated observation state of Subarray.
         """
+        print("Inside the calculationOBSST-----------------------")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
@@ -251,7 +256,9 @@ class SubarrayNode(SKASubarray):
             # self.isScanning = True
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
+            print("----------------inside ready block-------------")
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
+                print("-----------inside pointingSTATECOUNZTTRACt----------")
                 self._obs_state = ObsState.READY
         elif self._csp_sa_obs_state == ObsState.CONFIGURING or \
                 self._sdp_sa_obs_state == ObsState.CONFIGURING:
