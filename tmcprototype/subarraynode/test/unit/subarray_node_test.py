@@ -426,14 +426,12 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
                                        '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
                                        '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                        '{"fieldId":0,"intervalMs":1400}}}]}}')
-        tango_context.device.Scan('{"scanDuration": 10.0}')
-
-        # tango_context.device.EndScan()
+        # tango_context.device.Scan('{"scanDuration": 10.0}')
         csp_subarray_proxy_mock.obsState = ObsState.READY
         sdp_subarray_proxy_mock.obsState = ObsState.READY
         # csp_subarray_ln_proxy_mock.obsState = ObsState.READY
         # sdp_subarray_ln_proxy_mock.obsState = ObsState.READY
-
+        tango_context.device.EndSB()
         # assert:
         sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ENDSB)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_GOTOIDLE)
