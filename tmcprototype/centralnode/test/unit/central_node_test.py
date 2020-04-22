@@ -139,7 +139,7 @@ def test_release_resources_when_subarray_is_idle():
         'TMMidSubarrayNodes': subarray_fqdn
     }
 
-    subarray_proxy_mock = MagicMock()
+    subarray_proxy_mock = MagicMock(return_value = None)
     subarray_proxy_mock.DevState = DevState.ON
     subarray_proxy_mock.receptorIDList = [1]
     proxies_to_mock = {
@@ -160,7 +160,7 @@ def test_release_resources_when_subarray_is_idle():
         jsonArgument = json.loads(release_input)
         if jsonArgument['releaseALL'] == True:
             #subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
-            subarray_proxy_mock.command_inout.__str__(const.CMD_RELEASE_RESOURCES)
+            subarray_proxy_mock.__str__=subarray_proxy_mock.command_inout(const.CMD_RELEASE_RESOURCES)
             subarray_proxy_mock.__str__.assert_called_with()
         assert_activity_message(tango_context.device, const.STR_REL_RESOURCES)
 
