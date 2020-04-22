@@ -119,7 +119,7 @@ def test_assign_resources_should_send_json_to_subarraynode():
         assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
         device_proxy=tango_context.device
         # Call Startup command of Central Node
-        device_proxy.StartUpTelescope()
+        #device_proxy.StartUpTelescope()
         device_proxy.AssignResources(assign_command)
 
         # assert:
@@ -139,7 +139,7 @@ def test_release_resources_when_subarray_is_idle():
         'TMMidSubarrayNodes': subarray_fqdn
     }
 
-    subarray_proxy_mock = MagicMock(return_value = None)
+    subarray_proxy_mock = Mock(return_value = None)
     subarray_proxy_mock.DevState = DevState.ON
     subarray_proxy_mock.receptorIDList = [1]
     proxies_to_mock = {
