@@ -266,7 +266,7 @@ unit tests:
         pwd
         ls
         echo "+++ Trying tests for ${TMC_ELEMENT}"
-        find ./tmcprototype/ska_antennas.txt
+        find / -name "ska_antennas.txt"
         pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
           --forked \
           --cov=tmcprototype/${TMC_ELEMENT} \
