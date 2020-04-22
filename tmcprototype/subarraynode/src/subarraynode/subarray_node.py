@@ -1267,11 +1267,13 @@ class SubarrayNode(SKASubarray):
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
+        print("--------------inside sdp block---------------------")
         cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration, cbf_out_link)
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
+        print("--------------------Inside conf csp------------------")
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
             const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
@@ -1282,6 +1284,7 @@ class SubarrayNode(SKASubarray):
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
+        print("------------------inside dish block---------------")
         config_keys = scan_configuration.keys()
         if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
             self.only_dishconfig_flag = True
@@ -1327,6 +1330,7 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
+        print("Inside configure command of SubarrayNode::::::::", argin)
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg=const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
@@ -1335,9 +1339,11 @@ class SubarrayNode(SKASubarray):
 
         if self._obs_state != ObsState.IDLE:
             return
-
+        print("-------------------------------outside of try-----------------------")
         try:
+            print("-------------------------------inside of try block----------------------")
             scan_configuration = json.loads(argin)
+            print("scan conf after json loads:::::::", scan_configuration)
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
