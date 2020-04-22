@@ -160,7 +160,7 @@ def test_release_resources_when_subarray_is_idle():
         jsonArgument = json.loads(release_input)
         if jsonArgument['releaseALL'] == True:
             #subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
-            subarray_proxy_mock.__str__=subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
+            subarray_proxy_mock.__str__.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
         assert_activity_message(tango_context.device, const.STR_REL_RESOURCES)
 
 
