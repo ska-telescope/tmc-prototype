@@ -6,6 +6,7 @@ import mock
 import types
 import tango
 from tango import DevState
+import time
 
 from mock import Mock
 from subarraynode import SubarrayNode, const
@@ -208,6 +209,7 @@ def test_Configure_command_subarray():
                                        '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
                                        '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
                                        '{"fieldId":0,"intervalMs":1400}}}]}}')
+        time.sleep(60)
         print("obsState of SubarraNode is:::::::::::", tango_context.device.obsState)
         # assert:
         # scan_configuration = json.loads(argin)
