@@ -141,7 +141,6 @@ def test_release_resources_when_subarray_is_idle():
 
     subarray_proxy_mock = Mock()
     subarray_proxy_mock.DevState = DevState.ON
-    subarray_proxy_mock.__str__.return_value = 'test'
     subarray_proxy_mock.receptorIDList = [1]
     proxies_to_mock = {
         subarray_fqdn: subarray_proxy_mock
