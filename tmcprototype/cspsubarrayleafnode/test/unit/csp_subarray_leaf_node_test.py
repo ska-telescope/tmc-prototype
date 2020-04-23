@@ -10,15 +10,11 @@ from mock import Mock, mock_open
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
-# with open(os.path.join(sys.path[0], "ska_antennas.txt"), "r") as f:
-#     print(f.read())
 
-
-# file_path = os.path.dirname(os.path.abspath(__file__))
-#
-# SRC_ROOT_DIR = "/app"
-# TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
-# ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+file_path = os.path.dirname(os.path.abspath(__file__))
+SRC_ROOT_DIR = "/app"
+TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
+ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
@@ -65,6 +61,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         assign_config = []
         assign_config.append('{"dish":{"receptorIDList":["0001","0002"]}}')
         device_proxy=tango_context.device
+        print(os.system('find / -name "ska_antennas.txt"'))
 
         #act
         device_proxy.AssignResources(assign_config)

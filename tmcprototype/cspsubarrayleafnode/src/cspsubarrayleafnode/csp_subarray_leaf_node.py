@@ -24,7 +24,7 @@ TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
 ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 
 # print ("file_path", file_path)
-print(os. system('find / -name "ska_antennas.txt"'))
+# print(os. system('find / -name "ska_antennas.txt"'))
 
 # PyTango imports
 import tango
