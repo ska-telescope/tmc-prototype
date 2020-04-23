@@ -277,10 +277,10 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
     csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
-    sdp_subarray_obsstate_attribute.subscribe_event.side_effect = (
+    sdp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
-    dish_pointing_state_attribute.subscribe_event.side_effect = (
+    dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
