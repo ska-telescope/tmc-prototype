@@ -8,8 +8,7 @@ import types
 from mock import Mock
 from dishleafnode import DishLeafNode, const
 from tango.test_context import DeviceTestContext
-from ska.base.control_model import ObsState
-
+from ska.base.control_model import ObsState, HealthState, AdminMode, SimulationMode, ControlMode, TestMode, LoggingLevel
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     # arrange:

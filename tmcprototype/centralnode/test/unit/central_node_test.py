@@ -5,8 +5,8 @@ import mock
 from mock import Mock
 from centralnode import CentralNode
 from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
-from ska.base.control_model import HealthState
 from tango.test_context import DeviceTestContext
+from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode, LoggingLevel
 
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
