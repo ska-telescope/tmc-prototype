@@ -274,6 +274,7 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
     dish_pointing_state_attribute = "dishPointingState"
 
     event_subscription_map = {}
+    dish_pointing_state_map = {}
 
     csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
@@ -281,8 +282,8 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
     sdp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
-    dish_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+    # dish_ln_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.update({attr_name: callback}))
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
@@ -349,6 +350,7 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
     dish_pointing_state_attribute = "dishPointingState"
 
     event_subscription_map = {}
+    dish_pointing_state_map = {}
 
     csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
@@ -356,8 +358,8 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
     sdp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
-    dish_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+    # dish_ln_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
@@ -418,15 +420,15 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     dish_pointing_state_attribute = "dishPointingState"
 
     event_subscription_map = {}
-
+    dish_pointing_state_map = {}
     csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
     sdp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
-    dish_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+    # dish_ln_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
