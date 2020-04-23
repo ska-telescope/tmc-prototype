@@ -3,8 +3,7 @@ recursive-include test *.py
 recursive-include pogo CspSubarrayLeafNode.xmi
 include *.rst
 include *.txt
-include ska_antennas.txt
-recursive-include data *
+recursive-include ant *.txt
 graft docs
 global-exclude *.pyc
 global-exclude *.pyo
