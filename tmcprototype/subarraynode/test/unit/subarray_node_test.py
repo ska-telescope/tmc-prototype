@@ -434,9 +434,6 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
             as tango_context:
         receptor_list = ['0001']
         tango_context.device.On()
-        tango_context.device.AssignResources(receptor_list)
-
-
         csp_subarray_proxy_mock.obsState = ObsState.READY
         sdp_subarray_proxy_mock.obsState = ObsState.READY
 
