@@ -444,9 +444,9 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         json_scan_duration = json.loads(scan_config)
         scan_duration = int(json_scan_duration['scanDuration'])
 
-        cmdData = tango.DeviceData()
-        cmdData.insert(tango.DevString, scan_config)
-        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
+        # cmdData = tango.DeviceData()
+        # cmdData.insert(tango.DevString, scan_config)
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, scan_config)
 
         csp_argin = []
         csp_argin.append(scan_config)
