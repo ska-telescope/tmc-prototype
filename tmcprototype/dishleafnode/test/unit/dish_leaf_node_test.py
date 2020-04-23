@@ -4,7 +4,7 @@ import sys
 import json
 import mock
 import types
-
+from tango import DevState
 from mock import Mock
 from dishleafnode import DishLeafNode, const
 from tango.test_context import DeviceTestContext
