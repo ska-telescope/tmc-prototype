@@ -31,7 +31,7 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     include_package_data=True,
-    package_data={'': ['../ska_antennas.txt']},
+    package_data={'': ['ska_antennas.txt']},
     test_suite="test",
     entry_points={
         'console_scripts': ['CspSubarrayLeafNodeDS=cspsubarrayleafnode.csp_subarray_leaf_node:main']},
