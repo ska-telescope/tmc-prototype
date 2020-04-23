@@ -62,8 +62,10 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         assign_config = []
         assign_config.append('{"dish":{"receptorIDList":["0001","0002"]}}')
         device_proxy=tango_context.device
-        out = sp.check_output("find / -name 'ska_antennas.txt'", shell=True)
-        print("Path: ", out)
+        # out = sp.check_output("find / -name 'ska_antennas.txt'", shell=True)
+        # print("Path: ", out)
+        print ("SKA path in test file is           :", ska_antennas_path)
+
         #act
         device_proxy.AssignResources(assign_config)
 
