@@ -258,9 +258,12 @@ class SubarrayNode(SKASubarray):
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
             print("----------------inside ready block-------------")
+            print ("pointing_state_count_track:", pointing_state_count_track)
+            print ("self.dishPointingStateMap:", self.dishPointingStateMap)
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 print("-----------inside pointingSTATECOUNZTTRACt----------")
                 self._obs_state = ObsState.READY
+                print ("ObsState:", self._obs_state)
         elif self._csp_sa_obs_state == ObsState.CONFIGURING or \
                 self._sdp_sa_obs_state == ObsState.CONFIGURING:
             print("----------------inside configuring  block-------------")

@@ -10,6 +10,7 @@ import time
 
 from mock import Mock
 from subarraynode import SubarrayNode, const
+from subarraynode.const import PointingState
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
 
@@ -292,8 +293,8 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
         dummy_event_sdp = create_dummy_event_obsstate(sdp_subarray_ln_fqdn)
         event_subscription_map[sdp_subarray_obsstate_attribute](dummy_event_sdp)
 
-        # dummy_event_dish = create_dummy_event_pointingState(dish_ln_prefix + "0001")
-        # event_subscription_map[dish_pointing_state_attribute](dummy_event_dish)
+        dummy_event_dish = create_dummy_event_pointingState(dish_ln_prefix + "0001")
+        event_subscription_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
         assert tango_context.device.obsState == ObsState.READY
 
@@ -305,12 +306,12 @@ def create_dummy_event_obsstate(device_fqdn):
     fake_event.attr_value.value = ObsState.READY
     return fake_event
 
-# def create_dummy_event_pointingState(device_fqdn):
-#     fake_event = Mock()
-#     fake_event.err = False
-#     fake_event.attr_name = f"{device_fqdn}/PointingState"
-#     fake_event.attr_value.value = PointingState.TRACK
-#     return fake_event
+def create_dummy_event_pointingState(device_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/PointingState"
+    fake_event.attr_value.value = PointingState.TRACK
+    return fake_event
 
 # def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
 #     # arrange:
