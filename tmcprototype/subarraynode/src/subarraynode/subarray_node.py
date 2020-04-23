@@ -35,7 +35,9 @@ from .const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
 from ska.base import SKASubarray
 
-
+#Global variable
+# global scan_type_prev
+# scan_type_prev = ''
 __all__ = ["SubarrayNode", "main"]
 
 class SubarrayHealthState:
@@ -65,16 +67,19 @@ class SubarrayHealthState:
 
 
 class ElementDeviceData:
+    global scan_type_prev
     @staticmethod
-    def build_up_sdp_cmd_data(scan_config, sdp_scan_type_prev):
+    def build_up_sdp_cmd_data(scan_config):
         scan_config = scan_config.copy()
         sdp_scan_config = scan_config.get("sdp", {})
         # scan_type_configure = sdp_scan_config.get("scan_type")
         # print("scan type on subarray node insdp elementdevicedata:", scan_type_configure)
         if sdp_scan_config:
+            # global sdp_scan_type
             sdp_scan_type = sdp_scan_config.get("scan_type")
             print("scan type on subarray node in sdp elementdevicedata:", sdp_scan_type)
             if sdp_scan_type:
+                # scan_type_prev = sdp_scan_type
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
                 scan_config.pop("csp", None)
@@ -84,12 +89,14 @@ class ElementDeviceData:
                 cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
                 raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
-        elif sdp_scan_type_prev:
+        elif scan_type_prev:
             scan_config.pop("pointing", None)
             scan_config.pop("dish", None)
             scan_config.pop("csp", None)
             scan_config.pop("tmc", None)
-            sdp_scan_config["scan_type"] = sdp_scan_type_prev[0]
+            print("SDP scan config before", sdp_scan_config)
+            sdp_scan_config["scan_type"] = scan_type_prev[0]
+            print("SDP scan config after:::", sdp_scan_config)
             cmd_data = tango.DeviceData()
             cmd_data.insert(tango.DevString, json.dumps(scan_config))
 
@@ -100,7 +107,7 @@ class ElementDeviceData:
         return cmd_data
 
     @staticmethod
-    def build_up_csp_cmd_data(scan_config, scan_id, attr_name_map):
+    def build_up_csp_cmd_data(scan_config, attr_name_map):
         scan_config = scan_config.copy()
         csp_scan_config = scan_config.get("csp", {})
 
@@ -108,7 +115,7 @@ class ElementDeviceData:
             for key, attribute_name in attr_name_map.items():
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
-            csp_scan_config["scanID"] = scan_id
+            csp_scan_config["scanID"] = '1'
             cmd_data = tango.DeviceData()
             cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
@@ -1294,8 +1301,7 @@ class SubarrayNode(SKASubarray):
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
-        scan_type = ''
-        cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration, scan_type)
+        cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
@@ -1306,7 +1312,7 @@ class SubarrayNode(SKASubarray):
         }
 
         cmd_data = self._create_cmd_data(
-            "build_up_csp_cmd_data", scan_configuration, self._scan_id,attr_name_map)
+            "build_up_csp_cmd_data", scan_configuration, attr_name_map)
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
@@ -1367,7 +1373,8 @@ class SubarrayNode(SKASubarray):
         self.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
         self._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
 
-        if self._obs_state != ObsState.IDLE:
+        if self._obs_state not in [ObsState.IDLE, ObsState.READY]:
+        # if self._obs_state != ObsState.IDLE:
             return
 
         try:
@@ -1386,7 +1393,7 @@ class SubarrayNode(SKASubarray):
         #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
         #                                  const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         #
-        self._scan_id = str(scan_configuration["scanID"])
+        # self._scan_id = str(scan_configuration["scanID"])
         # self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
         #                         for _ in range(4))
 
