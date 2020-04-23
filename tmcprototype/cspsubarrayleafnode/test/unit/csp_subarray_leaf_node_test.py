@@ -5,6 +5,7 @@ import os
 import json
 import mock
 import types
+import subprocess as sp
 
 from mock import Mock, mock_open
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
@@ -61,8 +62,8 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         assign_config = []
         assign_config.append('{"dish":{"receptorIDList":["0001","0002"]}}')
         device_proxy=tango_context.device
-        print(os.system('find / -name "ska_antennas.txt"'))
-
+        out = sp.check_output("find / -name 'ska_antennas.txt'", shell=True)
+        print("Path: ", out)
         #act
         device_proxy.AssignResources(assign_config)
 
