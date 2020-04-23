@@ -311,7 +311,7 @@ def create_dummy_event_obsstate(device_fqdn):
 def create_dummy_event_pointingState(device_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/PointingState"
+    fake_event.attr_name = f"{device_fqdn}/dishPointingState"
     fake_event.attr_value.value = PointingState.TRACK
     return fake_event
 
