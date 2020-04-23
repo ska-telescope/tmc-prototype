@@ -38,7 +38,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
                                                                     any_method(with_name='commandCallback'))
 
 
-# to do: actual AZ and EL values need to be generated.
+#to do: actual AZ and EL values need to be generated.
 '''
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
     # arrange:
@@ -85,8 +85,6 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
                                                                 any_method(with_name='commandCallback'))
 
 '''
-
-
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
     # arrange:
     device_under_test = DishLeafNode
@@ -129,6 +127,7 @@ def test_standby_lp_mode_should_command_dish_to_standby():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+
         # act:
         tango_context.device.SetStandByLPMode()
 
@@ -160,7 +159,6 @@ def test_set_operate_mode_should_command_dish_to_start():
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE,
                                                                 any_method(with_name='commandCallback'))
 
-
 '''
 def test_track_should_command_dish_to_start_tracking():
     # arrange:
@@ -171,7 +169,7 @@ def test_track_should_command_dish_to_start_tracking():
     }
 
     dish_proxy_mock = Mock()
-
+    
     proxies_to_mock = {
         dish_master_fqdn: dish_proxy_mock
     }
@@ -193,8 +191,6 @@ def test_track_should_command_dish_to_start_tracking():
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0", 
                                                                 any_method(with_name='commandCallback'))
 '''
-
-
 def test_stop_track_should_command_dish_to_start_tracking():
     # arrange:
     device_under_test = DishLeafNode
@@ -217,7 +213,6 @@ def test_stop_track_should_command_dish_to_start_tracking():
         # assert:
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_TRACK,
                                                                 any_method(with_name='commandCallback'))
-
 
 def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinates():
     device_under_test = DishLeafNode
@@ -294,41 +289,6 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
                                                                     any_method(with_name='commandCallback'))
 
 
-def test_dishHealthState():
-    device_under_test = DishLeafNode
-    dish_master_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {
-        'DishMasterFQDN': dish_master_fqdn
-    }
-
-    dish_proxy_mock = Mock()
-
-    proxies_to_mock = {
-        dish_master_fqdn: dish_proxy_mock
-    }
-
-    # act & assert:
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        assert tango_context.device.dishHealthState == HealthState.OK
-'''
-def test_dishPointingState():
-    # arrange:
-    device_under_test = DishLeafNode
-
-    # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
-        assert tango_context.device.dishPointingState == HealthState.OK
-'''
-
-def test_activityMessage():
-    # arrange:
-    device_under_test = DishLeafNode
-    # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
-        tango_context.device.activityMessage = 'test'
-        assert tango_context.device.activityMessage == "test"
-
 
 def any_method(with_name=None):
     class AnyMethod():
@@ -344,6 +304,7 @@ def any_method(with_name=None):
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
                       device_proxy_import_path='tango.DeviceProxy'):
+
     with mock.patch(device_proxy_import_path) as patched_constructor:
         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
