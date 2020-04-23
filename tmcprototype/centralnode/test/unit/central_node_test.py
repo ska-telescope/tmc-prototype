@@ -3,16 +3,15 @@ import importlib
 import sys
 import mock
 import types
-import tango
 import json
 from tango import DevState
 from mock import MagicMock
 from mock import Mock
 from centralnode import CentralNode,const
-from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
+from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
+    STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState
 from tango.test_context import DeviceTestContext
-from ska.base.control_model import ObsState
 
 
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
@@ -114,12 +113,10 @@ def test_assign_resources_should_send_json_to_subarraynode():
         subarray_fqdn: subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
         device_proxy=tango_context.device
-        # Call Startup command of Central Node
-        #device_proxy.StartUpTelescope()
         device_proxy.AssignResources(assign_command)
 
         # assert:
@@ -128,7 +125,6 @@ def test_assign_resources_should_send_json_to_subarraynode():
                                                              jsonArgument["dish"]["receptorIDList"])
 
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
-
 
 
 def test_release_resources_when_subarray_is_idle():
@@ -146,22 +142,16 @@ def test_release_resources_when_subarray_is_idle():
         subarray_fqdn: subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
-        # tango_context.device.StartUpTelescope()
-        # tango_context.device.AssignResources(assign_command)
-
         release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
         tango_context.device.ReleaseResources(release_input)
-
 
         # assert:
         jsonArgument = json.loads(release_input)
         if jsonArgument['releaseALL'] == True:
             subarray_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
-        # assert_activity_message(tango_context.device, const.STR_REL_RESOURCES)
 
 
 def test_standby():
@@ -173,8 +163,6 @@ def test_standby():
     dish_device_ids = [str(i).zfill(1) for i in range(1, 10)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
-
-    proxies_to_mock = {}
     dut_properties = {
         'DishLeafNodePrefix': fqdn_prefix,
         'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
@@ -193,11 +181,8 @@ def test_standby():
         subarray_fqdn: subarray_proxy_mock
     }
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        tango_context.device.StartUpTelescope()
-
         tango_context.device.StandByTelescope()
 
         # assert:
@@ -205,7 +190,6 @@ def test_standby():
         csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY, [])
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
-
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
 
 def test_startup():
@@ -217,7 +201,6 @@ def test_startup():
     dish_device_ids = [str(i).zfill(1) for i in range(1, 10)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
-    proxies_to_mock = {}
     dut_properties = {
         'DishLeafNodePrefix': fqdn_prefix,
         'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
@@ -237,8 +220,7 @@ def test_startup():
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         tango_context.device.StartUpTelescope()
 
@@ -247,7 +229,6 @@ def test_startup():
         csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP, [])
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
         subarray_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
-
         assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
 
 
