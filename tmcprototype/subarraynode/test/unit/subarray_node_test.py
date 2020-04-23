@@ -434,18 +434,19 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
 
         print("event_subscription_map:", event_subscription_map)
         # assert tango_context.device.obsState == ObsState.READY
-
+        time.sleep(5)
         scan_config = '{"scanDuration":10}'
         print ("tango_context.device.obsState:", tango_context.device.obsState)
+
         tango_context.device.Scan(scan_config)
 
         # assert:
 
         cmdData = tango.DeviceData()
-        cmdData.insert(tango.DevString, argin)
+        cmdData.insert(tango.DevString, scan_config)
         sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
         csp_argin = []
-        csp_argin.append(argin)
+        csp_argin.append(scan_config)
         cmdData = tango.DeviceData()
         cmdData.insert(tango.DevVarStringArray, csp_argin)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_START_SCAN, cmdData)
