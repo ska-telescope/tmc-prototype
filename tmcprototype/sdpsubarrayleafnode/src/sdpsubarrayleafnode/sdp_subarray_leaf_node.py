@@ -414,19 +414,24 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         exception_message = []
         exception_count = 0
-
+        print("before try argin is :::",argin)
         try:
             # TODO : For Future Implementation
             # JSON argument scan_duration is maintained for future use.
             jsonArgument = json.loads(argin)
+            print("json args::::", jsonArgument)
             # TODO: Received id from Sdp Subarray Leaf Node and parse it and save it as id
-            id = jsonArgument["id"]
+            # id = jsonArgument["id"]
+            # print("id is :::::", id)
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
             # Check if SDP Subarray obsState is READY
+            print("before obsState condition")
             if sdp_subarray_obs_state == ObsState.READY:
+                print("after obsState condition")
                 # TODO : Pass id as a string argument to sdp Subarray Scan command
 
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, id, self.commandCallback)
+                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, self.commandCallback)
+                print("command scan invoked successfully kon SDPSA")
                 self._read_activity_message = const.STR_SCAN_SUCCESS
                 self.logger.info(const.STR_SCAN_SUCCESS)
             else:
