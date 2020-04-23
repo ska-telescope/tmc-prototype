@@ -69,6 +69,47 @@ def test_activity_message_attribute_captures_the_last_received_command():
         dut.StandByTelescope()
         assert_activity_message(dut, STR_STANDBY_CMD_ISSUED)
 
+def test_telescopeHealthState():
+    # arrange:
+    device_under_test = CentralNode
+
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.telescopeHealthState == HealthState.OK
+
+def test_subarray1HealthState():
+    # arrange:
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.subarray1HealthState == HealthState.OK
+
+def test_subarray2HealthState():
+    # arrange:
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.subarray2HealthState == HealthState.OK
+
+def test_subarray3HealthState():
+    # arrange:
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.subarray3HealthState == HealthState.OK
+
+def test_activityMessage():
+    # arrange:
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        tango_context.device.activityMessage = 'test'
+        assert tango_context.device.activityMessage == "test"
+
+
+
+
+
 
 def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
