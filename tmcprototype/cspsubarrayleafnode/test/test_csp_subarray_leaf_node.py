@@ -142,7 +142,7 @@ class TestCspSubarrayLeafNode(object):
         :param tango_context:
         :return:
         """
-        StartScan_input = '[1]'
+        StartScan_input = [1]
         with pytest.raises(tango.DevFailed):
             tango_context.device.StartScan(StartScan_input)
         time.sleep(1)
