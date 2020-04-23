@@ -627,7 +627,7 @@ class SubarrayNode(SKASubarray):
             # json_scan_duration = json.loads(argin)
             # self.scan_duration = int(json_scan_duration['scanDuration'])
             # TODO: Get the scan duration from configure command
-            self.scan_duration = {"scanDuration": 10.0}
+            self.scan_duration = 10.0
             json_id = json.loads(argin)
             self.id = int(json_id['id'])
 
@@ -648,7 +648,7 @@ class SubarrayNode(SKASubarray):
 
                 # Invoke Scan command on CSP Subarray Leaf Node
                 csp_argin = []
-                csp_argin.append(self.scan_duration)
+                csp_argin.append(self.id)
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevVarStringArray, csp_argin)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, cmdData)
