@@ -3,10 +3,11 @@ import importlib
 import sys
 import mock
 from mock import Mock
-from centralnode import CentralNode
+from tango import DevState
+from centralnode import CentralNode, const
 from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
-from ska.base.control_model import HealthState
 from tango.test_context import DeviceTestContext
+from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode, LoggingLevel
 
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
@@ -106,10 +107,76 @@ def test_activityMessage():
         tango_context.device.activityMessage = 'test'
         assert tango_context.device.activityMessage == "test"
 
+def test_State():
+    #arrange
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.State() == DevState.ON
 
+def test_Status():
+    # arrange
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.Status() == const.STR_INIT_SUCCESS
 
+def test_loggingLevel():
+    # arrange
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
+def test_loggingTargets():
+    # arrange
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        tango_context.device.loggingTargets = ['console::cout']
+        assert 'console::cout' in tango_context.device.loggingTargets
 
+def test_testMode():
+    # arrange
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        test_mode = TestMode.NONE
+        tango_context.device.testMode = test_mode
+        assert tango_context.device.testMode == test_mode
+
+def test_simulationMode():
+    # arrange
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        simulation_mode = SimulationMode.FALSE
+        tango_context.device.simulationMode = simulation_mode
+        assert tango_context.device.simulationMode == simulation_mode
+
+def test_controlMode():
+    # arrange
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        control_mode = ControlMode.REMOTE
+        tango_context.device.controlMode = control_mode
+        assert tango_context.device.controlMode == control_mode
+
+def test_adminMode():
+    # arrange
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.adminMode == AdminMode.ONLINE
+
+def test_healthState():
+    # arrange
+    device_under_test = CentralNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.healthState == HealthState.OK
 
 def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
