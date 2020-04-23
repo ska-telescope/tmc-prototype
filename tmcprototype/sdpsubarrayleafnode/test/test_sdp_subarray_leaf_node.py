@@ -122,7 +122,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_Scan_device_not_ready(self, tango_context, create_sdpsubarray_proxy):
         """Test for Scan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_device_not_ready) ENABLED START #
-        test_input = '{"scanDuration":0}'
+        test_input = '{"id":12345}'
         tango_context.device.Scan(test_input)
         time.sleep(1)
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
@@ -184,7 +184,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_Scan_key_error(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_key_error) ENABLED START #
-        test_input = '{"Duration":10}'
+        test_input = '{"id_test":10}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(test_input)
         time.sleep(1)
@@ -204,7 +204,7 @@ class TestSdpSubarrayLeafNode(object):
         """Test for Scan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan) ENABLED START #
         time.sleep(2)
-        test_input = '{"scanDuration":0}'
+        test_input = '{"id":12345}'
         tango_context.device.Scan(test_input)
         time.sleep(1)
         assert create_sdpsubarray_proxy.obsState == ObsState.SCANNING
