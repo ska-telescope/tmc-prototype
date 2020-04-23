@@ -466,7 +466,7 @@ class TestSubarrayNode(object):
     def test_Scan(self, tango_context):
         """Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-        tango_context.device.Scan('{"scanDuration": 30.0}')
+        tango_context.device.Scan('{"id": 1}')
         time.sleep(5)
         assert tango_context.device.obsState == ObsState.SCANNING
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
@@ -475,7 +475,7 @@ class TestSubarrayNode(object):
         """Negative Test for Scan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan('{"scanDuration": 5.0}')
+            tango_context.device.Scan('{"id": 1}')
         time.sleep(2)
         assert tango_context.device.obsState == ObsState.SCANNING
         # PROTECTED REGION END #    //  SubarrayNode.test_Scan
@@ -500,7 +500,7 @@ class TestSubarrayNode(object):
     def test_Scan_Negative_InvalidDataType(self, tango_context):
         """Test for InvalidScan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-        test_input = '{"scanDuration": "abc"}'
+        test_input = '{"id": "abc"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(test_input)
         time.sleep(5)
@@ -510,7 +510,7 @@ class TestSubarrayNode(object):
     def test_Scan_Negative_Keynotfound_ScanPara(self, tango_context):
         """Test for InvalidScan"""
         # PROTECTED REGION ID(SubarrayNode.test_Scan) ENABLED START #
-        test_input = '{"scan_Duration": "10"}'
+        test_input = '{"wrong_id": 1}'
         tango_context.device.Scan(test_input)
         time.sleep(5)
         assert const.ERR_SCAN_CMD in tango_context.device.activityMessage

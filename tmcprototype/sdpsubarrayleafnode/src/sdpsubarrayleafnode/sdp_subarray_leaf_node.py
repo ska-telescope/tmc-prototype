@@ -398,9 +398,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             :param argin: The string in JSON format. The JSON contains following values:
             Example:
-            {“scanDuration”:0}.
+            {“id”:1}.
 
-            Note: Enter input as without spaces:{“scanDuration”:0}
+            Note: Enter input as without spaces:{“id”:1}
 
             :return: None.
         """
@@ -411,11 +411,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # TODO : For Future Implementation
             # JSON argument scan_duration is maintained for future use.
             jsonArgument = json.loads(argin)
-            scan_duration = jsonArgument["scanDuration"]
+            # TODO: Received id from Sdp Subarray Leaf Node and parse it and save it as id
+            id = jsonArgument["id"]
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
             # Check if SDP Subarray obsState is READY
             if sdp_subarray_obs_state == ObsState.READY:
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, self.commandCallback)
+                # TODO : Pass id as a string argument to sdp Subarray Scan command
+
+                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, id, self.commandCallback)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
                 self.logger.info(const.STR_SCAN_SUCCESS)
             else:
@@ -496,7 +499,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             if self._sdp_subarray_proxy.obsState == ObsState.READY:
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSB, self.commandCallback)
+                # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
+                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.commandCallback)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
             else:
