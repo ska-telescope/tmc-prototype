@@ -5,13 +5,13 @@ import mock
 import types
 import json
 from tango import DevState
+from tango.test_context import DeviceTestContext
 from mock import MagicMock
 from mock import Mock
 from centralnode import CentralNode,const
 from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
     STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState
-from tango.test_context import DeviceTestContext
 
 
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
@@ -160,7 +160,7 @@ def test_standby():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1, 10)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {
@@ -198,7 +198,7 @@ def test_startup():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1, 10)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {
