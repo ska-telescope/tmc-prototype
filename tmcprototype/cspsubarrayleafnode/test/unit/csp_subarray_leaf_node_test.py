@@ -5,18 +5,11 @@ import os
 import json
 import mock
 import types
-import subprocess as sp
 
 from mock import Mock, mock_open
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
-
-file_path = os.path.dirname(os.path.abspath(__file__))
-SRC_ROOT_DIR = "/app"
-TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
-ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
-
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
     # arrange:
@@ -63,7 +56,6 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         device_proxy=tango_context.device
         #act
         device_proxy.AssignResources(assign_config)
-
         #assert
         receptorIDList = []
         jsonArgument = json.loads(assign_config[0])
@@ -71,7 +63,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         # convert receptorIDList from list of string to list of int
         for i in range(0, len(receptorIDList_str)):
             receptorIDList.append(int(receptorIDList_str[i]))
-        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS, receptorIDList,
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,receptorIDList,
                                                                         any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
@@ -150,8 +142,10 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
                           '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", ' \
                           '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
                           '"dec": "-30:52:17.3"}}, "scanID": "123"}'
+        # act
         device_proxy.Configure(csp_config)
-        argin_json = json.loads(argin)
+        # Assert
+        argin_json = json.loads(csp_config)
         cspConfiguration = argin_json.copy()
         if "pointing" in cspConfiguration:
             del cspConfiguration["pointing"]

@@ -240,13 +240,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
             TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
             ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
             print ("SKA path in true section    :", ska_antennas_path)
-
         else:
             TMC_ROOT_DIR="tmcprototype"
             ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
             print ("SKA path in false section     :", ska_antennas_path)
 
-   
+
         with open(ska_antennas_path) as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
