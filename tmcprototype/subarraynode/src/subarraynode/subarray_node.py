@@ -35,9 +35,6 @@ from .const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
 from ska.base import SKASubarray
 
-#Global variable
-# global scan_type_prev
-# scan_type_prev = ''
 __all__ = ["SubarrayNode", "main"]
 
 class SubarrayHealthState:
@@ -67,7 +64,6 @@ class SubarrayHealthState:
 
 
 class ElementDeviceData:
-    global scan_type_prev
     @staticmethod
     def build_up_sdp_cmd_data(scan_config):
         scan_config = scan_config.copy()
@@ -79,27 +75,15 @@ class ElementDeviceData:
             sdp_scan_type = sdp_scan_config.get("scan_type")
             print("scan type on subarray node in sdp elementdevicedata:", sdp_scan_type)
             if sdp_scan_type:
-                # scan_type_prev = sdp_scan_type
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
                 scan_config.pop("csp", None)
                 scan_config.pop("tmc", None)
-                sdp_scan_config["scan_type"] = sdp_scan_type[0]
+                # sdp_scan_config["scan_type"] = sdp_scan_type[0]
                 cmd_data = tango.DeviceData()
                 cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
                 raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
-        elif scan_type_prev:
-            scan_config.pop("pointing", None)
-            scan_config.pop("dish", None)
-            scan_config.pop("csp", None)
-            scan_config.pop("tmc", None)
-            print("SDP scan config before", sdp_scan_config)
-            sdp_scan_config["scan_type"] = scan_type_prev[0]
-            print("SDP scan config after:::", sdp_scan_config)
-            cmd_data = tango.DeviceData()
-            cmd_data.insert(tango.DevString, json.dumps(scan_config))
-
         else:
             # Need to check if sdp already has scan type if yes then msg showing continue with old scan .
             # and if no earlier scan exist throw error as below.

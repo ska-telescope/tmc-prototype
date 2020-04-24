@@ -138,13 +138,13 @@ class TestElementDeviceData:
         expected_msg = "SDP configuration must be given. Aborting SDP configuration."
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_sdp_cmd_data_with_modified_scan_configuration(self, example_scan_configuration):
-        modified_scan_config = example_scan_configuration
-        modified_scan_config["sdp"]["configure"] = {}
-        with pytest.raises(KeyError) as exception:
-            ElementDeviceData.build_up_sdp_cmd_data(modified_scan_config)
-        expected_msg = "SDP Subarray configuration is empty. Command data not built up"
-        assert exception.value.args[0] == expected_msg
+    # def test_build_up_sdp_cmd_data_with_modified_scan_configuration(self, example_scan_configuration):
+    #     modified_scan_config = example_scan_configuration
+    #     modified_scan_config["sdp"]["configure"] = {}
+    #     with pytest.raises(KeyError) as exception:
+    #         ElementDeviceData.build_up_sdp_cmd_data(modified_scan_config)
+    #     expected_msg = "SDP Subarray configuration is empty. Command data not built up"
+    #     assert exception.value.args[0] == expected_msg
 
     def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, csp_func_args):
         valid_scan_config = example_scan_configuration
