@@ -6,9 +6,10 @@ import mock
 import types
 
 from mock import Mock
+from tango import DevState
 from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
-from ska.base.control_model import ObsState
+from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready():
@@ -204,3 +205,97 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
+
+def test_State():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.State() == DevState.ALARM
+
+def test_Status():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.Status() != const.STR_INIT_SUCCESS
+
+def test_loggingLevel():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
+
+def test_healthState():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.healthState == HealthState.OK
+
+def test_adminMode():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.adminMode == AdminMode.ONLINE
+
+def test_controlMode():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        control_mode = ControlMode.REMOTE
+        tango_context.device.controlMode = control_mode
+        assert tango_context.device.controlMode == control_mode
+
+def test_simulationMode():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        simulation_mode = SimulationMode.FALSE
+        tango_context.device.simulationMode = simulation_mode
+        assert tango_context.device.simulationMode == simulation_mode
+
+def test_testMode():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        test_mode = TestMode.NONE
+        tango_context.device.testMode = test_mode
+        assert tango_context.device.testMode == test_mode
+
+def test_receiveAddresses():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.receiveAddresses == ""     #equal to datatype string?
+
+def test_activityMessage():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        tango_context.device.activityMessage = "test"
+        assert tango_context.device.activityMessage == "test"
+
+def test_activeProcessingBlocks():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.activeProcessingBlocks == ""
+
+def test_loggingTargets():
+    # arrange:
+    device_under_test = SdpSubarrayLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        tango_context.device.loggingTargets = ['console::cout']
+        assert 'console::cout' in tango_context.device.loggingTargets
+
