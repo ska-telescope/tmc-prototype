@@ -74,65 +74,37 @@ class TestSubarrayHealthState:
 @pytest.fixture(scope="function")
 def example_scan_configuration():
     scan_config = {
-        "scanID": 123,
-        "pointing": {
+          "pointing": {
             "target": {
-                "system": "ICRS",
-                "name": "Polaris",
-                "RA": "02:31:49.0946",
-                "dec": "+89:15:50.7923"
+              "system": "ICRS",
+              "name": "Polaris",
+              "RA": "02:31:49.0946",
+              "dec": "+89:15:50.7923"
             }
-        },
-        "dish": {
+          },
+          "dish": {
             "receiverBand": "1"
-        },
-        "csp": {
+          },
+          "csp": {
+            "id": "sbi-mvp01-20200325-00001-science_A",
             "frequencyBand": "1",
             "fsp": [
-                {
-                    "fspID": 1,
-                    "functionMode": "CORR",
-                    "frequencySliceID": 1,
-                    "integrationTime": 1400,
-                    "corrBandwidth": 0
-                }
+              {
+                "fspID": 1,
+                "functionMode": "CORR",
+                "frequencySliceID": 1,
+                "integrationTime": 1400,
+                "corrBandwidth": 0
+              }
             ]
-        },
-        "sdp": {
-            "configure": [
-                {
-                    "id": "realtime-20190627-0001",
-                    "sbiId": "20190627-0001",
-                    "workflow": {
-                        "id": "vis_ingest",
-                        "type": "realtime",
-                        "version": "0.1.0"
-                    },
-                    "parameters": {
-                        "numStations": 4,
-                        "numChannels": 372,
-                        "numPolarisations": 4,
-                        "freqStartHz": 0.35e9,
-                        "freqEndHz": 1.05e9,
-                        "fields": {
-                            "0": {
-                                "system": "ICRS",
-                                "name": "Polaris",
-                                "ra": 0.662432049839445,
-                                "dec": 1.5579526053855042
-                            }
-                        }
-                    },
-                    "scanParameters": {
-                        "123": {
-                            "fieldId": 0,
-                            "intervalMs": 1400
-                        }
-                    }
-                }
-            ]
+          },
+          "sdp": {
+            "scan_type": "science_A"
+          },
+          "tmc": {
+            "scanDuration": 10.0
+          }
         }
-    }
 
     return scan_config
 
@@ -149,45 +121,11 @@ class TestElementDeviceData:
 
     def test_build_up_sdp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
         valid_scan_config = example_scan_configuration
-        sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config, "cbf/attribute")
+        sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config)
 
         expected_string_dict = {
-            "scanID": 123,
-            "sdp": {
-                "configure": {
-                    "id": "realtime-20190627-0001",
-                    "sbiId": "20190627-0001",
-                    "workflow": {
-                        "id": "vis_ingest",
-                        "type": "realtime",
-                        "version": "0.1.0"
-                    },
-                    "parameters": {
-                        "numStations": 4,
-                        "numChannels": 372,
-                        "numPolarisations": 4,
-                        "freqStartHz": 350000000.0,
-                        "freqEndHz": 1050000000.0,
-                        "fields": {
-                            "0": {
-                                "system": "ICRS",
-                                "name": "Polaris",
-                                "ra": 0.662432049839445,
-                                "dec": 1.5579526053855042
-                            }
-                        }
-                    },
-                    "scanParameters": {
-                        "123": {
-                            "fieldId": 0,
-                            "intervalMs": 1400
-                        }
-                    },
-                    "cspCbfOutlinkAddress": "cbf/attribute"
-                }
-            }
-        }
-
+            "scan_type": "science_A"
+          }
         expected_string_dict = json.dumps(expected_string_dict)
 
         assert isinstance(sdp_cmd_data, tango.DeviceData)
@@ -196,7 +134,7 @@ class TestElementDeviceData:
     def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
         invalid_scan_config = example_scan_configuration.pop("sdp")
         with pytest.raises(KeyError) as exception:
-            ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config, "cbf/attribute")
+            ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config)
         expected_msg = "SDP configuration must be given. Aborting SDP configuration."
         assert exception.value.args[0] == expected_msg
 
@@ -204,39 +142,29 @@ class TestElementDeviceData:
         modified_scan_config = example_scan_configuration
         modified_scan_config["sdp"]["configure"] = {}
         with pytest.raises(KeyError) as exception:
-            ElementDeviceData.build_up_sdp_cmd_data(modified_scan_config, "cbf/attribute")
+            ElementDeviceData.build_up_sdp_cmd_data(modified_scan_config)
         expected_msg = "SDP Subarray configuration is empty. Command data not built up"
         assert exception.value.args[0] == expected_msg
 
     def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, csp_func_args):
         valid_scan_config = example_scan_configuration
         scan_id, attr_name_map = csp_func_args
-        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, scan_id, attr_name_map)
+        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map)
 
         expected_string_dict = {
-            "frequencyBand": "1",
-            "fsp": [
-                {
-                    "fspID": 1,
-                    "functionMode": "CORR",
-                    "frequencySliceID": 1,
-                    "integrationTime": 1400,
-                    "corrBandwidth": 0
-                }
-            ],
-            "string1": "attr1",
-            "string2": "attr2",
-            "pointing": {
-                "target": {
-                    "system": "ICRS",
-                    "name": "Polaris",
-                    "RA": "02:31:49.0946",
-                    "dec": "+89:15:50.7923"
-                }
-            },
-            "scanID": 1
-        }
-
+                "id": "sbi-mvp01-20200325-00001-science_A",
+                "frequencyBand": "1",
+                "fsp": [
+                    {
+                        "fspID": 1,
+                        "functionMode": "CORR",
+                        "frequencySliceID": 1,
+                        "integrationTime": 1400,
+                        "corrBandwidth": 0
+                    }
+                ],
+                "scanID": "1"
+            }
         expected_string_dict = json.dumps(expected_string_dict)
 
         assert isinstance(csp_cmd_data, tango.DeviceData)
@@ -246,7 +174,7 @@ class TestElementDeviceData:
         empty_scan_config = {}
         scan_id, attr_name_map = csp_func_args
         with pytest.raises(KeyError) as exception:
-            ElementDeviceData.build_up_csp_cmd_data(empty_scan_config, scan_id, attr_name_map)
+            ElementDeviceData.build_up_csp_cmd_data(empty_scan_config, attr_name_map)
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
@@ -254,7 +182,7 @@ class TestElementDeviceData:
         invalid_scan_config = example_scan_configuration.pop("csp")
         scan_id, attr_name_map = csp_func_args
         with pytest.raises(KeyError) as exception:
-            ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, scan_id, attr_name_map)
+            ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, attr_name_map)
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
