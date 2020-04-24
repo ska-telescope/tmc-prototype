@@ -1,4 +1,3 @@
-'''
 import contextlib
 import importlib
 import sys
@@ -60,21 +59,21 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
-
+'''
 def test_State():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.State() == DevState.ALARM
-
+'''
 def test_Status():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.Status() != const.STR_CSPSALN_INIT_SUCCESS
-
+'''
 def test_delayModel():
     # arrange:
     device_under_test = CspSubarrayLeafNode
@@ -125,7 +124,7 @@ def test_delayModel():
 
         if _assert_flag == True:
             assert 1
-
+'''
 def test_healthState():
     # arrange:
     device_under_test = CspSubarrayLeafNode
@@ -198,7 +197,7 @@ def test_loggingTargets():
     with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
-'''
+
 
 
 
