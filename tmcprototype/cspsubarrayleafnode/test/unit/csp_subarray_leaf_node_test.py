@@ -61,17 +61,12 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
             as tango_context:
         assign_config='{"dish":{"receptorIDList":["0001","0002"]}}'
         device_proxy=tango_context.device
-        # out = sp.check_output("find / -name 'ska_antennas.txt'", shell=True)
-        # print("Path: ", out)
-        print("in test file    ",os.path.isfile("ska_antennas.txt"))
-        print ("SKA path in test file is           :", ska_antennas_path)
-
         #act
         device_proxy.AssignResources(assign_config)
 
         #assert
         receptorIDList = []
-        jsonArgument = json.loads(assign_config)
+        jsonArgument = json.loads(assign_config[0])
         receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
         # convert receptorIDList from list of string to list of int
         for i in range(0, len(receptorIDList_str)):
@@ -155,7 +150,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
                           '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", ' \
                           '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
                           '"dec": "-30:52:17.3"}}, "scanID": "123"}'
-        tango_context.device.Configure(csp_config)
+        device_proxy.Configure(csp_config)
         argin_json = json.loads(argin)
         cspConfiguration = argin_json.copy()
         if "pointing" in cspConfiguration:
