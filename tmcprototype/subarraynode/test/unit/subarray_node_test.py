@@ -13,7 +13,7 @@ from mock import Mock
 from subarraynode import SubarrayNode, const
 from subarraynode.const import PointingState
 from tango.test_context import DeviceTestContext
-from ska.base.control_model import ObsState
+from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, LoggingLevel
 
 def test_On_should_command_subarray_to_On():
     # arrange:
