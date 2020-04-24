@@ -552,8 +552,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            # json_scan_duration = json.loads(argin[0])
-            # scan_ID = json_scan_duration["id"]
+            json_scan_duration = json.loads(argin[0])
+            print("json scan duration:::::::", json_scan_duration)
+            scan_ID = json_scan_duration["id"]
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == ObsState.READY:
                 #Invoke StartScan command on CspSubarray

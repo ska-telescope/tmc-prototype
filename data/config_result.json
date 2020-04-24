@@ -396,16 +396,6 @@
                                 "1000"
                             ]
                         }
-                    }, 
-                    "mid_csp_cbf/sw3/03": {
-                        "properties": {
-                            "polled_attr": [
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
-                                "1000"
-                            ]
-                        }
                     }
                 }
             }, 
@@ -549,6 +539,16 @@
                                 "1000"
                             ]
                         }
+                    }, 
+                    "mid_csp_cbf/sw3/03": {
+                        "properties": {
+                            "polled_attr": [
+                                "obsstate", 
+                                "1000", 
+                                "obsmode", 
+                                "1000"
+                            ]
+                        }
                     }
                 }
             }
@@ -558,6 +558,11 @@
                 "CentralNode": {
                     "ska_mid/tm_central/central_node": {
                         "attribute_properties": {
+                            "controlMode": {
+                                "__value": [
+                                    "0"
+                                ]
+                            }, 
                             "subarray1HealthState": {
                                 "abs_change": [
                                     "-1", 
@@ -639,8 +644,8 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -672,8 +677,8 @@
                         "attribute_properties": {
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "cspSubarrayObsState": {
@@ -688,8 +693,8 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -724,8 +729,8 @@
                         "attribute_properties": {
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "cspSubarrayObsState": {
@@ -740,8 +745,8 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -776,8 +781,8 @@
                         "attribute_properties": {
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "cspSubarrayObsState": {
@@ -792,8 +797,8 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -854,8 +859,8 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -901,8 +906,8 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -948,8 +953,8 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -995,8 +1000,8 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -1034,26 +1039,26 @@
                         "attribute_properties": {
                             "ConfiguredBand": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "WindSpeed": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "achievedPointing": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "desiredPointing": {
@@ -1064,8 +1069,8 @@
                             }, 
                             "dishMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "healthState": {
@@ -1076,8 +1081,8 @@
                             }, 
                             "pointingState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -1121,26 +1126,26 @@
                         "attribute_properties": {
                             "ConfiguredBand": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "WindSpeed": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "achievedPointing": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "desiredPointing": {
@@ -1151,8 +1156,8 @@
                             }, 
                             "dishMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "healthState": {
@@ -1163,8 +1168,8 @@
                             }, 
                             "pointingState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -1208,26 +1213,26 @@
                         "attribute_properties": {
                             "ConfiguredBand": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "WindSpeed": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "achievedPointing": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "desiredPointing": {
@@ -1238,8 +1243,8 @@
                             }, 
                             "dishMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "healthState": {
@@ -1250,8 +1255,8 @@
                             }, 
                             "pointingState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -1295,26 +1300,26 @@
                         "attribute_properties": {
                             "ConfiguredBand": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "WindSpeed": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "achievedPointing": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "desiredPointing": {
@@ -1325,8 +1330,8 @@
                             }, 
                             "dishMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "healthState": {
@@ -1337,8 +1342,8 @@
                             }, 
                             "pointingState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }
                         }, 
@@ -2244,8 +2249,8 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "numOfReservedSearchBeams": {
@@ -2439,6 +2444,11 @@
                                 "TimingBeams:16", 
                                 "VlbiBeams:20"
                             ], 
+                            "MidCspSubarrays": [
+                                "mid_csp/elt/subarray_01", 
+                                "mid_csp/elt/subarray_02", 
+                                "mid_csp/elt/subarray_03"
+                            ], 
                             "SearchBeamsMonitor": [
                                 "mid_csp/capability_monitor/search_beams"
                             ], 
@@ -2519,8 +2529,8 @@
                         "attribute_properties": {
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "assignedFspHealthState": {
@@ -2555,14 +2565,14 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "obsState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "receptors": {
@@ -2586,6 +2596,9 @@
                                 "mid_csp_cbf/sub_elt/subarray_01"
                             ], 
                             "CspMaster": [
+                                "mid_csp/elt/master"
+                            ], 
+                            "MidCspMaster": [
                                 "mid_csp/elt/master"
                             ], 
                             "PssSubarray": [
@@ -2731,8 +2744,8 @@
                         "attribute_properties": {
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "assignedFspHealthState": {
@@ -2767,14 +2780,14 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "obsState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "receptors": {
@@ -2798,6 +2811,9 @@
                                 "mid_csp_cbf/sub_elt/subarray_02"
                             ], 
                             "CspMaster": [
+                                "mid_csp/elt/master"
+                            ], 
+                            "MidCspMaster": [
                                 "mid_csp/elt/master"
                             ], 
                             "PssSubarray": [
@@ -2943,8 +2959,8 @@
                         "attribute_properties": {
                             "adminMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "assignedFspHealthState": {
@@ -2979,14 +2995,14 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "obsState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "receptors": {
@@ -3010,6 +3026,9 @@
                                 "mid_csp_cbf/sub_elt/subarray_03"
                             ], 
                             "CspMaster": [
+                                "mid_csp/elt/master"
+                            ], 
+                            "MidCspMaster": [
                                 "mid_csp/elt/master"
                             ], 
                             "PssSubarray": [
@@ -3305,8 +3324,8 @@
                         "attribute_properties": {
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "storageLoggingLevel": {
@@ -3509,8 +3528,8 @@
                         "attribute_properties": {
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "sdpHealthState": {
@@ -3547,8 +3566,8 @@
                         "attribute_properties": {
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "sdpSubarrayHealthState": {
@@ -3593,8 +3612,8 @@
                         "attribute_properties": {
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "sdpSubarrayHealthState": {
@@ -3639,8 +3658,8 @@
                         "attribute_properties": {
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "sdpSubarrayHealthState": {
@@ -3693,26 +3712,26 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "obsMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "obsState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "receptorIDList": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "simulationMode": {
@@ -3776,26 +3795,26 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "obsMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "obsState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "receptorIDList": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "simulationMode": {
@@ -3859,26 +3878,26 @@
                             }, 
                             "healthState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "obsMode": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "obsState": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "receptorIDList": {
                                 "abs_change": [
-                                    "-1", 
-                                    "1"
+                                    "1", 
+                                    "-1"
                                 ]
                             }, 
                             "simulationMode": {

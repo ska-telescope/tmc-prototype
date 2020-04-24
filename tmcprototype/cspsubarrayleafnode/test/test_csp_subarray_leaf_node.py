@@ -136,18 +136,6 @@ class TestCspSubarrayLeafNode(object):
         # assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
         assert create_cspsubarray1_proxy.obsState is not ObsState.READY
 
-    def test_StartScan_generic_exception(self, tango_context):
-        """
-        Test case to check generic exception (Negative test case)
-        :param tango_context:
-        :return:
-        """
-        StartScan_input = [1]
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StartScan(StartScan_input)
-        time.sleep(1)
-        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
-
     def test_Configure(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
         """Test for Configure"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_Configure) ENABLED START #
@@ -218,6 +206,20 @@ class TestCspSubarrayLeafNode(object):
         if _assert_flag == True:
             assert 1
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
+
+    def test_StartScan_generic_exception(self, tango_context):
+        """
+        Test case to check generic exception (Negative test case)
+        :param tango_context:
+        :return:
+        """
+        StartScan_input = '[123]'
+        # with pytest.raises(tango.DevFailed):
+        tango_context.device.StartScan(StartScan_input)
+        time.sleep(1)
+        print("Activity message is :::::", tango_context.device.activityMessage)
+        print("error message with const. is:::::::::", const.ERR_STARTSCAN_RESOURCES)
+        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
     def test_StartScan(self, tango_context, create_cspsubarray1_proxy):
         """Test for StartScan"""

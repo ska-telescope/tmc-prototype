@@ -734,6 +734,7 @@ class SubarrayNode(SKASubarray):
             #                              const.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
     def waitForEndScan(self):
+        print("inside endscan command with scan duration::::", self.scan_duration)
         scanning_time = 0.0
         while scanning_time <= self.scan_duration:
             # Stop thread, if EndScan command is invoked manually
