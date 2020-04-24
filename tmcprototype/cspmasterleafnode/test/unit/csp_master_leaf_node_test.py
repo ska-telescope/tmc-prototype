@@ -37,8 +37,8 @@ def test_on_should_command_csp_master_leaf_node_to_start():
         tango_context.device.On(on_config)
 
         # assert:
-        #if type(float(on_config)) == float:
-        csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_config,
+        if type(list(on_config)) == list:
+            csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_config,
                                                                     any_method(with_name='commandCallback'))
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
@@ -64,8 +64,8 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
         tango_context.device.Off(off_config)
 
         # assert:
-        #if type(float(on_config)) == float:
-        csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_config,
+        if type(list(off_config)) == list:
+            csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_config,
                                                                     any_method(with_name='commandCallback'))
 
 
@@ -89,11 +89,11 @@ def test_standby_should_command_csp_master_leaf_node_to_standby():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_config = "0"
         # act:
-        tango_context.device.Off(standby_config)
+        tango_context.device.Standby(standby_config)
 
         # assert:
-        #if type(float(on_config)) == float:
-        csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_config,
+        if type(list(standby_config)) == list:
+            csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_config,
                                                                     any_method(with_name='commandCallback'))
 
 def test_activityMessage():
