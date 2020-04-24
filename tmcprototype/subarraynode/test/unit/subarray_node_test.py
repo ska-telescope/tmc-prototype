@@ -97,6 +97,7 @@ def test_assignResource_should_command_subarray_AssignResource():
         tango_context.device.AssignResources(receptor_list)
 
         # assert:
+        json_argument = {}
         dummy_sdp_resources = ["PB1", "PB2"]
         json_argument[const.STR_KEY_PB_ID_LIST] = dummy_sdp_resources
         str_json_arg = json.dumps(json_argument)
@@ -427,7 +428,6 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
         'SdpSubarrayFQDN': sdp_subarray_fqdn,
         'DishLeafNodePrefix': dish_ln_prefix
     }
-    event_subscription_map = {}
     csp_subarray_ln_proxy_mock = Mock()
     csp_subarray_proxy_mock = Mock()
     sdp_subarray_ln_proxy_mock = Mock()
@@ -442,6 +442,12 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
         dish_ln_prefix + '0001': dish_ln_proxy_mock
     }
 
+    csp_subarray_obsstate_attribute = "cspSubarrayObsState"
+    sdp_subarray_obsstate_attribute = "sdpSubarrayObsState"
+    dish_pointing_state_attribute = "dishPointingState"
+
+    event_subscription_map = {}
+    dish_pointing_state_map = {}
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         tango_context.device.On()
