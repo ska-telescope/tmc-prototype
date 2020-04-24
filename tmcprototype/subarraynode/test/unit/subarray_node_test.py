@@ -591,56 +591,90 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
         time.sleep(5)
         assert tango_context.device.obsState == ObsState.SCANNING
 
-def test_Status(self, tango_context):
+def test_subarray_health_state_is_degraded_when_csp_subarray_ln_is_degraded_after_start():
+    # arrange:
+    device_under_test = CentralNode
+    csp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray_ln_health_attribute = 'cspsubarrayHealthState'
+    initial_dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray_ln_fqdn
+    }
+
+    event_subscription_map = {}
+
+    csp_subarray_ln_proxy_mock = Mock()
+    csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        csp_subarray_ln_fqdn: csp_subarray_ln_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_dummy_event_healthstate(csp_subarray_ln_fqdn)
+        event_subscription_map[csp_subarray_ln_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.healthState == HealthState.DEGRADED
+
+def create_dummy_event(device_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.DEGRADED
+    return fake_event
+
+def test_Status():
     """Test for Status"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.Status() == const.STR_SA_INIT_SUCCESS
 
-def test_State(self, tango_context):
+def test_State():
     """Test for State"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.State() == DevState.DISABLE
 
-def test_healthState(self, tango_context):
+def test_healthState():
     """Test for healthState"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
-def test_activationTime(self, tango_context):
+def test_activationTime():
     """Test for activationTime"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.activationTime == 0.0
 
-def test_adminMode(self, tango_context):
+def test_adminMode():
     """Test for adminMode"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
-def test_buildState(self, tango_context):
+def test_buildState():
     """Test for buildState"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.buildState == (
         "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
 
-def test_configurationDelayExpected(self, tango_context):
+def test_configurationDelayExpected():
     """Test for configurationDelayExpected"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.configurationDelayExpected == 0
 
-def test_configurationProgress(self, tango_context):
+def test_configurationProgress():
     """Test for configurationProgress"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.configurationProgress == 0
 
-def test_controlMode(self, tango_context):
+def test_controlMode():
     """Test for controlMode"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
@@ -648,19 +682,19 @@ def test_controlMode(self, tango_context):
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
 
-def test_obsMode(self, tango_context):
+def test_obsMode():
     """Test for obsMode"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.obsMode == ObsMode.IDLE
 
-def test_obsState(self, tango_context):
+def test_obsState():
     """Test for obsState"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.obsState == ObsState.IDLE
 
-def test_simulationMode(self, tango_context):
+def test_simulationMode():
     """Test for simulationMode"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
@@ -668,7 +702,7 @@ def test_simulationMode(self, tango_context):
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
 
-def test_testMode(self, tango_context):
+def test_testMode():
     """Test for testMode"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
@@ -676,25 +710,25 @@ def test_testMode(self, tango_context):
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
 
-def test_versionId(self, tango_context):
+def test_versionId():
     """Test for versionId"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.versionId == "0.5.1"
 
-def test_scanID(self, tango_context):
+def test_scanID():
     """Test for scanID"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.scanID == ""
 
-def test_sbID(self, tango_context):
+def test_sbID():
     """Test for sbID"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.sbID == ""
 
-def test_activityMessage(self, tango_context):
+def test_activityMessage():
     """Test for activityMessage"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
@@ -702,13 +736,13 @@ def test_activityMessage(self, tango_context):
         tango_context.device.activityMessage = message
         assert tango_context.device.activityMessage == message
 
-def test_configuredCapabilities(self, tango_context):
+def test_configuredCapabilities():
     """Test for configuredCapabilities"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.configuredCapabilities is None
 
-def test_receptorIDList(self, tango_context):
+def test_receptorIDList():
     """Test for receptorIDList"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
