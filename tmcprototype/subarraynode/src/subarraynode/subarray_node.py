@@ -26,7 +26,7 @@ import json
 
 # Tango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
+from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType, DeviceData, DevString
 from tango.server import run,attribute, command, device_property
 
 # Additional import
@@ -637,9 +637,9 @@ class SubarrayNode(SKASubarray):
                 self.isScanning = True
                 # Invoke Scan command on SDP Subarray Leaf Node
                 print ("Initialising cmddata")
-                cmdData = tango.DeviceData()
+                cmdData = DeviceData()
                 print ("cmdData created")
-                cmdData.insert(tango.DevString, argin)
+                cmdData.insert(DevString, argin)
                 print ("cmdData obj", cmdData)
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, cmdData)
                 print ("sdp subarray leaf node command called")
