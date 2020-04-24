@@ -418,8 +418,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         try:
             # TODO : For Future Implementation
             # JSON argument scan_duration is maintained for future use.
-            jsonArgument = json.loads(argin)
-            print("json args::::", jsonArgument)
+            # jsonArgument = json.loads(argin)
+            # print("json args::::", jsonArgument)
             # TODO: Received id from Sdp Subarray Leaf Node and parse it and save it as id
             # id = jsonArgument["id"]
             # print("id is :::::", id)
@@ -437,18 +437,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_SCAN + str(value_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_INVALID_JSON_SCAN + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+        # except ValueError as value_error:
+        #     log_msg = const.ERR_INVALID_JSON_SCAN + str(value_error)
+        #     self.logger.error(log_msg)
+        #     self._read_activity_message = const.ERR_INVALID_JSON_SCAN + str(value_error)
+        #     exception_message.append(self._read_activity_message)
+        #     exception_count += 1
+        # except KeyError as key_error:
+        #     log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+        #     self.logger.error(log_msg)
+        #     self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
+        #     exception_message.append(self._read_activity_message)
+        #     exception_count += 1
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                         exception_message, exception_count, const.ERR_SCAN)

@@ -214,8 +214,8 @@ class TestCspSubarrayLeafNode(object):
         :return:
         """
         StartScan_input = '[123]'
-        # with pytest.raises(tango.DevFailed):
-        tango_context.device.StartScan(StartScan_input)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StartScan(StartScan_input)
         time.sleep(1)
         print("Activity message is :::::", tango_context.device.activityMessage)
         print("error message with const. is:::::::::", const.ERR_STARTSCAN_RESOURCES)
