@@ -591,6 +591,7 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
         time.sleep(5)
         assert tango_context.device.obsState == ObsState.SCANNING
 
+@pytest.mark.xfail
 def test_subarray_health_state_is_degraded_when_csp_subarray_ln_is_degraded_after_start():
     # arrange:
     device_under_test = SubarrayNode

@@ -26,7 +26,8 @@ import json
 
 # Tango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType, DeviceData, DevString
+from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType, DeviceData, DevString, \
+    DevVarStringArray
 from tango.server import run,attribute, command, device_property
 
 # Additional import
