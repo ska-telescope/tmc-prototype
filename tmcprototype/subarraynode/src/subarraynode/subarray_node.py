@@ -631,7 +631,7 @@ class SubarrayNode(SKASubarray):
             # TODO: Get the scan duration from configure command
             self.scan_duration = 10
             json_id = json.loads(argin)
-            self.id = json_id['id']
+            self.id = int(json_id['id'])
             print("id of scan {} and its type {} ::::".format(self.id,type(self.id)))
 
             # self.logger.debug(const.STR_SCAN_IP_ARG, argin)
