@@ -638,7 +638,7 @@ class SubarrayNode(SKASubarray):
                 # Invoke Scan command on SDP Subarray Leaf Node
                 print ("Initialising cmddata")
                 cmdData = DeviceData()
-                print ("cmdData created")
+                print ("cmdData created",cmdData)
                 cmdData.insert(DevString, argin)
                 print ("cmdData obj", cmdData)
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, cmdData)
@@ -649,8 +649,8 @@ class SubarrayNode(SKASubarray):
                 # Invoke Scan command on CSP Subarray Leaf Node
                 csp_argin = []
                 csp_argin.append(argin)
-                cmdData = tango.DeviceData()
-                cmdData.insert(tango.DevVarStringArray, csp_argin)
+                cmdData = DeviceData()
+                cmdData.insert(DevVarStringArray, csp_argin)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, cmdData)
                 self.logger.debug(const.STR_CSP_SCAN_INIT)
                 self._read_activity_message = const.STR_CSP_SCAN_INIT

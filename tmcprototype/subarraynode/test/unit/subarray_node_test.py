@@ -323,13 +323,13 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
 
         cmdData = DeviceData()
         cmdData.insert(DevString, scan_config)
-        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, scan_config)
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
 
         csp_argin = []
         csp_argin.append(scan_config)
         cmdData = DeviceData()
         cmdData.insert(DevVarStringArray, csp_argin)
-        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_START_SCAN, csp_argin)
+        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_START_SCAN, cmdData)
 
 def create_dummy_event_obsstate(device_fqdn):
     fake_event = Mock()
@@ -618,7 +618,7 @@ def test_subarray_health_state_is_degraded_when_csp_subarray_ln_is_degraded_afte
         # assert:
         assert tango_context.device.healthState == HealthState.DEGRADED
 
-def create_dummy_event(device_fqdn):
+def create_dummy_event_healthstate(device_fqdn):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/healthState"
