@@ -274,7 +274,7 @@ def test_receiveAddresses():
     device_under_test = SdpSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
-        assert tango_context.device.receiveAddresses == ""     #equal to datatype string?
+        assert tango_context.device.receiveAddresses == ""
 
 def test_activityMessage():
     # arrange:
