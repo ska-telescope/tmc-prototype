@@ -166,7 +166,8 @@ class TestElementDeviceData:
                 "scanID": "1"
             }
         expected_string_dict = json.dumps(expected_string_dict)
-
+        print("expected_string_dict : ", expected_string_dict)
+        print("csp_cmd_data.extract() : ", csp_cmd_data.extract())
         assert isinstance(csp_cmd_data, tango.DeviceData)
         assert expected_string_dict == csp_cmd_data.extract()
 
