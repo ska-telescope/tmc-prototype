@@ -14,6 +14,88 @@ from ska.base.control_model import LoggingLevel
 import pytest
 import time
 
+def test_on_should_command_csp_master_leaf_node_to_start():
+    # arrange:
+    device_under_test = CspMasterLeafNode
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {
+        'CspMasterFQDN': csp_master_fqdn
+    }
+
+    csp_proxy_mock = Mock()
+    #dish_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        csp_master_fqdn: csp_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        on_config = "0"
+        # act:
+        tango_context.device.On(on_config)
+
+        # assert:
+        #if type(float(on_config)) == float:
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_config,
+                                                                    any_method(with_name='commandCallback'))
+
+def test_off_should_command_csp_master_leaf_node_to_stop():
+    # arrange:
+    device_under_test = CspMasterLeafNode
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {
+        'CspMasterFQDN': csp_master_fqdn
+    }
+
+    csp_proxy_mock = Mock()
+    #dish_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        csp_master_fqdn: csp_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        off_config = "0"
+        # act:
+        tango_context.device.Off(off_config)
+
+        # assert:
+        #if type(float(on_config)) == float:
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_config,
+                                                                    any_method(with_name='commandCallback'))
+
+
+def test_standby_should_command_csp_master_leaf_node_to_standby():
+    # arrange:
+    device_under_test = CspMasterLeafNode
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {
+        'CspMasterFQDN': csp_master_fqdn
+    }
+
+    csp_proxy_mock = Mock()
+    #dish_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        csp_master_fqdn: csp_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        standby_config = "0"
+        # act:
+        tango_context.device.Off(standby_config)
+
+        # assert:
+        #if type(float(on_config)) == float:
+        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_config,
+                                                                    any_method(with_name='commandCallback'))
+
 def test_activityMessage():
     # arrange:
     device_under_test = CspMasterLeafNode
@@ -92,6 +174,16 @@ def test_healthState():
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
+
+def any_method(with_name=None):
+    class AnyMethod():
+        def __eq__(self, other):
+            if not isinstance(other, types.MethodType):
+                return False
+
+            return other.__func__.__name__ == with_name if with_name else True
+
+    return AnyMethod()
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
