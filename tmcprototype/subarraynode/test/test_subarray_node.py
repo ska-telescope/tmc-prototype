@@ -124,7 +124,9 @@ class TestElementDeviceData:
         sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config)
 
         expected_string_dict = {
-            "scan_type": "science_A"
+            "sdp": {
+                "scan_type": "science_A"
+            }
           }
         expected_string_dict = json.dumps(expected_string_dict)
 
@@ -163,6 +165,14 @@ class TestElementDeviceData:
                         "corrBandwidth": 0
                     }
                 ],
+                "string1": "attr1", "string2": "attr2",
+                "pointing":
+                    {
+                        "target":
+                            {
+                                "system": "ICRS", "name": "Polaris", "RA": "02:31:49.0946", "dec": "+89:15:50.7923"
+                            }
+                    },
                 "scanID": "1"
             }
         expected_string_dict = json.dumps(expected_string_dict)
