@@ -38,7 +38,7 @@ def test_on_should_command_csp_master_leaf_node_to_start():
 
         # assert:
         #if type(float(on_config)) == float:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_config,
+        csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_config,
                                                                     any_method(with_name='commandCallback'))
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
@@ -65,7 +65,7 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
 
         # assert:
         #if type(float(on_config)) == float:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_config,
+        csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_config,
                                                                     any_method(with_name='commandCallback'))
 
 
@@ -93,7 +93,7 @@ def test_standby_should_command_csp_master_leaf_node_to_standby():
 
         # assert:
         #if type(float(on_config)) == float:
-        dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_config,
+        csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_config,
                                                                     any_method(with_name='commandCallback'))
 
 def test_activityMessage():
