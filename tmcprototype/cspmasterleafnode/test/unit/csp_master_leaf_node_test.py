@@ -24,7 +24,6 @@ def test_on_should_command_csp_master_leaf_node_to_start():
     }
 
     csp_proxy_mock = Mock()
-    #dish_proxy_mock.obsState = ObsState.READY
 
     proxies_to_mock = {
         csp_master_fqdn: csp_proxy_mock
@@ -32,13 +31,12 @@ def test_on_should_command_csp_master_leaf_node_to_start():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        on_config = "0"
+        on_config = []
         # act:
         tango_context.device.On(on_config)
 
         # assert:
-        if type(list(on_config)) == list:
-            csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_config,
+        csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_config,
                                                                     any_method(with_name='commandCallback'))
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
@@ -51,7 +49,6 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
     }
 
     csp_proxy_mock = Mock()
-    #dish_proxy_mock.obsState = ObsState.READY
 
     proxies_to_mock = {
         csp_master_fqdn: csp_proxy_mock
@@ -59,13 +56,12 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        off_config = "0"
+        off_config = []
         # act:
         tango_context.device.Off(off_config)
 
         # assert:
-        if type(list(off_config)) == list:
-            csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_config,
+        csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_config,
                                                                     any_method(with_name='commandCallback'))
 
 
@@ -79,7 +75,6 @@ def test_standby_should_command_csp_master_leaf_node_to_standby():
     }
 
     csp_proxy_mock = Mock()
-    #dish_proxy_mock.obsState = ObsState.READY
 
     proxies_to_mock = {
         csp_master_fqdn: csp_proxy_mock
@@ -87,13 +82,12 @@ def test_standby_should_command_csp_master_leaf_node_to_standby():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        standby_config = "0"
+        standby_config = []
         # act:
         tango_context.device.Standby(standby_config)
 
         # assert:
-        if type(list(standby_config)) == list:
-            csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_config,
+        csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_config,
                                                                     any_method(with_name='commandCallback'))
 
 def test_activityMessage():
