@@ -43,8 +43,8 @@ test:
 # 	mv /app/tmcprototype/dishmaster/dishmaster_coverage /build/dishmaster_coverage
 # 	cd /app/tmcprototype/dishleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 # 	mv /app/tmcprototype/dishleafnode/dishleafnode_coverage /build/dishleafnode_coverage
-# 	cd /app/tmcprototype/cspmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-# 	mv /app/tmcprototype/cspmasterleafnode/cspmasterleafnode_coverage /build/cspmasterleafnode_coverage
+	cd /app/tmcprototype/cspmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+ 	mv /app/tmcprototype/cspmasterleafnode/cspmasterleafnode_coverage /build/cspmasterleafnode_coverage
 	cd /app/tmcprototype/cspsubarrayleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/cspsubarrayleafnode/cspsubarrayleafnode_coverage /build/cspsubarrayleafnode_coverage
 # 	cd /app/tmcprototype/sdpmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
