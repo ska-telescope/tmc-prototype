@@ -593,7 +593,7 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
 
 def test_subarray_health_state_is_degraded_when_csp_subarray_ln_is_degraded_after_start():
     # arrange:
-    device_under_test = CentralNode
+    device_under_test = SubarrayNode
     csp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray_ln_health_attribute = 'cspsubarrayHealthState'
     initial_dut_properties = {
@@ -653,7 +653,7 @@ def test_adminMode():
     """Test for adminMode"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
+        assert tango_context.device.adminMode == AdminMode.OFFLINE
 
 def test_buildState():
     """Test for buildState"""
