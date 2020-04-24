@@ -5,7 +5,7 @@ import json
 import mock
 import types
 import tango
-from tango import DevState
+from tango import DevState, DeviceData, DevString, DevVarStringArray
 import time
 
 from mock import Mock
@@ -101,11 +101,9 @@ def test_assignResource_should_command_subarray_AssignResource():
         json_argument[const.STR_KEY_DISH] = dish
         arg_list.append(json.dumps(json_argument))
 
-        # cmdData = tango.DeviceData()
-        # cmdData.insert(tango.DevString, scan_config)
 
         # assert:
-        # sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, cmdData)
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, cmdData)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
 
 
@@ -444,14 +442,14 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         json_scan_duration = json.loads(scan_config)
         scan_duration = int(json_scan_duration['scanDuration'])
 
-        # cmdData = tango.DeviceData()
-        # cmdData.insert(tango.DevString, scan_config)
-        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, scan_config)
+        cmdData = DeviceData()
+        cmdData.insert(DevString, scan_config)
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, cmdData)
 
         csp_argin = []
         csp_argin.append(scan_config)
-        cmdData = tango.DeviceData()
-        cmdData.insert(tango.DevVarStringArray, csp_argin)
+        cmdData = DeviceData()
+        cmdData.insert(DevVarStringArray, csp_argin)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_START_SCAN, cmdData)
 
 def create_dummy_event_obsstate(device_fqdn):
@@ -525,7 +523,8 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
 
         dummy_event_sdp = create_dummy_event_obsstate(sdp_subarray_ln_fqdn)
         event_subscription_map[sdp_subarray_obsstate_attribute](dummy_event_sdp)
-
+        time.sleep(5)
+        print ("tango_context.device.obsState:", tango_context.device.obsState)
         tango_context.device.EndScan()
 
         # assert:

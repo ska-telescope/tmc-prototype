@@ -641,7 +641,7 @@ class SubarrayNode(SKASubarray):
                 print ("cmdData created")
                 cmdData.insert(tango.DevString, argin)
                 print ("cmdData obj", cmdData)
-                self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
+                self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, cmdData)
                 print ("sdp subarray leaf node command called")
                 self.logger.debug(const.STR_SDP_SCAN_INIT)
                 self._read_activity_message = const.STR_SDP_SCAN_INIT
