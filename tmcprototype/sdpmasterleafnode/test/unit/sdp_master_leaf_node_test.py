@@ -85,8 +85,8 @@ def test_standby_should_command_sdp_master_leaf_node_to_standby():
 
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
-        #sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY,
-        #                                                       any_method(with_name='commandCallback'))
+        sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY,
+                                                               any_method(with_name='commandCallback'))
 
 def test_disable_should_command_sdp_master_leaf_node_to_disable():
     # arrange:
@@ -109,8 +109,9 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable():
         tango_context.device.Disable()
 
         # assert:
-        sdp_proxy_mock.command_inout_asynch.assert_called_with(const.STR_DISABLE_CMS_SUCCESS,
-                                                               any_method(with_name='commandCallback'))
+        assert tango_context.device.activityMessage in const.STR_DISABLE_CMS_SUCCESS
+        #sdp_proxy_mock.command_inout_asynch.assert_called_with(const.STR_DISABLE_CMS_SUCCESS,
+        #                                                      any_method(with_name='commandCallback'))
 
 def test_activityMessage():
     # arrange:
