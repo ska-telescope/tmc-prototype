@@ -448,6 +448,13 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
 
     event_subscription_map = {}
     dish_pointing_state_map = {}
+
+    csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    sdp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         tango_context.device.On()
