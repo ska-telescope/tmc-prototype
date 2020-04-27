@@ -614,7 +614,7 @@ class SubarrayNode(SKASubarray):
             # json_scan_duration = json.loads(argin)
             # self.scan_duration = int(json_scan_duration['scanDuration'])
             # TODO: Get the scan duration from configure command
-            self.scan_duration = 10
+            # self.scan_duration = 10
             json_id = json.loads(argin)
             self.id = int(json_id['id'])
             print("id of scan {} and its type {} ::::".format(self.id,type(self.id)))
@@ -1141,6 +1141,7 @@ class SubarrayNode(SKASubarray):
         self.isScanning = False
         self._scan_id = ""
         self._sb_id = ""
+        self.scan_duration = 0
         self._receptor_id_list = []
         self.dishPointingStateMap = {}
         self._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
@@ -1399,7 +1400,10 @@ class SubarrayNode(SKASubarray):
         #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
         #                                  const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         #
-        # self._scan_id = str(scan_configuration["scanID"])
+        tmc_configure = scan_configuration["tmc"]
+        print("tmc conf::", tmc_configure)
+        self.scan_duration = int(tmc_configure["scanDuration"])
+        print("scan_duration :::::", self.scan_duration)
         # self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
         #                         for _ in range(4))
 
