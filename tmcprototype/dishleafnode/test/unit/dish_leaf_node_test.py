@@ -311,17 +311,52 @@ def test_dish_leaf_node_dish_mode_is_OFF_when_dish_master_is_OFF_after_start():
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create_dummy_event(dish_master_fqdn)
+        dummy_event = create_dummy_event_1(dish_master_fqdn)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_OFF_MODE
 
-def create_dummy_event(dish_master_fqdn):
+def create_dummy_event_1(dish_master_fqdn):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{dish_master_fqdn}/dishmode"
     fake_event.attr_value.value = 0
+    return fake_event
+
+def test_dish_leaf_node_when_dish_capturing_callback_True():
+    # arrange:
+    device_under_test = DishLeafNode
+    dish_master_fqdn = 'mid_d0001/elt/master'
+    dish_master_dishmode_attribute = 'dishMode'
+    initial_dut_properties = {
+        'DishMasterFQDN': dish_master_fqdn
+    }
+
+    event_subscription_map = {}
+
+    dish_master_device_proxy_mock = Mock()
+    dish_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        dish_master_fqdn: dish_master_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_dummy_event_2(dish_master_fqdn)
+        event_subscription_map[dish_master_dishmode_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_TRUE
+
+def create_dummy_event_2(dish_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{dish_master_fqdn}/capturing"
+    fake_event.attr_value.value = True
     return fake_event
 
 
