@@ -236,16 +236,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
         assigned_receptors =[]
 
         # Load a set of antenna descriptions and construct Antenna objects from them
-        file_path=os.path.isfile("ska_antennas.txt")
-        if(file_path):
-            SRC_ROOT_DIR = "/app"
-            TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
-            ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
-            print ("SKA path in true section    :", ska_antennas_path)
-        else:
-            TMC_ROOT_DIR="tmcprototype"
-            ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
-            print ("SKA path in false section     :", ska_antennas_path)
+        # file_path=os.path.isfile("ska_antennas.txt")
+        # if(file_path):
+        #     SRC_ROOT_DIR = "/app"
+        #     TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
+        #     ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+        #     print ("SKA path in true section    :", ska_antennas_path)
+        # else:
+        #     TMC_ROOT_DIR="tmcprototype"
+        #     ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+        #     print ("SKA path in false section     :", ska_antennas_path)
 
 
         with open(ska_antennas_path) as f:
