@@ -80,8 +80,8 @@ class ElementDeviceData:
                 scan_config.pop("csp", None)
                 sdp_scan_config["configure"] = sdp_config[0]
                 sdp_scan_config["configure"][const.STR_CSP_CBFOUTLINK] = cbf_out_link
-                # cmd_data = tango.DeviceData()
-                # cmd_data.insert(tango.DevString, json.dumps(scan_config))
+                cmd_data = tango.DeviceData()
+                cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
                 raise KeyError("SDP Subarray configuration is empty. Command data not built up")
         else:
@@ -98,8 +98,8 @@ class ElementDeviceData:
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
             csp_scan_config["scanID"] = scan_id
-            # cmd_data = tango.DeviceData()
-            # cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
+            cmd_data = tango.DeviceData()
+            cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
             raise KeyError("CSP configuration must be given. Aborting CSP configuration.")
         return json.dumps(csp_scan_config)
@@ -1314,6 +1314,7 @@ class SubarrayNode(SKASubarray):
             "build_up_dsh_cmd_data", scan_configuration, self.only_dishconfig_flag)
 
         try:
+            print ("Dish cmd_data:", cmd_data)
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
         except DevFailed as df:
