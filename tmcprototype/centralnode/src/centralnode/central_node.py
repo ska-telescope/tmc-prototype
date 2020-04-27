@@ -727,7 +727,7 @@ class CentralNode(SKABaseDevice):
                             self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                 else:
                     self._read_activity_message = const.STR_LIST_RES_NOT_REL \
-                                                  + str(res_not_released)
+                                                  + res_not_released
                     release_success = False
             else:
                 self._read_activity_message = const.STR_FALSE_TAG
@@ -752,7 +752,7 @@ class CentralNode(SKABaseDevice):
 
         argout = {
             "ReleaseAll" : release_success,
-            "receptorIDList" : str(res_not_released)
+            "receptorIDList" : res_not_released
         }
         return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.ReleaseResource
