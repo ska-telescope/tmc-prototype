@@ -190,7 +190,7 @@ def test_telescope_health_state_is_FAILED_when_sdp_master_leaf_node_is_FAILED_af
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.FAILED
+        assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
 
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
