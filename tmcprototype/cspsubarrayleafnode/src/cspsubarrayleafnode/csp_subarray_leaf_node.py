@@ -250,7 +250,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         #     print ("SKA path in false section     :", ska_antennas_path)
 
 
-        with open(ska_antennas_path) as f:
+        # with open(ska_antennas_path) as f:
+        with open('ska_antennas.txt') as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         # Create a dictionary including antenna objects
