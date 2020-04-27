@@ -321,7 +321,7 @@ def create_dummy_event(dish_master_fqdn):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{dish_master_fqdn}/dishmode"
-    fake_event.attr_value.value = const.STR_DISH_OFF_MODE
+    fake_event.attr_value.value = 0
     return fake_event
 
 
