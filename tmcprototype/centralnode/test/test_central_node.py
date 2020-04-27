@@ -90,7 +90,6 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         tango_context.device.StartUpTelescope()
         time.sleep(10)
-        # assert tango_context.device.activityMessage == const.STR_STARTUP_CMD_ISSUED
         assert create_subarray1_proxy.State() == DevState.OFF
         # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
 
@@ -144,7 +143,6 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
         tango_context.device.StandByTelescope()
         time.sleep(2)
-        # assert tango_context.device.activityMessage == const.STR_STANDBY_CMD_ISSUED
         assert create_subarray1_proxy.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
@@ -240,12 +238,9 @@ class TestCentralNode(object):
         time.sleep(10)
         json.loads(tango_context.device.AssignResources(test_input))
         time.sleep(3)
-        # result = create_subarray1_proxy.receptorIDList
         assert create_subarray1_proxy.State() == DevState.ON
-        # create_subarray1_proxy.ReleaseAllResources()
         input_release_res = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
         tango_context.device.ReleaseResources(input_release_res)
-        # assert result == (1, )
 
     def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
@@ -262,10 +257,7 @@ class TestCentralNode(object):
                      '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}]}}'
         result = tango_context.device.AssignResources(test_input1)
         time.sleep(2)
-        # input_release_res = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-        # create_subarray1_proxy.ReleaseResources(input_release_res)
         print("Result is::::", result)
-        # assert result == '{"dish": {"receptorIDList_success": []}}'
         assert result == '{"dish": {"receptorIDList_success": ["[", "]"]}}'
 
     def test_AssignResources_invalid_json(self, tango_context):
@@ -291,14 +283,9 @@ class TestCentralNode(object):
     def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
         time.sleep(2)
-        # with pytest.raises(tango.DevFailed):
-        # retVal = json.loads(tango_context.device.ReleaseResources(test_input))
         tango_context.device.ReleaseResources(test_input)
-            # assert retVal["receptorIDList"] == []
         time.sleep(3)
         assert create_subarray1_proxy.State() == DevState.OFF
-        # result = create_subarray1_proxy.receptorIDList
-        # assert result == None
 
     def test_ReleaseResources_FalseTag(self, tango_context):
         test_input = '{"subarrayID":1,"releaseALL":false,"receptorIDList":[]}'

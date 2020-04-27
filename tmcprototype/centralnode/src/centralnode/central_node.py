@@ -656,9 +656,6 @@ class CentralNode(SKABaseDevice):
                 input_json_subarray = jsonArgument.copy()
                 del input_json_subarray["subarrayID"]
                 input_to_sa = json.dumps(input_json_subarray)
-                # cmd_data = tango.DeviceData()
-                # cmd_data.insert(tango.DevString, json.dumps(input_json_subarray))
-                # print("cmdData is :", cmd_data)
                 self._resources_allocated = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
                 # Update self._subarray_allocation variable to update subarray allocation

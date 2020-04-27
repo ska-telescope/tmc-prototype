@@ -217,8 +217,6 @@ class TestCspSubarrayLeafNode(object):
         with pytest.raises(tango.DevFailed):
             tango_context.device.StartScan(StartScan_input)
         time.sleep(1)
-        print("Activity message is :::::", tango_context.device.activityMessage)
-        print("error message with const. is:::::::::", const.ERR_STARTSCAN_RESOURCES)
         assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
     def test_StartScan(self, tango_context, create_cspsubarray1_proxy):

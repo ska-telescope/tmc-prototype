@@ -68,18 +68,13 @@ class ElementDeviceData:
     def build_up_sdp_cmd_data(scan_config):
         scan_config = scan_config.copy()
         sdp_scan_config = scan_config.get("sdp", {})
-        # scan_type_configure = sdp_scan_config.get("scan_type")
-        # print("scan type on subarray node insdp elementdevicedata:", scan_type_configure)
         if sdp_scan_config:
-            # global sdp_scan_type
             sdp_scan_type = sdp_scan_config.get("scan_type")
-            print("scan type on subarray node in sdp elementdevicedata:", sdp_scan_type)
             if sdp_scan_type:
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
                 scan_config.pop("csp", None)
                 scan_config.pop("tmc", None)
-                # sdp_scan_config["scan_type"] = sdp_scan_type[0]
                 cmd_data = tango.DeviceData()
                 cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
@@ -608,35 +603,19 @@ class SubarrayNode(SKASubarray):
         """
         exception_count = 0
         exception_message = []
-        print("Outside of try argin:::::::", argin)
         try:
-            print("inside try")
-            # json_scan_duration = json.loads(argin)
-            # self.scan_duration = int(json_scan_duration['scanDuration'])
-            # TODO: Get the scan duration from configure command
-            # self.scan_duration = 10
             json_id = json.loads(argin)
             self.id = int(json_id['id'])
-            print("id of scan {} and its type {} ::::".format(self.id,type(self.id)))
-
-            # self.logger.debug(const.STR_SCAN_IP_ARG, argin)
-            print("obsState of Subarray is:", self._obs_state)
+            self.logger.debug(const.STR_SCAN_IP_ARG, argin)
             assert self._obs_state != ObsState.SCANNING, const.SCAN_ALREADY_IN_PROGRESS
-            print("After assert")
             if self._obs_state == ObsState.READY:
-                print("inside if block of obsState")
                 self._read_activity_message = const.STR_SCAN_IP_ARG + argin
-                print("After logger statement")
                 self.isScanning = True
-                print("after isScan setting")
                 # Invoke Scan command on SDP Subarray Leaf Node
                 cmdData = tango.DeviceData()
-                print("after cmdData obj")
                 # Invoke scan command on Sdp Subarray Leaf Node with input argument as scan id
                 # TODO: Pass id recived as a input
-
                 cmdData.insert(tango.DevString, argin)
-                print("cmdData of scan command:::::::", cmdData)
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, cmdData)
                 self.logger.debug(const.STR_SDP_SCAN_INIT)
                 self._read_activity_message = const.STR_SDP_SCAN_INIT
@@ -646,7 +625,6 @@ class SubarrayNode(SKASubarray):
                 csp_argin.append(argin)
                 cmdData = tango.DeviceData()
                 cmdData.insert(tango.DevVarStringArray, csp_argin)
-                print("cmdData for CSP sscan command:::::", cmdData)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, cmdData)
                 self.logger.debug(const.STR_CSP_SCAN_INIT)
                 self._read_activity_message = const.STR_CSP_SCAN_INIT
@@ -706,7 +684,6 @@ class SubarrayNode(SKASubarray):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                     exception_message, exception_count, const.ERR_SCAN_CMD)
         except Exception as except_occurred:
-            print("Exception in scan command:::::::::", except_occurred)
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                     exception_message, exception_count, const.ERR_SCAN_CMD)
         #Throw Exception
@@ -719,7 +696,6 @@ class SubarrayNode(SKASubarray):
             #                              const.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
     def waitForEndScan(self):
-        print("inside endscan command with scan duration::::", self.scan_duration)
         scanning_time = 0.0
         while scanning_time <= self.scan_duration:
             # Stop thread, if EndScan command is invoked manually
@@ -859,11 +835,9 @@ class SubarrayNode(SKASubarray):
             receptor_list = resource_jason["dish"]["receptorIDList"]
             sdp_resources = resource_jason.get("sdp")
             self._sb_id = resource_jason["sdp"]["id"]
-            print("_sb_id : ",self._sb_id)
             self.logger.debug("assign_resource_whole_jason", resource_jason)
             self.logger.debug("assign_resource_receptor", receptor_list)
             self.logger.debug("assign_resource_SDP_resources", sdp_resources)
-
 
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
@@ -1355,20 +1329,10 @@ class SubarrayNode(SKASubarray):
         Configuration and SDP Configuration parameters.
 
         JSON string example is:
-        {"pointing":{"target":{"system":"ICRS","name":"NGC1068","RA":0.70984,"dec":0.000233},},
+        {"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},
         "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",
-        "fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth
-        ":0,"channelAveragingMap":[[1,2],[745,0]],"outputLinkMap":[[1,0],[201,1]]},{"fspID":2,"functionMode
-        ":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0},]},"sdp":{"scan_type":
-        "science_A"},"tmc":{"scanDuration":10.0,}}
-
-        # {"scanID":123,"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946","dec":
-        # "+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode"
-        # :"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},"sdp":{"configure":[{"id":
-        # "realtime-20190627-0001","sbiId":"20190627-0001","workflow":{"id":"vis_ingest","type":"realtime","version"
-        # :"0.1.0"},"parameters":{"numStations":4,"numChannels":372,"numPolarisations":4,"freqStartHz":0.35e9,
-        # "freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"Polaris","ra":0.662432049839445,"dec":
-        # 1.5579526053855042}}},"scanParameters":{"123":{"fieldId":0,"intervalMs":1400}}}]}}
+        "fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},
+        "sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0}}
 
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
@@ -1381,7 +1345,6 @@ class SubarrayNode(SKASubarray):
         self._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
 
         if self._obs_state not in [ObsState.IDLE, ObsState.READY]:
-        # if self._obs_state != ObsState.IDLE:
             return
 
         try:
@@ -1393,20 +1356,8 @@ class SubarrayNode(SKASubarray):
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
 
-        # if "scanID" not in scan_configuration:
-        #     log_message = "'scanID' must be given. Aborting configuration."
-        #     self.logger.error(log_message)
-        #     self._read_activity_message = log_message
-        #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-        #                                  const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-        #
         tmc_configure = scan_configuration["tmc"]
-        print("tmc conf::", tmc_configure)
         self.scan_duration = int(tmc_configure["scanDuration"])
-        print("scan_duration :::::", self.scan_duration)
-        # self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) \
-        #                         for _ in range(4))
-
         self._configure_csp(scan_configuration)
         # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
         time.sleep(2)
