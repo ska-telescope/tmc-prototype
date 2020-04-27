@@ -186,7 +186,7 @@ def test_telescope_health_state_is_FAILED_when_sdp_master_leaf_node_is_FAILED_af
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create_dummy_event_for_failed(sdp_master_fqdn)
+        dummy_event = create1_dummy_event_for_degraded(sdp_master_fqdn)
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
