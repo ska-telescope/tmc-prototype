@@ -202,6 +202,7 @@ class TestElementDeviceData:
         dsh_cmd_data = ElementDeviceData.build_up_dsh_cmd_data(valid_scan_config, True)
         valid_scan_config.pop("sdp")
         valid_scan_config.pop("csp")
+        valid_scan_config.pop("tmc")
         expected_string_dict = json.dumps(valid_scan_config)
 
         assert isinstance(dsh_cmd_data, tango.DeviceData)
