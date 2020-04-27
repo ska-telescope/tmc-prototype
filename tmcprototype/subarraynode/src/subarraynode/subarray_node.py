@@ -110,8 +110,8 @@ class ElementDeviceData:
         if set(["pointing", "dish"]).issubset(scan_config.keys()) or only_dishconfig_flag:
             scan_config.pop("sdp", None)
             scan_config.pop("csp", None)
-            # cmd_data = tango.DeviceData()
-            # cmd_data.insert(tango.DevString, json.dumps(scan_config))
+            cmd_data = tango.DeviceData()
+            cmd_data.insert(tango.DevString, json.dumps(scan_config))
         else:
             raise KeyError("Dish configuration must be given. Aborting Dish configuration.")
         return json.dumps(scan_config)
@@ -1463,8 +1463,8 @@ class SubarrayNode(SKASubarray):
             # self._obs_state = ObsState.CONFIGURING
             cmd_input = []
             cmd_input.append(argin)
-            # cmdData = tango.DeviceData()
-            # cmdData.insert(tango.DevVarStringArray, cmd_input)
+            cmdData = tango.DeviceData()
+            cmdData.insert(tango.DevVarStringArray, cmd_input)
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_input)
             # set obsState to READY when the configuration is completed
             # self._obs_state = ObsState.READY
