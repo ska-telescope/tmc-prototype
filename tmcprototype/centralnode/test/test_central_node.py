@@ -240,7 +240,9 @@ class TestCentralNode(object):
         time.sleep(3)
         # result = create_subarray1_proxy.receptorIDList
         assert create_subarray1_proxy.State() == DevState.ON
-        create_subarray1_proxy.ReleaseAllResources()
+        # create_subarray1_proxy.ReleaseAllResources()
+        input_release_res = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        tango_context.device.ReleaseResources(input_release_res)
         # assert result == (1, )
 
     def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
@@ -258,8 +260,8 @@ class TestCentralNode(object):
                      '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}]}}'
         result = tango_context.device.AssignResources(test_input1)
         time.sleep(2)
-        input_release_res = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-        create_subarray1_proxy.ReleaseResources(input_release_res)
+        # input_release_res = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        # create_subarray1_proxy.ReleaseResources(input_release_res)
         assert result == '{"dish": {"receptorIDList_success": []}}'
 
     def test_AssignResources_invalid_json(self, tango_context):
