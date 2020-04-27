@@ -18,7 +18,6 @@ import pytz
 import katpoint
 import numpy as np
 
-file_path = os.path.dirname(os.path.abspath(__file__))
 # SRC_ROOT_DIR = "/app"
 # TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
 # TMC_ROOT_DIR="tmcprototype"
@@ -26,7 +25,10 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 
 # print ("file_path", file_path)
 # print(os. system('find / -name "ska_antennas.txt"'))
-
+file_path = os.path.dirname(os.path.abspath(__file__))
+ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pardir),os.pardir)) \
+                   + "/ska_antennas.txt"
+print ("******** Ska Antenna Path :", ska_antennas_path)
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
