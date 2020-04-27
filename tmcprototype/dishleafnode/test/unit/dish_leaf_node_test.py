@@ -328,7 +328,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_True():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
-    dish_master_dishmode_attribute = 'dishMode'
+    dish_master_capturing_attribute = 'capturing'
     initial_dut_properties = {
         'DishMasterFQDN': dish_master_fqdn
     }
@@ -347,7 +347,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_True():
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         dummy_event = create_dummy_event_2(dish_master_fqdn)
-        event_subscription_map[dish_master_dishmode_attribute](dummy_event)
+        event_subscription_map[dish_master_capturing_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_TRUE
