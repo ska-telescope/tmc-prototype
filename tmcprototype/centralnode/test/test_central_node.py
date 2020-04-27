@@ -85,7 +85,7 @@ class TestCentralNode(object):
         assert tango_context.device.Reset() == None
         # PROTECTED REGION END #    //  CentralNode.test_Reset
 
-    def test_StartUpTelescope(self, tango_context, create_leafNode1_proxy):
+    def test_StartUpTelescope(self, tango_context, create_subarray1_proxy):
         """Test for StartUpTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
         tango_context.device.StartUpTelescope()
@@ -138,7 +138,7 @@ class TestCentralNode(object):
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StowAntennas_ValueErr
 
-    def test_StandByTelescope(self, tango_context):
+    def test_StandByTelescope(self, tango_context, create_subarray1_proxy):
         """Test for StandByTelescope"""
         # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
         tango_context.device.StandByTelescope()

@@ -75,15 +75,15 @@ class ElementDeviceData:
                 scan_config.pop("dish", None)
                 scan_config.pop("csp", None)
                 scan_config.pop("tmc", None)
-                cmd_data = tango.DeviceData()
-                cmd_data.insert(tango.DevString, json.dumps(scan_config))
+                # cmd_data = tango.DeviceData()
+                # cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
                 raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
         else:
             # Need to check if sdp already has scan type if yes then msg showing continue with old scan .
             # and if no earlier scan exist throw error as below.
             raise KeyError("SDP configuration must be given. Aborting SDP configuration.")
-        return cmd_data
+        return json.dumps(scan_config)
 
     @staticmethod
     def build_up_csp_cmd_data(scan_config, attr_name_map):
@@ -95,11 +95,11 @@ class ElementDeviceData:
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
             csp_scan_config["scanID"] = '1'
-            cmd_data = tango.DeviceData()
-            cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
+            # cmd_data = tango.DeviceData()
+            # cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
             raise KeyError("CSP configuration must be given. Aborting CSP configuration.")
-        return cmd_data
+        return json.dumps(csp_scan_config)
 
     @staticmethod
     def build_up_dsh_cmd_data(scan_config, only_dishconfig_flag):
@@ -612,20 +612,20 @@ class SubarrayNode(SKASubarray):
                 self._read_activity_message = const.STR_SCAN_IP_ARG + argin
                 self.isScanning = True
                 # Invoke Scan command on SDP Subarray Leaf Node
-                cmdData = tango.DeviceData()
+                # cmdData = tango.DeviceData()
                 # Invoke scan command on Sdp Subarray Leaf Node with input argument as scan id
                 # TODO: Pass id recived as a input
-                cmdData.insert(tango.DevString, argin)
-                self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, cmdData)
+                # cmdData.insert(tango.DevString, argin)
+                self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
                 self.logger.debug(const.STR_SDP_SCAN_INIT)
                 self._read_activity_message = const.STR_SDP_SCAN_INIT
 
                 # Invoke Scan command on CSP Subarray Leaf Node
                 csp_argin = []
                 csp_argin.append(argin)
-                cmdData = tango.DeviceData()
-                cmdData.insert(tango.DevVarStringArray, csp_argin)
-                self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, cmdData)
+                # cmdData = tango.DeviceData()
+                # cmdData.insert(tango.DevVarStringArray, csp_argin)
+                self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
                 self.logger.debug(const.STR_CSP_SCAN_INIT)
                 self._read_activity_message = const.STR_CSP_SCAN_INIT
 
@@ -1305,6 +1305,7 @@ class SubarrayNode(SKASubarray):
             "build_up_dsh_cmd_data", scan_configuration, self.only_dishconfig_flag)
 
         try:
+            print("cmd data {} and type{}".format(cmd_data, type(cmd_data)))
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
         except DevFailed as df:
@@ -1438,9 +1439,9 @@ class SubarrayNode(SKASubarray):
             # self._obs_state = ObsState.CONFIGURING
             cmd_input = []
             cmd_input.append(argin)
-            cmdData = tango.DeviceData()
-            cmdData.insert(tango.DevVarStringArray, cmd_input)
-            self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmdData)
+            # cmdData = tango.DeviceData()
+            # cmdData.insert(tango.DevVarStringArray, cmd_input)
+            self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_input)
             # set obsState to READY when the configuration is completed
             # self._obs_state = ObsState.READY
             self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
