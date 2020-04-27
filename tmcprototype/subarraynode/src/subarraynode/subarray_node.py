@@ -26,7 +26,8 @@ import json
 
 # Tango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
+from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType, DeviceData, DevString, \
+    DevVarStringArray
 from tango.server import run,attribute, command, device_property
 
 # Additional import
@@ -79,13 +80,13 @@ class ElementDeviceData:
                 scan_config.pop("csp", None)
                 sdp_scan_config["configure"] = sdp_config[0]
                 sdp_scan_config["configure"][const.STR_CSP_CBFOUTLINK] = cbf_out_link
-                cmd_data = tango.DeviceData()
-                cmd_data.insert(tango.DevString, json.dumps(scan_config))
+                # cmd_data = tango.DeviceData()
+                # cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
                 raise KeyError("SDP Subarray configuration is empty. Command data not built up")
         else:
             raise KeyError("SDP configuration must be given. Aborting SDP configuration.")
-        return cmd_data
+        return json.dumps(scan_config)
 
     @staticmethod
     def build_up_csp_cmd_data(scan_config, scan_id, attr_name_map):
@@ -97,11 +98,11 @@ class ElementDeviceData:
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
             csp_scan_config["scanID"] = scan_id
-            cmd_data = tango.DeviceData()
-            cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
+            # cmd_data = tango.DeviceData()
+            # cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
             raise KeyError("CSP configuration must be given. Aborting CSP configuration.")
-        return cmd_data
+        return json.dumps(csp_scan_config)
 
     @staticmethod
     def build_up_dsh_cmd_data(scan_config, only_dishconfig_flag):
@@ -200,8 +201,11 @@ class SubarrayNode(SKASubarray):
                 """
         exception_message = []
         exception_count = 0
+        print("outside the if condition of obsState callback")
         if evt.err is False:
+            print("-------inside if of ObsStatecb---------")
             try:
+                print("----------------inside try of obsstCB-------------")
                 self._observetion_state = evt.attr_value.value
 
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
@@ -229,6 +233,7 @@ class SubarrayNode(SKASubarray):
                 [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                 exception_message, exception_count, const.ERR_AGGR_OBS_STATE)
         else:
+            print("------------inside else block of obsSTCB-----------------")
             log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
             self.logger.debug(log_msg)
             self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
@@ -238,23 +243,32 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated observation state of Subarray.
         """
+        print("Inside the calculationOBSST-----------------------")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
+            print("Pointing state:", value)
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == PointingState.SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
         if self._csp_sa_obs_state == ObsState.SCANNING and self._sdp_sa_obs_state ==\
                 ObsState.SCANNING:
+            print("----------------inside scanning block-------------")
             self._obs_state = ObsState.SCANNING
             # self.isScanning = True
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
+            print("----------------inside ready block-------------")
+            print ("pointing_state_count_track:", pointing_state_count_track)
+            print ("self.dishPointingStateMap:", self.dishPointingStateMap)
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
+                print("-----------inside pointingSTATECOUNZTTRACt----------")
                 self._obs_state = ObsState.READY
+                print ("ObsState:", self._obs_state)
         elif self._csp_sa_obs_state == ObsState.CONFIGURING or \
                 self._sdp_sa_obs_state == ObsState.CONFIGURING:
+            print("----------------inside configuring  block-------------")
             self._obs_state = ObsState.CONFIGURING
         elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
                 ObsState.IDLE:
@@ -267,10 +281,12 @@ class SubarrayNode(SKASubarray):
                             self._obs_state = ObsState.READY
                     else:
                         self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                        print("----------------inside 1st idle block-------------")
                         self._obs_state = ObsState.IDLE
                 elif pointing_state_count_slew != 0:
                     self._obs_state = ObsState.CONFIGURING
                 else:
+                    print("----------------inside 2nd idle block-------------")
                     self._obs_state = ObsState.IDLE
 
     def create_csp_ln_proxy(self):
@@ -336,7 +352,9 @@ class SubarrayNode(SKASubarray):
             try:
                 str_leafId = argin[leafId]
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
-                devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                print("Before proxy creation")
+                devProxy = DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                print("After proxy creation", devProxy)
                 self._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
@@ -603,29 +621,38 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
+        print("Argin in scan command before try:", argin)
         exception_count = 0
         exception_message = []
         try:
+            print("inside try::::::::")
             json_scan_duration = json.loads(argin)
             self.scan_duration = int(json_scan_duration['scanDuration'])
             self.logger.debug(const.STR_SCAN_IP_ARG, argin)
+            print("before scan condition")
             assert self._obs_state != ObsState.SCANNING, const.SCAN_ALREADY_IN_PROGRESS
+            print("after assert state")
             if self._obs_state == ObsState.READY:
+                print("obsState is ready")
                 self._read_activity_message = const.STR_SCAN_IP_ARG + argin
                 self.isScanning = True
                 # Invoke Scan command on SDP Subarray Leaf Node
-                cmdData = tango.DeviceData()
-                cmdData.insert(tango.DevString, argin)
-                self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, cmdData)
+                print ("Initialising cmddata")
+                # cmdData = DeviceData()
+                # print ("cmdData created",cmdData)
+                # cmdData.insert(DevString, argin)
+                # print ("cmdData obj", cmdData)
+                self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
+                print ("sdp subarray leaf node command called")
                 self.logger.debug(const.STR_SDP_SCAN_INIT)
                 self._read_activity_message = const.STR_SDP_SCAN_INIT
 
                 # Invoke Scan command on CSP Subarray Leaf Node
                 csp_argin = []
                 csp_argin.append(argin)
-                cmdData = tango.DeviceData()
-                cmdData.insert(tango.DevVarStringArray, csp_argin)
-                self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, cmdData)
+                # cmdData = DeviceData()
+                # cmdData.insert(DevVarStringArray, csp_argin)
+                self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
                 self.logger.debug(const.STR_CSP_SCAN_INIT)
                 self._read_activity_message = const.STR_CSP_SCAN_INIT
 
@@ -637,6 +664,9 @@ class SubarrayNode(SKASubarray):
                 self.set_status(const.STR_SA_SCANNING)
                 self.logger.info(const.STR_SA_SCANNING)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
+            else:
+                print("obs state of subarray is :", self._obs_state)
+                print("device state of Subarray is:::", self.get_state())
 
             self.end_scan_thread = threading.Thread(None, self.waitForEndScan, "SubarrayNode")
             self.end_scan_thread.start()
@@ -1235,6 +1265,7 @@ class SubarrayNode(SKASubarray):
     # --------
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         try:
+            print ("\n\n **********Command relayed to leaf node",device_proxy , cmd_data, type(cmd_data))
             device_proxy.command_inout(cmd_name, cmd_data)
             log_msg = "%s configured succesfully." %device_proxy.dev_name()
             self.logger.debug(log_msg)
@@ -1257,11 +1288,13 @@ class SubarrayNode(SKASubarray):
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
+        print("--------------inside sdp block---------------------")
         cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration, cbf_out_link)
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
+        print("--------------------Inside conf csp------------------")
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
             const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
@@ -1272,6 +1305,7 @@ class SubarrayNode(SKASubarray):
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
+        print("------------------inside dish block---------------")
         config_keys = scan_configuration.keys()
         if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
             self.only_dishconfig_flag = True
@@ -1317,6 +1351,7 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
+        print("Inside configure command of SubarrayNode::::::::", argin)
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg=const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
@@ -1325,9 +1360,11 @@ class SubarrayNode(SKASubarray):
 
         if self._obs_state != ObsState.IDLE:
             return
-
+        print("-------------------------------outside of try-----------------------")
         try:
+            print("-------------------------------inside of try block----------------------")
             scan_configuration = json.loads(argin)
+            print("scan conf after json loads:::::::", scan_configuration)
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
