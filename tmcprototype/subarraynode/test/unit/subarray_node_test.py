@@ -228,8 +228,8 @@ def test_Configure_command_subarray():
                     "corrBandwidth": 0
                 }
             ],
-            "string1": "attr1",
-            "string2": "attr2",
+            "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel",
+            "visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses",
             "pointing": {
                 "target": {
                     "system": "ICRS",
