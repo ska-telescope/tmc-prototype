@@ -17,26 +17,26 @@ from ska.base.control_model import HealthState
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
     device_under_test = CentralNode
-    csp_master_fqdn = 'mid/csp_elt/master'
-    csp_master_health_attribute = 'cspHealthState'
+    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
+    csp_master_ln_health_attribute = 'cspHealthState'
     initial_dut_properties = {
-        'CspMasterLeafNodeFQDN': csp_master_fqdn
+        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn
     }
 
     event_subscription_map = {}
 
-    csp_master_device_proxy_mock = Mock()
-    csp_master_device_proxy_mock.subscribe_event.side_effect = (
+    csp_master_ln_proxy_mock = Mock()
+    csp_master_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
     proxies_to_mock = {
-        csp_master_fqdn: csp_master_device_proxy_mock
+        csp_master_ln_fqdn: csp_master_ln_proxy_mock
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create_dummy_event(csp_master_fqdn)
-        event_subscription_map[csp_master_health_attribute](dummy_event)
+        dummy_event = create_dummy_event(csp_master_ln_fqdn)
+        event_subscription_map[csp_master_ln_health_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
@@ -80,10 +80,10 @@ def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
 
 
-def create_dummy_event(csp_master_fqdn):
+def create_dummy_event(csp_master_ln_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{csp_master_ln_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.DEGRADED
     return fake_event
 
