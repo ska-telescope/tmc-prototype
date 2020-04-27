@@ -285,9 +285,10 @@ class TestCentralNode(object):
     def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
         test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
         time.sleep(2)
-        with pytest.raises(tango.DevFailed):
-            retVal = json.loads(tango_context.device.ReleaseResources(test_input))
-            assert retVal["receptorIDList"] == []
+        # with pytest.raises(tango.DevFailed):
+        # retVal = json.loads(tango_context.device.ReleaseResources(test_input))
+        tango_context.device.ReleaseResources(test_input)
+            # assert retVal["receptorIDList"] == []
         time.sleep(3)
         assert create_subarray1_proxy.State() == DevState.OFF
         # result = create_subarray1_proxy.receptorIDList
