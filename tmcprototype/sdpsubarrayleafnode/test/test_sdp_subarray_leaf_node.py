@@ -122,7 +122,7 @@ class TestSdpSubarrayLeafNode(object):
     def test_Scan_device_not_ready(self, tango_context, create_sdpsubarray_proxy):
         """Test for Scan"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Scan_device_not_ready) ENABLED START #
-        test_input = '{"id":12345}'
+        test_input = '{"id":1}'
         tango_context.device.Scan(test_input)
         time.sleep(1)
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
