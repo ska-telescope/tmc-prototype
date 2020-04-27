@@ -159,7 +159,7 @@ def test_ReleaseResource_command_subarray():
         sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
 
-@pytest.mark.xfail
+#@pytest.mark.xfail
 def test_Configure_command_subarray():
     # arrange:
     device_under_test = SubarrayNode
@@ -223,9 +223,9 @@ def test_Configure_command_subarray():
                           '"visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", ' \
                           '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
                           '"dec": "-30:52:17.3"}}, "scanID": "12345"}'
-        cmd_data = tango.DeviceData()
-        cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
-        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, cmd_data)
+        # cmd_data = tango.DeviceData()
+        # cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
+        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, json.dumps(csp_scan_config))
 
         scan_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
@@ -233,15 +233,15 @@ def test_Configure_command_subarray():
                      '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
                      ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
-        cmd_data = tango.DeviceData()
-        cmd_data.insert(tango.DevString, json.dumps(scan_config))
-        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, cmd_data)
+        # cmd_data = tango.DeviceData()
+        # cmd_data.insert(tango.DevString, json.dumps(scan_config))
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, json.dumps(scan_config))
 
         dish_configure_input = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",' \
                                '"dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
-        cmd_data = tango.DeviceData()
-        cmd_data.insert(tango.DevString, json.dumps(dish_configure_input))
-        dish_ln_proxy_mock.command_inout.asser_called_with(const.CMD_CONFIGURE, cmd_data)
+        # cmd_data = tango.DeviceData()
+        # cmd_data.insert(tango.DevString, json.dumps(dish_configure_input))
+        dish_ln_proxy_mock.command_inout.asser_called_with(const.CMD_CONFIGURE, json.dumps(dish_configure_input))
 
 def create_dummy_event_obsstate_scanning(device_fqdn):
     fake_event = Mock()

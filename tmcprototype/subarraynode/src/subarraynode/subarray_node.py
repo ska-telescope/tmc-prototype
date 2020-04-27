@@ -80,13 +80,13 @@ class ElementDeviceData:
                 scan_config.pop("csp", None)
                 sdp_scan_config["configure"] = sdp_config[0]
                 sdp_scan_config["configure"][const.STR_CSP_CBFOUTLINK] = cbf_out_link
-                cmd_data = tango.DeviceData()
-                cmd_data.insert(tango.DevString, json.dumps(scan_config))
+                # cmd_data = tango.DeviceData()
+                # cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
                 raise KeyError("SDP Subarray configuration is empty. Command data not built up")
         else:
             raise KeyError("SDP configuration must be given. Aborting SDP configuration.")
-        return cmd_data
+        return json.dumps(scan_config)
 
     @staticmethod
     def build_up_csp_cmd_data(scan_config, scan_id, attr_name_map):
@@ -98,11 +98,11 @@ class ElementDeviceData:
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
             csp_scan_config["scanID"] = scan_id
-            cmd_data = tango.DeviceData()
-            cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
+            # cmd_data = tango.DeviceData()
+            # cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
             raise KeyError("CSP configuration must be given. Aborting CSP configuration.")
-        return cmd_data
+        return json.dumps(csp_scan_config)
 
     @staticmethod
     def build_up_dsh_cmd_data(scan_config, only_dishconfig_flag):
@@ -110,11 +110,11 @@ class ElementDeviceData:
         if set(["pointing", "dish"]).issubset(scan_config.keys()) or only_dishconfig_flag:
             scan_config.pop("sdp", None)
             scan_config.pop("csp", None)
-            cmd_data = tango.DeviceData()
-            cmd_data.insert(tango.DevString, json.dumps(scan_config))
+            # cmd_data = tango.DeviceData()
+            # cmd_data.insert(tango.DevString, json.dumps(scan_config))
         else:
             raise KeyError("Dish configuration must be given. Aborting Dish configuration.")
-        return cmd_data
+        return json.dumps(scan_config)
 
 
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
@@ -1463,9 +1463,9 @@ class SubarrayNode(SKASubarray):
             # self._obs_state = ObsState.CONFIGURING
             cmd_input = []
             cmd_input.append(argin)
-            cmdData = tango.DeviceData()
-            cmdData.insert(tango.DevVarStringArray, cmd_input)
-            self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmdData)
+            # cmdData = tango.DeviceData()
+            # cmdData.insert(tango.DevVarStringArray, cmd_input)
+            self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_input)
             # set obsState to READY when the configuration is completed
             # self._obs_state = ObsState.READY
             self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
