@@ -216,7 +216,15 @@ def test_Configure_command_subarray():
         # assert:
         # scan_configuration = json.loads(argin)
         # self._scan_id = str(scan_configuration["scanID"])
-
+        scan_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
+                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
+                      '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
+                      '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
+                      ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
+                      ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
+        # cmd_data = tango.DeviceData()
+        # cmd_data.insert(tango.DevString, json.dumps(scan_config))
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, scan_config)
         expected_string_dict = {
             "frequencyBand": "1",
             "fsp": [
@@ -245,16 +253,6 @@ def test_Configure_command_subarray():
         csp_scan_config = json.dumps(expected_string_dict)
         print ("csp_scan_config:", csp_scan_config)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_scan_config)
-
-        scan_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
-                     '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
-                     '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
-                     '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
-                     ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
-                     ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
-        # cmd_data = tango.DeviceData()
-        # cmd_data.insert(tango.DevString, json.dumps(scan_config))
-        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, json.dumps(scan_config))
 
         dish_configure_input = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",' \
                                '"dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
