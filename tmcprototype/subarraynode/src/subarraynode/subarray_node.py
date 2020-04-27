@@ -108,8 +108,11 @@ class ElementDeviceData:
             scan_config.pop("sdp", None)
             scan_config.pop("csp", None)
             scan_config.pop("tmc", None)
+            print("scan_conf is{} type{}:".format(scan_config, type(scan_config)))
             cmd_data = tango.DeviceData()
             cmd_data.insert(tango.DevString, json.dumps(scan_config))
+            print("cmd data in element class {} and tygpe{}:::" .format(cmd_data, type(cmd_data)))
+            print("element class scan cn with json {} and type {}".format(json.dumps(scan_config), type(json.dumps(scan_config))))
         else:
             raise KeyError("Dish configuration must be given. Aborting Dish configuration.")
         return cmd_data
@@ -1282,10 +1285,12 @@ class SubarrayNode(SKASubarray):
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
+        print("inside sdp block--------------------")
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
+        print("---------------------inisde csp block")
         # Need to confirm if CSP required SDP receive address
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
@@ -1297,6 +1302,7 @@ class SubarrayNode(SKASubarray):
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
+        print("-----------------------inside dish block")
         config_keys = scan_configuration.keys()
         if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
             self.only_dishconfig_flag = True
@@ -1339,6 +1345,7 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
+        print("-----------------------------------------outside")
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg=const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
@@ -1346,11 +1353,14 @@ class SubarrayNode(SKASubarray):
         self._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
 
         if self._obs_state not in [ObsState.IDLE, ObsState.READY]:
+            print("-----------------------------------------inside if")
             return
-
+        print("--------------after if")
         try:
+            print("---------------------------inside try")
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
+            print("-------------------inside exception")
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
             self._read_activity_message = log_message
