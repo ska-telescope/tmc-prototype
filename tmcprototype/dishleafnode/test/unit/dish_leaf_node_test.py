@@ -4,12 +4,13 @@ import sys
 import json
 import mock
 import types
-
+from tango import DevState
 from mock import Mock
 from dishleafnode import DishLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
-
+from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
+from ska.base.control_model import LoggingLevel
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     # arrange:
@@ -288,7 +289,120 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
             dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, capture_arg,
                                                                     any_method(with_name='commandCallback'))
 
+def test_dish_leaf_node_dish_mode_is_OFF_when_dish_master_is_OFF_after_start():
+    # arrange:
+    device_under_test = DishLeafNode
+    dish_master_fqdn = 'mid_d0001/elt/master'
+    dish_master_dishmode_attribute = 'dishMode'
+    initial_dut_properties = {
+        'DishMasterFQDN': dish_master_fqdn
+    }
 
+    event_subscription_map = {}
+
+    dish_master_device_proxy_mock = Mock()
+    dish_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        dish_master_fqdn: dish_master_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_dummy_event(dish_master_fqdn)
+        event_subscription_map[dish_master_dishmode_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage == const.STR_DISH_OFF_MODE
+
+def create_dummy_event(dish_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{dish_master_fqdn}/dishmode"
+    fake_event.attr_value.value = const.STR_DISH_OFF_MODE
+    return fake_event
+
+
+def test_activityMessage():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        tango_context.device.activityMessage = const.STR_OK
+        assert tango_context.device.activityMessage == const.STR_OK
+
+def test_State():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.State() == DevState.ALARM
+
+def test_Status():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.Status() != const.STR_DISH_INIT_SUCCESS
+
+def test_loggingLevel():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
+
+def test_loggingTargets():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        tango_context.device.loggingTargets = ['console::cout']
+        assert 'console::cout' in tango_context.device.loggingTargets
+
+def test_testMode():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        test_mode = TestMode.NONE
+        tango_context.device.testMode = test_mode
+        assert tango_context.device.testMode == test_mode
+
+def test_simulationMode():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        simulation_mode = SimulationMode.FALSE
+        tango_context.device.simulationMode = simulation_mode
+        assert tango_context.device.simulationMode == simulation_mode
+
+def test_controlMode():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        control_mode = ControlMode.REMOTE
+        tango_context.device.controlMode = control_mode
+        assert tango_context.device.controlMode == control_mode
+
+def test_adminMode():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.adminMode == AdminMode.ONLINE
+
+def test_healthState():
+    # arrange
+    device_under_test = DishLeafNode
+    # act & assert:
+    with fake_tango_system(device_under_test) as tango_context:
+        assert tango_context.device.healthState == HealthState.OK
 
 def any_method(with_name=None):
     class AnyMethod():
