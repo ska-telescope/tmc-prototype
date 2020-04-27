@@ -638,11 +638,11 @@ class SubarrayNode(SKASubarray):
                 self.isScanning = True
                 # Invoke Scan command on SDP Subarray Leaf Node
                 print ("Initialising cmddata")
-                cmdData = DeviceData()
-                print ("cmdData created",cmdData)
-                cmdData.insert(DevString, argin)
-                print ("cmdData obj", cmdData)
-                self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, cmdData)
+                # cmdData = DeviceData()
+                # print ("cmdData created",cmdData)
+                # cmdData.insert(DevString, argin)
+                # print ("cmdData obj", cmdData)
+                self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
                 print ("sdp subarray leaf node command called")
                 self.logger.debug(const.STR_SDP_SCAN_INIT)
                 self._read_activity_message = const.STR_SDP_SCAN_INIT
@@ -650,9 +650,9 @@ class SubarrayNode(SKASubarray):
                 # Invoke Scan command on CSP Subarray Leaf Node
                 csp_argin = []
                 csp_argin.append(argin)
-                cmdData = DeviceData()
-                cmdData.insert(DevVarStringArray, csp_argin)
-                self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, cmdData)
+                # cmdData = DeviceData()
+                # cmdData.insert(DevVarStringArray, csp_argin)
+                self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
                 self.logger.debug(const.STR_CSP_SCAN_INIT)
                 self._read_activity_message = const.STR_CSP_SCAN_INIT
 
