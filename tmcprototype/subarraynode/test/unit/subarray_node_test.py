@@ -238,7 +238,7 @@ def test_Configure_command_subarray():
                     "dec": "+89:15:50.7923"
                 }
             },
-            "scanID": 1
+            "scanID": 12345
         }
         # cmd_data = tango.DeviceData()
         # cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
