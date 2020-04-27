@@ -16,6 +16,35 @@ from ska.base.control_model import HealthState, AdminMode, SimulationMode, Contr
 from ska.base.control_model import LoggingLevel
 
 
+def create_dummy_event_for_degraded(csp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.DEGRADED
+    return fake_event
+
+def create_dummy_event_for_ok(csp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.OK
+    return fake_event
+
+def create_dummy_event_for_unknown(csp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.UNKNOWN
+    return fake_event
+
+def create_dummy_event_for_failed(csp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.FAILED
+    return fake_event
+
+
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
     device_under_test = CentralNode
@@ -128,6 +157,40 @@ def test_telescope_health_state_is_FAILED_when_csp_master_leaf_node_is_FAILED_af
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.FAILED
 
+def create1_dummy_event_for_degraded(sdp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.DEGRADED
+    return fake_event
+
+def test_telescope_health_state_is_FAILED_when_sdp_master_leaf_node_is_FAILED_after_start():
+    # arrange:
+    device_under_test = CentralNode
+    sdp_master_fqdn = 'mid/sdp_elt/master'
+    csp_master_health_attribute = 'sdpHealthState'
+    initial_dut_properties = {
+        'SdpMasterLeafNodeFQDN': sdp_master_fqdn
+    }
+
+    event_subscription_map = {}
+
+    sdp_master_device_proxy_mock = Mock()
+    sdp_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        sdp_master_fqdn: sdp_master_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_dummy_event_for_failed(sdp_master_fqdn)
+        event_subscription_map[csp_master_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.telescopeHealthState == HealthState.FAILED
 
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
@@ -274,33 +337,6 @@ def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
 
 
-def create_dummy_event_for_degraded(csp_master_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
-    fake_event.attr_value.value = HealthState.DEGRADED
-    return fake_event
-
-def create_dummy_event_for_ok(csp_master_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
-    fake_event.attr_value.value = HealthState.OK
-    return fake_event
-
-def create_dummy_event_for_unknown(csp_master_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
-    fake_event.attr_value.value = HealthState.UNKNOWN
-    return fake_event
-
-def create_dummy_event_for_failed(csp_master_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
-    fake_event.attr_value.value = HealthState.FAILED
-    return fake_event
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
