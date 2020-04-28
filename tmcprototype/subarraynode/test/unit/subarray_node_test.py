@@ -610,16 +610,13 @@ def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray_ln_is_ok_after_st
         sdp_subarray_ln_fqdn: sdp_subarray_ln_proxy_mock
     }
     csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda csp_subarray_ln_health_attribute, event_type, callback, *args,
-               **kwargs: subarray_ln_health_state_map.update(
-            {csp_subarray_ln_health_attribute: callback}))
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+
     sdp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda sdp_subarray_ln_health_attribute, event_type, callback, *args,
-               **kwargs: subarray_ln_health_state_map.update(
-            {sdp_subarray_ln_health_attribute: callback}))
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        subarray_ln_health_state_map = {}
         print("subarray_ln_health_state_map 1:", subarray_ln_health_state_map)
 
         health_state_value = HealthState.OK
