@@ -24,8 +24,8 @@ import numpy as np
 # ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 
 # print ("file_path", file_path)
-print("****$$$$Finding the file")
-print(os. system('find / -name "ska_antennas.txt"'))
+# print("****$$$$Finding the file")
+# print(os. system('find / -name "ska_antennas.txt"'))
 # file_path = os.path.dirname(os.path.abspath(__file__))
 # print("Module path:", file_path)
 # ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pardir),os.pardir)) \
@@ -239,6 +239,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         # Load a set of antenna descriptions and construct Antenna objects from them
         file_path=os.path.isfile("ska_antennas.txt")
+        print(file_path)
         if(file_path):
             SRC_ROOT_DIR = "/app"
             TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
@@ -251,7 +252,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
 
         with open(ska_antennas_path) as f:
-        #with open('ska_antennas.txt') as f:
+        # with open('ska_antennas.txt') as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         # Create a dictionary including antenna objects
