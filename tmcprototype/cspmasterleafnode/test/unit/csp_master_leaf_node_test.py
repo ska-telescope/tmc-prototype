@@ -117,7 +117,7 @@ def test_cspCbfHealthState_attribute_of_csp_master_is_equal_to_OK():
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.OK
+        assert tango_context.device.healthState == HealthState.OK
 
 def create_dummy_event_for_cspCbfHealthState_OK(csp_master_fqdn):
     fake_event = Mock()
@@ -152,13 +152,13 @@ def test_cspCbfHealthState_attribute_of_csp_master_is_equal_to_DEGRADED():
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
+        assert tango_context.device.healthState == HealthState.DEGRADED
 
 def create_dummy_event_for_cspCbfHealthState_DEGRADED(csp_master_fqdn):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{csp_master_fqdn}/cspCbfHealthState"
-    fake_event.attr_value.value = 1
+    fake_event.attr_value.value = HealthState.DEGRADED
     return fake_event
 
 def test_cspCbfHealthState_attribute_of_csp_master_is_equal_to_FAILED():
@@ -187,7 +187,7 @@ def test_cspCbfHealthState_attribute_of_csp_master_is_equal_to_FAILED():
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.FAILED
+        assert tango_context.device.healthState == HealthState.FAILED
 
 def create_dummy_event_for_cspCbfHealthState_FAILED(csp_master_fqdn):
     fake_event = Mock()
@@ -222,7 +222,7 @@ def test_cspCbfHealthState_attribute_of_csp_master_is_equal_to_UNKNOWN():
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.UNKNOWN
+        assert tango_context.device.healthState == HealthState.UNKNOWN
 
 def create_dummy_event_for_cspCbfHealthState_UNKNOWN(csp_master_fqdn):
     fake_event = Mock()
@@ -230,6 +230,9 @@ def create_dummy_event_for_cspCbfHealthState_UNKNOWN(csp_master_fqdn):
     fake_event.attr_name = f"{csp_master_fqdn}/cspCbfHealthState"
     fake_event.attr_value.value = HealthState.UNKNOWN
     return fake_event
+
+
+
 
 
 
@@ -305,12 +308,12 @@ def test_adminMode():
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
-def test_healthState():
-    # arrange
-    device_under_test = CspMasterLeafNode
-    # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
-        assert tango_context.device.healthState == HealthState.OK
+# def test_healthState():
+#     # arrange
+#     device_under_test = CspMasterLeafNode
+#     # act & assert:
+#     with fake_tango_system(device_under_test) as tango_context:
+#         assert tango_context.device.healthState == HealthState.OK
 
 def any_method(with_name=None):
     class AnyMethod():
