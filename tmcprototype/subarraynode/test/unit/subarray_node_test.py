@@ -706,7 +706,7 @@ def test_subarray_device_state_is_off_when_csp_subarray_is_off_after_start():
     csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
 
-    dut_properties = {
+    initial_dut_properties = {
         'CspSubarrayFQDN': csp_subarray_fqdn,
         'SdpSubarrayFQDN': sdp_subarray_fqdn
     }
