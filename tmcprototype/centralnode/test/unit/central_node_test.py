@@ -52,31 +52,31 @@ def create1_dummy_event_for_ok(sdp_master_fqdn):
     fake_event.attr_value.value = HealthState.OK
     return fake_event
 
-def create_subarray_dummy_event_for_unknown(sdp_master_fqdn):
+def create_subarray_dummy_event_for_unknown(subarray_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{subarray_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.UNKNOWN
     return fake_event
 
-def create_subarray_dummy_event_for_failed(sdp_master_fqdn):
+def create_subarray_dummy_event_for_failed(subarray_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{subarray_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.FAILED
     return fake_event
 
-def create_subarray_dummy_event_for_degraded(sdp_master_fqdn):
+def create_subarray_dummy_event_for_degraded(subarray_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{subarray_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.DEGRADED
     return fake_event
 
-def create_subarray_dummy_event_for_ok(sdp_master_fqdn):
+def create_subarray_dummy_event_for_ok(subarray_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{subarray_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.OK
     return fake_event
 
