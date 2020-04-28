@@ -44,6 +44,12 @@ def create_dummy_event_for_failed(csp_master_fqdn):
     fake_event.attr_value.value = HealthState.FAILED
     return fake_event
 
+def create1_dummy_event_for_degraded(sdp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.DEGRADED
+    return fake_event
 
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
@@ -157,12 +163,6 @@ def test_telescope_health_state_is_FAILED_when_csp_master_leaf_node_is_FAILED_af
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.FAILED
 
-def create1_dummy_event_for_degraded(sdp_master_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
-    fake_event.attr_value.value = HealthState.DEGRADED
-    return fake_event
 
 def test_telescope_health_state_is_degraded_when_sdp_master_leaf_node_is_degraded_after_start():
     # arrange:
@@ -191,7 +191,7 @@ def test_telescope_health_state_is_degraded_when_sdp_master_leaf_node_is_degrade
         event_subscription_map[sdp_master_health_attribute](dummy_event)
         print('telescopehealthstate:',tango_context.device.telescopeHealthState)
         # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.OK
+        assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
 
 
 
