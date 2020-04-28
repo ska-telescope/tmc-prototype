@@ -201,11 +201,8 @@ class SubarrayNode(SKASubarray):
                 """
         exception_message = []
         exception_count = 0
-        print("outside the if condition of obsState callback")
         if evt.err is False:
-            print("-------inside if of ObsStatecb---------")
             try:
-                print("----------------inside try of obsstCB-------------")
                 self._observetion_state = evt.attr_value.value
 
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
@@ -233,7 +230,6 @@ class SubarrayNode(SKASubarray):
                 [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                 exception_message, exception_count, const.ERR_AGGR_OBS_STATE)
         else:
-            print("------------inside else block of obsSTCB-----------------")
             log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
             self.logger.debug(log_msg)
             self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
@@ -243,32 +239,24 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated observation state of Subarray.
         """
-        print("Inside the calculationOBSST-----------------------")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
-            print("Pointing state:", value)
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == PointingState.SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
         if self._csp_sa_obs_state == ObsState.SCANNING and self._sdp_sa_obs_state ==\
                 ObsState.SCANNING:
-            print("----------------inside scanning block-------------")
             self._obs_state = ObsState.SCANNING
             # self.isScanning = True
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
-            print("----------------inside ready block-------------")
-            print ("pointing_state_count_track:", pointing_state_count_track)
-            print ("self.dishPointingStateMap:", self.dishPointingStateMap)
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                print("-----------inside pointingSTATECOUNZTTRACt----------")
                 self._obs_state = ObsState.READY
                 print ("ObsState:", self._obs_state)
         elif self._csp_sa_obs_state == ObsState.CONFIGURING or \
                 self._sdp_sa_obs_state == ObsState.CONFIGURING:
-            print("----------------inside configuring  block-------------")
             self._obs_state = ObsState.CONFIGURING
         elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
                 ObsState.IDLE:
@@ -281,12 +269,10 @@ class SubarrayNode(SKASubarray):
                             self._obs_state = ObsState.READY
                     else:
                         self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-                        print("----------------inside 1st idle block-------------")
                         self._obs_state = ObsState.IDLE
                 elif pointing_state_count_slew != 0:
                     self._obs_state = ObsState.CONFIGURING
                 else:
-                    print("----------------inside 2nd idle block-------------")
                     self._obs_state = ObsState.IDLE
 
     def create_csp_ln_proxy(self):
@@ -352,9 +338,7 @@ class SubarrayNode(SKASubarray):
             try:
                 str_leafId = argin[leafId]
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
-                print("Before proxy creation")
                 devProxy = DeviceProxy(self.DishLeafNodePrefix + str_leafId)
-                print("After proxy creation", devProxy)
                 self._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
@@ -621,37 +605,24 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        print("Argin in scan command before try:", argin)
         exception_count = 0
         exception_message = []
         try:
-            print("inside try::::::::")
             json_scan_duration = json.loads(argin)
             self.scan_duration = int(json_scan_duration['scanDuration'])
             self.logger.debug(const.STR_SCAN_IP_ARG, argin)
-            print("before scan condition")
             assert self._obs_state != ObsState.SCANNING, const.SCAN_ALREADY_IN_PROGRESS
-            print("after assert state")
             if self._obs_state == ObsState.READY:
-                print("obsState is ready")
                 self._read_activity_message = const.STR_SCAN_IP_ARG + argin
                 self.isScanning = True
                 # Invoke Scan command on SDP Subarray Leaf Node
-                print ("Initialising cmddata")
-                # cmdData = DeviceData()
-                # print ("cmdData created",cmdData)
-                # cmdData.insert(DevString, argin)
-                # print ("cmdData obj", cmdData)
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
-                print ("sdp subarray leaf node command called")
                 self.logger.debug(const.STR_SDP_SCAN_INIT)
                 self._read_activity_message = const.STR_SDP_SCAN_INIT
 
                 # Invoke Scan command on CSP Subarray Leaf Node
                 csp_argin = []
                 csp_argin.append(argin)
-                # cmdData = DeviceData()
-                # cmdData.insert(DevVarStringArray, csp_argin)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
                 self.logger.debug(const.STR_CSP_SCAN_INIT)
                 self._read_activity_message = const.STR_CSP_SCAN_INIT
@@ -1288,13 +1259,11 @@ class SubarrayNode(SKASubarray):
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
-        print("--------------inside sdp block---------------------")
         cbf_out_link = self.CspSubarrayFQDN + "/cbfOutputLink"
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration, cbf_out_link)
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
-        print("--------------------Inside conf csp------------------")
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
             const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
@@ -1305,7 +1274,6 @@ class SubarrayNode(SKASubarray):
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration, argin):
-        print("------------------inside dish block---------------")
         config_keys = scan_configuration.keys()
         if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
             self.only_dishconfig_flag = True
@@ -1351,7 +1319,6 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        print("Inside configure command of SubarrayNode::::::::", argin)
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg=const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
@@ -1360,11 +1327,8 @@ class SubarrayNode(SKASubarray):
 
         if self._obs_state != ObsState.IDLE:
             return
-        print("-------------------------------outside of try-----------------------")
         try:
-            print("-------------------------------inside of try block----------------------")
             scan_configuration = json.loads(argin)
-            print("scan conf after json loads:::::::", scan_configuration)
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)

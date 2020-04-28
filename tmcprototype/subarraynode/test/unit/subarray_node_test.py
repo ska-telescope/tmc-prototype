@@ -69,10 +69,6 @@ def test_assignResource_should_command_subarray_AssignResource():
     sdp_subarray_ln_proxy_mock = Mock()
     sdp_subarray_proxy_mock = Mock()
     dish_ln_proxy_mock = Mock()
-    # csp_subarray_proxy_mock.obsState = ObsState.READY
-    # sdp_subarray_proxy_mock.obsState = ObsState.READY
-    # csp_subarray_proxy_mock.set_state(DevState.OFF)
-    # sdp_subarray_proxy_mock.set_state(DevState.OFF)
 
     proxies_to_mock = {
         csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
@@ -86,13 +82,6 @@ def test_assignResource_should_command_subarray_AssignResource():
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
         receptor_list = ['0001']
-        # receptor_list1 = str(receptor_list)
-        # print("type of receptor-list on subarray : ", type(receptor_list1))
-        # act:
-        # tango_context.device.set_state(DevState.ON)
-
-        # cmdData = tango.DeviceData()
-        # cmdData.insert(tango.DevVarStringArray, receptor_list)
         tango_context.device.On()
         tango_context.device.AssignResources(receptor_list)
 
@@ -135,10 +124,6 @@ def test_ReleaseResource_command_subarray():
     sdp_subarray_ln_proxy_mock = Mock()
     sdp_subarray_proxy_mock = Mock()
     dish_ln_proxy_mock = Mock()
-    # csp_subarray_proxy_mock.obsState = ObsState.READY
-    # sdp_subarray_proxy_mock.obsState = ObsState.READY
-    # csp_subarray_proxy_mock.set_state(DevState.OFF)
-    # sdp_subarray_proxy_mock.set_state(DevState.OFF)
 
     proxies_to_mock = {
         csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
@@ -214,28 +199,22 @@ def test_Configure_command_subarray():
                                        '{"fieldId":0,"intervalMs":1400}}}]}}')
 
         # assert:
-        # scan_configuration = json.loads(argin)
-        # self._scan_id = str(scan_configuration["scanID"])
+        scan_config = '{"scanID": 12345, "sdp": {"configure": {"id": "realtime-20190627-0001", "sbiId": "20190627-0001", ' \
+                      '"workflow": {"id": "vis_ingest", "type": "realtime", "version": "0.1.0"}, ' \
+                      '"parameters": {"numStations": 4, "numChannels": 372, "numPolarisations": 4, ' \
+                      '"freqStartHz": 350000000.0, "freqEndHz": 1050000000.0, "fields": {"0": {"system": "ICRS", ' \
+                      '"name": "Polaris", "ra": 0.662432049839445, "dec": 1.5579526053855042}}}, ' \
+                      '"scanParameters": {"12345": {"fieldId": 0, "intervalMs": 1400}}, "cspCbfOutlinkAddress": ' \
+                      '"mid_csp/elt/subarray_01/cbfOutputLink"}}}'
 
-        csp_scan_config = '{"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",' \
-                          '"frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
-                          '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel",' \
-                          '"visDestinationAddressSubscriptionPoint":"mid_sdp/elt/subarray_1/receiveAddresses",' \
-                          '"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"20:21:10.31",' \
-                          '"dec":"-30:52:17.3"}},"scanID":"12345"}'
-        # cmd_data = tango.DeviceData()
-        # cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
-        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, json.dumps(csp_scan_config))
+        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, scan_config)
 
-        scan_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
-                     '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
-                     '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
-                     '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
-                     ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
-                     ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
-        # cmd_data = tango.DeviceData()
-        # cmd_data.insert(tango.DevString, json.dumps(scan_config))
-        sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, json.dumps(scan_config))
+        csp_scan_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, ' \
+                          '"integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": ' \
+                          '"ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": ' \
+                          '"mid_sdp/elt/subarray_1/receiveAddresses", "pointing": {"target": {"system": "ICRS", ' \
+                          '"name": "Polaris", "RA": "02:31:49.0946", "dec": "+89:15:50.7923"}}, "scanID": "12345"}'
+        csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_scan_config)
 
         dish_configure_input = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",' \
                                '"dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
@@ -298,7 +277,6 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        receptor_list = ['0001']
         tango_context.device.On()
         csp_subarray_proxy_mock.obsState = ObsState.READY
         sdp_subarray_proxy_mock.obsState = ObsState.READY
@@ -312,23 +290,14 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         print("event_subscription_map:", event_subscription_map)
         time.sleep(5)
         scan_config = '{"scanDuration": 10.0}'
-        print ("tango_context.device.obsState:", tango_context.device.obsState)
 
         tango_context.device.Scan(scan_config)
 
         # assert:
-        json_scan_duration = json.loads(scan_config)
-        scan_duration = int(json_scan_duration['scanDuration'])
-        print ("scan_duration", scan_duration)
-
-        # cmdData = DeviceData()
-        # cmdData.insert(DevString, scan_config)
         sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, scan_config)
 
         csp_argin = []
         csp_argin.append(scan_config)
-        # cmdData = DeviceData()
-        # cmdData.insert(DevVarStringArray, csp_argin)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_START_SCAN, csp_argin)
 
 def create_dummy_event_obsstate(device_fqdn):
@@ -529,8 +498,6 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
         dummy_event_sdp = create_dummy_event_obsstate(sdp_subarray_ln_fqdn)
         event_subscription_map[sdp_subarray_obsstate_attribute](dummy_event_sdp)
 
-        print ("event_subscription_map:", event_subscription_map)
-
         # assert:
         time.sleep(5)
         assert tango_context.device.obsState == ObsState.READY
@@ -591,7 +558,7 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
         time.sleep(5)
         assert tango_context.device.obsState == ObsState.SCANNING
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 def test_subarray_health_state_is_degraded_when_csp_subarray_ln_is_degraded_after_start():
     # arrange:
     device_under_test = SubarrayNode
@@ -622,7 +589,7 @@ def test_subarray_health_state_is_degraded_when_csp_subarray_ln_is_degraded_afte
 def create_dummy_event_healthstate(device_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/healthState"
+    fake_event.attr_name = f"{device_fqdn}/cspsubarrayHealthState"
     fake_event.attr_value.value = HealthState.DEGRADED
     return fake_event
 
