@@ -747,7 +747,7 @@ def create_dummy_event_state(device_fqdn, state_value, attribute):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    fake_event.attr_value.value = health_state_value
+    fake_event.attr_value.value = state_value
     return fake_event
 
 def test_Status():
