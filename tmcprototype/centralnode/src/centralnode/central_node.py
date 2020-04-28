@@ -110,6 +110,10 @@ class CentralNode(SKABaseDevice):
                 for subarray_health_state in list(self.subarray_health_state_map.values()):
                     counts[subarray_health_state] += 1
 
+                print('self.subarray_health_state_map.values() :', self.subarray_health_state_map.values())
+                print('counts[HealthState.OK]:',counts[HealthState.OK])
+                print('len(list(self.subarray_health_state_map.values())) + 2',
+                      len(list(self.subarray_health_state_map.values())) + 2)
                 if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 2:
                     self._telescope_health_state = HealthState.OK
                 elif counts[HealthState.FAILED] != 0:
