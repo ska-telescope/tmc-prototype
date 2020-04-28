@@ -43,7 +43,7 @@ services:
       - ..:/tmc-prototype
 
   midcspsubarray01:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.5
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.7-4028dc62
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}midcspsubarray01
     depends_on:
@@ -62,7 +62,7 @@ services:
       - rsyslog-csplmc:rw
 
   midcspsubarray02:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.5
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.7-4028dc62
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}midcspsubarray02
     depends_on:
@@ -81,7 +81,7 @@ services:
       - rsyslog-csplmc:rw
 
   midcspsubarray03:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.5
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.7-4028dc62
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}midcspsubarray03
     depends_on:
@@ -100,7 +100,7 @@ services:
       - rsyslog-csplmc:rw
 
   midcspmaster:
-   image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.5
+   image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.7-4028dc62
    network_mode: ${NETWORK_MODE}
    container_name: ${CONTAINER_NAME_PREFIX}midcspmaster
    depends_on:
@@ -118,7 +118,7 @@ services:
      - rsyslog-csplmc:rw
 
   midcapabilitymonitor:
-    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.5
+    image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.7-4028dc62
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}midcapabilitymonitor
     depends_on:
