@@ -736,8 +736,11 @@ def test_subarray_device_state_is_off_when_csp_subarray_is_off_after_start():
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        state = DevState.OFF
+        state = DevState.ON
         dummy_event = create_dummy_event_state(csp_subarray_fqdn, state, state_attribute)
+        event_subscription_map[state_attribute](dummy_event)
+
+        dummy_event = create_dummy_event_state(sdp_subarray_fqdn, state, state_attribute)
         event_subscription_map[state_attribute](dummy_event)
 
         # assert:

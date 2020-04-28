@@ -162,6 +162,7 @@ class SubarrayNode(SKASubarray):
                 """
         exception_message = []
         exception_count = 0
+        print ("Device State event:", evt)
         if evt.err is False:
             try:
                 if self.CspSubarrayFQDN in evt.attr_name:
@@ -188,8 +189,12 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated device state of Subarray.
         """
+        print ("self.get_state() :", self.get_state())
+        print ("self._csp_sa_device_state :", self._csp_sa_device_state)
+        print ("self._sdp_sa_device_state :", self._sdp_sa_device_state)
         if self.get_state() is not DevState.ON:
             if self._csp_sa_device_state==DevState.ON and self._sdp_sa_device_state == DevState.ON :
+                print ("In On state method")
                 self.set_state(DevState.ON)
             else:
                 self.logger.info("CSP and SDP subarray are not in ON state")
