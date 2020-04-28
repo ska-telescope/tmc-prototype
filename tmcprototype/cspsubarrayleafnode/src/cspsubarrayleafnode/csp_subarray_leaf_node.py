@@ -26,11 +26,11 @@ import numpy as np
 # print ("file_path", file_path)
 print("****$$$$Finding the file")
 print(os. system('find / -name "ska_antennas.txt"'))
-file_path = os.path.dirname(os.path.abspath(__file__))
-print("Module path:", file_path)
-ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pardir),os.pardir)) \
-                   + "/ska_antennas.txt"
-print ("******** Ska Antenna Path :", ska_antennas_path)
+# file_path = os.path.dirname(os.path.abspath(__file__))
+# print("Module path:", file_path)
+# ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pardir),os.pardir)) \
+#                   + "/ska_antennas.txt"
+# print ("******** Ska Antenna Path :", ska_antennas_path)
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
@@ -238,20 +238,20 @@ class CspSubarrayLeafNode(SKABaseDevice):
         assigned_receptors =[]
 
         # Load a set of antenna descriptions and construct Antenna objects from them
-        # file_path=os.path.isfile("ska_antennas.txt")
-        # if(file_path):
-        #     SRC_ROOT_DIR = "/app"
-        #     TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
-        #     ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
-        #     print ("SKA path in true section    :", ska_antennas_path)
-        # else:
-        #     TMC_ROOT_DIR="tmcprototype"
-        #     ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
-        #     print ("SKA path in false section     :", ska_antennas_path)
+        file_path=os.path.isfile("ska_antennas.txt")
+        if(file_path):
+            SRC_ROOT_DIR = "/app"
+            TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
+            ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+            print ("SKA path in true section    :", ska_antennas_path)
+        else:
+            TMC_ROOT_DIR="tmcprototype"
+            ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+            print ("SKA path in false section     :", ska_antennas_path)
 
 
-        # with open(ska_antennas_path) as f:
-        with open('ska_antennas.txt') as f:
+        with open(ska_antennas_path) as f:
+        #with open('ska_antennas.txt') as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         # Create a dictionary including antenna objects
