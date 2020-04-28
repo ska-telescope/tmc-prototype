@@ -1439,9 +1439,9 @@ class SubarrayNode(SKASubarray):
             # self._obs_state = ObsState.CONFIGURING
             cmd_input = []
             cmd_input.append(argin)
-            # cmdData = tango.DeviceData()
-            # cmdData.insert(tango.DevVarStringArray, cmd_input)
-            self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_input)
+            cmdData = tango.DeviceData()
+            cmdData.insert(tango.DevVarStringArray, cmd_input)
+            self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmdData)
             # set obsState to READY when the configuration is completed
             # self._obs_state = ObsState.READY
             self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
