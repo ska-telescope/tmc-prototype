@@ -54,7 +54,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
             as tango_context:
         assign_config='{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
-        assign_resources_input.append(assign_resource_input)
+        assign_resources_input.append(assign_config)
         device_proxy=tango_context.device
         ##act
         device_proxy.AssignResources(assign_resources_input)
