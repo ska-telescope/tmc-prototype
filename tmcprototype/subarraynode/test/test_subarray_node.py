@@ -130,7 +130,7 @@ class TestElementDeviceData:
           }
         expected_string_dict = json.dumps(expected_string_dict)
 
-        assert isinstance(sdp_cmd_data, tango.DeviceData)
+        assert isinstance(sdp_cmd_data, str)
         assert expected_string_dict == sdp_cmd_data.extract()
 
     def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
@@ -168,7 +168,7 @@ class TestElementDeviceData:
                 "scanID": "1"
             }
         expected_string_dict = json.dumps(expected_string_dict)
-        assert isinstance(csp_cmd_data, tango.DeviceData)
+        assert isinstance(csp_cmd_data, str)
         assert expected_string_dict == csp_cmd_data.extract()
 
     def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, csp_func_args):
