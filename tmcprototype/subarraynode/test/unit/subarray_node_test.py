@@ -587,6 +587,7 @@ def test_subarray_health_state_is_degraded_when_csp_subarray_ln_is_degraded_afte
         # assert:
         assert tango_context.device.healthState == HealthState.DEGRADED
 
+# @pytest.mark.xfail
 def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray_ln_is_ok_after_start():
     # arrange:
     device_under_test = SubarrayNode
@@ -599,15 +600,10 @@ def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray_ln_is_ok_after_st
         'SdpSubarrayLNFQDN': sdp_subarray_ln_fqdn,
     }
 
-    event_subscription_map = {}
+    subarray_ln_health_state_map = {}
 
     csp_subarray_ln_proxy_mock = Mock()
     sdp_subarray_ln_proxy_mock = Mock()
-
-    csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
-    sdp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
     proxies_to_mock = {
         csp_subarray_ln_fqdn: csp_subarray_ln_proxy_mock,
@@ -616,16 +612,26 @@ def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray_ln_is_ok_after_st
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        print("event_subscription_map 1:", event_subscription_map)
+        csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
+            lambda csp_subarray_ln_health_attribute, event_type, callback, *args, **kwargs: subarray_ln_health_state_map.update(
+                {attr_name: callback}))
+        sdp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
+            lambda sdp_subarray_ln_health_attribute, event_type, callback, *args, **kwargs: subarray_ln_health_state_map.update(
+                {attr_name: callback}))
+
+        print("subarray_ln_health_state_map 1:", subarray_ln_health_state_map)
+
         health_state_value = HealthState.OK
         dummy_event_csp = create_dummy_event_healthstate(csp_subarray_ln_fqdn, health_state_value, csp_subarray_ln_health_attribute)
-        event_subscription_map[csp_subarray_ln_health_attribute](dummy_event_csp)
-        print("event_subscription_map 2:", event_subscription_map)
+        subarray_ln_health_state_map[csp_subarray_ln_health_attribute](dummy_event_csp)
+
+        print("subarray_ln_health_state_map 2:", subarray_ln_health_state_map)
         health_state_value = HealthState.OK
         dummy_event_sdp = create_dummy_event_healthstate(sdp_subarray_ln_fqdn, health_state_value,
                                                      sdp_subarray_ln_health_attribute)
-        event_subscription_map[sdp_subarray_ln_health_attribute](dummy_event_sdp)
-        print ("event_subscription_map 3:", event_subscription_map)
+        subarray_ln_health_state_map[sdp_subarray_ln_health_attribute](dummy_event_sdp)
+
+        print ("subarray_ln_health_state_map 3:", subarray_ln_health_state_map)
 
         # assert:
         assert tango_context.device.healthState == HealthState.OK
