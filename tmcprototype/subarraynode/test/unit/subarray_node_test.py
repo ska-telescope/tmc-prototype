@@ -587,7 +587,7 @@ def test_subarray_health_state_is_degraded_when_csp_subarray_ln_is_degraded_afte
         # assert:
         assert tango_context.device.healthState == HealthState.DEGRADED
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray_ln_is_ok_after_start():
     # arrange:
     device_under_test = SubarrayNode
@@ -623,12 +623,12 @@ def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray_ln_is_ok_after_st
         print("subarray_ln_health_state_map 1:", subarray_ln_health_state_map)
 
         health_state_value = HealthState.OK
-        dummy_event_csp = create_dummy_event_healthstate(csp_subarray_ln_fqdn, health_state_value, csp_subarray_ln_health_attribute)
+        dummy_event_csp = create_dummy_event_healthstate_with_proxy(csp_subarray_ln_proxy_mock, csp_subarray_ln_fqdn, health_state_value, csp_subarray_ln_health_attribute)
         subarray_ln_health_state_map[csp_subarray_ln_health_attribute](dummy_event_csp)
 
         print("subarray_ln_health_state_map 2:", subarray_ln_health_state_map)
         health_state_value = HealthState.OK
-        dummy_event_sdp = create_dummy_event_healthstate(sdp_subarray_ln_fqdn, health_state_value,
+        dummy_event_sdp = create_dummy_event_healthstate_with_proxy(sdp_subarray_ln_proxy_mock, sdp_subarray_ln_fqdn, health_state_value,
                                                      sdp_subarray_ln_health_attribute)
         subarray_ln_health_state_map[sdp_subarray_ln_health_attribute](dummy_event_sdp)
 
@@ -700,6 +700,14 @@ def create_dummy_event_healthstate(device_fqdn, health_state_value, attribute):
     fake_event.attr_value.value = health_state_value
     return fake_event
 
+def create_dummy_event_healthstate_with_proxy(proxy_mock, device_fqdn, health_state_value, attribute):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = health_state_value
+    fake_event.device= proxy_mock
+    return fake_event
+
 def test_subarray_device_state_is_off_when_csp_subarray_is_off_after_start():
     # arrange:
     device_under_test = SubarrayNode
@@ -732,7 +740,7 @@ def test_subarray_device_state_is_off_when_csp_subarray_is_off_after_start():
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         state = DevState.OFF
-        dummy_event = create_dummy_event_state(csp_subarray_ln_fqdn, state, state_attribute)
+        dummy_event = create_dummy_event_state(csp_subarray_fqdn, state, state_attribute)
         event_subscription_map[state_attribute](dummy_event)
 
         # assert:
