@@ -28,12 +28,12 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        scan_config = '{"scanDuration":10}'
+        scan_config = '{"id":1}'
         # act:
         tango_context.device.Scan(scan_config)
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN,
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, scan_config,
                                                                         any_method(with_name='commandCallback'))
 
 
@@ -53,7 +53,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        assign_config = '{"processingBlockIdList": ["0001", "0002"]}'
+        assign_config = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}'
         device_proxy = tango_context.device
         # act:
         device_proxy.AssignResources(assign_config)
@@ -86,7 +86,6 @@ def test_release_resources_with_dummy_data_when_sdp_subarray_is_idle():
 
         # assert:
         sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RELEASE_RESOURCES,
-                                                                        '{"dummy_key": "dummy_value}"',
                                                                         any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_REL_RESOURCES)
 
@@ -107,12 +106,7 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        sdp_config = '{"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
-                     '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
-                     '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
-                     '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
-                     ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
-                     ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
+        sdp_config = '{"sdp":{ "scan_type": "science_A" }}'
         # act:
         tango_context.device.Configure(sdp_config)
 
@@ -120,8 +114,6 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
         json_argument = json.loads(sdp_config)
         sdp_arg = json_argument["sdp"]
         sdp_configuration = sdp_arg.copy()
-        if "configureScan" in sdp_configuration:
-            del sdp_configuration["configureScan"]
         sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
                                                                         json.dumps(sdp_configuration),
                                                                         any_method(with_name='commandCallback'))
@@ -171,7 +163,7 @@ def test_end_sb_should_command_sdp_subarray_to_end_sb_when_it_is_ready():
         tango_context.device.EndSB()
 
         # assert:
-        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSB,
+        sdp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESET,
                                                                         any_method(with_name='commandCallback'))
 
 

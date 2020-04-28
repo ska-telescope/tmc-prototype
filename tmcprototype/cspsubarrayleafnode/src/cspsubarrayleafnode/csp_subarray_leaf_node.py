@@ -505,9 +505,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
 
-            cmdData = tango.DeviceData()
-            cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
-            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, cmdData,
+            # cmdData = tango.DeviceData()
+            # cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
+            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
                                                        self.commandCallback)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
@@ -553,7 +553,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             json_scan_duration = json.loads(argin[0])
-            scan_duration = json_scan_duration["scanDuration"]
+            scan_ID = json_scan_duration["id"]
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == ObsState.READY:
                 #Invoke StartScan command on CspSubarray

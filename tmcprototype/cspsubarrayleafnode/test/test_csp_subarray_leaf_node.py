@@ -108,7 +108,7 @@ class TestCspSubarrayLeafNode(object):
         assignresources_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
         res = tango_context.device.AssignResources(assignresources_input)
         tango_context.device.status()
-        time.sleep(1)
+        time.sleep(5)
         assert create_cspsubarray1_proxy.state() == DevState.ON
         assert const.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
                and res is None
@@ -118,7 +118,7 @@ class TestCspSubarrayLeafNode(object):
         """Test for StartScan when device is not in READY state."""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_StartScan_Device_Not_Ready) ENABLED START #
         time.sleep(2)
-        tango_context.device.StartScan(['{"scanDuration": 10.0}'])
+        tango_context.device.StartScan(['{"id": 1}'])
         time.sleep(1)
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_StartScan_Device_Not_Ready
@@ -136,18 +136,6 @@ class TestCspSubarrayLeafNode(object):
         # assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
         assert create_cspsubarray1_proxy.obsState is not ObsState.READY
 
-    def test_StartScan_generic_exception(self, tango_context):
-        """
-        Test case to check generic exception (Negative test case)
-        :param tango_context:
-        :return:
-        """
-        StartScan_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StartScan(StartScan_input)
-        time.sleep(1)
-        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
-
     def test_Configure(self, tango_context, create_cspsubarray1_proxy, create_sdpsubarrayln1_proxy):
         """Test for Configure"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_Configure) ENABLED START #
@@ -158,11 +146,11 @@ class TestCspSubarrayLeafNode(object):
                               '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
                               '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", ' \
                               '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
-                              '"dec": "-30:52:17.3"}}, "scanID": "123"}'
+                              '"dec": "-30:52:17.3"}}, "scanID": "1"}'
         time.sleep(4)
         tango_context.device.Configure(configure_input)
         time.sleep(10)
-        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":123,"totalChannels":0,'
+        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":1,"totalChannels":0,'
                                                                         '"receiveAddresses":'
                                                                         '[{"fspId":1,"hosts":[]}]}')
         time.sleep(10)
@@ -219,10 +207,22 @@ class TestCspSubarrayLeafNode(object):
             assert 1
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
 
+    def test_StartScan_generic_exception(self, tango_context):
+        """
+        Test case to check generic exception (Negative test case)
+        :param tango_context:
+        :return:
+        """
+        StartScan_input = '[123]'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StartScan(StartScan_input)
+        time.sleep(1)
+        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
+
     def test_StartScan(self, tango_context, create_cspsubarray1_proxy):
         """Test for StartScan"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_StartScan) ENABLED START #
-        startscan_input = ['{"scanDuration": 10.0}']
+        startscan_input = ['{"id": 1}']
         tango_context.device.StartScan(startscan_input)
         time.sleep(2)
         obs_state = create_cspsubarray1_proxy.obsState
