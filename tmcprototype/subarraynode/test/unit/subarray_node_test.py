@@ -587,23 +587,31 @@ def test_subarray_health_state_is_degraded_when_csp_subarray_ln_is_degraded_afte
         # assert:
         assert tango_context.device.healthState == HealthState.DEGRADED
 
-def test_subarray_health_state_is_ok_when_csp_subarray_ln_is_ok_after_start():
+def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray_ln_is_ok_after_start():
     # arrange:
     device_under_test = SubarrayNode
     csp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    sdp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
     csp_subarray_ln_health_attribute = 'cspsubarrayHealthState'
+    sdp_subarray_ln_health_attribute = 'sdpSubarrayHealthState'
     initial_dut_properties = {
-        'CspSubarrayLNFQDN': csp_subarray_ln_fqdn
+        'CspSubarrayLNFQDN': csp_subarray_ln_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray_ln_fqdn,
     }
 
     event_subscription_map = {}
 
     csp_subarray_ln_proxy_mock = Mock()
+    sdp_subarray_ln_proxy_mock = Mock()
+
     csp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+    sdp_subarray_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
     proxies_to_mock = {
-        csp_subarray_ln_fqdn: csp_subarray_ln_proxy_mock
+        csp_subarray_ln_fqdn: csp_subarray_ln_proxy_mock,
+        sdp_subarray_ln_fqdn: sdp_subarray_ln_proxy_mock
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
@@ -611,6 +619,11 @@ def test_subarray_health_state_is_ok_when_csp_subarray_ln_is_ok_after_start():
         health_state_value = HealthState.OK
         dummy_event = create_dummy_event_healthstate(csp_subarray_ln_fqdn, health_state_value, csp_subarray_ln_health_attribute)
         event_subscription_map[csp_subarray_ln_health_attribute](dummy_event)
+
+        health_state_value = HealthState.OK
+        dummy_event = create_dummy_event_healthstate(sdp_subarray_ln_fqdn, health_state_value,
+                                                     sdp_subarray_ln_health_attribute)
+        event_subscription_map[sdp_subarray_ln_health_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.healthState == HealthState.OK
