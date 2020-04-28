@@ -616,14 +616,16 @@ def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray_ln_is_ok_after_st
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
+        print("event_subscription_map 1:", event_subscription_map)
         health_state_value = HealthState.OK
         dummy_event_csp = create_dummy_event_healthstate(csp_subarray_ln_fqdn, health_state_value, csp_subarray_ln_health_attribute)
         event_subscription_map[csp_subarray_ln_health_attribute](dummy_event_csp)
-
+        print("event_subscription_map 2:", event_subscription_map)
         health_state_value = HealthState.OK
         dummy_event_sdp = create_dummy_event_healthstate(sdp_subarray_ln_fqdn, health_state_value,
                                                      sdp_subarray_ln_health_attribute)
         event_subscription_map[sdp_subarray_ln_health_attribute](dummy_event_sdp)
+        print ("event_subscription_map 3:", event_subscription_map)
 
         # assert:
         assert tango_context.device.healthState == HealthState.OK

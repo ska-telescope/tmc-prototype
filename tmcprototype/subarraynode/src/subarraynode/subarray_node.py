@@ -146,6 +146,7 @@ class SubarrayNode(SKASubarray):
                 event_health_state, device_name, event)
             self._read_activity_message = log_message
             self.logger.debug(log_message)
+            print ("self.subarray_ln_health_state_map:", self.subarray_ln_health_state_map)
             self._health_state = SubarrayHealthState.calculate_health_state(
                 self.subarray_ln_health_state_map.values())
         else:
