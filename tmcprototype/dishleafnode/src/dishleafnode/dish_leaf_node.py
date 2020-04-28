@@ -648,7 +648,6 @@ class DishLeafNode(SKABaseDevice):
         exception_count = 0
         exception_message = []
         try:
-            print("argin in conf {} and its type {}:::: ".format(argin, type(argin)))
             jsonArgument = json.loads(argin)
             ra_value = (jsonArgument["pointing"]["target"]["RA"])
             dec_value = (jsonArgument["pointing"]["target"]["dec"])
@@ -858,7 +857,6 @@ class DishLeafNode(SKABaseDevice):
         exception_count = 0
         exception_message = []
         try:
-            print("argin is {} and type{}::::" .format(argin, type(argin)))
             self.el_limit = False
             jsonArgument = json.loads(argin)
             ra_value = (jsonArgument["pointing"]["target"]["RA"])
