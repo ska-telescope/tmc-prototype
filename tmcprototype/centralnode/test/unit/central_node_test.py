@@ -187,10 +187,11 @@ def test_telescope_health_state_is_degraded_when_sdp_master_leaf_node_is_degrade
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         dummy_event = create1_dummy_event_for_degraded(sdp_master_fqdn)
+        print('dummy event:',dummy_event)
         event_subscription_map[sdp_master_health_attribute](dummy_event)
-
+        print('telescopehealthstate:',tango_context.device.telescopeHealthState)
         # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
+        assert tango_context.device.telescopeHealthState == HealthState.OK
 
 
 
