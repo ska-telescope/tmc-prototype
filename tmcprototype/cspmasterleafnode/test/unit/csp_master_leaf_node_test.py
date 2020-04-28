@@ -231,6 +231,76 @@ def create_dummy_event_for_cspCbfHealthState_OK(csp_master_fqdn):
 #     fake_event.attr_value.value = HealthState.UNKNOWN
 #     return fake_event
 
+def test_attribute_cspPssHealthCallback_of_csp_master_is_equal_to_OK():
+    # arrange:
+    device_under_test = CspMasterLeafNode
+    csp_master_fqdn = 'mid/csp_elt/master'
+    csp_master_health_attribute = 'cspPssHealthCallback'
+    initial_dut_properties = {
+        'CspMasterFQDN': csp_master_fqdn
+    }
+
+    event_subscription_map = {}
+
+    csp_master_device_proxy_mock = Mock()
+    csp_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        csp_master_fqdn: csp_master_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_dummy_event_for_cspPssHealthCallback_OK(csp_master_fqdn)
+        event_subscription_map[csp_master_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage == const.STR_CSP_PSS_HEALTH_OK
+
+def create_dummy_event_for_cspPssHealthCallback_OK(csp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{csp_master_fqdn}/cspPssHealthCallback"
+    fake_event.attr_value.value = HealthState.OK
+    return fake_event
+
+def test_attribute_cspPstHealthCallback_of_csp_master_is_equal_to_OK():
+    # arrange:
+    device_under_test = CspMasterLeafNode
+    csp_master_fqdn = 'mid/csp_elt/master'
+    csp_master_health_attribute = 'cspPstHealthCallback'
+    initial_dut_properties = {
+        'CspMasterFQDN': csp_master_fqdn
+    }
+
+    event_subscription_map = {}
+
+    csp_master_device_proxy_mock = Mock()
+    csp_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        csp_master_fqdn: csp_master_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_dummy_event_for_cspPssHealthCallback_OK(csp_master_fqdn)
+        event_subscription_map[csp_master_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage == const.STR_CSP_PST_HEALTH_OK
+
+def create_dummy_event_for_cspPstHealthCallback_OK(csp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{csp_master_fqdn}/cspPstHealthCallback"
+    fake_event.attr_value.value = HealthState.OK
+    return fake_event
+
 
 def test_activityMessage():
     # arrange:
