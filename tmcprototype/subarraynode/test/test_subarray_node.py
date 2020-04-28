@@ -189,9 +189,8 @@ class TestElementDeviceData:
         }
 
         expected_string_dict = json.dumps(expected_string_dict)
-        print ("***************** sdp_cmd_data:", sdp_cmd_data, type(sdp_cmd_data))
         assert isinstance(sdp_cmd_data, str)
-        assert expected_string_dict == sdp_cmd_data.extract()
+        assert expected_string_dict == sdp_cmd_data
 
     def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
         invalid_scan_config = example_scan_configuration.pop("sdp")
@@ -240,7 +239,7 @@ class TestElementDeviceData:
         expected_string_dict = json.dumps(expected_string_dict)
         print ("csp_cmd_data:", csp_cmd_data, type(csp_cmd_data))
         assert isinstance(csp_cmd_data, str)
-        assert expected_string_dict == csp_cmd_data.extract()
+        assert expected_string_dict == csp_cmd_data
 
     def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, csp_func_args):
         empty_scan_config = {}

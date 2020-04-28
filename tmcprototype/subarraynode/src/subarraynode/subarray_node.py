@@ -45,7 +45,7 @@ class SubarrayHealthState:
     def generate_health_state_log_msg(health_state, device_name, event):
         if isinstance(health_state, HealthState):
             return (
-                const.STR_HEALTH_STATE + device_name + const.STR_ARROW + health_state.name.upper())
+                const.STR_HEALTH_STATE + str(device_name) + const.STR_ARROW + str(health_state.name.upper()))
         else:
             return const.STR_HEALTH_STATE_UNKNOWN_VAL + str(event)
 
@@ -134,6 +134,7 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
+        print ("Health State Event :", event)
         device_name = event.device.dev_name()
         if not event.err:
             event_health_state = event.attr_value.value
