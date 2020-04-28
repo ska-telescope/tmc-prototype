@@ -235,7 +235,7 @@ def test_attribute_cspPssHealthCallback_of_csp_master_is_equal_to_OK():
     # arrange:
     device_under_test = CspMasterLeafNode
     csp_master_fqdn = 'mid/csp_elt/master'
-    csp_master_health_attribute = 'cspPssHealthCallback'
+    csp_master_health_attribute = 'cspPssHealthState'
     initial_dut_properties = {
         'CspMasterFQDN': csp_master_fqdn
     }
@@ -262,7 +262,7 @@ def test_attribute_cspPssHealthCallback_of_csp_master_is_equal_to_OK():
 def create_dummy_event_for_cspPssHealthCallback_OK(csp_master_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/cspPssHealthCallback"
+    fake_event.attr_name = f"{csp_master_fqdn}/cspPssHealthState"
     fake_event.attr_value.value = HealthState.OK
     return fake_event
 
@@ -270,7 +270,7 @@ def test_attribute_cspPstHealthCallback_of_csp_master_is_equal_to_OK():
     # arrange:
     device_under_test = CspMasterLeafNode
     csp_master_fqdn = 'mid/csp_elt/master'
-    csp_master_health_attribute = 'cspPstHealthCallback'
+    csp_master_health_attribute = 'cspPstHealthState'
     initial_dut_properties = {
         'CspMasterFQDN': csp_master_fqdn
     }
@@ -297,7 +297,7 @@ def test_attribute_cspPstHealthCallback_of_csp_master_is_equal_to_OK():
 def create_dummy_event_for_cspPstHealthCallback_OK(csp_master_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/cspPstHealthCallback"
+    fake_event.attr_name = f"{csp_master_fqdn}/cspPstHealthState"
     fake_event.attr_value.value = HealthState.OK
     return fake_event
 
