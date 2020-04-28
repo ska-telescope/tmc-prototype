@@ -590,7 +590,7 @@ def create_dummy_event_healthstate(device_fqdn):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/cspsubarrayHealthState"
-    fake_event.device.dev_name = device_fqdn
+    # fake_event.device = device_fqdn
     fake_event.attr_value.value = HealthState.DEGRADED
     return fake_event
 
