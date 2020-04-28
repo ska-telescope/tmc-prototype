@@ -55,7 +55,9 @@ class SubarrayHealthState:
         Calculates aggregated health state of Subarray.
         """
         unique_states = set(health_states)
+        print("unique_states health_states:", unique_states)
         if unique_states == set([HealthState.OK]):
+            print ("Health State is :", HealthState.OK)
             return HealthState.OK
         elif HealthState.FAILED in unique_states:
             return HealthState.FAILED
