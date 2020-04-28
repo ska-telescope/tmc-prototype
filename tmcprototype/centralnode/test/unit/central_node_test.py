@@ -164,10 +164,11 @@ def create1_dummy_event_for_degraded(sdp_master_fqdn):
     fake_event.attr_value.value = HealthState.DEGRADED
     return fake_event
 
-def test_telescope_health_state_is_DEGRADED_when_sdp_master_leaf_node_is_DEGRADED_after_start():
+def test_telescope_health_state_is_degraded_when_sdp_master_leaf_node_is_degraded_after_start():
+    # arrange:def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
     device_under_test = CentralNode
-    sdp_master_fqdn = 'mid/sdp_elt/master'
+    sdp_master_fqdn = 'mid_sdp/elt/master'
     sdp_master_health_attribute = 'sdpHealthState'
     initial_dut_properties = {
         'SdpMasterLeafNodeFQDN': sdp_master_fqdn
@@ -186,11 +187,38 @@ def test_telescope_health_state_is_DEGRADED_when_sdp_master_leaf_node_is_DEGRADE
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create1_dummy_event_for_degraded(sdp_master_fqdn)
+        dummy_event = create_dummy_event_for_degraded(sdp_master_fqdn)
         event_subscription_map[sdp_master_health_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
+
+    device_under_test = CentralNode
+    csp_master_fqdn = 'mid/csp_elt/master'
+    csp_master_health_attribute = 'cspHealthState'
+    initial_dut_properties = {
+        'CspMasterLeafNodeFQDN': csp_master_fqdn
+    }
+
+    event_subscription_map = {}
+
+    csp_master_device_proxy_mock = Mock()
+    csp_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        csp_master_fqdn: csp_master_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_dummy_event_for_degraded(csp_master_fqdn)
+        event_subscription_map[csp_master_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
+
 
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
