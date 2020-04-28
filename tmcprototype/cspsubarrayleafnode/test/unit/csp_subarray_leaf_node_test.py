@@ -53,12 +53,14 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock)\
             as tango_context:
         assign_config='{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_resources_input = []
+        assign_resources_input.append(assign_resource_input)
         device_proxy=tango_context.device
-        #act
-        device_proxy.AssignResources(assign_config)
+        ##act
+        device_proxy.AssignResources(assign_resources_input)
         #assert
         receptorIDList = []
-        jsonArgument = json.loads(assign_config[0])
+        jsonArgument = json.loads(assign_resources_input[0])
         receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
         # convert receptorIDList from list of string to list of int
         for i in range(0, len(receptorIDList_str)):
