@@ -1305,7 +1305,6 @@ class SubarrayNode(SKASubarray):
             "build_up_dsh_cmd_data", scan_configuration, self.only_dishconfig_flag)
 
         try:
-            print("cmd data {} and type{}".format(cmd_data, type(cmd_data)))
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
         except DevFailed as df:

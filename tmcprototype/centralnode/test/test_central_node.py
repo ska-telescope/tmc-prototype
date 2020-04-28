@@ -257,7 +257,6 @@ class TestCentralNode(object):
                      '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}]}}'
         result = tango_context.device.AssignResources(test_input1)
         time.sleep(2)
-        print("Result is::::", result)
         assert result == '{"dish": {"receptorIDList_success": ["[", "]"]}}'
 
     def test_AssignResources_invalid_json(self, tango_context):

@@ -299,7 +299,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 delay_model_per_epoch["delayDetails"] = receptor_delay_model
                 delay_model.append(delay_model_per_epoch)
                 delay_model_json["delayModel"] = delay_model
-                print("delay_model_json: ", delay_model_json)
                 log_msg = "delay_model_json: " + str(delay_model_json)
                 self.logger.debug(log_msg)
                 # update the attribute
