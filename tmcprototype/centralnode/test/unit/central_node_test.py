@@ -52,6 +52,34 @@ def create1_dummy_event_for_ok(sdp_master_fqdn):
     fake_event.attr_value.value = HealthState.OK
     return fake_event
 
+def create_subarray_dummy_event_for_unknown(sdp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.UNKNOWN
+    return fake_event
+
+def create_subarray_dummy_event_for_failed(sdp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.FAILED
+    return fake_event
+
+def create_subarray_dummy_event_for_degraded(sdp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.DEGRADED
+    return fake_event
+
+def create_subarray_dummy_event_for_ok(sdp_master_fqdn):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
+    fake_event.attr_value.value = HealthState.OK
+    return fake_event
+
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
     device_under_test = CentralNode
@@ -194,6 +222,121 @@ def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_star
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.OK
 
+
+def test_telescope_health_state_is_degraded_when_subarray_leaf_node_is_degraded_after_start():
+    # arrange:
+    device_under_test = CentralNode
+    subarray_fqdn = 'ska_mid/tm_subarray_node/1'
+    subarray_health_attribute = 'subarrayHealthState'
+    initial_dut_properties = {
+        'CspMasterLeafNodeFQDN': subarray_fqdn
+    }
+
+    event_subscription_map = {}
+
+    subarray_device_proxy_mock = Mock()
+    subarray_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        subarray_fqdn: subarray_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_subarray_dummy_event_for_degraded(subarray_fqdn)
+        event_subscription_map[subarray_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
+
+
+def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start():
+    # arrange:
+    device_under_test = CentralNode
+    subarray_fqdn = 'ska_mid/tm_subarray_node/1'
+    subarray_health_attribute = 'subarrayHealthState'
+    initial_dut_properties = {
+        'CspMasterLeafNodeFQDN': subarray_fqdn
+    }
+
+    event_subscription_map = {}
+
+    subarray_device_proxy_mock = Mock()
+    subarray_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        subarray_fqdn: subarray_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_subarray_dummy_event_for_ok(subarray_fqdn)
+        event_subscription_map[subarray_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.telescopeHealthState == HealthState.OK
+
+
+def test_telescope_health_state_is_unknown_when_subarray_leaf_node_is_unknown_after_start():
+    # arrange:
+    device_under_test = CentralNode
+    subarray_fqdn = 'ska_mid/tm_subarray_node/1'
+    subarray_health_attribute = 'subarrayHealthState'
+    initial_dut_properties = {
+        'CspMasterLeafNodeFQDN': subarray_fqdn
+    }
+
+    event_subscription_map = {}
+
+    subarray_device_proxy_mock = Mock()
+    subarray_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        subarray_fqdn: subarray_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_subarray_dummy_event_for_unknown(subarray_fqdn)
+        event_subscription_map[subarray_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.telescopeHealthState == HealthState.UNKNOWN
+
+
+def test_telescope_health_state_is_failed_when_subarray_leaf_node_is_failed_after_start():
+    # arrange:
+    device_under_test = CentralNode
+    subarray_fqdn = 'ska_mid/tm_subarray_node/1'
+    subarray_health_attribute = 'subarrayHealthState'
+    initial_dut_properties = {
+        'CspMasterLeafNodeFQDN': subarray_fqdn
+    }
+
+    event_subscription_map = {}
+
+    subarray_device_proxy_mock = Mock()
+    subarray_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        subarray_fqdn: subarray_device_proxy_mock
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_subarray_dummy_event_for_failed(subarray_fqdn)
+        event_subscription_map[subarray_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.telescopeHealthState == HealthState.FAILED
 
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
