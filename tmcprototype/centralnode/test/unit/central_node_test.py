@@ -165,7 +165,6 @@ def create1_dummy_event_for_degraded(sdp_master_fqdn):
     return fake_event
 
 def test_telescope_health_state_is_degraded_when_sdp_master_leaf_node_is_degraded_after_start():
-    # arrange:def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
     device_under_test = CentralNode
     sdp_master_fqdn = 'mid_sdp/elt/master'
@@ -187,7 +186,7 @@ def test_telescope_health_state_is_degraded_when_sdp_master_leaf_node_is_degrade
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create_dummy_event_for_degraded(sdp_master_fqdn)
+        dummy_event = create1_dummy_event_for_degraded(sdp_master_fqdn)
         event_subscription_map[sdp_master_health_attribute](dummy_event)
 
         # assert:
