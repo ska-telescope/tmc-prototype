@@ -227,7 +227,7 @@ def test_telescope_health_state_is_degraded_when_subarray_leaf_node_is_degraded_
     # arrange:
     device_under_test = CentralNode
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
-    subarray_health_attribute = 'subarrayHealthState'
+    subarray_health_attribute = 'healthState'
     initial_dut_properties = {
         'CspMasterLeafNodeFQDN': subarray_fqdn
     }
@@ -256,7 +256,7 @@ def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start(
     # arrange:
     device_under_test = CentralNode
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
-    subarray_health_attribute = 'subarrayHealthState'
+    subarray_health_attribute = 'healthState'
     initial_dut_properties = {
         'CspMasterLeafNodeFQDN': subarray_fqdn
     }
@@ -285,7 +285,7 @@ def test_telescope_health_state_is_unknown_when_subarray_leaf_node_is_unknown_af
     # arrange:
     device_under_test = CentralNode
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
-    subarray_health_attribute = 'subarrayHealthState'
+    subarray_health_attribute = 'healthState'
     initial_dut_properties = {
         'CspMasterLeafNodeFQDN': subarray_fqdn
     }
@@ -314,7 +314,7 @@ def test_telescope_health_state_is_failed_when_subarray_leaf_node_is_failed_afte
     # arrange:
     device_under_test = CentralNode
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
-    subarray_health_attribute = 'subarrayHealthState'
+    subarray_health_attribute = 'healthState'
     initial_dut_properties = {
         'CspMasterLeafNodeFQDN': subarray_fqdn
     }
