@@ -30,22 +30,6 @@ def test_On_should_command_subarray_to_On():
         # assert:
         assert tango_context.device.state() == DevState.OFF
 
-def test_negative_On_should_command_subarray_to_On():
-    # arrange:
-    device_under_test = SubarrayNode
-    dut_properties = {
-    }
-    proxies_to_mock = {
-    }
-
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
-        # act:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.On(1)
-        # assert:
-        assert tango_context.device.state() == DevState.DISABLE
-
 def test_Standby_command_subarray_to_OFF():
     # arrange:
     device_under_test = SubarrayNode
@@ -115,6 +99,46 @@ def test_assignResource_should_command_subarray_AssignResource():
         arg_list.append(json.dumps(json_argument))
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
 
+def test_assignResource_should_raise_exception_when_called_before_on():
+    # arrange:
+    device_under_test = SubarrayNode
+    csp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray_fqdn,
+        'DishLeafNodePrefix' : dish_ln_prefix
+    }
+
+    csp_subarray_ln_proxy_mock = Mock()
+    csp_subarray_proxy_mock = Mock()
+    sdp_subarray_ln_proxy_mock = Mock()
+    sdp_subarray_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray_ln_fqdn : csp_subarray_ln_proxy_mock,
+        csp_subarray_fqdn : csp_subarray_proxy_mock,
+        sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
+        sdp_subarray_fqdn : sdp_subarray_proxy_mock,
+        dish_ln_prefix+"0001": dish_ln_proxy_mock
+    }
+
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        receptor_list = ['0001']
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(receptor_list)
+
+        # assert:
+        assert tango_context.device.State() == DevState.DISABLE
 
 def test_ReleaseResource_command_subarray():
     # arrange:
