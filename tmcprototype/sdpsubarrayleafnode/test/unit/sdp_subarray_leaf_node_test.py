@@ -6,11 +6,13 @@ import mock
 import types
 import pytest
 import time
+import tango
 from mock import Mock
 from tango import DevState
 from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
-from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
+from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
+from ska.base.control_model import LoggingLevel
 
 
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready():
