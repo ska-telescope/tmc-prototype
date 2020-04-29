@@ -168,6 +168,20 @@ def test_ReleaseResource_command_subarray():
         sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
 
+def test_release_resource_should_raise_exception_when_called_before_assign_resource():
+    # arrange:
+    device_under_test = SubarrayNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        tango_context.device.On()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseAllResources()
+
+        # assert:
+        assert tango_context.device.State() == DevState.OFF
+        assert const.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
+
 def test_Configure_command_subarray():
     # arrange:
     device_under_test = SubarrayNode
@@ -251,6 +265,48 @@ def create_dummy_event_obsstate_scanning(device_fqdn):
     fake_event.attr_name = f"{device_fqdn}/ObsState"
     fake_event.attr_value.value = ObsState.SCANNING
     return fake_event
+
+def test_configure_command_subarray_with_invalid_key_for_scan_id():
+    # arrange:
+    device_under_test = SubarrayNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        tango_context.device.On()
+        receptor_list = ['0001']
+        tango_context.device.AssignResources(receptor_list)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure('{"A":12345,"pointing":{"target":{"system":"ICRS","name":'
+                                           '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
+                                           '{"receiverBand":"1"},"csp":{"frequencyBand":"1","fsp":[{"fspID":1,'
+                                           '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                                           '"corrBandwidth":0}]},"sdp":{"configure":'
+                                           '[{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":'
+                                           '{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":'
+                                           '{"numStations":4,"numChannels":372,"numPolarisations":4,'
+                                           '"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":'
+                                           '{"system":"ICRS","name":"Polaris","ra":0.662432049839445,'
+                                           '"dec":1.5579526053855042}}},"scanParameters":{"12345":'
+                                           '{"fieldId":0,"intervalMs":1400}}}]}}')
+
+        # assert:
+        assert tango_context.device.obsState == ObsState.IDLE
+
+def test_configure_command_subarray_with_invalid_configure_input():
+    # arrange:
+    device_under_test = SubarrayNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        tango_context.device.On()
+        receptor_list = ['0001']
+        tango_context.device.AssignResources(receptor_list)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure('{"invalid_key"}')
+
+        # assert:
+        assert tango_context.device.obsState == ObsState.IDLE
+        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # arrange:
