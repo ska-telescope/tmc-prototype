@@ -76,6 +76,7 @@ def test_assign_resource_should_raise_exception_when_key_not_found():
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
+@pytest.mark.xfail
 def test_Configure_should_raise_exception_when_called_invalid_json():
     # arrange:
     device_under_test = CspSubarrayLeafNode
