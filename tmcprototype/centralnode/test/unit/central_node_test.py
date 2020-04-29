@@ -7,6 +7,7 @@ import json
 import pytest
 from mock import MagicMock
 from mock import Mock
+import tango
 from tango import DevState
 from tango.test_context import DeviceTestContext
 from centralnode import CentralNode,const
@@ -369,6 +370,151 @@ def any_method(with_name=None):
 
     return AnyMethod()
 
+def test_AssignResources_invalid_json():
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        result = 'a'
+        test_input = '{"dish":{"receptorIDList":["0001"]}}'
+        with pytest.raises(tango.DevFailed):
+            result = tango_context.device.AssignResources(test_input)
+
+        # assert:
+        assert 'a' in result
+
+
+def test_AssignResources_key_not_found():
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        result = 'a'
+        test_input = '{"dish":{"receptorIDList":["0001"]}}'
+        with pytest.raises(tango.DevFailed):
+            result = tango_context.device.AssignResources(test_input)
+
+        # assert:
+        assert 'a' in result
+
+def test_ReleaseResources_FalseTag(self, tango_context):
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        test_input = '{"subarrayID":1,"releaseALL":false,"receptorIDList":[]}'
+        tango_context.device.ReleaseResources(test_input)
+
+        # assert:
+        assert const.STR_FALSE_TAG in tango_context.device.activityMessage
+
+def test_ReleaseResources_invalid_json(self, tango_context):
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        test_input = '{"invalid_key"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseResources(test_input)
+
+        # assert:
+        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+
+def test_ReleaseResources_key_not_found(self, tango_context):
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        test_input = '{"releaseALL":true,"receptorIDList":[]}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseResources(test_input)
+        # assert:
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+
+def test_StartUpTelescope_Negative(self, tango_context):
+    """Test for StartUpTelescope"""
+    # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        tango_context.device.StartUpTelescope()
+
+        # assert:
+        assert const.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
+    # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
+
+def test_StandByTelescope_invalid_functionality(self, tango_context, create_leafNode1_proxy):
+    """Test for StandByTelescope"""
+    # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        create_leafNode1_proxy.SetOperateMode()
+        create_leafNode1_proxy.Scan("0")
+        tango_context.device.StandByTelescope()
+
+        # assert:
+        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
+
+def test_StowAntennas_ValueErr(self, tango_context, create_leafNode1_proxy):
+    """Negative Test for StowAntennas"""
+    # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        argin = ["xyz",]
+        create_leafNode1_proxy.SetStandByLPMode()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StowAntennas(argin)
+
+        # assert:
+        assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
+    # PROTECTED REGION END #    //  CentralNode.test_StowAntennas_ValueErr
+
+def test_StowAntennas_invalid_argument(self, tango_context):
+    """Test for StowAntennas"""
+    # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        argin = ["a", ]
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.StowAntennas(argin)
+
+        # assert:
+        assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
+    # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
+
+def test_StowAntennas_invalid_functionality(self, tango_context):
+    """Test for StowAntennas"""
+    # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
+    # arrange:
+    device_under_test = CentralNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        argin = ["0001",]
+        tango_context.device.StartUpTelescope()
+        with pytest.raises(tango.DevFailed) :
+            tango_context.device.StowAntennas(argin)
+
+        # assert:
+        assert const.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
+        # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
 def test_assign_resources_should_send_json_to_subarraynode():
     # arrange:
