@@ -86,7 +86,7 @@ def test_Configure_should_raise_exception_when_called_invalid_json():
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(configure_input)
         # assert:
-        assert tango_context.device.cspSubarrayObsState() == ObsState.IDLE
+        assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
 
 def test_StartScan_should_raise_generic_exception():
     # arrange:
