@@ -240,20 +240,20 @@ class CspSubarrayLeafNode(SKABaseDevice):
         # Load a set of antenna descriptions and construct Antenna objects from them
         print("****$$$$Finding the file")
         print(os.system('find / -name "ska_antennas.txt"'))
-        file_path=os.path.isfile("ska_antennas.txt")
-        print(file_path)
-        if(file_path):
-            SRC_ROOT_DIR = "/app"
-            TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
-            ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
-            print ("SKA path in true section    :", ska_antennas_path)
-        else:
-            TMC_ROOT_DIR="tmcprototype"
-            ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
-            print ("SKA path in false section     :", ska_antennas_path)
+        # file_path=os.path.isfile("ska_antennas.txt")
+        # print(file_path)
+        # if(file_path):
+        #     SRC_ROOT_DIR = "/app"
+        #     TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
+        #     ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+        #     print ("SKA path in true section    :", ska_antennas_path)
+        # else:
+        #     TMC_ROOT_DIR="tmcprototype"
+        #     ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
+        #     print ("SKA path in false section     :", ska_antennas_path)
 
 
-        with open(ska_antennas_path) as f:
+        with open("/venv/lib/python3.7/site-packages/cspsubarrayleafnode/ska_antennas.txt") as f:
         # with open('ska_antennas.txt') as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
