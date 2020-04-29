@@ -4,6 +4,8 @@ import sys
 import json
 import mock
 import types
+import pytest
+import tango
 
 from mock import Mock
 from tango import DevState
@@ -155,7 +157,7 @@ def test_loggingTargets():
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
-def test_assignResource_should_raise_exception_when_called_invalid_json():
+def test_assign_resource_should_raise_exception_when_called_invalid_json():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act
@@ -168,7 +170,7 @@ def test_assignResource_should_raise_exception_when_called_invalid_json():
     assert tango_context.device.state() == DevState.OFF
     assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
 
-def test_assignResource_should_raise_exception_when_key_not_found():
+def test_assign_resource_should_raise_exception_when_key_not_found():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act
@@ -192,7 +194,7 @@ def test_Configure_should_raise_exception_when_called_invalid_json():
     with pytest.raises(tango.DevFailed):
         tango_context.device.Configure(configure_input)
     # assert:
-    assert tango_context.device.obsState() == ObsState.READY
+    assert tango_context.device.cspSubarrayObsState == ObsState.IDLE
 
 def test_StartScan_should_raise_generic_exception():
     # arrange:
