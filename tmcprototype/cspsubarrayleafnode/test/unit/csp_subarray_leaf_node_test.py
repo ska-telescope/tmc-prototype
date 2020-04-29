@@ -164,11 +164,12 @@ def test_assign_resource_should_raise_exception_when_called_invalid_json():
     with fake_tango_system(device_under_test) \
             as tango_context:
         assignresources_input = '{"invalid_key"}'
-    with pytest.raises(tango.DevFailed):
-        tango_context.device.AssignResources(assignresources_input)
-    # assert:
-    assert tango_context.device.state() == DevState.OFF
-    assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(assignresources_input)
+        # assert:
+        assert tango_context.device.state() == DevState.OFF
+        assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
+
 
 def test_assign_resource_should_raise_exception_when_key_not_found():
     # arrange:
@@ -178,11 +179,11 @@ def test_assign_resource_should_raise_exception_when_key_not_found():
             as tango_context:
         assignresources_input = []
         assignresources_input.append('{"dis":{"receptorIDList":["0001","0002"]}}')
-    with pytest.raises(tango.DevFailed):
-        tango_context.device.AssignResources(assignresources_input)
-    # assert:
-    assert tango_context.device.state() == DevState.OFF
-    assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(assignresources_input)
+        # assert:
+        assert tango_context.device.state() == DevState.OFF
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 def test_Configure_should_raise_exception_when_called_invalid_json():
     # arrange:
@@ -191,10 +192,10 @@ def test_Configure_should_raise_exception_when_called_invalid_json():
     with fake_tango_system(device_under_test) \
             as tango_context:
         configure_input = '{"invalid_key"}'
-    with pytest.raises(tango.DevFailed):
-        tango_context.device.Configure(configure_input)
-    # assert:
-    assert tango_context.device.cspSubarrayObsState == ObsState.IDLE
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure(configure_input)
+        # assert:
+        assert tango_context.device.cspSubarrayObsState == ObsState.IDLE
 
 def test_StartScan_should_raise_generic_exception():
     # arrange:
@@ -203,7 +204,7 @@ def test_StartScan_should_raise_generic_exception():
     with fake_tango_system(device_under_test) \
             as tango_context:
         StartScan_input = '[123]'
-    with pytest.raises(tango.DevFailed):
-        tango_context.device.StartScan(StartScan_input)
-    # assert:
-    assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StartScan(StartScan_input)
+        # assert:
+        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
