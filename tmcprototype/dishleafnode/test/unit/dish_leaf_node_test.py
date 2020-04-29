@@ -724,7 +724,6 @@ def test_configure_should_raise_exception_when_called_with_invalid_JSON():
         input_string = '{"Invalid Key"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string)
-        time.sleep(5)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
@@ -774,7 +773,7 @@ def test_endscan_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(device_under_test) as tango_context:
         input_string = "a"
         with pytest.raises(tango.DevFailed):
-            tango_context.device.EndScanScan(input_string)
+            tango_context.device.EndScan(input_string)
 
         # assert:
         assert const.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
@@ -786,7 +785,7 @@ def test_startcapture_should_raise_exception_when_called_with_invalid_arguments(
     with fake_tango_system(device_under_test) as tango_context:
         input_string = "a"
         with pytest.raises(tango.DevFailed):
-            tango_context.device.EndScan(input_string)
+            tango_context.device.StartCapture(input_string)
 
         # assert:
         assert const.ERR_EXE_START_CAPTURE_CMD in tango_context.device.activityMessage
