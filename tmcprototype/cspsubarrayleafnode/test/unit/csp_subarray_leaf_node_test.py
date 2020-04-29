@@ -60,7 +60,6 @@ def test_assign_resource_should_raise_exception_when_called_invalid_json():
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assignresources_input)
         # assert:
-        assert tango_context.device.state() == DevState.OFF
         assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
 
 
@@ -75,7 +74,6 @@ def test_assign_resource_should_raise_exception_when_key_not_found():
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assignresources_input)
         # assert:
-        assert tango_context.device.state() == DevState.OFF
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 def test_Configure_should_raise_exception_when_called_invalid_json():
