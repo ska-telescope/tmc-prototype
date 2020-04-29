@@ -6,7 +6,7 @@ import json
 import mock
 import types
 
-from mock import Mock, mock_open
+from mock import Mock
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
 from ska.base.control_model import ObsState
@@ -72,7 +72,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
 
-def test_release_resources_RemoveAllReceptors_when_csp_subarray_is_idle():
+def test_release_resource_should_command_csp_subarray_to_release_all_resources():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
@@ -163,12 +163,8 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         cspConfiguration = argin_json.copy()
         if "pointing" in cspConfiguration:
             del cspConfiguration["pointing"]
-        # cmdData = tango.DeviceData()
-        # cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
         csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
                                     json.dumps(cspConfiguration), any_method(with_name='commandCallback'))
-        # assert_activity_message(device_proxy, const.STR_CONFIGURE_SUCCESS)
-
 
 def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
     # arrange:

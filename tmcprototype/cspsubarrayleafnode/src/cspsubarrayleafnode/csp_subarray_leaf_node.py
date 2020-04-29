@@ -499,9 +499,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # Keep configuration specific to CSP and delete pointing configuration
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
-
-            # cmdData = tango.DeviceData()
-            # cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
                                                        self.commandCallback)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
@@ -524,7 +521,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                     exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
 
         # throw exception:
-        if exception_count:
+        if exception_count > 0:
             self.throw_exception(exception_message, const.STR_CONFIG_SCAN_EXEC)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.Configure
 
@@ -685,10 +682,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             #convert receptorIDList from list of string to list of int
             for i in range(0, len(self.receptorIDList_str)):
                 self.receptorIDList.append(int(self.receptorIDList_str[i]))
+            self.update_config_params()
             # Invoke AddReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, self.receptorIDList,
                                                            self.commandCallback)
-            self.update_config_params()
             self._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
             self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
