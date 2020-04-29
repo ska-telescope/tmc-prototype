@@ -26,13 +26,15 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
         csp_subarray_fqdn: csp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         scan_config = { 'scanDuration': 10.0 }
         # act:
         tango_context.device.StartScan([json.dumps(scan_config)])
 
         # assert:
-        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, '0', any_method(with_name='commandCallback'))
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, '0',
+                                                             any_method(with_name='commandCallback'))
 
 
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list():
@@ -50,8 +52,8 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         csp_subarray_fqdn: csp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock)\
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         assign_config='{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_config)
@@ -65,8 +67,8 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         # convert receptorIDList from list of string to list of int
         for i in range(0, len(receptorIDList_str)):
             receptorIDList.append(int(receptorIDList_str[i]))
-        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,receptorIDList,
-                                                                        any_method(with_name='commandCallback'))
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
+                                                receptorIDList, any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
 
@@ -85,7 +87,8 @@ def test_release_resources_RemoveAllReceptors_when_csp_subarray_is_idle():
         csp_subarray_fqdn: csp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
             as tango_context:
         device_proxy = tango_context.device
         assign_config='{"dish":{"receptorIDList":["0001","0002"]}}'
@@ -97,7 +100,7 @@ def test_release_resources_RemoveAllReceptors_when_csp_subarray_is_idle():
 
         # assert:
         csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_REMOVE_ALL_RECEPTORS,
-                                                                        any_method(with_name='commandCallback'))
+                                                               any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
 def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
@@ -116,12 +119,12 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
     }
 
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         tango_context.device.EndScan()
         csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
-                                                                        any_method(with_name='commandCallback'))
+                                                        any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
 
 
@@ -139,8 +142,8 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         csp_subarray_fqdn: csp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         csp_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
                           '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
@@ -162,8 +165,8 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
             del cspConfiguration["pointing"]
         # cmdData = tango.DeviceData()
         # cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
-        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,  json.dumps(cspConfiguration),
-                                                                        any_method(with_name='commandCallback'))
+        csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
+                                    json.dumps(cspConfiguration), any_method(with_name='commandCallback'))
         # assert_activity_message(device_proxy, const.STR_CONFIGURE_SUCCESS)
 
 
@@ -183,13 +186,13 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
     }
 
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         tango_context.device.GoToIdle()
 
         csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_GOTOIDLE,
-                                                                        any_method(with_name='commandCallback'))
+                                                            any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
 
