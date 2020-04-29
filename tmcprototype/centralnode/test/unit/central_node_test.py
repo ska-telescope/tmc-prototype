@@ -16,48 +16,34 @@ from ska.base.control_model import HealthState, AdminMode, SimulationMode, Contr
 from ska.base.control_model import LoggingLevel
 
 
-def create_dummy_event_for_degraded(csp_master_fqdn):
+def create_dummy_event_for_degraded(device_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{device_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.DEGRADED
     return fake_event
 
-def create_dummy_event_for_ok(csp_master_fqdn):
+def create_dummy_event_for_ok(device_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{device_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.OK
     return fake_event
 
-def create_dummy_event_for_unknown(csp_master_fqdn):
+def create_dummy_event_for_unknown(device_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{device_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.UNKNOWN
     return fake_event
 
-def create_dummy_event_for_failed(csp_master_fqdn):
+def create_dummy_event_for_failed(device_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{device_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.FAILED
     return fake_event
 
-
-def create1_dummy_event_for_ok(sdp_master_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{sdp_master_fqdn}/healthState"
-    fake_event.attr_value.value = HealthState.OK
-    return fake_event
-
-def create_subarray_dummy_event_for_ok(subarray_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{subarray_fqdn}/healthState"
-    fake_event.attr_value.value = HealthState.OK
-    return fake_event
 
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
@@ -166,10 +152,8 @@ def test_telescope_health_state_is_FAILED_when_csp_master_leaf_node_is_FAILED_af
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         dummy_event = create_dummy_event_for_failed(csp_master_fqdn)
-        print('dummy_event in csp failed',dummy_event)
         event_subscription_map[csp_master_health_attribute](dummy_event)
-        print('tango_context.device.telescopeHealthState in csp failed:',
-              tango_context.device.telescopeHealthState)
+
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.FAILED
 
@@ -196,7 +180,7 @@ def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_star
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create1_dummy_event_for_ok(sdp_master_fqdn)
+        dummy_event = create_dummy_event_for_ok(sdp_master_fqdn)
         event_subscription_map[sdp_master_health_attribute](dummy_event)
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.OK
@@ -223,7 +207,7 @@ def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start(
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create_subarray_dummy_event_for_ok(subarray_fqdn)
+        dummy_event = create_dummy_event_for_ok(subarray_fqdn)
         event_subscription_map[subarray_health_attribute](dummy_event)
 
         # assert:
