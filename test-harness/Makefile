@@ -39,22 +39,22 @@ test:
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
 # 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
-	cd /app/tmcprototype/dishmaster && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-	mv /app/tmcprototype/dishmaster/dishmaster_coverage /build/dishmaster_coverage
-	cd /app/tmcprototype/dishleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-	mv /app/tmcprototype/dishleafnode/dishleafnode_coverage /build/dishleafnode_coverage
+# 	cd /app/tmcprototype/dishmaster && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+# 	mv /app/tmcprototype/dishmaster/dishmaster_coverage /build/dishmaster_coverage
+# 	cd /app/tmcprototype/dishleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+# 	mv /app/tmcprototype/dishleafnode/dishleafnode_coverage /build/dishleafnode_coverage
 	cd /app/tmcprototype/cspmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/cspmasterleafnode/cspmasterleafnode_coverage /build/cspmasterleafnode_coverage
 	cd /app/tmcprototype/cspsubarrayleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/cspsubarrayleafnode/cspsubarrayleafnode_coverage /build/cspsubarrayleafnode_coverage
-	cd /app/tmcprototype/sdpmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-	mv /app/tmcprototype/sdpmasterleafnode/sdpmasterleafnode_coverage /build/sdpmasterleafnode_coverage
-	cd /app/tmcprototype/sdpsubarrayleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-	mv /app/tmcprototype/sdpsubarrayleafnode/sdpsubarrayleafnode_coverage /build/sdpsubarrayleafnode_coverage
-	cd /app/tmcprototype/subarraynode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-	mv /app/tmcprototype/subarraynode/subarraynode_coverage /build/subarraynode_coverage
-	cd /app/tmcprototype/centralnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
-	mv /app/tmcprototype/centralnode/centralnode_coverage /build/centralnode_coverage
+# 	cd /app/tmcprototype/sdpmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+# 	mv /app/tmcprototype/sdpmasterleafnode/sdpmasterleafnode_coverage /build/sdpmasterleafnode_coverage
+# 	cd /app/tmcprototype/sdpsubarrayleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+# 	mv /app/tmcprototype/sdpsubarrayleafnode/sdpsubarrayleafnode_coverage /build/sdpsubarrayleafnode_coverage
+# 	cd /app/tmcprototype/subarraynode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+# 	mv /app/tmcprototype/subarraynode/subarraynode_coverage /build/subarraynode_coverage
+# 	cd /app/tmcprototype/centralnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+# 	mv /app/tmcprototype/centralnode/centralnode_coverage /build/centralnode_coverage
 	# Combine raw output from the coverage files of all the packages/devices and export to XML file
 	cd /build && coverage combine dishmaster_coverage dishleafnode_coverage cspmasterleafnode_coverage \
 	 cspsubarrayleafnode_coverage sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \

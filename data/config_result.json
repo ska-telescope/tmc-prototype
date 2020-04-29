@@ -2465,6 +2465,10 @@
                                 "1000", 
                                 "cspcbfadminmode", 
                                 "1000", 
+                                "standbycmdalarm", 
+                                "1000", 
+                                "offcmdalarm", 
+                                "1000", 
                                 "adminmode", 
                                 "1000", 
                                 "oncommandprogress", 
@@ -2617,6 +2621,8 @@
                                 "mid_csp/elt/cvlbi-01"
                             ], 
                             "polled_attr": [
+                                "alarmraisedflag", 
+                                "1000", 
                                 "timeoutexpiredflag", 
                                 "1000", 
                                 "state", 
@@ -2629,20 +2635,10 @@
                                 "1500", 
                                 "endscancmdprogress", 
                                 "1500", 
+                                "endsbcmdprogress", 
+                                "1500", 
                                 "healthstate", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
-                                "1000", 
-                                "gotoidlecmdprogress", 
-                                "1500", 
-                                "failureraisedflag", 
-                                "1000", 
-                                "addreceptorscmdprogress", 
-                                "1500", 
-                                "removereceptorscmdprogress", 
-                                "1500"
+                                "1000"
                             ]
                         }
                     }
@@ -3033,6 +3029,8 @@
                                 "mid_csp/elt/cvlbi-03"
                             ], 
                             "polled_attr": [
+                                "alarmraisedflag", 
+                                "1000", 
                                 "state", 
                                 "1000", 
                                 "timeoutexpiredflag", 
@@ -3045,20 +3043,10 @@
                                 "1500", 
                                 "endscancmdprogress", 
                                 "1500", 
+                                "endsbcmdprogress", 
+                                "1500", 
                                 "healthstate", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
-                                "1000", 
-                                "gotoidlecmdprogress", 
-                                "1500", 
-                                "failureraisedflag", 
-                                "1000", 
-                                "addreceptorscmdprogress", 
-                                "1500", 
-                                "removereceptorscmdprogress", 
-                                "1500"
+                                "1000"
                             ]
                         }
                     }
@@ -4026,10 +4014,6 @@
                                 "adminmode", 
                                 "1000", 
                                 "subarraymembership", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
                                 "1000"
                             ]
                         }
@@ -4172,10 +4156,6 @@
                                 "adminmode", 
                                 "1000", 
                                 "subarraymembership", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
                                 "1000"
                             ]
                         }
@@ -4318,10 +4298,6 @@
                                 "adminmode", 
                                 "1000", 
                                 "subarraymembership", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
                                 "1000"
                             ]
                         }
@@ -4461,10 +4437,6 @@
                                 "adminmode", 
                                 "1000", 
                                 "subarraymembership", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
                                 "1000"
                             ]
                         }

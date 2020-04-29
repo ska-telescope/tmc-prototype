@@ -238,6 +238,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         assigned_receptors =[]
 
         # Load a set of antenna descriptions and construct Antenna objects from them
+        print("****$$$$Finding the file")
+        print(os.system('find / -name "ska_antennas.txt"'))
         file_path=os.path.isfile("ska_antennas.txt")
         print(file_path)
         if(file_path):
