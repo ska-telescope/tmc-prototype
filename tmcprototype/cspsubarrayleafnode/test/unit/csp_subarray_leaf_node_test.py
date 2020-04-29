@@ -48,20 +48,61 @@ def any_method(with_name=None):
     return AnyMethod()
 
 
-@contextlib.contextmanager
-def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
-                      device_proxy_import_path='tango.DeviceProxy'):
 
-    with mock.patch(device_proxy_import_path) as patched_constructor:
-        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
-        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
 
-    device_under_test = getattr(patched_module, device_under_test.__name__)
+def test_assign_resource_should_raise_exception_when_called_invalid_json():
+    # arrange:
+    device_under_test = CspSubarrayLeafNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        assignresources_input = '{"invalid_key"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(assignresources_input)
+        # assert:
+        assert tango_context.device.state() == DevState.OFF
+        assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
 
-    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
-    device_test_context.start()
-    yield device_test_context
-    device_test_context.stop()
+
+def test_assign_resource_should_raise_exception_when_key_not_found():
+    # arrange:
+    device_under_test = CspSubarrayLeafNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        assignresources_input = []
+        assignresources_input.append('{"dis":{"receptorIDList":["0001","0002"]}}')
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(assignresources_input)
+        # assert:
+        assert tango_context.device.state() == DevState.OFF
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+
+def test_Configure_should_raise_exception_when_called_invalid_json():
+    # arrange:
+    device_under_test = CspSubarrayLeafNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        configure_input = '{"invalid_key"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure(configure_input)
+        # assert:
+        assert tango_context.device.cspSubarrayObsState() == ObsState.IDLE
+
+def test_StartScan_should_raise_generic_exception():
+    # arrange:
+    device_under_test = CspSubarrayLeafNode
+    # act
+    with fake_tango_system(device_under_test) \
+            as tango_context:
+        StartScan_input = '[123]'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StartScan(StartScan_input)
+        # assert:
+        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
+
+
 
 def test_State():   #from tango import DevState?
     # arrange:
@@ -157,54 +198,17 @@ def test_loggingTargets():
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
-def test_assign_resource_should_raise_exception_when_called_invalid_json():
-    # arrange:
-    device_under_test = CspSubarrayLeafNode
-    # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
-        assignresources_input = '{"invalid_key"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(assignresources_input)
-        # assert:
-        assert tango_context.device.state() == DevState.OFF
-        assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
+@contextlib.contextmanager
+def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
+                      device_proxy_import_path='tango.DeviceProxy'):
 
+    with mock.patch(device_proxy_import_path) as patched_constructor:
+        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
+        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
 
-def test_assign_resource_should_raise_exception_when_key_not_found():
-    # arrange:
-    device_under_test = CspSubarrayLeafNode
-    # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
-        assignresources_input = []
-        assignresources_input.append('{"dis":{"receptorIDList":["0001","0002"]}}')
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(assignresources_input)
-        # assert:
-        assert tango_context.device.state() == DevState.OFF
-        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+    device_under_test = getattr(patched_module, device_under_test.__name__)
 
-def test_Configure_should_raise_exception_when_called_invalid_json():
-    # arrange:
-    device_under_test = CspSubarrayLeafNode
-    # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
-        configure_input = '{"invalid_key"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(configure_input)
-        # assert:
-        assert tango_context.device.cspSubarrayObsState == ObsState.IDLE
-
-def test_StartScan_should_raise_generic_exception():
-    # arrange:
-    device_under_test = CspSubarrayLeafNode
-    # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
-        StartScan_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StartScan(StartScan_input)
-        # assert:
-        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
+    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
+    device_test_context.start()
+    yield device_test_context
+    device_test_context.stop()
