@@ -725,6 +725,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_JSON():
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string)
         time.sleep(5)
+
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
@@ -738,9 +739,9 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
             '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}')
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
-        time.sleep(5)
+
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_JSON_KEY_NOT_FOUND
+        assert  const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 def test_configure_should_raise_generic_exception():
     # arrange:
@@ -752,7 +753,7 @@ def test_configure_should_raise_generic_exception():
             tango_context.device.Configure(Configure_input)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_EXE_CONFIGURE_CMD
+        assert const.ERR_EXE_CONFIGURE_CMD in tango_context.device.activityMessage
 
 def test_scan_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -764,7 +765,7 @@ def test_scan_should_raise_exception_when_called_with_invalid_arguments():
             tango_context.device.Scan(input_string)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_EXE_SCAN_CMD
+        assert const.ERR_EXE_SCAN_CMD in tango_context.device.activityMessage
 
 def test_endscan_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -776,7 +777,7 @@ def test_endscan_should_raise_exception_when_called_with_invalid_arguments():
             tango_context.device.EndScanScan(input_string)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_EXE_END_SCAN_CMD
+        assert const.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
 
 def test_startcapture_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -788,7 +789,7 @@ def test_startcapture_should_raise_exception_when_called_with_invalid_arguments(
             tango_context.device.EndScan(input_string)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_EXE_START_CAPTURE_CMD
+        assert const.ERR_EXE_START_CAPTURE_CMD in tango_context.device.activityMessage
 
 
 def test_stopstartcapture_should_raise_exception_when_called_with_invalid_arguments():
@@ -801,7 +802,7 @@ def test_stopstartcapture_should_raise_exception_when_called_with_invalid_argume
             tango_context.device.StopCapture(input_string)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_EXE_STOP_CAPTURE_CMD
+        assert const.ERR_EXE_STOP_CAPTURE_CMD in tango_context.device.activityMessage
 
 def test_slew_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -813,7 +814,7 @@ def test_slew_should_raise_exception_when_called_with_invalid_arguments():
             tango_context.device.Slew(input_string)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_EXE_SLEW_CMD
+        assert const.ERR_EXE_SLEW_CMD in tango_context.device.activityMessage
 
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -826,7 +827,7 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
             tango_context.device.Track(input_string)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_JSON_KEY_NOT_FOUND
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
         tango_context.device.SetStandByLPMode()
 
 
@@ -841,7 +842,7 @@ def test_track_should_raise_exception_when_called_with_invalid_JSON():
             tango_context.device.Track(input_string)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_INVALID_JSON
+        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
 def test_activityMessage():
