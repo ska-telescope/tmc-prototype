@@ -415,11 +415,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            # TODO : For Future Implementation
-            # JSON argument scan_duration is maintained for future use.
-            # jsonArgument = json.loads(argin)
-            # TODO: Received id from Sdp Subarray Leaf Node and parse it and save it as id
-            # id = jsonArgument["id"]
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
             # Check if SDP Subarray obsState is READY
             if sdp_subarray_obs_state == ObsState.READY:

@@ -75,8 +75,6 @@ class ElementDeviceData:
                 scan_config.pop("dish", None)
                 scan_config.pop("csp", None)
                 scan_config.pop("tmc", None)
-                # cmd_data = tango.DeviceData()
-                # cmd_data.insert(tango.DevString, json.dumps(scan_config))
             else:
                 raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
         else:
@@ -94,9 +92,8 @@ class ElementDeviceData:
             for key, attribute_name in attr_name_map.items():
                 csp_scan_config[key] = attribute_name
             csp_scan_config["pointing"] = scan_config["pointing"]
+            # This is temporary fix to pass hardcoded scan_id value to CSP.
             csp_scan_config["scanID"] = '1'
-            # cmd_data = tango.DeviceData()
-            # cmd_data.insert(tango.DevString, json.dumps(csp_scan_config))
         else:
             raise KeyError("CSP configuration must be given. Aborting CSP configuration.")
         return json.dumps(csp_scan_config)
@@ -604,27 +601,18 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         exception_message = []
         try:
-            json_id = json.loads(argin)
-            self.id = int(json_id['id'])
             self.logger.debug(const.STR_SCAN_IP_ARG, argin)
             assert self._obs_state != ObsState.SCANNING, const.SCAN_ALREADY_IN_PROGRESS
             if self._obs_state == ObsState.READY:
                 self._read_activity_message = const.STR_SCAN_IP_ARG + argin
                 self.isScanning = True
-                # Invoke Scan command on SDP Subarray Leaf Node
-                # cmdData = tango.DeviceData()
                 # Invoke scan command on Sdp Subarray Leaf Node with input argument as scan id
-                # TODO: Pass id recived as a input
-                # cmdData.insert(tango.DevString, argin)
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
                 self.logger.debug(const.STR_SDP_SCAN_INIT)
                 self._read_activity_message = const.STR_SDP_SCAN_INIT
-
                 # Invoke Scan command on CSP Subarray Leaf Node
                 csp_argin = []
                 csp_argin.append(argin)
-                # cmdData = tango.DeviceData()
-                # cmdData.insert(tango.DevVarStringArray, csp_argin)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
                 self.logger.debug(const.STR_CSP_SCAN_INIT)
                 self._read_activity_message = const.STR_CSP_SCAN_INIT
@@ -669,17 +657,6 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = const.ERR_DUPLICATE_SCAN_CMD + str(assert_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
-        except ValueError as value_error:
-            str_log = const.ERR_SCAN_CMD + str(value_error) + const.ERR_INVALID_DATATYPE
-            self.logger.error(str_log)
-            self._read_activity_message = const.ERR_INVALID_DATATYPE + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except KeyError as key_err:
-            log_msg = const.ERR_SCAN_CMD + str(key_err)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SCAN_CMD + str(key_err)
-            self.logger.error(const.ERR_SCAN_CMD)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                     exception_message, exception_count, const.ERR_SCAN_CMD)
@@ -689,11 +666,6 @@ class SubarrayNode(SKASubarray):
         #Throw Exception
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_SCAN_EXEC)
-            # err_msg = ' '
-            # for item in excpt_msg:
-            #     err_msg += str(item) + "\n"
-            # tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-            #                              const.STR_SCAN_EXEC, tango.ErrSeverity.ERR)
 
     def waitForEndScan(self):
         scanning_time = 0.0
@@ -795,7 +767,7 @@ class SubarrayNode(SKASubarray):
         """
         Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
         as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
-        subarray is updated with the list of receptors and SDP resources string is pass to SDPLeafNode,
+        subarray is updated with the list of receptors and SDP resources string is pass to SDPSubarrayLeafNode,
         and returns list of assigned resources as well as passed SDP string as a DevString.
 
         Note: Resource allocation for CSP and SDP resources is also implemented but
@@ -831,11 +803,11 @@ class SubarrayNode(SKASubarray):
         # 1. Argument validation
         try:
             # Allocation success and failure lists
-            resource_jason = json.loads(argin)
-            receptor_list = resource_jason["dish"]["receptorIDList"]
-            sdp_resources = resource_jason.get("sdp")
-            self._sb_id = resource_jason["sdp"]["id"]
-            self.logger.debug("assign_resource_whole_jason", resource_jason)
+            resource_json = json.loads(argin)
+            receptor_list = resource_json["dish"]["receptorIDList"]
+            sdp_resources = resource_json.get("sdp")
+            self._sb_id = resource_json["sdp"]["id"]
+            self.logger.debug("assign_resource_whole_jason", resource_json)
             self.logger.debug("assign_resource_receptor", receptor_list)
             self.logger.debug("assign_resource_SDP_resources", sdp_resources)
 
@@ -906,8 +878,8 @@ class SubarrayNode(SKASubarray):
                 argout = []
         # return dish_allocation_result.
         self.logger.debug("assign_resource_argout",argout)
-        cmdDataReturn1 = json.dumps(argout)
-        return cmdDataReturn1
+        cmd_data_return = json.dumps(argout)
+        return cmd_data_return
 
     def is_AssignResources_allowed(self):
         """Checks if AssignResources is allowed in the current state of SubarrayNode."""
@@ -1286,7 +1258,6 @@ class SubarrayNode(SKASubarray):
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
-        # Need to confirm if CSP required SDP receive address
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
             const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"

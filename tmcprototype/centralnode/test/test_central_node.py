@@ -219,8 +219,6 @@ class TestCentralNode(object):
                      '"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
                      '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}]}}'
 
-        # the above test_input string has only 1 set of parameters for all the required fields. Same input can be passed
-        # in all the other methods. Argument with multiple parameters can be a scenario for testing.
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
         result = create_subarray1_proxy.receptorIDList

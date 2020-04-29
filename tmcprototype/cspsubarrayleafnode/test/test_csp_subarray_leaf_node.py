@@ -108,7 +108,7 @@ class TestCspSubarrayLeafNode(object):
         assignresources_input.append('{"dish":{"receptorIDList":["0001","0002"]}}')
         res = tango_context.device.AssignResources(assignresources_input)
         tango_context.device.status()
-        time.sleep(5)
+        time.sleep(1)
         assert create_cspsubarray1_proxy.state() == DevState.ON
         assert const.STR_ADD_RECEPTORS_SUCCESS in tango_context.device.activityMessage \
                and res is None
@@ -206,18 +206,6 @@ class TestCspSubarrayLeafNode(object):
         if _assert_flag == True:
             assert 1
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_delayModel
-
-    def test_StartScan_generic_exception(self, tango_context):
-        """
-        Test case to check generic exception (Negative test case)
-        :param tango_context:
-        :return:
-        """
-        StartScan_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StartScan(StartScan_input)
-        time.sleep(1)
-        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
     def test_StartScan(self, tango_context, create_cspsubarray1_proxy):
         """Test for StartScan"""
