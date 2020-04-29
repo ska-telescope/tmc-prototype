@@ -399,19 +399,6 @@ def test_AssignResources_key_not_found():
         # assert:
         assert 'a' in result
 
-def test_ReleaseResources_FalseTag():
-    # arrange:
-    device_under_test = CentralNode
-    # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
-        test_input = '{"subarrayID":1,"releaseALL":false,"receptorIDList":[]}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(test_input)
-
-        # assert:
-        assert const.STR_FALSE_TAG in tango_context.device.activityMessage
-
 def test_ReleaseResources_invalid_json():
     # arrange:
     device_under_test = CentralNode
@@ -437,35 +424,6 @@ def test_ReleaseResources_key_not_found():
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-def test_StartUpTelescope_Negative():
-    """Test for StartUpTelescope"""
-    # PROTECTED REGION ID(CentralNode.test_StartUpTelescope) ENABLED START #
-    # arrange:
-    device_under_test = CentralNode
-    # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StartUpTelescope()
-
-        # assert:
-        assert const.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
-    # PROTECTED REGION END #    //  CentralNode.test_StartUpTelescope
-
-def test_StandByTelescope_invalid_functionality():
-    """Test for StandByTelescope"""
-    # PROTECTED REGION ID(CentralNode.test_StandByTelescope) ENABLED START #
-    # arrange:
-    device_under_test = CentralNode
-    # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StandByTelescope()
-
-        # assert:
-        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
 def test_StowAntennas_ValueErr():
     """Negative Test for StowAntennas"""
@@ -499,22 +457,6 @@ def test_StowAntennas_invalid_argument():
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
     # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
-def test_StowAntennas_invalid_functionality():
-    """Test for StowAntennas"""
-    # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
-    # arrange:
-    device_under_test = CentralNode
-    # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
-        argin = ["0001",]
-        tango_context.device.StartUpTelescope()
-        with pytest.raises(tango.DevFailed) :
-            tango_context.device.StowAntennas(argin)
-
-        # assert:
-        assert const.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
 def test_assign_resources_should_send_json_to_subarraynode():
     # arrange:
