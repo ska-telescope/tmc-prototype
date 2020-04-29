@@ -30,6 +30,22 @@ def test_On_should_command_subarray_to_On():
         # assert:
         assert tango_context.device.state() == DevState.OFF
 
+def test_negative_On_should_command_subarray_to_On():
+    # arrange:
+    device_under_test = SubarrayNode
+    dut_properties = {
+    }
+    proxies_to_mock = {
+    }
+
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.On(1)
+        # assert:
+        assert tango_context.device.state() == DevState.DISABLE
+
 def test_Standby_command_subarray_to_OFF():
     # arrange:
     device_under_test = SubarrayNode
