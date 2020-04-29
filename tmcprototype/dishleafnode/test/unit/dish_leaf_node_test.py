@@ -2,6 +2,8 @@ import contextlib
 import importlib
 import sys
 import json
+import time
+
 import mock
 import types
 
@@ -719,12 +721,12 @@ def test_configure_should_raise_exception_when_called_with_invalid_JSON():
     device_under_test = DishLeafNode
     # act
     with fake_tango_system(device_under_test) as tango_context:
-        input_string = '{"abc"}'
+        input_string = '{"Invalid Key"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string)
-
+        time.sleep(5)
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_INVALID_JSON
+        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -736,7 +738,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
             '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}')
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
-
+        time.sleep(5)
         # assert:
         assert tango_context.device.activityMessage == const.ERR_JSON_KEY_NOT_FOUND
 
@@ -757,7 +759,7 @@ def test_scan_should_raise_exception_when_called_with_invalid_arguments():
     device_under_test = DishLeafNode
     # act
     with fake_tango_system(device_under_test) as tango_context:
-        input_string = '{"scanDuration":a}'
+        input_string = "a"
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(input_string)
 
@@ -769,7 +771,7 @@ def test_endscan_should_raise_exception_when_called_with_invalid_arguments():
     device_under_test = DishLeafNode
     # act
     with fake_tango_system(device_under_test) as tango_context:
-        input_string = '{"scanDuration":a}'
+        input_string = "a"
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndScanScan(input_string)
 
