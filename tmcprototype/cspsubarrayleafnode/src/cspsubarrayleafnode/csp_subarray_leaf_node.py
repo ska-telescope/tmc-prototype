@@ -539,9 +539,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
         state.
 
-        :param argin: JSON string consists of scanDuration (int).
+        :param argin: JSON string consists of scan id (int).
 
-        Example: in jive:{"scanDuration": 10.0}
+        Example: in jive:{"id":1}
 
         :return: None.
         """

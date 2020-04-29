@@ -276,10 +276,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 Mandatory JSON object consisting of
 
                 SBI ID :
-                    DevVarStringArray
+                    String
 
-                length of the SBI:
-                    Seconds
+                max_length:
+                    Float
 
             Scan types:
                 Consist of Scan type id name

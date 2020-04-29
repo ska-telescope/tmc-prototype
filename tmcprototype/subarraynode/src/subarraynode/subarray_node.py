@@ -807,7 +807,7 @@ class SubarrayNode(SKASubarray):
             receptor_list = resource_json["dish"]["receptorIDList"]
             sdp_resources = resource_json.get("sdp")
             self._sb_id = resource_json["sdp"]["id"]
-            self.logger.debug("assign_resource_whole_jason", resource_json)
+            self.logger.debug("assign_resource_whole_json", resource_json)
             self.logger.debug("assign_resource_receptor", receptor_list)
             self.logger.debug("assign_resource_SDP_resources", sdp_resources)
 

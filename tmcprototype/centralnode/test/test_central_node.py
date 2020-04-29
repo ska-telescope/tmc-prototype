@@ -213,12 +213,19 @@ class TestCentralNode(object):
         # PROTECTED REGION END #    //  CentralNode.test_testMode
 
     def test_AssignResources_Failure_Before_Startup(self, tango_context, create_subarray1_proxy):
-        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
-                     '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771",' \
-                     '"dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,' \
-                     '"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                     '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}]}}'
-
+        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
+                     ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":' \
+                     '"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":' \
+                     '"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":' \
+                     '"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
+                     '"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime"' \
+                     ',"version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch",' \
+                     '"id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001"' \
+                     ',"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":' \
+                     '"dpreb","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
+                     '"type":["calibration"]}]}]}}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
         result = create_subarray1_proxy.receptorIDList
@@ -227,11 +234,19 @@ class TestCentralNode(object):
         assert create_subarray1_proxy.State() == DevState.DISABLE
 
     def test_AssignResources(self, tango_context, create_subarray1_proxy):
-        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
-                     '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771",' \
-                     '"dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,' \
-                     '"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                     '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}]}}'
+        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
+                     ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":' \
+                     '"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":' \
+                     '"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":' \
+                     '"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
+                     '"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime"' \
+                     ',"version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch",' \
+                     '"id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001"' \
+                     ',"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":' \
+                     '"dpreb","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
+                     '"type":["calibration"]}]}]}}'
         tango_context.device.StartUpTelescope()
         time.sleep(10)
         json.loads(tango_context.device.AssignResources(test_input))
@@ -241,18 +256,34 @@ class TestCentralNode(object):
         tango_context.device.ReleaseResources(input_release_res)
 
     def test_duplicate_Allocation(self, tango_context, create_subarray1_proxy):
-        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
-                     '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771",' \
-                     '"dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,' \
-                     '"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                     '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}]}}'
+        test_input = '{"subarrayID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
+                     ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":' \
+                     '"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":' \
+                     '"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":' \
+                     '"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
+                     '"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime"' \
+                     ',"version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch",' \
+                     '"id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001"' \
+                     ',"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":' \
+                     '"dpreb","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
+                     '"type":["calibration"]}]}]}}'
         tango_context.device.AssignResources(test_input)
         time.sleep(3)
-        test_input1 = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
-                     '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771",' \
-                     '"dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,' \
-                     '"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                     '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}]}}'
+        test_input1 = '{"subarrayID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
+                     ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":' \
+                     '"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":' \
+                     '"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":' \
+                     '"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
+                     '"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime"' \
+                     ',"version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch",' \
+                     '"id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001"' \
+                     ',"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":' \
+                     '"dpreb","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
+                     '"type":["calibration"]}]}]}}'
         result = tango_context.device.AssignResources(test_input1)
         time.sleep(2)
         assert result == '{"dish": {"receptorIDList_success": ["[", "]"]}}'
