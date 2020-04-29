@@ -270,11 +270,8 @@ def test_configure_command_subarray_with_invalid_key_for_scan_id():
     # arrange:
     device_under_test = SubarrayNode
     # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
+    with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.On()
-        receptor_list = ['0001']
-        tango_context.device.AssignResources(receptor_list)
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure('{"A":12345,"pointing":{"target":{"system":"ICRS","name":'
                                            '"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},"dish":'
@@ -299,8 +296,6 @@ def test_configure_command_subarray_with_invalid_configure_input():
     with fake_tango_system(device_under_test) \
             as tango_context:
         tango_context.device.On()
-        receptor_list = ['0001']
-        tango_context.device.AssignResources(receptor_list)
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure('{"invalid_key"}')
 
