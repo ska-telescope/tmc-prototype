@@ -503,9 +503,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # Keep configuration specific to CSP and delete pointing configuration
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
-
-            # cmdData = tango.DeviceData()
-            # cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
                                                        self.commandCallback)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS

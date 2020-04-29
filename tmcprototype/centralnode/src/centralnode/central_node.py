@@ -532,7 +532,7 @@ class CentralNode(SKABaseDevice):
         Assigns resources to given subarray. It accepts the subarray id,
         receptor id list and SDP block in JSON string format. Upon successful execution, the
         'receptorIDList' attribute of the given subarray is populated with the given
-        receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throwout
+        receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throw
         error message regarding the prior existence of resource.
 
         :param argin: The string in JSON format. The JSON contains following values:
@@ -696,7 +696,6 @@ class CentralNode(SKABaseDevice):
                                                 exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
 
         except Exception as except_occurred:
-
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 

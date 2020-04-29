@@ -278,8 +278,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 SBI ID :
                     DevVarStringArray
 
-                    length of the SBI:
-                        Seconds
+                length of the SBI:
+                    Seconds
 
             Scan types:
                 Consist of Scan type id name

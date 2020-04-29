@@ -777,17 +777,17 @@ class SubarrayNode(SKASubarray):
             DevVarString.
 
             Example:
-            {"dish":{"receptorIDList":["0001","0002"]}, "sdp":{"id":"sbi-mvp01-20200318-0001","max_length":21600.0,
-            "scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"00:00:00.00","dec":"00:00:00.0",
-            "freq_min":0.0,"freq_max":0.0,"nchan":1000},{"id":"calibration_B","coordinate_system":"ICRS",
-            "ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000}],"processing_blocks":
-            [{"id":"pb-mvp01-20200318-0001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},
-            "parameters":{}},{"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime","id":"test_realtime",
-            "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0003","workflow":{"type":"batch","id":"ical",
-            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0001","type":
-            ["visibilities"]}]},{"id":"pb-mvp01-20200318-0004","workflow":{"type":"batch","id":"dpreb",
-            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0003",
-            "type":["calibration"]}]}]}}
+            {"dish":{"receptorIDList":["0001","0002"]}, "sdp":{"id":"sbi-mvp01-20200318-0001","max_length"
+            :21600.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"00:00:00.00","dec":
+            "00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000},{"id":"calibration_B",
+            "coordinate_system":"ICRS","ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,
+            "nchan":1000}],"processing_blocks":[{"id":"pb-mvp01-20200318-0001","workflow":{"type":"realtime"
+            ,"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0002","workflow"
+            :{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":
+            "pb-mvp01-20200318-0003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters"
+            :{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0001","type":["visibilities"]}]},{"id":
+            "pb-mvp01-20200318-0004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},"parameters"
+            :{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0003","type":["calibration"]}]}]}}
 
 
         :return:
@@ -1298,13 +1298,12 @@ class SubarrayNode(SKASubarray):
         :param argin: DevString.
         JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
         Configuration and SDP Configuration parameters.
-
         JSON string example is:
         {"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},
         "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",
         "fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},
         "sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0}}
-
+        CSP block in json string is as per earlier implementation and not aligned to SP-872
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
         :return: None
