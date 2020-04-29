@@ -24,8 +24,8 @@ import numpy as np
 # ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 
 # print ("file_path", file_path)
-# print("****$$$$Finding the file")
-# print(os. system('find / -name "ska_antennas.txt"'))
+print("****$$$$Finding the file")
+print(os. system('find / -name "ska_antennas.txt"'))
 # file_path = os.path.dirname(os.path.abspath(__file__))
 # print("Module path:", file_path)
 # ska_antennas_path = os.path.abspath(os.path.join(os.path.join(file_path, os.pardir),os.pardir)) \
