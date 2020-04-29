@@ -719,7 +719,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_JSON():
     device_under_test = DishLeafNode
     # act
     with fake_tango_system(device_under_test) as tango_context:
-        input_string = '{"Invalid Key"}'
+        input_string = '{"abc"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string)
 
@@ -757,7 +757,7 @@ def test_scan_should_raise_exception_when_called_with_invalid_arguments():
     device_under_test = DishLeafNode
     # act
     with fake_tango_system(device_under_test) as tango_context:
-        input_string = "a"
+        input_string = '{"scanDuration":a}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(input_string)
 
@@ -769,7 +769,7 @@ def test_endscan_should_raise_exception_when_called_with_invalid_arguments():
     device_under_test = DishLeafNode
     # act
     with fake_tango_system(device_under_test) as tango_context:
-        input_string = "a"
+        input_string = '{"scanDuration":a}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndScanScan(input_string)
 
