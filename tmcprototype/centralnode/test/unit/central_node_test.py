@@ -18,26 +18,26 @@ from ska.base.control_model import HealthState
 def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
     # arrange:
     device_under_test = CentralNode
-    csp_master_fqdn = 'mid/csp_elt/master'
-    csp_master_health_attribute = 'cspHealthState'
+    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
+    csp_master_ln_health_attribute = 'cspHealthState'
     initial_dut_properties = {
-        'CspMasterLeafNodeFQDN': csp_master_fqdn
+        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn
     }
 
     event_subscription_map = {}
 
-    csp_master_device_proxy_mock = Mock()
-    csp_master_device_proxy_mock.subscribe_event.side_effect = (
+    csp_master_ln_proxy_mock = Mock()
+    csp_master_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
 
     proxies_to_mock = {
-        csp_master_fqdn: csp_master_device_proxy_mock
+        csp_master_ln_fqdn: csp_master_ln_proxy_mock
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create_dummy_event(csp_master_fqdn)
-        event_subscription_map[csp_master_health_attribute](dummy_event)
+        dummy_event = create_dummy_event(csp_master_ln_fqdn)
+        event_subscription_map[csp_master_ln_health_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
@@ -81,10 +81,10 @@ def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
 
 
-def create_dummy_event(csp_master_fqdn):
+def create_dummy_event(csp_master_ln_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{csp_master_fqdn}/healthState"
+    fake_event.attr_name = f"{csp_master_ln_fqdn}/healthState"
     fake_event.attr_value.value = HealthState.DEGRADED
     return fake_event
 
@@ -116,14 +116,17 @@ def test_assign_resources_should_send_json_to_subarraynode():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]}}'
+        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}}'
         device_proxy=tango_context.device
         device_proxy.AssignResources(assign_command)
 
         # assert:
         jsonArgument = json.loads(assign_command)
+        input_json_subarray = jsonArgument.copy()
+        del input_json_subarray["subarrayID"]
+        input_to_sa = json.dumps(input_json_subarray)
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES,
-                                                             jsonArgument["dish"]["receptorIDList"])
+                                                             input_to_sa)
 
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
