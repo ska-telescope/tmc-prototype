@@ -406,7 +406,8 @@ def test_ReleaseResources_FalseTag():
     with fake_tango_system(device_under_test) \
             as tango_context:
         test_input = '{"subarrayID":1,"releaseALL":false,"receptorIDList":[]}'
-        tango_context.device.ReleaseResources(test_input)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseResources(test_input)
 
         # assert:
         assert const.STR_FALSE_TAG in tango_context.device.activityMessage
@@ -444,7 +445,8 @@ def test_StartUpTelescope_Negative():
     # act
     with fake_tango_system(device_under_test) \
             as tango_context:
-        tango_context.device.StartUpTelescope()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StartUpTelescope()
 
         # assert:
         assert const.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
@@ -458,7 +460,8 @@ def test_StandByTelescope_invalid_functionality():
     # act
     with fake_tango_system(device_under_test) \
             as tango_context:
-        tango_context.device.StandByTelescope()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StandByTelescope()
 
         # assert:
         assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
