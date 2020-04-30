@@ -244,12 +244,7 @@ def test_subarray1HealthState():
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.subarray1HealthState == HealthState.OK
-def create_dummy_event(csp_master_ln_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{csp_master_ln_fqdn}/healthState"
-    fake_event.attr_value.value = HealthState.DEGRADED
-    return fake_event
+
 def test_subarray2HealthState():
     # arrange:
     device_under_test = CentralNode
