@@ -455,7 +455,6 @@ class SubarrayNode(SKASubarray):
             failure, empty list is returned.
         """
         argout = []
-        json_argument = {}
         try:
             str_json_arg = json.dumps(argin)
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
@@ -814,9 +813,12 @@ class SubarrayNode(SKASubarray):
             receptor_list = resource_json["dish"]["receptorIDList"]
             sdp_resources = resource_json.get("sdp")
             self._sb_id = resource_json["sdp"]["id"]
-            self.logger.debug("assign_resource_whole_json", resource_json)
-            self.logger.debug("assign_resource_receptor", receptor_list)
-            self.logger.debug("assign_resource_SDP_resources", sdp_resources)
+            log_msg = "assign_resource_whole_json", resource_json
+            self.logger.debug(log_msg)
+            log_msg = "assign_resource_receptor", receptor_list
+            self.logger.debug(log_msg)
+            log_msg = "assign_resource_SDP_resources", sdp_resources
+            self.logger.debug(log_msg)
 
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
@@ -828,8 +830,8 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-
-            self.logger.debug("assign_resource_argin",argin)
+            log_msg = "assign_resource_argin",argin
+            self.logger.debug(log_msg)
 
         except ValueError as value_error:
             str_log = const.ERR_SCAN_CMD +"\n" + str(value_error) + const.ERR_INVALID_DATATYPE
@@ -884,7 +886,8 @@ class SubarrayNode(SKASubarray):
             else:
                 argout = []
         # return dish_allocation_result.
-        self.logger.debug("assign_resource_argout",argout)
+        log_msg = "assign_resource_argout",argout
+        self.logger.debug(log_msg)
         cmd_data_return = json.dumps(argout)
         return cmd_data_return
 

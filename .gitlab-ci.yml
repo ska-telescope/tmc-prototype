@@ -275,6 +275,7 @@ unit tests:
     paths:
       - ./test_results
 
+
 linting:
   stage: linting
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest

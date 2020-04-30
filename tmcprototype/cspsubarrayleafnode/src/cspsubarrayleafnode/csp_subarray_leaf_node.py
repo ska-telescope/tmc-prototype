@@ -11,18 +11,12 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
 import datetime
-import os
 import threading
 from datetime import datetime, timedelta
 import pytz
 import katpoint
 import numpy as np
 
-file_path = os.path.dirname(os.path.abspath(__file__))
-
-SRC_ROOT_DIR = "/app"
-TMC_ROOT_DIR = SRC_ROOT_DIR + "/tmcprototype"
-ska_antennas_path = TMC_ROOT_DIR + "/ska_antennas.txt"
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
@@ -230,7 +224,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         assigned_receptors =[]
 
         # Load a set of antenna descriptions and construct Antenna objects from them
-        with open(ska_antennas_path) as f:
+        with open("/venv/lib/python3.7/site-packages/cspsubarrayleafnode/ska_antennas.txt") as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         # Create a dictionary including antenna objects
@@ -685,11 +679,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             for i in range(0, len(self.receptorIDList_str)):
                 self.receptorIDList.append(int(self.receptorIDList_str[i]))
             self.update_config_params()
-
-            #Invoke AddReceptors command on CspSubarray
+            # Invoke AddReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, self.receptorIDList,
-                                                       self.commandCallback)
-
+                                                           self.commandCallback)
             self._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
             self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
@@ -716,7 +708,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                          exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
         # throw exception:
-        if exception_count > 0:
+        if exception_count:
+            print ("Exception in AssignResource:", exception_message)
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
