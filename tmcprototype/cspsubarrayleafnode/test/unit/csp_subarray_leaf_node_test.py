@@ -1,7 +1,6 @@
 import contextlib
 import importlib
 import sys
-import os
 import json
 import mock
 import types
