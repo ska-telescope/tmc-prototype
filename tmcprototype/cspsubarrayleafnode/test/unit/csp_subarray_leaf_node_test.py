@@ -89,20 +89,6 @@ def test_Configure_should_raise_exception_when_called_invalid_json():
         # assert:
         assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
 
-def test_StartScan_should_raise_generic_exception():
-    # arrange:
-    device_under_test = CspSubarrayLeafNode
-    # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
-        StartScan_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StartScan(StartScan_input)
-        # assert:
-        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
-
-
-
 def test_State():   #from tango import DevState?
     # arrange:
     device_under_test = CspSubarrayLeafNode
