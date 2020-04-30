@@ -1,5 +1,5 @@
-# release=0.1.0
-# tag=tmcprototype-0.1.0
+# release=0.1.10
+# tag=tmcprototype-0.1.10
 
 # -*- coding: utf-8 -*-
 #
@@ -13,7 +13,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.1.9"
+version = "0.1.10"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -22,6 +22,6 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.1.9
-tag=0.1.9
-description=Imported enum attributes from lmcbaseclasses control_model, Restructured TMC Prototype to remove duplicate names across folders, files and classes, Removed system path modifications, Fixed the import statements to reflect the correct paths, Utilised the installed TMC device packages to run the respective device containers and execute unit test cases, Resolved Pylint warnings and errors, Updated tmc-prototype to use the lmcbaseclasses version 0.5.1, Updated SubarrayNode.EndSB command to execute GoToIdle command on CSP Subarray, Changed ConfigureScan command of CSP Subarray to Configure.
+release=0.1.10
+tag=0.1.10
+description= Modify the AssignResources command to include SB information, Align use of the Configure command in the MVP, Update Scan command in the MVP to incorporate new json, Other supporting changes as per SP-872.
