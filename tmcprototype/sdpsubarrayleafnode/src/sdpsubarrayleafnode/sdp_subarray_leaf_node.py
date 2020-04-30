@@ -228,7 +228,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         try:
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                          '{"dummy_key": "dummy_value}"',
                                                                           self.commandCallback)
 
             # Update the status of command execution status in activity message
@@ -273,19 +272,41 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :param argin: The string in JSON format. The JSON contains following values:
 
-            Processing Block ID List:
+            SBI ID and maximum length of the SBI:
                 Mandatory JSON object consisting of
 
-                processingBlockIdList:
+                SBI ID :
+                    String
+
+                max_length:
+                    Float
+
+            Scan types:
+                Consist of Scan type id name
+
+                scan_type:
                     DevVarStringArray
-                    The individual string should contain PB numbers in string format
-                    with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+
+            Processing blocks:
+                Mandatory JSON object consisting of
+
+                    processing_blocks:
+                        DevVarStringArray
 
             Example:
-                {
-                "processingBlockIdList": ["0001", "0002"]
-                }
-            Note: Enter input without spaces  as:{"processingBlockIdList": ["0001", "0002"]}
+                {"id":"sbi-mvp01-20200318-0001","max_length":21600.0,"scan_types":[{"id":"science_A","coordinate_system"
+                :"ICRS","ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000},
+                {"id":"calibration_B","coordinate_system":"ICRS","ra":"00:00:00.00","dec":"00:00:00.0",
+                "freq_min":0.0,"freq_max":0.0,"nchan":1000}],"processing_blocks":[{"id":"pb-mvp01-20200318-0001",
+                "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},
+                {"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
+                "parameters":{}},{"id":"pb-mvp01-20200318-0003","workflow":{"type":"batch","id":"ical","version":
+                "0.1.0"},
+                "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0001","type":["visibilities"]}]},
+                {"id":"pb-mvp01-20200318-0004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},
+                "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0003","type":["calibration"]}]}]}}
+
+            Note: Enter input without spaces
 
         :return: Empty String.
         """
@@ -293,8 +314,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
 
         try:
-            jsonArgument = json.loads(argin)
-            processingBlockIDList = jsonArgument[const.STR_PROCESSINGBLOCKID_LIST]
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
                                                                           argin, self.commandCallback)
@@ -306,12 +325,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
-        except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
@@ -339,11 +353,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         Example:
 
-        {"sdp":{"configure":{"id":"realtime-20190627-0001","sbiId":"20190627-0001","workflow":
-        {"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":{"numStations":4,"numChanels":
-        372,"numPolarisations":4,"freqStartHz":0.35e9,"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS",
-        "name":"NGC6251","ra":1.0,"dec":1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},
-        "configureScan":{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}
+        {"sdp":{ "scan_type": "science_A" }}
 
         :return: None.
         """
@@ -356,8 +366,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             jsonArgument = json.loads(argin)
             sdp_arg = jsonArgument["sdp"]
             sdpConfiguration = sdp_arg.copy()
-            if "configureScan" in sdpConfiguration:
-                del sdpConfiguration["configureScan"]
             self._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                           self.commandCallback)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
@@ -398,42 +406,26 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             :param argin: The string in JSON format. The JSON contains following values:
             Example:
-            {“scanDuration”:0}.
+            {“id”:1}.
 
-            Note: Enter input as without spaces:{“scanDuration”:0}
+            Note: Enter input as without spaces:{“id”:1}
 
             :return: None.
         """
         exception_message = []
         exception_count = 0
-        print("argin in sdpsaln:", argin)
         try:
-            print("inside try of sdpsaln")
-            # TODO : For Future Implementation
-            # JSON argument scan_duration is maintained for future use.
-            jsonArgument = json.loads(argin)
-            scan_duration = jsonArgument["scanDuration"]
             sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
             # Check if SDP Subarray obsState is READY
             if sdp_subarray_obs_state == ObsState.READY:
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, self.commandCallback)
+                # TODO : Pass id as a string argument to sdp Subarray Scan command
+
+                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, self.commandCallback)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
                 self.logger.info(const.STR_SCAN_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_SCAN + str(value_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_INVALID_JSON_SCAN + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                         exception_message, exception_count, const.ERR_SCAN)
@@ -497,7 +489,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             if self._sdp_subarray_proxy.obsState == ObsState.READY:
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSB, self.commandCallback)
+                # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
+                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.commandCallback)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
             else:

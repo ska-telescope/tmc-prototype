@@ -299,7 +299,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 delay_model_per_epoch["delayDetails"] = receptor_delay_model
                 delay_model.append(delay_model_per_epoch)
                 delay_model_json["delayModel"] = delay_model
-                print("delay_model_json: ", delay_model_json)
                 log_msg = "delay_model_json: " + str(delay_model_json)
                 self.logger.debug(log_msg)
                 # update the attribute
@@ -504,10 +503,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # Keep configuration specific to CSP and delete pointing configuration
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
-
-            cmdData = tango.DeviceData()
-            cmdData.insert(tango.DevString, json.dumps(cspConfiguration))
-            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, cmdData,
+            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
                                                        self.commandCallback)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
@@ -543,17 +539,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
         This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
         state.
 
-        :param argin: JSON string consists of scanDuration (int).
+        :param argin: JSON string consists of scan id (int).
 
-        Example: in jive:{"scanDuration": 10.0}
+        Example: in jive:{"id":1}
 
         :return: None.
         """
         exception_message = []
         exception_count = 0
         try:
-            json_scan_duration = json.loads(argin[0])
-            scan_duration = json_scan_duration["scanDuration"]
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == ObsState.READY:
                 #Invoke StartScan command on CspSubarray
