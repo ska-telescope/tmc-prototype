@@ -291,11 +291,12 @@ def test_Configure_command_subarray():
 
         sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, scan_config)
 
-        csp_scan_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, ' \
-                          '"integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": ' \
-                          '"ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": ' \
-                          '"mid_sdp/elt/subarray_1/receiveAddresses", "pointing": {"target": {"system": "ICRS", ' \
-                          '"name": "Polaris", "RA": "02:31:49.0946", "dec": "+89:15:50.7923"}}, "scanID": "12345"}'
+        csp_scan_config = '{"id": "sbi-mvp01-20200325-00001-science_A", "frequencyBand": "1", "fsp": [{"fspID": 1, ' \
+                          '"functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}],' \
+                          ' "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
+                          '"visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", ' \
+                          '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "02:31:49.0946", ' \
+                          '"dec": "+89:15:50.7923"}}, "scanID": "1"}'
         csp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_scan_config)
 
         dish_configure_input = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",' \
