@@ -287,7 +287,7 @@ def test_Configure_command_subarray():
                                        '"tmc":{"scanDuration":10.0}}')
 
         # assert:
-        scan_config = '{"sdp":{"scan_type":"science_A"}}'
+        scan_config = '{"sdp": {"scan_type": "science_A"}}'
 
         sdp_subarray_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, scan_config)
 
