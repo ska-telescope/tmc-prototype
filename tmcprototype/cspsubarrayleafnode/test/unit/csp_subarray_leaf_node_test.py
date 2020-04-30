@@ -26,9 +26,8 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
         csp_subarray_fqdn: csp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_config = { 'scanDuration': 10.0 }
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+        scan_config = {'id':1}
         # act:
         tango_context.device.StartScan([json.dumps(scan_config)])
 
@@ -146,11 +145,11 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         csp_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
-                          '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
-                          '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
-                          '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", ' \
-                          '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
-                          '"dec": "-30:52:17.3"}}, "scanID": "123"}'
+                              '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
+                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
+                              '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", ' \
+                              '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
+                              '"dec": "-30:52:17.3"}}, "scanID": "1"}'
         assign_config='{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_config)

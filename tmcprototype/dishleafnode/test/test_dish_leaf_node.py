@@ -205,7 +205,6 @@ class TestDishLeafNode(object):
         # PROTECTED REGION ID(DishLeafNode.test_SetStandbyFPMode) ENABLED START #
         tango_context.device.SetStandbyFPMode()
         time.sleep(2)
-        print(tango_context.device.activityMessage)
         assert tango_context.device.activityMessage == (const.STR_STANDBYFP_SUCCESS) or \
                (const.STR_DISH_STANDBYFP_MODE)
         # PROTECTED REGION END #    //  DishLeafNode.test_SetStandbyFPMode
