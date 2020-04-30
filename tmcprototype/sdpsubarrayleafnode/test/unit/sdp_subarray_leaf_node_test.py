@@ -294,36 +294,6 @@ def test_loggingTargets():
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
-def test_AssignResources_invalid_key():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
-    # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
-        test_input = '{"processingBlock": ["0001", "0002"]}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
-        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
-
-def test_AssignResources_invalid_format():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
-    # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
-        test_input = '{"abc"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
-        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
-
-def test_AssignResources_generic_exception():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
-    # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
-        test_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
-        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
-
 def test_Configure_invalid_key():
     # arrange:
     device_under_test = SdpSubarrayLeafNode
@@ -358,38 +328,6 @@ def test_Configure_generic_exception():
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
         assert const.ERR_CONFIGURE in tango_context.device.activityMessage
-
-def test_Scan_invalid_json_format():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
-    # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
-        test_input = '{"abc"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan(test_input)
-        time.sleep(1)
-        assert const.ERR_INVALID_JSON_SCAN in tango_context.device.activityMessage
-
-def test_Scan_key_error():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
-    # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
-        test_input = '{"Duration":10}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan(test_input)
-        time.sleep(1)
-        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
-
-def test_Scan_generic_exception():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
-    # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
-        test_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan(test_input)
-        assert const.ERR_SCAN in tango_context.device.activityMessage
 
 def test_Scan_device_not_ready():
     # arrange:
