@@ -11,7 +11,6 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
 import datetime
-import os
 import threading
 from datetime import datetime, timedelta
 import pytz
