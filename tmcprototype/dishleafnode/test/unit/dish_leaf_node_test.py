@@ -712,7 +712,8 @@ def test_dish_leaf_node_when_desired_pointing_callback_True():
 
         # assert:
         print("create_dummy_event_3 value :",dummy_event.attr_value.value )
-        assert tango_context.device.activityMessage == const.STR_DESIRED_POINTING + str(dummy_event.attr_value.value)
+        assert tango_context.device.activityMessage == const.STR_DESIRED_POINTING +\
+               str(dummy_event.attr_value.value)
 
 def test_configure_should_raise_exception_when_called_with_invalid_JSON():
     # arrange:
@@ -733,7 +734,8 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(device_under_test) as tango_context:
         input_string = []
         input_string.append(
-            '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}')
+            '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},\
+            "dish":{"receiverBand":"1"}}')
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
 
@@ -818,7 +820,9 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
     device_under_test = DishLeafNode
     # act
     with fake_tango_system(device_under_test) as tango_context:
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        input_string =\
+            '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},' \
+            '"dish":{"receiverBand":"1"}}'
 
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(input_string)
