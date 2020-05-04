@@ -109,7 +109,8 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable():
 
         # assert:
         assert tango_context.device.activityMessage in const.STR_DISABLE_CMS_SUCCESS
-        
+
+
 def test_activityMessage():
     # arrange:
     device_under_test = SdpMasterLeafNode
@@ -118,12 +119,14 @@ def test_activityMessage():
         tango_context.device.activityMessage = "text"
         assert tango_context.device.activityMessage == "text"
 
+
 def test_versionInfo():
     # arrange:
     device_under_test = SdpMasterLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.versionInfo == '1.0'
+
 
 def test_ProcessingBlockList():
     # arrange:
@@ -132,6 +135,7 @@ def test_ProcessingBlockList():
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.ProcessingBlockList
 
+
 def test_State():
     # arrange:
     device_under_test = SdpMasterLeafNode
@@ -139,12 +143,14 @@ def test_State():
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.State() == DevState.ALARM
 
+
 def test_Status():
     # arrange:
     device_under_test = SdpMasterLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.Status() != const.STR_INIT_SUCCESS
+
 
 def test_loggingLevel():
     # arrange:
@@ -154,6 +160,7 @@ def test_loggingLevel():
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
+
 def test_loggingTargets():
     # arrange:
     device_under_test = SdpMasterLeafNode
@@ -161,6 +168,7 @@ def test_loggingTargets():
     with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
+
 
 def test_testMode():
     # arrange:
@@ -171,6 +179,7 @@ def test_testMode():
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
 
+
 def test_simulationMode():
     # arrange:
     device_under_test = SdpMasterLeafNode
@@ -179,6 +188,7 @@ def test_simulationMode():
         simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
+
 
 def test_controlMode():
     # arrange:
@@ -189,6 +199,7 @@ def test_controlMode():
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
 
+
 def test_adminMode():
     # arrange:
     device_under_test = SdpMasterLeafNode
@@ -196,12 +207,14 @@ def test_adminMode():
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
+
 def test_healthState():
     # arrange:
     device_under_test = SdpMasterLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
+
 
 def any_method(with_name=None):
     class AnyMethod():
