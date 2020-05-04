@@ -863,10 +863,10 @@ def test_subarray_device_state_is_on_when_csp_and_sdp_subarray_is_on_after_start
         # act:
         attribute = "state"
         dummy_event = create_dummy_event_state(csp_subarray_fqdn, attribute, DevState.ON)
-        event_subscription_map[state_attribute](dummy_event)
+        event_subscription_map[attribute](dummy_event)
 
         dummy_event = create_dummy_event_state(sdp_subarray_fqdn, attribute, DevState.ON)
-        event_subscription_map[state_attribute](dummy_event)
+        event_subscription_map[attribute](dummy_event)
 
         # assert:
         assert tango_context.device.State() == DevState.ON
