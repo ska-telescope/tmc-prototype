@@ -1,18 +1,14 @@
 import contextlib
 import importlib
-import sys
-import json
 import types
 import mock
 from mock import Mock
-import tango
 from tango import DevState
 from tango.test_context import DeviceTestContext
 from cspmasterleafnode import CspMasterLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
-import pytest
-import time
+
 
 def test_on_should_command_csp_master_leaf_node_to_start():
     # arrange:
