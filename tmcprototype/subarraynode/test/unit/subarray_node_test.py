@@ -74,7 +74,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray_to_assign_valid_re
         csp_subarray_fqdn : csp_subarray_proxy_mock,
         sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
         sdp_subarray_fqdn : sdp_subarray_proxy_mock,
-        dish_ln_prefix+"0001": dish_ln_proxy_mock
+        dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
 
 
@@ -97,11 +97,6 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray_to_assign_valid_re
         tango_context.device.On()
         tango_context.device.AssignResources(assign_input)
 
-        # assert:
-        # json_argument = {}
-        # dummy_sdp_resources = ["PB1", "PB2"]
-        # json_argument[const.STR_KEY_PB_ID_LIST] = dummy_sdp_resources
-        # str_json_arg = json.dumps(json_argument)
         resource_json = json.loads(assign_input)
         sdp_resources = resource_json.get("sdp")
         str_json_arg = json.dumps(sdp_resources)
@@ -185,7 +180,7 @@ def test_ReleaseResource_command_subarray():
         csp_subarray_fqdn : csp_subarray_proxy_mock,
         sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
         sdp_subarray_fqdn : sdp_subarray_proxy_mock,
-        dish_ln_prefix+"0001": dish_ln_proxy_mock
+        dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
 
 
@@ -371,7 +366,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         csp_subarray_fqdn : csp_subarray_proxy_mock,
         sdp_subarray_ln_fqdn : sdp_subarray_ln_proxy_mock,
         sdp_subarray_fqdn : sdp_subarray_proxy_mock,
-        dish_ln_prefix+'0001' : dish_ln_proxy_mock
+        dish_ln_prefix + '0001' : dish_ln_proxy_mock
     }
     csp_subarray_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray_obsstate_attribute = "sdpSubarrayObsState"
@@ -951,9 +946,7 @@ def test_activityMessage():
     """Test for activityMessage"""
     device_under_test = SubarrayNode
     with fake_tango_system(device_under_test) as tango_context:
-        message = const.STR_OK
-        tango_context.device.activityMessage = message
-        assert tango_context.device.activityMessage == message
+        assert tango_context.device.activityMessage == const.STR_SA_INIT_SUCCESS
 
 def test_configuredCapabilities():
     """Test for configuredCapabilities"""

@@ -130,7 +130,6 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        print ("Health State Event :", event)
         device_name = event.device.dev_name()
         if not event.err:
             event_health_state = event.attr_value.value
@@ -251,7 +250,6 @@ class SubarrayNode(SKASubarray):
                 ObsState.READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 self._obs_state = ObsState.READY
-                print ("ObsState:", self._obs_state)
         elif self._csp_sa_obs_state == ObsState.CONFIGURING or \
                 self._sdp_sa_obs_state == ObsState.CONFIGURING:
             self._obs_state = ObsState.CONFIGURING
@@ -1242,7 +1240,6 @@ class SubarrayNode(SKASubarray):
     # --------
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         try:
-            print ("\n\n **********Command relayed to leaf node",device_proxy , cmd_data, type(cmd_data))
             device_proxy.command_inout(cmd_name, cmd_data)
             log_msg = "%s configured succesfully." %device_proxy.dev_name()
             self.logger.debug(log_msg)
