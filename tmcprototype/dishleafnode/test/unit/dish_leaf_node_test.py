@@ -642,7 +642,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_False():
 def create_dummy_event_for_achievedPointing(dish_master_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/achievedPointing"
+    fake_event.attr_name = f"{dish_master_fqdn}/achievedPointing"
     fake_event.attr_value.value = 0.0
     return fake_event
 
@@ -680,7 +680,7 @@ def test_dish_leaf_node_when_acheived_pointing_callback_True():
 def create_dummy_event_for_desiredpointing(dish_master_fqdn):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/desiredPointing"
+    fake_event.attr_name = f"{dish_master_fqdn}/desiredPointing"
     fake_event.attr_value.value = 1.0
     return fake_event
 
