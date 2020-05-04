@@ -430,35 +430,31 @@ def test_ReleaseResources_KeyErr():
 
 def test_StowAntennas_ValueErr():
     """Negative Test for StowAntennas"""
-    # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
     # arrange:
     device_under_test = CentralNode
     # act
     with fake_tango_system(device_under_test) \
             as tango_context:
-        argin = ["xyz",]
+        argin = ["invalid_antenna",]
         with pytest.raises(tango.DevFailed):
             tango_context.device.StowAntennas(argin)
 
         # assert:
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
-    # PROTECTED REGION END #    //  CentralNode.test_StowAntennas_ValueErr
 
 def test_StowAntennas_ArgumentErr():
     """Test for StowAntennas"""
-    # PROTECTED REGION ID(CentralNode.test_StowAntennas) ENABLED START #
     # arrange:
     device_under_test = CentralNode
     # act
     with fake_tango_system(device_under_test) \
             as tango_context:
-        argin = ["a", ]
+        argin = ["invalid_argin", ]
         with pytest.raises(tango.DevFailed) :
             tango_context.device.StowAntennas(argin)
 
         # assert:
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
-    # PROTECTED REGION END #    //  CentralNode.test_StowAntennas
 
 
 def test_assign_resources():
