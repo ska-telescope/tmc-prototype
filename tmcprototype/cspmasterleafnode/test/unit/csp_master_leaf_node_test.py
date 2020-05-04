@@ -116,7 +116,9 @@ def test_attribute_cspCbfHealthState_of_csp_master_is_equal_to_OK():
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         health_state_value = HealthState.OK
-        dummy_event = create_dummy_event_for_HealthState(csp_master_fqdn,health_state_value,csp_master_health_attribute)
+        dummy_event = \
+            create_dummy_event_for_HealthState\
+                (csp_master_fqdn,health_state_value,csp_master_health_attribute)
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
@@ -237,7 +239,9 @@ def test_attribute_cspPssHealthCallback_of_csp_master_is_equal_to_OK():
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         health_state_value = HealthState.OK
-        dummy_event = create_dummy_event_for_HealthState(csp_master_fqdn,health_state_value,csp_master_health_attribute)
+        dummy_event = \
+            create_dummy_event_for_HealthState\
+                (csp_master_fqdn,health_state_value,csp_master_health_attribute)
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
@@ -358,7 +362,9 @@ def test_attribute_cspPstHealthCallback_of_csp_master_is_equal_to_OK():
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         health_state_value = HealthState.OK
-        dummy_event = create_dummy_event_for_HealthState(csp_master_fqdn,health_state_value,csp_master_health_attribute)
+        dummy_event = \
+            create_dummy_event_for_HealthState\
+                (csp_master_fqdn,health_state_value,csp_master_health_attribute)
         event_subscription_map[csp_master_health_attribute](dummy_event)
 
         # assert:
