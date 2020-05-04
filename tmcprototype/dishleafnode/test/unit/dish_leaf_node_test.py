@@ -639,10 +639,10 @@ def test_dish_leaf_node_when_dish_capturing_callback_False():
         assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_FALSE
 
 
-def create_dummy_event_for_achievedPointing(dish_master_fqdn, attribute, attr_value):
+def create_dummy_event(device_fqdn, attribute, attr_value):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{dish_master_fqdn}/{attribute}"
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = attr_value
     return fake_event
 
@@ -671,20 +671,12 @@ def test_dish_leaf_node_when_acheived_pointing_callback_True():
         # act:
         attribute = 'achievedPointing'
         value = 0.0
-        dummy_event = create_dummy_event_for_achievedPointing(dish_master_fqdn, attribute, value)
+        dummy_event = create_dummy_event(dish_master_fqdn, attribute, value)
         event_subscription_map[dish_master_achievedPointing_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.activityMessage == const.STR_ACHIEVED_POINTING + \
                str(dummy_event.attr_value.value)
-
-
-def create_dummy_event_for_desiredpointing(dish_master_fqdn):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{dish_master_fqdn}/desiredPointing"
-    fake_event.attr_value.value = 1.0
-    return fake_event
 
 
 def test_dish_leaf_node_when_desired_pointing_callback_True():
@@ -709,7 +701,9 @@ def test_dish_leaf_node_when_desired_pointing_callback_True():
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create_dummy_event_for_desiredpointing(dish_master_fqdn)
+        attribute = 'desiredPointing'
+        value = 0.0
+        dummy_event = create_dummy_event(dish_master_fqdn)
         event_subscription_map[dish_master_desiredPointing_attribute](dummy_event)
 
         # assert:
