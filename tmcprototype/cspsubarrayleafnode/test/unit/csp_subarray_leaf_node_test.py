@@ -1,16 +1,20 @@
+# Standard Python imports
 import contextlib
 import importlib
 import sys
 import json
-import mock
 import types
 import pytest
-import tango
-
+import mock
 from mock import Mock
+
+# Tango imports
+import tango
 from tango import DevState
-from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
+
+# Additional import
+from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode, LoggingLevel
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():

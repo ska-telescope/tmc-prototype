@@ -1,18 +1,20 @@
+# Standard Python imports
 import contextlib
 import importlib
 import sys
-import json
 import types
 import mock
 from mock import Mock, MagicMock
-import tango
+
+# Tango imports
 from tango import DevState
 from tango.test_context import DeviceTestContext
+
+# Additional import
 from sdpmasterleafnode import SdpMasterLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
-import pytest
-import time
+
 
 def test_on_should_command_sdp_master_leaf_node_to_start():
     # arrange:

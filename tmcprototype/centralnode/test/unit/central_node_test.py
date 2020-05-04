@@ -1,15 +1,20 @@
+# Standard Python imports
 import contextlib
 import importlib
 import sys
-import mock
 import types
 import json
 import pytest
+import mock
 from mock import MagicMock
 from mock import Mock
+
+# Tango imports
 import tango
 from tango import DevState
 from tango.test_context import DeviceTestContext
+
+# Additional import
 from centralnode import CentralNode,const
 from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
     STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
