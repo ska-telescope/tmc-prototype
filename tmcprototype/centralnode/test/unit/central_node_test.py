@@ -43,15 +43,14 @@ def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degrade
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        health_state = HealthState.DEGRADED
-        dummy_event = create_dummy_event(csp_master_ln_fqdn, health_state)
+        dummy_event = create_dummy_event(csp_master_ln_fqdn, HealthState.DEGRADED)
         event_subscription_map[csp_master_ln_health_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
 
 
-def test_telescope_health_state_is_OK_when_csp_master_leaf_node_is_OK_after_start():
+def test_telescope_health_state_is_ok_when_csp_master_leaf_node_is_ok_after_start():
     # arrange:
     device_under_test = CentralNode
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
@@ -72,15 +71,14 @@ def test_telescope_health_state_is_OK_when_csp_master_leaf_node_is_OK_after_star
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        health_state = HealthState.OK
-        dummy_event = create_dummy_event(csp_master_ln_fqdn, health_state)
+        dummy_event = create_dummy_event(csp_master_ln_fqdn, HealthState.OK)
         event_subscription_map[csp_master_ln_health_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.OK
 
 
-def test_telescope_health_state_is_UNKNOWN_when_csp_master_leaf_node_is_UNKNOWN_after_start():
+def test_telescope_health_state_is_unknown_when_csp_master_leaf_node_is_unknown_after_start():
     # arrange:
     device_under_test = CentralNode
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
@@ -101,15 +99,14 @@ def test_telescope_health_state_is_UNKNOWN_when_csp_master_leaf_node_is_UNKNOWN_
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        health_state = HealthState.UNKNOWN
-        dummy_event = create_dummy_event(csp_master_ln_fqdn, health_state)
+        dummy_event = create_dummy_event(csp_master_ln_fqdn, HealthState.UNKNOWN)
         event_subscription_map[csp_master_ln_health_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.UNKNOWN
 
 
-def test_telescope_health_state_is_FAILED_when_csp_master_leaf_node_is_FAILED_after_start():
+def test_telescope_health_state_is_failed_when_csp_master_leaf_node_is_failed_after_start():
     # arrange:
     device_under_test = CentralNode
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
@@ -130,8 +127,7 @@ def test_telescope_health_state_is_FAILED_when_csp_master_leaf_node_is_FAILED_af
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        health_state = HealthState.FAILED
-        dummy_event = create_dummy_event(csp_master_ln_fqdn, health_state)
+        dummy_event = create_dummy_event(csp_master_ln_fqdn, HealthState.FAILED)
         event_subscription_map[csp_master_ln_health_attribute](dummy_event)
 
         # assert:
@@ -159,8 +155,7 @@ def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_star
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        health_state = HealthState.OK
-        dummy_event = create_dummy_event(sdp_master_ln_fqdn, health_state)
+        dummy_event = create_dummy_event(sdp_master_ln_fqdn, HealthState.OK)
         event_subscription_map[sdp_master_ln_health_attribute](dummy_event)
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.OK
@@ -187,8 +182,7 @@ def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start(
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        health_state = HealthState.OK
-        dummy_event = create_dummy_event(subarray_fqdn, health_state)
+        dummy_event = create_dummy_event(subarray_fqdn, HealthState.OK)
         event_subscription_map[subarray_health_attribute](dummy_event)
 
         # assert:
@@ -238,7 +232,7 @@ def test_activity_message_attribute_captures_the_last_received_command():
         assert_activity_message(dut, STR_STANDBY_CMD_ISSUED)
 
 
-def test_telescopeHealthState():
+def test_telescope_health_state():
     # arrange:
     device_under_test = CentralNode
 
@@ -247,7 +241,7 @@ def test_telescopeHealthState():
         assert tango_context.device.telescopeHealthState == HealthState.OK
 
 
-def test_subarray1HealthState():
+def test_subarray1_health_state():
     # arrange:
     device_under_test = CentralNode
     # act & assert:
@@ -255,7 +249,7 @@ def test_subarray1HealthState():
         assert tango_context.device.subarray1HealthState == HealthState.OK
 
 
-def test_subarray2HealthState():
+def test_subarray2_health_state():
     # arrange:
     device_under_test = CentralNode
     # act & assert:
@@ -263,7 +257,7 @@ def test_subarray2HealthState():
         assert tango_context.device.subarray2HealthState == HealthState.OK
 
 
-def test_subarray3HealthState():
+def test_subarray3_health_state():
     # arrange:
     device_under_test = CentralNode
     # act & assert:
@@ -271,16 +265,16 @@ def test_subarray3HealthState():
         assert tango_context.device.subarray3HealthState == HealthState.OK
 
 
-def test_activityMessage():
+def test_activity_message():
     # arrange:
     device_under_test = CentralNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
-        tango_context.device.activityMessage = 'test'
-        assert tango_context.device.activityMessage == "test"
+        tango_context.device.activityMessage = ''
+        assert tango_context.device.activityMessage == ''
 
 
-def test_State():
+def test_state():
     #arrange
     device_under_test = CentralNode
     # act & assert:
@@ -288,7 +282,7 @@ def test_State():
         assert tango_context.device.State() == DevState.ON
 
 
-def test_Status():
+def test_status():
     # arrange
     device_under_test = CentralNode
     # act & assert:
@@ -296,7 +290,7 @@ def test_Status():
         assert tango_context.device.Status() == const.STR_INIT_SUCCESS
 
 
-def test_loggingLevel():
+def test_logging_level():
     # arrange
     device_under_test = CentralNode
     # act & assert:
@@ -305,7 +299,7 @@ def test_loggingLevel():
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
-def test_loggingTargets():
+def test_logging_targets():
     # arrange
     device_under_test = CentralNode
     # act & assert:
@@ -314,7 +308,7 @@ def test_loggingTargets():
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
-def test_testMode():
+def test_test_mode():
     # arrange
     device_under_test = CentralNode
     # act & assert:
@@ -324,7 +318,7 @@ def test_testMode():
         assert tango_context.device.testMode == test_mode
 
 
-def test_simulationMode():
+def test_simulation_mode():
     # arrange
     device_under_test = CentralNode
     # act & assert:
@@ -334,7 +328,7 @@ def test_simulationMode():
         assert tango_context.device.simulationMode == simulation_mode
 
 
-def test_controlMode():
+def test_control_mode():
     # arrange
     device_under_test = CentralNode
     # act & assert:
@@ -344,7 +338,7 @@ def test_controlMode():
         assert tango_context.device.controlMode == control_mode
 
 
-def test_adminMode():
+def test_admin_mode():
     # arrange
     device_under_test = CentralNode
     # act & assert:
@@ -352,7 +346,7 @@ def test_adminMode():
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
-def test_healthState():
+def test_health_state():
     # arrange
     device_under_test = CentralNode
     # act & assert:
@@ -373,7 +367,7 @@ def any_method(with_name=None):
     return AnyMethod()
 
 
-def test_AssignResources_jsonErr():
+def test_assign_resources_invalid_json():
     # arrange:
     device_under_test = CentralNode
     # act
@@ -388,7 +382,7 @@ def test_AssignResources_jsonErr():
         assert 'a' in result
 
 
-def test_AssignResources_KeyErr():
+def test_assign_resources_invalid_key():
     # arrange:
     device_under_test = CentralNode
     # act
@@ -402,7 +396,7 @@ def test_AssignResources_KeyErr():
         # assert:
         assert 'a' in result
 
-def test_ReleaseResources_jsonErr():
+def test_release_resources_invalid_json():
     # arrange:
     device_under_test = CentralNode
     # act
@@ -415,7 +409,7 @@ def test_ReleaseResources_jsonErr():
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
-def test_ReleaseResources_KeyErr():
+def test_release_resources_invalid_key():
     # arrange:
     device_under_test = CentralNode
     # act
@@ -428,7 +422,7 @@ def test_ReleaseResources_KeyErr():
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
-def test_StowAntennas_ValueErr():
+def test_stow_antennas_invalid_value():
     """Negative Test for StowAntennas"""
     # arrange:
     device_under_test = CentralNode
@@ -442,7 +436,7 @@ def test_StowAntennas_ValueErr():
         # assert:
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
 
-def test_StowAntennas_ArgumentErr():
+def test_stow_antennas_invalid_argument():
     """Test for StowAntennas"""
     # arrange:
     device_under_test = CentralNode
@@ -473,19 +467,21 @@ def test_assign_resources():
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
-                     ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":' \
-                     '"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":' \
-                     '"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                     '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":' \
-                     '"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
-                     '"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime"' \
-                     ',"version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch",' \
-                     '"id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001"' \
-                     ',"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":' \
-                     '"dpreb","version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
-                     '"type":["calibration"]}]}]}}'
+        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-' \
+                         '20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate' \
+                         '_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min"' \
+                         ':0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id"' \
+                         ':"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.' \
+                         '598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_' \
+                         'map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
+                         '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters"' \
+                         ':{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_' \
+                         'realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
+                         '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},' \
+                         '"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]}' \
+                         ',{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","' \
+                         'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
+                         '00003","type":["calibration"]}]}]}}'
         device_proxy=tango_context.device
         device_proxy.AssignResources(assign_command)
 
