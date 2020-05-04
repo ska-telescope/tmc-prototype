@@ -1,18 +1,22 @@
+# Standard Python imports
 import contextlib
 import importlib
 import sys
 import json
-import mock
 import types
-import tango
-from tango import DevState, DeviceData, DevString, DevVarStringArray
 import time
 import pytest
-
+import mock
 from mock import Mock
+
+# Tango imports
+import tango
+from tango import DevState, DeviceData, DevString, DevVarStringArray
+from tango.test_context import DeviceTestContext
+
+# Additional import
 from subarraynode import SubarrayNode, const
 from subarraynode.const import PointingState
-from tango.test_context import DeviceTestContext
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, LoggingLevel
 
 def test_on_command_should_change_subarray_device_state_from_disable_to_off():

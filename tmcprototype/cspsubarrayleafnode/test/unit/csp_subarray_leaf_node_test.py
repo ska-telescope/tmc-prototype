@@ -6,12 +6,12 @@ import mock
 import types
 import pytest
 import tango
-
 from mock import Mock
 from tango import DevState
 from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
-from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode, LoggingLevel
+from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode, \
+    LoggingLevel
 
 def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
     # arrange:
@@ -28,7 +28,8 @@ def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it
         csp_subarray_fqdn: csp_subarray_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties, proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         scan_config = {'id':1}
         # act:
         tango_context.device.StartScan([json.dumps(scan_config)])
@@ -148,9 +149,12 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         device_proxy = tango_context.device
         csp_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
                               '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
-                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
-                              '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", ' \
-                              '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "20:21:10.31", ' \
+                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/' \
+                     'delayModel", ' \
+                              '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/' \
+                     'sdp_subarray01/receiveAddresses", ' \
+                              '"pointing": {"target": {"system": "ICRS", "name": "Polaris", ' \
+                     '"RA": "20:21:10.31", ' \
                               '"dec": "-30:52:17.3"}}, "scanID": "1"}'
         assign_config='{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []

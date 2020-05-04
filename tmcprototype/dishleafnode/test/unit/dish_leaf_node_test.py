@@ -3,10 +3,8 @@ import importlib
 import sys
 import json
 import time
-
 import mock
 import types
-
 import pytest
 import tango
 from tango import DevState
@@ -197,7 +195,7 @@ def test_track_should_command_dish_to_start_tracking():
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0", 
                                                                 any_method(with_name='commandCallback'))
 '''
-def test_stop_track_should_command_dish_to_start_tracking():
+def test_stop_track_should_command_dish_to_stop_tracking():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -294,12 +292,14 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
             dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, capture_arg,
                                                                     any_method(with_name='commandCallback'))
 
+
 def create_dummy_event_for_dishmode(device_fqdn,dish_mode_value,attribute):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = dish_mode_value
     return fake_event
+
 
 def test_dish_leaf_node_dish_mode_is_OFF_when_dish_master_is_OFF_after_start():
     # arrange:
@@ -331,6 +331,7 @@ def test_dish_leaf_node_dish_mode_is_OFF_when_dish_master_is_OFF_after_start():
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_OFF_MODE
 
+
 def test_dish_leaf_node_dish_mode_is_STARTUP_when_dish_master_is_STARTUP_after_start():
     # arrange:
     device_under_test = DishLeafNode
@@ -339,9 +340,7 @@ def test_dish_leaf_node_dish_mode_is_STARTUP_when_dish_master_is_STARTUP_after_s
     initial_dut_properties = {
         'DishMasterFQDN': dish_master_fqdn
     }
-
     event_subscription_map = {}
-
     dish_master_device_proxy_mock = Mock()
     dish_master_device_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args,
@@ -371,7 +370,6 @@ def test_dish_leaf_node_dish_mode_is_SHUTDOWN_when_dish_master_is_SHUTDOWN_after
     }
 
     event_subscription_map = {}
-
     dish_master_device_proxy_mock = Mock()
     dish_master_device_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args,
@@ -641,10 +639,10 @@ def test_dish_leaf_node_when_dish_capturing_callback_False():
         assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_FALSE
 
 
-def create_dummy_event_for_achievedPointing(dish_master_fqdn):
+def create_dummy_event_for_achievedPointing(dish_master_fqdn,0.0,attribute):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{dish_master_fqdn}/achievedPointing"
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = 0.0
     return fake_event
 
@@ -679,10 +677,10 @@ def test_dish_leaf_node_when_acheived_pointing_callback_True():
                str(dummy_event.attr_value.value)
 
 
-def create_dummy_event_for_desiredpointing(dish_master_fqdn):
+def create_dummy_event_for_desiredpointing(dish_master_fqdn,1.0,attribute):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{dish_master_fqdn}/desiredPointing"
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = 1.0
     return fake_event
 
@@ -714,7 +712,8 @@ def test_dish_leaf_node_when_desired_pointing_callback_True():
 
         # assert:
         print("create_dummy_event_3 value :",dummy_event.attr_value.value )
-        assert tango_context.device.activityMessage == const.STR_DESIRED_POINTING + str(dummy_event.attr_value.value)
+        assert tango_context.device.activityMessage == const.STR_DESIRED_POINTING +\
+               str(dummy_event.attr_value.value)
 
 def test_configure_should_raise_exception_when_called_with_invalid_JSON():
     # arrange:
@@ -735,7 +734,8 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(device_under_test) as tango_context:
         input_string = []
         input_string.append(
-            '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}')
+            '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},\
+            "dish":{"receiverBand":"1"}}')
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
 
@@ -820,7 +820,9 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
     device_under_test = DishLeafNode
     # act
     with fake_tango_system(device_under_test) as tango_context:
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        input_string =\
+            '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},' \
+            '"dish":{"receiverBand":"1"}}'
 
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(input_string)
