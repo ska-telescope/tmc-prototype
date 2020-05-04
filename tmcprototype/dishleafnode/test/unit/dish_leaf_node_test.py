@@ -707,7 +707,6 @@ def test_dish_leaf_node_when_desired_pointing_callback_True():
         event_subscription_map[dish_master_desiredPointing_attribute](dummy_event)
 
         # assert:
-        print("create_dummy_event_3 value :",dummy_event.attr_value.value )
         assert tango_context.device.activityMessage == const.STR_DESIRED_POINTING +\
                str(dummy_event.attr_value.value)
 
