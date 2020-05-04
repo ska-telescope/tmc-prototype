@@ -703,7 +703,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_True():
         # act:
         attribute = 'desiredPointing'
         value = 0.0
-        dummy_event = create_dummy_event(dish_master_fqdn)
+        dummy_event = create_dummy_event(dish_master_fqdn, attribute, value)
         event_subscription_map[dish_master_desiredPointing_attribute](dummy_event)
 
         # assert:
