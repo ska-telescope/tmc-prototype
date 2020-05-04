@@ -639,7 +639,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_False():
         assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_FALSE
 
 
-def create_dummy_event_for_achievedPointing(dish_master_fqdn):
+def create_dummy_event_for_achievedPointing(dish_master_fqdn,0.0,attribute):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
@@ -677,7 +677,7 @@ def test_dish_leaf_node_when_acheived_pointing_callback_True():
                str(dummy_event.attr_value.value)
 
 
-def create_dummy_event_for_desiredpointing(dish_master_fqdn):
+def create_dummy_event_for_desiredpointing(dish_master_fqdn,1.0,attribute):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
