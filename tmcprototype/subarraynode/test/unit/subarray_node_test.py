@@ -219,7 +219,7 @@ def test_release_resource_should_raise_exception_when_called_before_assign_resou
 
         # assert:
         assert tango_context.device.State() == DevState.OFF
-        assert const.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
+        assert const.RESOURCE_ALREADY_RELEASED in tango_context.device.activityMessage
 
 def test_Configure_command_subarray():
     # arrange:

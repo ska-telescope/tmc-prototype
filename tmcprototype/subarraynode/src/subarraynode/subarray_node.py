@@ -26,8 +26,7 @@ import json
 
 # Tango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType, DeviceData, DevString, \
-    DevVarStringArray
+from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
 
 # Additional import
@@ -914,7 +913,7 @@ class SubarrayNode(SKASubarray):
         Example: "[]" as argout on successful release all resources.
         """
         try:
-            assert self._dishLnVsHealthEventID != {}, const.RESRC_ALREADY_RELEASED
+            assert self._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
         except AssertionError as assert_err:
             log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
             self.logger.error(log_message)
