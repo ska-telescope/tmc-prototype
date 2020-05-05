@@ -305,10 +305,6 @@ def test_configure_command_subarray():
                           '"dec": "+89:15:50.7923"}}, "scanID": "1"}'
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_config)
 
-        dish_config = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",' \
-                               '"dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
-        dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, dish_config)
-
 
 def create_dummy_event_state(device_fqdn, attribute, attr_value):
     fake_event = Mock()
