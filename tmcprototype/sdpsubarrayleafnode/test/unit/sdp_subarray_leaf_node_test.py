@@ -22,7 +22,6 @@ from ska.base.control_model import LoggingLevel
 
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready():
     # arrange:
-    device_under_test = SdpSubarrayLeafNode
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
         'SdpSubarrayFQDN': sdp_subarray1_fqdn
@@ -35,7 +34,7 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
         scan_input = '{"id":1}'
@@ -49,7 +48,6 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
 
 def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block_list():
     # arrange:
-    device_under_test = SdpSubarrayLeafNode
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
         'SdpSubarrayFQDN': sdp_subarray1_fqdn
@@ -61,7 +59,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
         assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
@@ -95,7 +93,6 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
 
 def test_release_resources_when_sdp_subarray_is_idle():
     # arrange:
-    device_under_test = SdpSubarrayLeafNode
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
         'SdpSubarrayFQDN': sdp_subarray1_fqdn
@@ -107,7 +104,7 @@ def test_release_resources_when_sdp_subarray_is_idle():
         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         # act:
@@ -121,7 +118,6 @@ def test_release_resources_when_sdp_subarray_is_idle():
 
 def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle():
     # arrange:
-    device_under_test = SdpSubarrayLeafNode
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
         'SdpSubarrayFQDN': sdp_subarray1_fqdn
@@ -133,7 +129,7 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
         sdp_config = '{"sdp":{ "scan_type": "science_A" }}'
@@ -151,7 +147,6 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
 
 def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
     # arrange:
-    device_under_test = SdpSubarrayLeafNode
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
         'SdpSubarrayFQDN': sdp_subarray1_fqdn
@@ -163,7 +158,7 @@ def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
         # act:
@@ -176,7 +171,6 @@ def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
 
 def test_end_sb_should_command_sdp_subarray_to_reset_when_it_is_ready():
     # arrange:
-    device_under_test = SdpSubarrayLeafNode
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
         'SdpSubarrayFQDN': sdp_subarray1_fqdn
@@ -188,7 +182,7 @@ def test_end_sb_should_command_sdp_subarray_to_reset_when_it_is_ready():
         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
         # act:
@@ -215,113 +209,87 @@ def any_method(with_name=None):
 
 
 def test_state():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.State() == DevState.ALARM
 
 
 def test_status():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.Status() != const.STR_INIT_SUCCESS
 
 
 def test_logging_level():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
 def test_health_state():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
 
 def test_admin_mode():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
 def test_control_mode():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
 
 
 def test_simulation_mode():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
 
 
 def test_test_mode():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
 
 def test_receive_addresses():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.receiveAddresses == ""
 
 
 def test_activity_message():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == ""
 
 
 def test_active_processing_blocks():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.activeProcessingBlocks == ""
 
 
 def test_logging_targets():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
 def test_configure_invalid_key():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         test_input = '{"":{"":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
                      '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
                      '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
@@ -334,10 +302,8 @@ def test_configure_invalid_key():
 
 
 def test_configure_invalid_format():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         test_input = '{"abc"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
@@ -345,10 +311,8 @@ def test_configure_invalid_format():
 
 
 def test_configure_generic_exception():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         test_input = '[123]'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
@@ -356,29 +320,23 @@ def test_configure_generic_exception():
 
 
 def test_Scan_device_not_ready():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         scan_input = '{"id":1}'
         tango_context.device.Scan(scan_input)
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
 
 
 def test_endsb_device_not_ready():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         tango_context.device.EndSB()
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 
 def test_endscan_invalid_state():
-    # arrange:
-    device_under_test = SdpSubarrayLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         tango_context.device.EndScan()
         assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
 

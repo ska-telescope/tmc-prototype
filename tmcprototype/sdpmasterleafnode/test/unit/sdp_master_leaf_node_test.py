@@ -18,20 +18,15 @@ from ska.base.control_model import LoggingLevel
 
 def test_on_should_command_sdp_master_leaf_node_to_start():
     # arrange:
-    device_under_test = SdpMasterLeafNode
     sdp_master_fqdn = 'mid_sdp/elt/master'
 
-    dut_properties = {
-        'SdpMasterFQDN': sdp_master_fqdn
-    }
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
 
     sdp_proxy_mock = Mock()
 
-    proxies_to_mock = {
-        sdp_master_fqdn: sdp_proxy_mock
-    }
+    proxies_to_mock = {sdp_master_fqdn: sdp_proxy_mock}
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         tango_context.device.On()
@@ -43,20 +38,15 @@ def test_on_should_command_sdp_master_leaf_node_to_start():
 
 def test_off_should_command_sdp_master_leaf_node_to_stop():
     # arrange:
-    device_under_test = SdpMasterLeafNode
     sdp_master_fqdn = 'mid_sdp/elt/master'
 
-    dut_properties = {
-        'SdpMasterFQDN': sdp_master_fqdn
-    }
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
 
     sdp_proxy_mock = Mock()
 
-    proxies_to_mock = {
-        sdp_master_fqdn: sdp_proxy_mock
-    }
+    proxies_to_mock = {sdp_master_fqdn: sdp_proxy_mock}
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         tango_context.device.Off()
@@ -66,20 +56,15 @@ def test_off_should_command_sdp_master_leaf_node_to_stop():
 
 def test_standby_should_command_sdp_master_leaf_node_to_standby():
     # arrange:
-    device_under_test = SdpMasterLeafNode
     sdp_master_fqdn = 'mid_sdp/elt/master'
 
-    dut_properties = {
-        'SdpMasterFQDN': sdp_master_fqdn
-    }
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
 
     sdp_proxy_mock = Mock()
 
-    proxies_to_mock = {
-        sdp_master_fqdn: sdp_proxy_mock
-    }
+    proxies_to_mock = {sdp_master_fqdn: sdp_proxy_mock}
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         tango_context.device.Standby()
@@ -91,7 +76,6 @@ def test_standby_should_command_sdp_master_leaf_node_to_standby():
 
 def test_disable_should_command_sdp_master_leaf_node_to_disable():
     # arrange:
-    device_under_test = SdpMasterLeafNode
     sdp_master_fqdn = 'mid_sdp/elt/master'
 
     dut_properties = {
@@ -104,7 +88,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable():
         sdp_master_fqdn: sdp_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         tango_context.device.Disable()
@@ -114,107 +98,83 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable():
 
 
 def test_activity_message():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         tango_context.device.activityMessage = "text"
         assert tango_context.device.activityMessage == "text"
 
 
 def test_version_info():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         assert tango_context.device.versionInfo == '1.0'
 
 
 def test_processing_block_list():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         assert tango_context.device.ProcessingBlockList
 
 
 def test_state():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         assert tango_context.device.State() == DevState.ALARM
 
 
 def test_status():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         assert tango_context.device.Status() != const.STR_INIT_SUCCESS
 
 
 def test_logging_level():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
 def test_logging_targets():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
 def test_test_mode():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
 
 
 def test_simulation_mode():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
 
 
 def test_control_mode():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
 
 
 def test_admin_mode():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
 def test_health_state():
-    # arrange:
-    device_under_test = SdpMasterLeafNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
 
