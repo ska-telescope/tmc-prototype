@@ -805,7 +805,6 @@ class SubarrayNode(SKASubarray):
             # Allocation success and failure lists
             resource_json = json.loads(argin)
             receptor_list = resource_json["dish"]["receptorIDList"]
-            print("receptor_list parse:", receptor_list)
             sdp_resources = resource_json.get("sdp")
             self._sb_id = resource_json["sdp"]["id"]
             log_msg = "assign_resource_whole_json", resource_json
@@ -872,13 +871,6 @@ class SubarrayNode(SKASubarray):
             dish_allocation_result.sort()
             receptor_list.sort()
 
-            print("receptor_list in the end: ", receptor_list)
-            print("csp_allocation_result: ", csp_allocation_result)
-            print("sdp_allocation_result: ", sdp_allocation_result)
-            print("dish_allocation_result: ", dish_allocation_result)
-            print("sdp_resources: ", sdp_resources)
-            print("type_dish_allocation_result: ", type(dish_allocation_result))
-
             if(dish_allocation_result == receptor_list and
                 csp_allocation_result == receptor_list and
                 sdp_allocation_result == sdp_resources
@@ -890,9 +882,6 @@ class SubarrayNode(SKASubarray):
         # return dish_allocation_result.
         log_msg = "assign_resource_argout",argout
         self.logger.debug(log_msg)
-        print("Argout before json dumps: ", argout)
-#        cmd_data_return = json.dumps(argout)
-#       print("Argout after json dumps: ", cmd_data_return)
         return argout
 
     def is_AssignResources_allowed(self):

@@ -658,18 +658,13 @@ class CentralNode(SKABaseDevice):
                 input_to_sa = json.dumps(input_json_subarray)
                 self._resources_allocated = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                print("Resources Allocated: ", self._resources_allocated)
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
-                print("type(len(self._resources_allocated)): ", type(self._resources_allocated))
-                print("len(self._resources_allocated): ", len(self._resources_allocated))
                 for dish in range(0, len(self._resources_allocated)):
                     dish_ID = "dish" + (self._resources_allocated[dish])
                     self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
                     receptorIDList.append(self._resources_allocated[dish])
-                    print("receptorIDList in for loop: ", receptorIDList)
-                print("receptorIDList outside for loop: ", receptorIDList)
                 self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                 self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
                 self.logger.info(receptorIDList)
@@ -678,7 +673,6 @@ class CentralNode(SKABaseDevice):
                         "receptorIDList_success": receptorIDList
                     }
                 }
-                print("Argout line 677: ", argout)
             else:
                 self._read_activity_message = const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
                 argout = {
@@ -687,21 +681,18 @@ class CentralNode(SKABaseDevice):
                     }
                 }
         except ValueError as value_error:
-            print("ValueError:" , value_error)
             self.logger.error(const.ERR_INVALID_JSON)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except KeyError as key_error:
-            print("KeyError: ", key_error)
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except DevFailed as dev_failed:
-            print("DevfailedExcept: ", dev_failed)
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
 
@@ -709,7 +700,6 @@ class CentralNode(SKABaseDevice):
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
-        print("Argout: ", argout)
         self.logger.info(argout)
 
         #throw exception:
