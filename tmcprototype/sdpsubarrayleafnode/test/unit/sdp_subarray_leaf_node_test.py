@@ -93,7 +93,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def test_release_resources_with_dummy_data_when_sdp_subarray_is_idle():
+def test_release_resources_when_sdp_subarray_is_idle():
     # arrange:
     device_under_test = SdpSubarrayLeafNode
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -108,8 +108,7 @@ def test_release_resources_with_dummy_data_when_sdp_subarray_is_idle():
     }
 
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) \
-            as tango_context:
+                           proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         # act:
         device_proxy.ReleaseAllResources()
@@ -213,22 +212,6 @@ def any_method(with_name=None):
             return other.__func__.__name__ == with_name if with_name else True
 
     return AnyMethod()
-
-
-@contextlib.contextmanager
-def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
-                      device_proxy_import_path='tango.DeviceProxy'):
-
-    with mock.patch(device_proxy_import_path) as patched_constructor:
-        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
-        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
-
-    device_under_test = getattr(patched_module, device_under_test.__name__)
-
-    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
-    device_test_context.start()
-    yield device_test_context
-    device_test_context.stop()
 
 
 def test_state():
@@ -377,9 +360,8 @@ def test_Scan_device_not_ready():
     device_under_test = SdpSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
-        test_input = '{"scanDuration":0}'
-        tango_context.device.Scan(test_input)
-        time.sleep(1)
+        scan_input = '{"id":1}'
+        tango_context.device.Scan(scan_input)
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
 
 
@@ -389,7 +371,6 @@ def test_endsb_device_not_ready():
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.EndSB()
-        time.sleep(2)
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 
@@ -399,10 +380,23 @@ def test_endscan_invalid_state():
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.EndScan()
-        time.sleep(2)
         assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
 
 
+@contextlib.contextmanager
+def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
+                      device_proxy_import_path='tango.DeviceProxy'):
+
+    with mock.patch(device_proxy_import_path) as patched_constructor:
+        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
+        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+
+    device_under_test = getattr(patched_module, device_under_test.__name__)
+
+    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
+    device_test_context.start()
+    yield device_test_context
+    device_test_context.stop()
 
 
 

@@ -848,7 +848,6 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
 
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
-        tango_context.device.SetStandByLPMode()
 
 
 def test_track_should_raise_exception_when_called_with_invalid_json():
