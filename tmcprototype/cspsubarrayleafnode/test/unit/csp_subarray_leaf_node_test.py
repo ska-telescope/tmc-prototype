@@ -13,7 +13,7 @@ from tango.test_context import DeviceTestContext
 from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode, \
     LoggingLevel
 
-def test_start_scan_should_command_csp_subarray_master_to_start_its_scan_when_it_is_ready():
+def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     csp_subarray_fqdn = 'mid_csp/elt/subarray_01'
@@ -105,6 +105,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources()
                                                                any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
+
 def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
     # arrange:
     device_under_test = CspSubarrayLeafNode
@@ -171,6 +172,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
                                     json.dumps(cspConfiguration), any_method(with_name='commandCallback'))
 
+
 def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
     # arrange:
     device_under_test = CspSubarrayLeafNode
@@ -186,7 +188,6 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
         csp_subarray_fqdn: csp_subarray_proxy_mock
     }
 
-
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
@@ -195,10 +196,6 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
         csp_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_GOTOIDLE,
                                                             any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
-
-
-
-
 
 
 def any_method(with_name=None):
@@ -210,8 +207,6 @@ def any_method(with_name=None):
             return other.__func__.__name__ == with_name if with_name else True
 
     return AnyMethod()
-
-
 
 
 def test_assign_resource_should_raise_exception_when_called_invalid_json():
@@ -240,8 +235,9 @@ def test_assign_resource_should_raise_exception_when_key_not_found():
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
+
 @pytest.mark.xfail
-def test_Configure_should_raise_exception_when_called_invalid_json():
+def test_configure_should_raise_exception_when_called_invalid_json():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act
@@ -253,42 +249,47 @@ def test_Configure_should_raise_exception_when_called_invalid_json():
         # assert:
         assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
 
-def test_State():   #from tango import DevState?
+
+def test_state():   #from tango import DevState?
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.State() == DevState.ALARM
 
-def test_Status():
+
+def test_status():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.Status() != const.STR_CSPSALN_INIT_SUCCESS
 
-def test_delayModel():
+
+def test_delaymodel():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.delayModel == " "
 
-def test_healthState():
+
+def test_healthstate():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
-def test_adminMode():
+
+def test_adminmode():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
-def test_controlMode():
+def test_controlmode():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
@@ -297,7 +298,8 @@ def test_controlMode():
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
 
-def test_simulationMode():
+
+def test_simulationmode():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
@@ -306,7 +308,8 @@ def test_simulationMode():
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
 
-def test_testMode():
+
+def test_testmode():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
@@ -315,7 +318,8 @@ def test_testMode():
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
 
-def test_visDestinationAddress():
+
+def test_visdestinationaddress():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
@@ -323,7 +327,8 @@ def test_visDestinationAddress():
         tango_context.device.visDestinationAddress = "test"
         assert tango_context.device.visDestinationAddress == "test"
 
-def test_activityMessage():
+
+def test_activitymessage():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
@@ -331,7 +336,8 @@ def test_activityMessage():
         tango_context.device.activityMessage = 'text'
         assert tango_context.device.activityMessage == 'text'
 
-def test_loggingLevel():
+
+def test_logginglevel():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
@@ -339,13 +345,15 @@ def test_loggingLevel():
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
-def test_loggingTargets():
+
+def test_loggingtargets():
     # arrange:
     device_under_test = CspSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
+
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
@@ -360,6 +368,7 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
+
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute
