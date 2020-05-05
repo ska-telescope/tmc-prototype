@@ -392,7 +392,6 @@ class SubarrayNode(SKASubarray):
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         log_msg = "add_receptors_in_group::",allocation_success
-        print("Allocation success: ", allocation_success)
         self.logger.debug(log_msg)
         return allocation_success
 
