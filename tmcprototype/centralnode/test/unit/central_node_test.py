@@ -35,7 +35,8 @@ def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degrade
     event_subscription_map = {}
     csp_master_ln_proxy_mock = Mock()
     csp_master_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+        lambda attr_name, event_type, callback, *args, **kwargs:
+        event_subscription_map.update({attr_name: callback}))
 
     proxies_to_mock = {
         csp_master_ln_fqdn: csp_master_ln_proxy_mock
