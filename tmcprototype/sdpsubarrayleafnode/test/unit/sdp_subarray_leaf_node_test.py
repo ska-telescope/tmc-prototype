@@ -43,7 +43,7 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
         tango_context.device.Scan(scan_input)
 
         # assert:
-        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, scan_config,
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, scan_input,
                                                                  any_method(with_name='commandCallback'))
 
 
