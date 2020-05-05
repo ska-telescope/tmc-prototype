@@ -355,6 +355,9 @@ def test_logging_targets():
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
+def assert_activity_message(device_proxy, expected_message):
+    assert device_proxy.activityMessage == expected_message  # reads tango attribute
+
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
                       device_proxy_import_path='tango.DeviceProxy'):
@@ -368,7 +371,3 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
-
-
-def assert_activity_message(device_proxy, expected_message):
-    assert device_proxy.activityMessage == expected_message  # reads tango attribute
