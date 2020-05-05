@@ -121,7 +121,6 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
 
-
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
@@ -288,6 +287,7 @@ def test_adminmode():
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
+
 
 def test_controlmode():
     # arrange:
