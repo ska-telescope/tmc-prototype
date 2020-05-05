@@ -343,7 +343,6 @@ class SubarrayNode(SKASubarray):
                                                           stateless=True)
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
                 self._health_event_id.append(self._event_id)
-                self.subarray_ln_health_state_map[devProxy.dev_name()] = HealthState.UNKNOWN
                 log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID)
                 self.logger.debug(log_msg)
 
