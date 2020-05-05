@@ -15,7 +15,7 @@ from tango.test_context import DeviceTestContext
 # Additional import
 from dishleafnode import DishLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
-from ska.base.control_model import LoggingLevel
+from ska.base.control_model import ObsState, LoggingLevel
 
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
