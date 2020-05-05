@@ -218,7 +218,6 @@ class CspMasterLeafNode(SKABaseDevice):
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(CspMasterLeafNode.init_device) ENABLED START #
         try:
-            self._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
             self.SkaLevel = const.INT_SKA_LEVEL
             self._admin_mode = AdminMode.ONLINE  # Setting adminMode to "ONLINE"
             self._health_state = HealthState.OK # Setting healthState to "OK"
@@ -269,6 +268,7 @@ class CspMasterLeafNode(SKABaseDevice):
         self.logger.debug(log_msg)
         self._read_activity_message = const.STR_SETTING_CB_MODEL + str(
             ApiUtil.instance().get_asynch_cb_sub_model())
+        self._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
         # PROTECTED REGION END #    //  CspMasterLeafNode.init_device
 
     def always_executed_hook(self):
