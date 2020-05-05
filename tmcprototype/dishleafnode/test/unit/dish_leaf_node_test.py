@@ -1,19 +1,20 @@
+# Standard Python imports
 import contextlib
 import importlib
-import sys
-import json
-import time
-import mock
 import types
-import pytest
-import tango
-from tango import DevState
+import sys
+import mock
 from mock import Mock
-from dishleafnode import DishLeafNode, const
+
+# Tango imports
+from tango import DevState
 from tango.test_context import DeviceTestContext
-from ska.base.control_model import ObsState
-from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
+
+# Additional import
+from dishleafnode import DishLeafNode, const
+from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
+
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     # arrange:
@@ -87,8 +88,9 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
                                                                 str(dish_str_ip),
                                                                 any_method(with_name='commandCallback'))
-
 '''
+
+
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
     # arrange:
     device_under_test = DishLeafNode
@@ -163,6 +165,7 @@ def test_set_operate_mode_should_command_dish_to_start():
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE,
                                                                 any_method(with_name='commandCallback'))
 
+
 '''
 def test_track_should_command_dish_to_start_tracking():
     # arrange:
@@ -195,6 +198,8 @@ def test_track_should_command_dish_to_start_tracking():
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0", 
                                                                 any_method(with_name='commandCallback'))
 '''
+
+
 def test_stop_track_should_command_dish_to_stop_tracking():
     # arrange:
     device_under_test = DishLeafNode
@@ -217,6 +222,7 @@ def test_stop_track_should_command_dish_to_stop_tracking():
         # assert:
         dish_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_TRACK,
                                                                 any_method(with_name='commandCallback'))
+
 
 def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinates():
     device_under_test = DishLeafNode
@@ -301,7 +307,7 @@ def create_dummy_event_for_dishmode(device_fqdn,dish_mode_value,attribute):
     return fake_event
 
 
-def test_dish_leaf_node_dish_mode_is_OFF_when_dish_master_is_OFF_after_start():
+def test_dish_leaf_node_dish_mode_is_off_when_dish_is_off():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -332,7 +338,7 @@ def test_dish_leaf_node_dish_mode_is_OFF_when_dish_master_is_OFF_after_start():
         assert tango_context.device.activityMessage == const.STR_DISH_OFF_MODE
 
 
-def test_dish_leaf_node_dish_mode_is_STARTUP_when_dish_master_is_STARTUP_after_start():
+def test_dish_leaf_node_dish_mode_is_startup_when_dish_is_startup():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -360,7 +366,8 @@ def test_dish_leaf_node_dish_mode_is_STARTUP_when_dish_master_is_STARTUP_after_s
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_STARTUP_MODE
 
-def test_dish_leaf_node_dish_mode_is_SHUTDOWN_when_dish_master_is_SHUTDOWN_after_start():
+
+def test_dish_leaf_node_dish_mode_is_shutdown_when_dish_is_shutdown():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -389,7 +396,8 @@ def test_dish_leaf_node_dish_mode_is_SHUTDOWN_when_dish_master_is_SHUTDOWN_after
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_SHUTDOWN_MODE
 
-def test_dish_leaf_node_dish_mode_is_STANDBYLP_when_dish_master_is_STANDBYLP_after_start():
+
+def test_dish_leaf_node_dish_mode_is_standby_when_dish_is_standby():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -419,7 +427,8 @@ def test_dish_leaf_node_dish_mode_is_STANDBYLP_when_dish_master_is_STANDBYLP_aft
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_STANDBYLP_MODE
 
-def test_dish_leaf_node_dish_mode_is_STANDBYFP_when_dish_master_is_STANDBYFP_after_start():
+
+def test_dish_leaf_node_dish_mode_is_standbyfp_when_dish_is_standbyfp():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -449,7 +458,8 @@ def test_dish_leaf_node_dish_mode_is_STANDBYFP_when_dish_master_is_STANDBYFP_aft
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_STANDBYFP_MODE
 
-def test_dish_leaf_node_dish_mode_is_MAINT_when_dish_master_is_MAINT_after_start():
+
+def test_dish_leaf_node_dish_mode_is_maint_when_dish_is_maint():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -479,7 +489,8 @@ def test_dish_leaf_node_dish_mode_is_MAINT_when_dish_master_is_MAINT_after_start
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_MAINT_MODE
 
-def test_dish_leaf_node_dish_mode_is_STOW_when_dish_master_is_STOW_after_start():
+
+def test_dish_leaf_node_dish_mode_is_stow_when_dish_is_stow():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -509,7 +520,8 @@ def test_dish_leaf_node_dish_mode_is_STOW_when_dish_master_is_STOW_after_start()
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_STOW_MODE
 
-def test_dish_leaf_node_dish_mode_is_CONFIG_when_dish_master_is_CONFIG_after_start():
+
+def test_dish_leaf_node_dish_mode_is_config_when_dish_is_config():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -540,7 +552,7 @@ def test_dish_leaf_node_dish_mode_is_CONFIG_when_dish_master_is_CONFIG_after_sta
         assert tango_context.device.activityMessage == const.STR_DISH_CONFIG_MODE
 
 
-def test_dish_leaf_node_dish_mode_is_OPERATE_when_dish_master_is_OPERATE_after_start():
+def test_dish_leaf_node_dish_mode_is_operate_when_dish_is_operate():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -578,7 +590,8 @@ def create_dummy_event_for_dish_capturing(device_fqdn,dish_capturing_value,attri
     fake_event.attr_value.value = dish_capturing_value
     return fake_event
 
-def test_dish_leaf_node_when_dish_capturing_callback_True():
+
+def test_dish_leaf_node_when_dish_capturing_callback_is_true():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -608,7 +621,8 @@ def test_dish_leaf_node_when_dish_capturing_callback_True():
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_TRUE
 
-def test_dish_leaf_node_when_dish_capturing_callback_False():
+
+def test_dish_leaf_node_when_dish_capturing_callback_is_false():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -647,7 +661,7 @@ def create_dummy_event(device_fqdn, attribute, attr_value):
     return fake_event
 
 
-def test_dish_leaf_node_when_acheived_pointing_callback_True():
+def test_dish_leaf_node_when_acheived_pointing_callback_is_true():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -679,7 +693,7 @@ def test_dish_leaf_node_when_acheived_pointing_callback_True():
                str(dummy_event.attr_value.value)
 
 
-def test_dish_leaf_node_when_desired_pointing_callback_True():
+def test_dish_leaf_node_when_desired_pointing_callback_is_true():
     # arrange:
     device_under_test = DishLeafNode
     dish_master_fqdn = 'mid_d0001/elt/master'
@@ -710,7 +724,8 @@ def test_dish_leaf_node_when_desired_pointing_callback_True():
         assert tango_context.device.activityMessage == const.STR_DESIRED_POINTING +\
                str(dummy_event.attr_value.value)
 
-def test_configure_should_raise_exception_when_called_with_invalid_JSON():
+
+def test_configure_should_raise_exception_when_called_with_invalid_json():
     # arrange:
     device_under_test = DishLeafNode
     # act
@@ -721,6 +736,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_JSON():
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+
 
 def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -737,6 +753,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert  const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
+
 def test_configure_should_raise_generic_exception():
     # arrange:
     device_under_test = DishLeafNode
@@ -748,6 +765,7 @@ def test_configure_should_raise_generic_exception():
 
         # assert:
         assert const.ERR_EXE_CONFIGURE_CMD in tango_context.device.activityMessage
+
 
 def test_scan_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -761,6 +779,7 @@ def test_scan_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_EXE_SCAN_CMD in tango_context.device.activityMessage
 
+
 def test_endscan_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
     device_under_test = DishLeafNode
@@ -772,6 +791,7 @@ def test_endscan_should_raise_exception_when_called_with_invalid_arguments():
 
         # assert:
         assert const.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
+
 
 def test_startcapture_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -798,6 +818,7 @@ def test_stopstartcapture_should_raise_exception_when_called_with_invalid_argume
         # assert:
         assert const.ERR_EXE_STOP_CAPTURE_CMD in tango_context.device.activityMessage
 
+
 def test_slew_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
     device_under_test = DishLeafNode
@@ -809,6 +830,7 @@ def test_slew_should_raise_exception_when_called_with_invalid_arguments():
 
         # assert:
         assert const.ERR_EXE_SLEW_CMD in tango_context.device.activityMessage
+
 
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     # arrange:
@@ -827,7 +849,7 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
         tango_context.device.SetStandByLPMode()
 
 
-def test_track_should_raise_exception_when_called_with_invalid_JSON():
+def test_track_should_raise_exception_when_called_with_invalid_json():
     # arrange:
     device_under_test = DishLeafNode
     # act
@@ -841,7 +863,7 @@ def test_track_should_raise_exception_when_called_with_invalid_JSON():
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
-def test_activityMessage():
+def test_activity_message():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
@@ -849,21 +871,24 @@ def test_activityMessage():
         tango_context.device.activityMessage = const.STR_OK
         assert tango_context.device.activityMessage == const.STR_OK
 
-def test_State():
+
+def test_state():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.State() == DevState.ALARM
 
-def test_Status():
+
+def test_status():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.Status() != const.STR_DISH_INIT_SUCCESS
 
-def test_loggingLevel():
+
+def test_logging_level():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
@@ -871,7 +896,8 @@ def test_loggingLevel():
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
-def test_loggingTargets():
+
+def test_logging_targets():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
@@ -879,7 +905,8 @@ def test_loggingTargets():
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
-def test_testMode():
+
+def test_test_mode():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
@@ -888,7 +915,8 @@ def test_testMode():
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
 
-def test_simulationMode():
+
+def test_simulation_mode():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
@@ -897,7 +925,8 @@ def test_simulationMode():
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
 
-def test_controlMode():
+
+def test_control_mode():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
@@ -906,19 +935,22 @@ def test_controlMode():
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
 
-def test_adminMode():
+
+def test_admin_mode():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
-def test_healthState():
+
+def test_health_state():
     # arrange
     device_under_test = DishLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
+
 
 def any_method(with_name=None):
     class AnyMethod():
