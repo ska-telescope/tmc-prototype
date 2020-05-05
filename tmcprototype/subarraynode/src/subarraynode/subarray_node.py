@@ -343,7 +343,6 @@ class SubarrayNode(SKASubarray):
                                                           stateless=True)
                 self._dishLnVsHealthEventID[devProxy] = self._event_id
                 self._health_event_id.append(self._event_id)
-                self.subarray_ln_health_state_map[devProxy.dev_name()] = HealthState.UNKNOWN
                 log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID)
                 self.logger.debug(log_msg)
 
@@ -758,7 +757,7 @@ class SubarrayNode(SKASubarray):
     @command(
         dtype_in='str',
         doc_in="String in JSON format consisting of Resources to add to subarray.",
-        dtype_out='str',
+        dtype_out=('str',),
         doc_out="String in JSON format consisting of Resources added to the subarray.",
     )
     @DebugIt()
@@ -873,7 +872,7 @@ class SubarrayNode(SKASubarray):
 
             if(dish_allocation_result == receptor_list and
                 csp_allocation_result == receptor_list and
-                sdp_allocation_result == ""
+                sdp_allocation_result == sdp_resources
               ):
                 # Currently sending dish allocation and SDP allocation results.
                 argout = dish_allocation_result
@@ -882,8 +881,7 @@ class SubarrayNode(SKASubarray):
         # return dish_allocation_result.
         log_msg = "assign_resource_argout",argout
         self.logger.debug(log_msg)
-        cmd_data_return = json.dumps(argout)
-        return cmd_data_return
+        return argout
 
     def is_AssignResources_allowed(self):
         """Checks if AssignResources is allowed in the current state of SubarrayNode."""
