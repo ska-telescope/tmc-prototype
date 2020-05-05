@@ -5,6 +5,8 @@ import types
 import sys
 import mock
 from mock import Mock
+import tango
+import pytest
 
 # Tango imports
 from tango import DevState
