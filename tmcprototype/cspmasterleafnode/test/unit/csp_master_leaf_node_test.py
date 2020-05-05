@@ -41,6 +41,7 @@ def test_on_should_command_csp_master_leaf_node_to_start():
         csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_config,
                                                                     any_method(with_name='commandCallback'))
 
+
 def test_off_should_command_csp_master_leaf_node_to_stop():
     # arrange:
     device_under_test = CspMasterLeafNode
@@ -155,6 +156,7 @@ def test_attribute_cspCbfHealthState_of_csp_master_is_equal_to_DEGRADED():
         # assert:
         assert tango_context.device.activityMessage == const.STR_CSP_CBF_HEALTH_DEGRADED
 
+
 def test_attribute_cspCbfHealthState_of_csp_master_is_equal_to_FAILED():
     # arrange:
     device_under_test = CspMasterLeafNode
@@ -184,6 +186,7 @@ def test_attribute_cspCbfHealthState_of_csp_master_is_equal_to_FAILED():
 
         # assert:
         assert tango_context.device.activityMessage == const.STR_CSP_CBF_HEALTH_FAILED
+
 
 def test_attribute_cspCbfHealthState_of_csp_master_is_equal_to_UNKNOWN():
     # arrange:
@@ -278,6 +281,7 @@ def test_attribute_cspPssHealthCallback_of_csp_master_is_equal_to_DEGRADED():
         # assert:
         assert tango_context.device.activityMessage == const.STR_CSP_PSS_HEALTH_DEGRADED
 
+
 def test_attribute_cspPssHealthCallback_of_csp_master_is_equal_to_FAILED():
     # arrange:
     device_under_test = CspMasterLeafNode
@@ -307,6 +311,7 @@ def test_attribute_cspPssHealthCallback_of_csp_master_is_equal_to_FAILED():
 
         # assert:
         assert tango_context.device.activityMessage == const.STR_CSP_PSS_HEALTH_FAILED
+
 
 def test_attribute_cspPssHealthCallback_of_csp_master_is_equal_to_UNKNOWN():
     # arrange:
@@ -401,6 +406,7 @@ def test_attribute_cspPstHealthCallback_of_csp_master_is_equal_to_DEGRADED():
         # assert:
         assert tango_context.device.activityMessage == const.STR_CSP_PST_HEALTH_DEGRADED
 
+
 def test_attribute_cspPstHealthCallback_of_csp_master_is_equal_to_FAILED():
     # arrange:
     device_under_test = CspMasterLeafNode
@@ -430,6 +436,7 @@ def test_attribute_cspPstHealthCallback_of_csp_master_is_equal_to_FAILED():
 
         # assert:
         assert tango_context.device.activityMessage == const.STR_CSP_PST_HEALTH_FAILED
+
 
 def test_attribute_cspPstHealthCallback_of_csp_master_is_equal_to_UNKNOWN():
     # arrange:
@@ -478,6 +485,7 @@ def test_activityMessage():
         tango_context.device.activityMessage = "text"
         assert tango_context.device.activityMessage == "text"
 
+
 def test_State():
     # arrange
     device_under_test = CspMasterLeafNode
@@ -485,12 +493,14 @@ def test_State():
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.State() == DevState.ALARM
 
+
 def test_Status():
     # arrange
     device_under_test = CspMasterLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert const.STR_DEV_ALARM in tango_context.device.Status()
+
 
 def test_loggingLevel():
     # arrange
@@ -500,6 +510,7 @@ def test_loggingLevel():
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
+
 def test_loggingTargets():
     # arrange
     device_under_test = CspMasterLeafNode
@@ -507,6 +518,7 @@ def test_loggingTargets():
     with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
+
 
 def test_testMode():
     # arrange
@@ -517,6 +529,7 @@ def test_testMode():
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
 
+
 def test_simulationMode():
     # arrange
     device_under_test = CspMasterLeafNode
@@ -525,6 +538,7 @@ def test_simulationMode():
         simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
+
 
 def test_controlMode():
     # arrange
@@ -535,6 +549,7 @@ def test_controlMode():
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
 
+
 def test_adminMode():
     # arrange
     device_under_test = CspMasterLeafNode
@@ -542,12 +557,14 @@ def test_adminMode():
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
+
 def test_healthState():
     # arrange
     device_under_test = CspMasterLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
+
 
 def any_method(with_name=None):
     class AnyMethod():
