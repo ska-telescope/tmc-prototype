@@ -88,7 +88,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
 
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,
-                                                                        assign_config,
+                                                                        assign_input,
                                                                   any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
