@@ -22,7 +22,9 @@ from ska.base.control_model import HealthState, AdminMode, SimulationMode, Contr
 from ska.base.control_model import LoggingLevel
 
 
-def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degraded_after_start():
+@pytest.fixture( scope="function",
+    params=[HealthState.DEGRADED, HealthState.OK, HealthState.UNKNOWN, HealthState.FAILED])
+def central_node_test_info(request):
     # arrange:
     device_under_test = CentralNode
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
@@ -42,97 +44,35 @@ def test_telescope_health_state_is_degraded_when_csp_master_leaf_node_is_degrade
         csp_master_ln_fqdn: csp_master_ln_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
-        # act:
-        dummy_event = create_dummy_event(csp_master_ln_fqdn, HealthState.DEGRADED)
-        event_subscription_map[csp_master_ln_health_attribute](dummy_event)
-
-        # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.DEGRADED
-
-
-def test_telescope_health_state_is_ok_when_csp_master_leaf_node_is_ok_after_start():
-    # arrange:
-    device_under_test = CentralNode
-    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
-    csp_master_ln_health_attribute = 'cspHealthState'
-    initial_dut_properties = {
-        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn
+    test_info = {
+        'device_under_test': device_under_test,
+        'csp_master_ln_health_attribute': csp_master_ln_health_attribute,
+        'initial_dut_properties': initial_dut_properties,
+        'proxies_to_mock': proxies_to_mock,
+        'csp_master_ln_health_state': request.param,
+        'event_subscription_map': event_subscription_map,
+        'csp_master_ln_fqdn': csp_master_ln_fqdn,
     }
+    return test_info
 
-    event_subscription_map = {}
-    csp_master_ln_proxy_mock = Mock()
-    csp_master_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args,
-               **kwargs: event_subscription_map.update({attr_name: callback}))
 
-    proxies_to_mock = {
-        csp_master_ln_fqdn: csp_master_ln_proxy_mock
-    }
+def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_start(
+    central_node_test_info):
+    device_under_test = central_node_test_info['device_under_test']
+    initial_dut_properties = central_node_test_info['initial_dut_properties']
+    proxies_to_mock = central_node_test_info['proxies_to_mock']
+    csp_master_ln_fqdn = central_node_test_info['csp_master_ln_fqdn']
+    event_subscription_map = central_node_test_info['event_subscription_map']
+    csp_master_ln_health_state = central_node_test_info['csp_master_ln_health_state']
+    csp_master_ln_health_attribute = central_node_test_info['csp_master_ln_health_attribute']
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create_dummy_event(csp_master_ln_fqdn, HealthState.OK)
+        dummy_event = create_dummy_event(csp_master_ln_fqdn, csp_master_ln_health_state)
         event_subscription_map[csp_master_ln_health_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.OK
-
-
-def test_telescope_health_state_is_unknown_when_csp_master_leaf_node_is_unknown_after_start():
-    # arrange:
-    device_under_test = CentralNode
-    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
-    csp_master_ln_health_attribute = 'cspHealthState'
-    initial_dut_properties = {
-        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn
-    }
-
-    event_subscription_map = {}
-    csp_master_ln_proxy_mock = Mock()
-    csp_master_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args,
-               **kwargs: event_subscription_map.update({attr_name: callback}))
-
-    proxies_to_mock = {
-        csp_master_ln_fqdn: csp_master_ln_proxy_mock
-    }
-
-    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
-        # act:
-        dummy_event = create_dummy_event(csp_master_ln_fqdn, HealthState.UNKNOWN)
-        event_subscription_map[csp_master_ln_health_attribute](dummy_event)
-
-        # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.UNKNOWN
-
-
-def test_telescope_health_state_is_failed_when_csp_master_leaf_node_is_failed_after_start():
-    # arrange:
-    device_under_test = CentralNode
-    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
-    csp_master_ln_health_attribute = 'cspHealthState'
-    initial_dut_properties = {
-        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn
-    }
-
-    event_subscription_map = {}
-    csp_master_ln_proxy_mock = Mock()
-    csp_master_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args,
-               **kwargs: event_subscription_map.update({attr_name: callback}))
-
-    proxies_to_mock = {
-        csp_master_ln_fqdn: csp_master_ln_proxy_mock
-    }
-
-    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
-        # act:
-        dummy_event = create_dummy_event(csp_master_ln_fqdn, HealthState.FAILED)
-        event_subscription_map[csp_master_ln_health_attribute](dummy_event)
-
-        # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.FAILED
+        assert tango_context.device.telescopeHealthState == csp_master_ln_health_state
 
 
 def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_start():
