@@ -307,9 +307,7 @@ def test_configure_command_subarray():
 
         dish_config = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",' \
                                '"dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
-        cmd_data = tango.DeviceData()
-        cmd_data.insert(tango.DevString, json.dumps(dish_config))
-        dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, cmd_data)
+        dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, dish_config)
 
 
 def create_dummy_event_state(device_fqdn, attribute, attr_value):
