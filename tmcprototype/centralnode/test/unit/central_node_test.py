@@ -66,7 +66,7 @@ def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_
     csp_master_ln_health_state = central_node_test_info['csp_master_ln_health_state']
     csp_master_ln_health_attribute = central_node_test_info['csp_master_ln_health_attribute']
 
-    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         dummy_event = create_dummy_event(csp_master_ln_fqdn, csp_master_ln_health_state)
         event_subscription_map[csp_master_ln_health_attribute](dummy_event)
@@ -77,7 +77,6 @@ def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_
 
 def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_start():
     # arrange:
-    device_under_test = CentralNode
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     sdp_master_ln_health_attribute = 'sdpHealthState'
     initial_dut_properties = {
@@ -94,7 +93,7 @@ def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_star
         sdp_master_ln_fqdn: sdp_master_ln_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         dummy_event = create_dummy_event(sdp_master_ln_fqdn, HealthState.OK)
         event_subscription_map[sdp_master_ln_health_attribute](dummy_event)
@@ -104,7 +103,6 @@ def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_star
 
 def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start():
     # arrange:
-    device_under_test = CentralNode
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
     subarray_health_attribute = 'healthState'
     initial_dut_properties = {
@@ -121,7 +119,7 @@ def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start(
         subarray_fqdn: subarray_device_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         dummy_event = create_dummy_event(subarray_fqdn, HealthState.OK)
         event_subscription_map[subarray_health_attribute](dummy_event)
@@ -140,7 +138,6 @@ def create_dummy_event(device_fqdn, health_state):
 
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
-    device_under_test = CentralNode
     dish_device_ids = [str(i).zfill(4) for i in range(1,10)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
@@ -151,7 +148,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in dish_device_ids }
 
     # act:
-    with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
+    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
         tango_context.device.StowAntennas(dish_device_ids)
 
     # assert:
@@ -160,11 +157,8 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
 
 
 def test_activity_message_attribute_captures_the_last_received_command():
-    # arrange:
-    device_under_test = CentralNode
-
     # act & assert:
-    with fake_tango_system(device_under_test)as tango_context:
+    with fake_tango_system(CentralNode)as tango_context:
         dut = tango_context.device
         dut.StartUpTelescope()
         assert_activity_message(dut, STR_STARTUP_CMD_ISSUED)
@@ -174,124 +168,95 @@ def test_activity_message_attribute_captures_the_last_received_command():
 
 
 def test_telescope_health_state():
-    # arrange:
-    device_under_test = CentralNode
-
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.telescopeHealthState == HealthState.OK
 
 
 def test_subarray1_health_state():
-    # arrange:
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.subarray1HealthState == HealthState.OK
 
 
 def test_subarray2_health_state():
-    # arrange:
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.subarray2HealthState == HealthState.OK
 
 
 def test_subarray3_health_state():
-    # arrange:
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.subarray3HealthState == HealthState.OK
 
 
 def test_activity_message():
-    # arrange:
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         tango_context.device.activityMessage = ''
         assert tango_context.device.activityMessage == ''
 
 
 def test_state():
-    #arrange
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.State() == DevState.ON
 
 
 def test_status():
-    # arrange
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.Status() == const.STR_INIT_SUCCESS
 
 
 def test_logging_level():
-    # arrange
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
 def test_logging_targets():
-    # arrange
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
 def test_test_mode():
-    # arrange
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
 
 
 def test_simulation_mode():
-    # arrange
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
 
 
 def test_control_mode():
-    # arrange
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
 
 
 def test_admin_mode():
-    # arrange
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
 def test_health_state():
-    # arrange
-    device_under_test = CentralNode
     # act & assert:
-    with fake_tango_system(device_under_test) as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
 
@@ -309,10 +274,8 @@ def any_method(with_name=None):
 
 
 def test_assign_resources_invalid_json():
-    # arrange:
-    device_under_test = CentralNode
     # act
-    with fake_tango_system(device_under_test) \
+    with fake_tango_system(CentralNode) \
             as tango_context:
         result = 'a'
         test_input = '{"dish":{"receptorIDList":["0001"]}}'
@@ -324,10 +287,8 @@ def test_assign_resources_invalid_json():
 
 
 def test_assign_resources_invalid_key():
-    # arrange:
-    device_under_test = CentralNode
     # act
-    with fake_tango_system(device_under_test) \
+    with fake_tango_system(CentralNode) \
             as tango_context:
         result = 'a'
         test_input = '{"dish":{"receptorIDList":["0001"]}}'
@@ -339,10 +300,8 @@ def test_assign_resources_invalid_key():
 
 
 def test_release_resources_invalid_json():
-    # arrange:
-    device_under_test = CentralNode
     # act
-    with fake_tango_system(device_under_test) \
+    with fake_tango_system(CentralNode) \
             as tango_context:
         test_input = '{"invalid_key"}'
         with pytest.raises(tango.DevFailed):
@@ -353,10 +312,8 @@ def test_release_resources_invalid_json():
 
 
 def test_release_resources_invalid_key():
-    # arrange:
-    device_under_test = CentralNode
     # act
-    with fake_tango_system(device_under_test) \
+    with fake_tango_system(CentralNode) \
             as tango_context:
         test_input = '{"releaseALL":true,"receptorIDList":[]}'
         with pytest.raises(tango.DevFailed):
@@ -367,10 +324,8 @@ def test_release_resources_invalid_key():
 
 def test_stow_antennas_invalid_value():
     """Negative Test for StowAntennas"""
-    # arrange:
-    device_under_test = CentralNode
     # act
-    with fake_tango_system(device_under_test) \
+    with fake_tango_system(CentralNode) \
             as tango_context:
         argin = ["invalid_antenna",]
         with pytest.raises(tango.DevFailed):
@@ -382,10 +337,8 @@ def test_stow_antennas_invalid_value():
 
 def test_stow_antennas_invalid_argument():
     """Test for StowAntennas"""
-    # arrange:
-    device_under_test = CentralNode
     # act
-    with fake_tango_system(device_under_test) \
+    with fake_tango_system(CentralNode) \
             as tango_context:
         argin = ["invalid_argin", ]
         with pytest.raises(tango.DevFailed) :
@@ -396,8 +349,6 @@ def test_stow_antennas_invalid_argument():
 
 
 def test_assign_resources():
-    # arrange:
-    device_under_test = CentralNode
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn
@@ -413,7 +364,7 @@ def test_assign_resources():
         subarray1_fqdn: subarray1_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-' \
                          '20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate' \
@@ -446,8 +397,6 @@ def test_assign_resources():
 
 @pytest.mark.xfail
 def test_release_resources():
-    # arrange:
-    device_under_test = CentralNode
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn
@@ -464,7 +413,7 @@ def test_release_resources():
         subarray1_fqdn: subarray1_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
@@ -478,7 +427,6 @@ def test_release_resources():
 
 def test_standby():
     # arrange:
-    device_under_test = CentralNode
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
@@ -507,7 +455,7 @@ def test_standby():
         sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
         subarray1_fqdn: subarray1_proxy_mock
     }
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         tango_context.device.StandByTelescope()
@@ -522,7 +470,6 @@ def test_standby():
 
 def test_startup():
     # arrange:
-    device_under_test = CentralNode
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
@@ -552,7 +499,7 @@ def test_startup():
         subarray1_fqdn: subarray1_proxy_mock
     }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         tango_context.device.StartUpTelescope()
