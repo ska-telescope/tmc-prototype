@@ -23,13 +23,8 @@ from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, Te
 def test_on_command_should_change_subarray_device_state_from_disable_to_off():
     # arrange:
     device_under_test = SubarrayNode
-    dut_properties = {
-    }
-    proxies_to_mock = {
-    }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test) as tango_context:
         # act:
         tango_context.device.On()
         # assert:
@@ -39,13 +34,8 @@ def test_on_command_should_change_subarray_device_state_from_disable_to_off():
 def test_standby_command_should_change_subarray_device_state_to_disable():
     # arrange:
     device_under_test = SubarrayNode
-    dut_properties = {
-    }
-    proxies_to_mock = {
-    }
 
-    with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(device_under_test) as tango_context:
         # act:
         tango_context.device.Standby()
         # assert:
@@ -83,35 +73,31 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
 
-
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
-                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"' \
-                        ':1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":' \
-                        '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                        '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
-                        '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"' \
-                        ',"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},' \
-                        '{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"}' \
-                        ',"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"' \
-                        ']}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":' \
-                        '"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":' \
-                        '["calibration"]}]}]}}'
+        assign_input = {"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"
+                        ,"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
+                        "ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"
+                        :1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",
+                        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":
+                        [{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],
+                        "processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",
+                        "id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"
+                        ,"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},
+                        {"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"}
+                        ,"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"
+                        ]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":
+                        "0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
+                        ["calibration"]}]}]}}
         tango_context.device.On()
-        tango_context.device.AssignResources(assign_input)
+        tango_context.device.AssignResources(json.dumps(assign_input))
 
-        resource_json = json.loads(assign_input)
-        sdp_resources = resource_json.get("sdp")
-        str_json_arg = json.dumps(sdp_resources)
+        str_json_arg = json.dumps(assign_input.get("sdp"))
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, str_json_arg)
 
         arg_list = []
         json_argument = {}
         dish = {}
-        resource_json = json.loads(assign_input)
         receptor_list = resource_json["dish"]["receptorIDList"]
         dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
         json_argument[const.STR_KEY_DISH] = dish
@@ -123,8 +109,7 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_di
     # arrange:
     device_under_test = SubarrayNode
     # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
+    with fake_tango_system(device_under_test) as tango_context:
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                         ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                         '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"' \
@@ -150,8 +135,7 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
     # arrange:
     device_under_test = SubarrayNode
     # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
+    with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.On()
         assign_input = '{"invalid_key": invalid_value}'
         with pytest.raises(tango.DevFailed):
@@ -192,7 +176,6 @@ def test_release_resource_command_subarray():
         dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
 
-
     with fake_tango_system(device_under_test, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         tango_context.device.On()
@@ -221,8 +204,7 @@ def test_release_resource_should_raise_exception_when_called_before_assign_resou
     # arrange:
     device_under_test = SubarrayNode
     # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
+    with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseAllResources()
@@ -294,7 +276,6 @@ def test_configure_command_subarray():
 
         # assert:
         sdp_config = '{"sdp": {"scan_type": "science_A"}}'
-
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, sdp_config)
 
         csp_config = '{"id": "sbi-mvp01-20200325-00001-science_A", "frequencyBand": "1", "fsp": [{"fspID": 1, ' \
@@ -335,8 +316,7 @@ def test_configure_command_subarray_with_invalid_configure_input():
     # arrange:
     device_under_test = SubarrayNode
     # act
-    with fake_tango_system(device_under_test) \
-            as tango_context:
+    with fake_tango_system(device_under_test) as tango_context:
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure('{"invalid_key"}')
@@ -849,7 +829,6 @@ def test_subarray_device_state_is_on_when_csp_and_sdp_subarray1_is_on_after_star
     sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
-
 
     with fake_tango_system(device_under_test, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
