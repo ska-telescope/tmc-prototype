@@ -314,8 +314,7 @@ def test_activity_message():
     device_under_test = SdpSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
-        tango_context.device.activityMessage = "test"
-        assert tango_context.device.activityMessage == "test"
+        assert tango_context.device.activityMessage == ""
 
 
 def test_active_processing_blocks():

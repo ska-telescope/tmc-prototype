@@ -333,8 +333,7 @@ def test_activity_message():
     device_under_test = CspSubarrayLeafNode
     # act & assert:
     with fake_tango_system(device_under_test) as tango_context:
-        tango_context.device.activityMessage = 'text'
-        assert tango_context.device.activityMessage == 'text'
+        assert tango_context.device.activityMessage == " "
 
 
 def test_logging_level():
