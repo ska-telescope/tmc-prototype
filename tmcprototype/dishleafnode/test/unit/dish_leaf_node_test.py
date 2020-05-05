@@ -1,16 +1,19 @@
+# Standard Python imports
 import contextlib
 import importlib
 import sys
-import json
-import time
-import mock
 import types
 import pytest
+import mock
+from mock import Mock
+
+# Tango imports
 import tango
 from tango import DevState
-from mock import Mock
-from dishleafnode import DishLeafNode, const
 from tango.test_context import DeviceTestContext
+
+# Additional import
+from dishleafnode import DishLeafNode, const
 from ska.base.control_model import ObsState
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
