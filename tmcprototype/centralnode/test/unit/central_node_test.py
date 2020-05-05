@@ -397,6 +397,7 @@ def test_assign_resources_invalid_key():
         # assert:
         assert 'a' in result
 
+
 def test_release_resources_invalid_json():
     # arrange:
     device_under_test = CentralNode
@@ -409,6 +410,7 @@ def test_release_resources_invalid_json():
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+
 
 def test_release_resources_invalid_key():
     # arrange:
@@ -437,6 +439,7 @@ def test_stow_antennas_invalid_value():
         # assert:
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
 
+
 def test_stow_antennas_invalid_argument():
     """Test for StowAntennas"""
     # arrange:
@@ -460,6 +463,10 @@ def test_assign_resources():
         'TMMidSubarrayNodes': subarray1_fqdn
     }
 
+    #For subarraynode proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where lenght of list need to be evaluated but Mock
+    # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # which supports this facility.
     subarray1_proxy_mock = MagicMock()
     subarray1_proxy_mock.DevState = DevState.OFF
     proxies_to_mock = {
@@ -496,6 +503,7 @@ def test_assign_resources():
 
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
+
 @pytest.mark.xfail
 def test_release_resources():
     # arrange:
@@ -505,6 +513,10 @@ def test_release_resources():
         'TMMidSubarrayNodes': subarray1_fqdn
     }
 
+    # For subarraynode proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where lenght of list need to be evaluated but Mock
+    # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # which supports this facility.
     subarray1_proxy_mock = MagicMock()
     subarray1_proxy_mock.DevState = DevState.ON
     subarray1_proxy_mock.receptorIDList = [1]
@@ -540,6 +552,11 @@ def test_standby():
         'TMMidSubarrayNodes': subarray1_fqdn,
         'NumDishes': len(dish_device_ids)
     }
+
+    # For subarraynode and dishleafnode proxy creation MagicMock is used instead of Mock because when
+    # proxy inout is called it returns list of resources allocated where lenght of list need to be evaluated
+    # but Mock doesnot support len function for returned object. Hence MagicMock which is a superset of
+    # Mock is used which supports this facility.
     dish_ln1_proxy_mock = MagicMock()
     csp_master_ln_proxy_mock = Mock()
     sdp_master_ln_proxy_mock = Mock()
@@ -562,6 +579,7 @@ def test_standby():
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
 
+
 def test_startup():
     # arrange:
     device_under_test = CentralNode
@@ -578,6 +596,11 @@ def test_startup():
         'TMMidSubarrayNodes': subarray1_fqdn,
         'NumDishes': len(dish_device_ids)
     }
+
+    # For subarraynode and dishleafnode proxy creation MagicMock is used instead of Mock because when
+    # proxy inout is called it returns list of resources allocated where lenght of list need to be evaluated
+    # but Mock doesnot support len function for returned object. Hence MagicMock which is a superset of
+    # Mock is used which supports this facility.
     dish_ln1_proxy_mock = MagicMock()
     csp_master_ln_proxy_mock = Mock()
     sdp_master_ln_proxy_mock = Mock()
