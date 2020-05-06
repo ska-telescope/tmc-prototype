@@ -129,7 +129,6 @@ class TestElementDeviceData:
             }
           }
         expected_string_dict = json.dumps(expected_string_dict)
-
         assert isinstance(sdp_cmd_data, str)
         assert expected_string_dict == sdp_cmd_data
 
@@ -427,7 +426,7 @@ class TestSubarrayNode(object):
         assert tango_context.device.State() == DevState.OFF
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseAllResources()
-        assert const.RESRC_ALREADY_RELEASED in tango_context.device.activityMessage
+        assert const.RESOURCE_ALREADY_RELEASED in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
 
     def test_ReleaseResources(self, tango_context):

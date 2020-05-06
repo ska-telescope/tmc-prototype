@@ -43,7 +43,7 @@ class SubarrayHealthState:
     def generate_health_state_log_msg(health_state, device_name, event):
         if isinstance(health_state, HealthState):
             return (
-                const.STR_HEALTH_STATE + device_name + const.STR_ARROW + health_state.name.upper())
+                const.STR_HEALTH_STATE + str(device_name) + const.STR_ARROW + str(health_state.name.upper()))
         else:
             return const.STR_HEALTH_STATE_UNKNOWN_VAL + str(event)
 
@@ -332,7 +332,7 @@ class SubarrayNode(SKASubarray):
             try:
                 str_leafId = argin[leafId]
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
-                devProxy = tango.DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                devProxy = DeviceProxy(self.DishLeafNodePrefix + str_leafId)
                 self._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
@@ -623,6 +623,9 @@ class SubarrayNode(SKASubarray):
                 self.set_status(const.STR_SA_SCANNING)
                 self.logger.info(const.STR_SA_SCANNING)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
+            else:
+                print("obs state of subarray is :", self._obs_state)
+                print("device state of Subarray is:::", self.get_state())
 
             self.end_scan_thread = threading.Thread(None, self.waitForEndScan, "SubarrayNode")
             self.end_scan_thread.start()
@@ -908,7 +911,7 @@ class SubarrayNode(SKASubarray):
         Example: "[]" as argout on successful release all resources.
         """
         try:
-            assert self._dishLnVsHealthEventID != {}, const.RESRC_ALREADY_RELEASED
+            assert self._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
         except AssertionError as assert_err:
             log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
             self.logger.error(log_message)
@@ -1318,7 +1321,6 @@ class SubarrayNode(SKASubarray):
 
         if self._obs_state not in [ObsState.IDLE, ObsState.READY]:
             return
-
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
