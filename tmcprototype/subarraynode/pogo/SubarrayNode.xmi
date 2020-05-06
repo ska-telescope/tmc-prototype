@@ -128,7 +128,7 @@
         <type xsi:type="pogoDsl:StringType"/>
       </argin>
       <argout description="A list of Resources added to the subarray.">
-        <type xsi:type="pogoDsl:StringType"/>
+        <type xsi:type="pogoDsl:StringArrayType"/>
       </argout>
       <status abstract="false" inherited="true" concrete="true"/>
     </commands>

@@ -286,7 +286,7 @@ class TestCentralNode(object):
                      '"type":["calibration"]}]}]}}'
         result = tango_context.device.AssignResources(test_input1)
         time.sleep(2)
-        assert result == '{"dish": {"receptorIDList_success": ["[", "]"]}}'
+        assert result == '{"dish": {"receptorIDList_success": []}}'
 
     def test_AssignResources_invalid_json(self, tango_context):
         test_input = '{"invalid_key"}'

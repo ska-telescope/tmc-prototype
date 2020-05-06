@@ -667,6 +667,7 @@ class CentralNode(SKABaseDevice):
                     receptorIDList.append(self._resources_allocated[dish])
                 self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                 self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+                self.logger.info(receptorIDList)
                 argout = {
                     "dish": {
                         "receptorIDList_success": receptorIDList
@@ -699,14 +700,12 @@ class CentralNode(SKABaseDevice):
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
+        self.logger.info(argout)
         #throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
             argout = '{"dish": {"receptorIDList_success": []}}'
 
-        # For future reference
-        #argout['dish']['receptorIDList'] = receptorIDList
-        #argout['receptorIDList'] = receptorIDList
         return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.AssignResources
 
