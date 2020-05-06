@@ -319,7 +319,7 @@ def test_configure_generic_exception():
         assert const.ERR_CONFIGURE in tango_context.device.activityMessage
 
 
-def test_Scan_device_not_ready():
+def test_scan_device_not_ready():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         scan_input = '{"id":1}'

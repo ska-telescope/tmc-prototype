@@ -266,7 +266,7 @@ unit tests:
         echo "+++ Trying tests for ${TMC_ELEMENT}"
         pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
           --forked \
-          --cov=tmcprototype/${TMC_ELEMENT} \
+          --cov=tmcprototype/${TMC_ELEMENT}/src \
           --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
           --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
           --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml

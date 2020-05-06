@@ -801,7 +801,6 @@ def test_subarray_device_state_is_on_when_csp_and_sdp_subarray1_is_on_after_star
         assert tango_context.device.State() == DevState.ON
 
 
-
 def test_status():
     """Test for Status"""
     with fake_tango_system(SubarrayNode) as tango_context:
