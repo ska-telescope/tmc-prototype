@@ -326,7 +326,8 @@ def test_configure_command_subarray_with_invalid_key():
                        '"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":' \
                        '["calibration"]}]}]}}'
         tango_context.device.AssignResources(assign_input)
-        tango_context.device.Configure('{"pointing12345":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946",'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure('{"pointing12345":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946",'
                                        '"dec":"+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":'
                                        '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":'
                                        '1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
