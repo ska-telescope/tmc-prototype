@@ -269,13 +269,6 @@ def test_configure_command_subarray():
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_config)
 
 
-def create_dummy_event_state(device_fqdn, attribute, attr_value):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    fake_event.attr_value.value = attr_value
-    return fake_event
-
 def test_configure_command_subarray_with_invalid_key():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -448,10 +441,12 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         csp_subarray1_proxy_mock.obsState = ObsState.READY
         sdp_subarray1_proxy_mock.obsState = ObsState.READY
         attribute = 'ObsState'
-        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_fqdn, attribute, ObsState.READY)
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_fqdn, attribute, ObsState.READY)
+        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         time.sleep(5)
         scan_input = '{"id": 1}'
@@ -516,12 +511,12 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
         csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
         sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
         attribute = 'ObsState'
-        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_fqdn, attribute,
-                                                               ObsState.SCANNING)
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.SCANNING)
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_fqdn, attribute,
-                                                               ObsState.SCANNING)
+        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.SCANNING)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
         time.sleep(5)
@@ -582,10 +577,12 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
         csp_subarray1_proxy_mock.obsState = ObsState.READY
         sdp_subarray1_proxy_mock.obsState = ObsState.READY
         attribute = 'ObsState'
-        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_fqdn, attribute, ObsState.READY)
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_fqdn, attribute, ObsState.READY)
+        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         time.sleep(5)
 
@@ -664,14 +661,17 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
         tango_context.device.AssignResources(assign_input)
 
         attribute = 'ObsState'
-        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_fqdn, attribute, ObsState.READY)
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_fqdn, attribute, ObsState.READY)
+        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-        attribute = 'dishPointingState'
-        dummy_event_dish = create_dummy_event_state(dish_ln_prefix + "0001", attribute, PointingState.TRACK)
+        attribute = 'PointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.TRACK)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
 
         # assert:
@@ -724,10 +724,12 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         attribute = 'ObsState'
-        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_fqdn, attribute, ObsState.SCANNING)
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.SCANNING)
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_fqdn, attribute, ObsState.SCANNING)
+        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.SCANNING)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         # assert:
         time.sleep(5)
@@ -791,7 +793,8 @@ def test_pointing_state_is_track_when_dish_master_in_track():
         tango_context.device.AssignResources(assign_input)
 
         attribute = 'dishPointingState'
-        dummy_event_dish = create_dummy_event_state(dish_ln_prefix + "0001", attribute, PointingState.TRACK)
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.TRACK)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
         time.sleep(5)
@@ -843,10 +846,12 @@ def test_obs_state_is_configuring_when_other_leaf_nodes_are_configuring_after_st
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         attribute = 'ObsState'
-        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_fqdn, attribute, ObsState.CONFIGURING)
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.CONFIGURING)
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_fqdn, attribute, ObsState.CONFIGURING)
+        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.CONFIGURING)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         # assert:
         time.sleep(5)
@@ -997,6 +1002,15 @@ def create_dummy_event_healthstate_with_proxy(proxy_mock, device_fqdn, health_st
     return fake_event
 
 
+def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = attr_value
+    fake_event.device = proxy_mock
+    return fake_event
+
+
 def test_subarray_device_state_is_on_when_csp_and_sdp_subarray1_is_on_after_start():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -1027,10 +1041,12 @@ def test_subarray_device_state_is_on_when_csp_and_sdp_subarray1_is_on_after_star
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_fqdn, attribute, DevState.ON)
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute,
+                                               DevState.ON)
         event_subscription_map[attribute](dummy_event)
 
-        dummy_event = create_dummy_event_state(sdp_subarray1_fqdn, attribute, DevState.ON)
+        dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
+                                               DevState.ON)
         event_subscription_map[attribute](dummy_event)
 
         # assert:
