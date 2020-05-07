@@ -120,8 +120,7 @@ def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         test_input = '{"invalid_json"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
+        tango_context.device.AssignResources(test_input)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
@@ -309,11 +308,19 @@ def test_activity_message():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == ""
 
-def test_write_receive_addresses_and_activity_message():
+
+def test_write_receive_addresses():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.write_receiveAddresses()
-        tango_context.device.write_activityMessage()
+        tango_context.device.receiveAddresses = "test"
+        assert tango_context.device.receiveAddresses == "test"
+
+
+def test_write_activity_message():
+    # act & assert:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+        tango_context.device.activityMessage = "test"
+        assert tango_context.device.activityMessage == "test"
 
 def test_active_processing_blocks():
     # act & assert:
