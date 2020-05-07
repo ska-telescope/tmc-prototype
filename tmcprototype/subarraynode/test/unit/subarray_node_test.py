@@ -1089,6 +1089,13 @@ class TestElementDeviceData:
         assert expected_string_dict == sdp_cmd_data
 
     def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
+        invalid_scan_config = example_scan_configuration["sdp"].pop("scan_type")
+        with pytest.raises(KeyError) as exception:
+            ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config)
+        expected_msg = "SDP Subarray scan_type is empty. Command data not built up"
+        assert exception.value.args[0] == expected_msg
+
+    def test_build_up_sdp_cmd_data_with_scan_type_missing_configuration(self, example_scan_configuration):
         invalid_scan_config = example_scan_configuration.pop("sdp")
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config)
