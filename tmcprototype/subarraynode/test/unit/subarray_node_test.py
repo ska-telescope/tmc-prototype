@@ -886,6 +886,42 @@ def test_obs_state_is_configuring_when_other_leaf_nodes_are_configuring_after_st
         assert tango_context.device.obsState == ObsState.CONFIGURING
 
 
+def test_obs_state_is_raises_exception_when_invalid_obs_state_key():
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+    csp_subarray1_obsstate_attribute = "invalidObsState"
+    event_subscription_map = {}
+
+    csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+
+        attribute = 'ObsState'
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.SCANNING)
+        with pytest.raises(KeyError) as exception:
+            event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+        # assert:
+        assert tango_context.device.activityMessage == const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(exception)
+
+
 def test_subarray_health_state_is_degraded_when_csp_subarray1_ln_is_degraded_after_start():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
@@ -1391,6 +1427,22 @@ class TestElementDeviceData:
         expected_msg = "Dish configuration must be given. Aborting Dish configuration."
         assert exception.value.args[0] == expected_msg
 
+
+def test_devfailed_exception():
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+
+    initial_dut_properties = {
+        'DishLeafNodePrefix': dish_ln_prefix
+    }
+    dish_ln_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        dish_ln_prefix + '0001': dish_ln_proxy_mock
+    }
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        with pytest.raises(tango.DevFailed):
+            pass
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
