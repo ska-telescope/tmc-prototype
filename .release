@@ -22,6 +22,7 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
+release_tmc=True
 release=0.1.11
 tag=0.1.11
 description= Updated SDP image to 0.8.0-hack-1, Updated Central Node to update the output argument for assignResource command, Removed bug of initilaizing heatlhState to UNKNOWN in Subarray Node
