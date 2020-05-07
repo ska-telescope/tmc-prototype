@@ -45,7 +45,6 @@ def central_node_test_info(request):
     }
 
     test_info = {
-        'device_under_test': device_under_test,
         'csp_master_ln_health_attribute': csp_master_ln_health_attribute,
         'initial_dut_properties': initial_dut_properties,
         'proxies_to_mock': proxies_to_mock,
@@ -58,7 +57,6 @@ def central_node_test_info(request):
 
 def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_start(
     central_node_test_info):
-    device_under_test = central_node_test_info['device_under_test']
     initial_dut_properties = central_node_test_info['initial_dut_properties']
     proxies_to_mock = central_node_test_info['proxies_to_mock']
     csp_master_ln_fqdn = central_node_test_info['csp_master_ln_fqdn']
@@ -373,7 +371,6 @@ def test_release_resources_invalid_key():
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-@pytest.mark.xfail
 def test_release_resources_false_tag():
     # act
     with fake_tango_system(CentralNode) \
