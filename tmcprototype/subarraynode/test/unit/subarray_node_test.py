@@ -748,7 +748,7 @@ def test_pointing_state_is_track_when_dish_master_in_track():
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        attribute = 'PointingState'
+        attribute = 'dishPointingState'
         dummy_event_dish = create_dummy_event_state(dish_ln_prefix + "0001", attribute, PointingState.TRACK)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
