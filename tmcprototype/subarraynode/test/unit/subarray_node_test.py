@@ -1062,6 +1062,40 @@ def example_scan_configuration():
 
     return scan_config
 
+def example_invalid_scan_configuration():
+    scan_config = {
+          "pointing": {
+            "target": {
+              "system": "ICRS",
+              "name": "Polaris",
+              "RA": "02:31:49.0946",
+              "dec": "+89:15:50.7923"
+            }
+          },
+          "dish": {
+            "receiverBand": "1"
+          },
+          "csp": {
+            "id": "sbi-mvp01-20200325-00001-science_A",
+            "frequencyBand": "1",
+            "fsp": [
+              {
+                "fspID": 1,
+                "functionMode": "CORR",
+                "frequencySliceID": 1,
+                "integrationTime": 1400,
+                "corrBandwidth": 0
+              }
+            ]
+          },
+          "sdp": {
+          },
+          "tmc": {
+            "scanDuration": 10.0
+          }
+        }
+
+    return scan_config
 
 @pytest.fixture(scope="function")
 def csp_func_args():
@@ -1088,14 +1122,14 @@ class TestElementDeviceData:
         assert isinstance(sdp_cmd_data, str)
         assert expected_string_dict == sdp_cmd_data
 
-    def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
-        invalid_scan_config = example_scan_configuration["sdp"].pop("scan_type")
+    def test_build_up_sdp_cmd_data_with_scan_type_missing_configuration(self, example_invalid_scan_configuration):
+        invalid_scan_config = example_invalid_scan_configuration
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config)
         expected_msg = "SDP Subarray scan_type is empty. Command data not built up"
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_sdp_cmd_data_with_scan_type_missing_configuration(self, example_scan_configuration):
+    def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
         invalid_scan_config = example_scan_configuration.pop("sdp")
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config)
