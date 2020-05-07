@@ -709,6 +709,7 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
     }
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+    dish_pointing_state_attribute = "dishPointingState"
 
     event_subscription_map = {}
     dish_pointing_state_map = {}
