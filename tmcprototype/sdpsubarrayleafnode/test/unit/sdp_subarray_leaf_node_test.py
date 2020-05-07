@@ -43,7 +43,7 @@ def command_call_back():
         # assert:
         return_val = sdp_subarray1_proxy_mock.command_inout_asynch(const.CMD_SCAN, scan_input,
                                                                  any_method(with_name='commandCallback'))
-        print("return_val",return_val)
+        print("return_val :",return_val)
 
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready():
     # arrange:
@@ -114,6 +114,14 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
                                                                         assign_input,
                                                                   any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
+
+def test_assign_invalid_format():
+    # act & assert:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+        test_input = '{"invalid_json"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(test_input)
+        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
 def test_release_resources_when_sdp_subarray_is_idle():
@@ -298,6 +306,11 @@ def test_activity_message():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == ""
 
+def test_write_receive_addresses_and_activity_message():
+    # act & assert:
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+        tango_context.device.write_receiveAddresses("0001")
+        tango_context.device.write_activityMessage("input")
 
 def test_active_processing_blocks():
     # act & assert:
