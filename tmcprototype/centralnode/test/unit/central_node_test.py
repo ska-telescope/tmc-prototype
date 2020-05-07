@@ -99,6 +99,31 @@ def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_star
         assert tango_context.device.telescopeHealthState == HealthState.OK
 
 
+def test_telescope_health_state_is_failed_when_sdp_master_leaf_node_is_failed_after_start():
+    # arrange:
+    sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
+    sdp_master_ln_health_attribute = 'sdpHealthState'
+    initial_dut_properties = {
+        'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn
+    }
+
+    event_subscription_map = {}
+    sdp_master_ln_proxy_mock = Mock()
+    sdp_master_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock
+    }
+
+    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dummy_event = create_dummy_event(sdp_master_ln_fqdn, HealthState.FAILED)
+        event_subscription_map[sdp_master_ln_health_attribute](dummy_event)
+        # assert:
+        assert tango_context.device.telescopeHealthState == HealthState.FAILED
+
 def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start():
     # arrange:
     subarray_fqdn = 'ska_mid/tm_subarray_node/1'
@@ -371,15 +396,6 @@ def test_release_resources_invalid_key():
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-def test_release_resources_false_tag():
-    # act
-    with fake_tango_system(CentralNode) \
-            as tango_context:
-        test_input = '{"releaseALL":true,"receptorIDList":[]}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(test_input)
-        # assert:
-        assert const.STR_FALSE_TAG in tango_context.device.activityMessage
 
 def test_stow_antennas_invalid_value():
     """Negative Test for StowAntennas"""
@@ -441,8 +457,7 @@ def test_assign_resources():
                          'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
                          '00003","type":["calibration"]}]}]}}'
         device_proxy=tango_context.device
-        argout = json.loads(device_proxy.AssignResources(assign_command))
-        print('argout',argout)
+        device_proxy.AssignResources(assign_command)
         # assert:
         jsonArgument = json.loads(assign_command)
         input_json_subarray = jsonArgument.copy()
@@ -488,7 +503,8 @@ def test_assign_resources_duplicate_allocation():
                          'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
                          '00003","type":["calibration"]}]}]}}'
         device_proxy=tango_context.device
-        device_proxy.AssignResources(assign_command)
+        argout = json.loads(device_proxy.AssignResources(assign_command))
+        print('argout :  :  :',argout)
 
         # assert:
         assert const.STR_DISH_DUPLICATE in tango_context.device.activityMessage

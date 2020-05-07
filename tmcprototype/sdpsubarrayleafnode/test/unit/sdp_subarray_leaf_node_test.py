@@ -5,7 +5,6 @@ import sys
 import json
 import types
 import pytest
-import time
 import tango
 import mock
 from mock import Mock
@@ -19,6 +18,32 @@ from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 from ska.base.control_model import LoggingLevel
 
+
+def command_call_back():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        scan_input = '{"id":1}'
+        # act:
+        tango_context.device.Scan(scan_input)
+
+        # assert:
+        return_val = sdp_subarray1_proxy_mock.command_inout_asynch(const.CMD_SCAN, scan_input,
+                                                                 any_method(with_name='commandCallback'))
+        print("return_val",return_val)
 
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready():
     # arrange:
