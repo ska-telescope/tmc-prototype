@@ -1090,6 +1090,7 @@ def example_invalid_scan_configuration():
             ]
           },
           "sdp": {
+              "scan_type_1": "science_A"
           },
           "tmc": {
             "scanDuration": 10.0
