@@ -441,8 +441,8 @@ def test_assign_resources():
                          'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
                          '00003","type":["calibration"]}]}]}}'
         device_proxy=tango_context.device
-        device_proxy.AssignResources(assign_command)
-
+        argout = json.loads(device_proxy.AssignResources(assign_command))
+        print('argout',argout)
         # assert:
         jsonArgument = json.loads(assign_command)
         input_json_subarray = jsonArgument.copy()
@@ -464,6 +464,7 @@ def test_assign_resources_duplicate_allocation():
     # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
     # which supports this facility.
     subarray1_proxy_mock = MagicMock()
+    subarray1_proxy_mock.receptorIDList = [1,2]
     subarray1_proxy_mock.DevState = DevState.OFF
     proxies_to_mock = {
         subarray1_fqdn: subarray1_proxy_mock
@@ -487,7 +488,6 @@ def test_assign_resources_duplicate_allocation():
                          'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
                          '00003","type":["calibration"]}]}]}}'
         device_proxy=tango_context.device
-        device_proxy.AssignResources(assign_command)
         device_proxy.AssignResources(assign_command)
 
         # assert:
