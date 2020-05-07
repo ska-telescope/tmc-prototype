@@ -661,6 +661,8 @@ class CentralNode(SKABaseDevice):
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
+                print('self._resources_allocated :',self._resources_allocated)
+                print('self._resources_allocated length :',len(self._resources_allocated))
                 for dish in range(0, len(self._resources_allocated)):
                     dish_ID = "dish" + (self._resources_allocated[dish])
                     self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
@@ -775,6 +777,7 @@ class CentralNode(SKABaseDevice):
                 res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                 self._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
+                print('res_not_released :',res_not_released)
                 if not res_not_released:
                     release_success = True
                     for Dish_ID, Dish_Status in self._subarray_allocation.items():
