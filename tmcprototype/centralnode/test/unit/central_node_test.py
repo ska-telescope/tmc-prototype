@@ -375,7 +375,7 @@ def test_release_resources_false_tag():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        test_input = '{"releaseALL":'',"receptorIDList":[]}'
+        test_input = '{"releaseALL":true,"receptorIDList":[]}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseResources(test_input)
         # assert:
@@ -453,46 +453,46 @@ def test_assign_resources():
 
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
-# def test_assign_resources_duplicate_allocation():
-#     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-#     dut_properties = {
-#         'TMMidSubarrayNodes': subarray1_fqdn
-#     }
-#
-#     #For subarraynode proxy creation MagicMock is used instead of Mock because when subarray proxy inout
-#     # is called it returns list of resources allocated where lenght of list need to be evaluated but Mock
-#     # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
-#     # which supports this facility.
-#     subarray1_proxy_mock = MagicMock()
-#     subarray1_proxy_mock.DevState = DevState.OFF
-#     proxies_to_mock = {
-#         subarray1_fqdn: subarray1_proxy_mock
-#     }
-#
-#     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) as tango_context:
-#         assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-' \
-#                          '20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate' \
-#                          '_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min"' \
-#                          ':0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id"' \
-#                          ':"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.' \
-#                          '598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_' \
-#                          'map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-#                          '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters"' \
-#                          ':{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_' \
-#                          'realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-#                          '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},' \
-#                          '"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]}' \
-#                          ',{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","' \
-#                          'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
-#                          '00003","type":["calibration"]}]}]}}'
-#         device_proxy=tango_context.device
-#         device_proxy.AssignResources(assign_command)
-#         device_proxy.AssignResources(assign_command)
-#
-#         # assert:
-#         assert const.STR_DISH_DUPLICATE in tango_context.device.activityMessage
-#
+def test_assign_resources_duplicate_allocation():
+    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    dut_properties = {
+        'TMMidSubarrayNodes': subarray1_fqdn
+    }
+
+    #For subarraynode proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where lenght of list need to be evaluated but Mock
+    # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # which supports this facility.
+    subarray1_proxy_mock = MagicMock()
+    subarray1_proxy_mock.DevState = DevState.OFF
+    proxies_to_mock = {
+        subarray1_fqdn: subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-' \
+                         '20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate' \
+                         '_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min"' \
+                         ':0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id"' \
+                         ':"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.' \
+                         '598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_' \
+                         'map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
+                         '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters"' \
+                         ':{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_' \
+                         'realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
+                         '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},' \
+                         '"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]}' \
+                         ',{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","' \
+                         'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
+                         '00003","type":["calibration"]}]}]}}'
+        device_proxy=tango_context.device
+        device_proxy.AssignResources(assign_command)
+        device_proxy.AssignResources(assign_command)
+
+        # assert:
+        assert const.STR_DISH_DUPLICATE in tango_context.device.activityMessage
+
 @pytest.mark.xfail
 def test_release_resources():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
