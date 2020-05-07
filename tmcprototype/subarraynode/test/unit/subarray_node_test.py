@@ -1062,6 +1062,7 @@ def example_scan_configuration():
 
     return scan_config
 
+@pytest.fixture(scope="function")
 def example_invalid_scan_configuration():
     scan_config = {
           "pointing": {
