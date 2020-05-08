@@ -430,11 +430,11 @@ def test_configure_command_subarray_raises_devfailed_exception():
 
 
 def test_scan_command_subarray_raises_devfailed_exception():
-    with fake_tango_system(SubarrayNode) as tango_context:
+    with fake_tango_system(SubarrayNode1) as tango_context:
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
             scan_input = '{"id": 1}'
-            tango_context.device.Scan()
+            tango_context.device.Scan(scan_input)
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
@@ -453,10 +453,10 @@ def test_endscan_command_subarray_raises_devfailed_exception():
 
 
 def test_endsb_command_subarray_raises_devfailed_exception():
-    with fake_tango_system(SubarrayNode) as tango_context:
+    with fake_tango_system(SubarrayNode1) as tango_context:
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
-            tango_context.device.EndSB(123)
+            tango_context.device.EndSB()
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
