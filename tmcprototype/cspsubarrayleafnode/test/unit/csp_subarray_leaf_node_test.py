@@ -320,14 +320,8 @@ def test_read_delay_model():
 def test_write_delay_model():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        tango_context.device.delayModel = "test"
-        assert tango_context.device.delayModel == "test"
-
-
-def test_read_state():
-    # act & assert:
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.state == ""
+        tango_context.device.delayModel = " "
+        assert tango_context.device.delayModel == " "
 
 
 def test_health_state():
@@ -378,6 +372,10 @@ def test_read_activity_message():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == " "
 
+def test_read_state():
+    # act & assert:
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        assert tango_context.device.state == " "
 
 def test_write_activity_message():
     # act & assert:
