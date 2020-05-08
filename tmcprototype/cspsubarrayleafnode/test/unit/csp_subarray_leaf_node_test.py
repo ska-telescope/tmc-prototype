@@ -302,7 +302,7 @@ def test_configure_should_raise_exception_when_called_invalid_json():
 def test_state():   #from tango import DevState?
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.State() == DevState.ALARM
+        assert tango_context.device.state == DevState.ALARM
 
 
 def test_status():
@@ -372,10 +372,6 @@ def test_read_activity_message():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == " "
 
-def test_read_state():
-    # act & assert:
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.state == " "
 
 def test_write_activity_message():
     # act & assert:
