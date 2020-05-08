@@ -129,31 +129,19 @@ test: build up ## test the application
 
 unit-test:
 	@echo "hiii I am snehal hande this my unit test case job"
-	#docker run -i -t nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
-	#mkdir unit_test_results
+	docker run nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
+# 	pipenv install --dev
 	$(INIT_CACHE)
-
+	mkdir test_results; \
 	for path in `find ./tmcprototype/*/test  -type d -name unit`; do \
 	    echo $$path; \
-	    basename $$path; \
-  	    export TMC_ELEMENT=$(basename "$ path"); \
- 	    echo $$TMC_ELEMENT; \
-
+	    export TMC_ELEMENT=$$(basename $$(dirname $$(dirname "$$path"))); \
+	    echo $$TMC_ELEMENT; \
+	    echo "+++ Installing $${TMC_ELEMENT} for tests"; \
+	    python3 -m pip install -U tmcprototype/$${TMC_ELEMENT} --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple/ ; \
+	    echo "+++ Trying tests for $${TMC_ELEMENT}"; \
+	    pytest -v tmcprototype/$${TMC_ELEMENT}/test/unit --forked --cov=tmcprototype/$${TMC_ELEMENT} --cov-report=html:./test_results/$${TMC_ELEMENT}_htmlcov --json-report --json-report-file=./test_results/$${TMC_ELEMENT}_report.json --junitxml=./test_results/$${TMC_ELEMENT}-unit-tests.xml; \
 	done
-
-#  	  export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
-# 	  echo "+++ Installing ${TMC_ELEMENT} for tests"
-# 	  install -U tmcprototype/${TMC_ELEMENT} --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple/
-# 	  echo "+++ Trying tests for ${TMC_ELEMENT}"
-# 	  pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
-# 	    --forked \
-# 	    --cov=tmcprototype/${TMC_ELEMENT} \
-# 	    --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
-# 	    --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
-# 	    --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
-# 	done
-
-
 
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 lint: build up ##lint the application (static code analysis)
