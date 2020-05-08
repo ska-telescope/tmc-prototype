@@ -722,6 +722,7 @@ class SubarrayNode(SKASubarray):
                     if len(self.dishPointingStateMap.values()) != 0:
                         self.calculate_observation_state()
 
+                self.end_scan_thread.cancel()
                 self.set_status(const.STR_SCAN_COMPLETE)
                 self.logger.info(const.STR_SCAN_COMPLETE)
                 self._read_activity_message = const.STR_END_SCAN_SUCCESS
