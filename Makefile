@@ -41,7 +41,7 @@ DOCKER_RUN_ARGS =
 # prevent collisions with jobs from the same project running at the same
 # time.
 #
-ifneq ($(CI_JOB_ID),)
+ifneq ($(CI_JbuildOB_ID),)
 NETWORK_MODE := tangonet-$(CI_JOB_ID)
 CONTAINER_NAME_PREFIX := $(PROJECT)-$(CI_JOB_ID)-
 else
@@ -126,6 +126,34 @@ test: build up ## test the application
 	  docker rm -f -v $(BUILD); \
 	  $(MAKE) down; \
 	  exit $$status
+
+unit-test:
+	@echo "hiii I am snehal hande this my unit test case job"
+	#docker run -i -t nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
+	#mkdir unit_test_results
+	$(INIT_CACHE)
+
+	for path in `find ./tmcprototype/*/test  -type d -name unit`; do \
+	    echo $$path; \
+	    basename $$path; \
+  	    export TMC_ELEMENT=$(basename "$ path"); \
+ 	    echo $$TMC_ELEMENT; \
+
+	done
+
+#  	  export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
+# 	  echo "+++ Installing ${TMC_ELEMENT} for tests"
+# 	  install -U tmcprototype/${TMC_ELEMENT} --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple/
+# 	  echo "+++ Trying tests for ${TMC_ELEMENT}"
+# 	  pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
+# 	    --forked \
+# 	    --cov=tmcprototype/${TMC_ELEMENT} \
+# 	    --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
+# 	    --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
+# 	    --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
+# 	done
+
+
 
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 lint: build up ##lint the application (static code analysis)
