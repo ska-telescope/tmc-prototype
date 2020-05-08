@@ -134,34 +134,6 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
 
 
 def test_assign_resource_should_raise_devfailed_exception():
-    # csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
-    # csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
-    # sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
-    # sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-    # dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
-    #
-    # dut_properties = {
-    #     'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
-    #     'CspSubarrayFQDN': csp_subarray1_fqdn,
-    #     'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
-    #     'SdpSubarrayFQDN': sdp_subarray1_fqdn,
-    #     'DishLeafNodePrefix' : dish_ln_prefix
-    # }
-    #
-    # csp_subarray1_ln_proxy_mock = Mock()
-    # csp_subarray1_proxy_mock = Mock()
-    # sdp_subarray1_ln_proxy_mock = Mock()
-    # sdp_subarray1_proxy_mock = Mock()
-    # dish_ln_proxy_mock = Mock()
-    #
-    # proxies_to_mock = {
-    #     csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-    #     csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-    #     sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-    #     sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
-    #     dish_ln_prefix + "0001": dish_ln_proxy_mock
-    # }
-
     with fake_tango_system(SubarrayNode) as tango_context:
         assign_input = {"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"
                         ,"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
@@ -439,6 +411,56 @@ def test_configure_command_subarray_with_invalid_configure_input():
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+
+
+def test_configure_command_subarray_raises_devfailed_exception():
+    with fake_tango_system(SubarrayNode) as tango_context:
+        tango_context.device.On()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure(
+                '{"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946",'
+                '"dec":"+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":'
+                '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":'
+                '1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
+                '"corrBandwidth":0}]},"sdp":{"scan_type":"science_A"},'
+                '"tmc":{"scanDuration":10.0}}')
+
+        # assert:
+        assert tango_context.device.obsState == ObsState.IDLE
+
+
+def test_scan_command_subarray_raises_devfailed_exception():
+    with fake_tango_system(SubarrayNode) as tango_context:
+        tango_context.device.On()
+        with pytest.raises(tango.DevFailed):
+            scan_input = '{"id": 1}'
+            tango_context.device.Scan(scan_input)
+
+        # assert:
+        assert tango_context.device.obsState == ObsState.IDLE
+        assert tango_context.device.activityMessage == const.ERR_SCAN_CMD
+
+
+def test_endscan_command_subarray_raises_devfailed_exception():
+    with fake_tango_system(SubarrayNode) as tango_context:
+        tango_context.device.On()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndScan()
+
+        # assert:
+        assert tango_context.device.obsState == ObsState.IDLE
+        assert tango_context.device.activityMessage == const.ERR_END_SCAN_CMD_ON_GROUP
+
+
+def test_endsb_command_subarray_raises_devfailed_exception():
+    with fake_tango_system(SubarrayNode) as tango_context:
+        tango_context.device.On()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndSB()
+
+        # assert:
+        assert tango_context.device.obsState == ObsState.IDLE
+        assert tango_context.device.activityMessage == const.ERR_ENDSB_INVOKING_CMD
 
 
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
@@ -875,6 +897,136 @@ def test_pointing_state_is_track_when_dish_master_in_track():
         attribute = 'dishPointingState'
         dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
                                                     PointingState.TRACK)
+        dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
+        # assert:
+        time.sleep(5)
+        assert tango_context.device.obsState == ObsState.IDLE
+
+
+def test_pointing_state_is_track_when_dish_master_in_slew():
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+        'DishLeafNodePrefix': dish_ln_prefix
+    }
+
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_ln_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + "0001": dish_ln_proxy_mock
+    }
+
+    dish_pointing_state_attribute = "dishPointingState"
+    dish_pointing_state_map = {}
+
+    dish_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
+            update({attr_name: callback}))
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.On()
+        assign_input = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
+                       ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
+                       '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"' \
+                       ':1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",' \
+                       '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":' \
+                       '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
+                       '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
+                       '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"' \
+                       ',"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},' \
+                       '{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"}' \
+                       ',"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"' \
+                       ']}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":' \
+                       '"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":' \
+                       '["calibration"]}]}]}}'
+        tango_context.device.AssignResources(assign_input)
+
+        attribute = 'dishPointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.SLEW)
+        dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
+        # assert:
+        time.sleep(5)
+        assert tango_context.device.obsState == ObsState.IDLE
+
+
+def test_pointing_state_is_track_when_dish_master_in_slew():
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+        'DishLeafNodePrefix': dish_ln_prefix
+    }
+
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_ln_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + "0001": dish_ln_proxy_mock
+    }
+
+    dish_pointing_state_attribute = "dishPointingState"
+    dish_pointing_state_map = {}
+
+    dish_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
+            update({attr_name: callback}))
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.On()
+        assign_input = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
+                       ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
+                       '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"' \
+                       ':1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",' \
+                       '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":' \
+                       '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
+                       '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
+                       '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"' \
+                       ',"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},' \
+                       '{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"}' \
+                       ',"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"' \
+                       ']}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":' \
+                       '"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":' \
+                       '["calibration"]}]}]}}'
+        tango_context.device.AssignResources(assign_input)
+
+        attribute = 'dishPointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.SCAN)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
         time.sleep(5)
