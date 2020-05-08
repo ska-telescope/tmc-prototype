@@ -894,12 +894,11 @@ def test_obs_state_is_raises_exception_when_invalid_obs_state_key():
     }
 
     csp_subarray1_ln_proxy_mock = Mock()
-    csp_subarray1_proxy_mock = Mock()
 
     proxies_to_mock = {
         csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock
     }
-    csp_subarray1_obsstate_attribute = "invalidObsState"
+    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     event_subscription_map = {}
 
     csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
