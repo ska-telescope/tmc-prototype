@@ -148,6 +148,7 @@ endif
 	-f docker-compose/mid-csp-lmc.yml \
 	-f docker-compose/mid-cbf-mcs.yml \
 	-f docker-compose/sdp-docker-compose.yml \
+	-f docker-compose/dsh-lmc-docker-compose.yml \
 	-f docker-compose/tmc-docker-compose.yml \
 	-f docker-compose/archiver-docker-compose.yml \
 	-f docker-compose/jive.yml \
@@ -168,6 +169,7 @@ down:  ## stop develop/test environment and any interactive session
 	-f docker-compose/mid-csp-lmc.yml \
 	-f docker-compose/mid-cbf-mcs.yml \
 	-f docker-compose/sdp-docker-compose.yml \
+	-f docker-compose/dsh-lmc-docker-compose.yml \
 	-f docker-compose/tmc-docker-compose.yml \
 	-f docker-compose/archiver-docker-compose.yml \
 	-f docker-compose/jive.yml \
