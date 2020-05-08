@@ -366,7 +366,9 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
+        print ("StandBy Command")
         self._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.commandCallback)
+        print ("Standby command called")
         self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
