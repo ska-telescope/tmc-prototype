@@ -13,7 +13,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.1.11"
+version = "9.9.9"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -22,7 +22,9 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release_tmc=True
-release=0.1.11
-tag=0.1.11
-description= Updated SDP image to 0.8.0-hack-1, Updated Central Node to update the output argument for assignResource command, Removed bug of initilaizing heatlhState to UNKNOWN in Subarray Node
+# release_tmc=1 if you want to release tmc else release_tmc=0
+release_tmc=0
+release=9.9.9
+tag=9.9.9
+tag_description=This tag is created for testing purpose
+release_notes=This release is created for testing purpose

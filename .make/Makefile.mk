@@ -135,3 +135,12 @@ config-git:
 	git config --global user.name $(USERNAME)
 
 push-tag-and-versioned-image: config-git push-versioned-image create-publish-tag
+
+release-tmc: .release
+	@. $(RELEASE_SUPPORT) ; releaseTMC
+
+delete-tmc-release: .release
+	@. $(RELEASE_SUPPORT) ; deleteTMCRelease
+
+release-tmc-on-condition: .release
+	@. $(RELEASE_SUPPORT) ; releaseTMCOnCondition

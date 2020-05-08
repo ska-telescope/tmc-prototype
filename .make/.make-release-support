@@ -104,14 +104,14 @@ function nextMajorLevel() {
 	echo $version
 }
 
-function getDescription(){
-	awk -F= '/^description=/{print $2}' .release
+function getTagDescription(){
+	awk -F= '/^tag_description=/{print $2}' .release
 }
 
 function createGitTag(){
 	tag=$(getTag)
 	echo $tag
-	description=$(getDescription)
+	description=$(getTagDescription)
 	git tag -a $tag -m "$description"
 }
 
@@ -135,5 +135,48 @@ function gitPush() {
   if [ $result -ne 0 ];
   then
     deleteImageFromNexus
+  fi
+}
+
+function getReleaseDescription(){
+	awk -F= '/^release_notes=/{print $2}' .release
+}
+
+#function isReleaseRequired() {
+#  release_required=$(awk -F= '/^release_tmc=/{print $2}' .release)
+#  echo $release_required
+#}
+
+function releaseTMC() {
+  name=$(getRelease)
+  echo "$name"
+  tag_name=$(getRelease)
+  echo "$tag_name"
+  release_notes=$(getReleaseDescription)
+  echo "$release_notes"
+  data1=('{ "name": "'$name'", "tag_name": "'$tag_name'", "description": "'"$release_notes"'"}')
+  echo "$data1"
+  result=$(curl --header 'Content-Type: application/json' \
+                --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" \
+                --data "$data1" \
+                --request POST https://gitlab.com/api/v4/projects/10749136/releases)
+  echo $result
+}
+
+function deleteTMCRelease() {
+  tag_name=$(getRelease)
+  echo "$tag_name"
+  target="https://gitlab.com/api/v4/projects/10749136/releases/"$tag_name
+  echo $target
+  result=$(curl --request DELETE --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "$target")
+  echo $result
+}
+
+function releaseTMCOnCondition() {
+  release_required=$(awk -F= '/^release_tmc=/{print $2}' .release)
+  echo $release_required
+  if [ $release_required -ne 0 ];
+  then
+    releaseTMC
   fi
 }
