@@ -627,7 +627,7 @@ class SubarrayNode(SKASubarray):
                 print("obs state of subarray is :", self._obs_state)
                 print("device state of Subarray is:::", self.get_state())
 
-            self.end_scan_thread = threading.Thread(None, self.waitForEndScan, "SubarrayNode")
+            self.end_scan_thread = threading.Timer(self.scan_duration, self.waitForEndScan, "SubarrayNode")
             self.end_scan_thread.start()
             # TODO: FOR FUTURE IMPLEMENTATION
             # with excpt_count is 0 and ThreadPoolExecutor(1) as executor:
@@ -669,20 +669,21 @@ class SubarrayNode(SKASubarray):
             self.throw_exception(exception_message, const.STR_SCAN_EXEC)
 
     def waitForEndScan(self):
-        scanning_time = 0.0
-        while scanning_time <= self.scan_duration:
-            # Stop thread, if EndScan command is invoked manually
-            if self._endscan_stop == True:
-                break
-            # Stop thread, if scan duration is commpleted and EndScan is not invoked manually.
-            elif self._endscan_stop == False and scanning_time == self.scan_duration:
-                self.EndScan()
-                break
-            # Increment counter till maximum scan duration provided with scan command
-            else:
-                time.sleep(1)
-                scanning_time += 1
-        self._endscan_stop = False
+        self.EndScan()
+        # scanning_time = 0.0
+        # while scanning_time <= self.scan_duration:
+        #     # Stop thread, if EndScan command is invoked manually
+        #     if self._endscan_stop == True:
+        #         break
+        #     # Stop thread, if scan duration is commpleted and EndScan is not invoked manually.
+        #     elif self._endscan_stop == False and scanning_time == self.scan_duration:
+        #         self.EndScan()
+        #         break
+        #     # Increment counter till maximum scan duration provided with scan command
+        #     else:
+        #         time.sleep(1)
+        #         scanning_time += 1
+        # self._endscan_stop = False
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
