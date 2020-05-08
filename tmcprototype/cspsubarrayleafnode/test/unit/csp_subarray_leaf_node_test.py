@@ -38,6 +38,30 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
                                                              any_method(with_name='commandCallback'))
 
 
+def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_idle():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        scan_input = {'id':1}
+        # act:
+        tango_context.device.StartScan([json.dumps(scan_input)])
+
+        # assert:
+        assert_activity_message(tango_context.device, const.ERR_DEVICE_NOT_READY)
+
+
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -230,9 +254,6 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_idle():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         tango_context.device.GoToIdle()
-
-        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_GOTOIDLE,
-                                                            any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_READY)
 
 
@@ -300,12 +321,13 @@ def test_write_delay_model():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.delayModel = "test"
+        assert tango_context.device.delayModel == "test"
 
 
 def test_read_state():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.state == " "
+        assert tango_context.device.state == ""
 
 
 def test_health_state():
