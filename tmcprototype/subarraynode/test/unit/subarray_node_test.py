@@ -437,7 +437,6 @@ def test_scan_command_subarray_raises_devfailed_exception():
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
-        assert tango_context.device.activityMessage == const.ERR_DUPLICATE_SCAN_CMD + str(assert_error)
 
 
 def test_endscan_command_subarray_raises_devfailed_exception():
