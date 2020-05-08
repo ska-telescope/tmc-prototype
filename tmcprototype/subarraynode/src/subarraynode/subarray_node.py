@@ -625,7 +625,7 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_SA_SCANNING)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
 
-            self.end_scan_thread = threading.Timer(10, self.EndScan())
+            self.end_scan_thread = threading.Timer(self.scan_duration, self.waitForEndScan)
             self.end_scan_thread.start()
             # TODO: FOR FUTURE IMPLEMENTATION
             # with excpt_count is 0 and ThreadPoolExecutor(1) as executor:
@@ -666,8 +666,8 @@ class SubarrayNode(SKASubarray):
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_SCAN_EXEC)
 
-    # def waitForEndScan(self):
-    #     self.EndScan()
+    def waitForEndScan(self):
+        self.EndScan()
         # scanning_time = 0.0
         # while scanning_time <= self.scan_duration:
         #     # Stop thread, if EndScan command is invoked manually
