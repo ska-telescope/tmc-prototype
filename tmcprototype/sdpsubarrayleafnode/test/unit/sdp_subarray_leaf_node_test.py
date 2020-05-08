@@ -110,7 +110,6 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         device_proxy = tango_context.device
         # act:
         device_proxy.AssignResources(assign_input)
-        assert tango_context.device.obsState == ObsState.IDLE
         assert_activity_message(device_proxy, const.ERR_INVALID_JSON)
 
 def test_release_resources_when_sdp_subarray_is_idle():
