@@ -4,7 +4,7 @@ import importlib
 import types
 import sys
 import mock
-from mock import Mock
+from mock import Mock, MagicMock
 
 # Tango imports
 from tango import DevState
