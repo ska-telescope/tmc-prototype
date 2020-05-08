@@ -125,7 +125,20 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
     # act
     with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
-        assign_input = '{"invalid_key": invalid_value}'
+        assign_input = {"":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"
+                        ,"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
+                        "ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"
+                        :1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",
+                        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":
+                        [{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],
+                        "processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",
+                        "id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"
+                        ,"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},
+                        {"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"}
+                        ,"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"
+                        ]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":
+                        "0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
+                        ["calibration"]}]}]}}
         with pytest.raises(ValueError) as value_error:
             tango_context.device.AssignResources(assign_input)
 
@@ -747,6 +760,7 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
 
         # assert:
+        time.sleep(5)
         assert tango_context.device.obsState == ObsState.READY
 
 
@@ -1026,7 +1040,8 @@ def test_pointing_state_is_with_error_event():
                                                     PointingState.SCAN)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
-        assert tango_context.device.activityMessage == const.STR_POINTING_STATE_UNKNOWN_VAL + str(dummy_event_dish)
+        time.sleep(5)
+        assert tango_context.device.activityMessage == const.ERR_SUBSR_DSH_POINTING_STATE + str(dummy_event_dish.errors)
 
 
 def test_pointing_state_is_ready_when_dish_master_in_ready():
@@ -1090,6 +1105,7 @@ def test_pointing_state_is_ready_when_dish_master_in_ready():
                                                     PointingState.READY)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
+        time.sleep(5)
         assert tango_context.device.obsState == ObsState.IDLE
 
 
@@ -1427,6 +1443,7 @@ def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
 def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event = MagicMock()
     fake_event.err = True
+    fake_event.errors = 'Wrong Value'
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = attr_value
     fake_event.device = proxy_mock
