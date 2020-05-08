@@ -504,9 +504,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.debug(argin)
 
         except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
+            log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
+            self._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 

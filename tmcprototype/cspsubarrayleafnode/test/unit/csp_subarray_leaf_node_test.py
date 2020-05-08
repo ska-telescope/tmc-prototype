@@ -191,6 +191,28 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
         assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
 
+def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_idle():
+    # arrange:
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.GoToIdle()
+        # assert:
+        assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
+
+
+def test_end_scan_should_command_csp_subarray_to_end_sb_when_it_is_idle():
+    # arrange:
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndScan()
+        # assert:
+        assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
+
+
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
@@ -223,7 +245,6 @@ def test_assign_resource_should_raise_exception_when_key_not_found():
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
-@pytest.mark.xfail
 def test_configure_should_raise_exception_when_called_invalid_json():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
@@ -246,10 +267,22 @@ def test_status():
         assert tango_context.device.Status() != const.STR_CSPSALN_INIT_SUCCESS
 
 
-def test_delay_model():
+def test_read_delay_model():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.delayModel == " "
+
+
+def test_write_delay_model():
+    # act & assert:
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        tango_context.device.delayModel = "test"
+
+
+def test_read_state():
+    # act & assert:
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        assert tango_context.device.state == " "
 
 
 def test_health_state():
@@ -295,10 +328,17 @@ def test_visdestination_address():
         assert tango_context.device.visDestinationAddress == "test"
 
 
-def test_activity_message():
+def test_read_activity_message():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == " "
+
+
+def test_write_activity_message():
+    # act & assert:
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        tango_context.device.activityMessage = "test"
+        assert tango_context.device.activityMessage == "test"
 
 
 def test_logging_level():
@@ -306,6 +346,12 @@ def test_logging_level():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
+
+
+def test_read_versionInfo():
+    # act & assert:
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        assert tango_context.device.versionInfo == " "
 
 
 def test_logging_targets():
