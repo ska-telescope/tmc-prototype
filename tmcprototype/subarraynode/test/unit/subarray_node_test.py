@@ -1223,37 +1223,6 @@ def test_subarray_health_state_is_failed_when_csp_subarray1_ln_is_failed_after_s
         assert tango_context.device.healthState == HealthState.FAILED
 
 
-def test_subarray_health_state_is_with_error():
-    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
-    csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
-    initial_dut_properties = {
-        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn
-    }
-
-    event_subscription_map = {}
-
-    csp_subarray1_ln_proxy_mock = MagicMock()
-    csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
-
-    proxies_to_mock = {
-        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock
-    }
-
-    with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        # act:
-        health_state_value = HealthState.FAILED
-        dummy_event = create_dummy_event_healthstate_with_error(
-            csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, health_state_value,
-            csp_subarray1_ln_health_attribute)
-        event_subscription_map[csp_subarray1_ln_health_attribute](dummy_event)
-
-        # assert:
-        assert tango_context.device.healthState == HealthState.FAILED
-        assert tango_context.device.activityMessage in const.ERR_SUBSR_SA_HEALTH_STATE + dummy_event.device + str(dummy_event)
-
-
 def test_subarray_device_state_is_on_when_csp_and_sdp_subarray1_is_on_after_start():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
