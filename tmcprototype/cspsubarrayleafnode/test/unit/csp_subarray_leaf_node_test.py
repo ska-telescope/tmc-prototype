@@ -126,6 +126,27 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
         assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
 
 
+def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_ready():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        tango_context.device.EndScan()
+        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_IN_SCAN)
+
+
 def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
@@ -193,24 +214,26 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
 
 def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_idle():
     # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
     csp_subarray1_proxy_mock = Mock()
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.GoToIdle()
-        # assert:
-        assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
 
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
 
-def test_end_scan_should_command_csp_subarray_to_end_sb_when_it_is_idle():
-    # arrange:
-    csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.READY
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.EndScan()
-        # assert:
-        assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        tango_context.device.GoToIdle()
+
+        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_GOTOIDLE,
+                                                            any_method(with_name='commandCallback'))
+        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_READY)
 
 
 def any_method(with_name=None):
