@@ -19,7 +19,7 @@ from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, C
 from ska.base.control_model import LoggingLevel
 
 
-def command_call_back():
+def test_command_call_back():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
@@ -44,6 +44,8 @@ def command_call_back():
         return_val = sdp_subarray1_proxy_mock.command_inout_asynch(const.CMD_SCAN, scan_input,
                                                                  any_method(with_name='commandCallback'))
         print("return_val :",return_val)
+        assert 0
+
 
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready():
     # arrange:
@@ -116,11 +118,13 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
+@pytest.mark.xfail
 def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         test_input = '{"invalid_json"}'
-        tango_context.device.AssignResources(test_input)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.AssignResources(test_input)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
