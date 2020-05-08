@@ -7,7 +7,7 @@ import types
 import time
 import pytest
 import mock
-from mock import Mock
+from mock import Mock, MagicMock
 
 # Tango imports
 import tango
@@ -1326,7 +1326,7 @@ def test_subarray_device_state_is_with_error():
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute,
+        dummy_event = create_dummy_event_state_with_error(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute,
                                                DevState.ON)
         event_subscription_map[attribute](dummy_event)
 
@@ -1394,7 +1394,7 @@ def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
 
 
 def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr_value):
-    fake_event = Mock()
+    fake_event = MagicMock()
     fake_event.err = True
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = attr_value
