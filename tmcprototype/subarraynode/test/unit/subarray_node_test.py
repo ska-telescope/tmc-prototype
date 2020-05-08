@@ -134,36 +134,35 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
 
 
 def test_assign_resource_should_raise_devfailed_exception():
-    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
-    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
-    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
-    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+    # csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    # csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    # sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    # sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    # dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+    #
+    # dut_properties = {
+    #     'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+    #     'CspSubarrayFQDN': csp_subarray1_fqdn,
+    #     'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+    #     'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+    #     'DishLeafNodePrefix' : dish_ln_prefix
+    # }
+    #
+    # csp_subarray1_ln_proxy_mock = Mock()
+    # csp_subarray1_proxy_mock = Mock()
+    # sdp_subarray1_ln_proxy_mock = Mock()
+    # sdp_subarray1_proxy_mock = Mock()
+    # dish_ln_proxy_mock = Mock()
+    #
+    # proxies_to_mock = {
+    #     csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
+    #     csp_subarray1_fqdn : csp_subarray1_proxy_mock,
+    #     sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
+    #     sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
+    #     dish_ln_prefix + "0001": dish_ln_proxy_mock
+    # }
 
-    dut_properties = {
-        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
-        'CspSubarrayFQDN': csp_subarray1_fqdn,
-        'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
-        'SdpSubarrayFQDN': sdp_subarray1_fqdn,
-        'DishLeafNodePrefix' : dish_ln_prefix
-    }
-
-    csp_subarray1_ln_proxy_mock = Mock()
-    csp_subarray1_proxy_mock = Mock()
-    sdp_subarray1_ln_proxy_mock = Mock()
-    sdp_subarray1_proxy_mock = Mock()
-    dish_ln_proxy_mock = Mock()
-
-    proxies_to_mock = {
-        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
-        dish_ln_prefix + "0001": dish_ln_proxy_mock
-    }
-
-    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
+    with fake_tango_system(SubarrayNode) as tango_context:
         assign_input = {"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"
                         ,"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
                         "ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"
@@ -179,21 +178,11 @@ def test_assign_resource_should_raise_devfailed_exception():
                         "0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
                         ["calibration"]}]}]}}
         tango_context.device.On()
-        tango_context.device.AssignResources(json.dumps(assign_input))
-
-        str_json_arg = json.dumps(assign_input.get("sdp"))
         with pytest.raises(tango.DevFailed):
-            sdp_subarray1_ln_proxy_mock.command_inout("wrong_cmd_name", str_json_arg)
-        # assert:
+            tango_context.device.AssignResources(json.dumps(assign_input))
+
+
         assert tango_context.device.State() == DevState.OFF
-        # arg_list = []
-        # json_argument = {}
-        # dish = {}
-        # receptor_list = assign_input["dish"]["receptorIDList"]
-        # dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
-        # json_argument[const.STR_KEY_DISH] = dish
-        # arg_list.append(json.dumps(json_argument))
-        # csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
 
 
 def test_release_resource_command_subarray():
