@@ -17,215 +17,215 @@ volumes:
   tangodb: {}
 
 services:
-  dish-master-5:
+  dish-master-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}dish-master-5
+    container_name: ${CONTAINER_NAME_PREFIX}dish-master-1
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dish-master 5"
+             ./bin/dish-master 1"
   
-  dish-master-6:
+  dish-master-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}dish-master-6
+    container_name: ${CONTAINER_NAME_PREFIX}dish-master-2
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dish-master 6"
+             ./bin/dish-master 2"
 
-  dish-master-7:
+  dish-master-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}dish-master-7
+    container_name: ${CONTAINER_NAME_PREFIX}dish-master-3
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dish-master 7"
+             ./bin/dish-master 3"
 
-  dish-master-8:
+  dish-master-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}dish-master-8
+    container_name: ${CONTAINER_NAME_PREFIX}dish-master-4
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dish-master 8"
+             ./bin/dish-master 4"
 
-  ds-simulator-5:
+  ds-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}ds-simulator-5
+    container_name: ${CONTAINER_NAME_PREFIX}ds-simulator-1
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/ds-simulator 5"
+             ./bin/ds-simulator 1"
 
-  ds-simulator-6:
+  ds-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}ds-simulator-6
+    container_name: ${CONTAINER_NAME_PREFIX}ds-simulator-2
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/ds-simulator 6"
+             ./bin/ds-simulator 2"
 
-  ds-simulator-7:
+  ds-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}ds-simulator-7
+    container_name: ${CONTAINER_NAME_PREFIX}ds-simulator-3
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/ds-simulator 7"
+             ./bin/ds-simulator 3"
 
-  ds-simulator-8:
+  ds-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}ds-simulator-8
+    container_name: ${CONTAINER_NAME_PREFIX}ds-simulator-4
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/ds-simulator 8"
+             ./bin/ds-simulator 4"
              
-  dsctrl-simulator-5:
+  dsctrl-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}dsctrl-simulator-5
+    container_name: ${CONTAINER_NAME_PREFIX}dsctrl-simulator-1
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dsctrl-simulator 5"
+             ./bin/dsctrl-simulator 1"
 
-  dsctrl-simulator-6:
+  dsctrl-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}dsctrl-simulator-6
+    container_name: ${CONTAINER_NAME_PREFIX}dsctrl-simulator-2
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dsctrl-simulator 6"
+             ./bin/dsctrl-simulator 2"
 
-  dsctrl-simulator-7:
+  dsctrl-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}dsctrl-simulator-7
+    container_name: ${CONTAINER_NAME_PREFIX}dsctrl-simulator-3
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dsctrl-simulator 7"
+             ./bin/dsctrl-simulator 3"
 
-  dsctrl-simulator-8:
+  dsctrl-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}dsctrl-simulator-8
+    container_name: ${CONTAINER_NAME_PREFIX}dsctrl-simulator-4
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dsctrl-simulator 8"
+             ./bin/dsctrl-simulator 4"
 
-  lmc-logger-5:
+  lmc-logger-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}lmc-logger-5
+    container_name: ${CONTAINER_NAME_PREFIX}lmc-logger-1
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/lmc-logger 5"
+             ./bin/lmc-logger 1"
   
-  lmc-logger-6:
+  lmc-logger-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}lmc-logger-6
+    container_name: ${CONTAINER_NAME_PREFIX}lmc-logger-2
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/lmc-logger 6"
+             ./bin/lmc-logger 2"
           
-  lmc-logger-7:
+  lmc-logger-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}lmc-logger-7
+    container_name: ${CONTAINER_NAME_PREFIX}lmc-logger-3
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/lmc-logger 7"
+             ./bin/lmc-logger 3"
 
-  lmc-logger-8:
+  lmc-logger-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
       - dshlmc-dsconfig
     network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}lmc-logger-8
+    container_name: ${CONTAINER_NAME_PREFIX}lmc-logger-4
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/lmc-logger 8"
+             ./bin/lmc-logger 4"
 
-  pdu-simulator-5:
+  pdu-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -236,9 +236,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/pdu-simulator 5"
+             ./bin/pdu-simulator 1"
 
-  pdu-simulator-6:
+  pdu-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -249,9 +249,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/pdu-simulator 6"
+             ./bin/pdu-simulator 2"
 
-  pdu-simulator-7:
+  pdu-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -262,9 +262,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/pdu-simulator 7"
+             ./bin/pdu-simulator 3"
 
-  pdu-simulator-8:
+  pdu-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -275,9 +275,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/pdu-simulator 8"
+             ./bin/pdu-simulator 4"
 
-  rx-simulator-5:
+  rx-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -288,9 +288,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/rx-simulator 5"
+             ./bin/rx-simulator 1"
 
-  rx-simulator-6:
+  rx-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -301,9 +301,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/rx-simulator 6"
+             ./bin/rx-simulator 2"
 
-  rx-simulator-7:
+  rx-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -314,9 +314,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/rx-simulator 7"
+             ./bin/rx-simulator 3"
 
-  rx-simulator-8:
+  rx-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -327,9 +327,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/rx-simulator 8"      
+             ./bin/rx-simulator 4"      
 
-  spf-simulator-5:
+  spf-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -340,9 +340,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/spf-simulator 5"
+             ./bin/spf-simulator 1"
 
-  spf-simulator-6:
+  spf-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -353,9 +353,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/spf-simulator 6"
+             ./bin/spf-simulator 2"
 
-  spf-simulator-7:
+  spf-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -366,9 +366,9 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/spf-simulator 7"
+             ./bin/spf-simulator 3"
 
-  spf-simulator-8:
+  spf-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
       - databaseds
@@ -379,7 +379,7 @@ services:
       - TANGO_HOST=${TANGO_HOST}
     command: >
       sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/spf-simulator 8"
+             ./bin/spf-simulator 4"
 
   dshlmc-dsconfig:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-dsconfig:latest

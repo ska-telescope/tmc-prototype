@@ -1,7 +1,7 @@
 {
   "servers": {
     "dish-master": {
-      "5": {
+      "1": {
         "DishMaster": {
           "mid_dsh_0005/elt/master": {
             "attribute_properties": {
@@ -357,7 +357,7 @@
           }
         }
       },
-      "6": {
+      "2": {
         "DishMaster": {
           "mid_dsh_0006/elt/master": {
             "alias": "dish_master",
@@ -714,7 +714,7 @@
           }
         }
       },
-      "7": {
+      "3": {
         "DishMaster": {
           "mid_dsh_0007/elt/master": {
             "attribute_properties": {
@@ -1070,7 +1070,7 @@
           }
         }
       },
-      "8": {
+      "4": {
         "DishMaster": {
           "mid_dsh_0008/elt/master": {
             "attribute_properties": {
@@ -1428,7 +1428,7 @@
       }
     },
     "ds-simulator": {
-      "5": {
+      "1": {
         "DSSimulator": {
           "mid_dsh_0005/lmc/ds_simulator": {
             "attribute_properties": {
@@ -1629,7 +1629,7 @@
           }
         }
       },
-      "6": {
+      "2": {
         "DSSimulator": {
           "mid_dsh_0006/lmc/ds_simulator": {
             "alias": "ds_simulator",
@@ -1831,7 +1831,7 @@
           }
         }
       },
-      "7": {
+      "3": {
         "DSSimulator": {
           "mid_dsh_0007/lmc/ds_simulator": {
             "attribute_properties": {
@@ -2032,7 +2032,7 @@
           }
         }
       },
-      "8": {
+      "4": {
         "DSSimulator": {
           "mid_dsh_0008/lmc/ds_simulator": {
             "attribute_properties": {
@@ -2235,7 +2235,7 @@
       }
     },
     "dsctrl-simulator": {
-      "5": {
+      "1": {
         "DSCtrlSimulator": {
           "mid_dsh_0005/ds/simulator": {
             "attribute_properties": {
@@ -2287,7 +2287,7 @@
           }
         }
       },
-      "6": {
+      "2": {
         "DSCtrlSimulator": {
           "mid_dsh_0006/ds/simulator": {
             "alias": "dsctrl_simulator",
@@ -2340,7 +2340,7 @@
           }
         }
       },
-      "7": {
+      "3": {
         "DSCtrlSimulator": {
           "mid_dsh_0007/ds/simulator": {
             "attribute_properties": {
@@ -2392,7 +2392,7 @@
           }
         }
       },
-      "8": {
+      "4": {
         "DSCtrlSimulator": {
           "mid_dsh_0008/ds/simulator": {
             "attribute_properties": {
@@ -2446,7 +2446,7 @@
       }
     },
     "lmc-logger": {
-      "5": {
+      "1": {
         "LMCLogger": {
           "mid_dsh_0005/elt/logger": {
             "properties": {
@@ -2560,7 +2560,7 @@
           }
         }
       },
-      "6": {
+      "2": {
         "LMCLogger": {
           "mid_dsh_0006/elt/logger": {
             "alias": "lmc_logger",
@@ -2675,7 +2675,7 @@
           }
         }
       },
-      "7": {
+      "3": {
         "LMCLogger": {
           "mid_dsh_0007/elt/logger": {
             "properties": {
@@ -2789,7 +2789,7 @@
           }
         }
       },
-      "8": {
+      "4": {
         "LMCLogger": {
           "mid_dsh_0008/elt/logger": {
             "properties": {
@@ -2905,7 +2905,7 @@
       }
     },
     "pdu-simulator": {
-      "5": {
+      "1": {
         "PDUSimulator": {
           "mid_dsh_0005/lmc/pdu_simulator": {
             "properties": {
@@ -2936,7 +2936,7 @@
           }
         }
       },
-      "6": {
+      "2": {
         "PDUSimulator": {
           "mid_dsh_0006/lmc/pdu_simulator": {
             "alias": "pdu_simulator",
@@ -2968,7 +2968,7 @@
           }
         }
       },
-      "7": {
+      "3": {
         "PDUSimulator": {
           "mid_dsh_0007/lmc/pdu_simulator": {
             "properties": {
@@ -2999,7 +2999,7 @@
           }
         }
       },
-      "8": {
+      "4": {
         "PDUSimulator": {
           "mid_dsh_0008/lmc/pdu_simulator": {
             "properties": {
@@ -3032,7 +3032,7 @@
       }
     },
     "rx-simulator": {
-      "5": {
+      "1": {
         "RxSimulator": {
           "mid_dsh_0005/spfrx/simulator": {
             "attribute_properties": {
@@ -3398,7 +3398,7 @@
           }
         }
       },
-      "6": {
+      "2": {
         "RxSimulator": {
           "mid_dsh_0006/spfrx/simulator": {
             "alias": "rx_simulator",
@@ -3765,7 +3765,7 @@
           }
         }
       },
-      "7": {
+      "3": {
         "RxSimulator": {
           "mid_dsh_0007/spfrx/simulator": {
             "attribute_properties": {
@@ -4131,7 +4131,7 @@
           }
         }
       },
-      "8": {
+      "4": {
         "RxSimulator": {
           "mid_dsh_0008/spfrx/simulator": {
             "attribute_properties": {
@@ -4499,7 +4499,7 @@
       }
     },
     "spf-simulator": {
-      "5": {
+      "1": {
         "SPFSimulator": {
           "mid_dsh_0005/spf/simulator": {
             "attribute_properties": {
@@ -4957,7 +4957,7 @@
           }
         }
       },
-      "6": {
+      "2": {
         "SPFSimulator": {
           "mid_dsh_0006/spf/simulator": {
             "alias": "spf_simulator",
@@ -5416,7 +5416,7 @@
           }
         }
       },
-      "7": {
+      "3": {
         "SPFSimulator": {
           "mid_dsh_0007/spf/simulator": {
             "attribute_properties": {
@@ -5874,7 +5874,7 @@
           }
         }
       },
-      "8": {
+      "4": {
         "SPFSimulator": {
           "mid_dsh_0008/spf/simulator": {
             "attribute_properties": {
