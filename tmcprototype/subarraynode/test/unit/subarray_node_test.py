@@ -1232,7 +1232,7 @@ def test_subarray_health_state_is_with_error():
 
     event_subscription_map = {}
 
-    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_ln_proxy_mock = MagicMock()
     csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
@@ -1251,7 +1251,7 @@ def test_subarray_health_state_is_with_error():
 
         # assert:
         assert tango_context.device.healthState == HealthState.FAILED
-        assert tango_context.device.activityMessage == const.ERR_SUBSR_SA_HEALTH_STATE + dummy_event.device + str(dummy_event)
+        assert tango_context.device.activityMessage in const.ERR_SUBSR_SA_HEALTH_STATE + dummy_event.device + str(dummy_event)
 
 
 def test_subarray_device_state_is_on_when_csp_and_sdp_subarray1_is_on_after_start():
