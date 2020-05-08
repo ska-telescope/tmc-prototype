@@ -90,17 +90,28 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def test_assign_resources_invalid_json_value():
-    # act & assert:
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.On()
-        test_input = '{"invalid_json"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
+def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block_list():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
 
-        # assert:
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        assign_input = 'Invalid_input'
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.AssignResources(assign_input)
         assert tango_context.device.obsState == ObsState.IDLE
-        
+        assert_activity_message(device_proxy, const.ERR_INVALID_JSON)
 
 def test_release_resources_when_sdp_subarray_is_idle():
     # arrange:
