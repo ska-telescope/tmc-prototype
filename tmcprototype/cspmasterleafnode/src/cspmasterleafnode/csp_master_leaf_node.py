@@ -150,6 +150,7 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         exception_count = 0
         exception_message = []
+        print ("Command callback event:", event)
         try:
             if event.err:
                 log = const.ERR_INVOKING_CMD + event.cmd_name
