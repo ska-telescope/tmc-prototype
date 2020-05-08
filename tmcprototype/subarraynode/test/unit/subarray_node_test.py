@@ -430,15 +430,15 @@ def test_configure_command_subarray_raises_devfailed_exception():
 
 
 def test_scan_command_subarray_raises_devfailed_exception():
-    with fake_tango_system(SubarrayNode1) as tango_context:
+    with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(AssertionError) as assert_error:
             scan_input = '{"id": 1}'
             tango_context.device.Scan(scan_input)
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
-        assert tango_context.device.activityMessage == const.ERR_SCAN_CMD
+        assert tango_context.device.activityMessage == const.ERR_DUPLICATE_SCAN_CMD + str(assert_error)
 
 
 def test_endscan_command_subarray_raises_devfailed_exception():
@@ -453,14 +453,14 @@ def test_endscan_command_subarray_raises_devfailed_exception():
 
 
 def test_endsb_command_subarray_raises_devfailed_exception():
-    with fake_tango_system(SubarrayNode1) as tango_context:
+    with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndSB()
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
-        assert tango_context.device.activityMessage == const.ERR_ENDSB_INVOKING_CMD
+        assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
