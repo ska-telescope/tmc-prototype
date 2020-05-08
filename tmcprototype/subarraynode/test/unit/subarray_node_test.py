@@ -913,8 +913,8 @@ def test_obs_state_is_raises_exception_when_invalid_obs_state_key():
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
                                                    attribute, ObsState.SCANNING)
-        with pytest.raises(KeyError) as exception:
-            event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+        #with pytest.raises(KeyError) as exception:
+        event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
         # assert:
         assert tango_context.device.activityMessage == const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(exception)
 
