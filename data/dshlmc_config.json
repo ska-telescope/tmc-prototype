@@ -7,12 +7,12 @@
             "attribute_properties": {
               "achievedPointing": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/achievedPointing"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/achievedPointing"
                 ]
               },
               "achievedTargetLock": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/targetLock"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/targetLock"
                 ]
               },
               "adminMode": {
@@ -20,42 +20,42 @@
               },
               "azimuthOverWrap": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/azimuthOverWrap"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/azimuthOverWrap"
                 ]
               },
               "band1PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/b1PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/b1PointingModelParams"
                 ]
               },
               "band2PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/b2PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/b2PointingModelParams"
                 ]
               },
               "band3PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/b3PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/b3PointingModelParams"
                 ]
               },
               "band4PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/b4PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/b4PointingModelParams"
                 ]
               },
               "band5aPointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/b5aPointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/b5aPointingModelParams"
                 ]
               },
               "band5bPointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/b5bPointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/b5bPointingModelParams"
                 ]
               },
               "configureTargetLock": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/configureTargetLock"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/configureTargetLock"
                 ]
               },
               "controlMode": {
@@ -63,27 +63,27 @@
               },
               "desiredPointing": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/desiredPointing"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/desiredPointing"
                 ]
               },
               "dsTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/testMode"
                 ]
               },
               "pointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/pointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/pointingModelParams"
                 ]
               },
               "polyTrack": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/polyTrack"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/polyTrack"
                 ]
               },
               "programTrackTable": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/programTrackTable"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/programTrackTable"
                 ]
               },
               "requestedBand": {
@@ -91,22 +91,22 @@
               },
               "rxEngineeringModeEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/spfrx/simulator/engineeringModeEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/spfrx/simulator/engineeringModeEnabled"
                 ]
               },
               "rxTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/spfrx/simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/spfrx/simulator/testMode"
                 ]
               },
               "spfTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator/testMode"
                 ]
               },
               "staticPointCorrEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/staticPointCorrEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/staticPointCorrEnabled"
                 ]
               },
               "tmProxyAddress": {
@@ -114,32 +114,32 @@
               },
               "trackInterpolationMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/interpolationMode"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/interpolationMode"
                 ]
               },
               "trackProgramMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/trackProgramMode"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/trackProgramMode"
                 ]
               },
               "trackTableBufferMaxSize": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/trackTableBufferMaxSize"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/trackTableBufferMaxSize"
                 ]
               },
               "trackTableBufferSize": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/trackTableBufferSize"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/trackTableBufferSize"
                 ]
               },
               "trackTableBufferingEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/trackTableBufferingEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/trackTableBufferingEnabled"
                 ]
               },
               "trackTableLoadMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator/trackTableLoadMode"
+                  "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator/trackTableLoadMode"
                 ]
               }
             },
@@ -152,16 +152,16 @@
               "ControlModeDefault": ["0"],
               "DefaultTaskTimeout": ["120"],
               "DsManagerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator"
               ],
               "ElementAlarmsAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/elt/alarms"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/elt/alarms"
               ],
               "ElementDatabaseDSAddress": [
-                "tango://databaseds-tango-base-test:10000/sys/database/2"
+                "tango://tmcprototype-databaseds:10000/sys/database/2"
               ],
               "ElementLoggerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/elt/logger"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/elt/logger"
               ],
               "ElementLoggerEnabledDefault": ["yes"],
               "ElementTelModelAddress": [""],
@@ -178,20 +178,20 @@
               "MaxTrackableTasks": ["100"],
               "OperateTaskTimeout": ["60"],
               "PduManagerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/pdu_simulator"
               ],
               "ProcessEventsInQueueThread": ["yes"],
               "ProxyTimeout": ["20"],
               "RequestedBandDefault": ["0"],
               "RxControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spfrx/simulator"
               ],
               "RxShutdownTimeDelay": ["30"],
               "SPFStartupTimeout": ["60"],
               "ShutdownTaskTimeout": ["60"],
               "SkaLevel": ["1"],
               "SpfControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator"
               ],
               "StandbyFPTaskTimeout": ["60"],
               "StorageLoggerEnabledDefault": ["yes"],
@@ -364,12 +364,12 @@
             "attribute_properties": {
               "achievedPointing": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/achievedPointing"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/achievedPointing"
                 ]
               },
               "achievedTargetLock": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/targetLock"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/targetLock"
                 ]
               },
               "adminMode": {
@@ -377,42 +377,42 @@
               },
               "azimuthOverWrap": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/azimuthOverWrap"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/azimuthOverWrap"
                 ]
               },
               "band1PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/b1PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/b1PointingModelParams"
                 ]
               },
               "band2PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/b2PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/b2PointingModelParams"
                 ]
               },
               "band3PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/b3PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/b3PointingModelParams"
                 ]
               },
               "band4PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/b4PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/b4PointingModelParams"
                 ]
               },
               "band5aPointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/b5aPointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/b5aPointingModelParams"
                 ]
               },
               "band5bPointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/b5bPointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/b5bPointingModelParams"
                 ]
               },
               "configureTargetLock": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/configureTargetLock"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/configureTargetLock"
                 ]
               },
               "controlMode": {
@@ -420,27 +420,27 @@
               },
               "desiredPointing": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/desiredPointing"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/desiredPointing"
                 ]
               },
               "dsTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/testMode"
                 ]
               },
               "pointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/pointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/pointingModelParams"
                 ]
               },
               "polyTrack": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/polyTrack"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/polyTrack"
                 ]
               },
               "programTrackTable": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/programTrackTable"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/programTrackTable"
                 ]
               },
               "requestedBand": {
@@ -448,22 +448,22 @@
               },
               "rxEngineeringModeEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spfrx/simulator/engineeringModeEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spfrx/simulator/engineeringModeEnabled"
                 ]
               },
               "rxTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spfrx/simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spfrx/simulator/testMode"
                 ]
               },
               "spfTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator/testMode"
                 ]
               },
               "staticPointCorrEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/staticPointCorrEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/staticPointCorrEnabled"
                 ]
               },
               "tmProxyAddress": {
@@ -471,32 +471,32 @@
               },
               "trackInterpolationMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/interpolationMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/interpolationMode"
                 ]
               },
               "trackProgramMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/trackProgramMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/trackProgramMode"
                 ]
               },
               "trackTableBufferMaxSize": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/trackTableBufferMaxSize"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/trackTableBufferMaxSize"
                 ]
               },
               "trackTableBufferSize": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/trackTableBufferSize"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/trackTableBufferSize"
                 ]
               },
               "trackTableBufferingEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/trackTableBufferingEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/trackTableBufferingEnabled"
                 ]
               },
               "trackTableLoadMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator/trackTableLoadMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator/trackTableLoadMode"
                 ]
               }
             },
@@ -509,16 +509,16 @@
               "ControlModeDefault": ["0"],
               "DefaultTaskTimeout": ["120"],
               "DsManagerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator"
               ],
               "ElementAlarmsAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/elt/alarms"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/elt/alarms"
               ],
               "ElementDatabaseDSAddress": [
-                "tango://databaseds-tango-base-test:10000/sys/database/2"
+                "tango://tmcprototype-databaseds:10000/sys/database/2"
               ],
               "ElementLoggerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/elt/logger"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/elt/logger"
               ],
               "ElementLoggerEnabledDefault": ["yes"],
               "ElementTelModelAddress": [""],
@@ -535,20 +535,20 @@
               "MaxTrackableTasks": ["100"],
               "OperateTaskTimeout": ["60"],
               "PduManagerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/pdu_simulator"
               ],
               "ProcessEventsInQueueThread": ["yes"],
               "ProxyTimeout": ["20"],
               "RequestedBandDefault": ["0"],
               "RxControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spfrx/simulator"
               ],
               "RxShutdownTimeDelay": ["30"],
               "SPFStartupTimeout": ["60"],
               "ShutdownTaskTimeout": ["60"],
               "SkaLevel": ["1"],
               "SpfControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator"
               ],
               "StandbyFPTaskTimeout": ["60"],
               "StorageLoggerEnabledDefault": ["yes"],
@@ -720,12 +720,12 @@
             "attribute_properties": {
               "achievedPointing": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/achievedPointing"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/achievedPointing"
                 ]
               },
               "achievedTargetLock": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/targetLock"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/targetLock"
                 ]
               },
               "adminMode": {
@@ -733,42 +733,42 @@
               },
               "azimuthOverWrap": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/azimuthOverWrap"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/azimuthOverWrap"
                 ]
               },
               "band1PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/b1PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/b1PointingModelParams"
                 ]
               },
               "band2PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/b2PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/b2PointingModelParams"
                 ]
               },
               "band3PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/b3PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/b3PointingModelParams"
                 ]
               },
               "band4PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/b4PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/b4PointingModelParams"
                 ]
               },
               "band5aPointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/b5aPointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/b5aPointingModelParams"
                 ]
               },
               "band5bPointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/b5bPointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/b5bPointingModelParams"
                 ]
               },
               "configureTargetLock": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/configureTargetLock"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/configureTargetLock"
                 ]
               },
               "controlMode": {
@@ -776,27 +776,27 @@
               },
               "desiredPointing": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/desiredPointing"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/desiredPointing"
                 ]
               },
               "dsTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/testMode"
                 ]
               },
               "pointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/pointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/pointingModelParams"
                 ]
               },
               "polyTrack": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/polyTrack"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/polyTrack"
                 ]
               },
               "programTrackTable": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/programTrackTable"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/programTrackTable"
                 ]
               },
               "requestedBand": {
@@ -804,22 +804,22 @@
               },
               "rxEngineeringModeEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spfrx/simulator/engineeringModeEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spfrx/simulator/engineeringModeEnabled"
                 ]
               },
               "rxTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spfrx/simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spfrx/simulator/testMode"
                 ]
               },
               "spfTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator/testMode"
                 ]
               },
               "staticPointCorrEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/staticPointCorrEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/staticPointCorrEnabled"
                 ]
               },
               "tmProxyAddress": {
@@ -827,32 +827,32 @@
               },
               "trackInterpolationMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/interpolationMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/interpolationMode"
                 ]
               },
               "trackProgramMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/trackProgramMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/trackProgramMode"
                 ]
               },
               "trackTableBufferMaxSize": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/trackTableBufferMaxSize"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/trackTableBufferMaxSize"
                 ]
               },
               "trackTableBufferSize": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/trackTableBufferSize"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/trackTableBufferSize"
                 ]
               },
               "trackTableBufferingEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/trackTableBufferingEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/trackTableBufferingEnabled"
                 ]
               },
               "trackTableLoadMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator/trackTableLoadMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator/trackTableLoadMode"
                 ]
               }
             },
@@ -865,16 +865,16 @@
               "ControlModeDefault": ["0"],
               "DefaultTaskTimeout": ["120"],
               "DsManagerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator"
               ],
               "ElementAlarmsAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/elt/alarms"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/elt/alarms"
               ],
               "ElementDatabaseDSAddress": [
-                "tango://databaseds-tango-base-test:10000/sys/database/2"
+                "tango://tmcprototype-databaseds:10000/sys/database/2"
               ],
               "ElementLoggerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/elt/logger"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/elt/logger"
               ],
               "ElementLoggerEnabledDefault": ["yes"],
               "ElementTelModelAddress": [""],
@@ -891,20 +891,20 @@
               "MaxTrackableTasks": ["100"],
               "OperateTaskTimeout": ["60"],
               "PduManagerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/pdu_simulator"
               ],
               "ProcessEventsInQueueThread": ["yes"],
               "ProxyTimeout": ["20"],
               "RequestedBandDefault": ["0"],
               "RxControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spfrx/simulator"
               ],
               "RxShutdownTimeDelay": ["30"],
               "SPFStartupTimeout": ["60"],
               "ShutdownTaskTimeout": ["60"],
               "SkaLevel": ["1"],
               "SpfControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator"
               ],
               "StandbyFPTaskTimeout": ["60"],
               "StorageLoggerEnabledDefault": ["yes"],
@@ -1076,12 +1076,12 @@
             "attribute_properties": {
               "achievedPointing": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/achievedPointing"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/achievedPointing"
                 ]
               },
               "achievedTargetLock": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/targetLock"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/targetLock"
                 ]
               },
               "adminMode": {
@@ -1089,42 +1089,42 @@
               },
               "azimuthOverWrap": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/azimuthOverWrap"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/azimuthOverWrap"
                 ]
               },
               "band1PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/b1PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/b1PointingModelParams"
                 ]
               },
               "band2PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/b2PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/b2PointingModelParams"
                 ]
               },
               "band3PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/b3PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/b3PointingModelParams"
                 ]
               },
               "band4PointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/b4PointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/b4PointingModelParams"
                 ]
               },
               "band5aPointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/b5aPointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/b5aPointingModelParams"
                 ]
               },
               "band5bPointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/b5bPointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/b5bPointingModelParams"
                 ]
               },
               "configureTargetLock": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/configureTargetLock"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/configureTargetLock"
                 ]
               },
               "controlMode": {
@@ -1132,27 +1132,27 @@
               },
               "desiredPointing": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/desiredPointing"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/desiredPointing"
                 ]
               },
               "dsTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/testMode"
                 ]
               },
               "pointingModelParams": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/pointingModelParams"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/pointingModelParams"
                 ]
               },
               "polyTrack": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/polyTrack"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/polyTrack"
                 ]
               },
               "programTrackTable": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/programTrackTable"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/programTrackTable"
                 ]
               },
               "requestedBand": {
@@ -1160,22 +1160,22 @@
               },
               "rxEngineeringModeEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spfrx/simulator/engineeringModeEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spfrx/simulator/engineeringModeEnabled"
                 ]
               },
               "rxTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spfrx/simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spfrx/simulator/testMode"
                 ]
               },
               "spfTestMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator/testMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator/testMode"
                 ]
               },
               "staticPointCorrEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/staticPointCorrEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/staticPointCorrEnabled"
                 ]
               },
               "tmProxyAddress": {
@@ -1183,32 +1183,32 @@
               },
               "trackInterpolationMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/interpolationMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/interpolationMode"
                 ]
               },
               "trackProgramMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/trackProgramMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/trackProgramMode"
                 ]
               },
               "trackTableBufferMaxSize": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/trackTableBufferMaxSize"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/trackTableBufferMaxSize"
                 ]
               },
               "trackTableBufferSize": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/trackTableBufferSize"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/trackTableBufferSize"
                 ]
               },
               "trackTableBufferingEnabled": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/trackTableBufferingEnabled"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/trackTableBufferingEnabled"
                 ]
               },
               "trackTableLoadMode": {
                 "__root_att": [
-                  "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator/trackTableLoadMode"
+                  "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator/trackTableLoadMode"
                 ]
               }
             },
@@ -1221,16 +1221,16 @@
               "ControlModeDefault": ["0"],
               "DefaultTaskTimeout": ["120"],
               "DsManagerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator"
               ],
               "ElementAlarmsAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/elt/alarms"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/elt/alarms"
               ],
               "ElementDatabaseDSAddress": [
-                "tango://databaseds-tango-base-test:10000/sys/database/2"
+                "tango://tmcprototype-databaseds:10000/sys/database/2"
               ],
               "ElementLoggerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/elt/logger"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/elt/logger"
               ],
               "ElementLoggerEnabledDefault": ["yes"],
               "ElementTelModelAddress": [""],
@@ -1247,20 +1247,20 @@
               "MaxTrackableTasks": ["100"],
               "OperateTaskTimeout": ["60"],
               "PduManagerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/pdu_simulator"
               ],
               "ProcessEventsInQueueThread": ["yes"],
               "ProxyTimeout": ["20"],
               "RequestedBandDefault": ["0"],
               "RxControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spfrx/simulator"
               ],
               "RxShutdownTimeDelay": ["30"],
               "SPFStartupTimeout": ["60"],
               "ShutdownTaskTimeout": ["60"],
               "SkaLevel": ["1"],
               "SpfControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator"
               ],
               "StandbyFPTaskTimeout": ["60"],
               "StorageLoggerEnabledDefault": ["yes"],
@@ -2456,14 +2456,14 @@
               "EnableLogForwardDefault": ["no"],
               "EnableLoggerInitPolling": ["yes"],
               "LogForwardSources": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spfrx/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spfrx/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/pdu_simulator"
               ],
               "LoggerInitPollPeriod": ["60000"],
               "LoggingLevelCentralDefault": ["3"],
@@ -2473,31 +2473,31 @@
               "LoggingTargetElementDefault": [""],
               "LoggingTargetStorageDefault": ["localhost"],
               "ManagedLogDevicesDefault": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/ds_simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/elt/master",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/lmc_monitor",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/elt/alarms",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/elt/archiver-lmc",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/elt/archiver-ds",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/elt/archiver-spf",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/elt/archiver-spfrx",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/ds_simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/elt/master",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/lmc_monitor",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/elt/alarms",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/elt/archiver-lmc",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/elt/archiver-ds",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/elt/archiver-spf",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/elt/archiver-spfrx",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/lmc/pdu_simulator"
               ],
               "ManagedSELogDevicesDefault": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spfrx/simulator"
               ],
               "ProcessEventsInQueueThread": ["yes"],
               "RxControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spfrx/simulator"
               ],
               "SELogLevel": ["4"],
               "SkaLevel": ["1"],
               "SpfControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_d0001/spf/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_d0001/spf/simulator"
               ],
               "StorageLoggerEnabledDefault": ["false"],
               "SyslogFacility": ["local6"],
@@ -2571,14 +2571,14 @@
               "EnableLogForwardDefault": ["no"],
               "EnableLoggerInitPolling": ["yes"],
               "LogForwardSources": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spfrx/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spfrx/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/pdu_simulator"
               ],
               "LoggerInitPollPeriod": ["60000"],
               "LoggingLevelCentralDefault": ["3"],
@@ -2588,31 +2588,31 @@
               "LoggingTargetElementDefault": [""],
               "LoggingTargetStorageDefault": ["localhost"],
               "ManagedLogDevicesDefault": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/ds_simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/elt/master",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/lmc_monitor",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/elt/alarms",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/elt/archiver-lmc",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/elt/archiver-ds",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/elt/archiver-spf",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/elt/archiver-spfrx",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/ds_simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/elt/master",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/lmc_monitor",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/elt/alarms",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/elt/archiver-lmc",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/elt/archiver-ds",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/elt/archiver-spf",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/elt/archiver-spfrx",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/lmc/pdu_simulator"
               ],
               "ManagedSELogDevicesDefault": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spfrx/simulator"
               ],
               "ProcessEventsInQueueThread": ["yes"],
               "RxControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spfrx/simulator"
               ],
               "SELogLevel": ["4"],
               "SkaLevel": ["1"],
               "SpfControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0006/spf/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0006/spf/simulator"
               ],
               "StorageLoggerEnabledDefault": ["false"],
               "SyslogFacility": ["local6"],
@@ -2685,14 +2685,14 @@
               "EnableLogForwardDefault": ["no"],
               "EnableLoggerInitPolling": ["yes"],
               "LogForwardSources": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spfrx/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spfrx/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/pdu_simulator"
               ],
               "LoggerInitPollPeriod": ["60000"],
               "LoggingLevelCentralDefault": ["3"],
@@ -2702,31 +2702,31 @@
               "LoggingTargetElementDefault": [""],
               "LoggingTargetStorageDefault": ["localhost"],
               "ManagedLogDevicesDefault": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/ds_simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/elt/master",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/lmc_monitor",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/elt/alarms",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/elt/archiver-lmc",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/elt/archiver-ds",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/elt/archiver-spf",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/elt/archiver-spfrx",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/ds_simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/elt/master",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/lmc_monitor",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/elt/alarms",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/elt/archiver-lmc",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/elt/archiver-ds",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/elt/archiver-spf",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/elt/archiver-spfrx",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/lmc/pdu_simulator"
               ],
               "ManagedSELogDevicesDefault": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spfrx/simulator"
               ],
               "ProcessEventsInQueueThread": ["yes"],
               "RxControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spfrx/simulator"
               ],
               "SELogLevel": ["4"],
               "SkaLevel": ["1"],
               "SpfControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0007/spf/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0007/spf/simulator"
               ],
               "StorageLoggerEnabledDefault": ["false"],
               "SyslogFacility": ["local6"],
@@ -2799,14 +2799,14 @@
               "EnableLogForwardDefault": ["no"],
               "EnableLoggerInitPolling": ["yes"],
               "LogForwardSources": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spfrx/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spfrx/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/pdu_simulator"
               ],
               "LoggerInitPollPeriod": ["60000"],
               "LoggingLevelCentralDefault": ["3"],
@@ -2816,31 +2816,31 @@
               "LoggingTargetElementDefault": [""],
               "LoggingTargetStorageDefault": ["localhost"],
               "ManagedLogDevicesDefault": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/ds_simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/elt/master",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/lmc_monitor",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/elt/alarms",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/elt/archiver-lmc",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/elt/archiver-ds",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/elt/archiver-spf",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/elt/archiver-spfrx",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/lmc/pdu_simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/ds_simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/elt/master",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/lmc_monitor",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/elt/alarms",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/elt/archiver-lmc",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/elt/archiver-ds",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/elt/archiver-spf",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/elt/archiver-spfrx",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/lmc/pdu_simulator"
               ],
               "ManagedSELogDevicesDefault": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator",
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator",
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spfrx/simulator"
               ],
               "ProcessEventsInQueueThread": ["yes"],
               "RxControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spfrx/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spfrx/simulator"
               ],
               "SELogLevel": ["4"],
               "SkaLevel": ["1"],
               "SpfControllerAddress": [
-                "tango://databaseds-tango-base-test:10000/mid_dsh_0008/spf/simulator"
+                "tango://tmcprototype-databaseds:10000/mid_dsh_0008/spf/simulator"
               ],
               "StorageLoggerEnabledDefault": ["false"],
               "SyslogFacility": ["local6"],
