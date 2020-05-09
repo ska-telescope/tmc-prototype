@@ -27,8 +27,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dish-master 1"
+      sh -c "./bin/dish-master 1"
   
   dish-master-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -40,8 +39,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dish-master 2"
+      sh -c "./bin/dish-master 2"
 
   dish-master-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -53,8 +51,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dish-master 3"
+      sh -c "./bin/dish-master 3"
 
   dish-master-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -66,8 +63,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dish-master 4"
+      sh -c "./bin/dish-master 4"
 
   ds-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -79,8 +75,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/ds-simulator 1"
+      sh -c "./bin/ds-simulator 1"
 
   ds-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -92,8 +87,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/ds-simulator 2"
+      sh -c "./bin/ds-simulator 2"
 
   ds-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -105,8 +99,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/ds-simulator 3"
+      sh -c "./bin/ds-simulator 3"
 
   ds-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -118,8 +111,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/ds-simulator 4"
+      sh -c "./bin/ds-simulator 4"
              
   dsctrl-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -131,8 +123,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dsctrl-simulator 1"
+      sh -c "./bin/dsctrl-simulator 1"
 
   dsctrl-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -144,8 +135,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dsctrl-simulator 2"
+      sh -c "./bin/dsctrl-simulator 2"
 
   dsctrl-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -157,8 +147,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dsctrl-simulator 3"
+      sh -c "./bin/dsctrl-simulator 3"
 
   dsctrl-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -170,8 +159,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/dsctrl-simulator 4"
+      sh -c "./bin/dsctrl-simulator 4"
 
   lmc-logger-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -183,8 +171,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/lmc-logger 1"
+      sh -c "./bin/lmc-logger 1"
   
   lmc-logger-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -196,8 +183,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/lmc-logger 2"
+      sh -c "./bin/lmc-logger 2"
           
   lmc-logger-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -209,8 +195,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/lmc-logger 3"
+      sh -c "./bin/lmc-logger 3"
 
   lmc-logger-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -222,8 +207,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/lmc-logger 4"
+      sh -c "./bin/lmc-logger 4"
 
   pdu-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -235,8 +219,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/pdu-simulator 1"
+      sh -c "./bin/pdu-simulator 1"
 
   pdu-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -248,8 +231,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/pdu-simulator 2"
+      sh -c "./bin/pdu-simulator 2"
 
   pdu-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -261,8 +243,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/pdu-simulator 3"
+      sh -c "./bin/pdu-simulator 3"
 
   pdu-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -274,8 +255,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/pdu-simulator 4"
+      sh -c "./bin/pdu-simulator 4"
 
   rx-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -287,8 +267,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/rx-simulator 1"
+      sh -c "./bin/rx-simulator 1"
 
   rx-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -300,8 +279,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/rx-simulator 2"
+      sh -c "./bin/rx-simulator 2"
 
   rx-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -313,8 +291,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/rx-simulator 3"
+      sh -c "./bin/rx-simulator 3"
 
   rx-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -326,8 +303,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/rx-simulator 4"      
+      sh -c "./bin/rx-simulator 4"      
 
   spf-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -339,8 +315,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/spf-simulator 1"
+      sh -c "./bin/spf-simulator 1"
 
   spf-simulator-2:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -352,8 +327,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/spf-simulator 2"
+      sh -c "./bin/spf-simulator 2"
 
   spf-simulator-3:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -365,8 +339,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/spf-simulator 3"
+      sh -c "./bin/spf-simulator 3"
 
   spf-simulator-4:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
@@ -378,8 +351,7 @@ services:
     environment:
       - TANGO_HOST=${TANGO_HOST}
     command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             ./bin/spf-simulator 4"
+      sh -c "./bin/spf-simulator 4"
 
   dshlmc-dsconfig:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/tango-dsconfig:latest
