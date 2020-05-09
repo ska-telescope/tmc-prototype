@@ -22,6 +22,11 @@ services:
     depends_on:
       - databaseds
       - dshlmc-dsconfig
+      - ds-simulator-1
+      - dsctrl-simulator-1
+      - lmc-logger-1
+      - rx-simulator-1
+      - spf-simulator-1
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dish-master-1
     environment:
@@ -34,6 +39,11 @@ services:
     depends_on:
       - databaseds
       - dshlmc-dsconfig
+      - ds-simulator-2
+      - dsctrl-simulator-2
+      - lmc-logger-2
+      - rx-simulator-2
+      - spf-simulator-2
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dish-master-2
     environment:
@@ -46,6 +56,11 @@ services:
     depends_on:
       - databaseds
       - dshlmc-dsconfig
+      - ds-simulator-3
+      - dsctrl-simulator-3
+      - lmc-logger-3
+      - rx-simulator-3
+      - spf-simulator-3
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dish-master-3
     environment:
@@ -58,6 +73,11 @@ services:
     depends_on:
       - databaseds
       - dshlmc-dsconfig
+      - ds-simulator-4
+      - dsctrl-simulator-4
+      - lmc-logger-4
+      - rx-simulator-4
+      - spf-simulator-4
     network_mode: ${NETWORK_MODE}
     container_name: ${CONTAINER_NAME_PREFIX}dish-master-4
     environment:
