@@ -209,54 +209,6 @@ services:
     command: >
       sh -c "./bin/lmc-logger 4"
 
-  pdu-simulator-1:
-    image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
-    depends_on:
-      - databaseds
-      - dshlmc-dsconfig
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}pdu-simulator5
-    environment:
-      - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "./bin/pdu-simulator 1"
-
-  pdu-simulator-2:
-    image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
-    depends_on:
-      - databaseds
-      - dshlmc-dsconfig
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}pdu-simulator6
-    environment:
-      - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "./bin/pdu-simulator 2"
-
-  pdu-simulator-3:
-    image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
-    depends_on:
-      - databaseds
-      - dshlmc-dsconfig
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}pdu-simulator7
-    environment:
-      - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "./bin/pdu-simulator 3"
-
-  pdu-simulator-4:
-    image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
-    depends_on:
-      - databaseds
-      - dshlmc-dsconfig
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}pdu-simulator8
-    environment:
-      - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "./bin/pdu-simulator 4"
-
   rx-simulator-1:
     image: ${DOCKER_REGISTRY_HOST}/ska-telescope/dsh_lmc_prototype:0.1.0
     depends_on:
