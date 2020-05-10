@@ -702,6 +702,28 @@
                                 "mid_csp_cbf/vcc/004"
                             ]
                         }
+                    },
+                    "mid_csp_cbf/fspSubarray/02_03": {
+                        "properties": {
+                            "CbfMasterAddress": [
+                                "mid_csp_cbf/sub_elt/master"
+                            ],
+                            "CbfSubarrayAddress": [
+                                "mid_csp_cbf/sub_elt/subarray_03"
+                            ],
+                            "FspID": [
+                                "2"
+                            ],
+                            "SubID": [
+                                "2"
+                            ],
+                            "VCC": [
+                                "mid_csp_cbf/vcc/001",
+                                "mid_csp_cbf/vcc/002",
+                                "mid_csp_cbf/vcc/003",
+                                "mid_csp_cbf/vcc/004"
+                            ]
+                        }
                     }
                 },
                 "FspVlbi": {
@@ -818,6 +840,28 @@
                                 "mid_csp_cbf/vcc/004"
                             ]
                         }
+                    },
+                    "mid_csp_cbf/fspSubarray/03_03": {
+                        "properties": {
+                            "CbfMasterAddress": [
+                                "mid_csp_cbf/sub_elt/master"
+                            ],
+                           "CbfSubarrayAddress": [
+                                "mid_csp_cbf/sub_elt/subarray_03"
+                            ],
+                            "FspID": [
+                                "3"
+                            ],
+                            "SubID": [
+                                "2"
+                            ],
+                            "VCC": [
+                                "mid_csp_cbf/vcc/001",
+                                "mid_csp_cbf/vcc/002",
+                                "mid_csp_cbf/vcc/003",
+                                "mid_csp_cbf/vcc/004"
+                            ]
+                        }
                     }
                 },
                 "FspVlbi": {
@@ -920,6 +964,28 @@
                             ],
                             "CbfSubarrayAddress": [
                                 "mid_csp_cbf/sub_elt/subarray_02"
+                            ],
+                            "FspID": [
+                                "4"
+                            ],
+                            "SubID": [
+                                "2"
+                            ],
+                            "VCC": [
+                                "mid_csp_cbf/vcc/001",
+                                "mid_csp_cbf/vcc/002",
+                                "mid_csp_cbf/vcc/003",
+                                "mid_csp_cbf/vcc/004"
+                            ]
+                        }
+                    },
+                    "mid_csp_cbf/fspSubarray/04_03": {
+                        "properties": {
+                            "CbfMasterAddress": [
+                                "mid_csp_cbf/sub_elt/master"
+                            ],
+                            "CbfSubarrayAddress": [
+                                "mid_csp_cbf/sub_elt/subarray_03"
                             ],
                             "FspID": [
                                 "4"
