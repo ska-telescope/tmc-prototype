@@ -74,11 +74,11 @@ def test_event_to_raised_devfailed_exception():
 
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
 
-    csp_master_proxy_mock.subscribe_event.side_effect = (raise_devfailed)
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         on_input = []
         # act:
+        csp_master_proxy_mock.subscribe_event.side_effect = (raise_devfailed)
         with pytest.raises(tango.DevFailed) as df:
             health_state_value = HealthState.OK
             dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
@@ -86,7 +86,7 @@ def test_event_to_raised_devfailed_exception():
             # event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
-            assert tango_context.device.activityMessage == str(df) + const.ERR_ON_SUBS_CSP_CBF_HEALTH
+            assert tango_context.device.activityMessage in str(df) + const.ERR_ON_SUBS_CSP_CBF_HEALTH
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
