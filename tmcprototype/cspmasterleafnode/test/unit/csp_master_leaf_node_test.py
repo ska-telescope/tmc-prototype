@@ -8,6 +8,7 @@ from mock import Mock, MagicMock
 
 # Tango imports
 import pytest
+import tango
 from tango import DevState, DevFailed
 from tango.test_context import DeviceTestContext
 
@@ -48,8 +49,7 @@ def test_on_should_command_raised_devfailed_exception():
 
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
 
-    csp_master_proxy_mock.side_effect = DevFailed
-
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (test_devfailed)
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         on_input = []
@@ -57,10 +57,14 @@ def test_on_should_command_raised_devfailed_exception():
         tango_context.device.On(on_input)
 
         # assert:
-        # with pytest.raises(tango.DevFailed)
-        csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
+
+        with pytest.raises(tango.DevFailed):
+            csp_master_proxy_mock.command_inout_asynch(const.CMD_OFF, off_input,
                                                                     any_method(with_name='commandCallback'))
 
+def test_devfailed():
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.Err)
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
     # arrange:
