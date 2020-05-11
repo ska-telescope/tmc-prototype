@@ -486,14 +486,13 @@ def test_assign_resources_raises_devfailed():
             tango_context.device.AssignResources()
 
         # assert:
-
-        # jsonArgument = json.loads(assign_command)
-        # input_json_subarray = jsonArgument.copy()
-        # del input_json_subarray["subarrayID"]
-        # input_to_sa = json.dumps(input_json_subarray)
-        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
-
-
+        jsonArgument = json.loads(assign_command)
+        input_json_subarray = jsonArgument.copy()
+        del input_json_subarray["subarrayID"]
+        input_to_sa = json.dumps(input_json_subarray)
+        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES,
+                                                             input_to_sa)
+        assert_activity_message(tango_context.device, const.ERR_ASSGN_RESOURCES)
 # def test_assign_resources_duplicate_allocation():
 #     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
 #     dut_properties = {
