@@ -63,7 +63,7 @@ def raise_devfailed(cmd_name = 'On', cmd_input= 'test', callback= 'commandCallba
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
-
+@pytest.mark.xfail
 def test_event_to_raised_devfailed_exception():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
@@ -74,11 +74,11 @@ def test_event_to_raised_devfailed_exception():
 
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
 
+    csp_master_proxy_mock.subscribe_event.side_effect = (raise_devfailed)
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         on_input = []
         # act:
-        csp_master_proxy_mock.subscribe_event.side_effect = (raise_devfailed)
         with pytest.raises(tango.DevFailed) as df:
             health_state_value = HealthState.OK
             dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,

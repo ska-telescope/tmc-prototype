@@ -450,15 +450,38 @@ def test_endscan_command_subarray_raises_devfailed_exception():
         assert tango_context.device.activityMessage == const.ERR_DUPLICATE_END_SCAN_CMD
 
 
-def test_endsb_command_subarray_raises_devfailed_exception():
+def test_endsb_command_subarray_when_in_invalid_state():
     with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
-        #with pytest.raises(tango.DevFailed):
         tango_context.device.EndSB()
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
+
+
+def test_endsb_command_subarray_should_raise_devfailed_exception():
+    # arrange
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    initial_dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn}
+
+    csp_subarray1_ln_proxy_mock = Mock()
+    proxies_to_mock = {csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock}
+    csp_subarray1_ln_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndSB()
+
+        # assert:
+        assert tango_context.device.obsState == ObsState.IDLE
+        assert const.ERR_ENDSB_INVOKING_CMD in tango_context.device.activityMessage
+
+
+def raise_devfailed(cmd_name = 'On', cmd_input= 'test', callback= 'commandCallback'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
