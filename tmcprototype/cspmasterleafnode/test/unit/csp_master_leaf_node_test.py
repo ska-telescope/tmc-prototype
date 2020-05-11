@@ -65,7 +65,8 @@ def test_event_to_raised_devfailed_exception():
                                                               csp_cbf_health_state_attribute)
 
         # assert:
-            assert tango_context.device.activityMessage in str(df) + const.ERR_ON_SUBS_CSP_CBF_HEALTH
+            assert tango_context.device.activityMessage in str(df) + const.ERR_SUBS_CSP_MASTER_LEAF_ATTR
+            assert tango_context.device.State() == DevState.Fault
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
@@ -552,7 +553,8 @@ def create_dummy_event_for_health_state_with_error(device_fqdn,health_state_valu
 def test_read_activity_message():
     # act & assert:
     with fake_tango_system(CspMasterLeafNode) as tango_context:
-        assert tango_context.device.activityMessage == const.STR_CSP_INIT_LEAF_NODE
+        tango_context.device.activityMessage = 'test'
+        assert tango_context.device.activityMessage == 'test'
 
 
 def test_write_activity_message():
