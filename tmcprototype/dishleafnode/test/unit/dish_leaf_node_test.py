@@ -79,7 +79,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
 
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
                                                                 str(dish_str_ip),
-                                                                any_method(with_name='commandCallback'))
+                                                                any_method())
 
 
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
@@ -165,8 +165,8 @@ def test_track_should_command_dish_to_start_tracking():
         ra_value = (jsonArgument["pointing"]["target"]["RA"])
         dec_value = (jsonArgument["pointing"]["target"]["dec"])
         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
-        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0", 
-                                                                any_method(with_name='commandCallback'))
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, '0',
+                                                                any_method())
 
 
 def test_stop_track_should_command_dish_to_stop_tracking():
