@@ -70,23 +70,6 @@ def test_event_to_raised_devfailed_exception():
         assert tango_context.device.State() == DevState.FAULT
 
 
-def test_event_to_raised_devfailed_exception_with_wrong_device_proxy():
-    # arrange:
-    csp_master_fqdn = 1
-    csp_cbf_health_state_attribute = 'cspCbfHealthState'
-    csp_pss_health_state_attribute = 'cspPssHealthState'
-    csp_pst_health_state_attribute = 'cspPstHealthState'
-    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
-
-    csp_master_proxy_mock = Mock()
-    event_subscription_map = {}
-    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
-                               proxies_to_mock=proxies_to_mock) as tango_context:
-        # assert:
-        dev_state = tango_context.device.State()
-        print ("dev_state:", dev_state)
-        assert tango_context.device.State() == DevState.FAULT
 # def test_attribute_csp_cbf_health_state_which_raise_devfailed_exception():
 #     # arrange:
 #     csp_master_fqdn = 'mid/csp_elt/master'
@@ -165,7 +148,7 @@ def test_standby_should_command_with_callback_method():
     csp_master_proxy_mock = Mock()
 
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (command_callback)
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_input = []
@@ -173,12 +156,10 @@ def test_standby_should_command_with_callback_method():
         tango_context.device.Standby(standby_input)
 
         # assert:
-        csp_master_proxy_mock.side_effect = command_callback(const.CMD_STANDBY)
-        print ("cmd_event :", csp_master_proxy_mock)
-        assert tango_context.device.activityMessage == const.STR_COMMAND + str(cmd_event.cmd_name) + const.STR_INVOKE_SUCCESS
+        assert const.STR_COMMAND + const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
 
-def command_callback(command_name):
+def command_callback(command_name ='Test', callback= 'Test'):
     fake_event = MagicMock()
     fake_event.err = False
     fake_event.errors = 'Event error'
