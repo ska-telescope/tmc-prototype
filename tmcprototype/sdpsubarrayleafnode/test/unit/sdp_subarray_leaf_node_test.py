@@ -94,7 +94,6 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
 def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.On()
         test_input = '{"invalid_json"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
