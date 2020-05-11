@@ -94,7 +94,7 @@ def test_attribute_csp_cbf_health_state_which_raise_devfailed_exception():
         event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage == const.STR_CSP_CBF_HEALTH_OK
+        assert tango_context.device.activityMessage == const.ERR_ON_SUBS_CSP_CBF_HEALTH
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
