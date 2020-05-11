@@ -48,6 +48,8 @@ def test_event_to_raised_devfailed_exception():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
     csp_cbf_health_state_attribute = 'cspCbfHealthState'
+    csp_pss_health_state_attribute = 'cspPssHealthState'
+    csp_pst_health_state_attribute = 'cspPstHealthState'
     dut_properties = {'CspMasterFQDN': csp_master_fqdn}
 
     csp_master_proxy_mock = Mock()
@@ -61,12 +63,16 @@ def test_event_to_raised_devfailed_exception():
         # act:
         with pytest.raises(tango.DevFailed) as df:
             health_state_value = HealthState.OK
-            dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
+            dummy_event1 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
                                                               csp_cbf_health_state_attribute)
+            dummy_event2 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
+                                                               csp_pss_health_state_attribute)
+            dummy_event3 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
+                                                               csp_pst_health_state_attribute)
 
         # assert:
             # assert tango_context.device.activityMessage in str(df) + const.ERR_SUBS_CSP_MASTER_LEAF_ATTR
-            assert tango_context.device.State() == DevState.Fault
+            assert tango_context.device.State() == DevState.FAULT
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
