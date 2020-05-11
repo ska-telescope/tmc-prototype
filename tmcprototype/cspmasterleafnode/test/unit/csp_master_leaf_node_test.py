@@ -159,7 +159,7 @@ def test_standby_should_command_with_callback_method():
         assert const.STR_COMMAND + const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
 
-def command_callback(command_name ='Test', callback= 'Test'):
+def command_callback(command_name ='Test', command_input='Test', callback= 'Test'):
     fake_event = MagicMock()
     fake_event.err = False
     fake_event.errors = 'Event error'
