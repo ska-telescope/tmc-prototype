@@ -4,6 +4,7 @@ import importlib
 import types
 import sys
 import json
+import threading
 import mock
 from mock import Mock
 import tango
@@ -142,7 +143,7 @@ def test_set_operate_mode_should_command_dish_to_start():
                                                                 any_method(with_name='commandCallback'))
 
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 def test_track_should_command_dish_to_start_tracking():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
