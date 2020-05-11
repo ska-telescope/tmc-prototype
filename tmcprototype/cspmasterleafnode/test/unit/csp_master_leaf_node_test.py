@@ -49,7 +49,7 @@ def test_on_should_command_raised_devfailed_exception():
 
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
 
-    csp_master_proxy_mock.command_inout_asynch.side_effect = (test_devfailed)
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         on_input = []
@@ -62,7 +62,7 @@ def test_on_should_command_raised_devfailed_exception():
             csp_master_proxy_mock.command_inout_asynch(const.CMD_OFF, off_input,
                                                                     any_method(with_name='commandCallback'))
 
-def test_devfailed():
+def raise_devfailed(cmd_name = test, cmd_input= test, callback= any_method(with_name='commandCallback')):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
