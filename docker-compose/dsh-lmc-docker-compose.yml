@@ -6,7 +6,6 @@
 #   - ds-simulator: DSSimulator device service
 #   - dsctrl-simulator: DSCtrlSimulator device service
 #   - lmc-logger: LMCLogger device service
-#   - pdu-simulator: PDUSimulator device service
 #   - rx-simulator: RxSimulator device service
 #   - spf-simulator: SPFSimulator device service
 # Requires:
