@@ -460,29 +460,71 @@ def test_endsb_command_subarray_when_in_invalid_state():
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 
-def test_endsb_command_subarray_should_raise_devfailed_exception():
-    # arrange
-    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
-    initial_dut_properties = {
-        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn}
-
-    csp_subarray1_ln_proxy_mock = Mock()
-    proxies_to_mock = {csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock}
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
-
-    with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.EndSB()
-
-        # assert:
-        assert tango_context.device.obsState == ObsState.IDLE
-        assert const.ERR_ENDSB_INVOKING_CMD in tango_context.device.activityMessage
-
-
 def raise_devfailed(cmd_name = 'EndSb'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
+
+def test_end_sb_should_raise_devfailed_exception():
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+        'DishLeafNodePrefix': dish_ln_prefix
+    }
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_ln_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + '0001': dish_ln_proxy_mock
+    }
+
+    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
+    sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+    dish_pointing_state_attribute = "dishPointingState"
+
+    event_subscription_map = {}
+    dish_pointing_state_map = {}
+
+    csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    sdp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    csp_subarray1_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        attribute = 'ObsState'
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
+        event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+
+        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
+        event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+        time.sleep(5)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndSB()
+        # assert:
+        assert tango_context.device.obsState == ObsState.READY
+        assert const.ERR_ENDSB_INVOKING_CMD in tango_context.device.activityMessage
 
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
