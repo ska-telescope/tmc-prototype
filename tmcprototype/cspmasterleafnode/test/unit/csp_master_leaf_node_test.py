@@ -65,11 +65,6 @@ def test_event_to_raised_devfailed_exception():
             health_state_value = HealthState.OK
             dummy_event1 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
                                                               csp_cbf_health_state_attribute)
-            dummy_event2 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_pss_health_state_attribute)
-            dummy_event3 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_pst_health_state_attribute)
-
         # assert:
             # assert tango_context.device.activityMessage in str(df) + const.ERR_SUBS_CSP_MASTER_LEAF_ATTR
             assert tango_context.device.State() == DevState.FAULT
