@@ -314,9 +314,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
 
         try:
+            argin1 = json.loads(argin)
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
-                                                                          argin, self.commandCallback)
+                                                                          argin1, self.commandCallback)
             # Update the status of command execution status in activity message
             self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
         except ValueError as value_error:

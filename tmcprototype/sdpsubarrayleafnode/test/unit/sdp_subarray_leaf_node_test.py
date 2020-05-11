@@ -90,7 +90,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
