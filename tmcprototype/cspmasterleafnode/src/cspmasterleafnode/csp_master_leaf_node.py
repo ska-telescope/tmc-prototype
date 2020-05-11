@@ -255,6 +255,7 @@ class CspMasterLeafNode(SKABaseDevice):
             self.set_state(DevState.ON)
             self.set_status(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
             self.logger.info(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
+            self._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
@@ -269,7 +270,6 @@ class CspMasterLeafNode(SKABaseDevice):
         self.logger.debug(log_msg)
         self._read_activity_message = const.STR_SETTING_CB_MODEL + str(
             ApiUtil.instance().get_asynch_cb_sub_model())
-        self._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
         # PROTECTED REGION END #    //  CspMasterLeafNode.init_device
 
     def always_executed_hook(self):
