@@ -172,10 +172,25 @@ function deleteTMCRelease() {
   echo $result
 }
 
+function releaseAlreadyExists() {
+  tag_name=$(getRelease)
+  result=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
+  python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
+  echo "$result"
+  if [ "$result" == "$tag_name" ]
+  then
+    msg="This release is already exists."
+    echo "$msg"
+  else
+    msg="This release does not exists yet."
+    echo "$msg"
+  fi
+}
+
 function releaseTMCOnCondition() {
   release_required=$(awk -F= '/^release_tmc=/{print $2}' .release)
-  echo $release_required
-  if [ $release_required -ne 0 ];
+  echo "$release_required"
+  if [ "$release_required" -ne 0 ];
   then
     releaseTMC
   fi

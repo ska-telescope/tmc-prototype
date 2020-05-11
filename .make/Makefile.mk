@@ -144,3 +144,6 @@ delete-tmc-release: .release
 
 release-tmc-on-condition: .release
 	@. $(RELEASE_SUPPORT) ; releaseTMCOnCondition
+
+check-releaseAlreadyExixsts: .release
+	@. $(RELEASE_SUPPORT) ; releaseAlreadyExists
