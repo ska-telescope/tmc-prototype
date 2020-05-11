@@ -468,7 +468,7 @@ def test_endsb_command_subarray_should_raise_devfailed_exception():
 
     csp_subarray1_ln_proxy_mock = Mock()
     proxies_to_mock = {csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock}
-    csp_subarray1_ln_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    csp_subarray1_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
 
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
         with pytest.raises(tango.DevFailed):
@@ -479,7 +479,7 @@ def test_endsb_command_subarray_should_raise_devfailed_exception():
         assert const.ERR_ENDSB_INVOKING_CMD in tango_context.device.activityMessage
 
 
-def raise_devfailed(cmd_name = 'On', cmd_input= 'test', callback= 'commandCallback'):
+def raise_devfailed(cmd_name = 'EndSb'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
