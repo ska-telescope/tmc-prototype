@@ -96,13 +96,13 @@ def test_standby_should_command_with_callback_method():
         tango_context.device.Standby(standby_input)
 
         # assert:
-        csp_master_proxy_mock.command_inout_asynch(const.CMD_STANDBY, standby_input, commandCallback(const.CMD_STANDBY))
-        cmd_event = commandCallback(const.CMD_STANDBY)
+        csp_master_proxy_mock.command_inout_asynch.side_effect = (const.CMD_STANDBY, standby_input, callback)
+        cmd_event = command_callback(const.CMD_STANDBY)
         print ("cmd_event :", cmd_event)
         assert tango_context.device.activityMessage == const.STR_COMMAND + str(cmd_event.cmd_name) + const.STR_INVOKE_SUCCESS
 
 
-def commandCallback(command_name):
+def command_callback(command_name):
     fake_event = MagicMock()
     fake_event.err = False
     fake_event.errors = 'Event error'
