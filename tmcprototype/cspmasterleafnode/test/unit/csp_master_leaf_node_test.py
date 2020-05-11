@@ -62,7 +62,7 @@ def test_on_should_command_raised_devfailed_exception():
             csp_master_proxy_mock.command_inout_asynch(const.CMD_OFF, off_input,
                                                                     any_method(with_name='commandCallback'))
 
-def raise_devfailed(cmd_name = test, cmd_input= test, callback= any_method(with_name='commandCallback')):
+def raise_devfailed(cmd_name = 'Off', cmd_input= 'test', callback= any_method(with_name='commandCallback')):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
