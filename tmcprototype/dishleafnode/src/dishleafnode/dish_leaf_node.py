@@ -869,9 +869,7 @@ class DishLeafNode(SKABaseDevice):
             # Pass string argument in track_thread in brackets
             self.track_thread1 = threading.Thread(None, self.track_thread, const.THREAD_TRACK,
                                                   args=(radec_value,))
-            print('self.track_thread1:',self.track_thread1)
             self.track_thread1.start()
-            print('self.track_thread1 after start:',self.track_thread1.start())
 
 
         except ValueError as value_error:
