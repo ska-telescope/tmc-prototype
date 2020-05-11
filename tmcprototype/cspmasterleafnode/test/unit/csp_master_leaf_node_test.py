@@ -48,7 +48,7 @@ def test_on_should_command_raised_devfailed_exception():
 
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
 
-    csp_master_proxy_mock.side_effect = tango.DevFailed
+    csp_master_proxy_mock.side_effect = DevFailed
 
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
