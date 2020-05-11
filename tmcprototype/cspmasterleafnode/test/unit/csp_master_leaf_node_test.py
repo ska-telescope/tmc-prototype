@@ -94,7 +94,7 @@ def test_attribute_csp_cbf_health_state_which_raise_devfailed_exception():
         event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
-        assert const.ERR_CSP_CBF_HEALTH_CB in tango_context.device.activityMessage
+        assert const.ERR_ON_SUBS_CSP_CBF_HEALTH in tango_context.device.activityMessage
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
@@ -580,8 +580,7 @@ def create_dummy_event_for_health_state_with_error(device_fqdn,health_state_valu
 
 def create_dummy_event_for_health_state_with_devfailed_error(device_fqdn,health_state_value,attribute):
     fake_event = Mock()
-    fake_event.err = True
-    fake_event.errors = 'Error Event'
+    fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     #fake_event.attr_value.value = health_state_value
     return fake_event
