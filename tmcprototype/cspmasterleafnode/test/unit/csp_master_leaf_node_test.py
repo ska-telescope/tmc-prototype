@@ -148,14 +148,12 @@ def test_standby_should_command_with_callback_method():
     csp_master_proxy_mock = Mock()
 
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (lambda command_name, command_args, callback: command_callback())
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_input = []
         # act:
         tango_context.device.Standby(standby_input)
-        csp_master_proxy_mock.command_inout_asynch(const.CMD_STANDBY, standby_input,
-                                                   lambda callback: command_callback)
         # assert:
         assert const.STR_COMMAND + const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
