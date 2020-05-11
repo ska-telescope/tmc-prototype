@@ -61,14 +61,40 @@ def test_event_to_raised_devfailed_exception():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         on_input = []
         # act:
-        # with pytest.raises(tango.DevFailed) as df:
         health_state_value = HealthState.OK
         dummy_event1 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
                                                           csp_cbf_health_state_attribute)
         # assert:
-        # assert tango_context.device.activityMessage in str(df) + const.ERR_SUBS_CSP_MASTER_LEAF_ATTR
         dev_state = tango_context.device.State()
-        assert tango_context.device.State() == dev_state
+        print ("dev_state:", dev_state)
+        assert tango_context.device.State() == DevState.FAULT
+
+
+def test_attribute_csp_cbf_health_state_which_raise_devfailed_exception():
+    # arrange:
+    csp_master_fqdn = 'mid/csp_elt/master'
+    csp_cbf_health_state_attribute = 'cspCbfHealthState'
+    initial_dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    event_subscription_map = {}
+
+    csp_master_device_proxy_mock = Mock()
+    csp_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {csp_master_fqdn: csp_master_device_proxy_mock}
+
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        health_state_value = HealthState.OK
+        dummy_event = create_dummy_event_for_health_state_with_devfailed_error(csp_master_fqdn,
+                                                                               health_state_value,
+                                                                               csp_cbf_health_state_attribute)
+        event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage == const.STR_CSP_CBF_HEALTH_OK
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
@@ -549,6 +575,15 @@ def create_dummy_event_for_health_state_with_error(device_fqdn,health_state_valu
     fake_event.errors = 'Error Event'
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = health_state_value
+    return fake_event
+
+
+def create_dummy_event_for_health_state_with_devfailed_error(device_fqdn,health_state_value,attribute):
+    fake_event = Mock()
+    fake_event.err = True
+    fake_event.errors = 'Error Event'
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    #fake_event.attr_value.value = health_state_value
     return fake_event
 
 
