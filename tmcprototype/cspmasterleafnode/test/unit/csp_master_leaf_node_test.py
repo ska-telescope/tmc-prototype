@@ -579,11 +579,8 @@ def create_dummy_event_for_health_state_with_error(device_fqdn,health_state_valu
 
 
 def create_dummy_event_for_health_state_with_devfailed_error(device_fqdn,health_state_value,attribute):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    #fake_event.attr_value.value = health_state_value
-    return fake_event
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 
 def test_read_activity_message():
