@@ -7,6 +7,7 @@ import mock
 from mock import Mock, MagicMock
 
 # Tango imports
+import pytest
 from tango import DevState, DevFailed
 from tango.test_context import DeviceTestContext
 
