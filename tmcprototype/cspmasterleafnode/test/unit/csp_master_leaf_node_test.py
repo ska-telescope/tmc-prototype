@@ -64,7 +64,7 @@ def test_on_should_command_raised_devfailed_exception():
 
 def test_devfailed():
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.Err)
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
     # arrange:
