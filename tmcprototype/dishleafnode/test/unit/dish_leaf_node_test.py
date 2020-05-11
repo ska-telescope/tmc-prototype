@@ -3,6 +3,7 @@ import contextlib
 import importlib
 import types
 import sys
+import json
 import mock
 from mock import Mock
 import tango
@@ -41,7 +42,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
 
 
 #TO DO: actual AZ and EL values need to be generated.
-@pytest.mark.xfail
+# @pytest.mark.xfail
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -141,7 +142,7 @@ def test_set_operate_mode_should_command_dish_to_start():
                                                                 any_method(with_name='commandCallback'))
 
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 def test_track_should_command_dish_to_start_tracking():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
