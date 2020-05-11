@@ -146,15 +146,17 @@ def test_standby_should_command_with_callback_method():
     dut_properties = {'CspMasterFQDN': csp_master_fqdn}
 
     csp_master_proxy_mock = Mock()
-
+    event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-    csp_master_proxy_mock.command_inout_asynch.side_effect = (lambda command_name, command_args, callback: command_callback())
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda cmd_name, cmd_input, callback, *args,
+               **kwargs: command_callback)
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_input = []
         # act:
         tango_context.device.Standby(standby_input)
-        dummy_event = command_callback()
+        dummy_event = command_callback(const.CMD_STANDBY)
         print ("dummy_event:", dummy_event)
         # assert:
         assert const.STR_COMMAND + const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
@@ -168,13 +170,6 @@ def command_callback(command_name='Test'):
     fake_event.cmd_name = f"{command_name}"
     cb = tango.utils.EventCallback()
     return cb
-
-def generate_callback():
-    fake_event = MagicMock()
-    fake_event.err = False
-    fake_event.errors = 'Event error'
-    fake_event.cmd_name = f"{command_name}"
-    return fake_event
 
 
 def test_attribute_csp_cbf_health_state_of_csp_master_is_ok():
