@@ -42,7 +42,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
 
 
 #TO DO: actual AZ and EL values need to be generated.
-# @pytest.mark.xfail
+@pytest.mark.xfail
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -79,7 +79,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
 
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
                                                                 str(dish_str_ip),
-                                                                any_method())
+                                                                any_method(with_name='commandCallback'))
 
 
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
@@ -142,7 +142,7 @@ def test_set_operate_mode_should_command_dish_to_start():
                                                                 any_method(with_name='commandCallback'))
 
 
-# @pytest.mark.xfail
+@pytest.mark.xfail
 def test_track_should_command_dish_to_start_tracking():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -165,8 +165,8 @@ def test_track_should_command_dish_to_start_tracking():
         ra_value = (jsonArgument["pointing"]["target"]["RA"])
         dec_value = (jsonArgument["pointing"]["target"]["dec"])
         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
-        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, '0',
-                                                                any_method())
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0",
+                                                                any_method(with_name='commandCallback'))
 
 
 def test_stop_track_should_command_dish_to_stop_tracking():
