@@ -138,7 +138,7 @@ def test_standby_should_command_csp_master_leaf_node_to_standby():
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_input,
                                                                     any_method(with_name='commandCallback'))
 
-@pytest.mark.xfail
+
 def test_standby_should_command_with_callback_method():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
