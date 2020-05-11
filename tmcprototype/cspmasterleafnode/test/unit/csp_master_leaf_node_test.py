@@ -38,7 +38,7 @@ def test_on_should_command_csp_master_leaf_node_to_start():
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
                                                                     any_method(with_name='commandCallback'))
 
-
+@pytest.mark.xfail
 def test_on_should_command_raised_devfailed_exception():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
@@ -54,17 +54,40 @@ def test_on_should_command_raised_devfailed_exception():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         on_input = []
         # act:
-        tango_context.device.On(on_input)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.On(on_input)
 
         # assert:
 
-        with pytest.raises(tango.DevFailed):
-            csp_master_proxy_mock.command_inout_asynch(const.CMD_OFF, off_input,
-                                                                    any_method(with_name='commandCallback'))
-
-def raise_devfailed(cmd_name = 'Off', cmd_input= 'test', callback= 'commandCallback'):
+def raise_devfailed(cmd_name = 'On', cmd_input= 'test', callback= 'commandCallback'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
+
+
+def test_event_to_raised_devfailed_exception():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+    csp_cbf_health_state_attribute = 'cspCbfHealthState'
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+
+    csp_master_proxy_mock.subscribe_event.side_effect = (raise_devfailed)
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        on_input = []
+        # act:
+        with pytest.raises(tango.DevFailed) as df:
+            health_state_value = HealthState.OK
+            dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
+                                                              csp_cbf_health_state_attribute)
+            # event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
+
+        # assert:
+            assert tango_context.device.activityMessage == str(df) + const.ERR_ON_SUBS_CSP_CBF_HEALTH
+
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
     # arrange:
