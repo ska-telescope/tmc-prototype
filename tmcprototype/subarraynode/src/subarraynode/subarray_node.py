@@ -179,6 +179,13 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated device state of Subarray.
         """
+	if self.get_state() is not DevState.OFF:
+            if self._csp_sa_device_state==DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
+                self.set_state(DevState.OFF)
+            else:
+                self.logger.info("CSP and SDP subarray are not in OFF state")
+        else:
+            self.logger.info("Subarray is already in OFF state")
         if self.get_state() is not DevState.ON:
             if self._csp_sa_device_state==DevState.ON and self._sdp_sa_device_state == DevState.ON :
                 self.set_state(DevState.ON)
@@ -931,7 +938,7 @@ class SubarrayNode(SKASubarray):
         # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
         # It will be moved to that command.
         self._sb_id = ""
-        self.set_state(DevState.OFF)
+        #self.set_state(DevState.OFF)
         self._obs_state = ObsState.IDLE
 
         argout = self._dish_leaf_node_group.get_device_list(True)
