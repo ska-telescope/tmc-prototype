@@ -592,13 +592,11 @@ def test_release_resources():
             subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
 
-@pytest.mark.xfail
 def raise_devfailed(cmd_name = 'ReleaseResources'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
 
-@pytest.mark.xfail
 def test_release_resources_raise_devfailed():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
