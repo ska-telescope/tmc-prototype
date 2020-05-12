@@ -227,7 +227,6 @@ def test_stow_antennas_should_set_stow_mode_raises_exception():
         proxy_mock.command_inout.side_effect = (raise_devfailed)
     # act:
     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        tango_context.device.StowAntennas(dish_device_ids)
         with pytest.raises(tango.DevFailed):
             tango_context.device.StowAntennas(dish_device_ids)
     # assert:
@@ -671,7 +670,10 @@ def test_standby_raised_devfailed():
         sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
         subarray1_fqdn: subarray1_proxy_mock
     }
+    dish_ln1_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    csp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
     sdp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    subarray1_proxy_mock.command_inout.side_effect = (raise_devfailed)
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
