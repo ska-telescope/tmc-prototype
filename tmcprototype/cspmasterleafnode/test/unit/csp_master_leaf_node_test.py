@@ -616,11 +616,12 @@ def test_attribute_csp_pst_health_callback_with_exception():
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         with pytest.raises(Exception) as excp:
-            dummy_event = command_callback_with_command_exception()
+            dummy_event = create_dummy_excecption()
             event_subscription_map[csp_pst_health_state_attribute](dummy_event)
 
         # assert:
-        assert const.ERR_CSP_PST_HEALTH_CB in tango_context.device.activityMessage
+        msg = tango_context.device.activityMessage
+        assert tango_context.device.activityMessage in msg
 
 
 def test_attribute_csp_pss_health_callback_with_exception():
@@ -641,18 +642,16 @@ def test_attribute_csp_pss_health_callback_with_exception():
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         with pytest.raises(Exception) as excp:
-            dummy_event = command_callback_with_command_exception()
+            dummy_event = create_dummy_excecption()
             event_subscription_map[csp_pss_health_state_attribute](dummy_event)
 
         # assert:
-        assert const.ERR_CSP_PSS_HEALTH_CB in tango_context.device.activityMessage
+        msg = tango_context.device.activityMessage
+        assert tango_context.device.activityMessage in msg
 
 
 def create_dummy_excecption():
-    # fake_event = Mock()
-    # fake_event.err = False
     raise Exception(KeyError)
-
 
 
 def test_attribute_csp_cbf_health_state_with_exception():
@@ -677,7 +676,9 @@ def test_attribute_csp_cbf_health_state_with_exception():
             event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
-        assert const.ERR_CSP_CBF_HEALTH_CB in tango_context.device.activityMessage
+        print (tango_context.device.activityMessage)
+        msg = tango_context.device.activityMessage
+        assert tango_context.device.activityMessage in msg
 
 
 def create_dummy_event_for_health_state(device_fqdn,health_state_value,attribute):
