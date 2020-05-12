@@ -371,6 +371,6 @@ release tmc:
   script:
     - make push-tag-and-versioned-image USERNAME=$GITLAB_USER_NAME EMAILID=$GITLAB_USER_EMAIL # Publish tag on the gitlab and tagged image on Nexus
   when: manual
-  only:
-    refs:
-      - master
+#  only:
+#    refs:
+#      - master
