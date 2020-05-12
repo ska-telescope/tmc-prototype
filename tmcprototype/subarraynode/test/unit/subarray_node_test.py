@@ -1695,7 +1695,7 @@ def test_subarray_device_state_is_with_wrong_attribute_name():
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         attribute = "state"
-        dummy_event = create_dummy_event_state_with_error(csp_subarray1_proxy_mock, 'wrong_fqdn', attribute,
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, 'wrong_fqdn', attribute,
                                                DevState.ON)
         event_subscription_map[attribute](dummy_event)
 
@@ -1743,7 +1743,8 @@ def test_subarray_device_state_is_with_exception():
 def command_callback_with_command_exception():
     fake_event = Mock()
     fake_event.err = False
-    return fake_event, Exception("Exception in callback")
+    fake_event.attr_name = Exception("Exception in callback")
+    return fake_event
 
 
 def test_obs_state_is_with_event_error():
