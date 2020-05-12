@@ -1741,10 +1741,56 @@ def test_subarray_device_state_is_with_exception():
         assert tango_context.device.activityMessage == msg
 
 
+def test_subarray_device_state_is_with_exception():
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+
+    initial_dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        attribute = "state"
+        dummy_event = command_callback_with_devfailed_exception()
+        event_subscription_map[attribute](dummy_event)
+
+        # assert:
+        msg = tango_context.device.activityMessage
+        assert tango_context.device.activityMessage == msg
+
+
 def command_callback_with_command_exception():
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = Exception("Exception in callback")
+    return fake_event
+
+
+def command_callback_with_devfailed_exception():
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
     return fake_event
 
 
