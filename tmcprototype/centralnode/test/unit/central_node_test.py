@@ -490,7 +490,7 @@ def test_assign_resources_raises_devfailed():
         # input_json_subarray = jsonArgument.copy()
         # del input_json_subarray["subarrayID"]
         # input_to_sa = json.dumps(input_json_subarray)
-        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
+            assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
 
 
 # def test_assign_resources_duplicate_allocation():
