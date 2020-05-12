@@ -134,7 +134,7 @@ config-git:
 	git config --global user.email $(EMAILID)
 	git config --global user.name $(USERNAME)
 
-push-tag-and-versioned-image: config-git push-versioned-image create-publish-tag
+push-tag-and-versioned-image: config-git push-versioned-image create-publish-tag release-tmc-without-error
 
 release-tmc: .release
 	@. $(RELEASE_SUPPORT) ; releaseTMC
@@ -142,8 +142,11 @@ release-tmc: .release
 delete-tmc-release: .release
 	@. $(RELEASE_SUPPORT) ; deleteTMCRelease
 
-release-tmc-on-condition: .release
-	@. $(RELEASE_SUPPORT) ; releaseTMCOnCondition
-
-check-releaseAlreadyExixsts: .release
+check-releaseAlreadyExists: .release
 	@. $(RELEASE_SUPPORT) ; releaseAlreadyExists
+
+delete-tag: .release
+	@. $(RELEASE_SUPPORT) ; deleteTag
+
+release-tmc-without-error: .release
+	@. $(RELEASE_SUPPORT) ; releaseTMCWithoutError
