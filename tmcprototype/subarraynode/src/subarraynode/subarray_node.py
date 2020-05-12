@@ -709,57 +709,58 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         exception_message = []
         self._endscan_stop = True
-        if self.is_end_scan == False:
 
-            try:
-                assert self._obs_state == ObsState.SCANNING, const.SCAN_ALREADY_COMPLETED
-                if self._obs_state == ObsState.SCANNING:
-                    self.isScanning = False
-                    # Invoke EndScan command on SDP Subarray Leaf Node
-                    self._sdp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
-                    self.logger.debug(const.STR_SDP_END_SCAN_INIT)
-                    self._read_activity_message = const.STR_SDP_END_SCAN_INIT
+        print("EndScan Thread : " + self.end_scan_thread.is_alive())
+        self.end_scan_thread.cancel()
+        try:
+            assert self._obs_state == ObsState.SCANNING, const.SCAN_ALREADY_COMPLETED
+            if self._obs_state == ObsState.SCANNING:
+                self.isScanning = False
+                # Invoke EndScan command on SDP Subarray Leaf Node
+                self._sdp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
+                self.logger.debug(const.STR_SDP_END_SCAN_INIT)
+                self._read_activity_message = const.STR_SDP_END_SCAN_INIT
 
-                    # Invoke EndScan command on CSP Subarray Leaf Node
-                    self._csp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
-                    self.logger.debug(const.STR_CSP_END_SCAN_INIT)
-                    self._read_activity_message = const.STR_CSP_END_SCAN_INIT
-                    self._scan_id = ""
+                # Invoke EndScan command on CSP Subarray Leaf Node
+                self._csp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
+                self.logger.debug(const.STR_CSP_END_SCAN_INIT)
+                self._read_activity_message = const.STR_CSP_END_SCAN_INIT
+                self._scan_id = ""
 
-                    if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
-                            ObsState.IDLE:
-                        if len(self.dishPointingStateMap.values()) != 0:
-                            self.calculate_observation_state()
+                if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
+                        ObsState.IDLE:
+                    if len(self.dishPointingStateMap.values()) != 0:
+                        self.calculate_observation_state()
 
 
-                    self.set_status(const.STR_SCAN_COMPLETE)
-                    self.logger.info(const.STR_SCAN_COMPLETE)
-                    self._read_activity_message = const.STR_END_SCAN_SUCCESS
-                    self.is_end_scan = True
-                    # TODO: FOR FUTURE IMPLEMENTATION
-                    # cmdData = tango.DeviceData()
-                    # cmdData.insert(tango.DevString, "0")
-                    # self._dish_leaf_node_group.command_inout(const.CMD_END_SCAN, cmdData)
-                    # set obsState to READY when the scan is ended
-                    # self._obs_state = ObsState.READY
-                    # self._scan_id = ""
-                    # self.set_status(const.STR_SCAN_COMPLETE)
-                    # self.logger.info(const.STR_SCAN_COMPLETE)
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_END_SCAN_CMD_ON_GROUP)
-            except AssertionError as assert_err:
-                str_log = const.ERR_DUPLICATE_END_SCAN_CMD + "\n" + str(assert_err)
-                self.logger.error(str_log)
-                self._read_activity_message = const.ERR_DUPLICATE_END_SCAN_CMD
-                exception_message.append(self._read_activity_message)
-                exception_count += 1
-            except Exception as except_occurred:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                    exception_message, exception_count, const.ERR_END_SCAN_CMD)
-            # Throw Exception
-            if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+                self.set_status(const.STR_SCAN_COMPLETE)
+                self.logger.info(const.STR_SCAN_COMPLETE)
+                self._read_activity_message = const.STR_END_SCAN_SUCCESS
+                self.is_end_scan = True
+                # TODO: FOR FUTURE IMPLEMENTATION
+                # cmdData = tango.DeviceData()
+                # cmdData.insert(tango.DevString, "0")
+                # self._dish_leaf_node_group.command_inout(const.CMD_END_SCAN, cmdData)
+                # set obsState to READY when the scan is ended
+                # self._obs_state = ObsState.READY
+                # self._scan_id = ""
+                # self.set_status(const.STR_SCAN_COMPLETE)
+                # self.logger.info(const.STR_SCAN_COMPLETE)
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                        exception_message, exception_count, const.ERR_END_SCAN_CMD_ON_GROUP)
+        except AssertionError as assert_err:
+            str_log = const.ERR_DUPLICATE_END_SCAN_CMD + "\n" + str(assert_err)
+            self.logger.error(str_log)
+            self._read_activity_message = const.ERR_DUPLICATE_END_SCAN_CMD
+            exception_message.append(self._read_activity_message)
+            exception_count += 1
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count, const.ERR_END_SCAN_CMD)
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
 
     def is_EndScan_allowed(self):
         """ This method is an internal construct of TANGO """
