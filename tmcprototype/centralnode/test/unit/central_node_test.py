@@ -682,7 +682,7 @@ def test_standby_raised_devfailed():
             tango_context.device.StandByTelescope()
 
         # assert:
-        assert_activity_message(tango_context.device, const.ERR_EXE_STANDBY_CMD)
+        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
 
 
 def test_startup():
@@ -728,6 +728,54 @@ def test_startup():
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
         assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
 
+def raise_devfailed(cmd_name = 'StartUpTelescope'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+
+def test_startup_raised_devfailed():
+    # arrange:
+    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
+    sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
+    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
+
+    dut_properties = {
+        'DishLeafNodePrefix': dish_leaf_fqdn_prefix,
+        'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
+        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
+        'TMMidSubarrayNodes': subarray1_fqdn,
+        'NumDishes': len(dish_device_ids)
+    }
+
+    # For subarraynode and dishleafnode proxy creation MagicMock is used instead of Mock because when
+    # proxy inout is called it returns list of resources allocated where lenght of list need to be evaluated
+    # but Mock doesnot support len function for returned object. Hence MagicMock which is a superset of
+    # Mock is used which supports this facility.
+    dish_ln1_proxy_mock = MagicMock()
+    csp_master_ln_proxy_mock = Mock()
+    sdp_master_ln_proxy_mock = Mock()
+    subarray1_proxy_mock = MagicMock()
+    proxies_to_mock = {
+        dish_leaf_fqdn_prefix + "0001": dish_ln1_proxy_mock,
+        csp_master_ln_fqdn: csp_master_ln_proxy_mock,
+        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
+        subarray1_fqdn: subarray1_proxy_mock
+    }
+    dish_ln1_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    csp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    sdp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    subarray1_proxy_mock.command_inout.side_effect = (raise_devfailed)
+
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StartUpTelescope()
+
+        # assert:
+        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
