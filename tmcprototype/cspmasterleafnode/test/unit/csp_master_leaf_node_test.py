@@ -121,9 +121,9 @@ def test_standby_should_command_with_callback_method():
     csp_master_proxy_mock = Mock()
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-    # csp_master_proxy_mock.command_inout_asynch.side_effect = (const.CMD_STANDBY, [], command_callback)
-    # csp_master_proxy_mock.command_inout_asynch.side_effect = (dummy_standby_command)
-    csp_master_proxy_mock.command_inout_asynch.side_effect = (lambda command_name, argument, callback, *args, **kwargs: event_subscription_map.update({command_name: callback}))
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_input = []
@@ -136,19 +136,77 @@ def test_standby_should_command_with_callback_method():
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
 
-def dummy_standby_command(command_name=const.CMD_STANDBY, input=[], callback='Test'):
-    print ("Dummy Standby command called")
-    command_callback(command_name)
+def test_standby_should_command_with_callback_method_with_event_error():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        standby_input = []
+        # act:
+        tango_context.device.Standby(standby_input)
+        dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
+        event_subscription_map[const.CMD_STANDBY](dummy_event)
+        # assert:
+        print("Activity Message:", tango_context.device.activityMessage)
+        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+
+
+def test_standby_should_command_with_callback_method_with_command_error():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        standby_input = []
+        # act:
+        tango_context.device.Standby(standby_input)
+        dummy_event = command_callback_with_command_name_error(const.CMD_STANDBY)
+        event_subscription_map[const.CMD_STANDBY](dummy_event)
+        # assert:
+        print("Activity Message:", tango_context.device.activityMessage)
+        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
 
 def command_callback(command_name):
     print ("in command callback")
     fake_event = MagicMock()
-    # command_name = 'Test'
     fake_event.err = False
     fake_event.errors = 'Event error'
     fake_event.cmd_name = f"{command_name}"
-    # cb = tango.utils.EventCallback()
+    return fake_event
+
+
+def command_callback_with_event_error(command_name):
+    print ("in command callback")
+    fake_event = MagicMock()
+    fake_event.err = True
+    fake_event.errors = 'Event error'
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def command_callback_with_command_name_error(command_name):
+    print ("in command callback")
+    fake_event = MagicMock()
+    fake_event.err = False
+    fake_event.errors = 'Event error'
     return fake_event
 
 
