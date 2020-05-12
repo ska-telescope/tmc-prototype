@@ -52,7 +52,6 @@ class CspMasterLeafNode(SKABaseDevice):
         try:
             if evt.err is False:
                 self._csp_cbf_health = evt.attr_value.value
-                print ("self._csp_cbf_health :", self._csp_cbf_health, evt)
                 if self._csp_cbf_health == HealthState.OK:
                     self.logger.debug(const.STR_CSP_CBF_HEALTH_OK)
                     self._read_activity_message = const.STR_CSP_CBF_HEALTH_OK
@@ -66,7 +65,6 @@ class CspMasterLeafNode(SKABaseDevice):
                     self.logger.debug(const.STR_CSP_CBF_HEALTH_UNKNOWN)
                     self._read_activity_message = const.STR_CSP_CBF_HEALTH_UNKNOWN
             else:
-                print ("In else block")
                 log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
                 self.logger.error(log_msg)
                 self._read_activity_message = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
@@ -366,9 +364,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
-        print ("StandBy Command")
         self._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.commandCallback)
-        print ("Standby command called")
         self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
