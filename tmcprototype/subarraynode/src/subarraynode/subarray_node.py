@@ -668,28 +668,6 @@ class SubarrayNode(SKASubarray):
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_SCAN_EXEC)
 
-    def waitForEndScan(self):
-
-        if self.is_end_scan_execute:
-            self.EndScan()
-
-
-
-        # scanning_time = 0.0
-        # while scanning_time <= self.scan_duration:
-        #     # Stop thread, if EndScan command is invoked manually
-        #     if self._endscan_stop == True:
-        #         break
-        #     # Stop thread, if scan duration is commpleted and EndScan is not invoked manually.
-        #     elif self._endscan_stop == False and scanning_time == self.scan_duration:
-        #         self.EndScan()
-        #         break
-        #     # Increment counter till maximum scan duration provided with scan command
-        #     else:
-        #         time.sleep(1)
-        #         scanning_time += 1
-        # self._endscan_stop = False
-
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
@@ -708,10 +686,10 @@ class SubarrayNode(SKASubarray):
         """
         exception_count = 0
         exception_message = []
-        self._endscan_stop = True
 
-        print("EndScan Thread : " + self.end_scan_thread.is_alive())
-        self.end_scan_thread.cancel()
+        if self.end_scan_thread.is_alive():
+            self.end_scan_thread.cancel() #stop timer when EndScan command is called
+
         try:
             assert self._obs_state == ObsState.SCANNING, const.SCAN_ALREADY_COMPLETED
             if self._obs_state == ObsState.SCANNING:
@@ -732,11 +710,9 @@ class SubarrayNode(SKASubarray):
                     if len(self.dishPointingStateMap.values()) != 0:
                         self.calculate_observation_state()
 
-
                 self.set_status(const.STR_SCAN_COMPLETE)
                 self.logger.info(const.STR_SCAN_COMPLETE)
                 self._read_activity_message = const.STR_END_SCAN_SUCCESS
-                self.is_end_scan = True
                 # TODO: FOR FUTURE IMPLEMENTATION
                 # cmdData = tango.DeviceData()
                 # cmdData.insert(tango.DevString, "0")
@@ -1118,11 +1094,8 @@ class SubarrayNode(SKASubarray):
         self._csp_sa_device_state = DevState.DISABLE
         self._sdp_sa_device_state = DevState.OFF
         self.only_dishconfig_flag = False
-        self._endscan_stop = False
         self._scan_type = ''
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
-        self.is_end_scan = False
-
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
