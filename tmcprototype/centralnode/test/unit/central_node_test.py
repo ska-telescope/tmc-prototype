@@ -635,6 +635,7 @@ def test_standby():
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
 
 
+
 def raise_devfailed(cmd_name = 'StandByTelescope'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
@@ -671,37 +672,10 @@ def test_standby_raised_devfailed():
         subarray1_fqdn: subarray1_proxy_mock
     }
     dish_ln1_proxy_mock.command_inout.side_effect = (raise_devfailed)
-    
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StandByTelescope()
-
-        # assert:
-        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
-
     csp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StandByTelescope()
-
-        # assert:
-        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
-
     sdp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StandByTelescope()
-
-        # assert:
-        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
-
     subarray1_proxy_mock.command_inout.side_effect = (raise_devfailed)
+
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
