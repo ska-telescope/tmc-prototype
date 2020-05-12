@@ -648,6 +648,14 @@ def test_attribute_csp_pss_health_callback_with_exception():
         assert const.ERR_CSP_PSS_HEALTH_CB in tango_context.device.activityMessage
 
 
+def create_dummy_excecption():
+    fake_event = Mock()
+    fake_event.err = False
+    raise Exception(KeyError)
+    return fake_event
+
+
+
 def test_attribute_csp_cbf_health_state_with_exception():
     # arrange:
     csp_master_fqdn = 'mid/csp_elt/master'
@@ -666,7 +674,7 @@ def test_attribute_csp_cbf_health_state_with_exception():
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         with pytest.raises(Exception) as excp:
-            dummy_event = command_callback_with_command_exception()
+            dummy_event = create_dummy_excecption()
             event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
