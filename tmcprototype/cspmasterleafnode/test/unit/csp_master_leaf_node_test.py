@@ -174,10 +174,10 @@ def test_standby_should_command_with_callback_method_with_command_error():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_input = []
         # act:
-        tango_context.device.Standby(standby_input)
         with pytest.raises(Exception) as excp:
-            dummy_event = command_callback_with_command_name_error(const.CMD_STANDBY)
-            # event_subscription_map[const.CMD_STANDBY](dummy_event)
+            tango_context.device.Standby(standby_input)
+            dummy_event = command_callback_with_command_exception(const.CMD_STANDBY)
+            event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
         assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
@@ -200,12 +200,9 @@ def command_callback_with_event_error(command_name):
     return fake_event
 
 
-def command_callback_with_command_name_error(command_name):
-    print ("in command callback")
-    fake_event = MagicMock()
-    fake_event.err = False
-    fake_event.errors = 'Event error'
-    return fake_event
+def command_callback_with_command_exception(command_name):
+    return Exception("Test", command_name)
+
 
 
 def test_attribute_csp_cbf_health_state_of_csp_master_is_ok():
