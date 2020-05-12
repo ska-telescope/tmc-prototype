@@ -444,7 +444,7 @@ def test_assign_resources():
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def raise_devfailed(cmd_name = 'AssignResources'):
+def raise_devfailed(cmd_name = 'AssignResources', cmd_input = 'test'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
@@ -463,6 +463,9 @@ def test_assign_resources_raises_devfailed():
     proxies_to_mock = {
         subarray1_fqdn: subarray1_proxy_mock
     }
+
+
+    subarray1_proxy_mock.command_inout.side_effect = (raise_devfailed)
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -486,11 +489,11 @@ def test_assign_resources_raises_devfailed():
             tango_context.device.AssignResources(assign_command)
 
         # assert:
-        # jsonArgument = json.loads(assign_command)
-        # input_json_subarray = jsonArgument.copy()
-        # del input_json_subarray["subarrayID"]
-        # input_to_sa = json.dumps(input_json_subarray)
-            assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
+        jsonArgument = json.loads(assign_command)
+        input_json_subarray = jsonArgument.copy()
+        del input_json_subarray["subarrayID"]
+        input_to_sa = json.dumps(input_json_subarray)
+        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
 
 
 # def test_assign_resources_duplicate_allocation():
