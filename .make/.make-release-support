@@ -129,7 +129,8 @@ function deleteImageFromNexus(){
 }
 
 function gitPush() {
-  tag=${1:-$(getTag)}
+  tag=$(awk -F= '/^tag=/{print $2}' .release)
+  echo $tag
   $(git push https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git $tag)
   result=$(echo $?)
   if [ $result -ne 0 ];
