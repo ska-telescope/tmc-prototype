@@ -208,6 +208,32 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
         proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
 
 
+def raise_devfailed(cmd_name = 'StowAntennas', cmd_input = 'test'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+
+def test_stow_antennas_should_set_stow_mode_raises_exception():
+    # arrange:
+    dish_device_ids = [str(i).zfill(4) for i in range(1,10)]
+    fqdn_prefix = "ska_mid/tm_leaf_node/d"
+    initial_dut_properties = {
+        'DishLeafNodePrefix': fqdn_prefix,
+        'NumDishes': len(dish_device_ids)
+    }
+
+    proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in dish_device_ids }
+    for proxy_mock in proxies_to_mock.values():
+        proxy_mock.command_inout.side_effect = (raise_devfailed)
+    # act:
+    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        tango_context.device.StowAntennas(dish_device_ids)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StowAntennas(dish_device_ids)
+    # assert:
+        assert const.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
+
+
 def test_activity_message_attribute_captures_the_last_received_command():
     # act & assert:
     with fake_tango_system(CentralNode)as tango_context:
@@ -608,6 +634,53 @@ def test_standby():
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
+
+
+def raise_devfailed(cmd_name = 'StandByTelescope'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+
+def test_standby_raised_devfailed():
+    # arrange:
+    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
+    sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
+    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
+
+    dut_properties = {
+        'DishLeafNodePrefix': dish_leaf_fqdn_prefix,
+        'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
+        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
+        'TMMidSubarrayNodes': subarray1_fqdn,
+        'NumDishes': len(dish_device_ids)
+    }
+
+    # For subarraynode and dishleafnode proxy creation MagicMock is used instead of Mock because when
+    # proxy inout is called it returns list of resources allocated where lenght of list need to be evaluated
+    # but Mock doesnot support len function for returned object. Hence MagicMock which is a superset of
+    # Mock is used which supports this facility.
+    dish_ln1_proxy_mock = MagicMock()
+    csp_master_ln_proxy_mock = Mock()
+    sdp_master_ln_proxy_mock = Mock()
+    subarray1_proxy_mock = MagicMock()
+    proxies_to_mock = {
+        dish_leaf_fqdn_prefix + "0001": dish_ln1_proxy_mock,
+        csp_master_ln_fqdn: csp_master_ln_proxy_mock,
+        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
+        subarray1_fqdn: subarray1_proxy_mock
+    }
+    sdp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StandByTelescope()
+
+        # assert:
+        assert_activity_message(tango_context.device, const.ERR_EXE_STANDBY_CMD)
 
 
 def test_startup():
