@@ -50,6 +50,7 @@ class CspMasterLeafNode(SKABaseDevice):
         :return: None
         """
         try:
+            print("Event", evt)
             if evt.err is False:
                 self._csp_cbf_health = evt.attr_value.value
                 if self._csp_cbf_health == HealthState.OK:
@@ -70,6 +71,7 @@ class CspMasterLeafNode(SKABaseDevice):
                 self._read_activity_message = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
                 self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
         except Exception as except_occurred:
+            print ("except_occurred:", except_occurred)
             self._handle_generic_exception(const.ERR_CSP_CBF_HEALTH_CB + ": " + str(except_occurred))
 
     def cspPssHealthCallback(self, evt):

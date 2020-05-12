@@ -201,7 +201,7 @@ def command_callback_with_event_error(command_name):
 
 
 def command_callback_with_command_exception():
-    return Exception("In callback Exception")
+    return Exception("Exception in callback")
 
 
 
