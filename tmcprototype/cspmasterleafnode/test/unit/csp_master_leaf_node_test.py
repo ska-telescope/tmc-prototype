@@ -128,8 +128,8 @@ def test_standby_should_command_with_callback_method():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_input = []
         # act:
-        dummy_event = command_callback(const.CMD_STANDBY)
-        event_subscription_map[const.CMD_STANDBY](dummy_event)
+        # dummy_event = command_callback(const.CMD_STANDBY)
+        # event_subscription_map[const.CMD_STANDBY](dummy_event)
         tango_context.device.Standby(standby_input)
         dummy_event = command_callback(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
