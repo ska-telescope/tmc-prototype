@@ -132,7 +132,6 @@ def test_standby_should_command_with_callback_method():
         dummy_event = command_callback(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        print("Activity Message:", tango_context.device.activityMessage)
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
 
@@ -156,7 +155,6 @@ def test_standby_should_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        print("Activity Message:", tango_context.device.activityMessage)
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
 
@@ -177,10 +175,10 @@ def test_standby_should_command_with_callback_method_with_command_error():
         standby_input = []
         # act:
         tango_context.device.Standby(standby_input)
-        dummy_event = command_callback_with_command_name_error(const.CMD_STANDBY)
-        event_subscription_map[const.CMD_STANDBY](dummy_event)
+        with pytest.raises(Exception) as excp:
+            dummy_event = command_callback_with_command_name_error(const.CMD_STANDBY)
+            # event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        print("Activity Message:", tango_context.device.activityMessage)
         assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
 
