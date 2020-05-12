@@ -686,9 +686,9 @@ class SubarrayNode(SKASubarray):
         """
         exception_count = 0
         exception_message = []
-
-        if self.end_scan_thread.is_alive():
-            self.end_scan_thread.cancel() #stop timer when EndScan command is called
+        if self.end_scan_thread:
+            if self.end_scan_thread.is_alive():
+                self.end_scan_thread.cancel() #stop timer when EndScan command is called
 
         try:
             assert self._obs_state == ObsState.SCANNING, const.SCAN_ALREADY_COMPLETED
@@ -1096,6 +1096,7 @@ class SubarrayNode(SKASubarray):
         self.only_dishconfig_flag = False
         self._scan_type = ''
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
+        self.end_scan_thread = None
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
