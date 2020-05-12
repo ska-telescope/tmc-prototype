@@ -398,36 +398,50 @@ class DishLeafNode(SKABaseDevice):
         self.dish_name = 'd' + self.dish_number
 
 
-    def set_oserver_lat_long_alt(self):
+    def set_observer_lat_long_alt(self):
         # Load a set of antenna descriptions and construct Antenna objects from them
         with open("/venv/lib/python3.7/site-packages/dishleafnode/ska_antennas.txt") as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         for ant in antennas:
+            print("ant is :---------- ", ant)
             if ant.name == self.dish_number:
-                ref_ant_lat = ant.latitude
-                ref_ant_long = ant.longitude
-                ref_ant_altitude = ant.altitude
+                ref_ant_lat = ant.ref_observer.lat
+                print("ref_ant_lat: ", ref_ant_lat, type(ref_ant_lat))
+                ref_ant_long = ant.ref_observer.long
+                print("ref_ant_long: ", ref_ant_long, type(ref_ant_long))
+                ref_ant_altitude = ant.ref_observer.elevation
+                print("ref_ant_alt: ", ref_ant_altitude)
                 ant_delay_model = ant.delay_model
+                print("ant_delay_model ", ant_delay_model, type(ant_delay_model))
 
         # Convert reference antenna lat and long into radian
-        ref_ant_lat_rad = self.dms_to_rad(ref_ant_lat.split(":"))
-        ref_ant_long_rad = self.dms_to_rad(ref_ant_long.split(":"))
+        ref_ant_lat_rad = self.dms_to_rad(str(ref_ant_lat).split(":"))
+        print("ref_ant_lat_rad ", ref_ant_lat_rad)
+        ref_ant_long_rad = self.dms_to_rad(str(ref_ant_long).split(":"))
+        print("ref_ant_long_rad ", ref_ant_long_rad)
 
         # Find latitude, longitude and altitude of Dish antenna
         # Convert enu to ecef coordinates for dish
         dish_ecef_coordinates = conversion.enu_to_ecef(ref_ant_lat_rad, ref_ant_long_rad, ref_ant_altitude,
                                                        ant_delay_model[0], ant_delay_model[1], ant_delay_model[2])
+        print("dish_ecef_coordinates: ", dish_ecef_coordinates)
         # Convert ecef to lla coordinates for dish (in radians)
         dish_lat_long_alt_rad = conversion.ecef_to_lla(dish_ecef_coordinates[0], dish_ecef_coordinates[1],
                                                        dish_ecef_coordinates[2])
+        print("dish_lat_long_alt_rad: ", dish_lat_long_alt_rad)
         # Convert lla coordinates from rad to dms
         dish_lat_dms = self.rad_to_dms(dish_lat_long_alt_rad[0])
+        print("dish_lat_dms: ",dish_lat_dms)
         dish_long_dms = self.rad_to_dms(dish_lat_long_alt_rad[1])
+        print("dish_long_dms ", dish_long_dms)
 
         self.observer_location_lat = str(dish_lat_dms[0]) + ":" + str(dish_lat_dms[1]) + ":" + str(dish_lat_dms[2])
+        print("self.observer_location_lat: ", self.observer_location_lat)
         self.observer_location_long = str(dish_long_dms[0]) + ":" + str(dish_long_dms[1]) + ":" + str(dish_long_dms[2])
+        print("self.observer_location_long ", self.observer_location_long)
         self.observer_altitude = dish_ecef_coordinates[2]
+        print("self.observer_altitude ", self.observer_altitude)
 
         # ===============================================
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
@@ -481,7 +495,7 @@ class DishLeafNode(SKABaseDevice):
         self.ele_min_lim = 17.5
         # ==================================================================================
         self.set_dish_name_number()
-        self.set_oserver_lat_long_alt()
+        self.set_observer_lat_long_alt()
         # self.observer_location_lat = '18:31:48:00'
         # self.observer_location_long = '73:50:23.99'
         # self.observer_altitude = 570
