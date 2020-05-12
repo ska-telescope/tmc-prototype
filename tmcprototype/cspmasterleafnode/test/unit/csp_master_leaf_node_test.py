@@ -122,26 +122,32 @@ def test_standby_should_command_with_callback_method():
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
     # csp_master_proxy_mock.command_inout_asynch.side_effect = (const.CMD_STANDBY, [], command_callback)
-    csp_master_proxy_mock.command_inout_asynch.side_effect = (dummy_standby_command)
-
+    # csp_master_proxy_mock.command_inout_asynch.side_effect = (dummy_standby_command)
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (lambda command_name, argument, callback, *args, **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_input = []
         # act:
+        dummy_event = command_callback(const.CMD_STANDBY)
+        event_subscription_map[const.CMD_STANDBY](dummy_event)
         tango_context.device.Standby(standby_input)
+        dummy_event = command_callback(const.CMD_STANDBY)
+        event_subscription_map[const.CMD_STANDBY](dummy_event)
         # dummy_event = command_callback(const.CMD_STANDBY)
         # print ("dummy_event:", dummy_event)
         # assert:
         assert const.STR_COMMAND + const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
-def dummy_standby_command(command_name = const.CMD_STANDBY, input=[], callback= 'Test'):
-    print ("Dummy Standby command called")
-    command_callback()
 
-def command_callback():
+def dummy_standby_command(command_name=const.CMD_STANDBY, input=[], callback='Test'):
+    print ("Dummy Standby command called")
+    command_callback(command_name)
+
+
+def command_callback(command_name):
     print ("in command callback")
     fake_event = MagicMock()
-    command_name = 'Test'
+    # command_name = 'Test'
     fake_event.err = False
     fake_event.errors = 'Event error'
     fake_event.cmd_name = f"{command_name}"
