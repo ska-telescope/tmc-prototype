@@ -179,7 +179,7 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated device state of Subarray.
         """
-	if self.get_state() is not DevState.OFF:
+        if self.get_state() is not DevState.OFF:
             if self._csp_sa_device_state==DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
                 self.set_state(DevState.OFF)
             else:
