@@ -671,10 +671,37 @@ def test_standby_raised_devfailed():
         subarray1_fqdn: subarray1_proxy_mock
     }
     dish_ln1_proxy_mock.command_inout.side_effect = (raise_devfailed)
-    csp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
-    sdp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
-    subarray1_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StandByTelescope()
 
+        # assert:
+        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
+
+    csp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StandByTelescope()
+
+        # assert:
+        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
+
+    sdp_master_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StandByTelescope()
+
+        # assert:
+        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
+
+    subarray1_proxy_mock.command_inout.side_effect = (raise_devfailed)
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
