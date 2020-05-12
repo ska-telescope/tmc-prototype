@@ -649,10 +649,9 @@ def test_attribute_csp_pss_health_callback_with_exception():
 
 
 def create_dummy_excecption():
-    fake_event = Mock()
-    fake_event.err = False
+    # fake_event = Mock()
+    # fake_event.err = False
     raise Exception(KeyError)
-    return fake_event
 
 
 
