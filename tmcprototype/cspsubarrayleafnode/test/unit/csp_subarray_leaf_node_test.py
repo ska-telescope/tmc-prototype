@@ -64,7 +64,7 @@ def test_start_scan_should_command_csp_subarray_to_start_raises_devfailed():
             tango_context.device.StartScan([json.dumps(scan_input)])
 
         # assert:
-    assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
+        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
 
 def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_idle():
@@ -270,7 +270,7 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning_ra
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndScan()
 
-    assert const.ERR_ENDSCAN_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_ENDSCAN_INVOKING_CMD in tango_context.device.activityMessage
 
 
 def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_ready():
