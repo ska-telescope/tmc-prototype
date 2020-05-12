@@ -592,6 +592,41 @@ def test_release_resources():
             subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
 
+@pytest.mark.xfail
+def raise_devfailed(cmd_name = 'ReleaseResources'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+@pytest.mark.xfail
+def test_release_resources():
+    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    dut_properties = {
+        'TMMidSubarrayNodes': subarray1_fqdn
+    }
+
+    # For subarraynode proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where lenght of list need to be evaluated but Mock
+    # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # which supports this facility.
+    subarray1_proxy_mock = MagicMock()
+    subarray1_proxy_mock.DevState = DevState.ON
+    subarray1_proxy_mock.receptorIDList = [1]
+    proxies_to_mock = {
+        subarray1_fqdn: subarray1_proxy_mock
+    }
+
+    subarray1_proxy_mock.command_inout.side_effect(raise_devfailed)
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseResources(release_input)
+
+        # assert:
+        assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
+
+
 def test_standby():
     # arrange:
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
@@ -682,7 +717,7 @@ def test_standby_raised_devfailed():
         with pytest.raises(tango.DevFailed):
             tango_context.device.StandByTelescope()
 
-        # assert:
+    # assert:
         assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
 
 
