@@ -648,10 +648,6 @@ def test_attribute_csp_pst_health_callback_of_csp_master_with_error_event():
 #         # assert:
 #         msg = tango_context.device.activityMessage
 #         assert tango_context.device.activityMessage in msg
-#
-
-def create_dummy_excecption():
-    raise Exception(KeyError)
 
 
 def test_attribute_csp_cbf_health_state_with_exception():
