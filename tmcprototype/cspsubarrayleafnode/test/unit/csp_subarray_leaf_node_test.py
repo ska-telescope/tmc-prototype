@@ -211,11 +211,6 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources_r
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
         device_proxy = tango_context.device
-        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
-        assign_resources_input = []
-        assign_resources_input.append(assign_input)
-        # act:
-        device_proxy.AssignResources(assign_resources_input)
         with pytest.raises(tango.DevFailed):
             device_proxy.ReleaseAllResources()
 
@@ -365,19 +360,9 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
                               '"pointing": {"target": {"system": "ICRS", "name": "Polaris", ' \
                      '"RA": "20:21:10.31", ' \
                               '"dec": "-30:52:17.3"}}, "scanID": "1"}'
-        assign_input='{"dish":{"receptorIDList":["0001","0002"]}}'
-        assign_resources_input = []
-        assign_resources_input.append(assign_input)
-
-        # act
-        device_proxy.AssignResources(assign_resources_input)
         with pytest.raises(tango.DevFailed):
             device_proxy.Configure(csp_config)
         # Assert
-        argin_json = json.loads(csp_config)
-        cspConfiguration = argin_json.copy()
-        if "pointing" in cspConfiguration:
-            del cspConfiguration["pointing"]
         assert const.ERR_CONFIGURE_INVOKING_CMD in tango_context.device.activityMessage
 
 
