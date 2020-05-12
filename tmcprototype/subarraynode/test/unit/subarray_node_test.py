@@ -1771,8 +1771,9 @@ def test_subarray_device_state_is_with_exception():
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         attribute = "state"
-        dummy_event = command_callback_with_devfailed_exception()
-        event_subscription_map[attribute](dummy_event)
+        with pytest.raises(tango.DevFailed):
+            dummy_event = command_callback_with_devfailed_exception()
+            # event_subscription_map[attribute](dummy_event)
 
         # assert:
         msg = tango_context.device.activityMessage
