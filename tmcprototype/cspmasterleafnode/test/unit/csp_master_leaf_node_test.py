@@ -70,33 +70,6 @@ def test_event_to_raised_devfailed_exception():
         assert tango_context.device.State() == DevState.FAULT
 
 
-# def test_attribute_csp_cbf_health_state_which_raise_devfailed_exception():
-#     # arrange:
-#     csp_master_fqdn = 'mid/csp_elt/master'
-#     csp_cbf_health_state_attribute = 'cspCbfHealthState'
-#     initial_dut_properties = {'CspMasterFQDN': csp_master_fqdn}
-#
-#     event_subscription_map = {}
-#
-#     csp_master_device_proxy_mock = Mock()
-#     csp_master_device_proxy_mock.subscribe_event.side_effect = (
-#         lambda attr_name, event_type, callback, *args,
-#                **kwargs: event_subscription_map.update({attr_name: callback}))
-#
-#     proxies_to_mock = {csp_master_fqdn: csp_master_device_proxy_mock}
-#
-#     with fake_tango_system(CspMasterLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
-#         # act:
-#         health_state_value = HealthState.OK
-#         with pytest.raises(tango.DevFailed):
-#             create_dummy_event_for_health_state_with_devfailed_error(csp_master_fqdn, health_state_value,
-#                                                                      csp_cbf_health_state_attribute)
-#         # event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
-#
-#         # assert:
-#         assert const.ERR_ON_SUBS_CSP_CBF_HEALTH in tango_context.device.activityMessage
-
-
 def test_off_should_command_csp_master_leaf_node_to_stop():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
@@ -148,8 +121,9 @@ def test_standby_should_command_with_callback_method():
     csp_master_proxy_mock = Mock()
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-    csp_master_proxy_mock.command_inout_asynch.side_effect = ('Standby', [], command_callback)
-    csp_master_proxy_mock.command_inout_asynch.return_value = command_callback()
+    # csp_master_proxy_mock.command_inout_asynch.side_effect = (const.CMD_STANDBY, [], command_callback)
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (dummy_standby_command)
+
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_input = []
@@ -160,6 +134,9 @@ def test_standby_should_command_with_callback_method():
         # assert:
         assert const.STR_COMMAND + const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
+def dummy_standby_command(command_name = const.CMD_STANDBY, input=[], callback= 'Test'):
+    print ("Dummy Standby command called")
+    command_callback()
 
 def command_callback():
     print ("in command callback")
