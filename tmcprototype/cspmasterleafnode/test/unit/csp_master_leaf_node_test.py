@@ -176,7 +176,7 @@ def test_standby_should_command_with_callback_method_with_command_error():
         # act:
         with pytest.raises(Exception) as excp:
             tango_context.device.Standby(standby_input)
-            dummy_event = command_callback_with_command_exception(const.CMD_STANDBY)
+            dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
         assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
@@ -200,8 +200,8 @@ def command_callback_with_event_error(command_name):
     return fake_event
 
 
-def command_callback_with_command_exception(command_name):
-    return Exception("Test", command_name)
+def command_callback_with_command_exception():
+    return Exception("In callback Exception")
 
 
 
@@ -596,6 +596,81 @@ def test_attribute_csp_pst_health_callback_of_csp_master_with_error_event():
 
         # assert:
         assert tango_context.device.activityMessage == const.ERR_ON_SUBS_CSP_PST_HEALTH + str(dummy_event.errors)
+
+
+def test_attribute_csp_pst_health_callback_with_exception():
+    # arrange:
+    csp_master_fqdn = 'mid/csp_elt/master'
+    csp_pst_health_state_attribute = 'cspPstHealthState'
+    initial_dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    event_subscription_map = {}
+
+    csp_master_device_proxy_mock = Mock()
+    csp_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {csp_master_fqdn: csp_master_device_proxy_mock}
+
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(Exception) as excp:
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[csp_pst_health_state_attribute](dummy_event)
+
+        # assert:
+        assert const.ERR_CSP_PST_HEALTH_CB in tango_context.device.activityMessage
+
+
+def test_attribute_csp_pss_health_callback_with_exception():
+    # arrange:
+    csp_master_fqdn = 'mid/csp_elt/master'
+    csp_pss_health_state_attribute = 'cspPssHealthState'
+    initial_dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    event_subscription_map = {}
+
+    csp_master_device_proxy_mock = Mock()
+    csp_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {csp_master_fqdn: csp_master_device_proxy_mock}
+
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(Exception) as excp:
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[csp_pss_health_state_attribute](dummy_event)
+
+        # assert:
+        assert const.ERR_CSP_PSS_HEALTH_CB in tango_context.device.activityMessage
+
+
+def test_attribute_csp_cbf_health_state_with_exception():
+    # arrange:
+    csp_master_fqdn = 'mid/csp_elt/master'
+    csp_cbf_health_state_attribute = 'cspCbfHealthState'
+    initial_dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    event_subscription_map = {}
+
+    csp_master_device_proxy_mock = Mock()
+    csp_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {csp_master_fqdn: csp_master_device_proxy_mock}
+
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(Exception) as excp:
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
+
+        # assert:
+        assert const.ERR_CSP_CBF_HEALTH_CB in tango_context.device.activityMessage
 
 
 def create_dummy_event_for_health_state(device_fqdn,health_state_value,attribute):
