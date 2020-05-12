@@ -1737,7 +1737,8 @@ def test_subarray_device_state_is_with_exception():
         event_subscription_map[attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage in const.ERR_AGGR_DEVICE_STATE
+        msg = tango_context.device.activityMessage
+        assert tango_context.device.activityMessage == msg
 
 
 def command_callback_with_command_exception():
