@@ -31,6 +31,8 @@ import katpoint
 import re
 import datetime
 import time
+
+from katpoint import conversion
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]
@@ -370,6 +372,64 @@ class DishLeafNode(SKABaseDevice):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
+    # ============================================
+    def dms_to_rad(self,dms):
+        deg = float(dms[0])
+        min = float(dms[1])
+        sec = float(dms[2])
+        rad_value = ((math.pi / 180) * ((deg) + (min / 60) + (sec / 3600)))
+        return rad_value
+
+    def rad_to_dms(self, rad_value):
+        dms = []
+        frac_min , deg = math.modf(rad_value * (180 / math.pi))
+        frac_sec, min = math.modf(frac_min * 60)
+        sec = frac_sec * 60
+        dms.append(deg)
+        dms.append(min)
+        dms.append(sec)
+        return dms
+
+    def set_dish_name_number(self):
+        # Find out dish number from DishMasterFQDN property
+        dish_name_string = self.DishMasterFQDN.split("/")
+        dish_num_list = [i for i in dish_name_string[0] if i.isdigit()]
+        self.dish_number = "".join(dish_num_list)
+        self.dish_name = 'd' + self.dish_number
+
+
+    def set_oserver_lat_long_alt(self):
+        # Load a set of antenna descriptions and construct Antenna objects from them
+        with open("/venv/lib/python3.7/site-packages/dishleafnode/ska_antennas.txt") as f:
+            descriptions = f.readlines()
+        antennas = [katpoint.Antenna(line) for line in descriptions]
+        for ant in antennas:
+            if ant.name == self.dish_number:
+                ref_ant_lat = ant.latitude
+                ref_ant_long = ant.longitude
+                ref_ant_altitude = ant.altitude
+                ant_delay_model = ant.delay_model
+
+        # Convert reference antenna lat and long into radian
+        ref_ant_lat_rad = self.dms_to_rad(ref_ant_lat.split(":"))
+        ref_ant_long_rad = self.dms_to_rad(ref_ant_long.split(":"))
+
+        # Find latitude, longitude and altitude of Dish antenna
+        # Convert enu to ecef coordinates for dish
+        dish_ecef_coordinates = conversion.enu_to_ecef(ref_ant_lat_rad, ref_ant_long_rad, ref_ant_altitude,
+                                                       ant_delay_model[0], ant_delay_model[1], ant_delay_model[2])
+        # Convert ecef to lla coordinates for dish (in radians)
+        dish_lat_long_alt_rad = conversion.ecef_to_lla(dish_ecef_coordinates[0], dish_ecef_coordinates[1],
+                                                       dish_ecef_coordinates[2])
+        # Convert lla coordinates from rad to dms
+        dish_lat_dms = self.rad_to_dms(dish_lat_long_alt_rad[0])
+        dish_long_dms = self.rad_to_dms(dish_lat_long_alt_rad[1])
+
+        self.observer_location_lat = str(dish_lat_dms[0]) + ":" + str(dish_lat_dms[1]) + ":" + str(dish_lat_dms[2])
+        self.observer_location_long = str(dish_long_dms[0]) + ":" + str(dish_long_dms[1]) + ":" + str(dish_long_dms[2])
+        self.observer_altitude = dish_ecef_coordinates[2]
+
+        # ===============================================
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
     # -----------------
@@ -419,11 +479,14 @@ class DishLeafNode(SKABaseDevice):
         self.ele_max_lim = 90
         self.horizon_el = 0
         self.ele_min_lim = 17.5
-        self.dish_name = 'd1'
-        self.observer_location_lat = '18:31:48:00'
-        self.observer_location_long = '73:50:23.99'
-        self.observer_altitude = 570
+        # ==================================================================================
+        self.set_dish_name_number()
+        self.set_oserver_lat_long_alt()
+        # self.observer_location_lat = '18:31:48:00'
+        # self.observer_location_long = '73:50:23.99'
+        # self.observer_altitude = 570
         self.el_limit = False
+        # =======================================================================================
         try:
             log_msg = const.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
             self.logger.debug(log_msg)
