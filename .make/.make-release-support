@@ -116,10 +116,10 @@ function createGitTag(){
 }
 
 function getSha(){
-  tag=${1:-$(getTag)}
-  tag=$tag
+  tag=$(awk -F= '/^tag=/{print $2}' .release)
+  echo $tag
   images="$(docker images --format {{.Repository}}:{{.Tag}}:{{.Digest}})"
-  sha=$(docker images --format {{.Repository}}_{{.Tag}}_{{.Digest}} | grep tmcprototype | grep $tag | awk -F_ '/nexus.engageska-portugal.pt/tango-example/tmcprototype_$tag_ {print $3}')
+  sha=$(docker images --format {{.Repository}}_{{.Tag}}_{{.Digest}} | grep tmcprototype | grep "$tag" | awk -F_ '/nexus.engageska-portugal.pt/tango-example/tmcprototype_$tag_ {print $3}')
   echo $sha
 }
 
