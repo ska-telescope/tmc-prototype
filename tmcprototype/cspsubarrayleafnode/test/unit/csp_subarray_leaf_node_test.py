@@ -20,7 +20,7 @@ from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMo
     LoggingLevel
 
 
-def test_go_to_idle_command_with_callback_method():
+def test_assign_command_with_callback_method():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {   'CspSubarrayFQDN': csp_subarray1_fqdn}
@@ -36,14 +36,19 @@ def test_go_to_idle_command_with_callback_method():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # end_scan_input = []
         # act:
-        tango_context.device.GoToIdle()
-        dummy_event = command_callback(const.CMD_GOTOIDLE)
-        event_subscription_map[const.CMD_GOTOIDLE](dummy_event)
+        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_resources_input = []
+        assign_resources_input.append(assign_input)
+        device_proxy = tango_context.device
+        ##act
+        device_proxy.AssignResources(assign_resources_input)
+        dummy_event = command_callback(const.CMD_ADD_RECEPTORS)
+        event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
 
-def test_go_to_idle_command_with_callback_method_with_event_error():
+def test_assign_command_with_callback_method_with_event_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
@@ -59,14 +64,19 @@ def test_go_to_idle_command_with_callback_method_with_event_error():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # end_scan_input = []
         # act:
-        tango_context.device.GoToIdle()
-        dummy_event = command_callback_with_event_error(const.CMD_GOTOIDLE)
-        event_subscription_map[const.CMD_GOTOIDLE](dummy_event)
+        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_resources_input = []
+        assign_resources_input.append(assign_input)
+        device_proxy = tango_context.device
+        ##act
+        device_proxy.AssignResources(assign_resources_input)
+        dummy_event = command_callback_with_event_error(const.CMD_ADD_RECEPTORS)
+        event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
         # assert:
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
 
-def test_go_to_idle_command_with_callback_method_with_command_error():
+def test_assign_command_with_callback_method_with_command_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
@@ -81,10 +91,14 @@ def test_go_to_idle_command_with_callback_method_with_command_error():
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # end_scan_input = []
+        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_resources_input = []
+        assign_resources_input.append(assign_input)
+        device_proxy = tango_context.device
         # act:# Standard Python imports
 
         with pytest.raises(Exception) as excp:
-            tango_context.device.GoToIdle()
+            device_proxy.AssignResources(assign_resources_input)
             dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_GOTOIDLE](dummy_event)
         # assert:
