@@ -154,7 +154,7 @@ function releaseTMC() {
   result=$(curl --header 'Content-Type: application/json' \
                 --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" \
                 --data "$data1" \
-                --request POST https://gitlab.example.com/api/v4/projects/10749136/releases)
+                --request POST https://gitlab.com/api/v4/projects/10749136/releases)
   echo $result
 }
 
