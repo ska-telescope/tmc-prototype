@@ -20,7 +20,7 @@ from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMo
     LoggingLevel
 
 
-def test_end_scan_should_command_with_callback_method():
+def test_go_to_idle_command_with_callback_method():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {   'CspSubarrayFQDN': csp_subarray1_fqdn}
@@ -36,14 +36,14 @@ def test_end_scan_should_command_with_callback_method():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # end_scan_input = []
         # act:
-        tango_context.device.EndScan()
-        dummy_event = command_callback(const.CMD_ENDSCAN)
-        event_subscription_map[const.CMD_ENDSCAN](dummy_event)
+        tango_context.device.GoToIdle()
+        dummy_event = command_callback(const.CMD_GOTOIDLE)
+        event_subscription_map[const.CMD_GOTOIDLE](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
 
-def test_standby_should_command_with_callback_method_with_event_error():
+def test_go_to_idle_command_with_callback_method_with_event_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
@@ -59,14 +59,14 @@ def test_standby_should_command_with_callback_method_with_event_error():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # end_scan_input = []
         # act:
-        tango_context.device.EndScan()
-        dummy_event = command_callback_with_event_error(const.CMD_ENDSCAN)
-        event_subscription_map[const.CMD_ENDSCAN](dummy_event)
+        tango_context.device.GoToIdle()
+        dummy_event = command_callback_with_event_error(const.CMD_GOTOIDLE)
+        event_subscription_map[const.CMD_GOTOIDLE](dummy_event)
         # assert:
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
 
-def test_standby_should_command_with_callback_method_with_command_error():
+def test_go_to_idle_command_with_callback_method_with_command_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
@@ -84,9 +84,9 @@ def test_standby_should_command_with_callback_method_with_command_error():
         # act:# Standard Python imports
 
         with pytest.raises(Exception) as excp:
-            tango_context.device.EndScan()
+            tango_context.device.GoToIdle()
             dummy_event = command_callback_with_command_exception()
-            event_subscription_map[const.CMD_ENDSCAN](dummy_event)
+            event_subscription_map[const.CMD_GOTOIDLE](dummy_event)
         # assert:
         assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
