@@ -6,7 +6,7 @@ import sys
 import json
 import threading
 import mock
-from mock import Mock
+from mock import Mock, MagicMock
 import tango
 import pytest
 
@@ -944,7 +944,7 @@ def test_assign_command_with_callback_method_with_command_error():
         # act
         with pytest.raises(Exception):
             device_proxy.Scan(scan_input)
-            dummy_event = command_callback_with_event_error(const.CMD_DISH_SCAN)
+            dummy_event = command_callback_with_command_exception(const.CMD_DISH_SCAN)
             event_subscription_map[const.CMD_DISH_SCAN](dummy_event)
 
         # assert:
