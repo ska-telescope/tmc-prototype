@@ -837,7 +837,7 @@ def raise_devfailed(cmd_name='StopTrack'):
                                      "From function test devfailed", tango.ErrSeverity.ERR)
 
 
-def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_fail():
+def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
         # arrange:
         dish_master1_fqdn = 'mid_d0001/elt/master'
         dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
@@ -853,11 +853,30 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_fail():
             device_proxy = tango_context.device
 
             #act
-            with pytest.raises(tango.DevFailed):
-                device_proxy.StopTrack()
+            device_proxy.StopTrack()
 
             # assert
             assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
+
+
+def command_callback(command_name):
+    fake_event = MagicMock()
+    fake_event.err = False
+    fake_event.errors = 'Event error'
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def command_callback_with_event_error(command_name):
+    fake_event = MagicMock()
+    fake_event.err = True
+    fake_event.errors = 'Event error'
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def command_callback_with_command_exception():
+    return Exception("Exception in callback")
 
 
 def any_method(with_name=None):
