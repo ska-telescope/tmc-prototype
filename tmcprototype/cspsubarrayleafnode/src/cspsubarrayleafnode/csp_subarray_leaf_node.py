@@ -489,12 +489,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.pointing_params = argin_json["pointing"]
             self.target_Ra = self.pointing_params["target"]["RA"]
             self.target_Dec = self.pointing_params["target"]["dec"]
-            self.update_config_params()
 
             # Create target object
             self.target = katpoint.Target('radec , ' + str(self.target_Ra) + ", " + str(self.target_Dec))
 
             cspConfiguration = argin_json.copy()
+
+            self.update_config_params()
             # Keep configuration specific to CSP and delete pointing configuration
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
