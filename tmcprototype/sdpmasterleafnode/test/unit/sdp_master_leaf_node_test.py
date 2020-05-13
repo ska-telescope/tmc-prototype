@@ -97,25 +97,74 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable():
         assert tango_context.device.activityMessage in const.STR_DISABLE_CMS_SUCCESS
 
 
-def test_standby_should_command_sdp_master_leaf_node_to_standby():
+def test_standby_should_command_with_callback_method():
     # arrange:
     sdp_master_fqdn = 'mid_sdp/elt/master'
 
     dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
 
     sdp_master_proxy_mock = Mock()
-
+    event_subscription_map = {}
     proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
-
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         standby_input = []
         # act:
         tango_context.device.Standby(standby_input)
-
+        dummy_event = command_callback(const.CMD_STANDBY)
+        event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_input,
-                                                                    any_method(with_name='commandCallback'))
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+
+
+def test_standby_should_command_with_callback_method_with_event_error():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        standby_input = []
+        # act:
+        tango_context.device.Standby(standby_input)
+        dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
+        event_subscription_map[const.CMD_STANDBY](dummy_event)
+        # assert:
+        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+
+
+def test_standby_should_command_with_callback_method_with_command_error():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        standby_input = []
+        # act:
+        with pytest.raises(Exception) as excp:
+            tango_context.device.Standby(standby_input)
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[const.CMD_STANDBY](dummy_event)
+        # assert:
+        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
 
 def command_callback(command_name):
@@ -127,6 +176,17 @@ def command_callback(command_name):
     return fake_event
 
 
+def command_callback_with_event_error(command_name):
+    print ("in command callback")
+    fake_event = MagicMock()
+    fake_event.err = True
+    fake_event.errors = 'Event error'
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def command_callback_with_command_exception():
+    return Exception("Exception in callback")
 
 
 def test_activity_message():
