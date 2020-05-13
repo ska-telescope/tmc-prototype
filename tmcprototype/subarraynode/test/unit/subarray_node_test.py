@@ -1741,7 +1741,7 @@ def test_subarray_device_state_is_with_exception():
         assert tango_context.device.activityMessage == msg
 
 
-def test_subarray_device_state_is_with_exception():
+def test_subarray_device_state_is_with_devfailed_exception():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
 
@@ -1773,7 +1773,7 @@ def test_subarray_device_state_is_with_exception():
         attribute = "state"
         with pytest.raises(tango.DevFailed):
             dummy_event = command_callback_with_devfailed_exception()
-            # event_subscription_map[attribute](dummy_event)
+            event_subscription_map[attribute](dummy_event)
 
         # assert:
         msg = tango_context.device.activityMessage
