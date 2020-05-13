@@ -35,28 +35,11 @@ def test_assign_command_with_callback_method():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
-                       '[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771",' \
-                       '"dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                       '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
-                       '{"id":"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699",' \
-                       '"dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                       '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                       '"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                       '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
-                       '"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
-                       '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},' \
-                       '"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                       '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
-                       '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",' \
-                       '"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004",' \
-                       '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                       '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
-                       '"type":["calibration"]}]}]}'
+        sdp_config = '{"sdp":{ "scan_type": "science_A" }}'
         # act
-        tango_context.device.AssignResources(assign_input)
-        dummy_event = command_callback(const.CMD_ASSIGN_RESOURCES)
-        event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
+        tango_context.device.Configure(sdp_config)
+        dummy_event = command_callback(const.CMD_CONFIGURE)
+        event_subscription_map[const.CMD_CONFIGURE](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
@@ -74,28 +57,11 @@ def test_assign_command_with_callback_method_with_event_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
-                       '[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771",' \
-                       '"dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                       '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
-                       '{"id":"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699",' \
-                       '"dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                       '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                       '"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                       '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
-                       '"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
-                       '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},' \
-                       '"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                       '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
-                       '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",' \
-                       '"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004",' \
-                       '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                       '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
-                       '"type":["calibration"]}]}]}'
+        sdp_config = '{"sdp":{ "scan_type": "science_A" }}'
         # act
-        tango_context.device.AssignResources(assign_input)
-        dummy_event = command_callback_with_event_error(const.CMD_ASSIGN_RESOURCES)
-        event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
+        tango_context.device.Configure(sdp_config)
+        dummy_event = command_callback_with_event_error(const.CMD_CONFIGURE)
+        event_subscription_map[const.CMD_CONFIGURE](dummy_event)
         # assert:
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
