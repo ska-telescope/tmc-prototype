@@ -871,6 +871,7 @@ class DishLeafNode(SKABaseDevice):
                                                   args=(radec_value,))
             self.track_thread1.start()
 
+
         except ValueError as value_error:
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             log_msg = const.ERR_INVALID_JSON + str(value_error)
