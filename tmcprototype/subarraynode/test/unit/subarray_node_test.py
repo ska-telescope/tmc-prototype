@@ -662,8 +662,8 @@ def test_start_scan_should_should_raise_devfailed_exception():
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         time.sleep(5)
         scan_input = '{"id": 1}'
-        # with pytest.raises(tango.DevFailed):
-        tango_context.device.Scan(scan_input)
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan(scan_input)
 
         # assert:
         assert tango_context.device.obsState == ObsState.READY
@@ -737,7 +737,7 @@ def test_start_scan_should_should_raise_assertion_exception():
 
         # assert:
         assert tango_context.device.obsState == ObsState.SCANNING
-        assert const.ERR_DUPLICATE_SCAN_CMD + str(assert_error) in tango_context.device.activityMessage
+        # assert const.ERR_DUPLICATE_SCAN_CMD + str(assert_error) in tango_context.device.activityMessage
 
 
 def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
