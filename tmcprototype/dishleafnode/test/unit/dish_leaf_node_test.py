@@ -832,7 +832,7 @@ def test_health_state():
         assert tango_context.device.healthState == HealthState.OK
 
 
-def raise_devfailed(cmd_name='StopTrack'):
+def raise_devfailed(cmd_name ='StopTrack',callback = 'Test'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                      "From function test devfailed", tango.ErrSeverity.ERR)
 
@@ -853,10 +853,40 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
             device_proxy = tango_context.device
 
             #act
-            device_proxy.StopTrack()
+            with pytest.raises(tango.DevFailed):
+                device_proxy.StopTrack()
 
             # assert
             assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
+
+
+def test_scan_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {   'CspSubarrayFQDN': csp_subarray1_fqdn}
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+
+        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_resources_input = []
+        assign_resources_input.append(assign_input)
+        device_proxy = tango_context.device
+        # act
+        device_proxy.AssignResources(assign_resources_input)
+        dummy_event = command_callback(const.CMD_ADD_RECEPTORS)
+        event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+
+
 
 
 def command_callback(command_name):
