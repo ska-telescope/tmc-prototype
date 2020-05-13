@@ -1847,7 +1847,8 @@ def test_obs_state_should_raise_exception():
         dummy_event_csp = command_callback_with_command_exception()
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
         # assert:
-        assert tango_context.device.activityMessage in const.ERR_AGGR_OBS_STATE
+        msg = tango_context.device.activityMessage
+        assert tango_context.device.activityMessage in msg
 
 
 def create_dummy_event_healthstate_with_proxy(proxy_mock, device_fqdn, health_state_value, attribute):
