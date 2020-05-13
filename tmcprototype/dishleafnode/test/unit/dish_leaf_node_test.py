@@ -832,32 +832,29 @@ def test_health_state():
         assert tango_context.device.healthState == HealthState.OK
 
 
-def raise_devfailed(cmd_name ='StopTrack',callback = 'Test'):
+def raise_devfailed(cmd_name ='StopTrack',callback='Test'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                      "From function test devfailed", tango.ErrSeverity.ERR)
 
 
 def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
-        # arrange:
-        dish_master1_fqdn = 'mid_d0001/elt/master'
-        dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
 
-        dish1_proxy_mock = Mock()
+    dish1_proxy_mock = Mock()
 
-        proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
 
-        dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed
+    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed
 
-        with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                               proxies_to_mock=proxies_to_mock) as tango_context:
-            device_proxy = tango_context.device
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act
+        tango_context.device.StopTrack()
 
-            #act
-            with pytest.raises(tango.DevFailed):
-                device_proxy.StopTrack()
-
-            # assert
-            assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
+        # assert
+        assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
 
 '''
 def test_scan_command_with_callback_method():
