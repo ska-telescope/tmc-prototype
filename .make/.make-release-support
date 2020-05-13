@@ -167,42 +167,25 @@ function deleteTMCRelease() {
   echo $result
 }
 
-#function releaseAlreadyExists() {
-#  tag_name=$(getRelease)
-#  result=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
-#  python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
-#  echo "$result"
-#  if [ "$result" == "$tag_name" ]
-#  then
-#    echo "This release is already exists."
-#    echo "$msg"
-#  else
-#    msg="This release does not exists yet."
-#    echo "$msg"
-#  fi
-#}
-
 function deleteTag() {
   tag=$(awk -F= '/^tag=/{print $2}' .release)
   echo $tag
   git push --delete https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git "$tag"
 }
 
-function releaseTMCWithoutError() {
+function releaseTMCIfNoError() {
   tag_name=$(getRelease)
-  releaseExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
+  releaseAlreadyExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
   python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
-  echo "$releaseExists"
-  if [ "$releaseExists" == "$tag_name" ]
+  if [ "$releaseAlreadyExists" == "$tag_name" ]
   then
-    echo "This release is already exists."
+    echo "This release is already exists. New release with same version is not possible."
   else
-    echo "This release does not exist. Hence new release will be created."
+    echo "Releasing tmc-prototype..."
     releaseTMC
-    releaseExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
+    checkReleaseExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
     python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
-    echo "$releaseExists"
-    if [ "$releaseExists" != "$tag_name" ]; then
+    if [ "$checkReleaseExists" != "$tag_name" ]; then
         echo "Error while releasing tmc. Tag and image will be deleted."
         deleteTag
         deleteImageFromNexus
