@@ -1,17 +1,115 @@
+# Standard Python imports
 import contextlib
 import importlib
 import sys
 import json
-import mock
 import types
 import pytest
 import tango
+import mock
 from mock import Mock
+from mock import MagicMock
+
+# Tango imports
 from tango import DevState
-from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from tango.test_context import DeviceTestContext
+
+# Additional import
+from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode, \
     LoggingLevel
+
+
+def test_end_scan_should_command_with_callback_method():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {   'CspSubarrayFQDN': csp_subarray1_fqdn}
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        end_scan_input = []
+        # act:
+        tango_context.device.EndScan(end_scan_input)
+        dummy_event = command_callback(const.CMD_ENDSCAN)
+        event_subscription_map[const.CMD_ENDSCAN](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+
+
+def test_standby_should_command_with_callback_method_with_event_error():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        end_scan_input = []
+        # act:
+        tango_context.device.EndScan(end_scan_input)
+        dummy_event = command_callback_with_event_error(const.CMD_ENDSCAN)
+        event_subscription_map[const.CMD_ENDSCAN](dummy_event)
+        # assert:
+        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+
+
+def test_standby_should_command_with_callback_method_with_command_error():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        end_scan_input = []
+        # act:
+        with pytest.raises(Exception) as excp:
+            tango_context.device.EndScan(end_scan_input)
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[const.CMD_ENDSCAN](dummy_event)
+        # assert:
+        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
+
+def command_callback(command_name):
+    print ("in command callback")
+    fake_event = MagicMock()
+    fake_event.err = False
+    fake_event.errors = 'Event error'
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def command_callback_with_event_error(command_name):
+    print ("in command callback")
+    fake_event = MagicMock()
+    fake_event.err = True
+    fake_event.errors = 'Event error'
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def command_callback_with_command_exception():
+    return Exception("Exception in callback")
+
 
 def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready():
     # arrange:
