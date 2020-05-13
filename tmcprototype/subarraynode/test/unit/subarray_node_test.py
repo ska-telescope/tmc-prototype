@@ -460,10 +460,14 @@ def test_endsb_command_subarray_when_in_invalid_state():
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 
-def raise_devfailed(cmd_name = 'EndSb'):
+def raise_devfailed(cmd_name='EndSb'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
+
+def raise_devfailed_with_arg(cmd_name='Test', input='Test'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 def test_end_sb_should_raise_devfailed_exception():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
@@ -642,7 +646,7 @@ def test_start_scan_should_should_raise_devfailed_exception():
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
             update({attr_name: callback}))
 
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_with_arg
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         tango_context.device.On()
@@ -713,7 +717,6 @@ def test_start_scan_should_should_raise_assertion_exception():
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
             update({attr_name: callback}))
 
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         tango_context.device.On()
@@ -729,7 +732,7 @@ def test_start_scan_should_should_raise_assertion_exception():
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         time.sleep(5)
         scan_input = '{"id": 1}'
-        with pytest.raises(AssertionError) as assert_error:
+        with pytest.raises(tango.DevFailed) as assert_error:
             tango_context.device.Scan(scan_input)
 
         # assert:
