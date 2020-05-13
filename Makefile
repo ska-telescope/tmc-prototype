@@ -128,7 +128,6 @@ test: build up ## test the application
 	  exit $$status
 
 unit-test:
-	@echo "hiii I am snehal hande this my unit test case job"
 	$(INIT_CACHE)
 	docker run -i --rm --network=$(NETWORK_MODE) \
 	   -e TANGO_HOST=$(TANGO_HOST) \
