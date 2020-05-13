@@ -859,7 +859,7 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
             # assert
             assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
 
-
+'''
 def test_scan_command_with_callback_method():
     # arrange:
     dish_master1_fqdn = 'mid_csp/elt/subarray_01'
@@ -907,7 +907,7 @@ def command_callback_with_event_error(command_name):
 
 def command_callback_with_command_exception():
     return Exception("Exception in callback")
-
+'''
 
 def any_method(with_name=None):
     class AnyMethod():
