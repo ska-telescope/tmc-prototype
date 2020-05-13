@@ -129,19 +129,13 @@ test: build up ## test the application
 
 unit-test:
 	@echo "hiii I am snehal hande this my unit test case job"
-	docker run nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
-# 	pipenv install --dev
 	$(INIT_CACHE)
-	mkdir test_results; \
-	for path in `find ./tmcprototype/*/test  -type d -name unit`; do \
-	    echo $$path; \
-	    export TMC_ELEMENT=$$(basename $$(dirname $$(dirname "$$path"))); \
-	    echo $$TMC_ELEMENT; \
-	    echo "+++ Installing $${TMC_ELEMENT} for tests"; \
-	    python3 -m pip install -U tmcprototype/$${TMC_ELEMENT} --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple/ ; \
-	    echo "+++ Trying tests for $${TMC_ELEMENT}"; \
-	    pytest -v tmcprototype/$${TMC_ELEMENT}/test/unit --forked --cov=tmcprototype/$${TMC_ELEMENT} --cov-report=html:./test_results/$${TMC_ELEMENT}_htmlcov --json-report --json-report-file=./test_results/$${TMC_ELEMENT}_report.json --junitxml=./test_results/$${TMC_ELEMENT}-unit-tests.xml; \
-	done
+	docker run -i --rm --network=$(NETWORK_MODE) \
+	   -e TANGO_HOST=$(TANGO_HOST) \
+	   -v $(CACHE_VOLUME):/home/tango/.cache \
+	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
+	bash -c "cd /app/tmcprototype && \
+	./run_unit_test.sh"
 
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 lint: build up ##lint the application (static code analysis)
