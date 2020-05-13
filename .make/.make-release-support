@@ -154,7 +154,7 @@ function releaseTMC() {
   result=$(curl --header 'Content-Type: application/json' \
                 --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" \
                 --data "$data1" \
-                --request POST https://gitlab.com/api/v4/projects/10749136/releases)
+                --request POST https://gitlab.example.com/api/v4/projects/10749136/releases)
   echo $result
 }
 
@@ -167,20 +167,20 @@ function deleteTMCRelease() {
   echo $result
 }
 
-function releaseAlreadyExists() {
-  tag_name=$(getRelease)
-  result=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
-  python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
-  echo "$result"
-  if [ "$result" == "$tag_name" ]
-  then
-    echo "This release is already exists."
-    echo "$msg"
-  else
-    msg="This release does not exists yet."
-    echo "$msg"
-  fi
-}
+#function releaseAlreadyExists() {
+#  tag_name=$(getRelease)
+#  result=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
+#  python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
+#  echo "$result"
+#  if [ "$result" == "$tag_name" ]
+#  then
+#    echo "This release is already exists."
+#    echo "$msg"
+#  else
+#    msg="This release does not exists yet."
+#    echo "$msg"
+#  fi
+#}
 
 function deleteTag() {
   tag=$(awk -F= '/^tag=/{print $2}' .release)
@@ -205,7 +205,9 @@ function releaseTMCWithoutError() {
     if [ "$releaseExists" != "$tag_name" ]; then
         echo "Error while releasing tmc. Tag and image will be deleted."
         deleteTag
-        deleteImageFromNexus
+        echo "pipeline id is:"
+        echo $CI_PIPELINE_ID
+#        deleteImageFromNexus
     fi
   fi
 }
