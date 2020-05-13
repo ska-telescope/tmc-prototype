@@ -34,13 +34,12 @@ def test_assign_command_with_callback_method():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        # end_scan_input = []
-        # act:
+
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_input)
         device_proxy = tango_context.device
-        ##act
+        # act
         device_proxy.AssignResources(assign_resources_input)
         dummy_event = command_callback(const.CMD_ADD_RECEPTORS)
         event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
@@ -62,13 +61,12 @@ def test_assign_command_with_callback_method_with_event_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        # end_scan_input = []
-        # act:
+
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_input)
         device_proxy = tango_context.device
-        ##act
+        # act
         device_proxy.AssignResources(assign_resources_input)
         dummy_event = command_callback_with_event_error(const.CMD_ADD_RECEPTORS)
         event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
@@ -90,12 +88,12 @@ def test_assign_command_with_callback_method_with_command_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        # end_scan_input = []
+
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_input)
         device_proxy = tango_context.device
-        # act:# Standard Python imports
+        # act:
 
         with pytest.raises(Exception):
             device_proxy.AssignResources(assign_resources_input)

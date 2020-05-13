@@ -736,7 +736,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
-            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
+            [ exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
 
         except Exception as except_occurred:
