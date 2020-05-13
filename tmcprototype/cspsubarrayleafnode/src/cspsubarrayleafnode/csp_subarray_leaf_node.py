@@ -486,10 +486,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
             argin_json = json.loads(argin)
             # Used to extract FSP IDs
             self.fsp_ids_object = argin_json["fsp"]
-            self.update_config_params()
             self.pointing_params = argin_json["pointing"]
             self.target_Ra = self.pointing_params["target"]["RA"]
             self.target_Dec = self.pointing_params["target"]["dec"]
+            self.update_config_params()
+
             # Create target object
             self.target = katpoint.Target('radec , ' + str(self.target_Ra) + ", " + str(self.target_Dec))
 
