@@ -412,9 +412,7 @@ class DishLeafNode(SKABaseDevice):
                 print("ref_ant_long: ", ref_ant_long, type(ref_ant_long))
                 ref_ant_altitude = ant.ref_observer.elevation
                 print("ref_ant_alt: ", ref_ant_altitude)
-                ant_delay_model = ant.delay_model
-                print("ant_delay_model ", ant_delay_model, type(ant_delay_model))
-
+                ant_delay_model = ant.delay_model.values()
         # Convert reference antenna lat and long into radian
         ref_ant_lat_rad = self.dms_to_rad(str(ref_ant_lat).split(":"))
         print("ref_ant_lat_rad ", ref_ant_lat_rad)
@@ -437,11 +435,11 @@ class DishLeafNode(SKABaseDevice):
         print("dish_long_dms ", dish_long_dms)
 
         self.observer_location_lat = str(dish_lat_dms[0]) + ":" + str(dish_lat_dms[1]) + ":" + str(dish_lat_dms[2])
-        print("self.observer_location_lat: ", self.observer_location_lat)
+        print("self.observer_location_lat: ", self.observer_location_lat, type(self.observer_location_lat))
         self.observer_location_long = str(dish_long_dms[0]) + ":" + str(dish_long_dms[1]) + ":" + str(dish_long_dms[2])
-        print("self.observer_location_long ", self.observer_location_long)
+        print("self.observer_location_long ", self.observer_location_long, type(self.observer_location_long))
         self.observer_altitude = dish_ecef_coordinates[2]
-        print("self.observer_altitude ", self.observer_altitude)
+        print("self.observer_altitude ", self.observer_altitude, type(self.observer_altitude))
 
         # ===============================================
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
