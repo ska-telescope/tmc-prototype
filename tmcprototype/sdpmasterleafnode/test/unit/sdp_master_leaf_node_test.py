@@ -4,6 +4,7 @@ import importlib
 import sys
 import types
 import mock
+import pytest
 from mock import Mock, MagicMock
 
 # Tango imports
@@ -111,9 +112,8 @@ def test_standby_should_command_with_callback_method():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        standby_input = []
         # act:
-        tango_context.device.Standby(standby_input)
+        tango_context.device.Standby()
         dummy_event = command_callback(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
@@ -134,9 +134,8 @@ def test_standby_should_command_with_callback_method_with_event_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        standby_input = []
         # act:
-        tango_context.device.Standby(standby_input)
+        tango_context.device.Standby()
         dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
@@ -157,10 +156,9 @@ def test_standby_should_command_with_callback_method_with_command_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        standby_input = []
         # act:
         with pytest.raises(Exception) as excp:
-            tango_context.device.Standby(standby_input)
+            tango_context.device.Standby()
             dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
