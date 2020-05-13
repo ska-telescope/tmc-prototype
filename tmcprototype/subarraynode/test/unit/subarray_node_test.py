@@ -793,18 +793,18 @@ def test_start_scan_should_should_raise_generic_exception():
         sdp_subarray1_proxy_mock.obsState = ObsState.READY
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                                   attribute, ObsState.SCANNING)
+                                                   attribute, ObsState.READY)
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                                   attribute, ObsState.SCANNING)
+                                                   attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         time.sleep(5)
         scan_input = '{"id": 1}'
         tango_context.device.Scan(scan_input)
 
         # assert:
-        assert tango_context.device.obsState == ObsState.SCANNING
+        assert tango_context.device.obsState == ObsState.READY
 
 
 def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
@@ -1014,11 +1014,11 @@ def test_end_scan_should_raise_generic_exception():
 
 
 def raise_generic_exception(cmd_name='Test'):
-    return Exception("Exception in callback")
+    return Exception("Exception in command")
 
 
 def raise_generic_exception_with_arg(cmd_name='Test', input='Test'):
-    return Exception("Exception in callback")
+    return Exception("Exception in command")
 
 def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
