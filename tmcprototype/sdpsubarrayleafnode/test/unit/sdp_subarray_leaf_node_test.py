@@ -53,11 +53,11 @@ def test_assign_command_with_callback_method():
                        '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
                        '"type":["calibration"]}]}]}'
-        assign_resources_input = []
-        assign_resources_input.append(assign_input)
+        # assign_resources_input = []
+        # assign_resources_input.append(assign_input)
         device_proxy = tango_context.device
         # act
-        device_proxy.AssignResources(assign_resources_input)
+        device_proxy.AssignResources(assign_input)
         dummy_event = command_callback(const.CMD_ASSIGN_RESOURCES)
         event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
         # assert:
