@@ -285,7 +285,7 @@ def test_set_stow_mode_should_command_dish_to_transit_to_stow_mode():
                                                                  any_method(with_name='commandCallback'))
 
 
-def create_dummy_event_for_dish_mode(device_fqdn,dish_mode_value,attribute):
+def create_dummy_event_for_dishmode(device_fqdn,dish_mode_value,attribute):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
