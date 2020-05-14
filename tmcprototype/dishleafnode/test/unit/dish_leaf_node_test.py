@@ -524,6 +524,67 @@ def test_dish_leaf_node_dish_mode_is_operate_when_dish_is_operate():
         assert tango_context.device.activityMessage == const.STR_DISH_OPERATE_MODE
 
 
+def test_dish_leaf_node_dish_mode_is_unknown():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dish_master_dishmode_attribute = 'dishMode'
+    initial_dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    event_subscription_map = {}
+
+    dish_master_device_proxy_mock = Mock()
+    dish_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {dish_master1_fqdn: dish_master_device_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dish_mode_value = 9
+        dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
+                                                         dish_master_dishmode_attribute)
+        event_subscription_map[dish_master_dishmode_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage in const.STR_DISH_UNKNOWN_MODE
+
+
+def test_dish_leaf_node_dish_mode_with_error_event():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dish_master_dishmode_attribute = 'dishMode'
+    initial_dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    event_subscription_map = {}
+
+    dish_master_device_proxy_mock = Mock()
+    dish_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {dish_master1_fqdn: dish_master_device_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dish_mode_value = 9
+        dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_mode_value,
+                                                         dish_master_dishmode_attribute)
+        event_subscription_map[dish_master_dishmode_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage in const.ERR_ON_SUBS_DISH_MODE_ATTR
+
+
+def create_dummy_event_with_error(device_fqdn,attr_value,attribute):
+    fake_event = Mock()
+    fake_event.err = True
+    fake_event.errors = 'Event Error'
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = attr_value
+    return fake_event
+
+
 def create_dummy_event_for_dish_capturing(device_fqdn,dish_capturing_value,attribute):
     fake_event = Mock()
     fake_event.err = False
@@ -584,6 +645,58 @@ def test_dish_leaf_node_when_dish_capturing_callback_is_false():
         assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_FALSE
 
 
+def test_dish_leaf_node_when_dish_capturing_callback_is_wrong():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dish_master_capturing_attribute = 'capturing'
+    initial_dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    event_subscription_map = {}
+
+    dish_master_device_proxy_mock = Mock()
+    dish_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {dish_master1_fqdn: dish_master_device_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dish_capturing_value = 'Invalid_value'
+        dummy_event = create_dummy_event_for_dish_capturing(dish_master1_fqdn, dish_capturing_value,
+                                                            dish_master_capturing_attribute)
+        event_subscription_map[dish_master_capturing_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_UNKNOWN
+
+
+def test_dish_leaf_node_when_dish_capturing_callback_with_error_event():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dish_master_capturing_attribute = 'capturing'
+    initial_dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    event_subscription_map = {}
+
+    dish_master_device_proxy_mock = Mock()
+    dish_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {dish_master1_fqdn: dish_master_device_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        dish_capturing_value = 'Invalid_value'
+        dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_capturing_value,
+                                                            dish_master_capturing_attribute)
+        event_subscription_map[dish_master_capturing_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage in const.ERR_SUBSR_CAPTURING_ATTR
+
+
 def create_dummy_event(device_fqdn, attribute, attr_value):
     fake_event = Mock()
     fake_event.err = False
@@ -595,7 +708,7 @@ def create_dummy_event(device_fqdn, attribute, attr_value):
 def test_dish_leaf_node_when_achieved_pointing_callback_is_true():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
-    dish_master_achievedPointing_attribute = 'achievedPointing'
+    dish_master_achieved_pointing_attribute = 'achievedPointing'
     initial_dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
 
     event_subscription_map = {}
@@ -612,17 +725,43 @@ def test_dish_leaf_node_when_achieved_pointing_callback_is_true():
         attribute = 'achievedPointing'
         value = 0.0
         dummy_event = create_dummy_event(dish_master1_fqdn, attribute, value)
-        event_subscription_map[dish_master_achievedPointing_attribute](dummy_event)
+        event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.activityMessage == const.STR_ACHIEVED_POINTING + \
                str(dummy_event.attr_value.value)
 
 
+def test_dish_leaf_node_when_achieved_pointing_callback_with_error_event():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dish_master_achieved_pointing_attribute = 'achievedPointing'
+    initial_dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    event_subscription_map = {}
+
+    dish_master_device_proxy_mock = Mock()
+    dish_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {dish_master1_fqdn: dish_master_device_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        attribute = 'achievedPointing'
+        value = 0.0
+        dummy_event = create_dummy_event_with_error(dish_master1_fqdn, attribute, value)
+        event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage in const.ERR_ON_SUBS_DISH_ACHVD_ATTR
+
+
 def test_dish_leaf_node_when_desired_pointing_callback_is_true():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
-    dish_master_desiredPointing_attribute = 'desiredPointing'
+    dish_master_desired_pointing_attribute = 'desiredPointing'
     initial_dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
 
     event_subscription_map = {}
@@ -639,11 +778,37 @@ def test_dish_leaf_node_when_desired_pointing_callback_is_true():
         attribute = 'desiredPointing'
         value = 0.0
         dummy_event = create_dummy_event(dish_master1_fqdn, attribute, value)
-        event_subscription_map[dish_master_desiredPointing_attribute](dummy_event)
+        event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.activityMessage == const.STR_DESIRED_POINTING +\
                str(dummy_event.attr_value.value)
+
+
+def test_dish_leaf_node_when_desired_pointing_callback_with_error_event():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dish_master_desired_pointing_attribute = 'desiredPointing'
+    initial_dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    event_subscription_map = {}
+
+    dish_master_device_proxy_mock = Mock()
+    dish_master_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {dish_master1_fqdn: dish_master_device_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        attribute = 'desiredPointing'
+        value = 0.0
+        dummy_event = create_dummy_event_with_error(dish_master1_fqdn, attribute, value)
+        event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.activityMessage in const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR
 
 
 def test_configure_should_raise_exception_when_called_with_invalid_json():

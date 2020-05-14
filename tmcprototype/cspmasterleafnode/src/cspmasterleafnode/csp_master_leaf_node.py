@@ -50,7 +50,6 @@ class CspMasterLeafNode(SKABaseDevice):
         :return: None
         """
         try:
-            print("Event", evt)
             if evt.err is False:
                 self._csp_cbf_health = evt.attr_value.value
                 if self._csp_cbf_health == HealthState.OK:
@@ -70,6 +69,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 self.logger.error(log_msg)
                 self._read_activity_message = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
                 self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
+        except DevFailed as dev_failed:
+            self._handle_devfailed_exception(dev_failed, const.ERR_ON_SUBS_CSP_CBF_HEALTH)
         except Exception as except_occurred:
             print ("except_occurred:", except_occurred)
             self._handle_generic_exception(const.ERR_CSP_CBF_HEALTH_CB + ": " + str(except_occurred))
@@ -103,8 +104,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 self.logger.error(log_msg)
                 self._read_activity_message = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
                 self.logger.error(const.ERR_ON_SUBS_CSP_PSS_HEALTH)
-        # except DevFailed as dev_failed:
-        #     self._handle_devfailed_exception(dev_failed, const.ERR_ON_SUBS_CSP_PSS_HEALTH)
+        except DevFailed as dev_failed:
+            self._handle_devfailed_exception(dev_failed, const.ERR_ON_SUBS_CSP_PSS_HEALTH)
         except Exception as except_occurred:
             self._handle_generic_exception(const.ERR_CSP_PSS_HEALTH_CB + ": " + str(except_occurred))
 
@@ -136,8 +137,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 self.logger.error(log_msg)
                 self._read_activity_message = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
                 self.logger.error(const.ERR_ON_SUBS_CSP_PST_HEALTH)
-        # except DevFailed as dev_failed:
-        #     self._handle_devfailed_exception(dev_failed, const.ERR_ON_SUBS_CSP_PSS_HEALTH)
+        except DevFailed as dev_failed:
+            self._handle_devfailed_exception(dev_failed, const.ERR_ON_SUBS_CSP_PSS_HEALTH)
         except Exception as except_occurred:
             self._handle_generic_exception(const.ERR_CSP_PST_HEALTH_CB + ": " + str(except_occurred))
 
@@ -224,12 +225,6 @@ class CspMasterLeafNode(SKABaseDevice):
         self._health_state = HealthState.OK # Setting healthState to "OK"
         self._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
         self._test_mode = TestMode.NONE
-
-        # except DevFailed as dev_failed:
-        #     self.logger.error(const.ERR_INIT_PROP_ATTR)
-        #     self._read_activity_message = const.ERR_INIT_PROP_ATTR
-        #     self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR)
-
         try:
             self._read_activity_message = const.STR_CSPMASTER_FQDN + str(self.CspMasterFQDN)
             # Creating proxy to the CSPMaster
