@@ -518,7 +518,7 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
         tango_context.device.AssignResources(json.dumps(assign_input))
 
         # assert
-        assert tango_context.device.State() == DevState.DISABLE
+        assert tango_context.device.State() == DevState.OFF
 
 
 def test_release_resource_command_subarray():
