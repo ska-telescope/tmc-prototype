@@ -25,10 +25,10 @@ from ska.base.control_model import LoggingLevel
 def test_end_sb_command_with_callback_method():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-    dut_properties = {    'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
     sdp_subarray1_proxy_mock = Mock()
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
-    proxies_to_mock = {   sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
     event_subscription_map = {}
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
         lambda command_name, callback, *args,
@@ -385,7 +385,7 @@ def test_configure_to_raise_devfailed():
             tango_context.device.Configure(sdp_config)
 
         # assert:
-    assert const.ERR_CONFIGURE in tango_context.device.activityMessage
+        assert const.ERR_CONFIGURE in tango_context.device.activityMessage
 
 
 def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
