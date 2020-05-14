@@ -547,7 +547,7 @@ def test_dish_leaf_node_dish_mode_is_unknown():
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage in const.STR_DISH_UNKNOWN_MODE
+        assert const.STR_DISH_UNKNOWN_MODE in tango_context.device.activityMessage
 
 
 def test_dish_leaf_node_dish_mode_with_error_event():
@@ -573,8 +573,7 @@ def test_dish_leaf_node_dish_mode_with_error_event():
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage in const.ERR_ON_SUBS_DISH_MODE_ATTR
-
+        assert const.ERR_ON_SUBS_DISH_MODE_ATTR in tango_context.device.activityMessage
 
 def create_dummy_event_with_error(device_fqdn,attr_value,attribute):
     fake_event = Mock()
@@ -694,7 +693,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_with_error_event():
         event_subscription_map[dish_master_capturing_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage in const.ERR_SUBSR_CAPTURING_ATTR
+        assert const.ERR_SUBSR_CAPTURING_ATTR in tango_context.device.activityMessage
 
 
 def create_dummy_event(device_fqdn, attribute, attr_value):
@@ -755,7 +754,7 @@ def test_dish_leaf_node_when_achieved_pointing_callback_with_error_event():
         event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage in const.ERR_ON_SUBS_DISH_ACHVD_ATTR
+        assert const.ERR_ON_SUBS_DISH_ACHVD_ATTR in tango_context.device.activityMessage
 
 
 def test_dish_leaf_node_when_desired_pointing_callback_is_true():
@@ -808,7 +807,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_with_error_event():
         event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage in const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR
+        assert const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR in tango_context.device.activityMessage
 
 
 def test_configure_should_raise_exception_when_called_with_invalid_json():
