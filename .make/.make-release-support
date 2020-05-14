@@ -144,11 +144,8 @@ function getReleaseDescription(){
 
 function releaseTMC() {
   name=$(getRelease)
-  echo "$name"
   tag_name=$(getRelease)
-  echo "$tag_name"
   release_notes=$(getReleaseDescription)
-  echo "$release_notes"
   data1=('{ "name": "'$name'", "tag_name": "'$tag_name'", "description": "'"$release_notes"'"}')
   echo "$data1"
   result=$(curl --header 'Content-Type: application/json' \
@@ -160,9 +157,7 @@ function releaseTMC() {
 
 function deleteTMCRelease() {
   tag_name=$(getRelease)
-  echo "$tag_name"
   target="https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/"$tag_name
-  echo $target
   result=$(curl --request DELETE --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "$target")
   echo $result
 }
@@ -175,13 +170,12 @@ function deleteTag() {
 
 function releaseTMCIfNoError() {
   tag_name=$(getRelease)
+  echo "CHECKING IF THIS RELEASE ALREADY EXISTS. IF IT DOES NOT EXISTS, IT WILL GIVE KeyError: 'tag_name' (EXPECTED BEHAVIOUR)."
   releaseAlreadyExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
   python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
   if [ "$releaseAlreadyExists" == "$tag_name" ]
   then
     echo "THIS RELEASE IS ALREADY EXISTS. NEW RELEASE WITH SAME VERSION IS NOT POSSIBLE."
-    echo "The project ID is: "
-    echo "$CI_PROJECT_ID"
   else
     echo "RELEASING TMC-PROTOTYPE..."
     releaseTMC
