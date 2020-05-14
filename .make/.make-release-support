@@ -179,14 +179,16 @@ function releaseTMCIfNoError() {
   python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
   if [ "$releaseAlreadyExists" == "$tag_name" ]
   then
-    echo "This release is already exists. New release with same version is not possible."
+    echo "THIS RELEASE IS ALREADY EXISTS. NEW RELEASE WITH SAME VERSION IS NOT POSSIBLE."
+    echo "The project ID is: "
+    echo "$CI_PROJECT_ID"
   else
-    echo "Releasing tmc-prototype..."
+    echo "RELEASING TMC-PROTOTYPE..."
     releaseTMC
     checkReleaseExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
     python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
     if [ "$checkReleaseExists" != "$tag_name" ]; then
-        echo "Error while releasing tmc. Tag and image will be deleted."
+        echo "ERROR WHILE RELEASING TMC. TAG AND IMAGE WILL BE DELETED."
         deleteTag
         deleteImageFromNexus
     fi
