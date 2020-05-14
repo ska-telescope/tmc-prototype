@@ -2313,7 +2313,8 @@ def test_pointing_state_to_raise_devfailed_exception_for_dish_ln():
         tango_context.device.AssignResources(assign_input)
 
         attribute = 'dishPointingState'
-        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+        with pytest.raises(tango.DevFailed):
+            dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
                                                     PointingState.SLEW)
         # dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
