@@ -65,8 +65,6 @@ def test_event_to_raised_devfailed_exception():
         dummy_event1 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
                                                           csp_cbf_health_state_attribute)
         # assert:
-        dev_state = tango_context.device.State()
-        print ("dev_state:", dev_state)
         assert tango_context.device.State() == DevState.FAULT
 
 
