@@ -2257,7 +2257,7 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_sdp_subarr
         # assert:
         assert tango_context.device.State() == DevState.FAULT
 
-
+@pytest.mark.xfail
 def test_pointing_state_to_raise_devfailed_exception_for_dish_ln():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
