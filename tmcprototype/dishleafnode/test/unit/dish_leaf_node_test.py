@@ -667,7 +667,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_is_wrong():
         event_subscription_map[dish_master_capturing_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_UNKNOWN
+        assert const.STR_DISH_CAPTURING_UNKNOWN in tango_context.device.activityMessage
 
 
 def test_dish_leaf_node_when_dish_capturing_callback_with_error_event():
