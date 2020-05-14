@@ -2202,6 +2202,35 @@ def test_subarray_device_state_is_with_exception():
         assert tango_context.device.activityMessage == msg
 
 
+# Test case for event subscribtion
+def test_subarray_health_state_event_to_raise_devfailed_exception():
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
+    initial_dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn
+    }
+
+    event_subscription_map = {}
+
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_for_event_subscription
+
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock
+    }
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        health_state_value = HealthState.FAILED
+        dummy_event = create_dummy_event_healthstate_with_proxy(
+            csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, health_state_value,
+            csp_subarray1_ln_health_attribute)
+        # event_subscription_map[csp_subarray1_ln_health_attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.State() == DevState.FAULT
+
+
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
@@ -2256,6 +2285,11 @@ def raise_devfailed(cmd_name='Test'):
 
 
 def raise_devfailed_with_arg(cmd_name='Test', input='Test'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+
+def raise_devfailed_for_event_subscription(evt_name = 'Test',evt_type= 'Test',callaback ='Test', stateless=True):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
