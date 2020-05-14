@@ -154,14 +154,14 @@ function releaseTMC() {
   result=$(curl --header 'Content-Type: application/json' \
                 --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" \
                 --data "$data1" \
-                --request POST https://gitlab.com/api/v4/projects/10749136/releases)
+                --request POST https://gitlab.com/api/v4/projects/"$CI_PROJECT_ID"/releases)
   echo $result
 }
 
 function deleteTMCRelease() {
   tag_name=$(getRelease)
   echo "$tag_name"
-  target="https://gitlab.com/api/v4/projects/10749136/releases/"$tag_name
+  target="https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/"$tag_name
   echo $target
   result=$(curl --request DELETE --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "$target")
   echo $result
@@ -175,7 +175,7 @@ function deleteTag() {
 
 function releaseTMCIfNoError() {
   tag_name=$(getRelease)
-  releaseAlreadyExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
+  releaseAlreadyExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
   python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
   if [ "$releaseAlreadyExists" == "$tag_name" ]
   then
@@ -185,7 +185,7 @@ function releaseTMCIfNoError() {
   else
     echo "RELEASING TMC-PROTOTYPE..."
     releaseTMC
-    checkReleaseExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/10749136/releases/""$tag_name" | \
+    checkReleaseExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
     python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
     if [ "$checkReleaseExists" != "$tag_name" ]; then
         echo "ERROR WHILE RELEASING TMC. TAG AND IMAGE WILL BE DELETED."
