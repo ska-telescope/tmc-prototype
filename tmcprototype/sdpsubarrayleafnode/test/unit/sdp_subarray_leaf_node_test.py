@@ -22,7 +22,7 @@ from ska.base.control_model import LoggingLevel
 
 
 
-def test_assign_command_with_callback_method():
+def test_endscan_command_with_callback_method():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {    'SdpSubarrayFQDN': sdp_subarray1_fqdn}
@@ -31,20 +31,19 @@ def test_assign_command_with_callback_method():
     proxies_to_mock = {   sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
     event_subscription_map = {}
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        sdp_config = '{"sdp":{ "scan_type": "science_A" }}'
         # act
-        tango_context.device.Configure(sdp_config)
-        dummy_event = command_callback(const.CMD_CONFIGURE)
-        event_subscription_map[const.CMD_CONFIGURE](dummy_event)
+        tango_context.device.EndScan()
+        dummy_event = command_callback(const.CMD_ENDSCAN)
+        event_subscription_map[const.CMD_ENDSCAN](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
 
-def test_assign_command_with_callback_method_with_event_error():
+def test_Endscan_command_with_callback_method_with_event_error():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
@@ -53,15 +52,14 @@ def test_assign_command_with_callback_method_with_event_error():
     proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
     event_subscription_map = {}
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        sdp_config = '{"sdp":{ "scan_type": "science_A" }}'
         # act
-        tango_context.device.Configure(sdp_config)
-        dummy_event = command_callback_with_event_error(const.CMD_CONFIGURE)
-        event_subscription_map[const.CMD_CONFIGURE](dummy_event)
+        tango_context.device.EndScan()
+        dummy_event = command_callback_with_event_error(const.CMD_ENDSCAN)
+        event_subscription_map[const.CMD_ENDSCAN](dummy_event)
         # assert:
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
