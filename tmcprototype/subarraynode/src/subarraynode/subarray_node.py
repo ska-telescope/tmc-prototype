@@ -141,7 +141,7 @@ class SubarrayNode(SKASubarray):
             self._health_state = SubarrayHealthState.calculate_health_state(
                 self.subarray_ln_health_state_map.values())
         else:
-            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + device_name + str(event)
+            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
             self.logger.debug(log_message)
             self._read_activity_message = log_message
 
@@ -236,6 +236,7 @@ class SubarrayNode(SKASubarray):
         """
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
+        print ("self.dishPointingStateMap:", self.dishPointingStateMap)
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
@@ -371,8 +372,8 @@ class SubarrayNode(SKASubarray):
                 self.set_status(const.STR_ASSIGN_RES_SUCCESS)
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
-                [exception_message, excpt_count] = self._handle_devfailed_exception(dev_failed,
-                                                    exception_message, excpt_count, const.ERR_ADDING_LEAFNODE)
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                    exception_message, exception_count, const.ERR_ADDING_LEAFNODE)
                 allocation_failure.append(str_leafId)
                 # Exception Logic to remove Id from subarray group
                 group_dishes = self._dish_leaf_node_group.get_device_list()
