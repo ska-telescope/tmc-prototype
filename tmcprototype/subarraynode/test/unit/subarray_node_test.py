@@ -201,6 +201,7 @@ class TestElementDeviceData:
         expected_msg = "Dish configuration must be given. Aborting Dish configuration."
         assert exception.value.args[0] == expected_msg
 
+
 # Test cases for Attributes
 def test_status():
     """Test for Status"""
@@ -463,8 +464,7 @@ def test_assign_resource_should_raise_devfailed_exception():
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(json.dumps(assign_input))
-
-
+        # assert
         assert tango_context.device.State() == DevState.OFF
 
 
@@ -799,6 +799,11 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+
+        attribute = 'PointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.TRACK)
+        dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         time.sleep(5)
         scan_input = '{"id": 1}'
 
@@ -870,6 +875,10 @@ def test_start_scan_should_should_raise_devfailed_exception():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+        attribute = 'PointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.TRACK)
+        dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         time.sleep(5)
         scan_input = '{"id": 1}'
         with pytest.raises(tango.DevFailed):
@@ -1007,7 +1016,10 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.SCANNING)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-
+        attribute = 'PointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.TRACK)
+        dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         time.sleep(5)
         tango_context.device.EndScan()
 
@@ -1076,7 +1088,10 @@ def test_end_scan_should_raise_devfailed_exception():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.SCANNING)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-
+        attribute = 'PointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.TRACK)
+        dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         time.sleep(5)
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndScan()
@@ -1155,7 +1170,10 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
                                                    attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         time.sleep(5)
-
+        attribute = 'PointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.TRACK)
+        dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         tango_context.device.EndSB()
         # assert:
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ENDSB)
@@ -1227,6 +1245,10 @@ def test_end_sb_should_raise_devfailed_exception():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+        attribute = 'PointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.TRACK)
+        dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         time.sleep(5)
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndSB()
