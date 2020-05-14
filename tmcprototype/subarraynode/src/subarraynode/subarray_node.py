@@ -376,7 +376,8 @@ class SubarrayNode(SKASubarray):
                                                     exception_message, exception_count, const.ERR_ADDING_LEAFNODE)
                 allocation_failure.append(str_leafId)
                 # Exception Logic to remove Id from subarray group
-                group_dishes = self._dish_leaf_node_group.get_device_list()
+                group_dishes = self._dish_leaf_node_group.get_device_list(True)
+                print ("group_dishes :", group_dishes)
                 if group_dishes.contains(self.DishLeafNodePrefix +  str_leafId):
                     self._dish_leaf_node_group.remove(self.DishLeafNodePrefix + str_leafId)
                 # unsubscribe event
