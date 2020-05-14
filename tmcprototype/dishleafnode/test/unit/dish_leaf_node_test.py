@@ -6,7 +6,7 @@ import sys
 import json
 import threading
 import mock
-from mock import Mock
+from mock import Mock, MagicMock
 import tango
 import pytest
 
@@ -856,34 +856,96 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
         # assert
         assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
 
-'''
+
 def test_scan_command_with_callback_method():
     # arrange:
-    dish_master1_fqdn = 'mid_csp/elt/subarray_01'
-    dut_properties = {   'CspSubarrayFQDN': csp_subarray1_fqdn}
-    csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
-    proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
     event_subscription_map = {}
 
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
         lambda command_name, argument, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
-    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
 
-        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
-        assign_resources_input = []
-        assign_resources_input.append(assign_input)
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        scan_input = "0"
         device_proxy = tango_context.device
+
         # act
-        device_proxy.AssignResources(assign_resources_input)
-        dummy_event = command_callback(const.CMD_ADD_RECEPTORS)
-        event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
+        device_proxy.Scan(scan_input)
+        dummy_event = command_callback(const.CMD_DISH_SCAN)
+        event_subscription_map[const.CMD_DISH_SCAN](dummy_event)
+
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
 
+def test_scan_command_with_callback_method_with_event_error():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        scan_input = "0"
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.Scan(scan_input)
+        dummy_event = command_callback_with_event_error(const.CMD_DISH_SCAN)
+        event_subscription_map[const.CMD_DISH_SCAN](dummy_event)
+
+        # assert:
+        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+
+
+def test_assign_command_with_callback_method_with_command_error():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        scan_input = "0"
+        device_proxy = tango_context.device
+
+        # act
+        with pytest.raises(Exception):
+            device_proxy.Scan(scan_input)
+            dummy_event = command_callback_with_command_exception(const.CMD_DISH_SCAN)
+            event_subscription_map[const.CMD_DISH_SCAN](dummy_event)
+
+        # assert:
+        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
 
 def command_callback(command_name):
@@ -904,7 +966,7 @@ def command_callback_with_event_error(command_name):
 
 def command_callback_with_command_exception():
     return Exception("Exception in callback")
-'''
+
 
 def any_method(with_name=None):
     class AnyMethod():
