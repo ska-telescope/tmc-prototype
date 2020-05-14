@@ -938,7 +938,6 @@ class SubarrayNode(SKASubarray):
         # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
         # It will be moved to that command.
         self._sb_id = ""
-        #self.set_state(DevState.OFF)
         self._obs_state = ObsState.IDLE
 
         argout = self._dish_leaf_node_group.get_device_list(True)
