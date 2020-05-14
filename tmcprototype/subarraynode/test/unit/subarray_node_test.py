@@ -69,9 +69,9 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
                            proxies_to_mock=proxies_to_mock) as tango_context:
         assign_input = {"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"
                         ,"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
-                        "ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"
+                        "ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":[{"freq_min":0.35e9,"freq_max"
                         :1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",
-                        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":
+                        "coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":
                         [{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],
                         "processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",
                         "id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"
@@ -102,9 +102,9 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_di
     with fake_tango_system(SubarrayNode) as tango_context:
         assign_input = {"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"
                         ,"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
-                        "ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"
+                        "ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":[{"freq_min":0.35e9,"freq_max"
                         :1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",
-                        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":
+                        "coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":
                         [{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],
                         "processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",
                         "id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"
@@ -167,9 +167,9 @@ def test_release_resource_command_subarray():
         tango_context.device.On()
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                         ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"' \
+                        '"ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
                         ':1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":' \
+                        '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":' \
                         '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
                         '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
                         '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"' \
@@ -235,9 +235,9 @@ def test_configure_command_subarray():
         tango_context.device.On()
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                         ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"' \
+                        '"ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
                         ':1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":' \
+                        '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":' \
                         '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
                         '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
                         '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"' \
@@ -249,8 +249,7 @@ def test_configure_command_subarray():
                         '["calibration"]}]}]}}'
         tango_context.device.AssignResources(assign_input)
 
-        tango_context.device.Configure('{"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946",'
-                                       '"dec":"+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":'
+        tango_context.device.Configure('{"pointing":{"target":{"system":"ICRS","name":""Polaris Australis","RA":"21:08:47.92","dec":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"},"csp":'
                                        '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":'
                                        '1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
                                        '"corrBandwidth":0}]},"sdp":{"scan_type":"science_A"},'
@@ -264,8 +263,7 @@ def test_configure_command_subarray():
                           '"functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}],' \
                           ' "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
                           '"visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", ' \
-                          '"pointing": {"target": {"system": "ICRS", "name": "Polaris", "RA": "02:31:49.0946", ' \
-                          '"dec": "+89:15:50.7923"}}, "scanID": "1"}'
+                          '"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis","RA":"21:08:47.92","dec":"-88:5.7:22.9"}}, "scanID": "1"}'
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_config)
 
 
@@ -313,9 +311,9 @@ def test_configure_command_subarray_with_invalid_key():
         tango_context.device.On()
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                       '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"' \
+                       '"ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
                        ':1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",' \
-                       '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":' \
+                       '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":' \
                        '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
                        '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
                        '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"' \
@@ -327,8 +325,7 @@ def test_configure_command_subarray_with_invalid_key():
                        '["calibration"]}]}]}}'
         tango_context.device.AssignResources(assign_input)
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure('{"pointing12345":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946",'
-                                       '"dec":"+89:15:50.7923"}},"dish":{"receiverBand":"1"},"csp":'
+            tango_context.device.Configure('{"pointing12345":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"},"csp":'
                                        '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":'
                                        '1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
                                        '"corrBandwidth":0}]},"sdp":{"scan_type":"science_A"},'
@@ -375,9 +372,9 @@ def test_configure_command_subarray_with_invalid_configure_input():
         tango_context.device.On()
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                       '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"' \
+                       '"ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
                        ':1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",' \
-                       '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":' \
+                       '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":' \
                        '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
                        '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
                        '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"' \

@@ -53,8 +53,8 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        dish_config = {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",
-                                             "dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
+        dish_config = {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92",
+                                             "dec":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"}}
         # act:
         tango_context.device.Configure(json.dumps(dish_config))
 
@@ -65,8 +65,8 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
         receiver_band = int(jsonArgument["dish"]["receiverBand"])
 
         arg_list = {"pointing": {
-            "AZ": 0.3049571750805346,
-            "EL": 19.113236909834765
+            "AZ": 181.6281105048956,
+            "EL": 27.336666294459825
 
         },
             "dish": {
@@ -153,8 +153,8 @@ def test_track_should_command_dish_to_start_tracking():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        input_string = {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91",
-                                              "dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}
+        input_string = {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92",
+                                              "dec":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"}}
 
         # act:
         tango_context.device.Track(json.dumps(input_string))
@@ -624,7 +624,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(DishLeafNode) as tango_context:
         input_string = []
         input_string.append(
-            '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},\
+            '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","":"-88:5.7:22.9"}},\
             "dish":{"receiverBand":"1"}}')
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
@@ -703,7 +703,7 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
         input_string =\
-            '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},' \
+            '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","":"21:08:47.92","dec":"-88:5.7:22.9"}},' \
             '"dish":{"receiverBand":"1"}}'
 
         with pytest.raises(tango.DevFailed):

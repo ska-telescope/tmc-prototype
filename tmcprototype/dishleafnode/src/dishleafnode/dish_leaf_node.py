@@ -239,7 +239,8 @@ class DishLeafNode(SKABaseDevice):
 
         """
         try:
-            # Setting Observer Position as Pune
+            # Setting Observer Position
+            print("------------------ IN TRACK COMMAND ----------------- 5")
             dish_antenna = katpoint.Antenna(name= self.dish_name ,
                                             latitude=self.observer_location_lat,
                                             longitude=self.observer_location_long,
@@ -325,8 +326,10 @@ class DishLeafNode(SKABaseDevice):
         """
 
         try:
+            print("------------------ IN TRACK COMMAND ----------------- 3")
             while self.event_track_time.is_set() is False:
                 # timestamp_value = Current system time in UTC
+                print("------------------ IN TRACK COMMAND ----------------- 4")
                 timestamp_value = str(datetime.datetime.utcnow())
                 katpoint_arg = []
                 katpoint_arg.insert(0, argin)
@@ -334,8 +337,14 @@ class DishLeafNode(SKABaseDevice):
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
                 if self.RaDec_AzEl_Conversion is True:
+                    print("------------------ IN TRACK COMMAND if 1 ----------------- ")
+                    print("self.RaDec_AzEl_Conversion: ", self.RaDec_AzEl_Conversion)
+                    print("self.el: ", self.el)
                     if self.el >= 17.5 and self.el <= 90:
+                        print("------------------ IN TRACK COMMAND if 2 ----------------- ")
                         if self.az < 0:
+                            print("------------------ IN TRACK COMMAND if 3 ----------------- ")
+                            print("self.az: ", self.az)
                             self.az = 360 - abs(self.az)
 
                         roundoff_az_el = [round(self.az, 12), round(self.el, 12)]
@@ -344,6 +353,7 @@ class DishLeafNode(SKABaseDevice):
                         # assign calculated AzEl to desiredPointing attribute of Dishmaster
                         self._dish_proxy.desiredPointing = spectrum
                         # Invoke Track command of Dish Master
+                        print("--------------- Command to DishMaster ----------------")
                         self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.commandCallback)
                     else:
                         self.el_limit = True
@@ -929,6 +939,7 @@ class DishLeafNode(SKABaseDevice):
         :return: None
 
         """
+        print("------------------ IN TRACK COMMAND ----------------- 1")
         exception_count = 0
         exception_message = []
         try:
@@ -942,6 +953,7 @@ class DishLeafNode(SKABaseDevice):
             # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, const.THREAD_TRACK)
             # self.tracking_time_thread1.start()
             # Pass string argument in track_thread in brackets
+            print("------------------ IN TRACK COMMAND ----------------- 2")
             self.track_thread1 = threading.Thread(None, self.track_thread, const.THREAD_TRACK,
                                                   args=(radec_value,))
             self.track_thread1.start()
@@ -984,6 +996,8 @@ class DishLeafNode(SKABaseDevice):
         exception_message = []
         try:
             self.event_track_time.set()
+            print("self.az in StopTrack: ", self.az)
+            print("self.el in StopTrack: ", self.el)
             self._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.commandCallback)
 
         except DevFailed as dev_failed:

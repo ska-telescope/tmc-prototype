@@ -1282,6 +1282,7 @@ class SubarrayNode(SKASubarray):
 
         try:
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
+            self.logger.debug("------------------- TRACK DISH -------------------")
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
         except DevFailed as df:
             self._read_activity_message = df[0].desc
