@@ -103,7 +103,6 @@ def test_assign_command_with_callback_method_with_command_error():
         assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
 def command_callback(command_name):
-    print ("in command callback")
     fake_event = MagicMock()
     fake_event.err = False
     fake_event.errors = 'Event error'
@@ -112,7 +111,6 @@ def command_callback(command_name):
 
 
 def command_callback_with_event_error(command_name):
-    print ("in command callback")
     fake_event = MagicMock()
     fake_event.err = True
     fake_event.errors = 'Event error'

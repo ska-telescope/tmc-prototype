@@ -153,6 +153,36 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
                                                                  any_method(with_name='commandCallback'))
 
 
+def raise_devfailed(cmd_name = 'Scan'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+def test_start_scan_should_raises_devfailed():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        scan_input = '{"id":1}'
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan(scan_input)
+
+        # assert:
+        assert const.ERR_SCAN in tango_context.device.activityMessage
+
+
 def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block_list():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -197,6 +227,52 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
                                                                   any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
+def raise_devfailed(cmd_name = 'AssignResources'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+def test_assign_resources_raise_devfailed():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
+                        '[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771",' \
+                        '"dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                        '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
+                        '{"id":"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699",' \
+                        '"dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                        '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
+                        '"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
+                        '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
+                        '"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
+                        '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},' \
+                        '"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
+                        '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
+                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",' \
+                        '"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004",' \
+                        '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
+                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
+                        '"type":["calibration"]}]}]}'
+        device_proxy = tango_context.device
+        # act:
+        with pytest.raises(tango.DevFailed):
+            device_proxy.AssignResources(assign_input)
+
+        # assert:
+        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
+
 
 @pytest.mark.xfail
 def test_assign_resources_invalid_json_value():
@@ -236,6 +312,34 @@ def test_release_resources_when_sdp_subarray_is_idle():
         assert_activity_message(device_proxy, const.STR_REL_RESOURCES)
 
 
+def raise_devfailed(cmd_name = 'ReleaseAllResources'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+def test_release_resources_raise_devfailed():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        with pytest.raises(tango.DevFailed):
+            device_proxy.ReleaseAllResources()
+
+        # assert:
+        assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
+
+
 def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -265,6 +369,36 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
                                                                      any_method(with_name='commandCallback'))
 
 
+def raise_devfailed(cmd_name = 'Configure'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+
+def test_configure_to_raise_devfailed():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        sdp_config = '{"sdp":{ "scan_type": "science_A" }}'
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure(sdp_config)
+
+        # assert:
+    assert const.ERR_CONFIGURE in tango_context.device.activityMessage
+
+
 def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -287,6 +421,34 @@ def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
                                                                      any_method(with_name='commandCallback'))
+
+def raise_devfailed(cmd_name = 'EndScan'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+
+def test_end_scan_should_command_raise_devfailed():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndScan()
+
+        # assert:
+        assert const.ERR_ENDSCAN_INVOKING_CMD in tango_context.device.activityMessage
 
 
 def test_end_sb_should_command_sdp_subarray_to_reset_when_it_is_ready():
@@ -311,6 +473,34 @@ def test_end_sb_should_command_sdp_subarray_to_reset_when_it_is_ready():
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESET,
                                                                      any_method(with_name='commandCallback'))
+
+def raise_devfailed(cmd_name = 'EndSB'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+
+def test_end_sb_should_command_raise_devfailed():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndSB()
+
+        # assert:
+        assert const.ERR_ENDSB_INVOKING_CMD in tango_context.device.activityMessage
 
 
 def assert_activity_message(device_proxy, expected_message):
