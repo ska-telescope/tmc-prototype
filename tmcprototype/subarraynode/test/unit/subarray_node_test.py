@@ -468,6 +468,58 @@ def test_assign_resource_should_raise_devfailed_exception():
         assert tango_context.device.State() == DevState.OFF
 
 
+def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devfailed_exception():
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+        'DishLeafNodePrefix' : dish_ln_prefix
+    }
+
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_ln_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
+        dish_ln_prefix + "0001": dish_ln_proxy_mock
+    }
+
+    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_with_arg
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        assign_input = {"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"
+                        ,"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
+                        "ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"
+                        :1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",
+                        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":
+                        [{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],
+                        "processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",
+                        "id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"
+                        ,"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},
+                        {"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"}
+                        ,"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"
+                        ]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":
+                        "0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
+                        ["calibration"]}]}]}}
+        tango_context.device.AssignResources(json.dumps(assign_input))
+
+        # assert
+        assert tango_context.device.State() == DevState.DISABLE
+
+
 def test_release_resource_command_subarray():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
