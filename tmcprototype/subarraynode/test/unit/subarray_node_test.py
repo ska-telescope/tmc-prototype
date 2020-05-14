@@ -514,6 +514,7 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
                         ]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":
                         "0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
                         ["calibration"]}]}]}}
+        tango_context.device.On()
         tango_context.device.AssignResources(json.dumps(assign_input))
 
         # assert
