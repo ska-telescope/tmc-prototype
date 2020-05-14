@@ -22,7 +22,7 @@ from ska.base.control_model import LoggingLevel
 
 
 
-def test_endscan_command_with_callback_method():
+def test_end_sb_command_with_callback_method():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {    'SdpSubarrayFQDN': sdp_subarray1_fqdn}
@@ -36,14 +36,14 @@ def test_endscan_command_with_callback_method():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act
-        tango_context.device.EndScan()
-        dummy_event = command_callback(const.CMD_ENDSCAN)
-        event_subscription_map[const.CMD_ENDSCAN](dummy_event)
+        tango_context.device.EndSB()
+        dummy_event = command_callback(const.CMD_RESET)
+        event_subscription_map[const.CMD_RESET](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
 
-def test_Endscan_command_with_callback_method_with_event_error():
+def test_end_sb_command_with_callback_method_with_event_error():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
@@ -57,9 +57,9 @@ def test_Endscan_command_with_callback_method_with_event_error():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act
-        tango_context.device.EndScan()
-        dummy_event = command_callback_with_event_error(const.CMD_ENDSCAN)
-        event_subscription_map[const.CMD_ENDSCAN](dummy_event)
+        tango_context.device.EndSB()
+        dummy_event = command_callback_with_event_error(const.CMD_RESET)
+        event_subscription_map[const.CMD_RESET](dummy_event)
         # assert:
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
