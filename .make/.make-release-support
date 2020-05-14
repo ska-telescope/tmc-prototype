@@ -104,10 +104,12 @@ function nextMajorLevel() {
 	echo $version
 }
 
+# Get tag description given in ..release file
 function getTagDescription(){
 	awk -F= '/^tag_description=/{print $2}' .release
 }
 
+# Create tag
 function createGitTag(){
 	tag=$(awk -F= '/^tag=/{print $2}' .release)
 	echo $tag
@@ -115,6 +117,7 @@ function createGitTag(){
 	git tag -a "$tag" -m "$description"
 }
 
+# Calculate sha. Sha is unique to the docker image.
 function getSha(){
   tag=$(awk -F= '/^tag=/{print $2}' .release)
   images="$(docker images --format {{.Repository}}:{{.Tag}}:{{.Digest}})"
@@ -122,11 +125,13 @@ function getSha(){
   echo $sha
 }
 
+# Delete docker image from nexus repo using sha
 function deleteImageFromNexus(){
   sha=$(getSha)
   result=$(curl -X "DELETE" -u ci-cd:ci-cd-pipeline-8237 https://nexus.engageska-portugal.pt/v2/tango-example/tmcprototype/manifests/"$sha" --verbose)
 }
 
+# Publish tag. (If there is error while publishing tag, docker image with same tag will be deleted.)
 function gitPush() {
   tag=$(awk -F= '/^tag=/{print $2}' .release)
   echo $tag
@@ -138,10 +143,12 @@ function gitPush() {
   fi
 }
 
+# Get release notes for tmc-release from .release file.
 function getReleaseDescription(){
 	awk -F= '/^release_notes=/{print $2}' .release
 }
 
+# Create GitLab release for tmc-prototype with version given in .release file
 function releaseTMC() {
   name=$(getRelease)
   tag_name=$(getRelease)
@@ -155,6 +162,7 @@ function releaseTMC() {
   echo $result
 }
 
+# Delete released tmc-prototype with version given in .release file
 function deleteTMCRelease() {
   tag_name=$(getRelease)
   target="https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/"$tag_name
@@ -168,6 +176,8 @@ function deleteTag() {
   git push --delete https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git "$tag"
 }
 
+# Create GitLab release tmc with version given in .release file.
+# If there is an error while creating GitLab release, published tag and docker (with same version number) image will be deleted.)
 function releaseTMCIfNoError() {
   tag_name=$(getRelease)
   echo "CHECKING IF THIS RELEASE ALREADY EXISTS. IF IT DOES NOT EXISTS, IT WILL GIVE KeyError: 'tag_name' (EXPECTED BEHAVIOUR)."
