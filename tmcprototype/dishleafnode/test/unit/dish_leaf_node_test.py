@@ -917,7 +917,7 @@ def test_scan_command_with_callback_method_with_event_error():
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
 
-def test_assign_command_with_callback_method_with_command_error():
+def test_scan_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
     dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
@@ -964,7 +964,7 @@ def command_callback_with_event_error(command_name):
     return fake_event
 
 
-def command_callback_with_command_exception():
+def command_callback_with_command_exception(command_name):
     return Exception("Exception in callback")
 
 
