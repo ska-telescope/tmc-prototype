@@ -207,8 +207,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     for proxy_mock in proxies_to_mock.values():
         proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
 
-
-def raise_devfailed(cmd_name = 'StowAntennas', cmd_input = 'test'):
+def raise_devfailed(cmd_name = 'any_command'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
@@ -469,10 +468,6 @@ def test_assign_resources():
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def raise_devfailed(cmd_name = 'AssignResources', cmd_input = 'test'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
-
 def test_assign_resources_raises_devfailed():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
@@ -592,11 +587,6 @@ def test_release_resources():
             subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
 
-def raise_devfailed(cmd_name = 'ReleaseResources'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
-
-
 def test_release_resources_raise_devfailed():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
@@ -666,12 +656,6 @@ def test_standby():
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
-
-
-
-def raise_devfailed(cmd_name = 'StandByTelescope'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 
 def test_standby_raised_devfailed():
@@ -761,10 +745,6 @@ def test_startup():
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
         assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
-
-def raise_devfailed(cmd_name = 'StartUpTelescope'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 
 def test_startup_raised_devfailed():

@@ -122,6 +122,11 @@ def command_callback_with_command_exception():
     return Exception("Exception in callback")
 
 
+def raise_devfailed(cmd_name = 'any_command'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+
 def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -146,10 +151,6 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, '0',
                                                              any_method(with_name='commandCallback'))
 
-
-def raise_devfailed(cmd_name = 'StartScan'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 def test_start_scan_should_command_csp_subarray_to_start_raises_devfailed():
     # arrange:
@@ -234,10 +235,6 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
 
-def raise_devfailed(cmd_name = 'AssignResources'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
-
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list_raise_devfail():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -297,11 +294,6 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources()
         assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
 
-def raise_devfailed(cmd_name='ReleaseResources'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
-
-
 def test_release_resource_should_command_csp_subarray_to_release_all_resources_raise_devfail():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -349,10 +341,6 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
                                                         any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
 
-
-def raise_devfailed(cmd_name = 'EndScan'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning_raise_devfailed():
     # arrange:
@@ -439,10 +427,6 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
                                     json.dumps(cspConfiguration), any_method(with_name='commandCallback'))
 
 
-def raise_devfailed(cmd_name = 'Configure'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
-
 def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
@@ -498,10 +482,6 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
                                                             any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
-
-def raise_devfailed(cmd_name = 'GoToIdle'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
     # arrange:

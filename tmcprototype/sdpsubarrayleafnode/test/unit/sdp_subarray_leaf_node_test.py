@@ -127,6 +127,11 @@ def command_callback_with_command_exception():
     return Exception("Exception in callback")
 
 
+def raise_devfailed(cmd_name = 'any_command'):
+    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+                                 "From function test devfailed", tango.ErrSeverity.ERR)
+
+
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -152,10 +157,6 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, scan_input,
                                                                  any_method(with_name='commandCallback'))
 
-
-def raise_devfailed(cmd_name = 'Scan'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 def test_start_scan_should_raises_devfailed():
     # arrange:
@@ -227,9 +228,6 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
                                                                   any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
-def raise_devfailed(cmd_name = 'AssignResources'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 def test_assign_resources_raise_devfailed():
     # arrange:
@@ -312,10 +310,6 @@ def test_release_resources_when_sdp_subarray_is_idle():
         assert_activity_message(device_proxy, const.STR_REL_RESOURCES)
 
 
-def raise_devfailed(cmd_name = 'ReleaseAllResources'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
-
 def test_release_resources_raise_devfailed():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -369,11 +363,6 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
                                                                      any_method(with_name='commandCallback'))
 
 
-def raise_devfailed(cmd_name = 'Configure'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
-
-
 def test_configure_to_raise_devfailed():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -422,10 +411,6 @@ def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
                                                                      any_method(with_name='commandCallback'))
 
-def raise_devfailed(cmd_name = 'EndScan'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
-
 
 def test_end_scan_should_command_raise_devfailed():
     # arrange:
@@ -473,10 +458,6 @@ def test_end_sb_should_command_sdp_subarray_to_reset_when_it_is_ready():
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESET,
                                                                      any_method(with_name='commandCallback'))
-
-def raise_devfailed(cmd_name = 'EndSB'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 
 def test_end_sb_should_command_raise_devfailed():
