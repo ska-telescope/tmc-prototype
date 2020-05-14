@@ -41,7 +41,7 @@ DOCKER_RUN_ARGS =
 # prevent collisions with jobs from the same project running at the same
 # time.
 #
-ifneq ($(CI_JbuildOB_ID),)
+ifneq ($(CI_JOB_ID),)
 NETWORK_MODE := tangonet-$(CI_JOB_ID)
 CONTAINER_NAME_PREFIX := $(PROJECT)-$(CI_JOB_ID)-
 else
