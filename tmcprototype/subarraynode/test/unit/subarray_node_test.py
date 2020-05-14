@@ -1119,7 +1119,6 @@ def test_end_scan_should_raise_devfailed_exception():
 
         # assert:
         assert tango_context.device.obsState == ObsState.SCANNING
-        assert const.ERR_END_SCAN_CMD_ON_GROUP in tango_context.device.activityMessage
 
 
 def test_endscan_command_subarray_with_duplicate_end_scan_command():
