@@ -56,6 +56,7 @@ STR_ENDSCAN_EXEC = "EndScan command execution"
 STR_ENDSB_EXEC = "EndSB command execution"
 STR_CMD_CALLBK = "SdpSubarrayLeafNode Command Callback"
 STR_COMMAND = "Command :-> "
+STR_INVOKE_SUCCESS = " invoked successfully."
 
 # #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_1"
