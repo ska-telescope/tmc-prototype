@@ -414,10 +414,10 @@ class DishLeafNode(SKABaseDevice):
 
         # Find latitude, longitude and altitude of Dish antenna
         # Convert enu to ecef coordinates for dish
-        dish_ecef_coordinates = katpoint.conversion.enu_to_ecef(ref_ant_lat_rad, ref_ant_long_rad, ref_ant_altitude,
+        dish_ecef_coordinates = katpoint.enu_to_ecef(ref_ant_lat_rad, ref_ant_long_rad, ref_ant_altitude,
                                                        ant_delay_model[0], ant_delay_model[1], ant_delay_model[2])
         # Convert ecef to lla coordinates for dish (in radians)
-        dish_lat_long_alt_rad = katpoint.conversion.ecef_to_lla(dish_ecef_coordinates[0], dish_ecef_coordinates[1],
+        dish_lat_long_alt_rad = katpoint.ecef_to_lla(dish_ecef_coordinates[0], dish_ecef_coordinates[1],
                                                        dish_ecef_coordinates[2])
         # Convert lla coordinates from rad to dms
         dish_lat_dms = self.rad_to_dms(dish_lat_long_alt_rad[0])
