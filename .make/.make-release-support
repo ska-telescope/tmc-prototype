@@ -128,7 +128,7 @@ function getSha(){
 # Delete docker image from nexus repo using sha
 function deleteImageFromNexus(){
   sha=$(getSha)
-  result=$(curl -X "DELETE" -u ci-cd:ci-cd-pipeline-8237 https://nexus.engageska-portugal.pt/v2/tango-example/tmcprototype/manifests/"$sha" --verbose)
+  result=$(curl -X "DELETE" -u $RAW_USER:$RAW_PASS https://nexus.engageska-portugal.pt/v2/tango-example/tmcprototype/manifests/"$sha" --verbose)
 }
 
 # Publish tag. (If there is error while publishing tag, docker image with same tag will be deleted.)
@@ -189,9 +189,8 @@ function releaseTMCIfNoError() {
   else
     echo "RELEASING TMC-PROTOTYPE..."
     echo "PIPELINE ID and PASSWORD:"
-    echo $RAW_USER
-    echo $RAW_PASS
     releaseTMC
+    deleteImageFromNexus      # Remove this after testing
     checkReleaseExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
     python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
     if [ "$checkReleaseExists" != "$tag_name" ]; then
