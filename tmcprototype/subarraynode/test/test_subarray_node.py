@@ -429,11 +429,12 @@ class TestSubarrayNode(object):
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
 
     def test_Duplicate_ReleaseAllResources(self, tango_context):
-        """Test for ReleaseAllResources"""
+        """Test for Duplicate ReleaseAllResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
-        tango_context.device.ReleaseAllResources()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseAllResources()
         assert const.RESOURCE_ALREADY_RELEASED in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
+        # PROTECTED REGION END #    //  SubarrayNode.test_Duplicate_ReleaseAllResources
 
     def test_ReleaseResources(self, tango_context):
         """Test for ReleaseResources"""
