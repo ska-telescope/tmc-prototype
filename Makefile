@@ -113,6 +113,7 @@ make = tar -c test-harness/ | \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "sudo chown -R tango:tango /build && \
+       sudo chmod 777 /build && \
 	   tar x --strip-components 1 --warning=all && \
 	   make TANGO_HOST=$(TANGO_HOST) $1"
 
