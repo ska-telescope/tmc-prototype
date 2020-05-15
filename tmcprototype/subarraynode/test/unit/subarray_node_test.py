@@ -892,6 +892,44 @@ def test_subarray_device_state_is_on_when_csp_and_sdp_subarray1_is_on_after_star
         # assert:
         assert tango_context.device.State() == DevState.ON
 
+def test_subarray_device_state_is_off_when_csp_and_sdp_subarray1_is_off_after_release_resources():
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+
+    initial_dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        # act:
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
+        dummy_event = create_dummy_event_state(sdp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
+        # assert:
+        assert tango_context.device.State() == DevState.OFF
 
 def test_status():
     """Test for Status"""
