@@ -1,15 +1,3 @@
-# release=0.1.11
-# tag=tmcprototype-0.1.11
-
-# -*- coding: utf-8 -*-
-#
-# This file is part of the TMC prototype
-#
-#
-#
-# Distributed under the terms of the BSD-3-Clause license.
-# See LICENSE.txt for more info.
-
 """Release information for Python Package"""
 
 name = """tmcprototype"""
@@ -24,4 +12,7 @@ copyright = """"""
 
 release=0.1.11
 tag=0.1.11
-description= Updated SDP image to 0.8.0-hack-1, Updated Central Node to update the output argument for assignResource command, Removed bug of initilaizing heatlhState to UNKNOWN in Subarray Node
+tag_description=Updated SDP image to 0.8.0-hack-1, Updated Central Node to update the output argument for assignResource command, Removed bug of initilaizing heatlhState to UNKNOWN in Subarray Node
+release_notes=This release Contains: <br /><ul> <li>First point</li> <li>Second point</li><li>Third point</li></ul>
+gitlab_username=JayantKumbhar
+private_token=LmMeweawasu3MB-igzbx
