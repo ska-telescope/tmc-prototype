@@ -249,7 +249,8 @@ def test_configure_command_subarray():
                         '["calibration"]}]}]}}'
         tango_context.device.AssignResources(assign_input)
 
-        tango_context.device.Configure('{"pointing":{"target":{"system":"ICRS","name":""Polaris Australis","RA":"21:08:47.92","dec":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"},"csp":'
+        tango_context.device.Configure('{"pointing":{"target":{"system":"ICRS","name":""Polaris Australis",'
+                                       '"RA":"21:08:47.92","dec":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"},"csp":'
                                        '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":'
                                        '1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
                                        '"corrBandwidth":0}]},"sdp":{"scan_type":"science_A"},'
