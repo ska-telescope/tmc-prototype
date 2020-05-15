@@ -259,11 +259,12 @@ def test_configure_command_subarray():
         sdp_config = '{"sdp": {"scan_type": "science_A"}}'
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, sdp_config)
 
-        csp_config = '{"id": "sbi-mvp01-20200325-00001-science_A", "frequencyBand": "1", "fsp": [{"fspID": 1, ' \
-                          '"functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}],' \
-                          ' "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", ' \
-                          '"visDestinationAddressSubscriptionPoint": "mid_sdp/elt/subarray_1/receiveAddresses", ' \
-                          '"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis","RA":"21:08:47.92","dec":"-88:5.7:22.9"}}, "scanID": "1"}'
+        csp_config = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,' \
+                     '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}],' \
+                     '"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel",' \
+                     '"visDestinationAddressSubscriptionPoint":"mid_sdp/elt/subarray_1/receiveAddresses",' \
+                     '"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92",' \
+                     '"dec":"-88:5.7:22.9"}},"scanID":"1"}'
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_config)
 
 
