@@ -156,7 +156,6 @@ function releaseTMC() {
   tag_name=$(getRelease)
   release_notes=$(getReleaseDescription)
   private_token=$(awk -F= '/^private_token=/{print $2}' .release)
-  echo $private_token
   data1=('{ "name": "'$name'", "tag_name": "'$tag_name'", "description": "'"$release_notes"'"}')
   result=$(curl --header 'Content-Type: application/json' \
                 --header  "PRIVATE-TOKEN: "$private_token \
@@ -176,7 +175,6 @@ function deleteTMCRelease() {
 
 function deleteTag() {
   tag=$(awk -F= '/^tag=/{print $2}' .release)
-  echo $tag
   git_username=$(awk -F= '/^gitlab_username=/{print $2}' .release)
   private_token=$(awk -F= '/^private_token=/{print $2}' .release)
   git push --delete https://"$git_username":"$private_token"@gitlab.com/ska-telescope/tmc-prototype.git "$tag"
@@ -195,7 +193,6 @@ function releaseTMCIfNoError() {
     echo "THIS RELEASE IS ALREADY EXISTS. NEW RELEASE WITH SAME VERSION IS NOT POSSIBLE."
   else
     echo "RELEASING TMC-PROTOTYPE..."
-    echo "PIPELINE ID and PASSWORD:"
     releaseTMC
     checkReleaseExists=$(curl --header "PRIVATE-TOKEN: "$private_token "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
     python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
