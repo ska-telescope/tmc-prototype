@@ -179,20 +179,13 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated device state of Subarray.
         """
-        if self.get_state() is not DevState.ON:
-            if self._csp_sa_device_state==DevState.ON and self._sdp_sa_device_state == DevState.ON :
-                self.set_state(DevState.ON)
-            else:
-                self.logger.info("SubarrayNode is not in ON state because CSPSubarray state is {} and SDPSubarray "
-                                 "state is {}".format(self._csp_sa_device_state, self._sdp_sa_device_state))
-        elif self.get_state() is not DevState.OFF:
-            if self._csp_sa_device_state==DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
-                self.set_state(DevState.OFF)
-            else:
-                self.logger.info("SubarrayNode is not in OFF state because CSPSubarray state is {} and SDPSubarray "
-                                 "state is {}".format(self._csp_sa_device_state, self._sdp_sa_device_state))
+        if self._csp_sa_device_state == DevState.ON and self._sdp_sa_device_state == DevState.ON:
+            self.set_state(DevState.ON)
+        elif self._csp_sa_device_state == DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
+            self.set_state(DevState.OFF)
         else:
-            self.logger.info("SubarrayNode is already in state ", self.get_state())
+            self.logger.info("SubarrayNode is in the state: {} CSPSubarray is in the state: {} and SDPSubarray "
+                             "is in the state: {}".format(self.get_state(), self._csp_sa_device_state, self._sdp_sa_device_state))
 
     def obsStateCallback(self, evt):
         """
@@ -1415,7 +1408,6 @@ class SubarrayNode(SKASubarray):
         """
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
         self._admin_mode = AdminMode.ONLINE
-        self.set_state(DevState.OFF)       # Set state = OFF
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
     @command(

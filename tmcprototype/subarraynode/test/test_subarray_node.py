@@ -310,7 +310,6 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
         tango_context.device.On()
         assert tango_context.device.adminMode == AdminMode.ONLINE
-        assert tango_context.device.State() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 
     def test_AssignResources(self, tango_context):
@@ -445,6 +444,8 @@ class TestSubarrayNode(object):
         """Test for StandbyTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
         tango_context.device.Standby()
+        while tango_context.device.state != DevState.DISABLE:
+            pass
         assert tango_context.device.adminMode == AdminMode.OFFLINE
         assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  SubarrayNode.Standby
