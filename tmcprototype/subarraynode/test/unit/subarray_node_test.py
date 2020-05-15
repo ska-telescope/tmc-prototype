@@ -870,7 +870,8 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
                                                     PointingState.TRACK)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.READY:
+            pass
         scan_input = '{"id": 1}'
 
         tango_context.device.Scan(scan_input)
@@ -958,7 +959,8 @@ def test_start_scan_should_should_raise_devfailed_exception():
         dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
                                                     PointingState.TRACK)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.READY:
+            pass
         scan_input = '{"id": 1}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(scan_input)
@@ -1022,7 +1024,8 @@ def test_start_scan_should_should_raise_assertion_exception():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.SCANNING)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.SCANNING:
+            pass
         scan_input = '{"id": 1}'
         with pytest.raises(tango.DevFailed) as assert_error:
             tango_context.device.Scan(scan_input)
@@ -1107,7 +1110,8 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
         dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
                                                     PointingState.TRACK)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.SCANNING:
+            pass
         tango_context.device.EndScan()
 
         # assert:
@@ -1166,7 +1170,8 @@ def test_end_scan_should_raise_devfailed_exception():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.SCANNING)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.SCANNING:
+            pass
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndScan()
 
@@ -1237,7 +1242,8 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.READY:
+            pass
         tango_context.device.EndSB()
         # assert:
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ENDSB)
@@ -1307,7 +1313,8 @@ def test_end_sb_should_raise_devfailed_exception():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.READY:
+            pass
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndSB()
         # assert:
@@ -1460,7 +1467,8 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
 
         # assert:
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.READY:
+            pass
         assert tango_context.device.obsState == ObsState.READY
 
 
@@ -1545,7 +1553,8 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
                                                     PointingState.TRACK)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.SCANNING:
+            pass
         assert tango_context.device.obsState == ObsState.SCANNING
 
 
@@ -1602,7 +1611,8 @@ def test_obs_state_is_configuring_when_other_leaf_nodes_are_configuring_after_st
                                                    attribute, ObsState.CONFIGURING)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         # assert:
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.CONFIGURING:
+            pass
         assert tango_context.device.obsState == ObsState.CONFIGURING
 
 
@@ -1761,7 +1771,8 @@ def test_pointing_state_is_slew_when_dish_master_in_slew():
                                                     PointingState.SLEW)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.CONFIGURING:
+            pass
         assert tango_context.device.obsState == ObsState.CONFIGURING
 
 
@@ -1826,7 +1837,8 @@ def test_pointing_state_is_scan_when_dish_master_in_scan():
                                                     PointingState.SCAN)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
-        time.sleep(5)
+        while tango_context.device.obsState == ObsState.IDLE:
+            pass
         assert tango_context.device.obsState == ObsState.IDLE
 
 
@@ -1891,7 +1903,6 @@ def test_pointing_state_is_ready_when_dish_master_in_ready():
                                                     PointingState.READY)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
-        time.sleep(5)
         assert tango_context.device.obsState == ObsState.IDLE
 
 
@@ -1956,7 +1967,6 @@ def test_pointing_state_is_with_error_event():
                                                     PointingState.SCAN)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
-        time.sleep(5)
         assert tango_context.device.activityMessage == const.ERR_SUBSR_DSH_POINTING_STATE + str(dummy_event_dish.errors)
 
 
