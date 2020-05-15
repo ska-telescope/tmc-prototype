@@ -128,7 +128,7 @@ test: build up ## test the application
 	  exit $$status
 
 unit-test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-unit-test: build up ## test the application
+unit-test: ##build up ## test the application
 	$(INIT_CACHE)
 	docker run -i --rm --network=$(NETWORK_MODE) \
 	   -e TANGO_HOST=$(TANGO_HOST) \
