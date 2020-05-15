@@ -2377,7 +2377,7 @@ def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
 def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event = MagicMock()
     fake_event.err = True
-    fake_event.errors = 'Wrong Value'
+    fake_event.errors = 'Invalid Value'
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = attr_value
     fake_event.device = proxy_mock

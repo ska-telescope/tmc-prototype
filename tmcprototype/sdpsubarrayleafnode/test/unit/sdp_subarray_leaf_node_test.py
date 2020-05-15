@@ -21,7 +21,6 @@ from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, C
 from ska.base.control_model import LoggingLevel
 
 
-
 def test_end_sb_command_with_callback_method():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -95,9 +94,7 @@ def test_assign_command_with_callback_method_with_command_error():
                        '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
                        '"type":["calibration"]}]}]}'
-
         # act:
-
         with pytest.raises(Exception):
             tango_context.device.AssignResources(assign_input)
             dummy_event = command_callback_with_command_exception()
@@ -105,8 +102,8 @@ def test_assign_command_with_callback_method_with_command_error():
         # assert:
         assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
+
 def command_callback(command_name):
-    print ("in command callback")
     fake_event = MagicMock()
     fake_event.err = False
     fake_event.errors = 'Event error'
@@ -115,7 +112,6 @@ def command_callback(command_name):
 
 
 def command_callback_with_event_error(command_name):
-    print ("in command callback")
     fake_event = MagicMock()
     fake_event.err = True
     fake_event.errors = 'Event error'
@@ -270,19 +266,6 @@ def test_assign_resources_raise_devfailed():
 
         # assert:
         assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
-
-
-@pytest.mark.xfail
-def test_assign_resources_invalid_json_value():
-    # act & assert:
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.On()
-        test_input = '{"invalid_json"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
-
-        # assert:
-        assert tango_context.device.obsState == ObsState.IDLE
 
 
 def test_release_resources_when_sdp_subarray_is_idle():
@@ -577,6 +560,7 @@ def test_write_activity_message():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         tango_context.device.activityMessage = "test"
         assert tango_context.device.activityMessage == "test"
+
 
 def test_active_processing_blocks():
     # act & assert:

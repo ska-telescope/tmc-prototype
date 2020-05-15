@@ -102,6 +102,7 @@ def test_assign_command_with_callback_method_with_command_error():
         # assert:
         assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
+
 def command_callback(command_name):
     fake_event = MagicMock()
     fake_event.err = False
@@ -427,7 +428,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
                                     json.dumps(cspConfiguration), any_method(with_name='commandCallback'))
 
 
-def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle():
+def test_configure_to_raise_devfailed_exception():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
         'CspSubarrayFQDN': csp_subarray1_fqdn
@@ -440,7 +441,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
 
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
@@ -483,7 +484,7 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
         assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
 
-def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
+def test_goto_idle_should_raise_devfailed_exception():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
@@ -496,7 +497,7 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
@@ -569,7 +570,7 @@ def test_configure_should_raise_exception_when_called_invalid_json():
         assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
 
 
-def test_state():   #from tango import DevState?
+def test_state():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.State() == DevState.ALARM
@@ -657,7 +658,7 @@ def test_logging_level():
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
-def test_read_versionInfo():
+def test_read_version_info():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.versionInfo == " "
@@ -672,6 +673,7 @@ def test_logging_targets():
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute
+
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},

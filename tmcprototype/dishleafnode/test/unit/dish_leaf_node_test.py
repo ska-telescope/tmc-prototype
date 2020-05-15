@@ -42,7 +42,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
                                                                     any_method(with_name='commandCallback'))
 
 
-#TO DO: actual AZ and EL values need to be generated.
+# TODO: actual AZ and EL values need to be generated.
 @pytest.mark.xfail
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
     # arrange:
@@ -574,6 +574,7 @@ def test_dish_leaf_node_dish_mode_with_error_event():
 
         # assert:
         assert const.ERR_ON_SUBS_DISH_MODE_ATTR in tango_context.device.activityMessage
+
 
 def create_dummy_event_with_error(device_fqdn,attr_value,attribute):
     fake_event = Mock()

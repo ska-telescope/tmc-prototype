@@ -181,7 +181,6 @@ def test_standby_should_command_with_callback_method_with_command_error():
 
 
 def command_callback(command_name):
-    print ("in command callback")
     fake_event = MagicMock()
     fake_event.err = False
     fake_event.errors = 'Event error'
@@ -190,7 +189,6 @@ def command_callback(command_name):
 
 
 def command_callback_with_event_error(command_name):
-    print ("in command callback")
     fake_event = MagicMock()
     fake_event.err = True
     fake_event.errors = 'Event error'
@@ -200,7 +198,6 @@ def command_callback_with_event_error(command_name):
 
 def command_callback_with_command_exception():
     return Exception("Exception in callback")
-
 
 
 def test_attribute_csp_cbf_health_state_of_csp_master_is_ok():
@@ -778,6 +775,7 @@ def any_method(with_name=None):
             return other.__func__.__name__ == with_name if with_name else True
 
     return AnyMethod()
+
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},

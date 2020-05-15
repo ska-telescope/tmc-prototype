@@ -166,7 +166,6 @@ def test_standby_should_command_with_callback_method_with_command_error():
 
 
 def command_callback(command_name):
-    print ("in command callback")
     fake_event = MagicMock()
     fake_event.err = False
     fake_event.errors = 'Event error'
@@ -175,7 +174,6 @@ def command_callback(command_name):
 
 
 def command_callback_with_event_error(command_name):
-    print ("in command callback")
     fake_event = MagicMock()
     fake_event.err = True
     fake_event.errors = 'Event error'
