@@ -134,8 +134,10 @@ function deleteImageFromNexus(){
 # Publish tag. (If there is error while publishing tag, docker image with same tag will be deleted.)
 function gitPush() {
   tag=$(awk -F= '/^tag=/{print $2}' .release)
+  git_username=$(awk -F= '/^gitlab_username=/{print $2}' .release)
+  private_token=$(awk -F= '/^private_token=/{print $2}' .release)
   echo $tag
-  $(git push https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git "$tag")
+  $(git push https://"$git_username":"$private_token"@gitlab.com/ska-telescope/tmc-prototype.git "$tag")
   result=$(echo $?)
   if [ $result -ne 0 ];
   then
@@ -175,7 +177,9 @@ function deleteTMCRelease() {
 function deleteTag() {
   tag=$(awk -F= '/^tag=/{print $2}' .release)
   echo $tag
-  git push --delete https://adityadangeska:qeFgyixVQE69zoYTnHHz@gitlab.com/ska-telescope/tmc-prototype.git "$tag"
+  git_username=$(awk -F= '/^gitlab_username=/{print $2}' .release)
+  private_token=$(awk -F= '/^private_token=/{print $2}' .release)
+  git push --delete https://"$git_username":"$private_token"@gitlab.com/ska-telescope/tmc-prototype.git "$tag"
 }
 
 # Create GitLab release tmc with version given in .release file.
