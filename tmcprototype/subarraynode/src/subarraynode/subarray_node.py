@@ -628,34 +628,14 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_SA_SCANNING)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
             else:
-                print("obs state of subarray is :", self._obs_state)
-                print("device state of Subarray is:::", self.get_state())
+                log_msg="obs state of subarray is :", self._obs_state
+                self.logger.info(log_msg)
+                log_msg="device state of Subarray is:::", self.get_state()
+                self.logger.info(log_msg)
 
-            self.end_scan_thread = threading.Thread(None, self.waitForEndScan, "SubarrayNode")
-            self.end_scan_thread.start()
-            # TODO: FOR FUTURE IMPLEMENTATION
-            # with excpt_count is 0 and ThreadPoolExecutor(1) as executor:
-            #     status = executor.submit(self.waitForEndScan, scan_duration)
-            #     if status:
-            #         # call endScan command
-            #         self.logger.debug("Sending end scan command...")
-            #         self.EndScan()
+            self.scan_thread = threading.Timer(self.scan_duration, self.EndScan)
+            self.scan_thread.start()
 
-            #TODO: FOR FUTURE IMPLEMENTATION
-            # if type(float(argin[0])) == float:
-            #     self.logger.debug("Observation state:", self._obs_state)
-            #     assert self._obs_state != ObsState.SCANNING, const.SCAN_ALREADY_IN_PROGRESS
-            #     self.logger.debug(const.STR_GRP_DEF +str(self._dish_leaf_node_group.get_device_list()))
-            #     self._read_activity_message = const.STR_SCAN_IP_ARG + str(argin)
-            #     self._read_activity_message = const.STR_GRP_DEF + str(
-            #         self._dish_leaf_node_group.get_device_list())
-            #     cmdData = tango.DeviceData()
-            #     cmdData.insert(tango.DevString, argin[0])
-            #     self._dish_leaf_node_group.command_inout(const.CMD_SCAN, cmdData)
-            #     # set obsState to SCANNING when the scan is started
-            #     self._obs_state = ObsState.SCANNING
-            #     self.set_status(const.STR_SA_SCANNING)
-            #     self.logger.info(const.STR_SA_SCANNING)
         except AssertionError as assert_error:
             str_log = const.ERR_SCAN_CMD + "\n" +str(assert_error) + const.ERR_DUPLICATE_SCAN_CMD
             self.logger.error(str_log)
@@ -671,22 +651,6 @@ class SubarrayNode(SKASubarray):
         #Throw Exception
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_SCAN_EXEC)
-
-    def waitForEndScan(self):
-        scanning_time = 0.0
-        while scanning_time <= self.scan_duration:
-            # Stop thread, if EndScan command is invoked manually
-            if self._endscan_stop == True:
-                break
-            # Stop thread, if scan duration is commpleted and EndScan is not invoked manually.
-            elif self._endscan_stop == False and scanning_time == self.scan_duration:
-                self.EndScan()
-                break
-            # Increment counter till maximum scan duration provided with scan command
-            else:
-                time.sleep(1)
-                scanning_time += 1
-        self._endscan_stop = False
 
     def is_Scan_allowed(self):
         """ This method is an internal construct of TANGO """
@@ -706,8 +670,12 @@ class SubarrayNode(SKASubarray):
         """
         exception_count = 0
         exception_message = []
-        self._endscan_stop = True
+
         try:
+            if self.scan_thread:
+                if self.scan_thread.is_alive():
+                    self.scan_thread.cancel()  # stop timer when EndScan command is called
+
             assert self._obs_state == ObsState.SCANNING, const.SCAN_ALREADY_COMPLETED
             if self._obs_state == ObsState.SCANNING:
                 self.isScanning = False
@@ -731,15 +699,6 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_SCAN_COMPLETE)
                 self._read_activity_message = const.STR_END_SCAN_SUCCESS
 
-                # TODO: FOR FUTURE IMPLEMENTATION
-                # cmdData = tango.DeviceData()
-                # cmdData.insert(tango.DevString, "0")
-                # self._dish_leaf_node_group.command_inout(const.CMD_END_SCAN, cmdData)
-                # set obsState to READY when the scan is ended
-                # self._obs_state = ObsState.READY
-                # self._scan_id = ""
-                # self.set_status(const.STR_SCAN_COMPLETE)
-                # self.logger.info(const.STR_SCAN_COMPLETE)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_END_SCAN_CMD_ON_GROUP)
@@ -1111,10 +1070,9 @@ class SubarrayNode(SKASubarray):
         self._csp_sa_device_state = DevState.DISABLE
         self._sdp_sa_device_state = DevState.OFF
         self.only_dishconfig_flag = False
-        self._endscan_stop = False
         self._scan_type = ''
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
-
+        self.scan_thread = None
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
