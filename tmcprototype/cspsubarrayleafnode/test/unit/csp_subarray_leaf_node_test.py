@@ -149,8 +149,8 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
                               '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/' \
                      'sdp_subarray01/receiveAddresses", ' \
                               '"pointing": {"target": {"system": "ICRS", "name": "Polaris", ' \
-                     '"RA": "20:21:10.31", ' \
-                              '"dec": "-30:52:17.3"}}, "scanID": "1"}'
+                     '"RA": "21:08:47.92", ' \
+                              '"dec": "-88:5.7:22.9"}}, "scanID": "1"}'
         assign_input='{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_input)
