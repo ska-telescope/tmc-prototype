@@ -113,7 +113,6 @@ make = tar -c test-harness/ | \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "sudo chown -R tango:tango /build && \
-       sudo chmod 777 /build && \
 	   tar x --strip-components 1 --warning=all && \
 	   make TANGO_HOST=$(TANGO_HOST) $1"
 
@@ -129,14 +128,26 @@ test: build up ## test the application
 	  exit $$status
 
 unit-test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-unit-test: up ## test the application
+unit-test: build up  test the application
 	$(INIT_CACHE)
-	docker run -i --rm --network=$(NETWORK_MODE) \
-	   -e TANGO_HOST=$(TANGO_HOST) \
-	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	bash -c "cd /app/tmcprototype && \
-	./run_unit_test.sh"
+	$(call make,unit_test); \
+	  status=$$?; \
+	  rm -fr build; \
+	  docker cp $(BUILD):/build .; \
+	  docker rm -f -v $(BUILD); \
+	  $(MAKE) down; \
+	  exit $$status
+
+#	docker run -i --rm --network=$(NETWORK_MODE) \
+#	   -e TANGO_HOST=$(TANGO_HOST) \
+#	   -v $(CACHE_VOLUME):/home/tango/.cache \
+#	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
+#	bash -c "cd /app/tmcprototype && \
+#	./run_unit_test.sh"
+#	docker cp $(BUILD):/app/tmcprototype/unit_test_results . \
+#	docker rm -f -v $(BUILD); \
+#	$(MAKE) down; \
+#	exit $$status
 
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 lint: build up ##lint the application (static code analysis)
