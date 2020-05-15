@@ -231,7 +231,7 @@ class DishLeafNode(SKABaseDevice):
 
         :param data: DevVarStringArray
         Argin to be provided is the Ra and Dec values in the following format:
-        radec|2:31:50.91|89:15:51.4
+        radec|21:08:47.92|89:15:51.4
         Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,and third value is Dec in
         Deg:Min:Sec.
 
@@ -240,7 +240,6 @@ class DishLeafNode(SKABaseDevice):
         """
         try:
             # Setting Observer Position
-            print("------------------ IN TRACK COMMAND ----------------- 5")
             dish_antenna = katpoint.Antenna(name= self.dish_name ,
                                             latitude=self.observer_location_lat,
                                             longitude=self.observer_location_long,
@@ -315,7 +314,7 @@ class DishLeafNode(SKABaseDevice):
         :param argin: DevVarStringArray
 
         For Track thread, argin to be provided is the Ra and Dec values in the following format:
-        radec|2:31:50.91|89:15:51.4 Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,
+        radec|21:08:47.92|89:15:51.4 Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,
         and third value is Dec in Deg:Min:Sec.
 
         It takes system's current time in UTC as timestamp and converts RaDec to AzEl using
@@ -326,10 +325,8 @@ class DishLeafNode(SKABaseDevice):
         """
 
         try:
-            print("------------------ IN TRACK COMMAND ----------------- 3")
             while self.event_track_time.is_set() is False:
                 # timestamp_value = Current system time in UTC
-                print("------------------ IN TRACK COMMAND ----------------- 4")
                 timestamp_value = str(datetime.datetime.utcnow())
                 katpoint_arg = []
                 katpoint_arg.insert(0, argin)
@@ -337,14 +334,8 @@ class DishLeafNode(SKABaseDevice):
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
                 if self.RaDec_AzEl_Conversion is True:
-                    print("------------------ IN TRACK COMMAND if 1 ----------------- ")
-                    print("self.RaDec_AzEl_Conversion: ", self.RaDec_AzEl_Conversion)
-                    print("self.el: ", self.el)
                     if self.el >= 17.5 and self.el <= 90:
-                        print("------------------ IN TRACK COMMAND if 2 ----------------- ")
                         if self.az < 0:
-                            print("------------------ IN TRACK COMMAND if 3 ----------------- ")
-                            print("self.az: ", self.az)
                             self.az = 360 - abs(self.az)
 
                         roundoff_az_el = [round(self.az, 12), round(self.el, 12)]
@@ -353,7 +344,6 @@ class DishLeafNode(SKABaseDevice):
                         # assign calculated AzEl to desiredPointing attribute of Dishmaster
                         self._dish_proxy.desiredPointing = spectrum
                         # Invoke Track command of Dish Master
-                        print("--------------- Command to DishMaster ----------------")
                         self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.commandCallback)
                     else:
                         self.el_limit = True
@@ -414,42 +404,29 @@ class DishLeafNode(SKABaseDevice):
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         for ant in antennas:
-            print("ant is :---------- ", ant)
             if ant.name == self.dish_number:
                 ref_ant_lat = ant.ref_observer.lat
-                print("ref_ant_lat: ", ref_ant_lat, type(ref_ant_lat))
                 ref_ant_long = ant.ref_observer.long
-                print("ref_ant_long: ", ref_ant_long, type(ref_ant_long))
                 ref_ant_altitude = ant.ref_observer.elevation
-                print("ref_ant_alt: ", ref_ant_altitude)
                 ant_delay_model = ant.delay_model.values()
         # Convert reference antenna lat and long into radian
         ref_ant_lat_rad = self.dms_to_rad(str(ref_ant_lat).split(":"))
-        print("ref_ant_lat_rad ", ref_ant_lat_rad)
         ref_ant_long_rad = self.dms_to_rad(str(ref_ant_long).split(":"))
-        print("ref_ant_long_rad ", ref_ant_long_rad)
 
         # Find latitude, longitude and altitude of Dish antenna
         # Convert enu to ecef coordinates for dish
         dish_ecef_coordinates = conversion.enu_to_ecef(ref_ant_lat_rad, ref_ant_long_rad, ref_ant_altitude,
                                                        ant_delay_model[0], ant_delay_model[1], ant_delay_model[2])
-        print("dish_ecef_coordinates: ", dish_ecef_coordinates)
         # Convert ecef to lla coordinates for dish (in radians)
         dish_lat_long_alt_rad = conversion.ecef_to_lla(dish_ecef_coordinates[0], dish_ecef_coordinates[1],
                                                        dish_ecef_coordinates[2])
-        print("dish_lat_long_alt_rad: ", dish_lat_long_alt_rad)
         # Convert lla coordinates from rad to dms
         dish_lat_dms = self.rad_to_dms(dish_lat_long_alt_rad[0])
-        print("dish_lat_dms: ",dish_lat_dms)
         dish_long_dms = self.rad_to_dms(dish_lat_long_alt_rad[1])
-        print("dish_long_dms ", dish_long_dms)
 
         self.observer_location_lat = str(dish_lat_dms[0]) + ":" + str(dish_lat_dms[1]) + ":" + str(dish_lat_dms[2])
-        print("self.observer_location_lat: ", self.observer_location_lat, type(self.observer_location_lat))
         self.observer_location_long = str(dish_long_dms[0]) + ":" + str(dish_long_dms[1]) + ":" + str(dish_long_dms[2])
-        print("self.observer_location_long ", self.observer_location_long, type(self.observer_location_long))
         self.observer_altitude = dish_ecef_coordinates[2]
-        print("self.observer_altitude ", self.observer_altitude, type(self.observer_altitude))
 
         # ===============================================
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
@@ -724,7 +701,7 @@ class DishLeafNode(SKABaseDevice):
         A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
 
             Example:
-            {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+            {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:5.7:22.9"}},
             "dish":{"receiverBand":"1"}}
 
         :return: None
@@ -933,13 +910,12 @@ class DishLeafNode(SKABaseDevice):
 
         For Track command, Argin to be provided is the Ra and Dec values in the following JSON format:
 
-        {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+        {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:5.7:22.9"}},
         "dish":{"receiverBand":"1"}}
 
         :return: None
 
         """
-        print("------------------ IN TRACK COMMAND ----------------- 1")
         exception_count = 0
         exception_message = []
         try:
@@ -953,7 +929,6 @@ class DishLeafNode(SKABaseDevice):
             # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, const.THREAD_TRACK)
             # self.tracking_time_thread1.start()
             # Pass string argument in track_thread in brackets
-            print("------------------ IN TRACK COMMAND ----------------- 2")
             self.track_thread1 = threading.Thread(None, self.track_thread, const.THREAD_TRACK,
                                                   args=(radec_value,))
             self.track_thread1.start()
@@ -996,8 +971,6 @@ class DishLeafNode(SKABaseDevice):
         exception_message = []
         try:
             self.event_track_time.set()
-            print("self.az in StopTrack: ", self.az)
-            print("self.el in StopTrack: ", self.el)
             self._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.commandCallback)
 
         except DevFailed as dev_failed:

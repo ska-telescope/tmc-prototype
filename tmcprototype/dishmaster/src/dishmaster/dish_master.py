@@ -982,18 +982,14 @@ class DishMaster(SKAMaster):
         """
         try:
             # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
-            print("------------ DishMaster TRACK ------------------------")
             self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
             self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
             actual_az_lim = abs((self._achieved_pointing[1] - self._desired_pointing[1])
                                 * math.cos(((self._desired_pointing[2]) * math.pi)/180))
-            print("actual_az_lim: ", actual_az_lim)
             actual_el_lim = abs(self._achieved_pointing[2] - self._desired_pointing[2])
-            print("actual_el_lim: ", actual_el_lim)
 
             if(float(actual_az_lim) <= self.preconfig_az_lim and
                float(actual_el_lim) <= self.preconfig_el_lim) is True:
-                print("------------- In Dishmaster TRACK if --------------")
             #if dish is within the preconfigured limit then dish will slew slowly (TRACK).
                 self._pointing_state = PointingState.TRACK                    # Set pointingState to TRACK Mode
                 # Inject fault in DishMaster1 if toggle_fault is enabled as a part of Subarray Isolation
@@ -1007,7 +1003,6 @@ class DishMaster(SKAMaster):
                 self.logger.debug("Dish is TRACKING.")
             else:
             #if dish is out of preconfigured limit then dish will slew fast (Slew).
-                print("------------- In Dishmaster SLEW else --------------")
                 self._pointing_state = PointingState.SLEW                   # Set pointingState to SLEW Mode
                 self.track_slew_thread = threading.Thread(None, self.track_slew, const.THREAD_TRACK)
                 self.track_slew_thread.start()
