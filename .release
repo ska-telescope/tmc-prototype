@@ -26,3 +26,5 @@ release=9.9.9
 tag=9.9.9
 tag_description=This tag is created for testing purpose
 release_notes=This release Contains: <br /><ul> <li>First point</li> <li>Second point</li><li>Third point</li></ul>
+gitlab_username=JayantKumbhar
+private_token=LmMeweawasu3MB-igzbx

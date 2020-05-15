@@ -153,10 +153,11 @@ function releaseTMC() {
   name=$(getRelease)
   tag_name=$(getRelease)
   release_notes=$(getReleaseDescription)
+  private_token=$(awk -F= '/^private_token=/{print $2}' .release)
+  echo $private_token
   data1=('{ "name": "'$name'", "tag_name": "'$tag_name'", "description": "'"$release_notes"'"}')
-  echo "$data1"
   result=$(curl --header 'Content-Type: application/json' \
-                --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" \
+                --header  "PRIVATE-TOKEN: "$private_token \
                 --data "$data1" \
                 --request POST https://gitlab.com/api/v4/projects/"$CI_PROJECT_ID"/releases)
   echo $result
@@ -165,8 +166,9 @@ function releaseTMC() {
 # Delete released tmc-prototype with version given in .release file
 function deleteTMCRelease() {
   tag_name=$(getRelease)
+  private_token=$(awk -F= '/^private_token=/{print $2}' .release)
   target="https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/"$tag_name
-  result=$(curl --request DELETE --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "$target")
+  result=$(curl --request DELETE --header "PRIVATE-TOKEN: "$private_token "$target")
   echo $result
 }
 
@@ -180,8 +182,9 @@ function deleteTag() {
 # If there is an error while creating GitLab release, published tag and docker (with same version number) image will be deleted.)
 function releaseTMCIfNoError() {
   tag_name=$(getRelease)
+  private_token=$(awk -F= '/^private_token=/{print $2}' .release)
   echo "CHECKING IF THIS RELEASE ALREADY EXISTS. IF IT DOES NOT EXISTS, IT WILL GIVE KeyError: 'tag_name' (EXPECTED BEHAVIOUR)."
-  releaseAlreadyExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
+  releaseAlreadyExists=$(curl --header "PRIVATE-TOKEN: "$private_token "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
   python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
   if [ "$releaseAlreadyExists" == "$tag_name" ]
   then
@@ -190,8 +193,7 @@ function releaseTMCIfNoError() {
     echo "RELEASING TMC-PROTOTYPE..."
     echo "PIPELINE ID and PASSWORD:"
     releaseTMC
-    deleteImageFromNexus      # Remove this after testing
-    checkReleaseExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
+    checkReleaseExists=$(curl --header "PRIVATE-TOKEN: "$private_token "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
     python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
     if [ "$checkReleaseExists" != "$tag_name" ]; then
         echo "ERROR WHILE RELEASING TMC. TAG AND IMAGE WILL BE DELETED."
