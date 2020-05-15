@@ -188,6 +188,9 @@ function releaseTMCIfNoError() {
     echo "THIS RELEASE IS ALREADY EXISTS. NEW RELEASE WITH SAME VERSION IS NOT POSSIBLE."
   else
     echo "RELEASING TMC-PROTOTYPE..."
+    echo "PIPELINE ID and PASSWORD:"
+    echo $RAW_USER
+    echo $RAW_PASS
     releaseTMC
     checkReleaseExists=$(curl --header "PRIVATE-TOKEN: LmMeweawasu3MB-igzbx" "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
     python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
