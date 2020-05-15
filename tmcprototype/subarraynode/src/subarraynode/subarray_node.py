@@ -179,21 +179,18 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated device state of Subarray.
         """
-        if self.get_state() is not DevState.OFF:
-            if self._csp_sa_device_state==DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
-                self.set_state(DevState.OFF)
-            else:
-                self.logger.info("CSP and SDP subarray are not in OFF state")
-        else:
-            self.logger.info("Subarray is already in OFF state")
         if self.get_state() is not DevState.ON:
             if self._csp_sa_device_state==DevState.ON and self._sdp_sa_device_state == DevState.ON :
                 self.set_state(DevState.ON)
             else:
-                self.logger.info("CSP and SDP subarray are not in ON state")
+                self.logger.info("SubarrayNode is not in ON state because CSP and SDP subarray are not in ON state")
+        elif self.get_state() is not DevState.OFF:
+            if self._csp_sa_device_state==DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
+                self.set_state(DevState.OFF)
+            else:
+                self.logger.info("SubarrayNode is not in OFF state because CSP and SDP subarray are not in OFF state")
         else:
-            self.logger.info("Subarray is already in On state")
-
+            self.logger.info("SubarrayNode is already in state ", self.get_state())
 
     def obsStateCallback(self, evt):
         """
