@@ -735,8 +735,8 @@ def assert_activity_message(dut, expected_message):
 
 
 def raise_devfailed_exception(cmd_name):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
+    tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 
 def any_method(with_name=None):

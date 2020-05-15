@@ -124,8 +124,8 @@ def command_callback_with_command_exception():
 
 
 def raise_devfailed_exception(cmd_name):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
+    tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready():

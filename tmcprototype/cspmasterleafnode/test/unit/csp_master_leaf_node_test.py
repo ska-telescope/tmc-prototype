@@ -39,9 +39,9 @@ def test_on_should_command_csp_master_leaf_node_to_start():
                                                                     any_method(with_name='commandCallback'))
 
 
-def raise_devfailed_exception(evt_name = 'Test',evt_type= 'Test',callaback ='Test', stateless=True):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
+def raise_devfailed_exception(evt_name, evt_type, callaback, stateless=True):
+    tango.Except.throw_exception("CspMasterLeafNode_CommandCallbackfailed", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 
 def test_event_to_raise_devfailed_exception():

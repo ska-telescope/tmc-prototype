@@ -175,6 +175,7 @@ def command_callback(command_name):
 
 def command_callback_with_event_error(command_name):
     fake_event = MagicMock()
+    fake_event = MagicMock()
     fake_event.err = True
     fake_event.errors = 'Event error'
     fake_event.cmd_name = f"{command_name}"

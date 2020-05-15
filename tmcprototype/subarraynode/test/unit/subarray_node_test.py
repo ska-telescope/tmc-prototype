@@ -2385,17 +2385,17 @@ def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr
 
 
 def raise_devfailed_exception(cmd_name):
-    tango.Except.throw_exception("Devfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
+    tango.Except.throw_exception("SubarrayNode_Commandfailed", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 
-def raise_devfailed_with_arg(cmd_name, input):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
+def raise_devfailed_with_arg(cmd_name, input_arg):
+    tango.Except.throw_exception("SubarrayNode_Commandfailed", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 
 def raise_devfailed_for_event_subscription(evt_name,evt_type,callaback, stateless=True):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
+    tango.Except.throw_exception("SubarrayNode_CommandCallbackfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
 

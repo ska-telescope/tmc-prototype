@@ -997,9 +997,9 @@ def test_health_state():
         assert tango_context.device.healthState == HealthState.OK
 
 
-def raise_devfailed_exception(cmd_name ='StopTrack',callback='Test'):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                     "From function test devfailed", tango.ErrSeverity.ERR)
+def raise_devfailed_exception(cmd_name, callback):
+    tango.Except.throw_exception("DishLeafNode_Commandfailed", "This is error message for devfailed",
+                                     " ", tango.ErrSeverity.ERR)
 
 
 def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
