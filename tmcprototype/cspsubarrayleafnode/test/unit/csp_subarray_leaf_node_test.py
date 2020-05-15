@@ -123,7 +123,7 @@ def command_callback_with_command_exception():
     return Exception("Exception in callback")
 
 
-def raise_devfailed(cmd_name = 'any_command'):
+def raise_devfailed_exception(cmd_name = 'any_command'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
@@ -153,7 +153,7 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
                                                              any_method(with_name='commandCallback'))
 
 
-def test_start_scan_should_command_csp_subarray_to_start_raises_devfailed():
+def test_start_scan_should_raise_devfailed_exception():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
@@ -166,7 +166,7 @@ def test_start_scan_should_command_csp_subarray_to_start_raises_devfailed():
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         scan_input = {'id':1}
@@ -249,7 +249,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         assign_input='{"dish":{"receptorIDList":["0001","0002"]}}'
@@ -308,7 +308,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources_r
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
@@ -343,7 +343,7 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
         assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
 
 
-def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning_raise_devfailed():
+def test_end_scan_should_raise_devfailed_exception():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
@@ -356,7 +356,7 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning_ra
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (raise_devfailed)
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
@@ -441,7 +441,7 @@ def test_configure_to_raise_devfailed_exception():
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
 
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
@@ -497,7 +497,7 @@ def test_goto_idle_should_raise_devfailed_exception():
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device

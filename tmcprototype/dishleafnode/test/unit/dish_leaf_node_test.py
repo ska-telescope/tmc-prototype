@@ -997,7 +997,7 @@ def test_health_state():
         assert tango_context.device.healthState == HealthState.OK
 
 
-def raise_devfailed(cmd_name ='StopTrack',callback='Test'):
+def raise_devfailed_exception(cmd_name ='StopTrack',callback='Test'):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                      "From function test devfailed", tango.ErrSeverity.ERR)
 
@@ -1011,7 +1011,7 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
 
     proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
 
-    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed
+    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:

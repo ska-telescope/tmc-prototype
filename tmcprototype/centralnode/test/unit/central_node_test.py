@@ -190,9 +190,9 @@ def test_stow_antennas_should_set_stow_mode_raises_exception():
         'NumDishes': len(dish_device_ids)
     }
 
-    proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in dish_device_ids }
+    proxies_to_mock = {fqdn_prefix + device_id: Mock() for device_id in dish_device_ids}
     for proxy_mock in proxies_to_mock.values():
-        proxy_mock.command_inout.side_effect = (raise_devfailed)
+        proxy_mock.command_inout.side_effect = raise_devfailed_exception
     # act:
     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
         with pytest.raises(tango.DevFailed):
@@ -272,7 +272,7 @@ def test_assign_resources():
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def test_assign_resources_raises_devfailed():
+def test_assign_resources_should_raise_devfailed_exception():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn
@@ -287,7 +287,7 @@ def test_assign_resources_raises_devfailed():
     proxies_to_mock = {
         subarray1_fqdn: subarray1_proxy_mock
     }
-    subarray1_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -368,7 +368,7 @@ def test_release_resources():
             subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
 
-def test_release_resources_raise_devfailed():
+def test_release_resources_should_raise_devfailed_exception():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn
@@ -384,7 +384,7 @@ def test_release_resources_raise_devfailed():
     proxies_to_mock = {
         subarray1_fqdn: subarray1_proxy_mock
     }
-    subarray1_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
@@ -462,7 +462,7 @@ def test_standby():
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
 
 
-def test_standby_raised_devfailed():
+def test_standby_should_raise_devfailed_exception():
     # arrange:
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
@@ -492,10 +492,10 @@ def test_standby_raised_devfailed():
         sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
         subarray1_fqdn: subarray1_proxy_mock
     }
-    dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed
-    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed
-    sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed
-    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed
+    dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -551,7 +551,7 @@ def test_startup():
         assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
 
 
-def test_startup_raised_devfailed():
+def test_startup_should_raise_devfailed_exception():
     # arrange:
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
@@ -581,10 +581,10 @@ def test_startup_raised_devfailed():
         sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
         subarray1_fqdn: subarray1_proxy_mock
     }
-    dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed
-    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed
-    sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed
-    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed
+    dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -734,7 +734,7 @@ def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
 
 
-def raise_devfailed(cmd_name = 'any_command'):
+def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 

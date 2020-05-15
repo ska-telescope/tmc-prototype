@@ -777,7 +777,7 @@ def test_configure_command_subarray_with_invalid_configure_input():
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
-def test_configure_command_subarray_raises_devfailed_exception():
+def test_configure_command_subarray_should_raise_devfailed_exception():
     with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
@@ -1155,7 +1155,7 @@ def test_end_scan_should_raise_devfailed_exception():
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
 
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         attribute = 'ObsState'
@@ -1296,7 +1296,7 @@ def test_end_sb_should_raise_devfailed_exception():
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
 
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = (raise_devfailed)
+    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         attribute = 'ObsState'
@@ -2384,7 +2384,7 @@ def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr
     return fake_event
 
 
-def raise_devfailed(cmd_name):
+def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("Devfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 

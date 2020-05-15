@@ -39,12 +39,12 @@ def test_on_should_command_csp_master_leaf_node_to_start():
                                                                     any_method(with_name='commandCallback'))
 
 
-def raise_devfailed(evt_name = 'Test',evt_type= 'Test',callaback ='Test', stateless=True):
+def raise_devfailed_exception(evt_name = 'Test',evt_type= 'Test',callaback ='Test', stateless=True):
     tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
 
-def test_event_to_raised_devfailed_exception():
+def test_event_to_raise_devfailed_exception():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
     csp_cbf_health_state_attribute = 'cspCbfHealthState'
@@ -56,7 +56,7 @@ def test_event_to_raised_devfailed_exception():
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
 
-    csp_master_proxy_mock.subscribe_event.side_effect = (raise_devfailed)
+    csp_master_proxy_mock.subscribe_event.side_effect = raise_devfailed_exception
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         on_input = []
@@ -683,11 +683,6 @@ def create_dummy_event_for_health_state_with_error(device_fqdn,health_state_valu
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = health_state_value
     return fake_event
-
-
-def create_dummy_event_for_health_state_with_devfailed_error(device_fqdn,health_state_value,attribute):
-    tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
 
 
 def test_read_activity_message():
