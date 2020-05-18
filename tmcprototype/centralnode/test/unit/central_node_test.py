@@ -181,7 +181,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
         proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
 
 
-def test_stow_antennas_should_set_stow_mode_raises_exception():
+def test_stow_antennas_should_raise_devfailed_exception():
     # arrange:
     dish_device_ids = [str(i).zfill(4) for i in range(1,10)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
@@ -191,6 +191,7 @@ def test_stow_antennas_should_set_stow_mode_raises_exception():
     }
 
     proxies_to_mock = {fqdn_prefix + device_id: Mock() for device_id in dish_device_ids}
+    # mock command_inout method to throw devfailed exception
     for proxy_mock in proxies_to_mock.values():
         proxy_mock.command_inout.side_effect = raise_devfailed_exception
     # act:

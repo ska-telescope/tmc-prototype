@@ -212,7 +212,6 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         SKABaseDevice.init_device(self)
         # PROTECTED REGION ID(CspMasterLeafNode.init_device) ENABLED START #
-        # try:
         self.SkaLevel = const.INT_SKA_LEVEL
         self._admin_mode = AdminMode.ONLINE  # Setting adminMode to "ONLINE"
         self._health_state = HealthState.OK # Setting healthState to "OK"
