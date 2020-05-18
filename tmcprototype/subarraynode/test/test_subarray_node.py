@@ -309,6 +309,8 @@ class TestSubarrayNode(object):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
         create_centralnode_proxy.StartUpTelescope()
+        while tango_context.device.state() != DevState.OFF:
+            time.sleep(1)
         assert tango_context.device.adminMode == AdminMode.ONLINE
         assert tango_context.device.state() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_On
