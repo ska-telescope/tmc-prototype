@@ -507,7 +507,7 @@ class CentralNode(SKABaseDevice):
                 self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STARTUP)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
+                                            exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
