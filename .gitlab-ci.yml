@@ -249,31 +249,47 @@ run tests:
     - make push
   retry: 2
 
+
 unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
+  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   stage: test
+  before_script:
+  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
   tags:
     - docker-executor
-  before_script:
-    - pipenv install --dev
   script:
-    - mkdir test_results
-    - |-
-      for path in `find ./tmcprototype/*/test  -type d -name unit`; do
-        export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
-        echo "+++ Installing ${TMC_ELEMENT} for tests"
-        python3 -m pip install -U tmcprototype/${TMC_ELEMENT} --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple/
-        echo "+++ Trying tests for ${TMC_ELEMENT}"
-        pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
-          --forked \
-          --cov=tmcprototype/${TMC_ELEMENT} \
-          --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
-          --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
-          --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
-      done
+    - make unit-test
+  retry: 2
   artifacts:
     paths:
       - ./test_results
+
+#
+#unit tests:
+#  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
+#  stage: test
+#  tags:
+#    - docker-executor
+#  before_script:
+#    - pipenv install --dev
+#  script:
+#    - mkdir test_results
+#    - |-
+#      for path in `find ./tmcprototype/*/test  -type d -name unit`; do
+#        export TMC_ELEMENT=$(basename $(dirname $(dirname "$path")))
+#        echo "+++ Installing ${TMC_ELEMENT} for tests"
+#        python3 -m pip install -U tmcprototype/${TMC_ELEMENT} --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple/
+#        echo "+++ Trying tests for ${TMC_ELEMENT}"
+#        pytest -v tmcprototype/${TMC_ELEMENT}/test/unit \
+#          --forked \
+#          --cov=tmcprototype/${TMC_ELEMENT} \
+#          --cov-report=html:./test_results/${TMC_ELEMENT}_htmlcov \
+#          --json-report --json-report-file=./test_results/${TMC_ELEMENT}_report.json \
+#          --junitxml=./test_results/${TMC_ELEMENT}-unit-tests.xml
+#      done
+#  artifacts:
+#    paths:
+#      - ./test_results
 
 
 linting:
