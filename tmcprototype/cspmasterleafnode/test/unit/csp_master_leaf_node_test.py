@@ -40,7 +40,7 @@ def test_on_should_command_csp_master_leaf_node_to_start():
 
 
 def raise_devfailed_exception(evt_name, evt_type, callaback, stateless=True):
-    tango.Except.throw_exception("CspMasterLeafNode_CommandCallbackwith_exceptionfailed", "This is error message for devfailed",
+    tango.Except.throw_exception("CspMasterLeafNode_cspCbfHealthCallback_with_exceptionfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
 
@@ -48,18 +48,14 @@ def test_event_to_raise_devfailed_exception():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
     csp_cbf_health_state_attribute = 'cspCbfHealthState'
-    csp_pss_health_state_attribute = 'cspPssHealthState'
-    csp_pst_health_state_attribute = 'cspPstHealthState'
     dut_properties = {'CspMasterFQDN': csp_master_fqdn}
 
     csp_master_proxy_mock = Mock()
-    event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
 
     csp_master_proxy_mock.subscribe_event.side_effect = raise_devfailed_exception
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        on_input = []
         # act:
         health_state_value = HealthState.OK
         dummy_event1 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
@@ -183,7 +179,7 @@ def test_standby_should_command_with_callback_method_with_command_error():
 def command_callback(command_name):
     fake_event = MagicMock()
     fake_event.err = False
-    fake_event.errors = 'Event error'
+    fake_event.errors = 'Event error in Command Callback'
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
@@ -191,13 +187,13 @@ def command_callback(command_name):
 def command_callback_with_event_error(command_name):
     fake_event = MagicMock()
     fake_event.err = True
-    fake_event.errors = 'Event error'
+    fake_event.errors = 'Event error in Command Callback'
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
 
 def command_callback_with_command_exception():
-    return Exception("Exception in callback")
+    return Exception("Exception in Command Callback")
 
 
 def test_attribute_csp_cbf_health_state_of_csp_master_is_ok():
@@ -614,8 +610,10 @@ def test_attribute_csp_pst_health_callback_with_exception():
         event_subscription_map[csp_pst_health_state_attribute](dummy_event)
 
         # assert:
+        print("tango_context.device.activityMessage")
+        print("self.state:", tango_context.device.State())
         msg = tango_context.device.activityMessage
-        assert tango_context.device.activityMessage in msg
+        assert const.ERR_CSP_PST_HEALTH_CB in tango_context.device.activityMessage
 
 
 def test_attribute_csp_pss_health_callback_with_exception():
@@ -639,8 +637,10 @@ def test_attribute_csp_pss_health_callback_with_exception():
         event_subscription_map[csp_pss_health_state_attribute](dummy_event)
 
         # assert:
+        print("tango_context.device.activityMessage")
+        print("self.state:", tango_context.device.State())
         msg = tango_context.device.activityMessage
-        assert tango_context.device.activityMessage in msg
+        assert const.ERR_CSP_PSS_HEALTH_CB in tango_context.device.activityMessage
 
 
 def test_attribute_csp_cbf_health_state_with_exception():
@@ -664,8 +664,10 @@ def test_attribute_csp_cbf_health_state_with_exception():
         event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
+        print("tango_context.device.activityMessage")
+        print("self.state:", tango_context.device.State())
         msg = tango_context.device.activityMessage
-        assert tango_context.device.activityMessage in msg
+        assert const.ERR_CSP_CBF_HEALTH_CB in tango_context.device.activityMessage
 
 
 def create_dummy_event_for_health_state(device_fqdn,health_state_value,attribute):
@@ -679,7 +681,7 @@ def create_dummy_event_for_health_state(device_fqdn,health_state_value,attribute
 def create_dummy_event_for_health_state_with_error(device_fqdn,health_state_value,attribute):
     fake_event = Mock()
     fake_event.err = True
-    fake_event.errors = 'Error Event'
+    fake_event.errors = 'Event error in attribute callback'
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = health_state_value
     return fake_event
