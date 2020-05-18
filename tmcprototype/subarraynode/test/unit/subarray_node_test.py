@@ -883,6 +883,10 @@ def test_subarray_device_state_is_on_when_csp_and_sdp_subarray1_is_on_after_star
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         attribute = "state"
+
+        dummy_event = create_dummy_event_state(csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
         dummy_event = create_dummy_event_state(csp_subarray1_fqdn, attribute, DevState.ON)
         event_subscription_map[attribute](dummy_event)
 
