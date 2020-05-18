@@ -163,7 +163,7 @@ def test_activity_message_attribute_captures_the_last_received_command():
 # Test cases for commands
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
-    dish_device_ids = [str(i).zfill(4) for i in range(1,10)]
+    dish_device_ids = [str(i).zfill(4) for i in range(1,4)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
         'DishLeafNodePrefix': fqdn_prefix,
@@ -183,7 +183,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
 
 def test_stow_antennas_should_raise_devfailed_exception():
     # arrange:
-    dish_device_ids = [str(i).zfill(4) for i in range(1,10)]
+    dish_device_ids = [str(i).zfill(4) for i in range(1,4)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
         'DishLeafNodePrefix': fqdn_prefix,
