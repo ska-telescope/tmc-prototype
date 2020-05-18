@@ -127,31 +127,22 @@ test: build up ## test the application
 	  $(MAKE) down; \
 	  exit $$status
 
+unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
 unit-test:
 	$(INIT_CACHE)
-	mkdir -p local_report
+	mkdir -p local_reports
+	chmod 777 local_reports
 	docker run -i --rm --network=$(NETWORK_MODE) \
 	   -e TANGO_HOST=$(TANGO_HOST) \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v /local_report -w /local_report \
-	   -v /report -w /report \
+	   -v local_report:/unit_test_reports \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	bash -c "sudo chown -R tango:tango /local_report /report && \
-	cd /app/tmcprototype && \
+	bash -c "cd /app/tmcprototype && \
+	sudo chown -R tango:tango /report && \
 	./run_unit_test.sh"
-	docker cp $(REPORT):/report ./local_report; \
+	docker cp $(REPORT):/report ./local_reports;
+	docker rm -f -v $(REPORT)
 
-
-#	docker run -i --rm --network=$(NETWORK_MODE) \
-#	   -e TANGO_HOST=$(TANGO_HOST) \
-#	   -v $(CACHE_VOLUME):/home/tango/.cache \
-#	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-#	bash -c "cd /app/tmcprototype && \
-#	./run_unit_test.sh"
-#	docker cp $(BUILD):/app/tmcprototype/unit_test_results . \
-#	docker rm -f -v $(BUILD); \
-#	$(MAKE) down; \
-#	exit $$status
 
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 lint: build up ##lint the application (static code analysis)
