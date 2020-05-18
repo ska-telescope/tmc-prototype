@@ -309,7 +309,7 @@ class TestSubarrayNode(object):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
         create_centralnode_proxy.StartUpTelescope()
-        while tango_context.device.state() != DevState.OFF:
+        while tango_context.device.State() != DevState.OFF:
             time.sleep(1)
         assert tango_context.device.adminMode == AdminMode.ONLINE
         assert tango_context.device.state() == DevState.OFF
@@ -447,7 +447,7 @@ class TestSubarrayNode(object):
         """Test for StandbyTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
         create_centralnode_proxy.StandByTelescope()
-        while tango_context.device.state() != DevState.DISABLE:
+        while tango_context.device.State() != DevState.DISABLE:
             time.sleep(1)
         assert tango_context.device.adminMode == AdminMode.OFFLINE
         assert tango_context.device.State() == DevState.DISABLE
