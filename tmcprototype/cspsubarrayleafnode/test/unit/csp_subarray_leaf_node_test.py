@@ -177,7 +177,7 @@ def test_start_scan_should_raise_devfailed_exception():
         assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
 
-def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_idle():
+def test_start_scan_should_not_command_csp_subarray_to_start_its_scan_when_it_is_idle():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
