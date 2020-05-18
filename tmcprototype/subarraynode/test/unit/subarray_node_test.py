@@ -515,9 +515,9 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
+        attribute1 = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_fqdn, attribute1, DevState.OFF)
+        event_subscription_map[attribute1](dummy_event)
 
         tango_context.device.On()
         csp_subarray1_proxy_mock.obsState = ObsState.READY
