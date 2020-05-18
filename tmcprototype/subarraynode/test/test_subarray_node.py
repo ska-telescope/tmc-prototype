@@ -305,19 +305,19 @@ class TestSubarrayNode(object):
         assert tango_context.device.receptorIDList == None
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
-    def test_On(self, tango_context, create_centralnode_proxy):
+    def test_On(self, tango_context):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
-        create_centralnode_proxy.StartUpTelescope()
-        while tango_context.device.State() != DevState.OFF:
-            time.sleep(1)
+        tango_context.device.On()
         assert tango_context.device.adminMode == AdminMode.ONLINE
-        assert tango_context.device.State() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 
-    def test_AssignResources(self, tango_context):
+    def test_AssignResources(self, tango_context, create_centralnode_proxy):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
+        create_centralnode_proxy.StartUpTelescope()
+        while tango_context.device.State() != DevState.OFF:
+            time.sleep(0.1)
         receptor_list = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                         ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                         '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max"' \
@@ -442,16 +442,6 @@ class TestSubarrayNode(object):
         """Test for ReleaseResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseResources) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseResources
-
-    def test_Standby(self, tango_context, create_centralnode_proxy):
-        """Test for StandbyTelescope on subarray."""
-        # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
-        create_centralnode_proxy.StandByTelescope()
-        while tango_context.device.State() != DevState.DISABLE:
-            time.sleep(1)
-        assert tango_context.device.adminMode == AdminMode.OFFLINE
-        assert tango_context.device.State() == DevState.DISABLE
-        # PROTECTED REGION END #    //  SubarrayNode.Standby
 
     def test_Reset(self, tango_context):
         """Test for Reset"""
@@ -591,3 +581,13 @@ class TestSubarrayNode(object):
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
         # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+
+    def test_Standby(self, tango_context):
+        """Test for StandbyTelescope on subarray."""
+        # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
+        tango_context.device.Standby()
+        while tango_context.device.State() != DevState.DISABLE:
+            time.sleep(0.1)
+        assert tango_context.device.adminMode == AdminMode.OFFLINE
+        assert tango_context.device.State() == DevState.DISABLE
+        # PROTECTED REGION END #    //  SubarrayNode.Standby
