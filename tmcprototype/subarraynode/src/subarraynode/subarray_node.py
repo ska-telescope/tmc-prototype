@@ -153,8 +153,9 @@ class SubarrayNode(SKASubarray):
                 """
         exception_message = []
         exception_count = 0
-        if evt.err is False:
-            try:
+        try:
+            if evt.err is False:
+
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
                 elif self.SdpSubarrayFQDN in evt.attr_name:
@@ -163,17 +164,22 @@ class SubarrayNode(SKASubarray):
                     self.logger.debug(const.EVT_UNKNOWN)
                     self._read_activity_message = const.EVT_UNKNOWN
                 self.calculate_device_state()
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
-            except Exception as except_occured:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                            exception_message, exception_count, const.ERR_AGGR_DEVICE_STATE)
-        else:
-            log_msg = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
-            self.logger.debug(log_msg)
-            self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
-            self.logger.critical(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
+
+            else:
+                log_msg = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
+                self.logger.debug(log_msg)
+                self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
+                self.logger.critical(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
+        except Exception as except_occured:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_AGGR_DEVICE_STATE)
 
     def calculate_device_state(self):
         """
@@ -196,8 +202,9 @@ class SubarrayNode(SKASubarray):
                 """
         exception_message = []
         exception_count = 0
-        if evt.err is False:
-            try:
+        try:
+            if evt.err is False:
+
                 self._observetion_state = evt.attr_value.value
 
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
@@ -213,22 +220,26 @@ class SubarrayNode(SKASubarray):
                     self._read_activity_message = const.EVT_UNKNOWN
                 self.calculate_observation_state()
 
-            except KeyError as key_error:
-                log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
-                self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
-                self.logger.critical(const.ERR_CSPSDP_SUBARRAY_OBS_STATE)
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                    exception_message, exception_count, const.ERR_SUBSR_CSPSDPSA_OBS_STATE)
-            except Exception as except_occured:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                exception_message, exception_count, const.ERR_AGGR_OBS_STATE)
-        else:
-            log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
-            self.logger.debug(log_msg)
-            self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
-            self.logger.critical(const.ERR_SUBSR_CSPSDPSA_OBS_STATE)
+            else:
+                log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
+                self.logger.debug(log_msg)
+                self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
+                self.logger.critical(const.ERR_SUBSR_CSPSDPSA_OBS_STATE)
+        except KeyError as key_error:
+            log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
+            self.logger.error(log_msg)
+            self._read_activity_message = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
+            self.logger.critical(const.ERR_CSPSDP_SUBARRAY_OBS_STATE)
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_SUBSR_CSPSDPSA_OBS_STATE)
+        except Exception as except_occured:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_AGGR_OBS_STATE)
 
     def calculate_observation_state(self):
         """

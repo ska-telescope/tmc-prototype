@@ -636,7 +636,7 @@ def test_attribute_csp_pss_health_callback_with_exception():
         assert const.ERR_CSP_PSS_HEALTH_CB in tango_context.device.activityMessage
 
 
-def test_attribute_csp_cbf_health_state_with_exception():
+def test_attribute_csp_cbf_health_state_callback_with_exception():
     # arrange:
     csp_master_fqdn = 'mid/csp_elt/master'
     csp_cbf_health_state_attribute = 'cspCbfHealthState'

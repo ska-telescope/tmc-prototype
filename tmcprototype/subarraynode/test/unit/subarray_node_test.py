@@ -442,6 +442,7 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
             tango_context.device.AssignResources(assign_input)
 
         # assert:
+        assert tango_context.device.State() == DevState.OFF
         assert tango_context.device.obsState == ObsState.IDLE
 
 
@@ -1179,17 +1180,6 @@ def test_end_scan_should_raise_devfailed_exception():
         assert tango_context.device.obsState == ObsState.SCANNING
 
 
-def test_endscan_command_subarray_with_duplicate_end_scan_command():
-    with fake_tango_system(SubarrayNode) as tango_context:
-        tango_context.device.On()
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.EndScan()
-
-        # assert:
-        assert tango_context.device.obsState == ObsState.IDLE
-        assert tango_context.device.activityMessage == const.ERR_DUPLICATE_END_SCAN_CMD
-
-
 def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -1705,12 +1695,11 @@ def test_obs_state_should_raise_exception():
         dummy_event_csp = command_callback_with_command_exception()
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
         # assert:
-        msg = tango_context.device.activityMessage
-        assert tango_context.device.activityMessage in msg
+        assert const.ERR_AGGR_OBS_STATE in tango_context.device.activityMessage
 
 
 # Test Pointing State Callback
-def test_pointing_state_is_slew_when_dish_master_in_slew():
+def test_pointing_state_is_slew():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
@@ -1776,7 +1765,7 @@ def test_pointing_state_is_slew_when_dish_master_in_slew():
         assert tango_context.device.obsState == ObsState.CONFIGURING
 
 
-def test_pointing_state_is_scan_when_dish_master_in_scan():
+def test_pointing_state_is_scan():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
@@ -1842,7 +1831,7 @@ def test_pointing_state_is_scan_when_dish_master_in_scan():
         assert tango_context.device.obsState == ObsState.IDLE
 
 
-def test_pointing_state_is_ready_when_dish_master_in_ready():
+def test_pointing_state_is_ready():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
@@ -1906,7 +1895,7 @@ def test_pointing_state_is_ready_when_dish_master_in_ready():
         assert tango_context.device.obsState == ObsState.IDLE
 
 
-def test_pointing_state_is_with_error_event():
+def test_pointing_state_with_error_event():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
@@ -2289,8 +2278,7 @@ def test_subarray_device_state_is_with_exception():
         event_subscription_map[attribute](dummy_event)
 
         # assert:
-        msg = tango_context.device.activityMessage
-        assert tango_context.device.activityMessage == msg
+        assert const.ERR_AGGR_DEVICE_STATE in tango_context.device.activityMessage
 
 
 # Test case for event subscribtion
