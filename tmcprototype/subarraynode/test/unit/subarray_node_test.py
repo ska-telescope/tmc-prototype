@@ -1032,7 +1032,7 @@ def test_start_scan_should_raise_assertion_exception():
             tango_context.device.Scan(scan_input)
 
         # assert:
-        assert tango_context.device.obsState == ObsState.SCANNING
+        assert const.ERR_DUPLICATE_SCAN_CMD in tango_context.device.activityMessage
 
 
 def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
