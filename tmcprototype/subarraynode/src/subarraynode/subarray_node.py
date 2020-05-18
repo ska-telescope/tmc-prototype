@@ -737,18 +737,20 @@ class SubarrayNode(SKASubarray):
             DevVarString.
 
             Example:
-            {"dish":{"receptorIDList":["0001","0002"]}, "sdp":{"id":"sbi-mvp01-20200318-0001",
-            "max_length":21600.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
-            "ra":"00:00:00.00","dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000},
-            {"id":"calibration_B","coordinate_system":"ICRS","ra":"00:00:00.00","dec":"00:00:00.0",
-            "freq_min":0.0,"freq_max":0.0,"nchan":1000}],"processing_blocks":[{"id":
-            "pb-mvp01-20200318-0001","workflow":{"type":"realtime","id":"vis_receive","version":
-            "0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime",
-            "id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200318-0003"
-            ,"workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies"
-            :[{"pb_id":"pb-mvp01-20200318-0001","type":["visibilities"]}]},{"id":
-            "pb-mvp01-20200318-0004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},
-            "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200318-0003","type":["calibration"]}]}]}}
+
+            {"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",
+            "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"21:08:47.92",
+            "dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,
+            "input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":"ICRS",
+            "ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,
+            "input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
+            "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},
+            {"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
+            "parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",
+            "type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",
+            "type":["calibration"]}]}]}}
 
 
         :return:
@@ -1240,6 +1242,7 @@ class SubarrayNode(SKASubarray):
 
         try:
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
+            self.logger.debug("------------------- TRACK DISH -------------------")
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
         except DevFailed as df:
             self._read_activity_message = df[0].desc
@@ -1262,7 +1265,7 @@ class SubarrayNode(SKASubarray):
         JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
         Configuration and SDP Configuration parameters.
         JSON string example is:
-        {"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.0946","dec":"+89:15:50.7923"}},
+        {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
         "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",
         "fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},
         "sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0}}
@@ -1352,10 +1355,9 @@ class SubarrayNode(SKASubarray):
         :param argin: DevString
 
         Example:
-        radec|2:31:50.91|89:15:51.4 as argin
-        Argin to be provided is the Ra and Dec values in the following format: radec|2:31:50.91|89:15:51.4
-        Where first value is tag that is radec, second value is Ra in Hr:Min:Sec, and third value is Dec in
-        Deg:Min:Sec.
+        radec|21:08:47.92|-88:57:22.9 as argin
+        Argin to be provided is the Ra and Dec values where first value is tag that is radec, second value is Ra
+        in Hr:Min:Sec, and third value is Dec in Deg:Min:Sec.
 
         :return: None
 
