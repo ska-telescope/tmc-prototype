@@ -1408,6 +1408,7 @@ class SubarrayNode(SKASubarray):
         """
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
         self._admin_mode = AdminMode.ONLINE
+        self.set_state(DevState.OFF)  # Set state = OFF
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
     @command(
