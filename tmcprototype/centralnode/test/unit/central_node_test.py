@@ -505,7 +505,6 @@ def test_standby_should_raise_devfailed_exception():
             tango_context.device.StandByTelescope()
 
     # assert:
-        assert tango_context.device.State() == DevState.ON
         assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
 
 
@@ -595,7 +594,6 @@ def test_startup_should_raise_devfailed_exception():
             tango_context.device.StartUpTelescope()
 
         # assert:
-        assert tango_context.device.State() == DevState.OFF
         assert const.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
 
 
