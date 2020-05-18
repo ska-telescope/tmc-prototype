@@ -216,7 +216,7 @@ class TestElementDeviceData:
 # Look at devicetest examples for more advanced testing
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy")
+@pytest.mark.usefixtures("tango_context", "create_centralnode_proxy", "create_dish_proxy", "create_dishln_proxy")
 
 class TestSubarrayNode(object):
     """Test case for packet generation."""
@@ -305,11 +305,12 @@ class TestSubarrayNode(object):
         assert tango_context.device.receptorIDList == None
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
-    def test_On(self, tango_context):
+    def test_On(self, tango_context, create_centralnode_proxy):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
-        tango_context.device.On()
+        create_centralnode_proxy.StartUpTelescope()
         assert tango_context.device.adminMode == AdminMode.ONLINE
+        assert tango_context.device.state() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 
     def test_AssignResources(self, tango_context):
@@ -421,7 +422,7 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
         tango_context.device.ReleaseAllResources()
         while tango_context.device.State() != DevState.OFF:
-            pass
+            time.sleep(1)
         assert tango_context.device.assignedResources is None
         assert tango_context.device.obsState == ObsState.IDLE
         assert tango_context.device.State() == DevState.OFF
@@ -440,12 +441,12 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseResources) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseResources
 
-    def Standby(self, tango_context):
+    def test_Standby(self, tango_context, create_centralnode_proxy):
         """Test for StandbyTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
-        tango_context.device.Standby()
-        while tango_context.device.state != DevState.DISABLE:
-            pass
+        create_centralnode_proxy.StandByTelescope()
+        while tango_context.device.state() != DevState.DISABLE:
+            time.sleep(1)
         assert tango_context.device.adminMode == AdminMode.OFFLINE
         assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  SubarrayNode.Standby

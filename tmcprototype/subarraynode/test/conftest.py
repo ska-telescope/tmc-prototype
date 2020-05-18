@@ -50,6 +50,11 @@ def initialize_device(tango_context):
     yield tango_context.device.Init()
 
 @pytest.fixture(scope="class")
+def create_centralnode_proxy():
+    centralnode_proxy = DeviceProxy("ska_mid/tm_central/central_node")
+    return centralnode_proxy
+
+@pytest.fixture(scope="class")
 def create_dish_proxy():
     dish_proxy = DeviceProxy("mid_d0001/elt/master")
     return dish_proxy
