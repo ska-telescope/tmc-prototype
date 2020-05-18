@@ -177,8 +177,8 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
         tango_context.device.StowAntennas(dish_device_ids)
 
     # assert:
-    for proxy_mock in proxies_to_mock.values():
-        proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
+        for proxy_mock in proxies_to_mock.values():
+            proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
 
 
 def test_stow_antennas_should_raise_devfailed_exception():
@@ -233,9 +233,9 @@ def test_assign_resources():
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn
     }
-    # For subarraynode proxy creation MagicMock is used instead of Mock because when subarray proxy inout
-    # is called it returns list of resources allocated where lenght of list need to be evaluated but Mock
-    # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
+    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
     # which supports this facility.
     subarray1_proxy_mock = MagicMock()
     subarray1_proxy_mock.DevState = DevState.OFF
@@ -279,9 +279,9 @@ def test_assign_resources_should_raise_devfailed_exception():
         'TMMidSubarrayNodes': subarray1_fqdn
     }
 
-    # For subarraynode proxy creation MagicMock is used instead of Mock because when subarray proxy inout
-    # is called it returns list of resources allocated where lenght of list need to be evaluated but Mock
-    # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
+    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
     # which supports this facility.
     subarray1_proxy_mock = MagicMock()
     subarray1_proxy_mock.DevState = DevState.OFF
@@ -346,9 +346,9 @@ def test_release_resources():
         'TMMidSubarrayNodes': subarray1_fqdn
     }
 
-    # For subarraynode proxy creation MagicMock is used instead of Mock because when subarray proxy inout
-    # is called it returns list of resources allocated where lenght of list need to be evaluated but Mock
-    # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
+    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
     # which supports this facility.
     subarray1_proxy_mock = MagicMock()
     subarray1_proxy_mock.DevState = DevState.ON
@@ -375,9 +375,9 @@ def test_release_resources_should_raise_devfailed_exception():
         'TMMidSubarrayNodes': subarray1_fqdn
     }
 
-    # For subarraynode proxy creation MagicMock is used instead of Mock because when subarray proxy inout
-    # is called it returns list of resources allocated where lenght of list need to be evaluated but Mock
-    # doesnot support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
+    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
     # which supports this facility.
     subarray1_proxy_mock = MagicMock()
     subarray1_proxy_mock.DevState = DevState.ON
@@ -436,9 +436,9 @@ def test_standby():
         'NumDishes': len(dish_device_ids)
     }
 
-    # For subarraynode and dishleafnode proxy creation MagicMock is used instead of Mock because when
-    # proxy inout is called it returns list of resources allocated where lenght of list need to be evaluated
-    # but Mock doesnot support len function for returned object. Hence MagicMock which is a superset of
+    # For subarray node and dish leaf node proxy creation MagicMock is used instead of Mock because when
+    # proxy inout is called it returns list of resources allocated where length of list need to be evaluated
+    # but Mock does not support len function for returned object. Hence MagicMock which is a superset of
     # Mock is used which supports this facility.
     dish_ln1_proxy_mock = MagicMock()
     csp_master_ln_proxy_mock = Mock()
@@ -479,9 +479,9 @@ def test_standby_should_raise_devfailed_exception():
         'NumDishes': len(dish_device_ids)
     }
 
-    # For subarraynode and dishleafnode proxy creation MagicMock is used instead of Mock because when
-    # proxy inout is called it returns list of resources allocated where lenght of list need to be evaluated
-    # but Mock doesnot support len function for returned object. Hence MagicMock which is a superset of
+    # For subarray node and dish leaf node proxy creation MagicMock is used instead of Mock because when
+    # proxy inout is called it returns list of resources allocated where length of list need to be evaluated
+    # but Mock does not support len function for returned object. Hence MagicMock which is a superset of
     # Mock is used which supports this facility.
     dish_ln1_proxy_mock = MagicMock()
     csp_master_ln_proxy_mock = Mock()
@@ -505,6 +505,7 @@ def test_standby_should_raise_devfailed_exception():
             tango_context.device.StandByTelescope()
 
     # assert:
+        assert tango_context.device.State() == DevState.OFF
         assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
 
 
@@ -524,9 +525,9 @@ def test_startup():
         'NumDishes': len(dish_device_ids)
     }
 
-    # For subarraynode and dishleafnode proxy creation MagicMock is used instead of Mock because when
-    # proxy inout is called it returns list of resources allocated where lenght of list need to be evaluated
-    # but Mock doesnot support len function for returned object. Hence MagicMock which is a superset of
+    # For subarray node and dish leaf node proxy creation MagicMock is used instead of Mock because when
+    # proxy inout is called it returns list of resources allocated where length of list need to be evaluated
+    # but Mock does not support len function for returned object. Hence MagicMock which is a superset of
     # Mock is used which supports this facility.
     dish_ln1_proxy_mock = MagicMock()
     csp_master_ln_proxy_mock = Mock()
@@ -568,9 +569,9 @@ def test_startup_should_raise_devfailed_exception():
         'NumDishes': len(dish_device_ids)
     }
 
-    # For subarraynode and dishleafnode proxy creation MagicMock is used instead of Mock because when
-    # proxy inout is called it returns list of resources allocated where lenght of list need to be evaluated
-    # but Mock doesnot support len function for returned object. Hence MagicMock which is a superset of
+    # For subarray node and dish leaf node proxy creation MagicMock is used instead of Mock because when
+    # proxy inout is called it returns list of resources allocated where length of list need to be evaluated
+    # but Mock does not support len function for returned object. Hence MagicMock which is a superset of
     # Mock is used which supports this facility.
     dish_ln1_proxy_mock = MagicMock()
     csp_master_ln_proxy_mock = Mock()
@@ -594,7 +595,8 @@ def test_startup_should_raise_devfailed_exception():
             tango_context.device.StartUpTelescope()
 
         # assert:
-        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
+        assert tango_context.device.State() == DevState.Disabled
+        assert const.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
 
 
 # Test cases for Telescope Health State
