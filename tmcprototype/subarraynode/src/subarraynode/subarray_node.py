@@ -236,7 +236,6 @@ class SubarrayNode(SKASubarray):
         """
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
-        print ("self.dishPointingStateMap:", self.dishPointingStateMap)
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1

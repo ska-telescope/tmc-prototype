@@ -645,7 +645,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_is_false():
         assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_FALSE
 
 
-def test_dish_leaf_node_when_dish_capturing_callback_is_wrong():
+def test_dish_leaf_node_when_invalid_attribute_value_for_dish_capturing():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
     dish_master_capturing_attribute = 'capturing'
