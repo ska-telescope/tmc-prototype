@@ -609,9 +609,6 @@ def test_attribute_csp_pst_health_callback_with_exception():
         event_subscription_map[csp_pst_health_state_attribute](dummy_event)
 
         # assert:
-        print("tango_context.device.activityMessage")
-        print("self.state:", tango_context.device.State())
-        msg = tango_context.device.activityMessage
         assert const.ERR_CSP_PST_HEALTH_CB in tango_context.device.activityMessage
 
 
@@ -636,9 +633,6 @@ def test_attribute_csp_pss_health_callback_with_exception():
         event_subscription_map[csp_pss_health_state_attribute](dummy_event)
 
         # assert:
-        print("tango_context.device.activityMessage")
-        print("self.state:", tango_context.device.State())
-        msg = tango_context.device.activityMessage
         assert const.ERR_CSP_PSS_HEALTH_CB in tango_context.device.activityMessage
 
 
@@ -663,9 +657,6 @@ def test_attribute_csp_cbf_health_state_with_exception():
         event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
-        print("tango_context.device.activityMessage")
-        print("self.state:", tango_context.device.State())
-        msg = tango_context.device.activityMessage
         assert const.ERR_CSP_CBF_HEALTH_CB in tango_context.device.activityMessage
 
 

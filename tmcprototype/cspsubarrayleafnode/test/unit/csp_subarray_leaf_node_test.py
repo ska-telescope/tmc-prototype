@@ -25,7 +25,7 @@ def test_assign_command_with_callback_method():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {   'CspSubarrayFQDN': csp_subarray1_fqdn}
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
     event_subscription_map = {}
 
@@ -52,7 +52,7 @@ def test_assign_command_with_callback_method_with_event_error():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
     event_subscription_map = {}
 
@@ -79,7 +79,7 @@ def test_assign_command_with_callback_method_with_command_error():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
     event_subscription_map = {}
 
@@ -235,7 +235,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
 
-def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list_raise_devfail():
+def test_assign_resources_should_raise_devfailed_exception():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
@@ -506,7 +506,7 @@ def test_goto_idle_should_raise_devfailed_exception():
         assert const.ERR_GOTOIDLE_INVOKING_CMD in tango_context.device.activityMessage
 
 
-def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_idle():
+def test_goto_idle_should_not_command_csp_subarray_to_end_sb_when_it_is_idle():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
