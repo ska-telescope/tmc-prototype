@@ -127,16 +127,20 @@ test: build up ## test the application
 	  $(MAKE) down; \
 	  exit $$status
 
-unit-test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-unit-test: build up  test the application
+unit-test:
 	$(INIT_CACHE)
-	$(call make,unit_test); \
-	  status=$$?; \
-	  rm -fr build; \
-	  docker cp $(BUILD):/build .; \
-	  docker rm -f -v $(BUILD); \
-	  $(MAKE) down; \
-	  exit $$status
+	mkdir -p local_report
+	docker run -i --rm --network=$(NETWORK_MODE) \
+	   -e TANGO_HOST=$(TANGO_HOST) \
+	   -v $(CACHE_VOLUME):/home/tango/.cache \
+	   -v /local_report -w /local_report \
+	   -v /report -w /report \
+	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
+	bash -c "sudo chown -R tango:tango /local_report /report && \
+	cd /app/tmcprototype && \
+	./run_unit_test.sh"
+	docker cp $(REPORT):/report ./local_report; \
+
 
 #	docker run -i --rm --network=$(NETWORK_MODE) \
 #	   -e TANGO_HOST=$(TANGO_HOST) \
@@ -210,3 +214,6 @@ INIT_CACHE = \
 # http://cakoose.com/wiki/gnu_make_thunks
 BUILD_GEN = $(shell docker create -v /build $(IMAGE_TO_TEST))
 BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
+
+REPORT_GEN = $(shell docker create -v /report $(IMAGE_TO_TEST))
+REPORT = $(eval REPORT := $(REPORT_GEN))$(REPORT)

@@ -1,19 +1,21 @@
 #!/bin/bash
 cd /app/tmcprototype;
-mkdir unit_test_results;
+#mkdir test_results;
 for path in $(find ./*/test  -type d -name unit); do
 echo $path;
 export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 echo $TMC_ELEMENT;
 echo +++ Trying tests for $TMC_ELEMENT;
-pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=./${TMC_ELEMENT} \
-    --cov-report=html:./unit_test_results/${TMC_ELEMENT}_htmlcov \
-    --json-report --json-report-file=./unit_test_results/${TMC_ELEMENT}_report.json \
-    --junitxml=./test_results/${TMC_ELEMENT}_unit_tests.xml; \
-    ls -l;
+pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=./${TMC_ELEMENT} --cov-report=html:/report/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/${TMC_ELEMENT}_report.json --junitxml=/report/${TMC_ELEMENT}-unit-tests.xml;
+ls -l /report;
+#mv test_results/${TMC_ELEMENT}_htmlcov /snehal;
+#ls -l /snehal;
 done
-
-ls -l;
+echo after for loop;
+ls -l /report;
+mv /report /local_report;
+echo In local report;
+ls -l local_report
 
 #mv /app/tmcprototype/test_results/* /build/unit_test_result
 #mv /app/tmcprototype/dishmaster/test_results/* /build/unit_test_result/dishmaster \
