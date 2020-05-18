@@ -288,7 +288,7 @@ def test_assign_resources_should_raise_devfailed_exception():
     proxies_to_mock = {
         subarray1_fqdn: subarray1_proxy_mock
     }
-    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -494,7 +494,7 @@ def test_standby_should_raise_devfailed_exception():
         subarray1_fqdn: subarray1_proxy_mock
     }
     dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
@@ -583,7 +583,7 @@ def test_startup_should_raise_devfailed_exception():
         subarray1_fqdn: subarray1_proxy_mock
     }
     dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
@@ -739,6 +739,10 @@ def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
+
+def raise_devfailed_exception_with_args(cmd_name, input_args):
+    tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 def any_method(with_name=None):
     class AnyMethod():
