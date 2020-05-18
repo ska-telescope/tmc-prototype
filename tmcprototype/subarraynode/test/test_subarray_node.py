@@ -79,7 +79,7 @@ def example_scan_configuration():
               "system": "ICRS",
               "name": "Polaris Australis",
               "RA": "21:08:47.92",
-              "dec": "-88:5.7:22.9"
+              "dec": "-88:57:22.9"
             }
           },
           "dish": {
@@ -161,7 +161,7 @@ class TestElementDeviceData:
                     {
                         "target":
                             {
-                                "system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92", "dec": "-88:5.7:22.9"
+                                "system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92", "dec": "-88:57:22.9"
                             }
                     },
                 "scanID": "1"
@@ -287,9 +287,9 @@ class TestSubarrayNode(object):
         #PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         receptor_list = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
                         '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":' \
-                        '"ICRS","ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":[{"freq_min":0.35e9,"freq_max":' \
+                        '"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":' \
                         '1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":' \
                         '"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
                         '"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":' \
@@ -318,9 +318,9 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         receptor_list = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                         ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
+                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
                         ':1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:5.7:22.9","subbands":' \
+                        '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":' \
                         '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
                         '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
                         '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"' \
@@ -357,7 +357,7 @@ class TestSubarrayNode(object):
         """Test for Configure"""
         # PROTECTED REGION ID(SubarrayNode.test_Configure) ENABLED START #
         tango_context.device.Configure('{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis",'
-                                       '"RA":"21:08:47.92","dec":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"},"csp":'
+                                       '"RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"},"csp":'
                                        '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":'
                                        '1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
                                        '"corrBandwidth":0}]},"sdp":{"scan_type":"science_A"},'
@@ -561,7 +561,7 @@ class TestSubarrayNode(object):
     def test_Track(self, tango_context, create_dishln_proxy):
         """Test for Track"""
         # PROTECTED REGION ID(SubarrayNode.test_Track) ENABLED START #
-        track_argin = "radec|21:08:47.92|-88:5.7:22.9"
+        track_argin = "radec|21:08:47.92|-88:57:22.9"
         tango_context.device.Track(track_argin)
         assert const.STR_TRACK_IP_ARG in tango_context.device.activityMessage
         create_dishln_proxy.StopTrack()

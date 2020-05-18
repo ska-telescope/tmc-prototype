@@ -31,7 +31,6 @@ import katpoint
 import re
 import datetime
 import time
-
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]
@@ -238,7 +237,7 @@ class DishLeafNode(SKABaseDevice):
 
         """
         try:
-            # Setting Observer Position
+            # Create Antenna Object
             dish_antenna = katpoint.Antenna(name= self.dish_name ,
                                             latitude=self.observer_location_lat,
                                             longitude=self.observer_location_long,
@@ -371,7 +370,6 @@ class DishLeafNode(SKABaseDevice):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
-    # ============================================
     def dms_to_rad(self,dms):
         deg = float(dms[0])
         min = float(dms[1])
@@ -392,13 +390,14 @@ class DishLeafNode(SKABaseDevice):
     def set_dish_name_number(self):
         # Find out dish number from DishMasterFQDN property
         dish_name_string = self.DishMasterFQDN.split("/")
-        dish_num_list = [i for i in dish_name_string[0] if i.isdigit()]
+        dish_num_list = [ dish_name_char for dish_name_char in dish_name_string[0] if dish_name_char.isdigit()]
         self.dish_number = "".join(dish_num_list)
         self.dish_name = 'd' + self.dish_number
 
 
     def set_observer_lat_long_alt(self):
-        # Load a set of antenna descriptions and construct Antenna objects from them
+        # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates) from text file and
+        # construct Antenna objects from them. Currently the text file contains Meerkat Antenna parameters.
         with open("/venv/lib/python3.7/site-packages/dishleafnode/ska_antennas.txt") as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
@@ -427,7 +426,6 @@ class DishLeafNode(SKABaseDevice):
         self.observer_location_long = str(dish_long_dms[0]) + ":" + str(dish_long_dms[1]) + ":" + str(dish_long_dms[2])
         self.observer_altitude = dish_ecef_coordinates[2]
 
-        # ===============================================
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
     # -----------------
@@ -477,12 +475,10 @@ class DishLeafNode(SKABaseDevice):
         self.ele_max_lim = 90
         self.horizon_el = 0
         self.ele_min_lim = 17.5
-        # ==================================================================================
-        self.set_dish_name_number()
-        self.set_observer_lat_long_alt()
         self.el_limit = False
-        # =======================================================================================
         try:
+            self.set_dish_name_number()
+            self.set_observer_lat_long_alt()
             log_msg = const.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
             self.logger.debug(log_msg)
             self._read_activity_message = const.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
@@ -697,7 +693,7 @@ class DishLeafNode(SKABaseDevice):
         A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
 
             Example:
-            {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:5.7:22.9"}},
+            {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
             "dish":{"receiverBand":"1"}}
 
         :return: None
@@ -906,7 +902,7 @@ class DishLeafNode(SKABaseDevice):
 
         For Track command, Argin to be provided is the Ra and Dec values in the following JSON format:
 
-        {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:5.7:22.9"}},
+        {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
         "dish":{"receiverBand":"1"}}
 
         :return: None

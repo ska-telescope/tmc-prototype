@@ -475,7 +475,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         "integrationTime":1400,"corrBandwidth":0}],"delayModelSubscriptionPoint":
         "ska_mid/tm_leaf_node/csp_subarray01/delayModel","visDestinationAddressSubscriptionPoint":
         "mid_sdp/elt/subarray_1/receiveAddresses","pointing":{"target":{"system":"ICRS","name":"Polaris Australis",
-        "RA":"21:08:47.92","dec":"-88:5.7:22.9"}},"scanID":"1"}
+        "RA":"21:08:47.92","dec":"-88:57:22.9"}},"scanID":"1"}
 
 
         :return: None.
