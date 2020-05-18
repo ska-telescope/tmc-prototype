@@ -1019,20 +1019,20 @@ def test_start_scan_should_should_raise_assertion_exception():
         sdp_subarray1_proxy_mock.obsState = ObsState.READY
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                                   attribute, ObsState.SCANNING)
+                                                   attribute, ObsState.READY)
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                                   attribute, ObsState.SCANNING)
+                                                   attribute, ObsState.READY)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-        while tango_context.device.obsState != ObsState.SCANNING:
+        while tango_context.device.obsState != ObsState.READY:
             pass
         scan_input = '{"id": 1}'
         with pytest.raises(tango.DevFailed) as assert_error:
             tango_context.device.Scan(scan_input)
 
         # assert:
-        assert tango_context.device.obsState == ObsState.SCANNING
+        assert tango_context.device.obsState == ObsState.READY
 
 
 def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
