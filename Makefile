@@ -128,7 +128,7 @@ test: build up ## test the application
 	  exit $$status
 
 unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
-unit-test:
+unit-test: build
 	$(INIT_CACHE)
 	mkdir -p local_reports
 	chmod 777 local_reports
