@@ -223,7 +223,6 @@ class DishLeafNode(SKABaseDevice):
         else:
             return deg_dec
 
-
     def convert_radec_to_azel(self, data):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
@@ -393,7 +392,6 @@ class DishLeafNode(SKABaseDevice):
         dish_num_list = [ dish_name_char for dish_name_char in dish_name_string[0] if dish_name_char.isdigit()]
         self.dish_number = "".join(dish_num_list)
         self.dish_name = 'd' + self.dish_number
-
 
     def set_observer_lat_long_alt(self):
         # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates) from text file and
@@ -944,7 +942,6 @@ class DishLeafNode(SKABaseDevice):
             self.throw_exception(exception_message, const.STR_TRACK_EXEC)
 
         # PROTECTED REGION END #    //  DishLeafNode.Track
-
 
     @command(
     )
