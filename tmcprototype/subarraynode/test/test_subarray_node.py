@@ -312,7 +312,7 @@ class TestSubarrayNode(object):
         while tango_context.device.State() != DevState.OFF:
             time.sleep(1)
         assert tango_context.device.adminMode == AdminMode.ONLINE
-        assert tango_context.device.state() == DevState.OFF
+        assert tango_context.device.State() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 
     def test_AssignResources(self, tango_context):
