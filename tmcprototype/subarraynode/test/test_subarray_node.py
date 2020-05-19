@@ -312,7 +312,7 @@ class TestSubarrayNode(object):
         assert tango_context.device.adminMode == AdminMode.ONLINE
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 
-    def test_AssignResources(self, tango_context, create_cspmasterln_proxy):
+    def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         # create_cspmasterln_proxy.On([])
