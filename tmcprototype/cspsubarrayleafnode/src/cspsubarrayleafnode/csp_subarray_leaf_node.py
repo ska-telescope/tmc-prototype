@@ -66,7 +66,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self._read_activity_message = log
                 self.logger.info(log)
         except Exception as except_occurred:
-            [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                 exception_message, exception_count, const.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
@@ -490,6 +490,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.pointing_params = argin_json["pointing"]
             self.target_Ra = self.pointing_params["target"]["RA"]
             self.target_Dec = self.pointing_params["target"]["dec"]
+
             # Create target object
             self.target = katpoint.Target('radec , ' + str(self.target_Ra) + ", " + str(self.target_Dec))
 
@@ -504,18 +505,18 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.debug(argin)
 
         except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
+            log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_INVALID_JSON_CONFIG_SCAN + str(value_error)
+            self._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except DevFailed as dev_failed:
-            [exception_count,exception_message] = self._handle_devfailed_exception(dev_failed,
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                 exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [exception_count, exception_message] = self._handle_generic_exception( except_occurred,
+            [exception_message, exception_count] = self._handle_generic_exception( except_occurred,
                                     exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
 
         # throw exception:
@@ -553,11 +554,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
 
         except DevFailed as dev_failed:
-            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
 
         except Exception as except_occurred:
-            [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                         exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
 
         # throw exception:
@@ -591,11 +592,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
 
         except DevFailed as dev_failed:
-            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                         exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
 
         # throw exception:
@@ -627,10 +628,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
         except DevFailed as dev_failed:
-            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
         except Exception as except_occurred:
-            [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                         exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
 
         # throw exception:
@@ -699,12 +700,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_count += 1
 
         except DevFailed as dev_failed:
-            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                          exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
 
         except Exception as except_occurred:
-            [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                          exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
         # throw exception:
@@ -736,12 +737,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
-            [exception_count, exception_message] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
+            [ exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                        exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [exception_count, exception_message] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                        exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:

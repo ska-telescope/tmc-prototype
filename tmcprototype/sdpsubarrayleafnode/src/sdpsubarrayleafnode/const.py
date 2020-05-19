@@ -24,6 +24,7 @@ ERR_INVALID_JSON_SCAN = "Invalid JSON format while invoking Scan command on SDP 
 ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_DEVICE_NOT_READY = "SdpSubarray is not in ready state."
+ERR_INVOKING_CMD = "Error in invoking command: "
 #
 # #strings
 # #General strings
@@ -54,6 +55,8 @@ STR_ASSIGN_RES_EXEC = "AssignResources command execution"
 STR_ENDSCAN_EXEC = "EndScan command execution"
 STR_ENDSB_EXEC = "EndSB command execution"
 STR_CMD_CALLBK = "SdpSubarrayLeafNode Command Callback"
+STR_COMMAND = "Command :-> "
+STR_INVOKE_SUCCESS = " invoked successfully."
 
 # #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_1"
