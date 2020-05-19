@@ -3,7 +3,6 @@
 cd /app/tmcprototype;
 
 for path in $(find ./*/test  -type d -name unit); do
-	echo $path;
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 	echo $TMC_ELEMENT;
 	echo +++ Trying tests for $TMC_ELEMENT;
