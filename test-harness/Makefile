@@ -8,7 +8,7 @@ SHELL = /bin/bash
 SRC_ROOT_DIR := /app
 TMC_ROOT_DIR := $(SRC_ROOT_DIR)/tmcprototype
 
-all: test lint unit_test
+all: test lint
 
 # wait for the device to be available before beginning the test
 # A temporary volume is mounted at /build when 'make test' is executing.
