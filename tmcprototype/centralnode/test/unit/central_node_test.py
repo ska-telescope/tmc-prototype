@@ -215,19 +215,6 @@ def test_stow_antennas_invalid_value():
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
 
 
-def test_stow_antennas_invalid_argument():
-    """Test for StowAntennas"""
-    # act
-    with fake_tango_system(CentralNode) \
-            as tango_context:
-        argin = ["invalid_argin", ]
-        with pytest.raises(tango.DevFailed) :
-            tango_context.device.StowAntennas(argin)
-
-        # assert:
-        assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
-
-
 def test_assign_resources():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
