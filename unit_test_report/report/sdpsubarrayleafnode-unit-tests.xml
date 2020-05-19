@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="0" hostname="0bafb88b40e9" name="pytest" skipped="0" tests="24" time="3.083" timestamp="2020-05-19T05:40:07.049976"><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="22" name="test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready" time="0.091"><system-out>1|2020-05-19T05:40:07.262Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:07.263Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:07.263Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:07.263Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:07.267Z|INFO|MainThread|Scan|sdp_subarray_leaf_node.py#425|tango-device:test/nodb/sdpsubarrayleafnode|Scan invoked successfully on SdpSubarray.
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="48" name="test_assign_resources_should_send_sdp_subarray_with_correct_processing_block_list" time="0.099"><system-out>1|2020-05-19T05:40:07.375Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:07.376Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:07.376Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:07.376Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="93" name="test_release_resources_when_sdp_subarray_is_idle" time="0.097"><system-out>1|2020-05-19T05:40:07.484Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:07.484Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:07.485Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:07.485Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="118" name="test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle" time="0.096"><system-out>1|2020-05-19T05:40:07.595Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:07.596Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:07.596Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:07.596Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:07.601Z|INFO|MainThread|Configure|sdp_subarray_leaf_node.py#373|tango-device:test/nodb/sdpsubarrayleafnode|Configure invoked successfully on SdpSubarray.
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="147" name="test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning" time="0.090"><system-out>1|2020-05-19T05:40:07.700Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:07.701Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:07.701Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:07.701Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:07.706Z|INFO|MainThread|EndScan|sdp_subarray_leaf_node.py#462|tango-device:test/nodb/sdpsubarrayleafnode|EndScan invoked successfully on SdpSubarray.
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="171" name="test_end_sb_should_command_sdp_subarray_to_reset_when_it_is_ready" time="0.092"><system-out>1|2020-05-19T05:40:07.803Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:07.804Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:07.804Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:07.804Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:07.808Z|INFO|MainThread|EndSB|sdp_subarray_leaf_node.py#495|tango-device:test/nodb/sdpsubarrayleafnode|EndSB invoked successfully on SdpSubarray.
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="210" name="test_state" time="0.099"><system-out>1|2020-05-19T05:40:07.922Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:07.923Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:07.923Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:07.923Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="216" name="test_status" time="0.092"><system-out>1|2020-05-19T05:40:08.023Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.024Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.025Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.025Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="222" name="test_logging_level" time="0.095"><system-out>1|2020-05-19T05:40:08.137Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.138Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.138Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.139Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:08.145Z|INFO|MainThread|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="229" name="test_health_state" time="0.086"><system-out>1|2020-05-19T05:40:08.237Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.238Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.238Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.238Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="235" name="test_admin_mode" time="0.090"><system-out>1|2020-05-19T05:40:08.338Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.339Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.339Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.340Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="241" name="test_control_mode" time="0.093"><system-out>1|2020-05-19T05:40:08.445Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.446Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.446Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.446Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="249" name="test_simulation_mode" time="0.098"><system-out>1|2020-05-19T05:40:08.550Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.551Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.551Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.552Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="257" name="test_test_mode" time="0.098"><system-out>1|2020-05-19T05:40:08.661Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.662Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.662Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.663Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="264" name="test_receive_addresses" time="0.089"><system-out>1|2020-05-19T05:40:08.766Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.767Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.767Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.767Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="270" name="test_activity_message" time="0.098"><system-out>1|2020-05-19T05:40:08.874Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.875Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.875Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.875Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="276" name="test_active_processing_blocks" time="0.090"><system-out>1|2020-05-19T05:40:08.984Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:08.984Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:08.985Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:08.985Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="282" name="test_logging_targets" time="0.137"><system-out>1|2020-05-19T05:40:09.133Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:09.133Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:09.134Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:09.134Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:09.140Z|INFO|MainThread|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to [&apos;console::cout&apos;]
+1|2020-05-19T05:40:09.140Z|INFO|MainThread|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to [&apos;console::cout&apos;]
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="289" name="test_configure_invalid_key" time="0.093"><system-out>1|2020-05-19T05:40:09.239Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:09.240Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:09.240Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:09.240Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:09.245Z|ERROR|MainThread|Configure|sdp_subarray_leaf_node.py#383|tango-device:test/nodb/sdpsubarrayleafnode|JSON key not found &apos;sdp&apos;
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="303" name="test_configure_invalid_format" time="0.096"><system-out>1|2020-05-19T05:40:09.352Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:09.353Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:09.354Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:09.354Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:09.358Z|INFO|MainThread|Configure|sdp_subarray_leaf_node.py#377|tango-device:test/nodb/sdpsubarrayleafnode|Invalid JSON format while invoking Configure command on SDP Subarray.Expecting &apos;:&apos; delimiter: line 1 column 7 (char 6)
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="312" name="test_configure_generic_exception" time="0.095"><system-out>1|2020-05-19T05:40:09.462Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:09.462Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:09.463Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:09.463Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:09.467Z|ERROR|MainThread|_handle_generic_exception|sdp_subarray_leaf_node.py#76|tango-device:test/nodb/sdpsubarrayleafnode|Error while invoking Configure command on SDP Subarray.list indices must be integers or slices, not str
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="321" name="test_scan_device_not_ready" time="0.103"><system-out>1|2020-05-19T05:40:09.575Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:09.576Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:09.576Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:09.577Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:09.582Z|ERROR|MainThread|Scan|sdp_subarray_leaf_node.py#428|tango-device:test/nodb/sdpsubarrayleafnode|SdpSubarray is not in ready state.
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="329" name="test_endsb_device_not_ready" time="0.092"><system-out>1|2020-05-19T05:40:09.687Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:09.687Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:09.688Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:09.688Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:09.692Z|ERROR|MainThread|EndSB|sdp_subarray_leaf_node.py#498|tango-device:test/nodb/sdpsubarrayleafnode|SdpSubarray is not in ready state.
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.sdp_subarray_leaf_node_test" file="test/unit/sdp_subarray_leaf_node_test.py" line="336" name="test_endscan_invalid_state" time="0.097"><system-out>1|2020-05-19T05:40:09.798Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/sdpsubarrayleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:09.798Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/sdpsubarrayleafnode|Logging targets set to []
+1|2020-05-19T05:40:09.799Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/sdpsubarrayleafnode|No Groups loaded for device: test/nodb/sdpsubarrayleafnode
+1|2020-05-19T05:40:09.799Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/sdpsubarrayleafnode|Completed SKABaseDevice.init_device
+Ready to accept request
+1|2020-05-19T05:40:09.803Z|ERROR|MainThread|EndScan|sdp_subarray_leaf_node.py#465|tango-device:test/nodb/sdpsubarrayleafnode|SdpSubarray is not in SCANNING state.
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase></testsuite></testsuites>

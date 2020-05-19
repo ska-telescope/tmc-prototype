@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="0" hostname="0bafb88b40e9" name="pytest" skipped="0" tests="25" time="3.150" timestamp="2020-05-19T05:39:38.863733"><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="18" name="test_on_should_command_csp_master_leaf_node_to_start" time="0.085"><system-out>1|2020-05-19T05:39:39.080Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:39.081Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:39.081Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:39.081Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:39.082Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="39" name="test_off_should_command_csp_master_leaf_node_to_stop" time="0.091"><system-out>1|2020-05-19T05:39:39.187Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:39.188Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:39.189Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:39.189Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:39.191Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="60" name="test_standby_should_command_csp_master_leaf_node_to_standby" time="0.091"><system-out>1|2020-05-19T05:39:39.289Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:39.290Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:39.291Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:39.291Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:39.292Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="81" name="test_attribute_csp_cbf_health_state_of_csp_master_is_ok" time="0.093"><system-out>1|2020-05-19T05:39:39.397Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:39.398Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:39.398Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:39.399Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:39.399Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="108" name="test_attribute_csp_cbf_health_state_of_csp_master_is_degraded" time="0.091"><system-out>1|2020-05-19T05:39:39.501Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:39.502Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:39.503Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:39.503Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:39.504Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="134" name="test_attribute_csp_cbf_health_state_of_csp_master_is_failed" time="0.091"><system-out>1|2020-05-19T05:39:39.606Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:39.607Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:39.607Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:39.607Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:39.608Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="160" name="test_attribute_csp_cbf_health_state_of_csp_master_is_unknown" time="0.091"><system-out>1|2020-05-19T05:39:39.709Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:39.709Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:39.710Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:39.710Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:39.711Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="186" name="test_attribute_csp_pss_health_callback_of_csp_master_is_ok" time="0.090"><system-out>1|2020-05-19T05:39:39.813Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:39.813Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:39.814Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:39.814Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:39.814Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="213" name="test_attribute_csp_pss_health_callback_of_csp_master_is_degraded" time="0.093"><system-out>1|2020-05-19T05:39:39.919Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:39.920Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:39.920Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:39.920Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:39.921Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="239" name="test_attribute_csp_pss_health_callback_of_csp_master_is_failed" time="0.089"><system-out>1|2020-05-19T05:39:40.023Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.024Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.024Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.024Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.025Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="265" name="test_attribute_csp_pss_health_callback_of_csp_master_is_unknown" time="0.091"><system-out>1|2020-05-19T05:39:40.130Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.131Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.131Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.132Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.133Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="291" name="test_attribute_csp_pst_health_callback_of_csp_master_is_ok" time="0.091"><system-out>1|2020-05-19T05:39:40.234Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.234Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.235Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.235Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.236Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="318" name="test_attribute_csp_pst_health_callback_of_csp_master_is_degraded" time="0.088"><system-out>1|2020-05-19T05:39:40.335Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.335Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.336Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.336Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.337Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="344" name="test_attribute_csp_pst_health_callback_of_csp_master_is_failed" time="0.096"><system-out>1|2020-05-19T05:39:40.438Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.439Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.439Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.439Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.440Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="370" name="test_attribute_csp_pst_health_callback_of_csp_master_is_unknown" time="0.101"><system-out>1|2020-05-19T05:39:40.562Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.563Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.564Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.564Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.565Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="404" name="test_activity_message" time="0.091"><system-out>1|2020-05-19T05:39:40.667Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.668Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.669Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.669Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.671Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="410" name="test_state" time="0.088"><system-out>1|2020-05-19T05:39:40.772Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.772Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.773Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.773Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.775Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="416" name="test_status" time="0.089"><system-out>1|2020-05-19T05:39:40.873Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.873Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.874Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.874Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.876Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="422" name="test_logging_level" time="0.097"><system-out>1|2020-05-19T05:39:40.974Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:40.975Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:40.975Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:40.976Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:40.977Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:40.985Z|INFO|MainThread|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="429" name="test_logging_targets" time="0.092"><system-out>1|2020-05-19T05:39:41.084Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:41.084Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:41.085Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:41.085Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:41.086Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:41.091Z|INFO|MainThread|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to [&apos;console::cout&apos;]
+1|2020-05-19T05:39:41.091Z|INFO|MainThread|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to [&apos;console::cout&apos;]
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="436" name="test_test_mode" time="0.092"><system-out>1|2020-05-19T05:39:41.191Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:41.192Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:41.192Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:41.192Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:41.194Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="444" name="test_simulation_mode" time="0.093"><system-out>1|2020-05-19T05:39:41.298Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:41.299Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:41.299Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:41.299Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:41.301Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="452" name="test_control_mode" time="0.102"><system-out>1|2020-05-19T05:39:41.411Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:41.411Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:41.412Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:41.412Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:41.414Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="460" name="test_admin_mode" time="0.104"><system-out>1|2020-05-19T05:39:41.533Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:41.534Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:41.535Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:41.535Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:41.537Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.csp_master_leaf_node_test" file="test/unit/csp_master_leaf_node_test.py" line="466" name="test_health_state" time="0.100"><system-out>1|2020-05-19T05:39:41.652Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/cspmasterleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:41.653Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/cspmasterleafnode|Logging targets set to []
+1|2020-05-19T05:39:41.653Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/cspmasterleafnode|No Groups loaded for device: test/nodb/cspmasterleafnode
+1|2020-05-19T05:39:41.654Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/cspmasterleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:41.655Z|INFO|Thread-1|init_device|csp_master_leaf_node.py#256|tango-device:test/nodb/cspmasterleafnode|Csp Master Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase></testsuite></testsuites>

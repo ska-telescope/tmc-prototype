@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="0" hostname="0bafb88b40e9" name="pytest" skipped="0" tests="39" time="33.240" timestamp="2020-05-19T05:40:11.544329"><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="22" name="test_on_command_should_change_subarray_device_state_from_disable_to_off" time="0.108"><system-out>1|2020-05-19T05:40:11.831Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:11.832Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:11.832Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:11.832Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:11.835Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:11.837Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="30" name="test_standby_command_should_change_subarray_device_state_to_disable" time="0.092"><system-out>1|2020-05-19T05:40:11.947Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:11.947Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:11.948Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:11.948Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:11.951Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:11.953Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="38" name="test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources" time="0.254"><system-out>1|2020-05-19T05:40:12.061Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:12.062Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:12.062Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:12.063Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:12.067Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:12.070Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:12.074Z|INFO|MainThread|AssignResources|subarray_node.py#799|tango-device:test/nodb/subarraynode|Allocating dishes
+1|2020-05-19T05:40:12.213Z|INFO|MainThread|AssignResources|subarray_node.py#803|tango-device:test/nodb/subarraynode|Allocating CSP resources
+1|2020-05-19T05:40:12.216Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:12.220Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:12.220Z|INFO|MainThread|AssignResources|subarray_node.py#807|tango-device:test/nodb/subarraynode|Allocating SDP resources
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="99" name="test_assign_resource_should_raise_exception_when_called_when_device_state_disable" time="0.107"><system-out>1|2020-05-19T05:40:12.332Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:12.332Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:12.333Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:12.333Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:12.337Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:12.339Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="123" name="test_assign_resource_should_raise_exception_when_called_with_invalid_input" time="0.099"><system-out>1|2020-05-19T05:40:12.446Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:12.447Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:12.447Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:12.447Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:12.452Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:12.454Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:12.458Z|ERROR|MainThread|AssignResources|subarray_node.py#782|tango-device:test/nodb/subarraynode|Invalid JSON formatExpecting value: line 1 column 17 (char 16)
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="135" name="test_release_resource_command_subarray" time="0.133"><system-out>1|2020-05-19T05:40:12.563Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:12.564Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:12.565Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:12.565Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:12.570Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:12.573Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:12.578Z|INFO|MainThread|AssignResources|subarray_node.py#799|tango-device:test/nodb/subarraynode|Allocating dishes
+1|2020-05-19T05:40:12.588Z|INFO|MainThread|AssignResources|subarray_node.py#803|tango-device:test/nodb/subarraynode|Allocating CSP resources
+1|2020-05-19T05:40:12.591Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:12.595Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:12.596Z|INFO|MainThread|AssignResources|subarray_node.py#807|tango-device:test/nodb/subarraynode|Allocating SDP resources
+1|2020-05-19T05:40:12.599Z|INFO|MainThread|ReleaseAllResources|subarray_node.py#879|tango-device:test/nodb/subarraynode|Releasing dishes
+1|2020-05-19T05:40:12.601Z|INFO|MainThread|remove_receptors_in_group|subarray_node.py#543|tango-device:test/nodb/subarraynode|All the receptors are removed from the Subarray node.
+1|2020-05-19T05:40:12.602Z|INFO|MainThread|ReleaseAllResources|subarray_node.py#881|tango-device:test/nodb/subarraynode|Releasing CSP resources
+1|2020-05-19T05:40:12.602Z|INFO|MainThread|ReleaseAllResources|subarray_node.py#883|tango-device:test/nodb/subarraynode|Releasing SDP resources
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="188" name="test_release_resource_should_raise_exception_when_called_before_assign_resource" time="0.104"><system-out>1|2020-05-19T05:40:12.706Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:12.707Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:12.707Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:12.707Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:12.711Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:12.714Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:12.718Z|ERROR|MainThread|ReleaseAllResources|subarray_node.py#874|tango-device:test/nodb/subarraynode|Exception occurred in ReleaseAllResources command.Resources are already released from Subarray
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="200" name="test_configure_command_subarray" time="2.144"><system-out>1|2020-05-19T05:40:12.827Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:12.828Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:12.829Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:12.829Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:12.832Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:12.835Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:12.838Z|INFO|MainThread|AssignResources|subarray_node.py#799|tango-device:test/nodb/subarraynode|Allocating dishes
+1|2020-05-19T05:40:12.846Z|INFO|MainThread|AssignResources|subarray_node.py#803|tango-device:test/nodb/subarraynode|Allocating CSP resources
+1|2020-05-19T05:40:12.848Z|INFO|MainThread|AssignResources|subarray_node.py#807|tango-device:test/nodb/subarraynode|Allocating SDP resources
+1|2020-05-19T05:40:12.848Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:12.857Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:12.871Z|INFO|MainThread|Configure|subarray_node.py#1272|tango-device:test/nodb/subarraynode|Configure command invoked on Subarray
+1|2020-05-19T05:40:12.871Z|INFO|MainThread|Configure|subarray_node.py#1274|tango-device:test/nodb/subarraynode|Input Arguments for Configure command :-&gt; {&quot;pointing&quot;:{&quot;target&quot;:{&quot;system&quot;:&quot;ICRS&quot;,&quot;name&quot;:&quot;Polaris&quot;,&quot;RA&quot;:&quot;02:31:49.0946&quot;,&quot;dec&quot;:&quot;+89:15:50.7923&quot;}},&quot;dish&quot;:{&quot;receiverBand&quot;:&quot;1&quot;},&quot;csp&quot;:{&quot;id&quot;:&quot;sbi-mvp01-20200325-00001-science_A&quot;,&quot;frequencyBand&quot;:&quot;1&quot;,&quot;fsp&quot;:[{&quot;fspID&quot;:1,&quot;functionMode&quot;:&quot;CORR&quot;,&quot;frequencySliceID&quot;:1,&quot;integrationTime&quot;:1400,&quot;corrBandwidth&quot;:0}]},&quot;sdp&quot;:{&quot;scan_type&quot;:&quot;science_A&quot;},&quot;tmc&quot;:{&quot;scanDuration&quot;:10.0}}
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="278" name="test_configure_command_subarray_with_invalid_key" time="0.155"><system-out>1|2020-05-19T05:40:15.010Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:15.010Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:15.011Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:15.011Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:15.016Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:15.018Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:15.022Z|INFO|MainThread|AssignResources|subarray_node.py#799|tango-device:test/nodb/subarraynode|Allocating dishes
+1|2020-05-19T05:40:15.033Z|INFO|MainThread|AssignResources|subarray_node.py#803|tango-device:test/nodb/subarraynode|Allocating CSP resources
+1|2020-05-19T05:40:15.035Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:15.035Z|INFO|MainThread|AssignResources|subarray_node.py#807|tango-device:test/nodb/subarraynode|Allocating SDP resources
+1|2020-05-19T05:40:15.038Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:15.053Z|INFO|MainThread|Configure|subarray_node.py#1272|tango-device:test/nodb/subarraynode|Configure command invoked on Subarray
+1|2020-05-19T05:40:15.054Z|INFO|MainThread|Configure|subarray_node.py#1274|tango-device:test/nodb/subarraynode|Input Arguments for Configure command :-&gt; {&quot;pointing12345&quot;:{&quot;target&quot;:{&quot;system&quot;:&quot;ICRS&quot;,&quot;name&quot;:&quot;Polaris&quot;,&quot;RA&quot;:&quot;02:31:49.0946&quot;,&quot;dec&quot;:&quot;+89:15:50.7923&quot;}},&quot;dish&quot;:{&quot;receiverBand&quot;:&quot;1&quot;},&quot;csp&quot;:{&quot;id&quot;:&quot;sbi-mvp01-20200325-00001-science_A&quot;,&quot;frequencyBand&quot;:&quot;1&quot;,&quot;fsp&quot;:[{&quot;fspID&quot;:1,&quot;functionMode&quot;:&quot;CORR&quot;,&quot;frequencySliceID&quot;:1,&quot;integrationTime&quot;:1400,&quot;corrBandwidth&quot;:0}]},&quot;sdp&quot;:{&quot;scan_type&quot;:&quot;science_A&quot;},&quot;tmc&quot;:{&quot;scanDuration&quot;:10.0}}
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="340" name="test_configure_command_subarray_with_invalid_configure_input" time="0.169"><system-out>1|2020-05-19T05:40:15.168Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:15.169Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:15.169Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:15.170Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:15.173Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:15.177Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:15.183Z|INFO|MainThread|AssignResources|subarray_node.py#799|tango-device:test/nodb/subarraynode|Allocating dishes
+1|2020-05-19T05:40:15.192Z|INFO|MainThread|AssignResources|subarray_node.py#803|tango-device:test/nodb/subarraynode|Allocating CSP resources
+1|2020-05-19T05:40:15.195Z|INFO|MainThread|AssignResources|subarray_node.py#807|tango-device:test/nodb/subarraynode|Allocating SDP resources
+1|2020-05-19T05:40:15.196Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:15.205Z|INFO|ThreadPoolExecutor-0_0|add_receptors_in_group|subarray_node.py#372|tango-device:test/nodb/subarraynode|Receptors are assigned successfully.
+1|2020-05-19T05:40:15.234Z|INFO|MainThread|Configure|subarray_node.py#1272|tango-device:test/nodb/subarraynode|Configure command invoked on Subarray
+1|2020-05-19T05:40:15.234Z|INFO|MainThread|Configure|subarray_node.py#1274|tango-device:test/nodb/subarraynode|Input Arguments for Configure command :-&gt; {&quot;invalid_key&quot;}
+1|2020-05-19T05:40:15.234Z|ERROR|MainThread|Configure|subarray_node.py#1284|tango-device:test/nodb/subarraynode|Invalid JSON formatExpecting &apos;:&apos; delimiter: line 1 column 15 (char 14)
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="398" name="test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready" time="5.118"><system-out>1|2020-05-19T05:40:15.355Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:15.355Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:15.356Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:15.356Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:15.359Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:15.361Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:20.371Z|INFO|MainThread|Scan|subarray_node.py#624|tango-device:test/nodb/subarraynode|Subarray is scanning at the desired pointing coordinates.
+1|2020-05-19T05:40:20.373Z|ERROR|Thread-2|EndScan|subarray_node.py#701|tango-device:test/nodb/subarraynode|End Scan Command Already Executed
+Scan is already completed
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+Exception in thread Thread-2:
+Traceback (most recent call last):
+  File &quot;/usr/lib/python3.7/threading.py&quot;, line 917, in _bootstrap_inner
+    self.run()
+  File &quot;/usr/lib/python3.7/threading.py&quot;, line 1166, in run
+    self.function(*self.args, **self.kwargs)
+  File &quot;/venv/lib/python3.7/site-packages/tango/server.py&quot;, line 1142, in cmd
+    return get_worker().execute(f, self, *args, **kwargs)
+  File &quot;/venv/lib/python3.7/site-packages/tango/green.py&quot;, line 98, in execute
+    return fn(*args, **kwargs)
+  File &quot;/venv/lib/python3.7/site-packages/tango/log4tango.py&quot;, line 130, in log_stream
+    return f(*args, **kwargs)
+  File &quot;/venv/lib/python3.7/site-packages/subarraynode/subarray_node.py&quot;, line 710, in EndScan
+    self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+  File &quot;/venv/lib/python3.7/site-packages/subarraynode/subarray_node.py&quot;, line 971, in throw_exception
+    tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+PyTango.DevFailed: DevFailed[
+DevError[
+    desc = End Scan Command Already Executed
+           
+  origin = ENDSCAN command execution
+  reason = SubarrayNode_Commandfailed
+severity = ERR]
+]
+
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="466" name="test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning" time="5.137"><system-out>1|2020-05-19T05:40:20.523Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:20.523Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:20.524Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:20.524Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:20.527Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:20.528Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:25.537Z|INFO|MainThread|EndScan|subarray_node.py#693|tango-device:test/nodb/subarraynode|Scan is completed
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="534" name="test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready" time="5.133"><system-out>1|2020-05-19T05:40:25.668Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:25.668Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:25.669Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:25.669Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:25.673Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:25.675Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:30.688Z|INFO|MainThread|EndSB|subarray_node.py#1325|tango-device:test/nodb/subarraynode|EndSB command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node.
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="598" name="test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start" time="5.120"><system-out>1|2020-05-19T05:40:30.799Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:30.799Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:30.800Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:30.800Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:30.804Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:30.806Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="656" name="test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start" time="5.151"><system-out>1|2020-05-19T05:40:35.968Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:35.968Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:35.969Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:35.969Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:35.976Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:35.977Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="711" name="test_subarray_health_state_is_degraded_when_csp_subarray1_ln_is_degraded_after_start" time="0.160"><system-out>1|2020-05-19T05:40:41.158Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:41.159Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:41.160Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:41.160Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:41.163Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:41.165Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="741" name="test_subarray_health_state_is_ok_when_csp_and_sdp_subarray1_ln_is_ok_after_start" time="0.132"><system-out>1|2020-05-19T05:40:41.314Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:41.314Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:41.315Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:41.315Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:41.318Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:41.320Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="786" name="test_subarray_health_state_is_unknown_when_csp_subarray1_ln_is_unknown_after_start" time="0.106"><system-out>1|2020-05-19T05:40:41.434Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:41.435Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:41.436Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:41.436Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:41.439Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:41.441Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="816" name="test_subarray_health_state_is_failed_when_csp_subarray1_ln_is_failed_after_start" time="0.103"><system-out>1|2020-05-19T05:40:41.551Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:41.552Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:41.552Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:41.552Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:41.555Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:41.557Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="855" name="test_subarray_device_state_is_on_when_csp_and_sdp_subarray1_is_on_after_start" time="0.099"><system-out>1|2020-05-19T05:40:41.668Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:41.669Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:41.669Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:41.669Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:41.673Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:41.674Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:41.677Z|INFO|MainThread|calculate_device_state|subarray_node.py#186|tango-device:test/nodb/subarraynode|CSP and SDP subarray are not in ON state
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="895" name="test_status" time="0.105"><system-out>1|2020-05-19T05:40:41.786Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:41.786Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:41.787Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:41.787Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:41.791Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:41.794Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="901" name="test_state" time="0.110"><system-out>1|2020-05-19T05:40:41.911Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:41.912Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:41.913Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:41.913Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:41.917Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:41.919Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="907" name="test_health_state" time="0.112"><system-out>1|2020-05-19T05:40:42.039Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:42.039Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:42.040Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:42.040Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:42.043Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:42.045Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="913" name="test_activation_time" time="0.104"><system-out>1|2020-05-19T05:40:42.153Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:42.154Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:42.154Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:42.154Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:42.158Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:42.159Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="919" name="test_admin_mode" time="0.104"><system-out>1|2020-05-19T05:40:42.276Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:42.277Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:42.277Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:42.277Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:42.281Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:42.283Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="925" name="test_build_state" time="0.122"><system-out>1|2020-05-19T05:40:42.397Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:42.398Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:42.398Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:42.398Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:42.403Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:42.406Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="932" name="test_configuration_delay_expected" time="0.105"><system-out>1|2020-05-19T05:40:42.551Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:42.551Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:42.552Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:42.552Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:42.556Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:42.559Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="938" name="test_configuration_progress" time="0.126"><system-out>1|2020-05-19T05:40:42.689Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:42.690Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:42.691Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:42.691Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:42.695Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:42.698Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="944" name="test_control_mode" time="0.100"><system-out>1|2020-05-19T05:40:42.806Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:42.806Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:42.807Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:42.807Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:42.810Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:42.812Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="952" name="test_obs_mode" time="0.105"><system-out>1|2020-05-19T05:40:42.922Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:42.923Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:42.923Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:42.924Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:42.928Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:42.930Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="958" name="test_obs_state" time="0.113"><system-out>1|2020-05-19T05:40:43.042Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:43.042Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:43.043Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:43.043Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:43.047Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:43.049Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="964" name="test_simulation_mode" time="0.114"><system-out>1|2020-05-19T05:40:43.180Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:43.180Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:43.181Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:43.181Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:43.185Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:43.188Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="972" name="test_test_mode" time="0.117"><system-out>1|2020-05-19T05:40:43.310Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:43.310Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:43.311Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:43.311Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:43.315Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:43.317Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="980" name="test_version_id" time="0.127"><system-out>1|2020-05-19T05:40:43.449Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:43.450Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:43.450Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:43.450Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:43.455Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:43.459Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="986" name="test_scan_id" time="0.121"><system-out>1|2020-05-19T05:40:43.594Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:43.595Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:43.595Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:43.595Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:43.599Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:43.602Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="992" name="test_sb_id" time="0.112"><system-out>1|2020-05-19T05:40:43.721Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:43.721Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:43.722Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:43.722Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:43.726Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:43.729Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="998" name="test_activity_message" time="0.106"><system-out>1|2020-05-19T05:40:43.843Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:43.844Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:43.844Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:43.845Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:43.849Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:43.851Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="1004" name="test_configured_capabilities" time="0.108"><system-out>1|2020-05-19T05:40:43.969Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:43.970Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:43.970Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:43.970Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:43.974Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:43.975Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.subarray_node_test" file="test/unit/subarray_node_test.py" line="1010" name="test_receptor_id_list" time="0.105"><system-out>1|2020-05-19T05:40:44.089Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/subarraynode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:44.090Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/subarraynode|Logging targets set to []
+1|2020-05-19T05:40:44.091Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/subarraynode|No Groups loaded for device: test/nodb/subarraynode
+1|2020-05-19T05:40:44.091Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/subarraynode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:44.095Z|INFO|Thread-1|init_device|subarray_node.py#1095|tango-device:test/nodb/subarraynode|Csp Subarray Leaf Node initialized successfully.
+1|2020-05-19T05:40:44.097Z|INFO|Thread-1|init_device|subarray_node.py#1127|tango-device:test/nodb/subarraynode|Subarray node is initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase></testsuite></testsuites>

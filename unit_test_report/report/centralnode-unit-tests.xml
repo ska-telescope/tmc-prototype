@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="0" hostname="0bafb88b40e9" name="pytest" skipped="1" tests="32" time="4.514" timestamp="2020-05-19T05:39:32.825709"><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="58" name="test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_start[HealthState.DEGRADED]" time="0.100"><system-out>1|2020-05-19T05:39:33.019Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:33.020Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:33.020Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:33.020Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:33.021Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:33.026Z|INFO|MainThread|healthStateCallback|central_node.py#78|tango-device:test/nodb/centralnode|healthState of &lt;Mock name=&apos;mock.device&apos; id=&apos;140475062000608&apos;&gt; :-&gt; DEGRADED
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="58" name="test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_start[HealthState.OK]" time="0.095"><system-out>1|2020-05-19T05:39:33.133Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:33.134Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:33.134Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:33.134Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:33.134Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:33.138Z|INFO|MainThread|healthStateCallback|central_node.py#72|tango-device:test/nodb/centralnode|healthState of &lt;Mock name=&apos;mock.device&apos; id=&apos;140475061911336&apos;&gt; :-&gt; OK
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="58" name="test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_start[HealthState.UNKNOWN]" time="0.096"><system-out>1|2020-05-19T05:39:33.242Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:33.243Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:33.243Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:33.243Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:33.243Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:33.248Z|INFO|MainThread|healthStateCallback|central_node.py#90|tango-device:test/nodb/centralnode|healthState of &lt;Mock name=&apos;mock.device&apos; id=&apos;140475061909768&apos;&gt; :-&gt; UNKNOWN
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="58" name="test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_start[HealthState.FAILED]" time="0.098"><system-out>1|2020-05-19T05:39:33.352Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:33.353Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:33.353Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:33.353Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:33.354Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:33.359Z|INFO|MainThread|healthStateCallback|central_node.py#84|tango-device:test/nodb/centralnode|healthState of &lt;Mock name=&apos;mock.device&apos; id=&apos;140475061908480&apos;&gt; :-&gt; FAILED
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="77" name="test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_start" time="0.093"><system-out>1|2020-05-19T05:39:33.460Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:33.460Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:33.461Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:33.461Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:33.461Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:33.466Z|CRITICAL|MainThread|healthStateCallback|central_node.py#135|tango-device:test/nodb/centralnode|Error while aggregating Subarray healthState 
+: &apos;in &lt;string&gt;&apos; requires string as left operand, not NoneType
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="103" name="test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start" time="0.096"><system-out>1|2020-05-19T05:39:33.569Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:33.570Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:33.570Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:33.570Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:33.571Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:33.576Z|INFO|MainThread|healthStateCallback|central_node.py#72|tango-device:test/nodb/centralnode|healthState of &lt;Mock name=&apos;mock.device&apos; id=&apos;140475061911000&apos;&gt; :-&gt; OK
+1|2020-05-19T05:39:33.576Z|CRITICAL|MainThread|healthStateCallback|central_node.py#126|tango-device:test/nodb/centralnode|Key Error occurred while setting Subarray healthState: -1
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="138" name="test_stow_antennas_should_set_stow_mode_on_leaf_nodes" time="0.106"><system-out>1|2020-05-19T05:39:33.681Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:33.682Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:33.683Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:33.683Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:33.683Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:33.692Z|INFO|MainThread|StowAntennas|central_node.py#407|tango-device:test/nodb/centralnode|STOW command invoked from Central node on the requested dishes
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="158" name="test_activity_message_attribute_captures_the_last_received_command" time="0.102"><system-out>1|2020-05-19T05:39:33.802Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:33.803Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:33.803Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:33.803Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:33.803Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:33.809Z|INFO|MainThread|StartUpTelescope|central_node.py#485|tango-device:test/nodb/centralnode|StartUpTelescope command invoked from Central node
+1|2020-05-19T05:39:33.816Z|INFO|MainThread|StandByTelescope|central_node.py#444|tango-device:test/nodb/centralnode|StandByTelescope command invoked from Central node
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="169" name="test_telescope_health_state" time="0.096"><system-out>1|2020-05-19T05:39:33.917Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:33.918Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:33.919Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:33.919Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:33.919Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="175" name="test_subarray1_health_state" time="0.094"><system-out>1|2020-05-19T05:39:34.026Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:34.026Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:34.027Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:34.027Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:34.027Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="181" name="test_subarray2_health_state" time="0.097"><system-out>1|2020-05-19T05:39:34.135Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:34.136Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:34.137Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:34.137Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:34.137Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="187" name="test_subarray3_health_state" time="0.094"><system-out>1|2020-05-19T05:39:34.242Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:34.243Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:34.243Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:34.244Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:34.244Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="193" name="test_activity_message" time="0.105"><system-out>1|2020-05-19T05:39:34.354Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:34.355Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:34.355Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:34.355Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:34.356Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="200" name="test_state" time="0.108"><system-out>1|2020-05-19T05:39:34.480Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:34.481Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:34.482Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:34.482Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:34.482Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="206" name="test_status" time="0.101"><system-out>1|2020-05-19T05:39:34.598Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:34.599Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:34.600Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:34.600Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:34.600Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="212" name="test_logging_level" time="0.096"><system-out>1|2020-05-19T05:39:34.707Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:34.708Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:34.709Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:34.709Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:34.709Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:34.718Z|INFO|MainThread|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="219" name="test_logging_targets" time="0.100"><system-out>1|2020-05-19T05:39:34.820Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:34.821Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:34.821Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:34.822Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:34.822Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:34.832Z|INFO|MainThread|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to [&apos;console::cout&apos;]
+1|2020-05-19T05:39:34.832Z|INFO|MainThread|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to [&apos;console::cout&apos;]
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="226" name="test_test_mode" time="0.100"><system-out>1|2020-05-19T05:39:34.932Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:34.933Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:34.933Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:34.933Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:34.933Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="234" name="test_simulation_mode" time="0.098"><system-out>1|2020-05-19T05:39:35.045Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:35.045Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:35.046Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:35.046Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:35.046Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="242" name="test_control_mode" time="0.092"><system-out>1|2020-05-19T05:39:35.153Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:35.154Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:35.154Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:35.154Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:35.154Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="250" name="test_admin_mode" time="0.133"><system-out>1|2020-05-19T05:39:35.297Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:35.298Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:35.298Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:35.298Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:35.298Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="256" name="test_health_state" time="0.097"><system-out>1|2020-05-19T05:39:35.405Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:35.406Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:35.406Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:35.406Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:35.406Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="275" name="test_assign_resources_invalid_json" time="0.135"><system-out>1|2020-05-19T05:39:35.554Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:35.555Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:35.555Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:35.555Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:35.555Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:35.563Z|ERROR|MainThread|AssignResources|central_node.py#690|tango-device:test/nodb/centralnode|JSON key not found 
+1|2020-05-19T05:39:35.563Z|INFO|MainThread|AssignResources|central_node.py#703|tango-device:test/nodb/centralnode|[]
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="288" name="test_assign_resources_invalid_key" time="0.103"><system-out>1|2020-05-19T05:39:35.689Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:35.690Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:35.690Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:35.690Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:35.690Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:35.698Z|ERROR|MainThread|AssignResources|central_node.py#690|tango-device:test/nodb/centralnode|JSON key not found 
+1|2020-05-19T05:39:35.698Z|INFO|MainThread|AssignResources|central_node.py#703|tango-device:test/nodb/centralnode|[]
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="301" name="test_release_resources_invalid_json" time="0.099"><system-out>1|2020-05-19T05:39:35.795Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:35.796Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:35.797Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:35.797Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:35.797Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:35.804Z|ERROR|MainThread|ReleaseResources|central_node.py#790|tango-device:test/nodb/centralnode|Invalid JSON format
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="313" name="test_release_resources_invalid_key" time="0.126"><system-out>1|2020-05-19T05:39:35.918Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:35.919Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:35.920Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:35.920Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:35.920Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+1|2020-05-19T05:39:35.929Z|ERROR|MainThread|ReleaseResources|central_node.py#795|tango-device:test/nodb/centralnode|JSON key not found 
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="324" name="test_stow_antennas_invalid_value" time="0.133"><system-out>1|2020-05-19T05:39:36.083Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:36.084Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:36.085Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:36.085Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:36.085Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:36.091Z|ERROR|MainThread|StowAntennas|central_node.py#423|tango-device:test/nodb/centralnode|Invalid StowAntennas arguments 
+
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="337" name="test_stow_antennas_invalid_argument" time="0.114"><system-out>1|2020-05-19T05:39:36.204Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:36.205Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:36.205Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:36.206Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:36.206Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:36.214Z|ERROR|MainThread|StowAntennas|central_node.py#423|tango-device:test/nodb/centralnode|Invalid StowAntennas arguments 
+
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="350" name="test_assign_resources" time="0.134"><system-out>1|2020-05-19T05:39:36.366Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:36.367Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:36.367Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:36.368Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:36.368Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:36.378Z|INFO|MainThread|AssignResources|central_node.py#669|tango-device:test/nodb/centralnode|Resources are assigned successfully
+1|2020-05-19T05:39:36.378Z|INFO|MainThread|AssignResources|central_node.py#670|tango-device:test/nodb/centralnode|[]
+1|2020-05-19T05:39:36.378Z|INFO|MainThread|AssignResources|central_node.py#703|tango-device:test/nodb/centralnode|{&apos;dish&apos;: {&apos;receptorIDList_success&apos;: []}}
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="397" name="test_release_resources" time="0.109"><skipped message="" type="pytest.xfail"></skipped><system-out>1|2020-05-19T05:39:36.489Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:36.490Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:36.491Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:36.491Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:36.491Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:36.502Z|INFO|MainThread|ReleaseResources|central_node.py#777|tango-device:test/nodb/centralnode|Resources have been released successfully
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="427" name="test_standby" time="0.108"><system-out>1|2020-05-19T05:39:36.741Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:36.742Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:36.742Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:36.742Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:36.743Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:36.750Z|INFO|MainThread|StandByTelescope|central_node.py#444|tango-device:test/nodb/centralnode|StandByTelescope command invoked from Central node
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.central_node_test" file="test/unit/central_node_test.py" line="470" name="test_startup" time="0.104"><system-out>1|2020-05-19T05:39:36.858Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/centralnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:36.859Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/centralnode|Logging targets set to []
+1|2020-05-19T05:39:36.859Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/centralnode|No Groups loaded for device: test/nodb/centralnode
+1|2020-05-19T05:39:36.859Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/centralnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:36.859Z|INFO|Thread-1|init_device|central_node.py#239|tango-device:test/nodb/centralnode|Device initialisating...
+Ready to accept request
+1|2020-05-19T05:39:36.867Z|INFO|MainThread|StartUpTelescope|central_node.py#485|tango-device:test/nodb/centralnode|StartUpTelescope command invoked from Central node
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase></testsuite></testsuites>

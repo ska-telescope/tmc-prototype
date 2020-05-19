@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="0" hostname="0bafb88b40e9" name="pytest" skipped="2" tests="43" time="6.616" timestamp="2020-05-19T05:39:55.225720"><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="20" name="test_start_scan_should_command_dish_to_start_scan_when_it_is_ready" time="0.100"><system-out>1|2020-05-19T05:39:55.512Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:55.513Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:55.513Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:55.513Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:55.513Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:55.514Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:55.515Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="43" name="test_configure_to_send_correct_configuration_data_when_dish_is_idle" time="0.093"><skipped message="" type="pytest.xfail"></skipped><system-out>1|2020-05-19T05:39:55.627Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:55.628Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:55.628Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:55.628Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:55.629Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:55.629Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:55.630Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="83" name="test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning" time="0.094"><system-out>1|2020-05-19T05:39:55.778Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:55.779Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:55.780Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:55.780Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:55.780Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:55.781Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:55.782Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="104" name="test_standby_lp_mode_should_command_dish_to_standby" time="0.095"><system-out>1|2020-05-19T05:39:55.887Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:55.888Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:55.888Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:55.889Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:55.889Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:55.890Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:55.891Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="124" name="test_set_operate_mode_should_command_dish_to_start" time="0.090"><system-out>1|2020-05-19T05:39:55.991Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:55.992Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:55.992Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:55.992Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:55.992Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:55.993Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:55.994Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="143" name="test_track_should_command_dish_to_start_tracking" time="0.087"><skipped message="" type="pytest.xfail"></skipped><system-out>1|2020-05-19T05:39:56.093Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:56.094Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:56.094Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:56.094Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:56.094Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:56.095Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:56.096Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="170" name="test_stop_track_should_command_dish_to_stop_tracking" time="0.097"><system-out>1|2020-05-19T05:39:56.250Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:56.250Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:56.251Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:56.251Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:56.251Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:56.252Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:56.252Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="189" name="test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinates" time="0.101"><system-out>1|2020-05-19T05:39:56.363Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:56.363Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:56.364Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:56.364Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:56.364Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:56.364Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:56.366Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="209" name="test_start_capture_should_command_dish_to_start_capture_on_the_set_configured_band" time="0.107"><system-out>1|2020-05-19T05:39:56.477Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:56.478Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:56.479Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:56.479Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:56.480Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:56.480Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:56.482Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="229" name="test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_band" time="0.122"><system-out>1|2020-05-19T05:39:56.618Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:56.619Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:56.620Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:56.620Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:56.620Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:56.621Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:56.622Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="257" name="test_dish_leaf_node_dish_mode_is_off_when_dish_is_off" time="0.132"><system-out>1|2020-05-19T05:39:56.759Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:56.760Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:56.761Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:56.761Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:56.761Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:56.762Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:56.762Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="283" name="test_dish_leaf_node_dish_mode_is_startup_when_dish_is_startup" time="0.122"><system-out>1|2020-05-19T05:39:56.904Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:56.904Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:56.905Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:56.905Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:56.905Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:56.906Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:56.906Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="307" name="test_dish_leaf_node_dish_mode_is_shutdown_when_dish_is_shutdown" time="0.095"><system-out>1|2020-05-19T05:39:57.018Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:57.019Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:57.019Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:57.019Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:57.019Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:57.020Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:57.020Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="332" name="test_dish_leaf_node_dish_mode_is_standby_when_dish_is_standby" time="0.091"><system-out>1|2020-05-19T05:39:57.125Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:57.125Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:57.126Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:57.126Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:57.126Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:57.127Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:57.127Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="358" name="test_dish_leaf_node_dish_mode_is_standbyfp_when_dish_is_standbyfp" time="0.097"><system-out>1|2020-05-19T05:39:57.230Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:57.231Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:57.231Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:57.232Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:57.232Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:57.233Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:57.234Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="384" name="test_dish_leaf_node_dish_mode_is_maint_when_dish_is_maint" time="0.096"><system-out>1|2020-05-19T05:39:57.343Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:57.343Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:57.344Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:57.344Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:57.344Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:57.345Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:57.345Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="410" name="test_dish_leaf_node_dish_mode_is_stow_when_dish_is_stow" time="0.096"><system-out>1|2020-05-19T05:39:57.456Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:57.457Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:57.457Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:57.457Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:57.458Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:57.458Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:57.459Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="436" name="test_dish_leaf_node_dish_mode_is_config_when_dish_is_config" time="0.104"><system-out>1|2020-05-19T05:39:57.570Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:57.571Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:57.572Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:57.572Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:57.572Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:57.573Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:57.574Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="462" name="test_dish_leaf_node_dish_mode_is_operate_when_dish_is_operate" time="0.094"><system-out>1|2020-05-19T05:39:57.680Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:57.680Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:57.681Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:57.681Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:57.681Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:57.682Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:57.682Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="496" name="test_dish_leaf_node_when_dish_capturing_callback_is_true" time="0.107"><system-out>1|2020-05-19T05:39:57.792Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:57.794Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:57.794Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:57.795Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:57.795Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:57.796Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:57.797Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="522" name="test_dish_leaf_node_when_dish_capturing_callback_is_false" time="0.106"><system-out>1|2020-05-19T05:39:57.914Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:57.915Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:57.916Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:57.916Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:57.916Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:57.917Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:57.918Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="556" name="test_dish_leaf_node_when_acheived_pointing_callback_is_true" time="0.137"><system-out>1|2020-05-19T05:39:58.071Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:58.072Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:58.072Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:58.072Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:58.072Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:58.073Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:58.073Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="583" name="test_dish_leaf_node_when_desired_pointing_callback_is_true" time="0.106"><system-out>1|2020-05-19T05:39:58.191Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:58.192Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:58.193Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:58.193Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:58.193Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:58.194Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:58.194Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:58.197Z|ERROR|MainThread|dishDesiredPointingCallback|dish_leaf_node.py#168|tango-device:test/nodb/dishleafnode|Desired Pointing :-&gt; 0.0
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="610" name="test_configure_should_raise_exception_when_called_with_invalid_json" time="0.099"><system-out>1|2020-05-19T05:39:58.303Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:58.304Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:58.304Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:58.305Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:58.305Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:58.306Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:58.307Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:58.311Z|ERROR|MainThread|Configure|dish_leaf_node.py#682|tango-device:test/nodb/dishleafnode|Invalid JSON format.Expecting &apos;:&apos; delimiter: line 1 column 15 (char 14)
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="621" name="test_configure_should_raise_exception_when_called_with_invalid_arguments" time="0.104"><system-out>1|2020-05-19T05:39:58.422Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:58.423Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:58.423Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:58.423Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:58.424Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:58.424Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:58.426Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:58.429Z|ERROR|MainThread|Configure|dish_leaf_node.py#689|tango-device:test/nodb/dishleafnode|JSON key not found.&apos;RA&apos;
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="635" name="test_configure_should_raise_generic_exception" time="0.116"><system-out>1|2020-05-19T05:39:58.549Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:58.550Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:58.550Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:58.550Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:58.551Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:58.551Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:58.553Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:58.557Z|ERROR|MainThread|Configure|dish_leaf_node.py#701|tango-device:test/nodb/dishleafnode|Exception occurred in Configure commandlist indices must be integers or slices, not str
+1|2020-05-19T05:39:58.557Z|ERROR|MainThread|_handle_generic_exception|dish_leaf_node.py#361|tango-device:test/nodb/dishleafnode|Exception occurred in Configure commandlist indices must be integers or slices, not str
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="646" name="test_scan_should_raise_exception_when_called_with_invalid_arguments" time="0.372"><system-out>1|2020-05-19T05:39:58.812Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:58.812Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:58.813Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:58.813Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:58.813Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:58.814Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:58.815Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:58.818Z|ERROR|MainThread|Scan|dish_leaf_node.py#575|tango-device:test/nodb/dishleafnode|Exception in executing SCAN command Invalid argument could not convert string to float: &apos;a&apos;
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="657" name="test_endscan_should_raise_exception_when_called_with_invalid_arguments" time="0.125"><system-out>1|2020-05-19T05:39:59.086Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:59.086Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:59.086Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:59.087Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:59.087Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:59.087Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:59.088Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:59.091Z|ERROR|MainThread|EndScan|dish_leaf_node.py#614|tango-device:test/nodb/dishleafnode|Exception in EndScan command Invalid argument could not convert string to float: &apos;a&apos;
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="668" name="test_startcapture_should_raise_exception_when_called_with_invalid_arguments" time="0.099"><system-out>1|2020-05-19T05:39:59.196Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:59.197Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:59.197Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:59.197Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:59.197Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:59.198Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:59.199Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:59.203Z|ERROR|MainThread|StartCapture|dish_leaf_node.py#739|tango-device:test/nodb/dishleafnode|Exception occurred in StartCapture command Invalid argument could not convert string to float: &apos;a&apos;
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="679" name="test_stopstartcapture_should_raise_exception_when_called_with_invalid_arguments" time="0.103"><system-out>1|2020-05-19T05:39:59.313Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:59.314Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:59.314Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:59.314Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:59.315Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:59.315Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:59.316Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:59.321Z|ERROR|MainThread|StopCapture|dish_leaf_node.py#773|tango-device:test/nodb/dishleafnode|Exception occurred in StopCapture command Invalid argument could not convert string to float: &apos;a&apos;
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="690" name="test_slew_should_raise_exception_when_called_with_invalid_arguments" time="0.105"><system-out>1|2020-05-19T05:39:59.433Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:59.433Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:59.434Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:59.434Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:59.434Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:59.435Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:59.436Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:59.440Z|ERROR|MainThread|Slew|dish_leaf_node.py#820|tango-device:test/nodb/dishleafnode|Exception occurred in Slew command Invalid argument could not convert string to float: &apos;a&apos;
+1|2020-05-19T05:39:59.440Z|ERROR|MainThread|Slew|dish_leaf_node.py#823|tango-device:test/nodb/dishleafnode|Exception occurred in Slew command
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="701" name="test_track_should_raise_exception_when_called_with_invalid_arguments" time="0.111"><system-out>1|2020-05-19T05:39:59.556Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:59.557Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:59.557Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:59.557Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:59.557Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:59.558Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:59.559Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:59.564Z|ERROR|MainThread|Track|dish_leaf_node.py#884|tango-device:test/nodb/dishleafnode|JSON key not found.&apos;RA&apos;
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="715" name="test_track_should_raise_exception_when_called_with_invalid_json" time="0.101"><system-out>1|2020-05-19T05:39:59.674Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:59.674Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:59.675Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:59.675Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:59.675Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:59.676Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:59.677Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:39:59.682Z|ERROR|MainThread|Track|dish_leaf_node.py#877|tango-device:test/nodb/dishleafnode|Invalid JSON format.Expecting &apos;:&apos; delimiter: line 1 column 15 (char 14)
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="727" name="test_activity_message" time="0.113"><system-out>1|2020-05-19T05:39:59.802Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:59.803Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:59.803Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:59.803Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:59.804Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:59.805Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:59.806Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="734" name="test_state" time="0.094"><system-out>1|2020-05-19T05:39:59.916Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:39:59.917Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:39:59.918Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:39:59.918Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:39:59.918Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:39:59.919Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:39:59.920Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="740" name="test_status" time="0.095"><system-out>1|2020-05-19T05:40:00.034Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:00.034Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:40:00.035Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:40:00.035Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:00.035Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:40:00.036Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:40:00.037Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="746" name="test_logging_level" time="0.095"><system-out>1|2020-05-19T05:40:00.138Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:00.139Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:40:00.139Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:40:00.139Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:00.139Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:40:00.140Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:40:00.141Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:00.147Z|INFO|MainThread|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="753" name="test_logging_targets" time="0.235"><system-out>1|2020-05-19T05:40:00.334Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:00.335Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:40:00.335Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:40:00.335Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:00.335Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:40:00.336Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:40:00.338Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+1|2020-05-19T05:40:00.396Z|INFO|MainThread|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to [&apos;console::cout&apos;]
+1|2020-05-19T05:40:00.396Z|INFO|MainThread|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to [&apos;console::cout&apos;]
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="760" name="test_test_mode" time="0.123"><system-out>1|2020-05-19T05:40:00.522Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:00.522Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:40:00.523Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:40:00.523Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:00.523Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:40:00.523Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:40:00.524Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="768" name="test_simulation_mode" time="0.125"><system-out>1|2020-05-19T05:40:00.666Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:00.667Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:40:00.667Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:40:00.667Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:00.667Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:40:00.668Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:40:00.669Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="776" name="test_control_mode" time="0.111"><system-out>1|2020-05-19T05:40:00.788Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:00.788Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:40:00.788Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:40:00.789Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:00.789Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:40:00.789Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:40:00.790Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="784" name="test_admin_mode" time="0.115"><system-out>1|2020-05-19T05:40:00.923Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:00.924Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:40:00.924Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:40:00.924Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:00.924Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:40:00.925Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:40:00.927Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase><testcase classname="test.unit.dish_leaf_node_test" file="test/unit/dish_leaf_node_test.py" line="790" name="test_health_state" time="0.106"><system-out>1|2020-05-19T05:40:01.052Z|INFO|Thread-1|write_loggingLevel|base_device.py#455|tango-device:test/nodb/dishleafnode|Logging level set to LoggingLevel.INFO on Python and Tango loggers
+1|2020-05-19T05:40:01.052Z|INFO|Thread-1|update_logging_handlers|base_device.py#163|tango-device:test/nodb/dishleafnode|Logging targets set to []
+1|2020-05-19T05:40:01.053Z|INFO|Thread-1|init_device|base_device.py#364|tango-device:test/nodb/dishleafnode|No Groups loaded for device: test/nodb/dishleafnode
+1|2020-05-19T05:40:01.053Z|INFO|Thread-1|init_device|base_device.py#366|tango-device:test/nodb/dishleafnode|Completed SKABaseDevice.init_device
+1|2020-05-19T05:40:01.053Z|INFO|Thread-1|init_device|dish_leaf_node.py#413|tango-device:test/nodb/dishleafnode|Initializing Leaf Node...
+1|2020-05-19T05:40:01.053Z|ERROR|Thread-1|init_device|dish_leaf_node.py#443|tango-device:test/nodb/dishleafnode|Setting CallBack Model as :-&gt; PUSH_CALLBACK
+1|2020-05-19T05:40:01.054Z|INFO|Thread-1|init_device|dish_leaf_node.py#459|tango-device:test/nodb/dishleafnode|Dish Leaf Node initialized successfully.
+Ready to accept request
+</system-out><system-err>Can&apos;t create notifd event supplier. Notifd event not available
+</system-err></testcase></testsuite></testsuites>
