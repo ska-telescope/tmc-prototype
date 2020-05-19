@@ -216,7 +216,7 @@ class TestElementDeviceData:
 # Look at devicetest examples for more advanced testing
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_centralnode_proxy", "create_dish_proxy", "create_dishln_proxy")
+@pytest.mark.usefixtures("tango_context", "create_centralnode_proxy", "create_dish_proxy", "create_dishln_proxy", "create_cspmasterln_proxy")
 
 class TestSubarrayNode(object):
     """Test case for packet generation."""
@@ -315,7 +315,7 @@ class TestSubarrayNode(object):
     def test_AssignResources(self, tango_context, create_centralnode_proxy):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        create_centralnode_proxy.StartUpTelescope()
+        create_cspmasterln_proxy.On([])
         # while tango_context.device.State() != DevState.OFF:
         time.sleep(25)
         receptor_list = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \

@@ -55,6 +55,11 @@ def create_centralnode_proxy():
     return centralnode_proxy
 
 @pytest.fixture(scope="class")
+def create_cspmasterln_proxy():
+    cspmasterln_proxy = DeviceProxy("ska_mid/tm_leaf_node/csp_master")
+    return cspmasterln_proxy
+
+@pytest.fixture(scope="class")
 def create_dish_proxy():
     dish_proxy = DeviceProxy("mid_d0001/elt/master")
     return dish_proxy
