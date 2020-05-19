@@ -249,7 +249,6 @@ run tests:
     - make push
   retry: 2
 
-
 unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   stage: test
@@ -259,10 +258,10 @@ unit tests:
     - docker-executor
   script:
     - make unit-test
-  retry: 2
   artifacts:
     paths:
       - ./unit_test_report
+  retry: 2
 
 linting:
   stage: linting

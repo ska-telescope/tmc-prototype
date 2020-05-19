@@ -1,4 +1,5 @@
 #!/bin/bash
+#Entering into a bash shell script to run unit-test cases and generating reports
 cd /app/tmcprototype;
 
 for path in $(find ./*/test  -type d -name unit); do

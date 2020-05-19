@@ -206,5 +206,6 @@ INIT_CACHE = \
 BUILD_GEN = $(shell docker create -v /build $(IMAGE_TO_TEST))
 BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
 
+#Docker volume to store unit test reports
 REPORT_GEN = $(shell docker create -v /report $(IMAGE_TO_TEST))
 REPORT = $(eval REPORT := $(REPORT_GEN))$(REPORT)
