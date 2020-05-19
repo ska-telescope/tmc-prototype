@@ -316,7 +316,7 @@ class TestSubarrayNode(object):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         create_centralnode_proxy.StartUpTelescope()
-        time.sleep(2)
+        time.sleep(10)
         # while tango_context.device.State() != DevState.OFF:
             # time.sleep(0.1)
             # pass
