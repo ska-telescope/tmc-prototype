@@ -151,10 +151,12 @@ class SubarrayNode(SKASubarray):
                 :param evt: A TANGO_CHANGE event on CSP and SDP Subarray deviceState.
                 :return: None
                 """
+        print("outside the device state callback")
         exception_message = []
         exception_count = 0
         if evt.err is False:
             try:
+                print("inside the device state callback")
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
                 elif self.SdpSubarrayFQDN in evt.attr_name:
@@ -164,9 +166,11 @@ class SubarrayNode(SKASubarray):
                     self._read_activity_message = const.EVT_UNKNOWN
                 self.calculate_device_state()
             except DevFailed as dev_failed:
+                print("inside devfailed")
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
             except Exception as except_occured:
+                print("exception block")
                 [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                             exception_message, exception_count, const.ERR_AGGR_DEVICE_STATE)
         else:
@@ -179,6 +183,7 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated device state of Subarray.
         """
+        print("inside device state calc")
         if self._csp_sa_device_state == DevState.ON and self._sdp_sa_device_state == DevState.ON:
             self.set_state(DevState.ON)
         elif self._csp_sa_device_state == DevState.OFF or self._sdp_sa_device_state == DevState.OFF:
@@ -1038,6 +1043,7 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
+        print("we are in init method of SubarrayNode")
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
         self.set_state(DevState.INIT)
@@ -1409,6 +1415,7 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
+        print("On command is called in sa node")
         self._admin_mode = AdminMode.ONLINE
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
