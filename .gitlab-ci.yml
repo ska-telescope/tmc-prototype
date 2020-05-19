@@ -262,7 +262,7 @@ unit tests:
   retry: 2
   artifacts:
     paths:
-      - ./test_results
+      - ./local_reports
 
 #
 #unit tests:
