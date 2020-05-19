@@ -305,11 +305,14 @@ class TestSubarrayNode(object):
         assert tango_context.device.receptorIDList == None
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
-    def test_On(self, tango_context):
+    def test_On(self, tango_context, create_centralnode_proxy):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
+        create_centralnode_proxy.StartUpTelescope()
+        time.sleep(20)
         tango_context.device.On()
-        assert tango_context.device.adminMode == AdminMode.ONLINE
+        print("state of subarray is :::", tango_context.device.State())
+        assert tango_context.device.adminMode == AdminMode.OFFLINE
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 
     def test_AssignResources(self, tango_context):
@@ -317,8 +320,8 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         # create_cspmasterln_proxy.On([])
         # while tango_context.device.State() != DevState.OFF:
-        tango_context.device.set_state(DevState.OFF)
-        time.sleep(25)
+        # tango_context.device.set_state(DevState.OFF)
+        # time.sleep(25)
         receptor_list = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                         ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                         '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
