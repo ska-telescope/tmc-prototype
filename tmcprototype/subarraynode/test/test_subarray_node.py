@@ -315,8 +315,9 @@ class TestSubarrayNode(object):
     def test_AssignResources(self, tango_context, create_cspmasterln_proxy):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        create_cspmasterln_proxy.On([])
+        # create_cspmasterln_proxy.On([])
         # while tango_context.device.State() != DevState.OFF:
+        tango_context.device.set_state(DevState.OFF)
         time.sleep(25)
         receptor_list = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                         ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
