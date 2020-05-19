@@ -316,9 +316,10 @@ class TestSubarrayNode(object):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
         create_centralnode_proxy.StartUpTelescope()
-        while tango_context.device.State() != DevState.OFF:
+        time.sleep(2)
+        # while tango_context.device.State() != DevState.OFF:
             # time.sleep(0.1)
-            pass
+            # pass
         receptor_list = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                         ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                         '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
