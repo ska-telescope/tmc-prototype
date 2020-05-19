@@ -8,7 +8,7 @@ SHELL = /bin/bash
 SRC_ROOT_DIR := /app
 TMC_ROOT_DIR := $(SRC_ROOT_DIR)/tmcprototype
 
-all: test lint unit_test
+all: test lint
 
 # wait for the device to be available before beginning the test
 # A temporary volume is mounted at /build when 'make test' is executing.
@@ -121,20 +121,4 @@ lint:
 	 /build/csp-master-leaf-node-linting.xml /build/sdp-master-leaf-node-linting.xml \
 	 /build/subarray-node-linting.xml /build/central-node-linting.xml /build/reports/linting.xml
 
-unit_test:
-	cd /app/tmcprototype;
-	mkdir unit_test_results;
-	for path in $(find ./*/test  -type d -name unit); do
-		echo $path;
-		export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
-		echo $TMC_ELEMENT;
-		echo +++ Trying tests for $TMC_ELEMENT;
-		pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=./${TMC_ELEMENT} \
-		   --cov-report=html:./unit_test_results/${TMC_ELEMENT}_htmlcov \
-		    --json-report --json-report-file=./unit_test_results/${TMC_ELEMENT}_report.json \
-		    --junitxml=./test_results/${TMC_ELEMENT}_unit_tests.xml; \
-		    ls -l;
-	done
-
-
-.PHONY: all test lint unit_test
+.PHONY: all test lint

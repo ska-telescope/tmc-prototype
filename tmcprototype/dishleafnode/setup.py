@@ -30,7 +30,7 @@ setup(
     description='A Leaf control node for DishMaster.',
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
-    include_package_data=True,
+    package_data={'': ['ska_antennas.txt']},
     test_suite="test",
     entry_points={'console_scripts':['DishLeafNodeDS = dishleafnode.dish_leaf_node:main']},
     author='jyotin.ska',

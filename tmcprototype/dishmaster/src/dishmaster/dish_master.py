@@ -982,7 +982,6 @@ class DishMaster(SKAMaster):
         """
         try:
             # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
-
             self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
             self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
             actual_az_lim = abs((self._achieved_pointing[1] - self._desired_pointing[1])
