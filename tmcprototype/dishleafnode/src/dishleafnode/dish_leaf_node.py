@@ -223,13 +223,12 @@ class DishLeafNode(SKABaseDevice):
         else:
             return deg_dec
 
-
     def convert_radec_to_azel(self, data):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
         :param data: DevVarStringArray
         Argin to be provided is the Ra and Dec values in the following format:
-        radec|2:31:50.91|89:15:51.4
+        radec|21:08:47.92|89:15:51.4
         Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,and third value is Dec in
         Deg:Min:Sec.
 
@@ -237,7 +236,7 @@ class DishLeafNode(SKABaseDevice):
 
         """
         try:
-            # Setting Observer Position as Pune
+            # Create Antenna Object
             dish_antenna = katpoint.Antenna(name= self.dish_name ,
                                             latitude=self.observer_location_lat,
                                             longitude=self.observer_location_long,
@@ -312,7 +311,7 @@ class DishLeafNode(SKABaseDevice):
         :param argin: DevVarStringArray
 
         For Track thread, argin to be provided is the Ra and Dec values in the following format:
-        radec|2:31:50.91|89:15:51.4 Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,
+        radec|21:08:47.92|89:15:51.4 Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,
         and third value is Dec in Deg:Min:Sec.
 
         It takes system's current time in UTC as timestamp and converts RaDec to AzEl using
@@ -370,6 +369,61 @@ class DishLeafNode(SKABaseDevice):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
+    def dms_to_rad(self,dms):
+        deg = float(dms[0])
+        min = float(dms[1])
+        sec = float(dms[2])
+        rad_value = ((math.pi / 180) * ((deg) + (min / 60) + (sec / 3600)))
+        return rad_value
+
+    def rad_to_dms(self, rad_value):
+        dms = []
+        frac_min , deg = math.modf(rad_value * (180 / math.pi))
+        frac_sec, min = math.modf(frac_min * 60)
+        sec = frac_sec * 60
+        dms.append(deg)
+        dms.append(min)
+        dms.append(sec)
+        return dms
+
+    def set_dish_name_number(self):
+        # Find out dish number from DishMasterFQDN property
+        dish_name_string = self.DishMasterFQDN.split("/")
+        dish_num_list = [ dish_name_char for dish_name_char in dish_name_string[0] if dish_name_char.isdigit()]
+        self.dish_number = "".join(dish_num_list)
+        self.dish_name = 'd' + self.dish_number
+
+    def set_observer_lat_long_alt(self):
+        # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates) from text file and
+        # construct Antenna objects from them. Currently the text file contains Meerkat Antenna parameters.
+        with open("/venv/lib/python3.7/site-packages/dishleafnode/ska_antennas.txt") as f:
+            descriptions = f.readlines()
+        antennas = [katpoint.Antenna(line) for line in descriptions]
+        for ant in antennas:
+            if ant.name == self.dish_number:
+                ref_ant_lat = ant.ref_observer.lat
+                ref_ant_long = ant.ref_observer.long
+                ref_ant_altitude = ant.ref_observer.elevation
+                ant_delay_model = ant.delay_model.values()
+        # Convert reference antenna lat and long into radian
+        ref_ant_lat_rad = self.dms_to_rad(str(ref_ant_lat).split(":"))
+        ref_ant_long_rad = self.dms_to_rad(str(ref_ant_long).split(":"))
+
+        # Find latitude, longitude and altitude of Dish antenna
+        # Convert enu to ecef coordinates for dish
+        dish_ecef_coordinates = katpoint.enu_to_ecef(ref_ant_lat_rad, ref_ant_long_rad, ref_ant_altitude,
+                                                       ant_delay_model[0], ant_delay_model[1], ant_delay_model[2])
+        # Convert ecef to lla coordinates for dish (in radians)
+        dish_lat_long_alt_rad = katpoint.ecef_to_lla(dish_ecef_coordinates[0], dish_ecef_coordinates[1],
+                                                       dish_ecef_coordinates[2])
+        # Convert lla coordinates from rad to dms
+        dish_lat_dms = self.rad_to_dms(dish_lat_long_alt_rad[0])
+        dish_long_dms = self.rad_to_dms(dish_lat_long_alt_rad[1])
+
+        self.observer_location_lat = str(dish_lat_dms[0]) + ":" + str(dish_lat_dms[1]) + ":" + str(dish_lat_dms[2])
+        self.observer_location_long = str(dish_long_dms[0]) + ":" + str(dish_long_dms[1]) + ":" + str(dish_long_dms[2])
+        self.observer_altitude = dish_ecef_coordinates[2]
+
 # PROTECTED REGION END #    //  DishLeafNode.class_variable
 
     # -----------------
@@ -419,12 +473,10 @@ class DishLeafNode(SKABaseDevice):
         self.ele_max_lim = 90
         self.horizon_el = 0
         self.ele_min_lim = 17.5
-        self.dish_name = 'd1'
-        self.observer_location_lat = '18:31:48:00'
-        self.observer_location_long = '73:50:23.99'
-        self.observer_altitude = 570
         self.el_limit = False
         try:
+            self.set_dish_name_number()
+            self.set_observer_lat_long_alt()
             log_msg = const.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
             self.logger.debug(log_msg)
             self._read_activity_message = const.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
@@ -639,7 +691,7 @@ class DishLeafNode(SKABaseDevice):
         A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
 
             Example:
-            {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+            {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
             "dish":{"receiverBand":"1"}}
 
         :return: None
@@ -848,7 +900,7 @@ class DishLeafNode(SKABaseDevice):
 
         For Track command, Argin to be provided is the Ra and Dec values in the following JSON format:
 
-        {"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},
+        {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
         "dish":{"receiverBand":"1"}}
 
         :return: None
@@ -890,7 +942,6 @@ class DishLeafNode(SKABaseDevice):
             self.throw_exception(exception_message, const.STR_TRACK_EXEC)
 
         # PROTECTED REGION END #    //  DishLeafNode.Track
-
 
     @command(
     )

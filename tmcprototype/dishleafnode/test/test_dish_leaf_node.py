@@ -91,7 +91,7 @@ class TestDishLeafNode(object):
     def test_Track_invalid_radec(self, tango_context, create_dish_proxy):
         """Test for Track"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"14:26:54.38","dec":"-83:40:03.1"}},"dish":{"receiverBand":"1"}}'
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris","RA":"02:31:49.09","dec":"+89:15:50.79"}},"dish":{"receiverBand":"1"}}'
         time.sleep(2)
         tango_context.device.Track(input_string)
         time.sleep(2)
@@ -102,7 +102,7 @@ class TestDishLeafNode(object):
     def test_Configure(self, tango_context):
         """Test for Configure"""
         # PROTECTED REGION ID(DishLeafNode.test_Configure) ENABLED START #
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         tango_context.device.Configure(input_string)
         time.sleep(25)
         assert tango_context.device.activityMessage == (const.STR_CONFIGURE_SUCCESS) or \
@@ -122,7 +122,7 @@ class TestDishLeafNode(object):
     def test_Configure_invalid_arguments(self, tango_context):
         """Test for Configure_invalid_arguments  (Negative test case)"""
         input_string = []
-        input_string.append('{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}')
+        input_string.append('{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","":"21:08:47.92","":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"}}')
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
             time.sleep(1)
@@ -242,7 +242,7 @@ class TestDishLeafNode(object):
     def test_Track_invalid_arg(self, tango_context):
         """Test for Track_invalid_arguments (Negative test case)"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","":"2:31:50.91","":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","":"21:08:47.92","":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(input_string)
         time.sleep(5)
@@ -262,7 +262,7 @@ class TestDishLeafNode(object):
     def test_Track(self, tango_context, create_dish_proxy):
         """Test for Track"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"NGC6251","RA":"2:31:50.91","dec":"89:15:51.4"}},"dish":{"receiverBand":"1"}}'
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         tango_context.device.Track(input_string)
         time.sleep(60)
         assert (create_dish_proxy.pointingState == 1 or create_dish_proxy.pointingState == 2)
