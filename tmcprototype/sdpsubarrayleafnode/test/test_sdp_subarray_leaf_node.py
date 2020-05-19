@@ -74,21 +74,18 @@ class TestSdpSubarrayLeafNode(object):
     def test_AssignResources(self, tango_context, create_sdpsubarray_proxy):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_AssignResources) ENABLED START #
-        test_input = '{"id":"sbi-mvp01-20200318-0001","max_length":21600.0,"scan_types":' \
-                     '[{"id":"science_A","coordinate_system":"ICRS","ra":"00:00:00.00",' \
-                     '"dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000},' \
-                     '{"id":"calibration_B","coordinate_system":"ICRS","ra":"00:00:00.00",' \
-                     '"dec":"00:00:00.0","freq_min":0.0,"freq_max":0.0,"nchan":1000}],' \
-                     '"processing_blocks":[{"id":"pb-mvp01-20200318-0001","workflow":' \
-                     '{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}}' \
-                     ',{"id":"pb-mvp01-20200318-0002","workflow":{"type":"realtime","id":' \
-                     '"test_realtime","version":"0.1.0"},"parameters":{}},{"id":' \
-                     '"pb-mvp01-20200318-0003","workflow":{"type":"batch","id":"ical",' \
-                     '"version":"0.1.0"},"parameters":{},"dependencies":' \
-                     '[{"pb_id":"pb-mvp01-20200318-0001","type":["visibilities"]}]},' \
-                     '{"id":"pb-mvp01-20200318-0004","workflow":{"type":"batch","id":' \
-                     '"dpreb","version":"0.1.0"},"parameters":{},"dependencies":' \
-                     '[{"pb_id":"pb-mvp01-20200318-0003","type":["calibration"]}]}]}}'
+        test_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",' \
+                     '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":' \
+                     '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
+                     '{"id":"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9",' \
+                     '"subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
+                     '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
+                     '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
+                     '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},' \
+                     '{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
+                     '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},' \
+                     '{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
+                     '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}'
         tango_context.device.AssignResources(test_input)
         assert const.STR_ASSIGN_RESOURCES_SUCCESS in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_AssignResources
@@ -123,12 +120,18 @@ class TestSdpSubarrayLeafNode(object):
     def test_Configure_invalid_key(self, tango_context):
         """Test for Configure command with invalid_key"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_Configure_invalid_key) ENABLED START #
-        test_input = '{"":{"":{"id":"realtime-20190627-0001","sbiId":"20190627-0001",' \
-                     '"workflow":{"id":"vis_ingest","type":"realtime","version":"0.1.0"},"parameters":' \
-                     '{"numStations":4,"numChanels":372,"numPolarisations":4,"freqStartHz":0.35e9,' \
-                     '"freqEndHz":1.05e9,"fields":{"0":{"system":"ICRS","name":"NGC6251","ra":1.0,"dec"' \
-                     ':1.0}}},"scanParameters":{"12345":{"fieldId":0,"intervalMs":1400}}},"configureScan"' \
-                     ':{"scanParameters":{"12346":{"fieldId":0,"intervalMs":2800}}}}}'
+        test_input = '{"invalid_key":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",' \
+                     '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":' \
+                     '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
+                     '{"id":"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9",' \
+                     '"subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
+                     '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
+                     '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
+                     '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},' \
+                     '{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
+                     '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},' \
+                     '{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
+                     '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
