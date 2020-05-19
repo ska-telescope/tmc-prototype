@@ -130,17 +130,17 @@ test: build up ## test the application
 unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
 unit-test: build
 	$(INIT_CACHE)
-	mkdir -p local_reports
-	chmod 777 local_reports
+	mkdir -p unit_test_report
+	chmod 777 unit_test_report
 	docker run -i --rm \
 	   -e TANGO_HOST=$(TANGO_HOST) \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v local_report:/unit_test_reports \
+	   -v unit_test_report:/unit_test_reports \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	bash -c "cd /app/tmcprototype && \
 	sudo chown -R tango:tango /report && \
 	./run_unit_test.sh"
-	docker cp $(REPORT):/report ./local_reports;
+	docker cp $(REPORT):/report ./unit_test_report;
 	docker rm -f -v $(REPORT)
 
 
