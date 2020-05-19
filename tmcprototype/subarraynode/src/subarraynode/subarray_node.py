@@ -181,7 +181,7 @@ class SubarrayNode(SKASubarray):
         """
         if self._csp_sa_device_state == DevState.ON and self._sdp_sa_device_state == DevState.ON:
             self.set_state(DevState.ON)
-        elif self._csp_sa_device_state == DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
+        elif self._csp_sa_device_state == DevState.OFF or self._sdp_sa_device_state == DevState.OFF:
             self.set_state(DevState.OFF)
         else:
             self.logger.info("SubarrayNode is in the state: {} CSPSubarray is in the state: {} and SDPSubarray "
