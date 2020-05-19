@@ -216,7 +216,7 @@ class TestElementDeviceData:
 # Look at devicetest examples for more advanced testing
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_centralnode_proxy", "create_cspsa_proxy", "create_dish_proxy", "create_dishln_proxy", "create_cspmasterln_proxy")
+@pytest.mark.usefixtures("tango_context", "create_sdpsa_proxy", "create_centralnode_proxy", "create_cspsa_proxy", "create_dish_proxy", "create_dishln_proxy", "create_cspmasterln_proxy")
 
 class TestSubarrayNode(object):
     """Test case for packet generation."""
@@ -305,7 +305,7 @@ class TestSubarrayNode(object):
         assert tango_context.device.receptorIDList == None
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
-    def test_On(self, tango_context, create_cspmasterln_proxy, create_cspsa_proxy):
+    def test_On(self, tango_context, create_cspmasterln_proxy, create_cspsa_proxy, create_sdpsa_proxy):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
         # create_centralnode_proxy.StartUpTelescope()
@@ -314,6 +314,7 @@ class TestSubarrayNode(object):
         tango_context.device.On()
         print("state of subarray is :::", tango_context.device.State())
         print("state of csp subarray is :::", create_cspsa_proxy.State())
+        print("state of SDP sa is :::", create_sdpsa_proxy.State())
         assert tango_context.device.adminMode == AdminMode.OFFLINE
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 

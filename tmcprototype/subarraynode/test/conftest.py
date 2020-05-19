@@ -65,6 +65,11 @@ def create_cspsa_proxy():
     return cspsa_proxy
 
 @pytest.fixture(scope="class")
+def create_sdpsa_proxy():
+    sdpsa_proxy = DeviceProxy("mid_sdp/elt/subarray_1")
+    return sdpsa_proxy
+
+@pytest.fixture(scope="class")
 def create_dish_proxy():
     dish_proxy = DeviceProxy("mid_d0001/elt/master")
     return dish_proxy
