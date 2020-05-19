@@ -108,7 +108,7 @@ DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(
 #      to the host
 #
 make = tar -c test-harness/ | \
-	   docker run -i --rm \
+	   docker run -i --rm --network=$(NETWORK_MODE) \
 	   -e TANGO_HOST=$(TANGO_HOST) \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
@@ -132,7 +132,7 @@ unit-test: build
 	$(INIT_CACHE)
 	mkdir -p local_reports
 	chmod 777 local_reports
-	docker run -i --rm --network=$(NETWORK_MODE) \
+	docker run -i --rm \
 	   -e TANGO_HOST=$(TANGO_HOST) \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v local_report:/unit_test_reports \
