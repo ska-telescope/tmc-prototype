@@ -127,6 +127,23 @@ test: build up ## test the application
 	  $(MAKE) down; \
 	  exit $$status
 
+unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
+unit-test: build
+	$(INIT_CACHE)
+	mkdir -p unit_test_report
+	chmod 777 unit_test_report
+	docker run -i --rm \
+	   -e TANGO_HOST=$(TANGO_HOST) \
+	   -v $(CACHE_VOLUME):/home/tango/.cache \
+	   -v unit_test_report:/unit_test_reports \
+	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
+	bash -c "cd /app/tmcprototype && \
+	sudo chown -R tango:tango /report && \
+	./run_unit_test.sh"
+	docker cp $(REPORT):/report ./unit_test_report;
+	docker rm -f -v $(REPORT)
+
+
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 lint: build up ##lint the application (static code analysis)
 	$(INIT_CACHE)
@@ -188,3 +205,7 @@ INIT_CACHE = \
 # http://cakoose.com/wiki/gnu_make_thunks
 BUILD_GEN = $(shell docker create -v /build $(IMAGE_TO_TEST))
 BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
+
+#Docker volume to store unit test reports
+REPORT_GEN = $(shell docker create -v /report $(IMAGE_TO_TEST))
+REPORT = $(eval REPORT := $(REPORT_GEN))$(REPORT)
