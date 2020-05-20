@@ -477,7 +477,30 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
 
 
 def test_assign_resource_should_raise_devfailed_exception():
-    with fake_tango_system(SubarrayNode) as tango_context:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+    }
+
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
         assign_input = {"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"
                         ,"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
                         "ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"
@@ -492,7 +515,6 @@ def test_assign_resource_should_raise_devfailed_exception():
                         ]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":
                         "0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
                         ["calibration"]}]}]}}
-        tango_context.device.On()
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(json.dumps(assign_input))
         # assert
