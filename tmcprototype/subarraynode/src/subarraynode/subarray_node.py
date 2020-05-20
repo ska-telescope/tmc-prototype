@@ -151,11 +151,11 @@ class SubarrayNode(SKASubarray):
                 :param evt: A TANGO_CHANGE event on CSP and SDP Subarray deviceState.
                 :return: None
                 """
+        print("outside the device state callback")
         exception_message = []
         exception_count = 0
         try:
             if evt.err is False:
-
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
                 elif self.SdpSubarrayFQDN in evt.attr_name:
@@ -164,7 +164,6 @@ class SubarrayNode(SKASubarray):
                     self.logger.debug(const.EVT_UNKNOWN)
                     self._read_activity_message = const.EVT_UNKNOWN
                 self.calculate_device_state()
-
             else:
                 log_msg = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
                 self.logger.debug(log_msg)
@@ -185,14 +184,14 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated device state of Subarray.
         """
-        if self.get_state() is not DevState.ON:
-            if self._csp_sa_device_state==DevState.ON and self._sdp_sa_device_state == DevState.ON :
-                self.set_state(DevState.ON)
-            else:
-                self.logger.info("CSP and SDP subarray are not in ON state")
+        print("inside device state calc")
+        if self._csp_sa_device_state == DevState.ON and self._sdp_sa_device_state == DevState.ON:
+            self.set_state(DevState.ON)
+        elif self._csp_sa_device_state == DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
+            self.set_state(DevState.OFF)
         else:
-            self.logger.info("Subarray is already in On state")
-
+            self.logger.info("SubarrayNode is in the state: {} CSPSubarray is in the state: {} and SDPSubarray "
+                             "is in the state: {}".format(self.get_state(), self._csp_sa_device_state, self._sdp_sa_device_state))
 
     def obsStateCallback(self, evt):
         """
@@ -903,7 +902,6 @@ class SubarrayNode(SKASubarray):
         # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
         # It will be moved to that command.
         self._sb_id = ""
-        self.set_state(DevState.OFF)
         self._obs_state = ObsState.IDLE
 
         argout = self._dish_leaf_node_group.get_device_list(True)
@@ -1051,6 +1049,7 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
+        print("we are in init method of SubarrayNode")
         SKASubarray.init_device(self)
         # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
         self.set_state(DevState.INIT)
@@ -1422,8 +1421,9 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
+        print("On command is called in sa node")
         self._admin_mode = AdminMode.ONLINE
-        self.set_state(DevState.OFF)       # Set state = OFF
+        # self.set_state(DevState.OFF)
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
     @command(
