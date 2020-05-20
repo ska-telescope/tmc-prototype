@@ -186,7 +186,7 @@ class SubarrayNode(SKASubarray):
         print("inside device state calc")
         if self._csp_sa_device_state == DevState.ON and self._sdp_sa_device_state == DevState.ON:
             self.set_state(DevState.ON)
-        elif self._csp_sa_device_state == DevState.OFF or self._sdp_sa_device_state == DevState.OFF:
+        elif self._csp_sa_device_state == DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
             self.set_state(DevState.OFF)
         else:
             self.logger.info("SubarrayNode is in the state: {} CSPSubarray is in the state: {} and SDPSubarray "
@@ -1417,6 +1417,7 @@ class SubarrayNode(SKASubarray):
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
         print("On command is called in sa node")
         self._admin_mode = AdminMode.ONLINE
+        self.set_state(DevState.OFF)
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
     @command(
