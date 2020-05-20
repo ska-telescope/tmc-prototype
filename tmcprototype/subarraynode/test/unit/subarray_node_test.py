@@ -1150,6 +1150,10 @@ def test_start_scan_should_raise_assertion_exception():
 
     event_subscription_map = {}
     dish_pointing_state_map = {}
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
     csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
@@ -1160,8 +1164,10 @@ def test_start_scan_should_raise_assertion_exception():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        csp_subarray1_proxy_mock.obsState = ObsState.READY
-        sdp_subarray1_proxy_mock.obsState = ObsState.READY
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
                                                    attribute, ObsState.SCANNING)
