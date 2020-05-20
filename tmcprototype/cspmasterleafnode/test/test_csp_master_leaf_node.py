@@ -156,7 +156,7 @@ class TestCspMasterLeafNode(object):
         time.sleep(1)
         assert create_cspmaster_proxy.State() == DevState.STANDBY
         time.sleep(1)
-        # tango_context.device.On([])
+        tango_context.device.On([])
         # PROTECTED REGION END #    //  CspMasterLeafNode.test_Standby
 
     def test_Off(self, tango_context):

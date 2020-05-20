@@ -310,8 +310,10 @@ class TestSubarrayNode(object):
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
         # create_centralnode_proxy.StartUpTelescope()
         print("state of csp subarray is before on command:::", create_cspsa_proxy.State())
+        create_cspmasterln_proxy.Standby()
+        print("state of csp subarray is before on command:::", create_cspsa_proxy.State())
         create_cspmasterln_proxy.On([])
-        time.sleep(25)
+        time.sleep(15)
         tango_context.device.On()
         print("state of subarray is :::", tango_context.device.State())
         print("state of csp subarray is :::", create_cspsa_proxy.State())
