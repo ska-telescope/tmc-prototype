@@ -309,8 +309,9 @@ class TestSubarrayNode(object):
         """Test for StartUpTelescope on subarray."""
         # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
         # create_centralnode_proxy.StartUpTelescope()
-        print("state of csp subarray is before on command:::", create_cspsa_proxy.State())
+        # print("state of csp subarray is before on command:::", create_cspsa_proxy.State())
         create_cspmasterln_proxy.Standby([])
+        time.sleep(15)
         print("state of csp subarray is before on command:::", create_cspsa_proxy.State())
         create_cspmasterln_proxy.On([])
         time.sleep(15)
