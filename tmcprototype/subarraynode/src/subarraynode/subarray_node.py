@@ -1417,7 +1417,7 @@ class SubarrayNode(SKASubarray):
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
         print("On command is called in sa node")
         self._admin_mode = AdminMode.ONLINE
-        self.set_state(DevState.OFF)
+        # self.set_state(DevState.OFF)
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
     @command(
