@@ -1472,6 +1472,11 @@ def test_track_command_subarray():
     }
 
     dish_pointing_state_map = {}
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
 
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
@@ -1480,7 +1485,10 @@ def test_track_command_subarray():
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        tango_context.device.On()
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
@@ -1540,6 +1548,10 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
     event_subscription_map = {}
     dish_pointing_state_map = {}
 
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
     csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
@@ -1555,7 +1567,10 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        tango_context.device.On()
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
@@ -1627,6 +1642,10 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
     event_subscription_map = {}
     dish_pointing_state_map = {}
 
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
     csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
@@ -1642,7 +1661,10 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        tango_context.device.On()
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
@@ -1860,6 +1882,11 @@ def test_pointing_state_is_slew():
 
     dish_pointing_state_attribute = "dishPointingState"
     dish_pointing_state_map = {}
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
 
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
@@ -1868,7 +1895,10 @@ def test_pointing_state_is_slew():
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        tango_context.device.On()
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
@@ -1926,6 +1956,11 @@ def test_pointing_state_is_scan():
 
     dish_pointing_state_attribute = "dishPointingState"
     dish_pointing_state_map = {}
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
 
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
@@ -1934,7 +1969,10 @@ def test_pointing_state_is_scan():
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        tango_context.device.On()
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
@@ -2064,6 +2102,11 @@ def test_pointing_state_with_error_event():
 
     dish_pointing_state_attribute = "dishPointingState"
     dish_pointing_state_map = {}
+    event_subscription_map = {}
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
 
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
@@ -2072,7 +2115,10 @@ def test_pointing_state_with_error_event():
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        tango_context.device.On()
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
