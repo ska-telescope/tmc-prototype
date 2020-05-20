@@ -188,8 +188,9 @@ class SubarrayNode(SKASubarray):
         elif self._csp_sa_device_state == DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
             self.set_state(DevState.OFF)
         else:
-            self.logger.info("SubarrayNode is in the state: {} CSPSubarray is in the state: {} and SDPSubarray "
-                             "is in the state: {}".format(self.get_state(), self._csp_sa_device_state, self._sdp_sa_device_state))
+            log_msg = "SubarrayNode is in the state: {} CSPSubarray is in the state: {} and SDPSubarray is in the " \
+                      "state: {}".format(self.get_state(), self._csp_sa_device_state, self._sdp_sa_device_state)
+            self.logger.info(log_msg)
 
     def obsStateCallback(self, evt):
         """
