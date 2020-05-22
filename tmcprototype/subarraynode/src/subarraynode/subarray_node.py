@@ -170,9 +170,8 @@ class SubarrayNode(SKASubarray):
                 self.logger.critical(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
+                                                        exception_message, exception_count,
+                                                            const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                                                   exception_message,
@@ -185,11 +184,14 @@ class SubarrayNode(SKASubarray):
         """
         if self._csp_sa_device_state == DevState.ON and self._sdp_sa_device_state == DevState.ON:
             self.set_state(DevState.ON)
+            self.logger.info("Subarray is in the {} state.".format(self.get_state()))
         elif self._csp_sa_device_state == DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
             self.set_state(DevState.OFF)
+            self.logger.info("Subarray is in the {} state.".format(self.get_state()))
         else:
             self.logger.info("SubarrayNode is in the state: {} CSPSubarray is in the state: {} and SDPSubarray "
-                             "is in the state: {}".format(self.get_state(), self._csp_sa_device_state, self._sdp_sa_device_state))
+                             "is in the state: {}".format(self.get_state(), self._csp_sa_device_state,
+                                                          self._sdp_sa_device_state))
 
     def obsStateCallback(self, evt):
         """
