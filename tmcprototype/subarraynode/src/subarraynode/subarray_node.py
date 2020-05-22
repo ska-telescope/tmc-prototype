@@ -155,7 +155,6 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         try:
             if evt.err is False:
-
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
                 elif self.SdpSubarrayFQDN in evt.attr_name:
@@ -164,7 +163,6 @@ class SubarrayNode(SKASubarray):
                     self.logger.debug(const.EVT_UNKNOWN)
                     self._read_activity_message = const.EVT_UNKNOWN
                 self.calculate_device_state()
-
             else:
                 log_msg = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
                 self.logger.debug(log_msg)
@@ -172,9 +170,8 @@ class SubarrayNode(SKASubarray):
                 self.logger.critical(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
+                                                        exception_message, exception_count,
+                                                            const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                                                   exception_message,
@@ -185,14 +182,18 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated device state of Subarray.
         """
-        if self.get_state() is not DevState.ON:
-            if self._csp_sa_device_state==DevState.ON and self._sdp_sa_device_state == DevState.ON :
-                self.set_state(DevState.ON)
-            else:
-                self.logger.info("CSP and SDP subarray are not in ON state")
+        if self._csp_sa_device_state == DevState.ON and self._sdp_sa_device_state == DevState.ON:
+            self.set_state(DevState.ON)
+            log_msg = "Subarray is in the {} state.".format(self.get_state())
+            self.logger.info(log_msg)
+        elif self._csp_sa_device_state == DevState.OFF and self._sdp_sa_device_state == DevState.OFF:
+            self.set_state(DevState.OFF)
+            log_msg = "Subarray is in the {} state.".format(self.get_state())
+            self.logger.info(log_msg)
         else:
-            self.logger.info("Subarray is already in On state")
-
+            log_msg = "SubarrayNode is in the state: {} CSPSubarray is in the state: {} and SDPSubarray is in the " \
+                      "state: {}".format(self.get_state(), self._csp_sa_device_state, self._sdp_sa_device_state)
+            self.logger.info(log_msg)
 
     def obsStateCallback(self, evt):
         """
@@ -903,7 +904,6 @@ class SubarrayNode(SKASubarray):
         # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
         # It will be moved to that command.
         self._sb_id = ""
-        self.set_state(DevState.OFF)
         self._obs_state = ObsState.IDLE
 
         argout = self._dish_leaf_node_group.get_device_list(True)
@@ -1423,7 +1423,6 @@ class SubarrayNode(SKASubarray):
         """
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
         self._admin_mode = AdminMode.ONLINE
-        self.set_state(DevState.OFF)       # Set state = OFF
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
     @command(

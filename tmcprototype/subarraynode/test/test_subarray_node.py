@@ -216,7 +216,8 @@ class TestElementDeviceData:
 # Look at devicetest examples for more advanced testing
 
 # Device test case
-@pytest.mark.usefixtures("tango_context", "create_dish_proxy", "create_dishln_proxy")
+@pytest.mark.usefixtures("tango_context", "create_centralnode_proxy", "create_cspsa_proxy",
+                         "create_dish_proxy", "create_dishln_proxy", "create_cspmasterln_proxy")
 
 class TestSubarrayNode(object):
     """Test case for packet generation."""
@@ -305,12 +306,16 @@ class TestSubarrayNode(object):
         assert tango_context.device.receptorIDList == None
         # PROTECTED REGION END #    //  SubarrayNode.test_AssignResources
 
-    def test_On(self, tango_context):
+    def test_On(self, tango_context, create_cspmasterln_proxy, create_cspsa_proxy):
         """Test for StartUpTelescope on subarray."""
-        # PROTECTED REGION ID(SubarrayNode.test_On) ENABLED START #
+        create_cspmasterln_proxy.Standby([])
+        while create_cspsa_proxy.State() != DevState.DISABLE:
+            time.sleep(0.1)
+        create_cspmasterln_proxy.On([])
+        while tango_context.device.State() != DevState.OFF:
+            time.sleep(0.1)
         tango_context.device.On()
         assert tango_context.device.adminMode == AdminMode.ONLINE
-        assert tango_context.device.State() == DevState.OFF
         # PROTECTED REGION END #    //  SubarrayNode.test_On
 
     def test_AssignResources(self, tango_context):
@@ -421,26 +426,25 @@ class TestSubarrayNode(object):
         """Test for ReleaseAllResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
         tango_context.device.ReleaseAllResources()
+        while tango_context.device.State() != DevState.OFF:
+            time.sleep(1)
         assert tango_context.device.assignedResources is None
         assert tango_context.device.obsState == ObsState.IDLE
         assert tango_context.device.State() == DevState.OFF
+        # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
+
+    def test_Duplicate_ReleaseAllResources(self, tango_context):
+        """Test for Duplicate ReleaseAllResources"""
+        # PROTECTED REGION ID(SubarrayNode.test_ReleaseAllResources) ENABLED START #
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseAllResources()
         assert const.RESOURCE_ALREADY_RELEASED in tango_context.device.activityMessage
-        # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseAllResources
+        # PROTECTED REGION END #    //  SubarrayNode.test_Duplicate_ReleaseAllResources
 
     def test_ReleaseResources(self, tango_context):
         """Test for ReleaseResources"""
         # PROTECTED REGION ID(SubarrayNode.test_ReleaseResources) ENABLED START #
         # PROTECTED REGION END #    //  SubarrayNode.test_ReleaseResources
-
-    def Standby(self, tango_context):
-        """Test for StandbyTelescope on subarray."""
-        # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
-        tango_context.device.Standby()
-        assert tango_context.device.adminMode == AdminMode.OFFLINE
-        assert tango_context.device.State() == DevState.DISABLE
-        # PROTECTED REGION END #    //  SubarrayNode.Standby
 
     def test_Reset(self, tango_context):
         """Test for Reset"""
@@ -580,3 +584,13 @@ class TestSubarrayNode(object):
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
         # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+
+    def test_Standby(self, tango_context):
+        """Test for StandbyTelescope on subarray."""
+        # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
+        tango_context.device.Standby()
+        while tango_context.device.State() != DevState.DISABLE:
+            time.sleep(0.1)
+        assert tango_context.device.adminMode == AdminMode.OFFLINE
+        assert tango_context.device.State() == DevState.DISABLE
+        # PROTECTED REGION END #    //  SubarrayNode.Standby
