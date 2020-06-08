@@ -19,6 +19,12 @@ from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode, \
     LoggingLevel
 
+with open("cspsubarrayleafnode/test/unit/input.txt") as f:
+    input_data=f.readlines()
+
+
+
+
 
 def test_assign_command_with_callback_method():
     # arrange:
@@ -35,7 +41,7 @@ def test_assign_command_with_callback_method():
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
 
-        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_input = input_data[0]
         assign_resources_input = []
         assign_resources_input.append(assign_input)
         device_proxy = tango_context.device
@@ -193,7 +199,7 @@ def test_start_scan_should_not_command_csp_subarray_to_start_its_scan_when_it_is
 
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = {'id':1}
+        scan_input = input_data[1]
         # act:
         tango_context.device.StartScan([json.dumps(scan_input)])
 
@@ -402,15 +408,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
-        csp_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
-                              '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
-                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/' \
-                     'delayModel", ' \
-                              '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/' \
-                     'sdp_subarray01/receiveAddresses", ' \
-                              '"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", ' \
-                     '"RA": "21:08:47.92", ' \
-                              '"dec": "-88:57:22.9"}}, "scanID": "1"}'
+        csp_config = input_data[2]
         assign_input='{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_input)
