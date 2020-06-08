@@ -8,6 +8,10 @@ RUN ipython profile create
 USER root
 RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-logging/0.2.1/ska_logging-0.2.1.tar.gz
 RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.5.1+22db2b66/lmcbaseclasses-0.5.1+22db2b66.tar.gz
+RUN pip3 list
+
+#install ska-telescope-model
+RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-telescope-model/0.1.0/ska-telescope-model-0.1.0.tar.gz
 
 # install all local TMC packages
 RUN python3 -m pip install \
@@ -21,5 +25,5 @@ RUN python3 -m pip install \
     /app/tmcprototype/subarraynode
 
 USER tango
-
+RUN pip3 list
 CMD ["/venv/bin/CentralNodeDS"]
