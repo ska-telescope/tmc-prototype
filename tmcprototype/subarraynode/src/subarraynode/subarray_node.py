@@ -34,6 +34,7 @@ from . import const
 from .const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
 from ska.base import SKASubarray
+from ska_telmodel.csp.interface import make_csp_config
 
 __all__ = ["SubarrayNode", "main"]
 
