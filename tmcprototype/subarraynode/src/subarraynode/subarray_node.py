@@ -34,7 +34,7 @@ from . import const
 from .const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
 from ska.base import SKASubarray
-from ska_telmodel.csp.interface import make_csp_config
+from ska_telmodel.csp import interface
 
 __all__ = ["SubarrayNode", "main"]
 
@@ -70,8 +70,8 @@ class ElementDeviceData:
         scan_config = scan_config.copy()
         sdp_scan_config = scan_config.get("sdp", {})
         if sdp_scan_config:
-            sdp_scan_type = sdp_scan_config.get("scan_type")
-            if sdp_scan_type:
+            # sdp_scan_type = sdp_scan_config.get("scan_type")
+            if self._scan_type:
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
                 scan_config.pop("csp", None)
@@ -88,16 +88,20 @@ class ElementDeviceData:
     def build_up_csp_cmd_data(scan_config, attr_name_map):
         scan_config = scan_config.copy()
         csp_scan_config = scan_config.get("csp", {})
-
-        if csp_scan_config:
+        # Invoke ska_telmodel library function to create csp configure schema
+        csp_config_schema = interface.make_csp_config(self._csp_interface_version, self._sdp_interface_version,
+                                                      self._scan_type, csp_scan_config, self._receive_addresses_map)
+        if csp_config_schema:
             for key, attribute_name in attr_name_map.items():
-                csp_scan_config[key] = attribute_name
-            csp_scan_config["pointing"] = scan_config["pointing"]
+                csp_config_schema[key] = attribute_name
+            csp_config_schema["pointing"] = scan_config["pointing"]
+            # ----------------------------------------------------------------
             # This is temporary fix to pass hardcoded scan_id value to CSP.
-            csp_scan_config["scanID"] = '1'
+            # csp_scan_config["scanID"] = '1'
+
         else:
             raise KeyError("CSP configuration must be given. Aborting CSP configuration.")
-        return json.dumps(csp_scan_config)
+        return json.dumps(csp_config_schema)
 
     @staticmethod
     def build_up_dsh_cmd_data(scan_config, only_dishconfig_flag):
@@ -121,6 +125,16 @@ class SubarrayNode(SKASubarray):
     other TM Components (such as OET, Central Node) for a Subarray.
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
+    def receive_addresses_callback(self, event):
+        """
+        Retrieves the receiveAddresses attribute of SDP Subarray.
+
+            :param evt: A TANGO_CHANGE event on SDP Subarray receiveAddresses attribute.
+
+            :return: None
+            """
+        self._receive_addresses_map = event.attr_value.value
+
     def health_state_cb(self, event):
         """
         Retrieves the subscribed health states, aggregates them
@@ -1082,6 +1096,9 @@ class SubarrayNode(SKASubarray):
         self._sdp_sa_device_state = DevState.OFF
         self.only_dishconfig_flag = False
         self._scan_type = ''
+        self._receive_addresses_map = ''
+        self._csp_interface_version = 0
+        self._sdp_interface_version = 0
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
         self.scan_thread = None
 
@@ -1104,6 +1121,7 @@ class SubarrayNode(SKASubarray):
             # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
             self._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
+            # Subscribe state of CspSubarray
             self._csp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
                                                         self.device_state_callback, stateless=True)
 
@@ -1127,8 +1145,13 @@ class SubarrayNode(SKASubarray):
             # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.obsStateCallback, stateless=True)
+            # Subscribe state of SdpSubarray
             self._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
                                                self.device_state_callback, stateless=True)
+            # Subscribe ReceiveAddresses of SdpSubarray
+            attr_name = self.SdpSubarrayFQDN + "/receiveAddresses"
+            self._sdp_sa_proxy.subscribe_event( attr_name, EventType.CHANGE_EVENT,
+                                               self.receive_addresses_callback, stateless=True)
             self.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
             log_msg=const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
@@ -1235,9 +1258,11 @@ class SubarrayNode(SKASubarray):
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
+
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
-            const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
+            #----------------------------------------------------
+            # const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
         }
 
         cmd_data = self._create_cmd_data(
@@ -1278,10 +1303,15 @@ class SubarrayNode(SKASubarray):
         Configuration and SDP Configuration parameters.
         JSON string example is:
         {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
-        "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",
-        "fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},
+        "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[
+        {"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,
+        "channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":0,"outputLinkMap":[[0,0],[200,1]]},{
+        "fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,
+        "channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":744,"outputLinkMap":[[0,4],[200,5]]}]},
         "sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0}}
+        ----------------------------------------------------------------------------------
         CSP block in json string is as per earlier implementation and not aligned to SP-872
+        --------------------------------------------------------------------------------------
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
         :return: None
@@ -1305,6 +1335,8 @@ class SubarrayNode(SKASubarray):
 
         tmc_configure = scan_configuration["tmc"]
         self.scan_duration = int(tmc_configure["scanDuration"])
+
+        self._scan_type = scan_configuration["sdp"]["scan_type"]
         self._configure_csp(scan_configuration)
         # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
         time.sleep(2)
