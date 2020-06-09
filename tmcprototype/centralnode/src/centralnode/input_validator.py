@@ -8,7 +8,7 @@ class AssignResourceValidator():
         """
         Validates the input string received as an argument of AssignResources command.
 
-        :param input_string: A JSON string
+        :param: input_string: A JSON string
 
         :return: True if input string is valid.
 
