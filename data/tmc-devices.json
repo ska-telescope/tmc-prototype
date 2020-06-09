@@ -56,12 +56,6 @@
                             "SkaLevel": [
                                 "1"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "subarray1healthstate",
                                 "1000",
@@ -137,12 +131,6 @@
                             ],
                             "SkaLevel": [
                                 "2"
-                            ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -221,12 +209,6 @@
                             "SkaLevel": [
                                 "2"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "activitymessage",
                                 "1000",
@@ -304,12 +286,6 @@
                             "SkaLevel": [
                                 "2"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "activitymessage",
                                 "1000",
@@ -361,12 +337,6 @@
                             "TrackDuration": [
                                 "1"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "activitymessage",
                                 "1000",
@@ -407,12 +377,6 @@
                             ],
                             "TrackDuration": [
                                 "1"
-                            ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -455,12 +419,6 @@
                             "TrackDuration": [
                                 "1"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "activitymessage",
                                 "1000",
@@ -502,12 +460,6 @@
                             "TrackDuration": [
                                 "1"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "activitymessage",
                                 "1000",
@@ -539,12 +491,6 @@
                         "properties": {
                             "CspMasterFQDN": [
                                 "mid_csp/elt/master"
-                            ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -591,12 +537,6 @@
                             "SkaLevel": [
                                 "3"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "adminmode",
                                 "1000",
@@ -641,12 +581,6 @@
                                 "mid_csp/elt/subarray_02"],
                             "SkaLevel": [
                                 "3"
-                            ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -693,12 +627,6 @@
                             "SkaLevel": [
                                 "3"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "adminmode",
                                 "1000",
@@ -732,12 +660,6 @@
                         "properties": {
                             "SdpMasterFQDN": [
                                 "mid_sdp/elt/master"
-                            ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -779,12 +701,6 @@
                             "SkaLevel": [
                                 "3"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "activitymessage",
                                 "1000",
@@ -825,12 +741,6 @@
                             "SkaLevel": [
                                 "3"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "activitymessage",
                                 "1000",
@@ -870,12 +780,6 @@
                             ],
                             "SkaLevel": [
                                 "3"
-                            ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -1122,12 +1026,6 @@
                             "SkaLevel": [
                                 "1"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "achievedpointing",
                                 "1000",
@@ -1208,12 +1106,6 @@
                         "properties": {
                             "SkaLevel": [
                                 "1"
-                            ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1296,12 +1188,6 @@
                             "SkaLevel": [
                                 "1"
                             ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
-                            ],
                             "polled_attr": [
                                 "achievedpointing",
                                 "1000",
@@ -1382,12 +1268,6 @@
                         "properties": {
                             "SkaLevel": [
                                 "1"
-                            ],
-                            "LoggingTargetsDefault": [
-                                "console::cout"
-                            ],
-                            "LoggingLevelDefault": [
-                                "4"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
