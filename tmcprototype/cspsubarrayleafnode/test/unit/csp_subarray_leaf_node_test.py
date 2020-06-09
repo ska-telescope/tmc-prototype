@@ -22,10 +22,6 @@ from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMo
 with open("cspsubarrayleafnode/test/unit/input.txt") as f:
     input_data=f.readlines()
 
-
-
-
-
 def test_assign_command_with_callback_method():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -68,7 +64,7 @@ def test_assign_command_with_callback_method_with_event_error():
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
 
-        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_input = input_data[0]
         assign_resources_input = []
         assign_resources_input.append(assign_input)
         device_proxy = tango_context.device
@@ -95,7 +91,7 @@ def test_assign_command_with_callback_method_with_command_error():
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
 
-        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_input = input_data[0]
         assign_resources_input = []
         assign_resources_input.append(assign_input)
         device_proxy = tango_context.device
@@ -149,7 +145,7 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
 
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = {'id':1}
+        scan_input = input_data[1]
         # act:
         tango_context.device.StartScan([json.dumps(scan_input)])
 
@@ -174,7 +170,7 @@ def test_start_scan_should_raise_devfailed_exception():
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = {'id':1}
+        scan_input = input_data[1]
         # act:
         with pytest.raises(tango.DevFailed):
             tango_context.device.StartScan([json.dumps(scan_input)])
@@ -223,7 +219,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
 
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input='{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_input= input_data[0]
         assign_resources_input = []
         assign_resources_input.append(assign_input)
         device_proxy=tango_context.device
@@ -257,7 +253,7 @@ def test_assign_resources_should_raise_devfailed_exception():
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input='{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_input= input_data[0]
         assign_resources_input = []
         assign_resources_input.append(assign_input)
         device_proxy=tango_context.device
@@ -287,8 +283,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources()
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
         device_proxy = tango_context.device
-        assign_input='{"dish":{"receptorIDList":["0001","0002"]}}'
-        assign_resources_input = []
+        assign_input= input_data[0]
         assign_resources_input.append(assign_input)
         # act:
         device_proxy.AssignResources(assign_resources_input)
@@ -409,7 +404,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         csp_config = input_data[2]
-        assign_input='{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_input= input_data[0]
         assign_resources_input = []
         assign_resources_input.append(assign_input)
 
@@ -442,15 +437,7 @@ def test_configure_to_raise_devfailed_exception():
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
-        csp_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
-                              '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
-                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/' \
-                     'delayModel", ' \
-                              '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/' \
-                     'sdp_subarray01/receiveAddresses", ' \
-                              '"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", ' \
-                     '"RA": "21:08:47.92", ' \
-                              '"dec": "-88:57:22.9"}}, "scanID": "1"}'
+        csp_config = input_data[2]
         with pytest.raises(tango.DevFailed):
             device_proxy.Configure(csp_config)
         # Assert
