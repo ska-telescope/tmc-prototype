@@ -1,4 +1,9 @@
-from input_validator import AssignResourceValidator
+# standard python imports
+import pytest
+
+# other imports
+from centralnode.input_validator import AssignResourceValidator
+from centralnode.exceptions import InvalidJSONError
 
 class TestAssignResourceValidator():
     """Class to test the AssignResourceValidator class methods"""
@@ -47,7 +52,7 @@ class TestAssignResourceValidator():
             ',{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","' \
             'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
             '00003","type":["calibration"]}]}]}}'
-        
+
         with pytest.raises(InvalidJSONError):
             input_validator = AssignResourceValidator()
             assert input_validator.validate(invalid_subarray_id_json_string)
