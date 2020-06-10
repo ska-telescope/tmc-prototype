@@ -20,6 +20,8 @@ from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 from ska.base.control_model import LoggingLevel
 
+with open("sdpsubarrayleafnode/test/unit/test_input_sdp_subarray_leaf.txt") as f:
+    input_data=f.readlines()
 
 def test_end_sb_command_with_callback_method():
     # arrange:
@@ -76,24 +78,7 @@ def test_assign_command_with_callback_method_with_command_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
-                       '[{"id":"science_A","coordinate_system":"ICRS","ra":"21:08:47.92",' \
-                       '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                       '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
-                       '{"id":"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92",' \
-                       '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                       '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                       '"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                       '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
-                       '"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
-                       '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},' \
-                       '"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                       '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
-                       '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",' \
-                       '"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004",' \
-                       '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                       '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
-                       '"type":["calibration"]}]}]}'
+        assign_input = input_data[0]
         # act:
         with pytest.raises(Exception):
             tango_context.device.AssignResources(assign_input)
@@ -113,7 +98,7 @@ def command_callback(command_name):
 def command_callback_with_event_error(command_name):
     fake_event = MagicMock()
     fake_event.err = True
-    fake_event.errors = 'Event error in Command Callback'
+    fake_event.errors = input_data[1]
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
@@ -144,7 +129,7 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        scan_input = '{"id":1}'
+        scan_input = input_data[2]
         # act:
         tango_context.device.Scan(scan_input)
 
@@ -170,7 +155,7 @@ def test_start_scan_should_raise_devfailed_exception():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        scan_input = '{"id":1}'
+        scan_input = input_data[2]
         # act:
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(scan_input)
@@ -195,24 +180,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
-                        '[{"id":"science_A","coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9",' \
-                        '"subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                        '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
-                        '{"id":"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9",' \
-                        '"subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                        '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                        '"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                        '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
-                        '"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
-                        '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},' \
-                        '"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                        '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
-                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",' \
-                        '"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004",' \
-                        '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
-                        '"type":["calibration"]}]}]}'
+        assign_input = input_data[0]
         device_proxy = tango_context.device
         # act:
         device_proxy.AssignResources(assign_input)
@@ -240,24 +208,7 @@ def test_assign_resources_should_raise_devfailed_exception():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
-                        '[{"id":"science_A","coordinate_system":"ICRS","ra":"21:08:47.92",' \
-                        '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                        '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
-                        '{"id":"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92",' \
-                        '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                        '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                        '"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                        '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
-                        '"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
-                        '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},' \
-                        '"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                        '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
-                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",' \
-                        '"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004",' \
-                        '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
-                        '"type":["calibration"]}]}]}'
+        assign_input =input_data[0]
         device_proxy = tango_context.device
         # act:
         with pytest.raises(tango.DevFailed):
@@ -332,7 +283,7 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        sdp_config = '{"sdp":{ "scan_type": "science_A" }}'
+        sdp_config = input_data[3]
         # act:
         tango_context.device.Configure(sdp_config)
 
@@ -361,7 +312,7 @@ def test_configure_should_raise_devfailed_exception():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        sdp_config = '{"sdp":{ "scan_type": "science_A" }}'
+        sdp_config = input_data[3]
         # act:
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(sdp_config)
@@ -538,57 +489,46 @@ def test_test_mode():
 def test_receive_addresses():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.receiveAddresses == ""
+        assert tango_context.device.receiveAddresses == ''
 
 
 def test_activity_message():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activityMessage == ""
+        assert tango_context.device.activityMessage == ''
 
 
 def test_write_receive_addresses():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.receiveAddresses = "test"
-        assert tango_context.device.receiveAddresses == "test"
+        tango_context.device.receiveAddresses = input_data[4]
+        assert tango_context.device.receiveAddresses == input_data[4]
 
 
 def test_write_activity_message():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.activityMessage = "test"
-        assert tango_context.device.activityMessage == "test"
+        tango_context.device.activityMessage = input_data[4]
+        assert tango_context.device.activityMessage == input_data[4]
 
 
 def test_active_processing_blocks():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activeProcessingBlocks == ""
+        assert tango_context.device.activeProcessingBlocks == ''
 
 
 def test_logging_targets():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.loggingTargets = ['console::cout']
+        tango_context.device.loggingTargets = [input_data[5]]
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
 def test_configure_invalid_key():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        test_input = '{"invalid_key":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",' \
-                     '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":' \
-                     '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
-                     '{"id":"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9",' \
-                     '"subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                     '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
-                     '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
-                     '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},' \
-                     '{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
-                     '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},' \
-                     '{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                     '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}'
+        test_input = input_data[6]
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
@@ -597,7 +537,7 @@ def test_configure_invalid_key():
 def test_configure_invalid_format():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        test_input = '{"abc"}'
+        test_input = input_data[7]
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
         assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
@@ -606,7 +546,7 @@ def test_configure_invalid_format():
 def test_configure_generic_exception():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        test_input = '[123]'
+        test_input = input_data[8]
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
         assert const.ERR_CONFIGURE in tango_context.device.activityMessage
@@ -615,7 +555,7 @@ def test_configure_generic_exception():
 def test_scan_device_not_ready():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        scan_input = '{"id":1}'
+        scan_input = input_data[2]
         tango_context.device.Scan(scan_input)
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
 

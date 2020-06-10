@@ -20,6 +20,7 @@ from ska.base.control_model import LoggingLevel
 with open("cspmasterleafnode/test/unit/test_input_csp_master_leaf.txt") as f:
     input_data=f.readlines()
 
+
 def test_on_should_command_csp_master_leaf_node_to_start():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'

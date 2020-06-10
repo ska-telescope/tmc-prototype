@@ -1,0 +1,4 @@
+Event error in Command Callbacktext
+text
+console::cout
+1.0

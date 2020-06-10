@@ -16,6 +16,9 @@ from sdpmasterleafnode import SdpMasterLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
 
+with open("sdpmasterleafnode/test/unit/test_input_sdp_master_leaf.txt") as f:
+    input_data=f.readlines()
+
 
 def test_on_should_command_sdp_master_leaf_node_to_start():
     # arrange:
@@ -176,7 +179,7 @@ def command_callback_with_event_error(command_name):
     fake_event = MagicMock()
     fake_event = MagicMock()
     fake_event.err = True
-    fake_event.errors = 'Event error in Command Callback'
+    fake_event.errors = input_data[0]
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
@@ -188,14 +191,14 @@ def command_callback_with_command_exception():
 def test_activity_message():
     # act & assert:
     with fake_tango_system(SdpMasterLeafNode) as tango_context:
-        tango_context.device.activityMessage = "text"
-        assert tango_context.device.activityMessage == "text"
+        tango_context.device.activityMessage = input_data[1]
+        assert tango_context.device.activityMessage == input_data[1]
 
 
 def test_version_info():
     # act & assert:
     with fake_tango_system(SdpMasterLeafNode) as tango_context:
-        assert tango_context.device.versionInfo == '1.0'
+        assert tango_context.device.versionInfo == input_data[3]
 
 
 def test_processing_block_list():
@@ -226,7 +229,7 @@ def test_logging_level():
 def test_logging_targets():
     # act & assert:
     with fake_tango_system(SdpMasterLeafNode) as tango_context:
-        tango_context.device.loggingTargets = ['console::cout']
+        tango_context.device.loggingTargets = [input_data[2]]
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
