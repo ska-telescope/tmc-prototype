@@ -1,0 +1,9 @@
+{"dish":{"receptorIDList":["0001","0002"]}}
+{'id':1}
+{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", "pointing": {"target": {"system": "ICRS", "name": "Polaris Australis","RA": "21:08:47.92","dec": "-88:57:22.9"}}, "scanID": "1"}
+{"invalid_key"}
+{"dis":{"receptorIDList":["0001","0002"]}}
+test
+console::cout
+Event error in Command Callback
+ 

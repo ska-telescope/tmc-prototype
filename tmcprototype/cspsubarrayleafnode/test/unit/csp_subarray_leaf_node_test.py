@@ -19,7 +19,7 @@ from cspsubarrayleafnode import CspSubarrayLeafNode, const
 from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMode, ControlMode, AdminMode, \
     LoggingLevel
 
-with open("cspsubarrayleafnode/test/unit/input.txt") as f:
+with open("cspsubarrayleafnode/test/unit/test_input_csp_subarray_leaf.txt") as f:
     input_data=f.readlines()
 
 def test_assign_command_with_callback_method():
@@ -115,7 +115,7 @@ def command_callback(command_name):
 def command_callback_with_event_error(command_name):
     fake_event = MagicMock()
     fake_event.err = True
-    fake_event.errors = 'Event error in Command Callback'
+    fake_event.errors = input_data[7]
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
@@ -284,6 +284,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources()
             as tango_context:
         device_proxy = tango_context.device
         assign_input= input_data[0]
+        assign_resources_input = []
         assign_resources_input.append(assign_input)
         # act:
         device_proxy.AssignResources(assign_resources_input)
@@ -526,7 +527,7 @@ def any_method(with_name=None):
 def test_assign_resource_should_raise_exception_when_called_invalid_json():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assignresources_input = '{"invalid_key"}'
+        assignresources_input = input_data[3]
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assignresources_input)
         # assert:
@@ -537,7 +538,7 @@ def test_assign_resource_should_raise_exception_when_key_not_found():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assignresources_input = []
-        assignresources_input.append('{"dis":{"receptorIDList":["0001","0002"]}}')
+        assignresources_input.append(input_data[4])
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assignresources_input)
         # assert:
@@ -547,7 +548,7 @@ def test_assign_resource_should_raise_exception_when_key_not_found():
 def test_configure_should_raise_exception_when_called_invalid_json():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        configure_input = '{"invalid_key"}'
+        configure_input = input_data[3]
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(configure_input)
         # assert:
@@ -569,14 +570,14 @@ def test_status():
 def test_read_delay_model():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.delayModel == " "
+        assert tango_context.device.delayModel == input_data[8]
 
 
 def test_write_delay_model():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        tango_context.device.delayModel = " "
-        assert tango_context.device.delayModel == " "
+        tango_context.device.delayModel = input_data[8]
+        assert tango_context.device.delayModel == input_data[8]
 
 
 def test_health_state():
@@ -618,21 +619,21 @@ def test_test_mode():
 def test_visdestination_address():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        tango_context.device.visDestinationAddress = "test"
-        assert tango_context.device.visDestinationAddress == "test"
+        tango_context.device.visDestinationAddress = input_data[5]
+        assert tango_context.device.visDestinationAddress == input_data[5]
 
 
 def test_read_activity_message():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activityMessage == " "
+        assert tango_context.device.activityMessage == input_data[8]
 
 
 def test_write_activity_message():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        tango_context.device.activityMessage = "test"
-        assert tango_context.device.activityMessage == "test"
+        tango_context.device.activityMessage = input_data[5]
+        assert tango_context.device.activityMessage == input_data[5]
 
 
 def test_logging_level():
@@ -645,13 +646,13 @@ def test_logging_level():
 def test_read_version_info():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.versionInfo == " "
+        assert tango_context.device.versionInfo == input_data[8]
 
 
 def test_logging_targets():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        tango_context.device.loggingTargets = ['console::cout']
+        tango_context.device.loggingTargets = [input_data[6]]
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
