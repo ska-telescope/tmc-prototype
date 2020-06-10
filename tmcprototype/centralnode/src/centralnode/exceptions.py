@@ -1,2 +1,3 @@
 class InvalidJSONError(Exception):
     pass
+
