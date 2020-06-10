@@ -49,6 +49,8 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
+        exception_message = []
+        exception_count = 0
         try:
             if evt.err is False:
                 self._csp_cbf_health = evt.attr_value.value
@@ -70,7 +72,9 @@ class CspMasterLeafNode(SKABaseDevice):
                 self._read_activity_message = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
                 self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
         except Exception as except_occurred:
-            self._handle_generic_exception(const.ERR_CSP_CBF_HEALTH_CB + ": " + str(except_occurred))
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_CSP_CBF_HEALTH_CB)
 
     def cspPssHealthCallback(self, evt):
         """
@@ -80,6 +84,8 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
+        exception_message = []
+        exception_count = 0
         try:
             if evt.err is False:
                 self._csp_pss_health = evt.attr_value.value
@@ -102,7 +108,9 @@ class CspMasterLeafNode(SKABaseDevice):
                 self._read_activity_message = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
                 self.logger.error(const.ERR_ON_SUBS_CSP_PSS_HEALTH)
         except Exception as except_occurred:
-            self._handle_generic_exception(const.ERR_CSP_PSS_HEALTH_CB + ": " + str(except_occurred))
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_CSP_PSS_HEALTH_CB)
 
     def cspPstHealthCallback(self, evt):
         """
@@ -112,6 +120,8 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
+        exception_message = []
+        exception_count = 0
         try:
             if evt.err is False:
                 self._csp_pst_health = evt.attr_value.value
@@ -133,51 +143,74 @@ class CspMasterLeafNode(SKABaseDevice):
                 self._read_activity_message = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
                 self.logger.error(const.ERR_ON_SUBS_CSP_PST_HEALTH)
         except Exception as except_occurred:
-            self._handle_generic_exception(const.ERR_CSP_PST_HEALTH_CB + ": " + str(except_occurred))
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_CSP_PST_HEALTH_CB)
 
-    def commandCallback(self, event):
+    def cmd_ended_cb(self, event):
         """
-        Checks whether the command has been successfully invoked on CSPMaster.
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully invoked on CSPMaster.
 
-        :param event: response from CspMaster for the invoked command.
-
-        :return: None
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
         """
         exception_count = 0
         exception_message = []
+        # Update logs and activity message attribute with received event
         try:
             if event.err:
-                log = const.ERR_INVOKING_CMD + event.cmd_name
                 log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
+                self._read_activity_message = log_msg
             else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self._read_activity_message = log
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
         except Exception as except_occurred:
-            self._handle_generic_exception(const.ERR_EXCEPT_CMD_CB + ": " + str(except_occurred))
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_CMD_CB)
         # Throw Exception
         if exception_count > 0:
-            err_msg = ''
-            for item in exception_message:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-                                         const.STR_CSP_CMD_CALLBK, tango.ErrSeverity.ERR)
+            self.throw_exception(exception_message, const.STR_CSP_CMD_CALLBK)
 
-    #Exception handling
-    def _handle_devfailed_exception(self, df, read_actvity_msg):
+    # Function for handling all Devfailed exception
+    def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(df)
         self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(df)
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
 
-    def _handle_generic_exception(self, read_actvity_msg):
-        log_msg = read_actvity_msg + str(Exception)
+    # Function for handling all generic exception
+    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
+        log_msg = read_actvity_msg + str(exception)
         self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(Exception)
+        self._read_activity_message = read_actvity_msg + str(exception)
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
+
+    def throw_exception(self, except_msg_list, read_actvity_msg):
+        err_msg = ''
+        for item in except_msg_list:
+            err_msg += item + "\n"
+        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
     # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
 
@@ -227,9 +260,9 @@ class CspMasterLeafNode(SKABaseDevice):
         except DevFailed as dev_failed:
             log_msg = const.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
+            self._read_activity_message = log_msg
             self.set_state(DevState.FAULT)
-            self._handle_devfailed_exception(dev_failed, const.ERR_IN_CREATE_PROXY_CSP_MASTER)
+            self._handle_devfailed_exception(dev_failed, log_msg, 0,const.STR_ERR_MSG)
 
         # Subscribing to CSPMaster Attributes
         try:
@@ -308,7 +341,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
-        self._csp_proxy.command_inout_asynch(const.CMD_ON, argin, self.commandCallback)
+        self._csp_proxy.command_inout_asynch(const.CMD_ON, argin, self.cmd_ended_cb)
         self.logger.debug(const.STR_ON_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.On
@@ -330,7 +363,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
-        self._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, self.commandCallback)
+        self._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, self.cmd_ended_cb)
         self.logger.debug(const.STR_OFF_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Off
@@ -354,7 +387,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
         """
-        self._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.commandCallback)
+        self._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.cmd_ended_cb)
         self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
 
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby

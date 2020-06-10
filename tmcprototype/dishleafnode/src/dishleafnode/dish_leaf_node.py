@@ -177,28 +177,40 @@ class DishLeafNode(SKABaseDevice):
             self._read_activity_message = const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
             self.logger.error(const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR)
 
-    def commandCallback(self, event):
+    def cmd_ended_cb(self, event):
         """
-        Checks whether the command has been successfully invoked on DishMaster.
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully invoked on DishMaster.
 
-        :param event: response from DishMaster for the invoked command
-
-
-        :return: None
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
 
         """
         exception_count = 0
         exception_message = []
+        # Update logs and activity message attribute with received event
         try:
             if event.err:
-                log = const.ERR_INVOKING_CMD + event.cmd_name
-                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
-                self.logger.error(log)
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
             else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self._read_activity_message = log
-                self.logger.info(log)
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
         except Exception as except_occurred:
             [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
                                                 exception_message, exception_count, const.ERR_EXCEPT_CMD_CB)
@@ -341,7 +353,7 @@ class DishLeafNode(SKABaseDevice):
                         # assign calculated AzEl to desiredPointing attribute of Dishmaster
                         self._dish_proxy.desiredPointing = spectrum
                         # Invoke Track command of Dish Master
-                        self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.commandCallback)
+                        self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
                     else:
                         self.el_limit = True
                         self._read_activity_message = const.ERR_ELE_LIM
@@ -554,7 +566,7 @@ class DishLeafNode(SKABaseDevice):
     def SetStowMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStowMode) ENABLED START #
         """ Triggers the DishMaster to transit into Stow Mode. """
-        self._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.commandCallback)
+        self._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.cmd_ended_cb)
         # PROTECTED REGION END #    //  DishLeafNode.SetStowMode
 
     def is_SetStowMode_allowed(self):
@@ -568,7 +580,7 @@ class DishLeafNode(SKABaseDevice):
     def SetStandByLPMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStandByLPMode) ENABLED START #
         """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State). """
-        self._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.commandCallback)
+        self._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.cmd_ended_cb)
         # PROTECTED REGION END #    //  DishLeafNode.SetStandByLPMode
 
     def is_SetStandByLPMode_allowed(self):
@@ -583,7 +595,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(DishLeafNode.SetOperateMode) ENABLED START #
         """ Triggers the DishMaster to transit into Operate mode. """
 
-        self._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.commandCallback)
+        self._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.cmd_ended_cb)
         # PROTECTED REGION END #    //  DishLeafNode.SetOperateMode
 
     def is_SetOperateMode_allowed(self):
@@ -620,7 +632,7 @@ class DishLeafNode(SKABaseDevice):
             #if type(float(scan_duration)) == float:
                 self.logger.debug(const.STR_IN_SCAN)
                 self._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
-                                                      argin, self.commandCallback)
+                                                      argin, self.cmd_ended_cb)
                 self.logger.debug(const.STR_OUT_SCAN)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
@@ -660,7 +672,7 @@ class DishLeafNode(SKABaseDevice):
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
-                                                      argin, self.commandCallback)
+                                                      argin, self.cmd_ended_cb)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
             self.logger.error(log_msg)
@@ -726,7 +738,7 @@ class DishLeafNode(SKABaseDevice):
             dish_str_ip = json.dumps(arg_list)
             # Send configure command to Dish Master
             self._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
-                                                  self.commandCallback)
+                                                  self.cmd_ended_cb)
 
         except ValueError as value_error:
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
@@ -785,7 +797,7 @@ class DishLeafNode(SKABaseDevice):
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
-                                                      argin, self.commandCallback)
+                                                      argin, self.cmd_ended_cb)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
             self.logger.error(log_msg)
@@ -819,7 +831,7 @@ class DishLeafNode(SKABaseDevice):
         exception_message = []
         try:
             if type(float(argin)) == float:
-                self._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE, argin, self.commandCallback)
+                self._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE, argin, self.cmd_ended_cb)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
             self.logger.error(log_msg)
@@ -839,7 +851,7 @@ class DishLeafNode(SKABaseDevice):
     def SetStandbyFPMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStandbyFPMode) ENABLED START #
         """ Triggers the DishMaster to transition into the STANDBY-FP (Standby-Full power) mode. """
-        self._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, self.commandCallback)
+        self._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, self.cmd_ended_cb)
         # PROTECTED REGION END #    //  DishLeafNode.SetStandbyFPMode
 
     def is_SetStandbyFPMode_allowed(self):
@@ -866,7 +878,7 @@ class DishLeafNode(SKABaseDevice):
         exception_message = []
         try:
             if type(float(argin)) == float:
-                self._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW, argin, self.commandCallback)
+                self._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW, argin, self.cmd_ended_cb)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
             self.logger.error(log_msg)
@@ -960,7 +972,7 @@ class DishLeafNode(SKABaseDevice):
         exception_message = []
         try:
             self.event_track_time.set()
-            self._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.commandCallback)
+            self._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.cmd_ended_cb)
 
         except DevFailed as dev_failed:
             self._read_activity_message = const.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)

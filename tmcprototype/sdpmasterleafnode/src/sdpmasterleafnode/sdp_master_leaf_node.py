@@ -37,34 +37,45 @@ class SdpMasterLeafNode(SKABaseDevice):
     actions during an observation.
     """
     # PROTECTED REGION ID(SdpMasterLeafNode.class_variable) ENABLED START #
-    def commandCallback(self, event):
+    def cmd_ended_cb(self, event):
 
         """
-        Checks whether the command has been successfully invoked on SDP Master.
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully invoked on SDP Master.
 
-        :param event: response from SDP Master for the invoked command.
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
 
-        :return: None.
         """
         exception_count = 0
         exception_message = []
         try:
             if event.err:
-                log = const.ERR_INVOKING_CMD + event.cmd_name
                 log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
-                self.logger.error(log)
+                self._read_activity_message = log_msg
             else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self._read_activity_message = log
-                self.logger.info(log)
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
         except Exception as except_occurred:
-            self._read_activity_message = const.ERR_EXCEPT_CMD_CB + str(except_occurred)
             log_msg = const.ERR_EXCEPT_CMD_CB + str(except_occurred)
+            self._read_activity_message = log_msg
             self.logger.error(log_msg)
-            exception_message.append(self._read_activity_message)
+            exception_message.append(log_msg)
             exception_count += 1
 
         # Throw Exception
@@ -209,7 +220,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         :return: None.
 
         """
-        self._sdp_proxy.command_inout_asynch(const.CMD_ON, self.commandCallback)
+        self._sdp_proxy.command_inout_asynch(const.CMD_ON, self.cmd_ended_cb)
         log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.On
@@ -264,7 +275,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         :return: None.
 
         """
-        self._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.commandCallback)
+        self._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.cmd_ended_cb)
         log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Standby
