@@ -1,0 +1,4 @@
+Event error in Command Callback
+Event error in attribute callback
+test
+console::cout
