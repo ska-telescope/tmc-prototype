@@ -6,7 +6,8 @@ RUN ipython profile create
 
 #install lmc-base-classes
 USER root
-RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-logging/0.2.1/ska_logging-0.2.1.tar.gz
+#RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-logging/0.2.1/ska_logging-0.2.1.tar.gz
+RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-logging/0.3.0/ska_logging-0.3.0.tar.gz
 #RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.5.1+22db2b66/lmcbaseclasses-0.5.1+22db2b66.tar.gz
 RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.5.4+d12da018/lmcbaseclasses-0.5.4+d12da018.tar.gz
 
