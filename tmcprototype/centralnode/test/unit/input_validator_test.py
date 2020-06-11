@@ -3,7 +3,7 @@ import pytest
 
 # other imports
 from centralnode.input_validator import AssignResourceValidator
-from centralnode.exceptions import InvalidJSONError
+from centralnode.exceptions import InvalidJSONError, JsonKeyMissingError
 
 class TestAssignResourceValidator():
     """Class to test the AssignResourceValidator class methods"""
@@ -112,7 +112,7 @@ class TestAssignResourceValidator():
         Tests that InvalidJSONError is raised when a receptor id is given incorrect value in the input string.
         """
         missing_subarray_id_json_string = \
-            '{,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-' \
+            '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-' \
             '20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate' \
             '_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min"' \
             ':0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id"' \
@@ -128,7 +128,7 @@ class TestAssignResourceValidator():
             'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
             '00003","type":["calibration"]}]}]}}'
 
-        with pytest.raises(InvalidJSONError):
+        with pytest.raises(JsonKeyMissingError):
             input_validator = AssignResourceValidator()
             assert input_validator.validate(missing_subarray_id_json_string)
 
