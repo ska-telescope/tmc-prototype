@@ -1,5 +1,20 @@
+'''
 class InvalidJSONError(Exception):
-    """ Raised when the JSON is not correct"""
+    pass
+'''
 
-    def __init__(self, message):
-        self.message = message
+
+class JsonKeyMissing(KeyError):
+
+    """Raised when the key is missing"""
+    pass
+
+
+class JsonValueTypeMismatch(TypeError):
+    """Raised when the key data type is different than that of value"""
+    pass
+
+
+class JsonValueMissing(ValueError):
+    """Raised when the key is missing"""
+    pass
