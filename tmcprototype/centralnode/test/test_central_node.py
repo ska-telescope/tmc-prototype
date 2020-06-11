@@ -372,4 +372,5 @@ class TestCentralNode(object):
         # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
+        assert 0
         # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
