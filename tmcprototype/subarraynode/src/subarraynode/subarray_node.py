@@ -40,9 +40,7 @@ __all__ = ["SubarrayNode", "main"]
 
 # global receive_addresses_map
 receive_addresses_map = ''
-# global csp_interface_version
 csp_interface_version = 0
-# global sdp_interface_version
 sdp_interface_version = 0
 
 class SubarrayHealthState:
@@ -99,11 +97,11 @@ class ElementDeviceData:
         scan_type = scan_config["sdp"]["scan_type"]
         print("scan_type in element device data node::::::::::: 2", scan_type)
         # Invoke ska_telmodel library function to create csp configure schema
-        # global csp_interface_version
-        # global sdp_interface_version
         # global receive_addresses_map
+        print("-----------csp_interface_version---------- ",  csp_interface_version)
+        print("-----------sdp_interface_version---------- ", sdp_interface_version)
         csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
-                                                      scan_type, csp_scan_config, receive_addresses_map)
+                                                      scan_type, str(csp_scan_config), receive_addresses_map)
         if csp_config_schema:
             for key, attribute_name in attr_name_map.items():
                 csp_config_schema[key] = attribute_name
@@ -1110,8 +1108,6 @@ class SubarrayNode(SKASubarray):
         self.only_dishconfig_flag = False
         # global receive_addresses_map
         # receive_addresses_map = ''
-        # global csp_interface_version
-        # csp_interface_version = 0
         # global sdp_interface_version
         # sdp_interface_version = 0
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
