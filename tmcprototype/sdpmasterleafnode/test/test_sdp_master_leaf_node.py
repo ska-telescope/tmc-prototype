@@ -99,13 +99,13 @@ class TestSdpMasterLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.4, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == '0.5.1'
+        assert tango_context.device.versionId == '0.5.4'
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_versionId
 
     def test_healthState(self, tango_context):
