@@ -38,6 +38,15 @@ from ska_telmodel.csp import interface
 
 __all__ = ["SubarrayNode", "main"]
 
+# global scan_type
+scan_type = ''
+# global receive_addresses_map
+receive_addresses_map = ''
+# global csp_interface_version
+csp_interface_version = 0
+# global sdp_interface_version
+sdp_interface_version = 0
+
 class SubarrayHealthState:
 
     @staticmethod
@@ -71,7 +80,9 @@ class ElementDeviceData:
         sdp_scan_config = scan_config.get("sdp", {})
         if sdp_scan_config:
             # sdp_scan_type = sdp_scan_config.get("scan_type")
-            if self._scan_type:
+            global scan_type
+            print("scan type in element device data node:::::::::::", scan_type)
+            if scan_type:
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
                 scan_config.pop("csp", None)
@@ -89,8 +100,12 @@ class ElementDeviceData:
         scan_config = scan_config.copy()
         csp_scan_config = scan_config.get("csp", {})
         # Invoke ska_telmodel library function to create csp configure schema
-        csp_config_schema = interface.make_csp_config(self._csp_interface_version, self._sdp_interface_version,
-                                                      self._scan_type, csp_scan_config, self._receive_addresses_map)
+        # global csp_interface_version
+        # global sdp_interface_version
+        # global scan_type
+        # global receive_addresses_map
+        csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
+                                                      scan_type, csp_scan_config, receive_addresses_map)
         if csp_config_schema:
             for key, attribute_name in attr_name_map.items():
                 csp_config_schema[key] = attribute_name
@@ -133,7 +148,7 @@ class SubarrayNode(SKASubarray):
 
             :return: None
             """
-        self._receive_addresses_map = event.attr_value.value
+        receive_addresses_map = event.attr_value.value
 
     def health_state_cb(self, event):
         """
@@ -1095,10 +1110,14 @@ class SubarrayNode(SKASubarray):
         self._csp_sa_device_state = DevState.DISABLE
         self._sdp_sa_device_state = DevState.OFF
         self.only_dishconfig_flag = False
-        self._scan_type = ''
-        self._receive_addresses_map = ''
-        self._csp_interface_version = 0
-        self._sdp_interface_version = 0
+        # global scan_type
+        # scan_type = ''
+        # global receive_addresses_map
+        # receive_addresses_map = ''
+        # global csp_interface_version
+        # csp_interface_version = 0
+        # global sdp_interface_version
+        # sdp_interface_version = 0
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
         self.scan_thread = None
 
@@ -1149,8 +1168,8 @@ class SubarrayNode(SKASubarray):
             self._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
                                                self.device_state_callback, stateless=True)
             # Subscribe ReceiveAddresses of SdpSubarray
-            attr_name = self.SdpSubarrayFQDN + "/receiveAddresses"
-            self._sdp_sa_proxy.subscribe_event( attr_name, EventType.CHANGE_EVENT,
+            # attr_name = self.SdpSubarrayFQDN + "/receiveAddresses"
+            self._sdp_sa_proxy.subscribe_event( "receiveAddresses", EventType.CHANGE_EVENT,
                                                self.receive_addresses_callback, stateless=True)
             self.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
@@ -1316,17 +1335,23 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
+        print("argin in configure command {} and its type {} :::::::".format(argin, type(argin)))
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg=const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
+        print("before set status")
         self.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
+        print("after set status")
         self._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
-
+        print("before if::::::::::::::::::::::::::::::")
         if self._obs_state not in [ObsState.IDLE, ObsState.READY]:
+            print("inside try block::::::::::::::::::::::::::::::")
             return
         try:
+            print("inside try block::::::::::::::::::::::::::::::")
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
+            print("inside exception block::::::::::::::::::::::::::::::")
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
             self._read_activity_message = log_message
@@ -1335,8 +1360,9 @@ class SubarrayNode(SKASubarray):
 
         tmc_configure = scan_configuration["tmc"]
         self.scan_duration = int(tmc_configure["scanDuration"])
-
-        self._scan_type = scan_configuration["sdp"]["scan_type"]
+        global scan_type
+        scan_type = scan_configuration["sdp"]["scan_type"]
+        print("scan type in subarray node:::::::::::", scan_type)
         self._configure_csp(scan_configuration)
         # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
         time.sleep(2)

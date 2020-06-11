@@ -131,12 +131,61 @@ def example_invalid_scan_configuration():
                 "functionMode": "CORR",
                 "frequencySliceID": 1,
                 "integrationTime": 1400,
-                "corrBandwidth": 0
+                "corrBandwidth": 0,
+                "channelAveragingMap": [
+                  [
+                    0,
+                    2
+                  ],
+                  [
+                    744,
+                    0
+                  ]
+                ],
+                "outputChannelOffset": 0,
+                "outputLinkMap": [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    200,
+                    1
+                  ]
+                ]
+              },
+              {
+                "fspID": 2,
+                "functionMode": "CORR",
+                "frequencySliceID": 2,
+                "integrationTime": 1400,
+                "corrBandwidth": 0,
+                "channelAveragingMap": [
+                  [
+                    0,
+                    2
+                  ],
+                  [
+                    744,
+                    0
+                  ]
+                ],
+                "outputChannelOffset": 744,
+                "outputLinkMap": [
+                  [
+                    0,
+                    4
+                  ],
+                  [
+                    200,
+                    5
+                  ]
+                ]
               }
             ]
           },
           "sdp": {
-              "scan_type_1": "science_A"
+            "scan_type_1": "science_A"
           },
           "tmc": {
             "scanDuration": 10.0
