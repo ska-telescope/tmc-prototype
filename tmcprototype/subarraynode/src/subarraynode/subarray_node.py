@@ -38,8 +38,6 @@ from ska_telmodel.csp import interface
 
 __all__ = ["SubarrayNode", "main"]
 
-# global scan_type
-scan_type = ''
 # global receive_addresses_map
 receive_addresses_map = ''
 # global csp_interface_version
@@ -79,9 +77,8 @@ class ElementDeviceData:
         scan_config = scan_config.copy()
         sdp_scan_config = scan_config.get("sdp", {})
         if sdp_scan_config:
-            # sdp_scan_type = sdp_scan_config.get("scan_type")
-            global scan_type
-            print("scan type in element device data node:::::::::::", scan_type)
+            scan_type = sdp_scan_config.get("scan_type")
+            print("scan_type in element device data node::::::::::: 1", scan_type)
             if scan_type:
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
@@ -99,10 +96,11 @@ class ElementDeviceData:
     def build_up_csp_cmd_data(scan_config, attr_name_map):
         scan_config = scan_config.copy()
         csp_scan_config = scan_config.get("csp", {})
+        scan_type = scan_config["sdp"]["scan_type"]
+        print("scan_type in element device data node::::::::::: 2", scan_type)
         # Invoke ska_telmodel library function to create csp configure schema
         # global csp_interface_version
         # global sdp_interface_version
-        # global scan_type
         # global receive_addresses_map
         csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
                                                       scan_type, csp_scan_config, receive_addresses_map)
@@ -1110,8 +1108,6 @@ class SubarrayNode(SKASubarray):
         self._csp_sa_device_state = DevState.DISABLE
         self._sdp_sa_device_state = DevState.OFF
         self.only_dishconfig_flag = False
-        # global scan_type
-        # scan_type = ''
         # global receive_addresses_map
         # receive_addresses_map = ''
         # global csp_interface_version
@@ -1360,9 +1356,8 @@ class SubarrayNode(SKASubarray):
 
         tmc_configure = scan_configuration["tmc"]
         self.scan_duration = int(tmc_configure["scanDuration"])
-        global scan_type
         scan_type = scan_configuration["sdp"]["scan_type"]
-        print("scan type in subarray node:::::::::::", scan_type)
+        print("scan type in subarray node::::::::::: 3", scan_type)
         self._configure_csp(scan_configuration)
         # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
         time.sleep(2)
