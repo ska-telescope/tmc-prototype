@@ -21,6 +21,9 @@ from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
 
+with open("centralnode/test/unit/test_input_central.txt")as f:
+    input_data=f.readlines()
+
 
 @pytest.fixture( scope="function",
     params=[HealthState.DEGRADED, HealthState.OK, HealthState.UNKNOWN, HealthState.FAILED])
@@ -109,7 +112,7 @@ def test_logging_level():
 def test_logging_targets():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
-        tango_context.device.loggingTargets = ['console::cout']
+        tango_context.device.loggingTargets = [input_data[0]]
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
@@ -207,7 +210,7 @@ def test_stow_antennas_invalid_value():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        argin = ["invalid_antenna", ]
+        argin = [input_data[1], ]
         with pytest.raises(tango.DevFailed):
             tango_context.device.StowAntennas(argin)
 
@@ -232,21 +235,7 @@ def test_assign_resources():
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-' \
-                         '20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate' \
-                         '_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min"' \
-                         ':0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id"' \
-                         ':"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9",' \
-                         '"subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_' \
-                         'map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                         '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters"' \
-                         ':{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_' \
-                         'realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                         '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},' \
-                         '"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]}' \
-                         ',{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","' \
-                         'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
-                         '00003","type":["calibration"]}]}]}}'
+        assign_command = input_data[2]
         device_proxy=tango_context.device
         device_proxy.AssignResources(assign_command)
         # assert:
@@ -279,21 +268,7 @@ def test_assign_resources_should_raise_devfailed_exception():
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-' \
-                         '20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate' \
-                         '_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min"' \
-                         ':0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id"' \
-                         ':"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9' \
-                         '","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_' \
-                         'map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                         '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters"' \
-                         ':{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_' \
-                         'realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                         '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},' \
-                         '"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]}' \
-                         ',{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","' \
-                         'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
-                         '00003","type":["calibration"]}]}]}}'
+        assign_command = input_data[2]
 
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assign_command)
@@ -305,7 +280,7 @@ def test_assign_resources_should_raise_devfailed_exception():
 def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
-        test_input = '{"invalid_json"}'
+        test_input = input_data[3]
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(test_input)
 
@@ -318,7 +293,7 @@ def test_assign_resources_invalid_key():
     with fake_tango_system(CentralNode) \
             as tango_context:
         result = 'test'
-        test_input = '{"dish":{"receptorIDList":["0001"]}}'
+        test_input = input_data[4]
         with pytest.raises(tango.DevFailed):
             result = tango_context.device.AssignResources(test_input)
 
@@ -347,7 +322,7 @@ def test_release_resources():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        release_input= input_data[3]
         tango_context.device.ReleaseResources(release_input)
 
         # assert:
@@ -376,7 +351,7 @@ def test_release_resources_should_raise_devfailed_exception():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        release_input= input_data[5]
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseResources(release_input)
 
@@ -388,7 +363,7 @@ def test_release_resources_invalid_json_value():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        test_input = '{"invalid_json"}'
+        test_input = input_data[3]
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseResources(test_input)
 
@@ -400,7 +375,7 @@ def test_release_resources_invalid_key():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        test_input = '{"releaseALL":true,"receptorIDList":[]}'
+        test_input = input_data[6]
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseResources(test_input)
         # assert:
