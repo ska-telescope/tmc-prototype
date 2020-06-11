@@ -2708,6 +2708,15 @@ def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr
     return fake_event
 
 
+def create_dummy_event_sdp_receiceAddresses(proxy_mock, device_fqdn, attribute, attr_value):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = attr_value
+    fake_event.device = proxy_mock
+    return fake_event
+
+
 def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("SubarrayNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
