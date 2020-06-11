@@ -13,7 +13,7 @@ from json import JSONDecodeError
 # import logging
 
 # SKA specific imports
-from centralnode.exceptions import InvalidJSONError
+from centralnode.exceptions import InvalidJSONError, JsonKeyMissingError
 # import ska.logging as ska_logging
 
 class AssignResourceValidator():
@@ -41,14 +41,15 @@ class AssignResourceValidator():
             input_json = json.loads(input_string)
             print("JSON load ok.")
         except JSONDecodeError as json_error:
-            raise InvalidJSONError(json_error.msg)
+            print(json_error.msg)
+            raise InvalidJSONError("Malformed input string. Please check the JSON format.")
 
         # Check subarray ID
         print("Checking subarray id value type")
         try:
             subarray_id = input_json["subarrayID"]
         except KeyError as ke:
-            print(ke)
+            raise JsonKeyMissingError("A mandatory key subarrayID is missing from input JSON.")
         
         assert type(subarray_id) == int
 
