@@ -107,7 +107,7 @@ class ElementDeviceData:
         print("-----------sdp_interface_version---------- ", sdp_interface_version)
         csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
                                                       scan_type, json.dumps(csp_scan_config), receive_addresses_map)
-        # csp_config_schema = json.loads(csp_config_schema)
+        csp_config_schema = json.loads(csp_config_schema)
         if csp_config_schema:
             for key, attribute_name in attr_name_map.items():
                 csp_config_schema[key] = attribute_name
