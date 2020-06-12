@@ -77,6 +77,7 @@ class ElementDeviceData:
         if sdp_scan_config:
             scan_type = sdp_scan_config.get("scan_type")
             print("scan_type in element device data node::::::::::: 1", scan_type)
+            # sdp_scan_type = sdp_scan_config.get("scan_type")
             if scan_type:
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
@@ -92,8 +93,12 @@ class ElementDeviceData:
 
     @staticmethod
     def build_up_csp_cmd_data(scan_config, attr_name_map):
+        print("Inside build_up_csp_cmd_data")
         scan_config = scan_config.copy()
+        log_msg = "scan config is {} :::::::".format(scan_config)
+        print(log_msg)
         csp_scan_config = scan_config.get("csp", {})
+        # csp_scan_config = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":0,"outputLinkMap":[[0,0],[200,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":744,"outputLinkMap":[[0,4],[200,5]]}]}'
         scan_type = scan_config["sdp"]["scan_type"]
         print("scan_type in element device data node::::::::::: 2", scan_type)
         # Invoke ska_telmodel library function to create csp configure schema
@@ -101,7 +106,8 @@ class ElementDeviceData:
         print("-----------csp_interface_version---------- ",  csp_interface_version)
         print("-----------sdp_interface_version---------- ", sdp_interface_version)
         csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
-                                                      scan_type, str(csp_scan_config), receive_addresses_map)
+                                                      scan_type, json.dumps(csp_scan_config), receive_addresses_map)
+        # csp_config_schema = json.loads(csp_config_schema)
         if csp_config_schema:
             for key, attribute_name in attr_name_map.items():
                 csp_config_schema[key] = attribute_name
@@ -144,7 +150,11 @@ class SubarrayNode(SKASubarray):
 
             :return: None
             """
+        self.logger.info("Inside receive addre::::::::::::::::::::::::")
+        global receive_addresses_map
         receive_addresses_map = event.attr_value.value
+        log_msg = "receive addr map is {} and its type {} ".format(receive_addresses_map, type(receive_addresses_map))
+        self.logger.info(log_msg)
 
     def health_state_cb(self, event):
         """
@@ -1161,7 +1171,7 @@ class SubarrayNode(SKASubarray):
                                                self.device_state_callback, stateless=True)
             # Subscribe ReceiveAddresses of SdpSubarray
             # attr_name = self.SdpSubarrayFQDN + "/receiveAddresses"
-            self._sdp_sa_proxy.subscribe_event( "receiveAddresses", EventType.CHANGE_EVENT,
+            self._sdp_sa_proxy.subscribe_event("receiveAddresses", EventType.CHANGE_EVENT,
                                                self.receive_addresses_callback, stateless=True)
             self.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
@@ -1254,7 +1264,9 @@ class SubarrayNode(SKASubarray):
             raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
+        self.logger.info("Inside _create_cmd_data")
         try:
+            self.logger.info("Inside _create_cmd_data try block ::::::::")
             method = getattr(ElementDeviceData, method_name)
             cmd_data = method(scan_config, *args)
         except KeyError as kerr:
@@ -1269,13 +1281,15 @@ class SubarrayNode(SKASubarray):
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
+        self.logger.info("inside _configure_csp")
 
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
             #----------------------------------------------------
             # const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
         }
-
+        log_msg = "attr map is {} ::::::::::::".format(attr_name_map)
+        self.logger.info(log_msg)
         cmd_data = self._create_cmd_data(
             "build_up_csp_cmd_data", scan_configuration, attr_name_map)
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
@@ -1327,30 +1341,31 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        print("argin in configure command {} and its type {} :::::::".format(argin, type(argin)))
+        self.logger.info("argin in configure command {} and its type {} :::::::".format(argin, type(argin)))
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg=const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
-        print("before set status")
+        self.logger.info("before set status")
         self.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        print("after set status")
+        self.logger.info("after set status")
         self._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
-        print("before if::::::::::::::::::::::::::::::")
+        self.logger.info("before if::::::::::::::::::::::::::::::")
         if self._obs_state not in [ObsState.IDLE, ObsState.READY]:
-            print("inside try block::::::::::::::::::::::::::::::")
+            self.logger.info("inside try block::::::::::::::::::::::::::::::")
             return
         try:
-            print("inside try block::::::::::::::::::::::::::::::")
+            self.logger.info("inside try block::::::::::::::::::::::::::::::")
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
-            print("inside exception block::::::::::::::::::::::::::::::")
+            self.logger.info("inside exception block::::::::::::::::::::::::::::::")
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
             self._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-
+        self.logger.info("before tmc_conf")
         tmc_configure = scan_configuration["tmc"]
+        self.logger.info("after tmc_conf")
         self.scan_duration = int(tmc_configure["scanDuration"])
         scan_type = scan_configuration["sdp"]["scan_type"]
         print("scan type in subarray node::::::::::: 3", scan_type)
