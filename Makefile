@@ -140,9 +140,8 @@ unit-test: build
 	bash -c "cd /app/tmcprototype && \
 	sudo chown -R tango:tango /report && \
 	./run_unit_test.sh"
-	docker cp $(REPORT):/report ./unit_test_report;
+	docker cp $(REPORT):/report ./unit_test_report
 	docker rm -f -v $(REPORT)
-
 
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 lint: build up ##lint the application (static code analysis)
