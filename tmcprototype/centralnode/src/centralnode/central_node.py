@@ -36,7 +36,7 @@ class CentralNode(SKABaseDevice):
     """
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
 
-    def healthStateCallback(self, evt):
+    def health_state_cb(self, evt):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
         telescope health state.
@@ -45,9 +45,8 @@ class CentralNode(SKABaseDevice):
 
         :return: None
         """
-
-        if evt.err is False:
-            try:
+        try:
+            if not evt.err:
                 health_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     self._subarray1_health_state = health_state
@@ -67,34 +66,34 @@ class CentralNode(SKABaseDevice):
                     # TODO: For future reference
                     # self._read_activity_message = const.EVT_UNKNOWN
 
-                if health_state == HealthState.OK:
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
-                    self.logger.info(str_log)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                    #                                                            ) + const.STR_OK
-                elif health_state == HealthState.DEGRADED:
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
-                    self.logger.info(str_log)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                    #                                                            ) + const.STR_DEGRADED
-                elif health_state == HealthState.FAILED:
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
-                    self.logger.info(str_log)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                    #                                                            ) + const.STR_FAILED
-                elif health_state == HealthState.UNKNOWN:
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
-                    self.logger.info(str_log)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE + str(
-                    #     evt.device) + const.STR_UNKNOWN
-                else:
-                    self.logger.info(const.STR_HEALTH_STATE_UNKNOWN_VAL)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
+                # if health_state == HealthState.OK:
+                #     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
+                #     self.logger.info(str_log)
+                #     # TODO: For future reference
+                #     # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                #     #                                                            ) + const.STR_OK
+                # elif health_state == HealthState.DEGRADED:
+                #     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
+                #     self.logger.info(str_log)
+                #     # TODO: For future reference
+                #     # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                #     #                                                            ) + const.STR_DEGRADED
+                # elif health_state == HealthState.FAILED:
+                #     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
+                #     self.logger.info(str_log)
+                #     # TODO: For future reference
+                #     # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                #     #                                                            ) + const.STR_FAILED
+                # elif health_state == HealthState.UNKNOWN:
+                #     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
+                #     self.logger.info(str_log)
+                #     # TODO: For future reference
+                #     # self._read_activity_message = const.STR_HEALTH_STATE + str(
+                #     #     evt.device) + const.STR_UNKNOWN
+                # else:
+                #     self.logger.info(const.STR_HEALTH_STATE_UNKNOWN_VAL)
+                #     # TODO: For future reference
+                #     # self._read_activity_message = const.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
 
                 counts = {
                         HealthState.OK: 0,
@@ -112,31 +111,43 @@ class CentralNode(SKABaseDevice):
 
                 if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 2:
                     self._telescope_health_state = HealthState.OK
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
+                    self.logger.info(str_log)
+                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + const.STR_OK
                 elif counts[HealthState.FAILED] != 0:
                     self._telescope_health_state = HealthState.FAILED
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
+                    self.logger.info(str_log)
+                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + const.STR_FAILED
                 elif counts[HealthState.DEGRADED] != 0:
                     self._telescope_health_state = HealthState.DEGRADED
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
+                    self.logger.info(str_log)
+                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + const.STR_DEGRADED
                 else:
                     self._telescope_health_state = HealthState.UNKNOWN
-
-            except KeyError as key_error:
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
+                    self.logger.info(str_log)
+                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + const.STR_UNKNOWN
+            else:
                 # TODO: For future reference
-                # self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-                log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
-                self.logger.critical(log_msg)
-            except DevFailed:
-                # TODO: For future reference
-                # self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                self.logger.exception(const.ERR_HEALTH_STATE_CB, evt)
-            except Exception as except_occured:
-                # TODO: For future reference
-                # self._read_activity_message = const.ERR_AGGR_HEALTH_STATE + str(except_occured)
-                log_msg = const.ERR_AGGR_HEALTH_STATE + ": " + str(except_occured)
-                self.logger.critical(log_msg)
-        else:
+                # self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
+                self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
+        except KeyError as key_error:
             # TODO: For future reference
-            # self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
-            self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
+            # self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+            self.logger.critical(log_msg)
+        except Exception as except_occured:
+            # TODO: For future reference
+            # self._read_activity_message = const.ERR_AGGR_HEALTH_STATE + str(except_occured)
+            log_msg = const.ERR_AGGR_HEALTH_STATE + ": " + str(except_occured)
+            self.logger.critical(log_msg)
+
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
     def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
@@ -294,7 +305,7 @@ class CentralNode(SKABaseDevice):
             self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN)
             self._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
                                                         EventType.CHANGE_EVENT,
-                                                        self.healthStateCallback, stateless=True)
+                                                        self.health_state_cb, stateless=True)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                     exception_message, exception_count,const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
@@ -305,7 +316,7 @@ class CentralNode(SKABaseDevice):
             self._sdp_master_leaf_proxy = DeviceProxy(self.SdpMasterLeafNodeFQDN)
             self._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
                                                         EventType.CHANGE_EVENT,
-                                                        self.healthStateCallback, stateless=True)
+                                                        self.health_state_cb, stateless=True)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                 exception_message, exception_count,const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
@@ -317,7 +328,7 @@ class CentralNode(SKABaseDevice):
                 self.subarray_health_state_map[subarray_proxy] = -1
                 subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
                                                EventType.CHANGE_EVENT,
-                                               self.healthStateCallback, stateless=True)
+                                               self.health_state_cb, stateless=True)
 
                 #populate subarrayID-subarray proxy map
                 tokens = self.TMMidSubarrayNodes[subarray].split('/')

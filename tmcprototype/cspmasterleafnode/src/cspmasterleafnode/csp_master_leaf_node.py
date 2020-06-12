@@ -41,7 +41,7 @@ class CspMasterLeafNode(SKABaseDevice):
     """
 
     # PROTECTED REGION ID(CspMasterLeafNode.class_variable) ENABLED START #\
-    def cspCbfHealthCallback(self, evt):
+    def csp_cbf_health_state_cb(self, evt):
         """
         Retrieves the subscribed cspCbfHealthState attribute of CSPMaster.
 
@@ -76,7 +76,7 @@ class CspMasterLeafNode(SKABaseDevice):
                                                                                   exception_message, exception_count,
                                                                                   const.ERR_CSP_CBF_HEALTH_CB)
 
-    def cspPssHealthCallback(self, evt):
+    def csp_pss_health_state_cb(self, evt):
         """
         Retrieves the subscribed cspPssHealthState attribute of CSPMaster.
 
@@ -112,7 +112,7 @@ class CspMasterLeafNode(SKABaseDevice):
                                                                                   exception_message, exception_count,
                                                                                   const.ERR_CSP_PSS_HEALTH_CB)
 
-    def cspPstHealthCallback(self, evt):
+    def csp_pst_health_state_cb(self, evt):
         """
         Retrieves the subscribed cspPstHealthState attribute of CSPMaster.
 
@@ -267,11 +267,11 @@ class CspMasterLeafNode(SKABaseDevice):
         # Subscribing to CSPMaster Attributes
         try:
             self._csp_proxy.subscribe_event(const.EVT_CBF_HEALTH, EventType.CHANGE_EVENT,
-                                            self.cspCbfHealthCallback, stateless=True)
+                                            self.csp_cbf_health_state_cb, stateless=True)
             self._csp_proxy.subscribe_event(const.EVT_PSS_HEALTH, EventType.CHANGE_EVENT,
-                                            self.cspPssHealthCallback, stateless=True)
+                                            self.csp_pss_health_state_cb, stateless=True)
             self._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
-                                            self.cspPstHealthCallback, stateless=True)
+                                            self.csp_pst_health_state_cb, stateless=True)
 
             self.set_state(DevState.ON)
 

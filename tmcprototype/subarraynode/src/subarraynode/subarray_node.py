@@ -129,21 +129,29 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        device_name = event.device.dev_name()
-        if not event.err:
-            event_health_state = event.attr_value.value
-            self.subarray_ln_health_state_map[device_name] = event_health_state
+        exception_message = []
+        exception_count = 0
+        try:
+            device_name = event.device.dev_name()
+            if not event.err:
+                event_health_state = event.attr_value.value
+                self.subarray_ln_health_state_map[device_name] = event_health_state
 
-            log_message = SubarrayHealthState.generate_health_state_log_msg(
-                event_health_state, device_name, event)
-            self._read_activity_message = log_message
-            self.logger.debug(log_message)
-            self._health_state = SubarrayHealthState.calculate_health_state(
-                self.subarray_ln_health_state_map.values())
-        else:
-            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-            self.logger.debug(log_message)
-            self._read_activity_message = log_message
+                log_message = SubarrayHealthState.generate_health_state_log_msg(
+                    event_health_state, device_name, event)
+                self._read_activity_message = log_message
+                self.logger.debug(log_message)
+                self._health_state = SubarrayHealthState.calculate_health_state(
+                    self.subarray_ln_health_state_map.values())
+            else:
+                log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
+                self.logger.debug(log_message)
+                self._read_activity_message = log_message
+        except Exception as except_occured:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_AGGR_HEALTH_STATE)
 
     def device_state_callback(self, evt):
         """
@@ -168,10 +176,6 @@ class SubarrayNode(SKASubarray):
                 self.logger.debug(log_msg)
                 self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
                 self.logger.critical(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                        exception_message, exception_count,
-                                                            const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                                                   exception_message,
@@ -195,7 +199,7 @@ class SubarrayNode(SKASubarray):
                       "state: {}".format(self.get_state(), self._csp_sa_device_state, self._sdp_sa_device_state)
             self.logger.info(log_msg)
 
-    def obsStateCallback(self, evt):
+    def observation_state_cb(self, evt):
         """
                 Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
                 :param evt: A TANGO_CHANGE event on CSP and SDP Subarray obsState.
@@ -231,11 +235,6 @@ class SubarrayNode(SKASubarray):
             self.logger.error(log_msg)
             self._read_activity_message = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
             self.logger.critical(const.ERR_CSPSDP_SUBARRAY_OBS_STATE)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.ERR_SUBSR_CSPSDPSA_OBS_STATE)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                                                   exception_message,
@@ -1102,7 +1101,7 @@ class SubarrayNode(SKASubarray):
                 stateless=True)
             # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
             self._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                        self.obsStateCallback, stateless=True)
+                                                        self.observation_state_cb, stateless=True)
             self._csp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
                                                         self.device_state_callback, stateless=True)
 
@@ -1125,7 +1124,7 @@ class SubarrayNode(SKASubarray):
                                                         self.health_state_cb, stateless=True)
             # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                        self.obsStateCallback, stateless=True)
+                                                        self.observation_state_cb, stateless=True)
             self._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
                                                self.device_state_callback, stateless=True)
             self.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
