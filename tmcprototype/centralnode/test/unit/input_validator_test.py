@@ -3,7 +3,7 @@ import pytest
 
 # other imports
 from centralnode.input_validator import AssignResourceValidator
-from centralnode.exceptions import InvalidJSONError, JsonKeyMissingError
+from centralnode.exceptions import InvalidJSONError, JsonKeyMissingError, InvalidParameterValue
 
 class TestAssignResourceValidator():
     """Class to test the AssignResourceValidator class methods"""
@@ -53,9 +53,12 @@ class TestAssignResourceValidator():
             'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
             '00003","type":["calibration"]}]}]}}'
 
-        with pytest.raises(InvalidJSONError):
+        with pytest.raises(InvalidParameterValue) as excinfo:
             input_validator = AssignResourceValidator()
-            assert input_validator.validate(invalid_subarray_id_json_string)
+            input_validator.validate(invalid_subarray_id_json_string)
+        print("Exception:::::")
+        print(excinfo.value)
+        assert "Invalid subarray ID. Subarray ID must be between 1 and 3." in str(excinfo.value)
 
     def test_validate_subarray_id_empty(self):
         """
@@ -87,7 +90,7 @@ class TestAssignResourceValidator():
         Tests that InvalidJSONError is raised when a receptor id is given incorrect value in the input string.
         """
         incorrect_receptor_id_json_string = \
-            '{"subarrayID":1,"dish":{"receptorIDList":0001},"sdp":{"id":"sbi-mvp01-' \
+            '{"subarrayID":1,"dish":{"receptorIDList":"0001"},"sdp":{"id":"sbi-mvp01-' \
             '20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A","coordinate' \
             '_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min"' \
             ':0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id"' \
@@ -103,7 +106,7 @@ class TestAssignResourceValidator():
             'version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-' \
             '00003","type":["calibration"]}]}]}}'
 
-        with pytest.raises(InvalidJSONError):
+        with pytest.raises(InvalidParameterValue):
             input_validator = AssignResourceValidator()
             assert input_validator.validate(incorrect_receptor_id_json_string)
 
