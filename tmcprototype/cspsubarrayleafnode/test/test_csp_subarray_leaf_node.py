@@ -336,6 +336,6 @@ class TestCspSubarrayLeafNode(object):
     def test_loggingTargets(self, tango_context):
         """Test for loggingTargets"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_loggingTargets) ENABLED START #
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_loggingTargets

@@ -369,7 +369,7 @@ class TestCentralNode(object):
 
     def test_loggingTargets(self, tango_context):
         """Test for loggingTargets"""
-        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
-        # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+        # PROTECTED REGION ID(CentralNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  CentralNode.test_loggingTargets

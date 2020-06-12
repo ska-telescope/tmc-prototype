@@ -580,10 +580,10 @@ class TestSubarrayNode(object):
 
     def test_loggingTargets(self, tango_context):
         """Test for loggingTargets"""
-        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
-        # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+        # PROTECTED REGION ID(SubarrayNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  SubarrayNode.test_loggingTargets
 
     def test_Standby(self, tango_context):
         """Test for StandbyTelescope on subarray."""

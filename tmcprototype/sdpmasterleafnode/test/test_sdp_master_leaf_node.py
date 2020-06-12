@@ -188,14 +188,14 @@ class TestSdpMasterLeafNode(object):
 
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
-        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_loggingLevel) ENABLED START #
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
-        # PROTECTED REGION END #    //  DishMaster.test_loggingLevel
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_loggingLevel
 
     def test_loggingTargets(self, tango_context):
         """Test for loggingTargets"""
-        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
-        # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_loggingTargets
