@@ -146,6 +146,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_count = 0
         exception_message = []
         try:
+            self.logger.info("event logs : CSPmasterleafnode")
             if event.err:
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
