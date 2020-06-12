@@ -5,7 +5,6 @@ class InvalidJSONError(Exception):
 class JsonKeyMissingError(KeyError):
     """Raised when a mandatory key in the input string is missing"""
 
-
 class JsonValueTypeMismatch(TypeError):
     """Raised when the key data type is different than that of value"""
 
