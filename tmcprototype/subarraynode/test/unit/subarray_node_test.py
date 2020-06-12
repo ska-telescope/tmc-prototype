@@ -51,7 +51,7 @@ class TestElementDeviceData:
         valid_scan_config = example_scan_configuration
         sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config)
 
-        expected_string_dict = json.loads(input_data[10])
+        expected_string_dict =(input_data[10])
         assert isinstance(sdp_cmd_data, str)
         assert expected_string_dict == sdp_cmd_data
 
@@ -74,7 +74,7 @@ class TestElementDeviceData:
         scan_id, attr_name_map = csp_func_args
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map)
 
-        expected_string_dict = json.loads(input_data[11])
+        expected_string_dict = (input_data[11])
         assert isinstance(csp_cmd_data, str)
         assert expected_string_dict == csp_cmd_data
 
