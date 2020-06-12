@@ -1,0 +1,8 @@
+0
+{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}
+{"pointing":{"AZ":181.6281105048956,"EL":27.336666294459825},"dish":{"receiverBand":receiver_band}}
+{"Invalid Key"}
+console::cout
+["[123]","a","Event Error","Invalid_value"]
+{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","":"21:08:47.92","dec":"-88:57:22.9"}},'\'"dish":{"receiverBand":"1"}}
+{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","":"-88:5.7:22.9"}},\ "dish":{"receiverBand":"1"}}
