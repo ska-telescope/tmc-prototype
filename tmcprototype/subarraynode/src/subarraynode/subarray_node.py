@@ -98,23 +98,26 @@ class ElementDeviceData:
         log_msg = "scan config is {} :::::::".format(scan_config)
         print(log_msg)
         csp_scan_config = scan_config.get("csp", {})
-        # csp_scan_config = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":0,"outputLinkMap":[[0,0],[200,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":744,"outputLinkMap":[[0,4],[200,5]]}]}'
-        scan_type = scan_config["sdp"]["scan_type"]
-        print("scan_type in element device data node::::::::::: 2", scan_type)
-        # Invoke ska_telmodel library function to create csp configure schema
-        # global receive_addresses_map
-        print("-----------csp_interface_version---------- ",  csp_interface_version)
-        print("-----------sdp_interface_version---------- ", sdp_interface_version)
-        csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
-                                                      scan_type, json.dumps(csp_scan_config), receive_addresses_map)
-        csp_config_schema = json.loads(csp_config_schema)
-        if csp_config_schema:
-            for key, attribute_name in attr_name_map.items():
-                csp_config_schema[key] = attribute_name
-            csp_config_schema["pointing"] = scan_config["pointing"]
-            # ----------------------------------------------------------------
-            # This is temporary fix to pass hardcoded scan_id value to CSP.
-            # csp_scan_config["scanID"] = '1'
+        if csp_scan_config:
+            # csp_scan_config = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":0,"outputLinkMap":[[0,0],[200,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":744,"outputLinkMap":[[0,4],[200,5]]}]}'
+            scan_type = scan_config["sdp"]["scan_type"]
+            print("scan_type in element device data node::::::::::: 2", scan_type)
+            # Invoke ska_telmodel library function to create csp configure schema
+            # global receive_addresses_map
+            print("-----------csp_interface_version---------- ",  csp_interface_version)
+            print("-----------sdp_interface_version---------- ", sdp_interface_version)
+            csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
+                                                          scan_type, json.dumps(csp_scan_config), receive_addresses_map)
+            csp_config_schema = json.loads(csp_config_schema)
+            if csp_config_schema:
+                for key, attribute_name in attr_name_map.items():
+                    csp_config_schema[key] = attribute_name
+                csp_config_schema["pointing"] = scan_config["pointing"]
+                # ----------------------------------------------------------------
+                # This is temporary fix to pass hardcoded scan_id value to CSP.
+                # csp_scan_config["scanID"] = '1'
+            else:
+                raise KeyError("CSP configuration schema must be given. Aborting CSP configuration.")
 
         else:
             raise KeyError("CSP configuration must be given. Aborting CSP configuration.")

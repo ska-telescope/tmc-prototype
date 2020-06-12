@@ -267,14 +267,6 @@ class TestElementDeviceData:
         attr_name_map = csp_func_args
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map)
         expected_string_dict ={
-              "pointing": {
-                "target": {
-                  "system": "ICRS",
-                  "name": "Polaris Australis",
-                  "RA": "21:08:47.92",
-                  "dec": "-88:57:22.9"
-                }
-              },
               "id": "sbi-mvp01-20200325-00001-science_A",
               "frequencyBand": "1",
               "fsp": [
@@ -302,6 +294,34 @@ class TestElementDeviceData:
                     ],
                     [
                       200,
+                      1
+                    ]
+                  ],
+                  "outputHost": [
+                    [
+                      0,
+                      "192.168.0.1"
+                    ],
+                    [
+                      400,
+                      "192.168.0.2"
+                    ]
+                  ],
+                  "outputMac": [
+                    [
+                      0,
+                      "06-00-00-00-00-00"
+                    ]
+                  ],
+                  "outputPort": [
+                    [
+                      0,
+                      9000,
+                      1
+                    ],
+                    [
+                      400,
+                      9000,
                       1
                     ]
                   ]
@@ -332,13 +352,53 @@ class TestElementDeviceData:
                       200,
                       5
                     ]
+                  ],
+                  "outputHost": [
+                    [
+                      0,
+                      "192.168.0.3"
+                    ],
+                    [
+                      400,
+                      "192.168.0.4"
+                    ]
+                  ],
+                  "outputMac": [
+                    [
+                      0,
+                      "06-00-00-00-00-01"
+                    ]
+                  ],
+                  "outputPort": [
+                    [
+                      0,
+                      9000,
+                      1
+                    ],
+                    [
+                      400,
+                      9000,
+                      1
+                    ]
                   ]
                 }
-              ]
+              ],
+              "string1": "attr1",
+              "string2": "attr2",
+              "pointing": {
+                "target": {
+                  "system": "ICRS",
+                  "name": "Polaris Australis",
+                  "RA": "21:08:47.92",
+                  "dec": "-88:57:22.9"
+                }
+              }
             }
 
         expected_string_dict = json.dumps(expected_string_dict)
         assert isinstance(csp_cmd_data, str)
+        print("expected string is::::::::", expected_string_dict)
+        print("csp_cmd data is :::::::::::::::::", csp_cmd_data)
         assert expected_string_dict == csp_cmd_data
 
     def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, csp_func_args):
@@ -347,6 +407,7 @@ class TestElementDeviceData:
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_csp_cmd_data(empty_scan_config, attr_name_map)
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
+        print("excetion 0th :::::::::::", exception.value.args[0])
         assert exception.value.args[0] == expected_msg
 
     def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration, csp_func_args):
