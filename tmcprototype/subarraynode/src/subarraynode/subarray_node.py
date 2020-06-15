@@ -76,7 +76,6 @@ class ElementDeviceData:
         sdp_scan_config = scan_config.get("sdp", {})
         if sdp_scan_config:
             scan_type = sdp_scan_config.get("scan_type")
-            print("scan_type in element device data node::::::::::: 1", scan_type)
             # sdp_scan_type = sdp_scan_config.get("scan_type")
             if scan_type:
                 scan_config.pop("pointing", None)
@@ -93,19 +92,12 @@ class ElementDeviceData:
 
     @staticmethod
     def build_up_csp_cmd_data(scan_config, attr_name_map):
-        print("Inside build_up_csp_cmd_data")
         scan_config = scan_config.copy()
-        log_msg = "scan config is {} :::::::".format(scan_config)
-        print(log_msg)
         csp_scan_config = scan_config.get("csp", {})
         if csp_scan_config:
-            # csp_scan_config = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":0,"outputLinkMap":[[0,0],[200,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":744,"outputLinkMap":[[0,4],[200,5]]}]}'
             scan_type = scan_config["sdp"]["scan_type"]
-            print("scan_type in element device data node::::::::::: 2", scan_type)
             # Invoke ska_telmodel library function to create csp configure schema
             # global receive_addresses_map
-            print("-----------csp_interface_version---------- ",  csp_interface_version)
-            print("-----------sdp_interface_version---------- ", sdp_interface_version)
             csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
                                                           scan_type, json.dumps(csp_scan_config), receive_addresses_map)
             csp_config_schema = json.loads(csp_config_schema)
@@ -1291,8 +1283,6 @@ class SubarrayNode(SKASubarray):
             #----------------------------------------------------
             # const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
         }
-        log_msg = "attr map is {} ::::::::::::".format(attr_name_map)
-        self.logger.info(log_msg)
         cmd_data = self._create_cmd_data(
             "build_up_csp_cmd_data", scan_configuration, attr_name_map)
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
@@ -1344,34 +1334,24 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        self.logger.info("argin in configure command {} and its type {} :::::::".format(argin, type(argin)))
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg=const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
-        self.logger.info("before set status")
         self.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        self.logger.info("after set status")
         self._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
-        self.logger.info("before if::::::::::::::::::::::::::::::")
         if self._obs_state not in [ObsState.IDLE, ObsState.READY]:
-            self.logger.info("inside try block::::::::::::::::::::::::::::::")
             return
         try:
-            self.logger.info("inside try block::::::::::::::::::::::::::::::")
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
-            self.logger.info("inside exception block::::::::::::::::::::::::::::::")
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
             self._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-        self.logger.info("before tmc_conf")
         tmc_configure = scan_configuration["tmc"]
-        self.logger.info("after tmc_conf")
         self.scan_duration = int(tmc_configure["scanDuration"])
         scan_type = scan_configuration["sdp"]["scan_type"]
-        print("scan type in subarray node::::::::::: 3", scan_type)
         self._configure_csp(scan_configuration)
         # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
         time.sleep(2)
