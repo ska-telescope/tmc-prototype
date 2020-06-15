@@ -10,18 +10,20 @@
 # standard Python imports
 import json
 from json import JSONDecodeError
-# import logging
+import logging
 
 # SKA specific imports
 from centralnode.exceptions import InvalidJSONError, JsonKeyMissingError, JsonValueTypeMismatchError
 from centralnode.exceptions import InvalidParameterValue
 # import ska.logging as ska_logging
 
-# logger = ska_logging()
-# logger.configure_logging(INFO)
+module_logger = logging.getLogger(__name__)
 
 class AssignResourceValidator():
     """Class to validate the input string of AssignResources command of Central Node"""
+
+    def __init__(self, logger=module_logger):
+        self.logger = logger
 
     def _validate_subarray_id(self, subarray_id):
         """Applies validation on Subarray ID value
@@ -38,16 +40,14 @@ class AssignResourceValidator():
         """
         try:
             assert type(subarray_id) == int
-            print("subarrayID type correct.")
+            self.logger.info("SubarrayID type correct.")
         except AssertionError as ae:
-            print(ae)
-            raise JsonValueTypeMismatchError("Subarray ID must be an integr value.")
+            self.logger.exception("Exception: %s", ae)
+            raise JsonValueTypeMismatchError("Subarray ID must be an integer value.")
 
         if not 1<= subarray_id <= 3:
-            print("Subarray ID is not in valid range.")
+            self.logger.error("Invalid subarray ID. Subarray ID must be between 1 and 3.")
             raise InvalidParameterValue("Invalid subarray ID. Subarray ID must be between 1 and 3.")
-
-        print("subarrayID validation successful.")
 
     def _validate_receptor_id_list(self, receptor_id_list):
         """Applies validation on receptorIDList value
@@ -57,24 +57,20 @@ class AssignResourceValidator():
         :return: None
 
         :throws:
-            JsonValueTypeMismatchError: When receptorIDList is not a list of strings.
-
             InvalidParameterValue: When a value of a JSON key is not valid. E.g. Non string value 
             is passed in the list.
         """
         try:
             assert type(receptor_id_list) == list
-            print("receptorIDList type correct.")
+            self.logger.info("receptorIDList type correct.")
         except AssertionError as ae:
-            print(ae)
+            self.logger.exception("Exception: %s", str(ae))
             raise InvalidParameterValue("The parameter receptorIDList must be a list.")
 
         for receptor_id in receptor_id_list:
-            print(type(receptor_id))
-            print(int(receptor_id))
             if (type(receptor_id) != str) or ( int(receptor_id) not in range(1,4)):
-                raise InvalidJSONError("Invalid value in receptorIDList. All the values must be string. \
-            Valid values are '0001', '0002', '0003', '0004'")
+                self.logger.error("Invalid value in receptorIDList.")
+                raise InvalidParameterValue("Invalid value in receptorIDList. Valid values are '0001', '0002', '0003', '0004'")
 
     def validate(self, input_string):
         """
@@ -90,38 +86,37 @@ class AssignResourceValidator():
             JsonKeyMissingError: When a mandatory key from the JSON string is missing.
         """
         ret_val = False
-        print("Entry")
         
         ## Check if JSON is correct
-        print("Checking JSON format.")
+        self.logger.info("Checking JSON format.")
         try:
             input_json = json.loads(input_string)
-            print("JSON load ok.")
+            self.logger.info("The JSON format is correct.")
         except JSONDecodeError as json_error:
-            print(json_error.msg)
+            self.logger.exception("Exception: %s", str(json_error))
             raise InvalidJSONError("Malformed input string. Please check the JSON format.")
 
         ## Validate subarray ID
-        print("Validating subarrayID")
+        self.logger.info("Validating subarrayID")
         try:
             subarray_id = input_json["subarrayID"]
         except KeyError as ke:
-            print(ke)
+            self.logger.exception("Exception: %s", str(ke))
             raise JsonKeyMissingError("A mandatory key subarrayID is missing from input JSON.")
 
         self._validate_subarray_id(subarray_id)
+        self.logger.info("SubarrayID validation successful.")
 
         ## Validate receptorIDList
-        print("Validating receptorIDList")
+        self.logger.info("Validating receptorIDList")
         try:
             receptor_id_list = input_json["dish"]["receptorIDList"]
         except KeyError as ke:
-            print(ke)
+            self.logger.exception("Exception: %s", str(ke))
             raise JsonKeyMissingError("A mandatory key receptorIDList is missing from input JSON.")
-        
+
         self._validate_receptor_id_list(receptor_id_list)
+        self.logger.info("receptor_id_list validation successful.")
 
         ret_val = True
-        print("Success")
-
         return ret_val
