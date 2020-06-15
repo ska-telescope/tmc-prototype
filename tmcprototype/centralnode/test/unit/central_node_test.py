@@ -8,6 +8,7 @@ import pytest
 import mock
 from mock import MagicMock
 from mock import Mock
+from os.path import dirname, join
 
 # Tango imports
 import tango
@@ -21,8 +22,30 @@ from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
 
-with open("centralnode/test/unit/test_input_central.txt")as f:
-    input_data=f.readlines()
+assign_input_file = 'command_AssignResources.json'
+path = join(dirname(__file__), 'data', assign_input_file)
+with open(path, 'r') as file:
+    assign_input_str = file.read()
+
+relese_input_file='command_ReleaseResources.json'
+path= join(dirname(__file__), 'data' ,relese_input_file)
+with open(path, 'r') as file1:
+    relese_input_str=file1.read()
+
+invalid_json_file='invalid_json.json'
+path= join(dirname(__file__), 'data' ,invalid_json_file)
+with open(path, 'r') as file2:
+    inavlid_json_str=file2.read()
+
+assign_invalid_key_file='invalid_key_AssignResources.json'
+path= join(dirname(__file__), 'data' , assign_invalid_key_file)
+with open(path, 'r') as file3:
+    assign_inavlid_key=file3.read()
+
+release_invalid_key_file='invalid_key_ReleaseResources.json'
+path= join(dirname(__file__), 'data' , release_invalid_key_file)
+with open(path, 'r') as file4:
+    release_inavlid_key=file4.read()
 
 
 @pytest.fixture( scope="function",
@@ -112,7 +135,7 @@ def test_logging_level():
 def test_logging_targets():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
-        tango_context.device.loggingTargets = [input_data[0]]
+        tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
@@ -210,7 +233,7 @@ def test_stow_antennas_invalid_value():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        argin = [input_data[1], ]
+        argin = ["invalid_antenna", ]
         with pytest.raises(tango.DevFailed):
             tango_context.device.StowAntennas(argin)
 
@@ -235,11 +258,10 @@ def test_assign_resources():
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_command = input_data[2]
         device_proxy=tango_context.device
-        device_proxy.AssignResources(assign_command)
+        device_proxy.AssignResources(assign_input_str)
         # assert:
-        jsonArgument = json.loads(assign_command)
+        jsonArgument = json.loads(assign_input_str)
         input_json_subarray = jsonArgument.copy()
         del input_json_subarray["subarrayID"]
         input_to_sa = json.dumps(input_json_subarray)
@@ -268,10 +290,8 @@ def test_assign_resources_should_raise_devfailed_exception():
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_command = input_data[2]
-
         with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(assign_command)
+            tango_context.device.AssignResources(assign_input_str)
 
         # assert:
         assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
@@ -280,9 +300,8 @@ def test_assign_resources_should_raise_devfailed_exception():
 def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
-        test_input = input_data[3]
         with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(test_input)
+            tango_context.device.AssignResources(inavlid_json_str)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
@@ -293,9 +312,8 @@ def test_assign_resources_invalid_key():
     with fake_tango_system(CentralNode) \
             as tango_context:
         result = 'test'
-        test_input = input_data[4]
         with pytest.raises(tango.DevFailed):
-            result = tango_context.device.AssignResources(test_input)
+            result = tango_context.device.AssignResources(assign_inavlid_key)
 
         # assert:
         assert 'test' in result
@@ -322,11 +340,10 @@ def test_release_resources():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        release_input= input_data[3]
-        tango_context.device.ReleaseResources(release_input)
+        tango_context.device.ReleaseResources(relese_input_str)
 
         # assert:
-        jsonArgument = json.loads(release_input)
+        jsonArgument = json.loads(relese_input_str)
         if jsonArgument['releaseALL'] == True:
             subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
@@ -351,9 +368,8 @@ def test_release_resources_should_raise_devfailed_exception():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        release_input= input_data[5]
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(release_input)
+            tango_context.device.ReleaseResources(relese_input_str)
 
         # assert:
         assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
@@ -363,9 +379,8 @@ def test_release_resources_invalid_json_value():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        test_input = input_data[3]
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(test_input)
+            tango_context.device.ReleaseResources(inavlid_json_str)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
@@ -375,9 +390,8 @@ def test_release_resources_invalid_key():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        test_input = input_data[6]
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(test_input)
+            tango_context.device.ReleaseResources(release_inavlid_key)
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 

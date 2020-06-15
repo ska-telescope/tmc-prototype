@@ -19,10 +19,6 @@ from dishleafnode import DishLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import ObsState, LoggingLevel
 
-with open("dishleafnode/test/unit/test_input_dish_leaf.txt") as f:
-    input_data=f.readlines()
-string_msg=json.loads(input_data[5])
-
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     # arrange:
@@ -36,7 +32,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = input_data[0]
+        scan_input = "0"
         # act:
         tango_context.device.Scan(scan_input)
 
@@ -59,9 +55,10 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        dish_config = input_data[1]
+        dish_config = {"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92",
+                                               "dec": "-88:57:22.9"}}, "dish": {"receiverBand": "1"}}
         # act:
-        tango_context.device.Configure(dish_config)
+        tango_context.device.Configure(json.dumps(dish_config))
 
         # assert:
         jsonArgument = (dish_config)
@@ -69,8 +66,17 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
         # dec_value = (jsonArgument["pointing"]["target"]["dec"])
         receiver_band = int(jsonArgument["dish"]["receiverBand"])
 
-        arg_list = input_data[2]
-        dish_str_ip = (arg_list)
+        arg_list = {"pointing": {
+            "AZ": 181.6281105048956,
+            "EL": 27.336666294459825
+
+        },
+            "dish": {
+                "receiverBand": receiver_band
+            }
+
+        }
+        dish_str_ip = json.dumps(arg_list)
 
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
                                                                  str(dish_str_ip),
@@ -88,7 +94,7 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = input_data[0]
+        scan_input = "0"
         # act:
         tango_context.device.EndScan(scan_input)
 
@@ -148,10 +154,11 @@ def test_track_should_command_dish_to_start_tracking():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        input_string = input_data[1]
+        input_string = {"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92",
+                                                "dec": "-88:57:22.9"}}, "dish": {"receiverBand": "1"}}
 
         # act:
-        tango_context.device.Track(input_string)
+        tango_context.device.Track(json.dumps(input_string))
 
         # assert:
         jsonArgument = input_string
@@ -191,7 +198,7 @@ def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinat
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        slew_arg = input_data[0]
+        slew_arg = "0"
         # act:
         tango_context.device.Slew(slew_arg)
 
@@ -211,7 +218,7 @@ def test_start_capture_should_command_dish_to_start_capture_on_the_set_configure
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        capture_arg = input_data[0]
+        capture_arg = "0"
         # act:
         tango_context.device.StartCapture(capture_arg)
 
@@ -231,7 +238,7 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        capture_arg = input_data[0]
+        capture_arg = "0"
         # act:
         tango_context.device.StopCapture(capture_arg)
 
@@ -571,7 +578,7 @@ def test_dish_leaf_node_dish_mode_with_error_event():
 def create_dummy_event_with_error(device_fqdn, attr_value, attribute):
     fake_event = Mock()
     fake_event.err = True
-    fake_event.errors = string_msg[2]
+    fake_event.errors = 'Event Error'
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = attr_value
     return fake_event
@@ -654,7 +661,7 @@ def test_dish_leaf_node_when_invalid_attribute_value_for_dish_capturing():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_capturing_value = string_msg[3]
+        dish_capturing_value = 'Invalid_value'
         dummy_event = create_dummy_event_for_dish_capturing(dish_master1_fqdn, dish_capturing_value,
                                                             dish_master_capturing_attribute)
         event_subscription_map[dish_master_capturing_attribute](dummy_event)
@@ -680,7 +687,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_with_error_event():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_capturing_value = string_msg[3]
+        dish_capturing_value = 'Invalid_value'
         dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_capturing_value,
                                                     dish_master_capturing_attribute)
         event_subscription_map[dish_master_capturing_attribute](dummy_event)
@@ -806,7 +813,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_with_error_event():
 def test_configure_should_raise_exception_when_called_with_invalid_json():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = input_data[3]
+        input_string = '{"Invalid Key"}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string)
 
@@ -818,7 +825,9 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
         input_string = []
-        input_string.append(input_data[7])
+        input_string.append(
+            '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","":"-88:5.7:22.9"}},\
+            "dish":{"receiverBand":"1"}}')
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
 
@@ -829,7 +838,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
 def test_configure_should_raise_generic_exception():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        Configure_input = string_msg[0]
+        Configure_input = '[123]'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(Configure_input)
 
@@ -840,7 +849,7 @@ def test_configure_should_raise_generic_exception():
 def test_scan_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = string_msg[1]
+        input_string = "a"
         with pytest.raises(tango.DevFailed):
             tango_context.device.Scan(input_string)
 
@@ -851,7 +860,7 @@ def test_scan_should_raise_exception_when_called_with_invalid_arguments():
 def test_end_scan_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = string_msg[1]
+        input_string = "a"
         with pytest.raises(tango.DevFailed):
             tango_context.device.EndScan(input_string)
 
@@ -862,7 +871,7 @@ def test_end_scan_should_raise_exception_when_called_with_invalid_arguments():
 def test_start_capture_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = string_msg[1]
+        input_string = "a"
         with pytest.raises(tango.DevFailed):
             tango_context.device.StartCapture(input_string)
 
@@ -873,7 +882,7 @@ def test_start_capture_should_raise_exception_when_called_with_invalid_arguments
 def test_stop_capture_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = string_msg[1]
+        input_string = "a"
         with pytest.raises(tango.DevFailed):
             tango_context.device.StopCapture(input_string)
 
@@ -884,7 +893,7 @@ def test_stop_capture_should_raise_exception_when_called_with_invalid_arguments(
 def test_slew_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = string_msg[1]
+        input_string = "a"
         with pytest.raises(tango.DevFailed):
             tango_context.device.Slew(input_string)
 
@@ -895,7 +904,9 @@ def test_slew_should_raise_exception_when_called_with_invalid_arguments():
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = input_data[6]
+        input_string = \
+            '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","":"21:08:47.92","dec":"-88:57:22.9"}},' \
+            '"dish":{"receiverBand":"1"}}'
 
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(input_string)
@@ -907,7 +918,7 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
 def test_track_should_raise_exception_when_called_with_invalid_json():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = input_data[3]
+        input_string = '{"Invalid Key"}'
 
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(input_string)
@@ -945,7 +956,7 @@ def test_logging_level():
 def test_logging_targets():
     # act & assert:
     with fake_tango_system(DishLeafNode) as tango_context:
-        tango_context.device.loggingTargets = [input_data[4]]
+        tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
@@ -1028,7 +1039,7 @@ def test_scan_command_with_callback_method():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = input_data[0]
+        scan_input = "0"
         device_proxy = tango_context.device
 
         # act
@@ -1058,7 +1069,7 @@ def test_scan_command_with_callback_method_with_event_error():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = input_data[0]
+        scan_input = "0"
         device_proxy = tango_context.device
 
         # act
@@ -1088,7 +1099,7 @@ def test_scan_command_with_callback_method_with_command_error():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = input_data[0]
+        scan_input = "0"
         device_proxy = tango_context.device
 
         # act
@@ -1104,7 +1115,7 @@ def test_scan_command_with_callback_method_with_command_error():
 def command_callback(command_name):
     fake_event = MagicMock()
     fake_event.err = False
-    fake_event.errors = string_msg[2]
+    fake_event.errors = 'Event error'
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
@@ -1112,7 +1123,7 @@ def command_callback(command_name):
 def command_callback_with_event_error(command_name):
     fake_event = MagicMock()
     fake_event.err = True
-    fake_event.errors = string_msg[2]
+    fake_event.errors = 'Event error'
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
@@ -1145,5 +1156,3 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
-
-

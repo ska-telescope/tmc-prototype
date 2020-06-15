@@ -9,6 +9,7 @@ import tango
 import mock
 from mock import Mock
 from mock import MagicMock
+from os.path import dirname, join
 
 
 # Tango imports
@@ -20,8 +21,31 @@ from sdpsubarrayleafnode import SdpSubarrayLeafNode, const
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 from ska.base.control_model import LoggingLevel
 
-with open("sdpsubarrayleafnode/test/unit/test_input_sdp_subarray_leaf.txt") as f:
-    input_data=f.readlines()
+assign_input_file = 'command_AssignResources.json'
+path = join(dirname(__file__), 'data', assign_input_file)
+with open(path, 'r') as file:
+    assign_input_str = file.read()
+
+scan_input_file= 'command_Scan.json'
+path= join(dirname(__file__), 'data', scan_input_file)
+with open(path, 'r') as file1:
+    scan_input_str=file1.read()
+
+configure_input_file= 'command_Configure.json'
+path= join(dirname(__file__), 'data' , configure_input_file)
+with open(path, 'r') as file2:
+    configure_str=file2.read()
+
+configure_invalid_key_file='invalid_key_Configure.json'
+path= join(dirname(__file__), 'data' , configure_invalid_key_file)
+with open(path, 'r') as file3:
+    configure_inavlid_key=file3.read()
+
+configure_invalid_format_file='invalid_format_Configure.json'
+path= join(dirname(__file__), 'data' , configure_invalid_format_file)
+with open(path, 'r') as file4:
+    configure_invalid_format =file4.read()
+
 
 def test_end_sb_command_with_callback_method():
     # arrange:
@@ -78,10 +102,9 @@ def test_assign_command_with_callback_method_with_command_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input = input_data[0]
         # act:
         with pytest.raises(Exception):
-            tango_context.device.AssignResources(assign_input)
+            tango_context.device.AssignResources(assign_input_str)
             dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
         # assert:
@@ -98,7 +121,7 @@ def command_callback(command_name):
 def command_callback_with_event_error(command_name):
     fake_event = MagicMock()
     fake_event.err = True
-    fake_event.errors = input_data[1]
+    fake_event.errors = 'Event error in Command Callback'
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
@@ -129,12 +152,11 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        scan_input = input_data[2]
         # act:
-        tango_context.device.Scan(scan_input)
+        tango_context.device.Scan(scan_input_str)
 
         # assert:
-        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, scan_input,
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, scan_input_str,
                                                                  any_method(with_name='commandCallback'))
 
 
@@ -155,10 +177,10 @@ def test_start_scan_should_raise_devfailed_exception():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        scan_input = input_data[2]
         # act:
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan(scan_input)
+            tango_context.device.Scan(scan_input_str)
+            tango_context.device.Scan(scan_input_str)
 
         # assert:
         assert const.ERR_SCAN in tango_context.device.activityMessage
@@ -180,14 +202,13 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        assign_input = input_data[0]
         device_proxy = tango_context.device
         # act:
-        device_proxy.AssignResources(assign_input)
+        device_proxy.AssignResources(assign_input_str)
 
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,
-                                                                        assign_input,
+                                                                        assign_input_str,
                                                                   any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
@@ -208,11 +229,10 @@ def test_assign_resources_should_raise_devfailed_exception():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        assign_input =input_data[0]
         device_proxy = tango_context.device
         # act:
         with pytest.raises(tango.DevFailed):
-            device_proxy.AssignResources(assign_input)
+            device_proxy.AssignResources(assign_input_str)
 
         # assert:
         assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
@@ -283,12 +303,11 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        sdp_config = input_data[3]
         # act:
-        tango_context.device.Configure(sdp_config)
+        tango_context.device.Configure(configure_str)
 
         # assert:
-        json_argument = json.loads(sdp_config)
+        json_argument = json.loads(configure_str)
         sdp_arg = json_argument["sdp"]
         sdp_configuration = sdp_arg.copy()
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
@@ -312,10 +331,9 @@ def test_configure_should_raise_devfailed_exception():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) \
             as tango_context:
-        sdp_config = input_data[3]
         # act:
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(sdp_config)
+            tango_context.device.Configure(configure_str)
 
         # assert:
         assert const.ERR_CONFIGURE in tango_context.device.activityMessage
@@ -489,55 +507,54 @@ def test_test_mode():
 def test_receive_addresses():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.receiveAddresses == ''
+        assert tango_context.device.receiveAddresses == ""
 
 
 def test_activity_message():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activityMessage == ''
+        assert tango_context.device.activityMessage == ""
 
 
 def test_write_receive_addresses():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.receiveAddresses = input_data[4]
-        assert tango_context.device.receiveAddresses == input_data[4]
+        tango_context.device.receiveAddresses = "test"
+        assert tango_context.device.receiveAddresses == "test"
 
 
 def test_write_activity_message():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.activityMessage = input_data[4]
-        assert tango_context.device.activityMessage == input_data[4]
+        tango_context.device.activityMessage = "test"
+        assert tango_context.device.activityMessage == "test"
 
 
 def test_active_processing_blocks():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activeProcessingBlocks == ''
+        assert tango_context.device.activeProcessingBlocks == ""
 
 
 def test_logging_targets():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.loggingTargets = [input_data[5]]
+        tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
 def test_configure_invalid_key():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        test_input = input_data[6]
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(test_input)
+            tango_context.device.Configure(configure_inavlid_key)
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
 def test_configure_invalid_format():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        test_input = input_data[7]
+        test_input = configure_invalid_format
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
         assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
@@ -546,7 +563,7 @@ def test_configure_invalid_format():
 def test_configure_generic_exception():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        test_input = input_data[8]
+        test_input = '[123]'
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(test_input)
         assert const.ERR_CONFIGURE in tango_context.device.activityMessage
@@ -555,8 +572,7 @@ def test_configure_generic_exception():
 def test_scan_device_not_ready():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        scan_input = input_data[2]
-        tango_context.device.Scan(scan_input)
+        tango_context.device.Scan(scan_input_str)
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
 
 
