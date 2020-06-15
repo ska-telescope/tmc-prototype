@@ -28,8 +28,8 @@ ERR_ENDSCAN_INVOKING_CMD = "Error while invoking EndScan command on CSP Subarray
 ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command on CspSubarray."
 ERR_INVALID_JSON_ASSIGN_RES = "Invalid JSON format while invoking AddReceptors command on CspSubarray."
 ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarray."
-ERR_DEVICE_NOT_READY = "Csp subarray is not in ready state."
-ERR_DEVICE_NOT_IN_SCAN = "CspSubarray is not in SCANNING state."
+ERR_DEVICE_NOT_READY = "Csp subarray is not in ready obsState."
+ERR_DEVICE_NOT_IN_SCAN = "CspSubarray is not in SCANNING obsState."
 ERR_GOTOIDLE_INVOKING_CMD = "Error while invoking GoToIdle command on CSP Subarray."
 ERR_IN_CREATE_PROXY_CSPSA = "Error in creating proxy of the CSP Subarray device."
 
@@ -60,6 +60,7 @@ STR_START_SCAN_EXEC = "StartScan command execution"
 STR_CSPSA_FQDN = "CspSubarrayFQDN :-> "
 STR_GOTOIDLE_SUCCESS = "GoToIdle command is invoked successfully on CspSubarray."
 STR_GOTOIDLE_EXEC = "GoToIdle command execution"
+STR_OBS_STATE = "CSP Subarray Leaf Node obsState is: "
 
 #INTEGERS
 INT_SKA_LEVEL = 3

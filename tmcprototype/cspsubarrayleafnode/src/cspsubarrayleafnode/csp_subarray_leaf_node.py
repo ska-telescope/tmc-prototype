@@ -56,11 +56,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         exception_message = []
         try:
+            log_msg = "Command Event is: " + str(event)
+            self.logger.info(log_msg)
             if event.err:
                 self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
-                log = const.ERR_INVOKING_CMD + event.cmd_name
-                self.logger.error(log)
+                self.logger.error(self._read_activity_message)
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
@@ -344,7 +345,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # create CspSubarray Proxy
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             except Exception:
-                self.logger.debug(const.ERR_IN_CREATE_PROXY_CSPSA)
+                log_msg = const.ERR_IN_CREATE_PROXY_CSPSA + str(Exception)
+                self.logger.debug(log_msg)
 
             # create CspSubarray Proxy
             # self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
@@ -381,7 +383,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR_CSPSALN, 0,
                                                                 const.STR_ERR_MSG)
             self.logger.debug(const.ERR_INIT_PROP_ATTR_CSPSALN)
-            self.logger.debug(const.STR_ERR_MSG, dev_failed)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -396,7 +397,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.logger.debug("Stopping delay model thread.")
         self._stop_delay_model_event.set()
         self.delay_model_calculator_thread.join()
-        self.logger.debug("Exiting.")
+        self.logger.debug("CSP Subarray Leaf Node is Exiting.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
 
     # ------------------
@@ -502,7 +503,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                        self.commandCallback)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
-            self.logger.debug(argin)
+            log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
+            self.logger.debug(log_msg)
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
@@ -551,7 +553,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(const.STR_STARTSCAN_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
+                log_msg = const.STR_OBS_STATE +  self.CspSubarrayProxy.obsState
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
+                self.logger.error(log_msg)
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
@@ -589,7 +594,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(const.STR_ENDSCAN_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
+                log_msg = const.STR_OBS_STATE + self.CspSubarrayProxy.obsState
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
+                self.logger.error(log_msg)
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
@@ -735,7 +743,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(const.STR_GOTOIDLE_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
+                log_msg = const.STR_OBS_STATE + self.CspSubarrayProxy.obsState
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
+                self.logger.error(log_msg)
         except DevFailed as dev_failed:
             [ exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
