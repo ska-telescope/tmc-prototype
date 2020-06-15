@@ -17,9 +17,6 @@ from cspmasterleafnode import CspMasterLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
 
-with open("cspmasterleafnode/test/unit/test_input_csp_master_leaf.txt") as f:
-    input_data=f.readlines()
-
 
 def test_on_should_command_csp_master_leaf_node_to_start():
     # arrange:
@@ -189,7 +186,7 @@ def command_callback(command_name):
 def command_callback_with_event_error(command_name):
     fake_event = MagicMock()
     fake_event.err = True
-    fake_event.errors = input_data[0]
+    fake_event.errors = 'Event error in Command Callback'
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
@@ -674,7 +671,7 @@ def create_dummy_event_for_health_state(device_fqdn,health_state_value,attribute
 def create_dummy_event_for_health_state_with_error(device_fqdn,health_state_value,attribute):
     fake_event = Mock()
     fake_event.err = True
-    fake_event.errors = input_data[1]
+    fake_event.errors = 'Event error in attribute callback'
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = health_state_value
     return fake_event
@@ -683,15 +680,15 @@ def create_dummy_event_for_health_state_with_error(device_fqdn,health_state_valu
 def test_read_activity_message():
     # act & assert:
     with fake_tango_system(CspMasterLeafNode) as tango_context:
-        tango_context.device.activityMessage = input_data[2]
-        assert tango_context.device.activityMessage == input_data[2]
+        tango_context.device.activityMessage = 'test'
+        assert tango_context.device.activityMessage == 'test'
 
 
 def test_write_activity_message():
     # act & assert:
     with fake_tango_system(CspMasterLeafNode) as tango_context:
-        tango_context.device.activityMessage = input_data[2]
-        assert tango_context.device.activityMessage == input_data[2]
+        tango_context.device.activityMessage = 'test'
+        assert tango_context.device.activityMessage == 'test'
 
 
 def test_state():
@@ -716,7 +713,7 @@ def test_logging_level():
 def test_logging_targets():
     # act & assert:
     with fake_tango_system(CspMasterLeafNode) as tango_context:
-        tango_context.device.loggingTargets = [input_data[3]]
+        tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
