@@ -267,13 +267,13 @@ class TestCspSubarrayLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.4, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.5.1"
+        assert tango_context.device.versionId == "0.5.4"
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_versionId
 
     def test_healthState(self, tango_context):
@@ -336,6 +336,6 @@ class TestCspSubarrayLeafNode(object):
     def test_loggingTargets(self, tango_context):
         """Test for loggingTargets"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_loggingTargets) ENABLED START #
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_loggingTargets
