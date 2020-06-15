@@ -150,6 +150,8 @@ lint: build up ##lint the application (static code analysis)
 	status=$$?; \
 	docker cp $(BUILD):/build .; \
 	$(MAKE) down; \
+	cp ./unit_test_report/report/code-coverage.xml ./build/reports	
+	cp ./unit_test_report/report/unit-tests.xml ./build/reports	
 	exit $$status
 
 pull:  ## download the application image
@@ -208,3 +210,7 @@ BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
 #Docker volume to store unit test reports
 REPORT_GEN = $(shell docker create -v /report $(IMAGE_TO_TEST))
 REPORT = $(eval REPORT := $(REPORT_GEN))$(REPORT)
+
+#Docker volume to store combine coverage and xml reports
+COMBINE_REPORT = $(shell docker create -v /combine $(IMAGE_TO_TEST))
+COMBINE = $(eval COMBINE := $(COMBINE_REPORT))$(COMBINE)
