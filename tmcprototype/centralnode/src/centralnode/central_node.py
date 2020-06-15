@@ -65,36 +65,7 @@ class CentralNode(SKABaseDevice):
                     self.logger.debug(const.EVT_UNKNOWN)
                     # TODO: For future reference
                     # self._read_activity_message = const.EVT_UNKNOWN
-
-                # if health_state == HealthState.OK:
-                #     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
-                #     self.logger.info(str_log)
-                #     # TODO: For future reference
-                #     # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                #     #                                                            ) + const.STR_OK
-                # elif health_state == HealthState.DEGRADED:
-                #     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
-                #     self.logger.info(str_log)
-                #     # TODO: For future reference
-                #     # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                #     #                                                            ) + const.STR_DEGRADED
-                # elif health_state == HealthState.FAILED:
-                #     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
-                #     self.logger.info(str_log)
-                #     # TODO: For future reference
-                #     # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                #     #                                                            ) + const.STR_FAILED
-                # elif health_state == HealthState.UNKNOWN:
-                #     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
-                #     self.logger.info(str_log)
-                #     # TODO: For future reference
-                #     # self._read_activity_message = const.STR_HEALTH_STATE + str(
-                #     #     evt.device) + const.STR_UNKNOWN
-                # else:
-                #     self.logger.info(const.STR_HEALTH_STATE_UNKNOWN_VAL)
-                #     # TODO: For future reference
-                #     # self._read_activity_message = const.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
-
+                
                 counts = {
                         HealthState.OK: 0,
                         HealthState.DEGRADED: 0,
