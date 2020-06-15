@@ -146,15 +146,16 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_count = 0
         exception_message = []
         try:
-            self.logger.info("event logs : CSPmasterleafnode")
+            self.logger.info('event logs : CSPmasterleafnode')
+            self.logger.error('Error Events' + str(event.err))
             if event.err:
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
+                self._read_activity_message = log_msg
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self.logger.error(log)
                 self._read_activity_message = log
         except Exception as except_occurred:
             self._handle_generic_exception(const.ERR_EXCEPT_CMD_CB + ": " + str(except_occurred))

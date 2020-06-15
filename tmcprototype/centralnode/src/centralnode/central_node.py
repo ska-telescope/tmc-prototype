@@ -45,9 +45,12 @@ class CentralNode(SKABaseDevice):
 
         :return: None
         """
-
+        self.logger.info('event logs : CentralNode')
+        self.logger.info('event error :' + str(evt.err))
         if evt.err is False:
             try:
+                self.logger.info('Event attribute name : ' + str(evt.attr_name))
+                self.logger.info('Event attribute value : ' + evt.attr_value.value)
                 health_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     self._subarray1_health_state = health_state
@@ -404,8 +407,9 @@ class CentralNode(SKABaseDevice):
             for leafId in range(0, len(argin)):
                 if type(float(argin[leafId])) == float:
                     pass
-            self.logger.info(const.STR_STOW_CMD_ISSUED_CN)
-            self._read_activity_message = const.STR_STOW_CMD_ISSUED_CN
+            log_msg=const.STR_STOW_CMD_ISSUED_CN
+            self.logger.info(log_msg)
+            self._read_activity_message = log_msg
             for i in range(0, len(argin)):
                 device_name = self.DishLeafNodePrefix + argin[i]
                 try:
@@ -420,6 +424,7 @@ class CentralNode(SKABaseDevice):
                     self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
 
         except ValueError as value_error:
+            self.logger.info(str(value_error))
             self.logger.error(const.ERR_STOW_ARGIN)
             self._read_activity_message = const.ERR_STOW_ARGIN + str(value_error)
             exception_message.append(self._read_activity_message)
@@ -441,8 +446,9 @@ class CentralNode(SKABaseDevice):
         """ Set the Elements into STANDBY state (i.e. Low Power State). """
         exception_count =0
         exception_message =[]
-        self.logger.info(const.STR_STANDBY_CMD_ISSUED)
-        self._read_activity_message = const.STR_STANDBY_CMD_ISSUED
+        log_msg=const.STR_STANDBY_CMD_ISSUE
+        self.logger.info(log_msg)
+        self._read_activity_message = log_msg
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
@@ -482,8 +488,9 @@ class CentralNode(SKABaseDevice):
         model.Set the Elements into ON state from STANDBY state. """
         exception_count =0
         exception_message = []
-        self.logger.info(const.STR_STARTUP_CMD_ISSUED)
-        self._read_activity_message = const.STR_STARTUP_CMD_ISSUED
+        log_msg=const.STR_STARTUP_CMD_ISSUED
+        self.logger.info(log_msg)
+        self._read_activity_message = log_msg
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
@@ -681,12 +688,14 @@ class CentralNode(SKABaseDevice):
                     }
                 }
         except ValueError as value_error:
+            self.logger.info('Value error : ' + str(value_error))
             self.logger.error(const.ERR_INVALID_JSON)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except KeyError as key_error:
+            self.logger.info('Key error : ' + str(key_error))
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
@@ -773,8 +782,9 @@ class CentralNode(SKABaseDevice):
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
                 res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
-                self._read_activity_message = const.STR_REL_RESOURCES
-                self.logger.info(const.STR_REL_RESOURCES)
+                log_msg=const.STR_REL_RESOURCES
+                self._read_activity_message = log_msg
+                self.logger.info(log_msg)
                 if not res_not_released:
                     release_success = True
                     for Dish_ID, Dish_Status in self._subarray_allocation.items():
@@ -787,11 +797,13 @@ class CentralNode(SKABaseDevice):
             else:
                 self._read_activity_message = const.STR_FALSE_TAG
         except ValueError as value_error:
+            self.logger.info('Value Error : ' + str(value_error))
             self.logger.error(const.ERR_INVALID_JSON)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
+            self.logger.info('Key Error : ' + str(key_error))
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)

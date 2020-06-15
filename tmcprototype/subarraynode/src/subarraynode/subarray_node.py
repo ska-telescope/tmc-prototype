@@ -154,7 +154,10 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
+            self.logger.info('Event Error : ' + str(evt.err))
+            self.logger.info('Event AttrName : ' + str(evt.attr_name))
             if evt.err is False:
+                self.logger.info('Event Attr Value: '+ str(evt.attr_value.value))
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
                 elif self.SdpSubarrayFQDN in evt.attr_name:
@@ -166,7 +169,7 @@ class SubarrayNode(SKASubarray):
             else:
                 log_msg = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
                 self.logger.debug(log_msg)
-                self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
+                self._read_activity_message = log_msg
                 self.logger.critical(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
@@ -204,7 +207,9 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
+            self.logger.info('Event Error: ' + str(evt.err))
             if evt.err is False:
+                self.logger.info('Event Attr Name: ' + str(evt.attr_name))
 
                 self._observetion_state = evt.attr_value.value
 
@@ -224,7 +229,7 @@ class SubarrayNode(SKASubarray):
             else:
                 log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
                 self.logger.debug(log_msg)
-                self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
+                self._read_activity_message = log_msg
                 self.logger.critical(const.ERR_SUBSR_CSPSDPSA_OBS_STATE)
         except KeyError as key_error:
             log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
@@ -926,6 +931,7 @@ class SubarrayNode(SKASubarray):
         :return: None
 
         """
+        self.logger.info('Event Error: ' + str(evt.err))
         if evt.err is False:
             try:
                 self._dish_pointing_state = evt.attr_value.value
@@ -1111,7 +1117,7 @@ class SubarrayNode(SKASubarray):
         except DevFailed as dev_failed:
             log_msg=const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
+            self._read_activity_message = log_msg
             self.set_state(DevState.FAULT)
             _state_fault_flag = True
             self.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
@@ -1132,7 +1138,7 @@ class SubarrayNode(SKASubarray):
         except DevFailed as dev_failed:
             log_msg=const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
+            self._read_activity_message = log_msg
             self.set_state(DevState.FAULT)
             _state_fault_flag = True
             self.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
