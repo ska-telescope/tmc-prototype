@@ -162,7 +162,7 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            if evt.err is False:
+            if not evt.err:
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
                 elif self.SdpSubarrayFQDN in evt.attr_name:
@@ -208,7 +208,7 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            if evt.err is False:
+            if not evt.err:
 
                 self._observetion_state = evt.attr_value.value
 
@@ -360,7 +360,7 @@ class SubarrayNode(SKASubarray):
                 # Subscribe Dish Pointing State
                 self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
                                                           tango.EventType.CHANGE_EVENT,
-                                                          self.setPointingState,
+                                                          self.pointing_state_cb,
                                                           stateless=True)
                 self._dishLnVsPointingStateEventID[devProxy] = self._event_id
                 self._pointing_state_event_id.append(self._event_id)
@@ -915,7 +915,7 @@ class SubarrayNode(SKASubarray):
         return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
                                         DevState.STANDBY]
 
-    def setPointingState(self, evt):
+    def pointing_state_cb(self, evt):
         """
         Retrieves the subscribed DishMaster health state, aggregate them to evaluate
         health state of the Subarray.
@@ -925,8 +925,10 @@ class SubarrayNode(SKASubarray):
         :return: None
 
         """
-        if evt.err is False:
-            try:
+        exception_message = []
+        exception_count = 0
+        try:
+            if not evt.err:
                 self._dish_pointing_state = evt.attr_value.value
                 self.dishPointingStateMap[evt.device] = self._dish_pointing_state
                 if self._dish_pointing_state == PointingState.READY:
@@ -949,18 +951,19 @@ class SubarrayNode(SKASubarray):
                     self.logger.debug(const.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
                     self._read_activity_message = const.STR_POINTING_STATE_UNKNOWN_VAL + str(evt)
                 self.calculate_observation_state()
-            except KeyError as key_err:
-                log_msg = const.ERR_SETPOINTING_CALLBK + str(key_err)
-                self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_SETPOINTING_CALLBK + str(key_err)
-            except Exception as except_occurred:
-                log_msg = const.ERR_AGGR_POINTING_STATE + str(except_occurred.message)
-                self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_AGGR_POINTING_STATE + str(except_occurred.message)
-        else:
-            log_msg = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
-            self.logger.debug(log_msg)
-            self._read_activity_message = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
+            else:
+                log_msg = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
+                self.logger.debug(log_msg)
+                self._read_activity_message = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
+        except KeyError as key_err:
+            log_msg = const.ERR_SETPOINTING_CALLBK + str(key_err)
+            self.logger.error(log_msg)
+            self._read_activity_message = const.ERR_SETPOINTING_CALLBK + str(key_err)
+        except Exception as except_occured:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_AGGR_POINTING_STATE)
 
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
         log_msg=read_actvity_msg + str(exception)

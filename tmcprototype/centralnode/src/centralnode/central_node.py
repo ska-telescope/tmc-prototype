@@ -45,6 +45,8 @@ class CentralNode(SKABaseDevice):
 
         :return: None
         """
+        exception_count = 0
+        exception_message = []
         try:
             if not evt.err:
                 health_state = evt.attr_value.value
@@ -114,10 +116,9 @@ class CentralNode(SKABaseDevice):
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
             self.logger.critical(log_msg)
         except Exception as except_occured:
-            # TODO: For future reference
-            # self._read_activity_message = const.ERR_AGGR_HEALTH_STATE + str(except_occured)
-            log_msg = const.ERR_AGGR_HEALTH_STATE + ": " + str(except_occured)
-            self.logger.critical(log_msg)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                                exception_message, exception_count, const.ERR_AGGR_HEALTH_STATE)
+
 
     # PROTECTED REGION END #    //  CentralNode.class_variable
 

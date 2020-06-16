@@ -52,7 +52,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            if evt.err is False:
+            if not evt.err:
                 self._csp_cbf_health = evt.attr_value.value
                 if self._csp_cbf_health == HealthState.OK:
                     self.logger.debug(const.STR_CSP_CBF_HEALTH_OK)
@@ -87,7 +87,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            if evt.err is False:
+            if not evt.err:
                 self._csp_pss_health = evt.attr_value.value
                 if self._csp_pss_health == HealthState.OK:
                     self.logger.debug(const.STR_CSP_PSS_HEALTH_OK)
@@ -123,7 +123,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            if evt.err is False:
+            if not evt.err:
                 self._csp_pst_health = evt.attr_value.value
                 if self._csp_pst_health == HealthState.OK:
                     self.logger.debug(const.STR_CSP_PST_HEALTH_OK)
@@ -259,10 +259,9 @@ class CspMasterLeafNode(SKABaseDevice):
             self._csp_proxy = DeviceProxy(str(self.CspMasterFQDN))
         except DevFailed as dev_failed:
             log_msg = const.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
             self.set_state(DevState.FAULT)
-            self._handle_devfailed_exception(dev_failed, log_msg, 0,const.STR_ERR_MSG)
+            self._handle_devfailed_exception(dev_failed, log_msg, 0,const.ERR_IN_CREATE_PROXY)
+
 
         # Subscribing to CSPMaster Attributes
         try:
@@ -277,11 +276,9 @@ class CspMasterLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
+            self._handle_devfailed_exception(dev_failed, log_msg, 0, const.ERR_CSP_MASTER_LEAF_INIT)
             self.set_state(DevState.FAULT)
             self.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
-            self.logger.error(const.ERR_CSP_MASTER_LEAF_INIT)
 
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
         log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())

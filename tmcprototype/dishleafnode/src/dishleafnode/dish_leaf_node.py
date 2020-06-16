@@ -52,7 +52,7 @@ class DishLeafNode(SKABaseDevice):
 
         """
         try:
-            if evt.err is False:
+            if not evt.err:
                 self._dish_mode = evt.attr_value.value
                 if self._dish_mode == 0:
                     self.logger.debug(const.STR_DISH_OFF_MODE)
@@ -105,7 +105,7 @@ class DishLeafNode(SKABaseDevice):
 
         """
         try:
-            if evt.err is False:
+            if not evt.err:
                 self._dish_capturing = evt.attr_value.value
                 if self._dish_capturing is True:
                     self.logger.debug(const.STR_DISH_CAPTURING_TRUE)
@@ -137,7 +137,7 @@ class DishLeafNode(SKABaseDevice):
 
         """
         try:
-            if evt.err is False:
+            if not evt.err:
                 self._achieved_pointing = evt.attr_value.value
                 log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
                 self.logger.debug(log_msg)
@@ -162,7 +162,7 @@ class DishLeafNode(SKABaseDevice):
 
         """
         try:
-            if evt.err is False:
+            if not evt.err:
                 self._desired_pointing = evt.attr_value.value
                 log_msg = const.STR_DESIRED_POINTING + str(self._desired_pointing)
                 self.logger.error(log_msg)
@@ -367,6 +367,15 @@ class DishLeafNode(SKABaseDevice):
             self.logger.error(const.ERR_EXE_TRACK)
             self._handle_generic_exception(except_occurred, [], 0, const.ERR_EXE_TRACK)
 
+    # Function for handling all Devfailed exception
+    def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
+        log_msg = read_actvity_msg + str(df)
+        self.logger.error(log_msg)
+        self._read_activity_message = read_actvity_msg + str(df)
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
+
     def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(exception)
         self.logger.error(log_msg)
@@ -486,6 +495,8 @@ class DishLeafNode(SKABaseDevice):
         self.horizon_el = 0
         self.ele_min_lim = 17.5
         self.el_limit = False
+        exception_message = []
+        exception_count = 0
         try:
             self.set_dish_name_number()
             self.set_observer_lat_long_alt()
@@ -495,9 +506,7 @@ class DishLeafNode(SKABaseDevice):
             self._dish_proxy = DeviceProxy(str(self.DishMasterFQDN))   #Creating proxy to the DishMaster
             self.event_track_time = threading.Event()
         except DevFailed as dev_failed:
-            log_msg = const.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
+            self._handle_devfailed_exception(dev_failed,exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
             self.set_state(DevState.FAULT)
         self._admin_mode = AdminMode.ONLINE                                    #Setting adminMode to "ONLINE"
         self._health_state = HealthState.OK                                    #Setting healthState to "OK"
@@ -522,9 +531,8 @@ class DishLeafNode(SKABaseDevice):
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.info(const.STR_DISH_INIT_SUCCESS)
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBS_DISH_ATTR + str(dev_failed)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SUBS_DISH_ATTR + str(dev_failed)
+            self._handle_devfailed_exception(dev_failed,exception_message, exception_count,
+                                             const.ERR_SUBS_DISH_ATTR)
             self.set_state(DevState.FAULT)
             self.set_status(const.ERR_DISH_INIT)
             self.logger.error(const.ERR_DISH_INIT)
@@ -755,10 +763,9 @@ class DishLeafNode(SKABaseDevice):
             exception_count += 1
 
         except DevFailed as dev_failed:
-            self._read_activity_message = const.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
-            log_msg = const.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
-            self.logger.error(log_msg)
-            exception_message.append(const.ERR_EXE_CONFIGURE_CMD + str(dev_failed))
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                                                    exception_message, exception_count,
+                                                                                    const.ERR_EXE_CONFIGURE_CMD)
 
         except Exception as except_occurred:
             log_msg = const.ERR_EXE_CONFIGURE_CMD + str(except_occurred)
@@ -975,10 +982,9 @@ class DishLeafNode(SKABaseDevice):
             self._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.cmd_ended_cb)
 
         except DevFailed as dev_failed:
-            self._read_activity_message = const.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)
-            log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)
-            self.logger.error(log_msg)
-            exception_message.append(const.ERR_EXE_STOP_TRACK_CMD + str(dev_failed))
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                                                    exception_message, exception_count,
+                                                                                    const.ERR_EXE_STOP_TRACK_CMD)
 
         except Exception as except_occurred:
             log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(except_occurred)

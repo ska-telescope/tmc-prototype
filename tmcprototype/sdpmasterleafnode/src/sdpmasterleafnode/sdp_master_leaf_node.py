@@ -72,25 +72,37 @@ class SdpMasterLeafNode(SKABaseDevice):
                 self.logger.info(log_msg)
                 self._read_activity_message = log_msg
         except Exception as except_occurred:
-            log_msg = const.ERR_EXCEPT_CMD_CB + str(except_occurred)
-            self._read_activity_message = log_msg
-            self.logger.error(log_msg)
-            exception_message.append(log_msg)
-            exception_count += 1
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_CMD_CB)
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_CSP_CMD_CALLBK)
 
-        # Throw Exception
-        if exception_count > 0:
-            err_msg = ''
-            for item in exception_message:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-                                         const.STR_SDP_CMD_CALLBK, tango.ErrSeverity.ERR)
+    # Function for handling all Devfailed exception
+    def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
+        log_msg = read_actvity_msg + str(df)
+        self.logger.error(log_msg)
+        self._read_activity_message = read_actvity_msg + str(df)
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
 
-    #Throw devfailed exception
-    def _handle_devfailed_exception(self, df, actvity_msg):
-        self._read_activity_message = actvity_msg
-        self._read_activity_message = const.ERR_MSG + str(df)
-        self.logger.error(actvity_msg)
+    # Function for handling all generic exception
+    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
+        log_msg = read_actvity_msg + str(exception)
+        self.logger.error(log_msg)
+        self._read_activity_message = read_actvity_msg + str(exception)
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
+
+    def throw_exception(self, except_msg_list, read_actvity_msg):
+        err_msg = ''
+        for item in except_msg_list:
+            err_msg += item + "\n"
+        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+
     # PROTECTED REGION END #    //  SdpMasterLeafNode.class_variable
 
     # -----------------
@@ -144,7 +156,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             self._test_mode = TestMode.NONE
 
         except DevFailed as dev_failed:
-            self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR)
+            self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR, 0 , const.STR_ERR_MSG)
 
         try:
             self._read_activity_message = const.STR_SDPMASTER_FQDN + str(self.SdpMasterFQDN)
@@ -152,7 +164,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             self._sdp_proxy = DeviceProxy(str(self.SdpMasterFQDN))
         except DevFailed as dev_failed:
             self.set_state(DevState.FAULT)
-            self._handle_devfailed_exception(dev_failed, const.ERR_IN_CREATE_PROXY_SDP_MASTER)
+            self._handle_devfailed_exception(dev_failed, const.ERR_IN_CREATE_PROXY_SDP_MASTER, 0, const.STR_ERR_MSG)
 
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
         self._read_activity_message = const.STR_SETTING_CB_MODEL + str(
@@ -242,7 +254,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         # This code is written only to improve code coverage
         if self._test_mode == TestMode.TEST:
-            self._handle_devfailed_exception(DevFailed, const.ERR_OFF_CMD_FAIL)
+            self._handle_devfailed_exception(DevFailed, const.ERR_OFF_CMD_FAIL, 0, const.STR_ERR_MSG)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Off
 
     @command(
