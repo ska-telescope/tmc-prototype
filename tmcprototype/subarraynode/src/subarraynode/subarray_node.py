@@ -38,6 +38,7 @@ from ska_telmodel.csp import interface
 
 __all__ = ["SubarrayNode", "main"]
 
+receive_addresses_map = ''
 csp_interface_version = 0
 sdp_interface_version = 0
 
@@ -68,6 +69,14 @@ class SubarrayHealthState:
 
 
 class ElementDeviceData:
+    # def __init__(self):
+    #     subarray_node_obj = SubarrayNode(SKASubarray)
+    #     print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiii ::::::::::::::::::::::::::::::::::::::Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+        # self.digvi()
+    #
+    # def digvi(self):
+    #     a = self.subarray_node_obj.receive_addresses_map
+    #     print("a {} and its type {} ::::::::::::".format(a,type(a)))
     @staticmethod
     def build_up_sdp_cmd_data(scan_config):
         scan_config = scan_config.copy()
@@ -94,9 +103,11 @@ class ElementDeviceData:
         if csp_scan_config:
             scan_type = scan_config["sdp"]["scan_type"]
             # Invoke ska_telmodel library function to create csp configure schema
-            subarray_node_obj = SubarrayNode()
+            # subarray_node_obj = SubarrayNode(SKASubarray)
+            # receive_addresses_map = subarray_node_obj.receive_addresses_callback(event)
+            # global receive_addresses_map
             csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
-                                                          scan_type, json.dumps(csp_scan_config), subarray_node_obj._receive_addresses_map)
+                                scan_type, json.dumps(csp_scan_config), receive_addresses_map)
             csp_config_schema = json.loads(csp_config_schema)
             if csp_config_schema:
                 for key, attribute_name in attr_name_map.items():
@@ -142,7 +153,8 @@ class SubarrayNode(SKASubarray):
 
             :return: None
             """
-        self._receive_addresses_map = event.attr_value.value
+        global receive_addresses_map
+        receive_addresses_map = event.attr_value.value
 
     def health_state_cb(self, event):
         """
@@ -1110,7 +1122,7 @@ class SubarrayNode(SKASubarray):
         self.only_dishconfig_flag = False
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
         self.scan_thread = None
-        self._receive_addresses_map = ''
+        # self.receive_addresses_map = ''
 
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
