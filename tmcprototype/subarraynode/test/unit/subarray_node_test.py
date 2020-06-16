@@ -127,30 +127,12 @@ class TestElementDeviceData:
         valid_scan_config = example_scan_configuration
         scan_id, attr_name_map = csp_func_args
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map)
-
-        expected_string_dict = {
-                "id": "sbi-mvp01-20200325-00001-science_A",
-                "frequencyBand": "1",
-                "fsp": [
-                    {
-                        "fspID": 1,
-                        "functionMode": "CORR",
-                        "frequencySliceID": 1,
-                        "integrationTime": 1400,
-                        "corrBandwidth": 0
-                    }
-                ],
-                "string1": "attr1", "string2": "attr2",
-                "pointing":
-                    {
-                        "target":
-                            {
-                                "system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92", "dec": "-88:57:22.9"
-                            }
-                    },
-                "scanID": "1"
-            }
-        expected_string_dict = json.dumps(expected_string_dict)
+        expected_string_dict_file= 'expected_string_dict.json'
+        path = join(dirname(__file__), 'data', expected_string_dict_file)
+        with open(path, 'r') as f:
+            expected_dict=f.read()
+        expected_string=json.loads(expected_dict)
+        expected_string_dict = json.dumps(expected_string)
         assert isinstance(csp_cmd_data, str)
         assert expected_string_dict == csp_cmd_data
 
