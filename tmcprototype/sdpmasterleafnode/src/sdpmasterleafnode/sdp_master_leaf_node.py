@@ -154,9 +154,11 @@ class SdpMasterLeafNode(SKABaseDevice):
             self._health_state = HealthState.OK
             self._admin_mode = AdminMode.ONLINE
             self._test_mode = TestMode.NONE
+            exception_message = []
+            exception_count = 0
 
         except DevFailed as dev_failed:
-            self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR, 0 , const.STR_ERR_MSG)
+            self._handle_devfailed_exception(dev_failed, exception_message, exception_count, const.ERR_INIT_PROP_ATTR)
 
         try:
             self._read_activity_message = const.STR_SDPMASTER_FQDN + str(self.SdpMasterFQDN)
@@ -164,7 +166,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             self._sdp_proxy = DeviceProxy(str(self.SdpMasterFQDN))
         except DevFailed as dev_failed:
             self.set_state(DevState.FAULT)
-            self._handle_devfailed_exception(dev_failed, const.ERR_IN_CREATE_PROXY_SDP_MASTER, 0, const.STR_ERR_MSG)
+            self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                             const.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
         ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
         self._read_activity_message = const.STR_SETTING_CB_MODEL + str(
@@ -251,10 +254,12 @@ class SdpMasterLeafNode(SKABaseDevice):
          """
         self.logger.debug(const.STR_OFF_CMD_SUCCESS)
         self._read_activity_message = const.STR_OFF_CMD_SUCCESS
+        exception_message = []
+        exception_count= 0
 
         # This code is written only to improve code coverage
         if self._test_mode == TestMode.TEST:
-            self._handle_devfailed_exception(DevFailed, const.ERR_OFF_CMD_FAIL, 0, const.STR_ERR_MSG)
+            self._handle_devfailed_exception(DevFailed, exception_message, exception_count, const.ERR_OFF_CMD_FAIL)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.Off
 
     @command(

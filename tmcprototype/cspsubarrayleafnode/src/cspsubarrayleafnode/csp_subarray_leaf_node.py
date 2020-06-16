@@ -67,7 +67,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         exception_count = 0
         exception_message = []
-        print("CSP SLN Callback event :", event, type(event))
         # Update logs and activity message attribute with received event
         try:
             if event.err:

@@ -153,7 +153,7 @@ class SubarrayNode(SKASubarray):
                                                                                   exception_count,
                                                                                   const.ERR_AGGR_HEALTH_STATE)
 
-    def device_state_callback(self, evt):
+    def device_state_cb(self, evt):
         """
                 Retrieves the subscribed CSP_Subarray AND SDP_Subarray  deviceState.
                 :param evt: A TANGO_CHANGE event on CSP and SDP Subarray deviceState.
@@ -1106,7 +1106,7 @@ class SubarrayNode(SKASubarray):
             self._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.observation_state_cb, stateless=True)
             self._csp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-                                                        self.device_state_callback, stateless=True)
+                                                        self.device_state_cb, stateless=True)
 
             self.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
             self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
@@ -1129,7 +1129,7 @@ class SubarrayNode(SKASubarray):
             self._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         self.observation_state_cb, stateless=True)
             self._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-                                               self.device_state_callback, stateless=True)
+                                               self.device_state_cb, stateless=True)
             self.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
             log_msg=const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
