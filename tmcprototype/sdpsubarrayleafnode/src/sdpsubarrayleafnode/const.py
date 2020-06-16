@@ -25,6 +25,7 @@ ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_DEVICE_NOT_READY = "SdpSubarray is not in ready state."
 ERR_INVOKING_CMD = "Error in invoking command: "
+ERR_IN_CREATE_PROXY_SDPSA = "Error in creating proxy of the SDP Subarray device."
 #
 # #strings
 # #General strings
@@ -37,6 +38,7 @@ STR_HEALTH_STATE_UNKNOWN_VAL = "SDP Subarray leaf healthState event returned unk
 STR_ERR_MSG = "Error message is: "
 STR_INIT_SUCCESS = "SDP Subarray Leaf Node is initialized successfully."
 STR_FALSE = "False"
+STR_SDPSALN_INIT_SUCCESS = "SdpSubarrayLeafNode initialized successfully."
 STR_PROCESSINGBLOCKID_LIST = "processingBlockIdList"
 STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully"
 STR_FALSE_TAG = "False in ReleaseALL tag is not yet supported"
