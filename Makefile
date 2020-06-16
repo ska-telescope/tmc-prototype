@@ -210,7 +210,3 @@ BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
 #Docker volume to store unit test reports
 REPORT_GEN = $(shell docker create -v /report $(IMAGE_TO_TEST))
 REPORT = $(eval REPORT := $(REPORT_GEN))$(REPORT)
-
-#Docker volume to store combine coverage and xml reports
-COMBINE_REPORT = $(shell docker create -v /combine $(IMAGE_TO_TEST))
-COMBINE = $(eval COMBINE := $(COMBINE_REPORT))$(COMBINE)
