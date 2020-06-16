@@ -8,6 +8,8 @@ import time
 import pytest
 import mock
 from mock import Mock, MagicMock
+from os.path import dirname, join
+
 
 # Tango imports
 import tango
@@ -20,80 +22,65 @@ from subarraynode.const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
     LoggingLevel
 
+scan_input_file= 'command_Scan.json'
+path= join(dirname(__file__), 'data', scan_input_file)
+with open(path, 'r') as file1:
+    scan_input_str=file1.read()
+
+configure_input_file= 'command_Configure.json'
+path= join(dirname(__file__), 'data' , configure_input_file)
+with open(path, 'r') as file2:
+    sub_conf_str=file2.read()
+
+configure_invalid_key_file='invalid_key_Configure.json'
+path= join(dirname(__file__), 'data' , configure_invalid_key_file)
+with open(path, 'r') as file3:
+    configure_inavlid_key=file3.read()
+
+configure_invalid_input_file='invalid_input_Configure.json'
+path= join(dirname(__file__), 'data' , configure_invalid_input_file)
+with open(path, 'r') as file4:
+    invalid_ip_str=file4.read()
+
+assign_invalid_key_file='invalid_key_AssignResources.json'
+path= join(dirname(__file__), 'data' , assign_invalid_key_file)
+with open(path, 'r') as file5:
+    assign_inavlid_key=file5.read()
+
+sdp_configure_input_file= 'command_sdp_Configure.json'
+path= join(dirname(__file__), 'data' , sdp_configure_input_file)
+with open(path, 'r') as file6:
+    sdp_conf_str=file6.read()
+
+csp_configure_input_file= 'command_csp_Configure.json'
+path= join(dirname(__file__), 'data' , csp_configure_input_file)
+with open(path, 'r') as file7:
+    csp_conf_str=file7.read()
+
+scan_config_file= 'example_scan_config.json'
+path= join(dirname(__file__), 'data' , scan_config_file)
+with open(path, 'r') as file8:
+    scan_config_str=file8.read()
+
+invalid_scan_config_file= 'example_invalid_scan_config.json'
+path= join(dirname(__file__), 'data' , invalid_scan_config_file)
+with open(path, 'r') as file9:
+    invalid_scan_config_str=file9.read()
+
+
+
 
 @pytest.fixture(scope="function")
 def example_scan_configuration():
-    scan_config = {
-          "pointing": {
-            "target": {
-              "system": "ICRS",
-              "name": "Polaris Australis",
-              "RA": "21:08:47.92",
-              "dec": "-88:57:22.9"
-            }
-          },
-          "dish": {
-            "receiverBand": "1"
-          },
-          "csp": {
-            "id": "sbi-mvp01-20200325-00001-science_A",
-            "frequencyBand": "1",
-            "fsp": [
-              {
-                "fspID": 1,
-                "functionMode": "CORR",
-                "frequencySliceID": 1,
-                "integrationTime": 1400,
-                "corrBandwidth": 0
-              }
-            ]
-          },
-          "sdp": {
-            "scan_type": "science_A"
-          },
-          "tmc": {
-            "scanDuration": 10.0
-          }
-        }
-
+    scan_config_string= scan_config_str
+    scan_config=json.loads(scan_config_string)
     return scan_config
 
 
 @pytest.fixture(scope="function")
 def example_invalid_scan_configuration():
-    scan_config = {
-          "pointing": {
-            "target": {
-              "system": "ICRS",
-              "name": "Polaris Australis",
-              "RA": "21:08:47.92",
-              "dec": "-88:57:22.9"
-            }
-          },
-          "dish": {
-            "receiverBand": "1"
-          },
-          "csp": {
-            "id": "sbi-mvp01-20200325-00001-science_A",
-            "frequencyBand": "1",
-            "fsp": [
-              {
-                "fspID": 1,
-                "functionMode": "CORR",
-                "frequencySliceID": 1,
-                "integrationTime": 1400,
-                "corrBandwidth": 0
-              }
-            ]
-          },
-          "sdp": {
-              "scan_type_1": "science_A"
-          },
-          "tmc": {
-            "scanDuration": 10.0
-          }
-        }
-
+    scan_config_string = invalid_scan_config_str
+    scan_config=json.loads(scan_config_string)
     return scan_config
 
 
@@ -467,7 +454,7 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
         dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
         event_subscription_map[attribute](dummy_event)
 
-        assign_input = '{"invalid_key": invalid_value}'
+        assign_input = assign_inavlid_key
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assign_input)
 
@@ -737,15 +724,10 @@ def test_configure_command_subarray():
                         '["calibration"]}]}]}}'
         tango_context.device.AssignResources(assign_input)
 
-        tango_context.device.Configure('{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis",'
-                                       '"RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"},"csp":'
-                                       '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":'
-                                       '1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
-                                       '"corrBandwidth":0}]},"sdp":{"scan_type":"science_A"},'
-                                       '"tmc":{"scanDuration":10.0}}')
+        tango_context.device.Configure(sub_conf_str)
 
         # assert:
-        sdp_config = '{"sdp": {"scan_type": "science_A"}}'
+        sdp_config = sdp_conf_str
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, sdp_config)
 
         csp_config = '{"id": "sbi-mvp01-20200325-00001-science_A", "frequencyBand": "1", "fsp": [{"fspID": 1,' \
@@ -817,11 +799,7 @@ def test_configure_command_subarray_with_invalid_key():
                        '["calibration"]}]}]}}'
         tango_context.device.AssignResources(assign_input)
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure('{"pointing12345":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"},"csp":'
-                                       '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":'
-                                       '1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
-                                       '"corrBandwidth":0}]},"sdp":{"scan_type":"science_A"},'
-                                       '"tmc":{"scanDuration":10.0}}')
+            tango_context.device.Configure(configure_inavlid_key)
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
@@ -891,7 +869,7 @@ def test_configure_command_subarray_with_invalid_configure_input():
                        '["calibration"]}]}]}}'
         tango_context.device.AssignResources(assign_input)
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure('{"invalid_key"}')
+            tango_context.device.Configure(invalid_ip_str)
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
@@ -902,13 +880,7 @@ def test_configure_command_subarray_should_raise_devfailed_exception():
     with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(
-                '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92",'
-                '"dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"},"csp":'
-                '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":'
-                '1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,'
-                '"corrBandwidth":0}]},"sdp":{"scan_type":"science_A"},'
-                '"tmc":{"scanDuration":10.0}}')
+            tango_context.device.Configure(sub_conf_str)
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
@@ -1006,7 +978,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         while tango_context.device.obsState != ObsState.READY:
             pass
-        scan_input = '{"id": 1}'
+        scan_input = scan_input_str
 
         tango_context.device.Scan(scan_input)
 
@@ -1108,9 +1080,8 @@ def test_start_scan_should_should_raise_devfailed_exception():
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         while tango_context.device.obsState != ObsState.READY:
             pass
-        scan_input = '{"id": 1}'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan(scan_input)
+            tango_context.device.Scan(scan_input_str)
 
         # assert:
         assert tango_context.device.obsState == ObsState.READY
@@ -1178,9 +1149,8 @@ def test_start_scan_should_raise_assertion_exception():
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         while tango_context.device.obsState != ObsState.SCANNING:
             pass
-        scan_input = '{"id": 1}'
         with pytest.raises(tango.DevFailed) as assert_error:
-            tango_context.device.Scan(scan_input)
+            tango_context.device.Scan(scan_input_str)
 
         # assert:
         assert const.ERR_DUPLICATE_SCAN_CMD in tango_context.device.activityMessage

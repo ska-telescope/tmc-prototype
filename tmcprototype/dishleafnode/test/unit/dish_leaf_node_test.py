@@ -13,11 +13,35 @@ import pytest
 # Tango imports
 from tango import DevState
 from tango.test_context import DeviceTestContext
+from os.path import dirname, join
+
 
 # Additional import
 from dishleafnode import DishLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import ObsState, LoggingLevel
+
+
+config_input_file= 'command_Config.json'
+path= join(dirname(__file__), 'data', config_input_file)
+with open(path, 'r') as file:
+    config_input_str=file.read()
+
+invalid_arg_file= 'invalid_json_argument_Configure.json'
+path= join(dirname(__file__), 'data', invalid_arg_file)
+with open(path, 'r') as file1:
+    configure_invalid_arg=file1.read()
+
+invalid_arg_file2= 'invalid_json_argument_Track.json'
+path= join(dirname(__file__), 'data', invalid_arg_file2)
+with open(path, 'r') as file2:
+    track_invalid_arg=file2.read()
+
+invalid_key_file='invalid_key.json'
+path= join(dirname(__file__), 'data' , invalid_key_file)
+with open(path, 'r') as file3:
+    inavlid_key_str=file3.read()
+
 
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
@@ -55,8 +79,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        dish_config = {"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92",
-                                               "dec": "-88:57:22.9"}}, "dish": {"receiverBand": "1"}}
+        dish_config = config_input_str
         # act:
         tango_context.device.Configure(json.dumps(dish_config))
 
@@ -154,11 +177,9 @@ def test_track_should_command_dish_to_start_tracking():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        input_string = {"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92",
-                                                "dec": "-88:57:22.9"}}, "dish": {"receiverBand": "1"}}
-
+        input_string = config_input_str
         # act:
-        tango_context.device.Track(json.dumps(input_string))
+        tango_context.device.Track(input_string)
 
         # assert:
         jsonArgument = input_string
@@ -813,7 +834,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_with_error_event():
 def test_configure_should_raise_exception_when_called_with_invalid_json():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = '{"Invalid Key"}'
+        input_string = inavlid_key_str
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string)
 
@@ -825,9 +846,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
         input_string = []
-        input_string.append(
-            '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","":"-88:5.7:22.9"}},\
-            "dish":{"receiverBand":"1"}}')
+        input_string.append(configure_invalid_arg)
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
 
@@ -904,9 +923,7 @@ def test_slew_should_raise_exception_when_called_with_invalid_arguments():
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = \
-            '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","":"21:08:47.92","dec":"-88:57:22.9"}},' \
-            '"dish":{"receiverBand":"1"}}'
+        input_string = track_invalid_arg
 
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(input_string)
@@ -918,7 +935,7 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
 def test_track_should_raise_exception_when_called_with_invalid_json():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = '{"Invalid Key"}'
+        input_string = inavlid_key_str
 
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(input_string)
@@ -1156,3 +1173,5 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
+
+
