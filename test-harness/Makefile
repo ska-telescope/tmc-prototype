@@ -60,9 +60,10 @@ test:
 	 cspsubarrayleafnode_coverage sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
 	 subarraynode_coverage centralnode_coverage  && coverage xml && coverage html
 	mkdir -p /build/reports
+#renamed code-coverage to runtest-code-coverage as unit test cases combined coverage report is saved as code-coverage.xml in order to create badge with coverage report from mocking test case result.
 	cd /build && mv coverage.xml ./reports/runtest-code-coverage.xml
 
-	# Merge device-unit-tests.xml files of all the packages/devices into single unit-tests.xml file
+	# Merge device-unit-tests.xml files of all the packages/devices into single unit-tests.xml file. Renamed unit-tests.xml to runtest-code-coverage as unit test cases combined coverage report is saved as runtest-unit-tests.xml in order to create badge with coverage report from mocking test case result.
 	pip3 install junitparser
 	junitparser merge /build/reports/dish-leaf-node-unit-tests.xml \
                              /build/reports/dish-master-unit-tests.xml \
