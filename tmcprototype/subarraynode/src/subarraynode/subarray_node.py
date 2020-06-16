@@ -76,7 +76,6 @@ class ElementDeviceData:
         sdp_scan_config = scan_config.get("sdp", {})
         if sdp_scan_config:
             scan_type = sdp_scan_config.get("scan_type")
-            # sdp_scan_type = sdp_scan_config.get("scan_type")
             if scan_type:
                 scan_config.pop("pointing", None)
                 scan_config.pop("dish", None)
@@ -145,11 +144,8 @@ class SubarrayNode(SKASubarray):
 
             :return: None
             """
-        self.logger.info("Inside receive addre::::::::::::::::::::::::")
         global receive_addresses_map
         receive_addresses_map = event.attr_value.value
-        log_msg = "receive addr map is {} and its type {} ".format(receive_addresses_map, type(receive_addresses_map))
-        self.logger.info(log_msg)
 
     def health_state_cb(self, event):
         """
@@ -1115,10 +1111,6 @@ class SubarrayNode(SKASubarray):
         self._csp_sa_device_state = DevState.DISABLE
         self._sdp_sa_device_state = DevState.OFF
         self.only_dishconfig_flag = False
-        # global receive_addresses_map
-        # receive_addresses_map = ''
-        # global sdp_interface_version
-        # sdp_interface_version = 0
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
         self.scan_thread = None
 
@@ -1355,7 +1347,6 @@ class SubarrayNode(SKASubarray):
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
         self.scan_duration = int(tmc_configure["scanDuration"])
-        scan_type = scan_configuration["sdp"]["scan_type"]
         self._configure_csp(scan_configuration)
         # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
         time.sleep(2)
