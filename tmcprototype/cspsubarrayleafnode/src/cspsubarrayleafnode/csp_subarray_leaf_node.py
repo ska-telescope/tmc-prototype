@@ -56,8 +56,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         exception_message = []
         try:
-            log_msg = "Command Event is: " + str(event)
-            self.logger.info(log_msg)
             if event.err:
                 self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
