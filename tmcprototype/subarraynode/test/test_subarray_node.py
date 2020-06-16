@@ -309,11 +309,13 @@ class TestSubarrayNode(object):
     def test_On(self, tango_context, create_cspmasterln_proxy, create_cspsa_proxy):
         """Test for StartUpTelescope on subarray."""
         create_cspmasterln_proxy.Standby([])
-        while create_cspsa_proxy.State() != DevState.DISABLE:
-            time.sleep(0.1)
+        # while create_cspsa_proxy.State() != DevState.DISABLE:
+        #     time.sleep(0.1)
+        time.sleep(5)
         create_cspmasterln_proxy.On([])
-        while tango_context.device.State() != DevState.OFF:
-            time.sleep(0.1)
+        # while tango_context.device.State() != DevState.OFF:
+        #     time.sleep(0.1)
+        time.sleep(5)
         tango_context.device.On()
         assert tango_context.device.adminMode == AdminMode.ONLINE
         # PROTECTED REGION END #    //  SubarrayNode.test_On
