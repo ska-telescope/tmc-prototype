@@ -6,6 +6,7 @@ image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
 default:
   tags:
     - auto-k8s
+    - docker-executor
 variables:
   DOCKER_DRIVER: overlay2
 
@@ -31,8 +32,6 @@ stages:
 
 build CentralNode wheel for publication: # Executed on a tag
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/centralnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -44,8 +43,6 @@ build CentralNode wheel for publication: # Executed on a tag
 
 build CentralNode wheel for development: # Executed on a commit
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/centralnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -57,8 +54,6 @@ build CentralNode wheel for development: # Executed on a commit
 
 build SubarrayNode wheel for publication: # Executed on a tag
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/subarraynode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -70,8 +65,6 @@ build SubarrayNode wheel for publication: # Executed on a tag
 
 build SubarrayNode wheel for development: # Executed on a commit
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/subarraynode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -83,8 +76,6 @@ build SubarrayNode wheel for development: # Executed on a commit
 
 build DishLeafNode wheel for publication: # Executed on a tag
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/dishleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -96,8 +87,6 @@ build DishLeafNode wheel for publication: # Executed on a tag
 
 build DishLeafNode wheel for development: # Executed on a commit
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/dishleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -109,8 +98,6 @@ build DishLeafNode wheel for development: # Executed on a commit
 
 build CspMasterLeafNode wheel for publication: # Executed on a tag
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/cspmasterleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -122,8 +109,6 @@ build CspMasterLeafNode wheel for publication: # Executed on a tag
 
 build CspMasterLeafNode wheel for development: # Executed on a commit
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/cspmasterleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -135,8 +120,6 @@ build CspMasterLeafNode wheel for development: # Executed on a commit
 
 build CspSubarrayLeafNode wheel for publication: # Executed on a tag
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/cspsubarrayleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -149,8 +132,6 @@ build CspSubarrayLeafNode wheel for publication: # Executed on a tag
 
 build SdpMasterLeafNode wheel for publication: # Executed on a tag
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/sdpmasterleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -163,8 +144,6 @@ build SdpMasterLeafNode wheel for publication: # Executed on a tag
 
 build SdpMasterLeafNode wheel for development: # Executed on a commit
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/sdpmasterleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -176,8 +155,6 @@ build SdpMasterLeafNode wheel for development: # Executed on a commit
 
 build CspSubarrayLeafNode wheel for development: # Executed on a commit
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/cspsubarrayleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -189,8 +166,6 @@ build CspSubarrayLeafNode wheel for development: # Executed on a commit
 
 build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/sdpsubarrayleafnode
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -202,8 +177,6 @@ build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
 
 build SdpSubarrayLeafNode wheel for development: # Executed on a commit
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/sdpsubarrayleafnode
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -216,8 +189,6 @@ build SdpSubarrayLeafNode wheel for development: # Executed on a commit
 
 build DishMaster wheel for publication: # Executed on a tag
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/dishmaster
     - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -229,8 +200,6 @@ build DishMaster wheel for publication: # Executed on a tag
 
 build DishMaster wheel for development: # Executed on a commit
   stage: build
-  tags:
-    - docker-executor
   script:
     - cd ./tmcprototype/dishmaster
     - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -245,8 +214,6 @@ run tests:
   stage: test
   before_script:
   - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
-  tags:
-    - docker-executor
   script:
     - make test
     - make push
@@ -257,8 +224,6 @@ unit tests:
   stage: test
   before_script:
   - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
-  tags:
-    - docker-executor
   script:
     - make unit-test
   artifacts:
@@ -269,8 +234,6 @@ unit tests:
 linting:
   stage: linting
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
-  tags:
-    - docker-executor
   script:
     - apt-get -y update
     - apt-get install -y python3-pip python3-setuptools python3-wheel --no-install-recommends
@@ -282,8 +245,6 @@ linting:
 
 publish to nexus:
   stage: publish
-  tags:
-    - docker-executor
   variables:
     TWINE_USERNAME: $TWINE_USERNAME
     TWINE_PASSWORD: $TWINE_PASSWORD
@@ -307,8 +268,6 @@ pages:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   before_script:
   - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
-  tags:
-    - docker-executor
   stage: pages
   only:
     - master
@@ -331,8 +290,6 @@ create ci metrics:
   stage: .post
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   when: always
-  tags:
-    - docker-executor
   script:
     # Gitlab CI badges creation: START
     - apt-get -y update
@@ -346,8 +303,6 @@ create ci metrics:
 #trigger:
 #  image: appropriate/curl
 #  stage: trigger
-#  tags:
-#  - docker-executor
 #  script:
 #  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH -F "variables[HELM_CHART]=tmc-proto" https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
 
@@ -356,8 +311,6 @@ release tmc:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   before_script:
   - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
-  tags:
-    - docker-executor
   script:
     - make release-tmc-prototype USERNAME=$GITLAB_USER_NAME EMAILID=$GITLAB_USER_EMAIL # Publish tag on the gitlab and tagged image on Nexus
   when: manual
