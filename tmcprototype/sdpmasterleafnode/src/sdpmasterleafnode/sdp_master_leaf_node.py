@@ -50,16 +50,14 @@ class SdpMasterLeafNode(SKABaseDevice):
         exception_message = []
         try:
             if event.err:
-                log = const.ERR_INVOKING_CMD + event.cmd_name
                 log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self.logger.error(log_msg)
                 self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
-                self.logger.error(log)
             else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self._read_activity_message = log
-                self.logger.info(log)
+                log_msg = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log_msg
+                self.logger.info(log_msg)
         except Exception as except_occurred:
             self._read_activity_message = const.ERR_EXCEPT_CMD_CB + str(except_occurred)
             log_msg = const.ERR_EXCEPT_CMD_CB + str(except_occurred)
@@ -79,7 +77,8 @@ class SdpMasterLeafNode(SKABaseDevice):
     def _handle_devfailed_exception(self, df, actvity_msg):
         self._read_activity_message = actvity_msg
         self._read_activity_message = const.ERR_MSG + str(df)
-        self.logger.error(actvity_msg)
+        log_msg = const.ERR_MSG + str(df) + "\n" + actvity_msg
+        self.logger.error(log_msg)
     # PROTECTED REGION END #    //  SdpMasterLeafNode.class_variable
 
     # -----------------
