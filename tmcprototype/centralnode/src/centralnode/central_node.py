@@ -45,12 +45,9 @@ class CentralNode(SKABaseDevice):
 
         :return: None
         """
-        self.logger.info('event logs : CentralNode')
-        self.logger.info('event error :' + str(evt.err))
+        self.logger.info('Command event is :' + str(evt))
         if evt.err is False:
             try:
-                self.logger.info('Event attribute name : ' + str(evt.attr_name))
-                self.logger.info('Event attribute value : ' + evt.attr_value.value)
                 health_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     self._subarray1_health_state = health_state
@@ -424,7 +421,6 @@ class CentralNode(SKABaseDevice):
                     self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
 
         except ValueError as value_error:
-            self.logger.info(str(value_error))
             self.logger.error(const.ERR_STOW_ARGIN)
             self._read_activity_message = const.ERR_STOW_ARGIN + str(value_error)
             exception_message.append(self._read_activity_message)
@@ -446,24 +442,27 @@ class CentralNode(SKABaseDevice):
         """ Set the Elements into STANDBY state (i.e. Low Power State). """
         exception_count =0
         exception_message =[]
-        log_msg=const.STR_STANDBY_CMD_ISSUE
+        log_msg=const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
         self._read_activity_message = log_msg
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
+                self.logger.info(const.CMD_SET_STANDBY_MODE)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
 
         try:
             self._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
+            self.logger.info(const.CMD_STANDBY_CSP_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
 
         try:
             self._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
+            self.logger.info(const.CMD_STANDBY_SDP_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
@@ -471,6 +470,7 @@ class CentralNode(SKABaseDevice):
         try:
             for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
                 self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STANDBY)
+                self.logger.info(const.CMD_STANDBY_SA_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
@@ -494,17 +494,20 @@ class CentralNode(SKABaseDevice):
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
+                self.logger.info(const.CMD_SET_OPERATE_MODE)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
 
         try:
             self._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP,[])
+            self.logger.info(const.CMD_STARTUP_CSP_DEV)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
         try:
             self._sdp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
+            self.logger.info(const.CMD_STARTUP_SDP_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
@@ -512,6 +515,7 @@ class CentralNode(SKABaseDevice):
         try:
             for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
                 self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STARTUP)
+                self.logger.info(const.CMD_STARTUP_SA_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
@@ -681,21 +685,21 @@ class CentralNode(SKABaseDevice):
                     }
                 }
             else:
+                log_msg=const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
                 self._read_activity_message = const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
+                self.logger.info(log_msg)
                 argout = {
                     "dish": {
                         "receptorIDList_success": receptorIDList
                     }
                 }
         except ValueError as value_error:
-            self.logger.info('Value error : ' + str(value_error))
             self.logger.error(const.ERR_INVALID_JSON)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
         except KeyError as key_error:
-            self.logger.info('Key error : ' + str(key_error))
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
@@ -791,19 +795,20 @@ class CentralNode(SKABaseDevice):
                         if Dish_Status == subarray_name:
                             self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                 else:
+                    log_msg=const.STR_LIST_RES_NOT_REL + res_not_released
                     self._read_activity_message = const.STR_LIST_RES_NOT_REL \
                                                   + res_not_released
+                    self.logger.info(log_msg)
                     release_success = False
             else:
                 self._read_activity_message = const.STR_FALSE_TAG
+                self.logger.info(const.STR_FALSE_TAG)
         except ValueError as value_error:
-            self.logger.info('Value Error : ' + str(value_error))
             self.logger.error(const.ERR_INVALID_JSON)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
-            self.logger.info('Key Error : ' + str(key_error))
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)

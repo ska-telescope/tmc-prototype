@@ -50,6 +50,7 @@ class CspMasterLeafNode(SKABaseDevice):
         :return: None
         """
         try:
+            self.logger.info('Callback event is : ' + str(evt))
             if evt.err is False:
                 self._csp_cbf_health = evt.attr_value.value
                 if self._csp_cbf_health == HealthState.OK:
@@ -67,7 +68,7 @@ class CspMasterLeafNode(SKABaseDevice):
             else:
                 log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
         except Exception as except_occurred:
             self._handle_generic_exception(const.ERR_CSP_CBF_HEALTH_CB + ": " + str(except_occurred))
@@ -81,6 +82,7 @@ class CspMasterLeafNode(SKABaseDevice):
         :return: None
         """
         try:
+            self.logger.info('Callback event is : ' + str(evt))
             if evt.err is False:
                 self._csp_pss_health = evt.attr_value.value
                 if self._csp_pss_health == HealthState.OK:
@@ -99,7 +101,7 @@ class CspMasterLeafNode(SKABaseDevice):
             else:
                 log_msg = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_CSP_PSS_HEALTH)
         except Exception as except_occurred:
             self._handle_generic_exception(const.ERR_CSP_PSS_HEALTH_CB + ": " + str(except_occurred))
@@ -113,6 +115,7 @@ class CspMasterLeafNode(SKABaseDevice):
         :return: None
         """
         try:
+            self.logger.info('Callback event is : ' + str(evt))
             if evt.err is False:
                 self._csp_pst_health = evt.attr_value.value
                 if self._csp_pst_health == HealthState.OK:
@@ -130,7 +133,7 @@ class CspMasterLeafNode(SKABaseDevice):
             else:
                 log_msg = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_CSP_PST_HEALTH)
         except Exception as except_occurred:
             self._handle_generic_exception(const.ERR_CSP_PST_HEALTH_CB + ": " + str(except_occurred))
@@ -146,10 +149,8 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_count = 0
         exception_message = []
         try:
-            self.logger.info('event logs : CSPmasterleafnode')
-            self.logger.error('Error Events' + str(event.err))
+            self.logger.info('Command callback event is : ' + str(event))
             if event.err:
-                log = const.ERR_INVOKING_CMD + event.cmd_name
                 log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self.logger.error(log_msg)
                 self._read_activity_message = log_msg

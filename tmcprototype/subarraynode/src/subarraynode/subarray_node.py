@@ -130,6 +130,7 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         device_name = event.device.dev_name()
+        self.logger.info('Event logs : ' + str(event))
         if not event.err:
             event_health_state = event.attr_value.value
             self.subarray_ln_health_state_map[device_name] = event_health_state
@@ -154,10 +155,8 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Event Error : ' + str(evt.err))
-            self.logger.info('Event AttrName : ' + str(evt.attr_name))
+            self.logger.info('Callback Event is : ' + str(evt))
             if evt.err is False:
-                self.logger.info('Event Attr Value: '+ str(evt.attr_value.value))
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
                 elif self.SdpSubarrayFQDN in evt.attr_name:
@@ -207,10 +206,8 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Event Error: ' + str(evt.err))
+            self.logger.info('Callback Event is: ' + str(evt))
             if evt.err is False:
-                self.logger.info('Event Attr Name: ' + str(evt.attr_name))
-
                 self._observetion_state = evt.attr_value.value
 
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
@@ -571,6 +568,7 @@ class SubarrayNode(SKASubarray):
         """
         try:
             self._csp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
+            self.logger.info(const.CMD_RELEASE_ALL_RESOURCES)
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
             self.logger.debug(df)
@@ -586,6 +584,7 @@ class SubarrayNode(SKASubarray):
         """
         try:
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
+            self.logger.info(const.CMD_RELEASE_ALL_RESOURCES)
 
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
@@ -931,7 +930,7 @@ class SubarrayNode(SKASubarray):
         :return: None
 
         """
-        self.logger.info('Event Error: ' + str(evt.err))
+        self.logger.info('Command Event is : ' + str(evt))
         if evt.err is False:
             try:
                 self._dish_pointing_state = evt.attr_value.value
@@ -1341,8 +1340,11 @@ class SubarrayNode(SKASubarray):
             self.logger.debug("EndSB invoked on SubarrayNode.")
             if self._obs_state == ObsState.READY:
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
+                self.logger.info(const.CMD_ENDSB)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
+                self.logger.info(const.CMD_GOTOIDLE)
                 self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                self.logger.info(const.CMD_STOP_TRACK)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
                 self.set_status(const.STR_ENDSB_SUCCESS)
