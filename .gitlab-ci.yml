@@ -3,6 +3,9 @@
 # In this case we use the latest python docker image to build and test this project.
 image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
 
+default:
+  tags:
+    - auto-k8s
 variables:
   DOCKER_DRIVER: overlay2
 
