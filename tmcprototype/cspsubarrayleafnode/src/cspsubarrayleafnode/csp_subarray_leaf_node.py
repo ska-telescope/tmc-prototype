@@ -8,7 +8,7 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 import datetime
 import threading
