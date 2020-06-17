@@ -342,13 +342,9 @@ class DishMaster(SKAMaster):
             self.SkaLevel = 1                           # Set SkaLevel to 1
             # Initialise Attributes
             self._health_state = HealthState.OK         # Set healthState to OK
-            self.logger.debug("HealthState is OK.")
             self._admin_mode = AdminMode.ONLINE         # Set adminMode to ONLINE
-            self.logger.debug("AdminMode is set to ONLINE.")
             self._dish_mode = 3                         # Set dishMode to STANDBY-LP Mode
-            self.logger.info(const.STR_DISH_STANDBYFP_MODE)
             self._pointing_state = PointingState.READY  # Set pointingState to READY Mode
-            self.logger.debug("Dish pointing state is set to READY.")
             self._band1_sampler_frequency = 0           # Set Band 1 Sampler Frequency to 0
             self._band2_sampler_frequency = 0           # Set Band 2 Sampler Frequency to 0
             self._band3_sampler_frequency = 0           # Set Band 3 Sampler Frequency to 0

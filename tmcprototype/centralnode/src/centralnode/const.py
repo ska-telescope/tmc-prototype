@@ -11,7 +11,7 @@ CMD_STANDBY_SDP_DEV = "Standby for sdpmasterleaf device "
 CMD_STANDBY_SA_DEV = "Standby for subarray device"
 CMD_STARTUP = "On"
 CMD_STARTUP_CSP_DEV = "On for cspmasterleaf device"
-CMD_STARTUP_SDP_DEV = "On for cspmasterleaf device"
+CMD_STARTUP_SDP_DEV = "On for sdpmasterleaf device"
 CMD_STARTUP_SA_DEV = "On for subarray device"
 
 #Event messages
