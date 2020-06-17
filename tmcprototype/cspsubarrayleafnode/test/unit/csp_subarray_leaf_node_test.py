@@ -36,10 +36,10 @@ path= join(dirname(__file__), 'data' , configure_input_file)
 with open(path, 'r') as f:
     configure_str=f.read()
 
-invalid_json_file='invalid_json.json'
-path= join(dirname(__file__), 'data' ,invalid_json_file)
+invalid_json_assign_config_file='invalid_json_Assign_Resources_Configure.json'
+path= join(dirname(__file__), 'data' ,invalid_json_assign_config_file)
 with open(path, 'r') as f:
-    inavlid_json_str=f.read()
+    assign_cofig_invalid_str=f.read()
 
 assign_invalid_key_file='invalid_key_AssignResources.json'
 path= join(dirname(__file__), 'data' , assign_invalid_key_file)
@@ -543,7 +543,7 @@ def test_assign_resource_should_raise_exception_when_called_invalid_json():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(inavlid_json_str)
+            tango_context.device.AssignResources(assign_cofig_invalid_str)
         # assert:
         assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
 
@@ -563,7 +563,7 @@ def test_configure_should_raise_exception_when_called_invalid_json():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(inavlid_json_str)
+            tango_context.device.Configure(assign_cofig_invalid_str)
         # assert:
         assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
 

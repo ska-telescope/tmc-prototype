@@ -27,20 +27,20 @@ path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
     assign_input_str = f.read()
 
-relese_input_file='command_ReleaseResources.json'
-path= join(dirname(__file__), 'data' ,relese_input_file)
+release_input_file='command_ReleaseResources.json'
+path= join(dirname(__file__), 'data' ,release_input_file)
 with open(path, 'r') as f:
     relese_input_str= f.read()
 
-invalid_json_file='invalid_json.json'
-path= join(dirname(__file__), 'data' ,invalid_json_file)
+invalid_json_Assign_Release_file='invalid_json_Assign_Release_Resources.json'
+path= join(dirname(__file__), 'data' ,invalid_json_Assign_Release_file)
 with open(path, 'r') as f:
-    inavlid_json_str= f.read()
+    assign_release_invalid_str= f.read()
 
 assign_invalid_key_file='invalid_key_AssignResources.json'
 path= join(dirname(__file__), 'data' , assign_invalid_key_file)
 with open(path, 'r') as f:
-    assign_inavlid_key=f.read()
+    assign_invalid_key=f.read()
 
 release_invalid_key_file='invalid_key_ReleaseResources.json'
 path= join(dirname(__file__), 'data' , release_invalid_key_file)
@@ -301,7 +301,7 @@ def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(inavlid_json_str)
+            tango_context.device.AssignResources(assign_release_invalid_str)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
@@ -313,7 +313,7 @@ def test_assign_resources_invalid_key():
             as tango_context:
         result = 'test'
         with pytest.raises(tango.DevFailed):
-            result = tango_context.device.AssignResources(assign_inavlid_key)
+            result = tango_context.device.AssignResources(assign_invalid_key)
 
         # assert:
         assert 'test' in result
@@ -380,7 +380,7 @@ def test_release_resources_invalid_json_value():
     with fake_tango_system(CentralNode) \
             as tango_context:
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(inavlid_json_str)
+            tango_context.device.ReleaseResources(assign_release_invalid_str)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage

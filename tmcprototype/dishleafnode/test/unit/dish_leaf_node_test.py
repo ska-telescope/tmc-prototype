@@ -15,7 +15,6 @@ from tango import DevState
 from tango.test_context import DeviceTestContext
 from os.path import dirname, join
 
-
 # Additional import
 from dishleafnode import DishLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
@@ -37,10 +36,10 @@ path= join(dirname(__file__), 'data', invalid_arg_file2)
 with open(path, 'r') as f:
     track_invalid_arg=f.read()
 
-invalid_key_file='invalid_key.json'
-path= join(dirname(__file__), 'data' , invalid_key_file)
+invalid_key_config_track_file='invalid_key_Configure_Track.json'
+path= join(dirname(__file__), 'data' , invalid_key_config_track_file)
 with open(path, 'r') as f:
-    inavlid_key_str=f.read()
+    config_track_invalid_str=f.read()
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     # arrange:
@@ -170,17 +169,15 @@ def test_track_should_command_dish_to_start_tracking():
     dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
 
     dish1_proxy_mock = Mock()
-
     proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        input_string = config_input_str
         # act:
-        tango_context.device.Track(input_string)
+        tango_context.device.Track(config_input_str)
 
         # assert:
-        jsonArgument = input_string
+        jsonArgument = config_input_str
         ra_value = (jsonArgument["pointing"]["target"]["RA"])
         dec_value = (jsonArgument["pointing"]["target"]["dec"])
         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
@@ -832,9 +829,8 @@ def test_dish_leaf_node_when_desired_pointing_callback_with_error_event():
 def test_configure_should_raise_exception_when_called_with_invalid_json():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = inavlid_key_str
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(input_string)
+            tango_context.device.Configure(config_track_invalid_str)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
@@ -921,10 +917,9 @@ def test_slew_should_raise_exception_when_called_with_invalid_arguments():
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = track_invalid_arg
 
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Track(input_string)
+            tango_context.device.Track(track_invalid_arg)
 
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
@@ -933,10 +928,8 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
 def test_track_should_raise_exception_when_called_with_invalid_json():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = inavlid_key_str
-
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Track(input_string)
+            tango_context.device.Track(config_track_invalid_str)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
@@ -1171,5 +1164,3 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
-
-

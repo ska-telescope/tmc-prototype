@@ -10,7 +10,6 @@ import mock
 from mock import Mock, MagicMock
 from os.path import dirname, join
 
-
 # Tango imports
 import tango
 from tango import DevState, DeviceData, DevString, DevVarStringArray
@@ -35,7 +34,7 @@ with open(path, 'r') as f:
 configure_input_file= 'command_Configure.json'
 path= join(dirname(__file__), 'data' , configure_input_file)
 with open(path, 'r') as f:
-    sub_conf_str=f.read()
+    configure_str=f.read()
 
 configure_invalid_key_file='invalid_key_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_key_file)
@@ -45,7 +44,7 @@ with open(path, 'r') as f:
 configure_invalid_input_file='invalid_input_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_input_file)
 with open(path, 'r') as f:
-    invalid_ip_str=f.read()
+    invalid_conf_input=f.read()
 
 assign_invalid_key_file='invalid_key_AssignResources.json'
 path= join(dirname(__file__), 'data' , assign_invalid_key_file)
@@ -74,17 +73,13 @@ with open(path, 'r') as f:
 
 @pytest.fixture(scope="function")
 def example_scan_configuration():
-    scan_config_string= scan_config_str
-    scan_config=json.loads(scan_config_string)
+    scan_config=json.loads(scan_config_str)
     return scan_config
-
 
 @pytest.fixture(scope="function")
 def example_invalid_scan_configuration():
-    scan_config_string = invalid_scan_config_str
-    scan_config=json.loads(scan_config_string)
+    scan_config=json.loads(invalid_scan_config_str)
     return scan_config
-
 
 @pytest.fixture(scope="function")
 def csp_func_args():
@@ -360,9 +355,8 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
         event_subscription_map[attribute](dummy_event)
 
-        assign_input = assign_input_str
         assign_input_dict=json.loads((assign_input_str))
-        tango_context.device.AssignResources(assign_input)
+        tango_context.device.AssignResources(assign_input_str)
 
         str_json_arg = json.dumps(assign_input_dict.get("sdp"))
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, str_json_arg)
@@ -624,7 +618,7 @@ def test_configure_command_subarray():
         event_subscription_map[attribute](dummy_event)
         tango_context.device.AssignResources(assign_input_str)
 
-        tango_context.device.Configure(sub_conf_str)
+        tango_context.device.Configure(configure_str)
 
         # assert:
         sdp_config = sdp_conf_str
@@ -734,7 +728,7 @@ def test_configure_command_subarray_with_invalid_configure_input():
 
         tango_context.device.AssignResources(assign_input_str)
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(invalid_ip_str)
+            tango_context.device.Configure(invalid_conf_input)
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
@@ -745,7 +739,7 @@ def test_configure_command_subarray_should_raise_devfailed_exception():
     with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(sub_conf_str)
+            tango_context.device.Configure(configure_str)
 
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
@@ -839,7 +833,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_START_SCAN, [scan_input])
 
 
-def test_start_scan_should_should_raise_devfailed_exception():
+def test_start_scan_should_raise_devfailed_exception():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
