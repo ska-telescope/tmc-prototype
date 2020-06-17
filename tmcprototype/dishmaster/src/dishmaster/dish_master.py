@@ -61,10 +61,11 @@ class DishMaster(SKAMaster):
                 self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
                 self.change_azimuth_thread = threading.Thread(None, self.azimuth, 'DishMaster')
                 self.change_elevation_thread = threading.Thread(None, self.elevation, 'DishMaster')
+                self.logger.debug(const.STR_AZ_THREAD_START)
                 self.change_azimuth_thread.start()
+                self.logger.debug(const.STR_EL_THREAD_START)
                 self.change_elevation_thread.start()
                 self._pointing_state = PointingState.SLEW
-                self.logger.debug(const.STR_DISH_POINT_INPROG)
             except Exception as except_occured:
                 log_msg = const.ERR_EXE_POINT_FN + str(self.ReceptorNumber)
                 self.logger.debug(log_msg)
