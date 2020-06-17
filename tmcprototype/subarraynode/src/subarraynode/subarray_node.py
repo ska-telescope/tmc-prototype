@@ -177,7 +177,6 @@ class SubarrayNode(SKASubarray):
                 log_msg = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
                 self.logger.debug(log_msg)
                 self._read_activity_message = log_msg
-                self.logger.critical(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                                                   exception_message,
@@ -231,12 +230,10 @@ class SubarrayNode(SKASubarray):
                 log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
                 self.logger.debug(log_msg)
                 self._read_activity_message = log_msg
-                self.logger.critical(const.ERR_SUBSR_CSPSDPSA_OBS_STATE)
         except KeyError as key_error:
             log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
             self.logger.error(log_msg)
             self._read_activity_message = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
-            self.logger.critical(const.ERR_CSPSDP_SUBARRAY_OBS_STATE)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                                                                   exception_message,
@@ -1176,8 +1173,6 @@ class SubarrayNode(SKASubarray):
         Where 123 is a Scan ID from configuration json string.
         """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
-        log_msg = "read_scanID",self._scan_id
-        self.logger.debug(log_msg)
         return self._scan_id
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
@@ -1259,7 +1254,8 @@ class SubarrayNode(SKASubarray):
 
         try:
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
-            self.logger.debug("------------------- TRACK DISH -------------------")
+            self.logger.debug("---------Configure command is invoked on the Dish Leaf Nodes Group---------")
+            self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
         except DevFailed as df:
             self._read_activity_message = df[0].desc

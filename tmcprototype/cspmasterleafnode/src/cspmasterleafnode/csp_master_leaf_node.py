@@ -52,7 +52,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('CspcbfHealth State attribute change event is : ' + str(evt))
+            self.logger.info('CspcbfHealthState attribute change event is : ' + str(evt))
             if not evt.err:
                 self._csp_cbf_health = evt.attr_value.value
                 if self._csp_cbf_health == HealthState.OK:
