@@ -108,7 +108,6 @@ class CspMasterLeafNode(SKABaseDevice):
                 log_msg = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
                 self.logger.error(log_msg)
                 self._read_activity_message = log_msg
-                self.logger.error(const.ERR_ON_SUBS_CSP_PSS_HEALTH)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                                                   exception_message, exception_count,
@@ -144,7 +143,6 @@ class CspMasterLeafNode(SKABaseDevice):
                 log_msg = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
                 self.logger.error(log_msg)
                 self._read_activity_message = log_msg
-                self.logger.error(const.ERR_ON_SUBS_CSP_PST_HEALTH)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                                                   exception_message, exception_count,
