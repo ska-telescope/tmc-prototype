@@ -52,6 +52,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
+            self.logger.info('Callback event is : ' + str(evt))
             if not evt.err:
                 self._csp_cbf_health = evt.attr_value.value
                 if self._csp_cbf_health == HealthState.OK:
@@ -69,7 +70,7 @@ class CspMasterLeafNode(SKABaseDevice):
             else:
                 log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
@@ -87,6 +88,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
+            self.logger.info('Callback event is : ' + str(evt))
             if not evt.err:
                 self._csp_pss_health = evt.attr_value.value
                 if self._csp_pss_health == HealthState.OK:
@@ -105,7 +107,7 @@ class CspMasterLeafNode(SKABaseDevice):
             else:
                 log_msg = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_CSP_PSS_HEALTH)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
@@ -123,6 +125,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
+            self.logger.info('Callback event is : ' + str(evt))
             if not evt.err:
                 self._csp_pst_health = evt.attr_value.value
                 if self._csp_pst_health == HealthState.OK:
@@ -140,7 +143,7 @@ class CspMasterLeafNode(SKABaseDevice):
             else:
                 log_msg = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_CSP_PST_HEALTH)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
@@ -180,6 +183,7 @@ class CspMasterLeafNode(SKABaseDevice):
                 log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
                 self.logger.info(log_msg)
                 self._read_activity_message = log_msg
+
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                                                   exception_message, exception_count,
@@ -260,7 +264,7 @@ class CspMasterLeafNode(SKABaseDevice):
         except DevFailed as dev_failed:
             log_msg = const.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
             self.set_state(DevState.FAULT)
-            self._handle_devfailed_exception(dev_failed, log_msg, 0,const.ERR_IN_CREATE_PROXY)
+            self._handle_devfailed_exception(dev_failed, [], 0,const.ERR_IN_CREATE_PROXY)
 
 
         # Subscribing to CSPMaster Attributes
@@ -276,7 +280,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
-            self._handle_devfailed_exception(dev_failed, log_msg, 0, const.ERR_CSP_MASTER_LEAF_INIT)
+            self._handle_devfailed_exception(dev_failed, [], 0, const.ERR_CSP_MASTER_LEAF_INIT)
             self.set_state(DevState.FAULT)
             self.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
 

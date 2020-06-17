@@ -61,9 +61,12 @@ class DishMaster(SKAMaster):
                 self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
                 self.change_azimuth_thread = threading.Thread(None, self.azimuth, 'DishMaster')
                 self.change_elevation_thread = threading.Thread(None, self.elevation, 'DishMaster')
+                self.logger.debug("Starting thread to change azimuth coordinates.")
                 self.change_azimuth_thread.start()
+                self.logger.debug("Starting thread to change elevation coordinates.")
                 self.change_elevation_thread.start()
                 self._pointing_state = PointingState.SLEW
+                self.logger.debug(const.STR_DISH_POINT_INPROG)
             except Exception as except_occured:
                 log_msg = const.ERR_EXE_POINT_FN + str(self.ReceptorNumber)
                 self.logger.debug(log_msg)
@@ -77,6 +80,7 @@ class DishMaster(SKAMaster):
         """ Calculates the azimuth angle difference. """
         #time.sleep(1)
         self._pointing_state = PointingState.SLEW
+        self.logger.debug(const.STR_DISH_POINT_INPROG)
         azimuth_index = 1
         if self._azimuth_difference > 0.00:
             self.increment_position([azimuth_index, self._azimuth_difference])
@@ -86,6 +90,7 @@ class DishMaster(SKAMaster):
     def elevation(self):
         """ Calculates the elevation angle difference. """
         self._pointing_state = PointingState.SLEW
+        self.logger.debug(const.STR_DISH_POINT_INPROG)
         elevation_index = 2
         if self._elevation_difference > 0.00:
             self.increment_position([elevation_index, self._elevation_difference])
@@ -116,6 +121,7 @@ class DishMaster(SKAMaster):
         for position in numpy.arange(0, input_increment, 0.01):
             self.set_status(const.STR_DISH_POINT_INPROG)
             self._pointing_state = PointingState.SLEW
+            self.logger.debug(const.STR_DISH_POINT_INPROG)
             if position == input_increment:
                 self.logger.info("position == input_increment. Breaking the loop")
                 break
@@ -215,6 +221,7 @@ class DishMaster(SKAMaster):
             time.sleep(2)
         # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
         self._pointing_state = PointingState.TRACK
+        self.logger.debug("After Slew Dish pointing state is set to TRACK")
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -336,9 +343,13 @@ class DishMaster(SKAMaster):
             self.SkaLevel = 1                           # Set SkaLevel to 1
             # Initialise Attributes
             self._health_state = HealthState.OK         # Set healthState to OK
+            self.logger.debug("HealthState is OK.")
             self._admin_mode = AdminMode.ONLINE         # Set adminMode to ONLINE
+            self.logger.debug("AdminMode is set to ONLINE.")
             self._dish_mode = 3                         # Set dishMode to STANDBY-LP Mode
+            self.logger.info(const.STR_DISH_STANDBYFP_MODE)
             self._pointing_state = PointingState.READY  # Set pointingState to READY Mode
+            self.logger.debug("Dish pointing state is set to READY.")
             self._band1_sampler_frequency = 0           # Set Band 1 Sampler Frequency to 0
             self._band2_sampler_frequency = 0           # Set Band 2 Sampler Frequency to 0
             self._band3_sampler_frequency = 0           # Set Band 3 Sampler Frequency to 0
@@ -364,6 +375,7 @@ class DishMaster(SKAMaster):
             self._azimuthoverwrap = False
             self._toggle_fault = False
             self.set_status(const.STR_DISH_INIT_SUCCESS)
+            self.logger.debug(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
         except Exception as except_occured:
             log_msg = const.ERR_MSG + str(except_occured)
@@ -566,6 +578,7 @@ class DishMaster(SKAMaster):
             self.Slew("0")
             time.sleep(1)
             self.stow_thread = threading.Thread(None, self.check_slew, 'DishMaster')
+            self.logger.debug("Starting thread to set dish to STOW mode.")
             self.stow_thread.start()
         except Exception as except_occured:
             excpt_msg.append(const.ERR_EXE_SET_STOW_MODE_CMD + str(self.ReceptorNumber))
@@ -744,6 +757,7 @@ class DishMaster(SKAMaster):
                 self._scan_execution_time = float(argin)
                 self._scan_delta_t = self._scan_execution_time - self._current_time
                 schedule_scan_thread = Timer(self._scan_delta_t, self.StartCapture, [argin])
+                self.logger.debug("Starting thread to enable SCAN.")
                 schedule_scan_thread.start()
                 self.logger.info(const.STR_SCAN_INPROG)
             else:
@@ -1059,7 +1073,8 @@ class DishMaster(SKAMaster):
             self._desired_pointing[2] = EL
             receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
             self._configured_band = int(receiverBand)
-            self.logger.info(const.STR_CONFIG_SUCCESS)
+            self.logger.debug(const.STR_CONFIG_SUCCESS)
+            self.logger.debug("Configure Json for DishMaster is" + str(argin))
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON + str(value_error)

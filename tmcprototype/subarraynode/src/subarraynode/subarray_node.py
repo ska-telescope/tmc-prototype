@@ -133,6 +133,7 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         try:
             device_name = event.device.dev_name()
+            self.logger.info('Event logs : ' + str(event))
             if not event.err:
                 event_health_state = event.attr_value.value
                 self.subarray_ln_health_state_map[device_name] = event_health_state
@@ -162,6 +163,7 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
+            self.logger.info('Callback Event is : ' + str(evt))
             if not evt.err:
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
@@ -174,7 +176,7 @@ class SubarrayNode(SKASubarray):
             else:
                 log_msg = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
                 self.logger.debug(log_msg)
-                self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE + str(evt)
+                self._read_activity_message = log_msg
                 self.logger.critical(const.ERR_SUBSR_CSPSDPSA_DEVICE_STATE)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
@@ -208,8 +210,8 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
+            self.logger.info('Callback Event is: ' + str(evt))
             if not evt.err:
-
                 self._observetion_state = evt.attr_value.value
 
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
@@ -228,7 +230,7 @@ class SubarrayNode(SKASubarray):
             else:
                 log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
                 self.logger.debug(log_msg)
-                self._read_activity_message = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
+                self._read_activity_message = log_msg
                 self.logger.critical(const.ERR_SUBSR_CSPSDPSA_OBS_STATE)
         except KeyError as key_error:
             log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
@@ -565,6 +567,7 @@ class SubarrayNode(SKASubarray):
         """
         try:
             self._csp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
+            self.logger.info(const.CMD_RELEASE_ALL_RESOURCES)
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
             self.logger.debug(df)
@@ -580,6 +583,7 @@ class SubarrayNode(SKASubarray):
         """
         try:
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
+            self.logger.info(const.CMD_RELEASE_ALL_RESOURCES)
 
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
@@ -928,6 +932,7 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
+            self.logger.info('Command Event is : ' + str(evt))
             if not evt.err:
                 self._dish_pointing_state = evt.attr_value.value
                 self.dishPointingStateMap[evt.device] = self._dish_pointing_state
@@ -1113,7 +1118,7 @@ class SubarrayNode(SKASubarray):
         except DevFailed as dev_failed:
             log_msg=const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
+            self._read_activity_message = log_msg
             self.set_state(DevState.FAULT)
             _state_fault_flag = True
             self.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
@@ -1134,7 +1139,7 @@ class SubarrayNode(SKASubarray):
         except DevFailed as dev_failed:
             log_msg=const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
+            self._read_activity_message = log_msg
             self.set_state(DevState.FAULT)
             _state_fault_flag = True
             self.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
@@ -1337,8 +1342,11 @@ class SubarrayNode(SKASubarray):
             self.logger.debug("EndSB invoked on SubarrayNode.")
             if self._obs_state == ObsState.READY:
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
+                self.logger.info(const.CMD_ENDSB)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
+                self.logger.info(const.CMD_GOTOIDLE)
                 self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                self.logger.info(const.CMD_STOP_TRACK)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
                 self.set_status(const.STR_ENDSB_SUCCESS)
