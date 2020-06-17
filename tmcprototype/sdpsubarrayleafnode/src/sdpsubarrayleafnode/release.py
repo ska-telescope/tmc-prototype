@@ -15,6 +15,6 @@ version_info = version.split(".")
 description = """"""
 author = "kalyanit.ska"
 author_email = "kalyanit.ska at gmail.com"
-license = """GPL"""
+license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
