@@ -57,7 +57,7 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -139,7 +139,7 @@
                                 "2"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -222,7 +222,7 @@
                                 "2"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -305,7 +305,7 @@
                                 "2"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -362,7 +362,7 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -409,7 +409,7 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -456,7 +456,7 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -503,7 +503,7 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -541,7 +541,7 @@
                                 "mid_csp/elt/master"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -592,7 +592,7 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -643,7 +643,7 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -694,7 +694,7 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -734,7 +734,7 @@
                                 "mid_sdp/elt/master"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -780,7 +780,7 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -826,7 +826,7 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -872,7 +872,7 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -1123,7 +1123,7 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -1210,7 +1210,7 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -1297,7 +1297,7 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
@@ -1384,7 +1384,7 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
                                 "4"
