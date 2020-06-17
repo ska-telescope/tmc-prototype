@@ -24,28 +24,28 @@ from ska.base.control_model import LoggingLevel
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
-with open(path, 'r') as file:
-    assign_input_str = file.read()
+with open(path, 'r') as f:
+    assign_input_str = f.read()
 
 relese_input_file='command_ReleaseResources.json'
 path= join(dirname(__file__), 'data' ,relese_input_file)
-with open(path, 'r') as file1:
-    relese_input_str=file1.read()
+with open(path, 'r') as f:
+    relese_input_str= f.read()
 
 invalid_json_file='invalid_json.json'
 path= join(dirname(__file__), 'data' ,invalid_json_file)
-with open(path, 'r') as file2:
-    inavlid_json_str=file2.read()
+with open(path, 'r') as f:
+    inavlid_json_str= f.read()
 
 assign_invalid_key_file='invalid_key_AssignResources.json'
 path= join(dirname(__file__), 'data' , assign_invalid_key_file)
-with open(path, 'r') as file3:
-    assign_inavlid_key=file3.read()
+with open(path, 'r') as f:
+    assign_inavlid_key=f.read()
 
 release_invalid_key_file='invalid_key_ReleaseResources.json'
 path= join(dirname(__file__), 'data' , release_invalid_key_file)
-with open(path, 'r') as file4:
-    release_inavlid_key=file4.read()
+with open(path, 'r') as f:
+    release_inavlid_key=f.read()
 
 
 @pytest.fixture( scope="function",

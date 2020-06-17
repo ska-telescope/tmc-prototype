@@ -24,56 +24,53 @@ from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, Te
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
-with open(path, 'r') as file:
-    assign_input_str = file.read()
+with open(path, 'r') as f:
+    assign_input_str = f.read()
 
 scan_input_file= 'command_Scan.json'
 path= join(dirname(__file__), 'data', scan_input_file)
-with open(path, 'r') as file1:
-    scan_input_str=file1.read()
+with open(path, 'r') as f:
+    scan_input_str=f.read()
 
 configure_input_file= 'command_Configure.json'
 path= join(dirname(__file__), 'data' , configure_input_file)
-with open(path, 'r') as file2:
-    sub_conf_str=file2.read()
+with open(path, 'r') as f:
+    sub_conf_str=f.read()
 
 configure_invalid_key_file='invalid_key_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_key_file)
-with open(path, 'r') as file3:
-    configure_inavlid_key=file3.read()
+with open(path, 'r') as f:
+    configure_inavlid_key=f.read()
 
 configure_invalid_input_file='invalid_input_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_input_file)
-with open(path, 'r') as file4:
-    invalid_ip_str=file4.read()
+with open(path, 'r') as f:
+    invalid_ip_str=f.read()
 
 assign_invalid_key_file='invalid_key_AssignResources.json'
 path= join(dirname(__file__), 'data' , assign_invalid_key_file)
-with open(path, 'r') as file5:
-    assign_inavlid_key=file5.read()
+with open(path, 'r') as f:
+    assign_inavlid_key=f.read()
 
 sdp_configure_input_file= 'command_sdp_Configure.json'
 path= join(dirname(__file__), 'data' , sdp_configure_input_file)
-with open(path, 'r') as file6:
-    sdp_conf_str=file6.read()
+with open(path, 'r') as f:
+    sdp_conf_str=f.read()
 
 csp_configure_input_file= 'command_csp_Configure.json'
 path= join(dirname(__file__), 'data' , csp_configure_input_file)
-with open(path, 'r') as file7:
-    csp_conf_str=file7.read()
+with open(path, 'r') as f:
+    csp_conf_str=f.read()
 
 scan_config_file= 'example_scan_config.json'
 path= join(dirname(__file__), 'data' , scan_config_file)
-with open(path, 'r') as file8:
-    scan_config_str=file8.read()
+with open(path, 'r') as f:
+    scan_config_str=f.read()
 
 invalid_scan_config_file= 'example_invalid_scan_config.json'
 path= join(dirname(__file__), 'data' , invalid_scan_config_file)
-with open(path, 'r') as file9:
-    invalid_scan_config_str=file9.read()
-
-
-
+with open(path, 'r') as f:
+    invalid_scan_config_str=f.read()
 
 @pytest.fixture(scope="function")
 def example_scan_configuration():

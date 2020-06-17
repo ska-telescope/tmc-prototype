@@ -24,25 +24,23 @@ from ska.base.control_model import ObsState, LoggingLevel
 
 config_input_file= 'command_Config.json'
 path= join(dirname(__file__), 'data', config_input_file)
-with open(path, 'r') as file:
-    config_input_str=file.read()
+with open(path, 'r') as f:
+    config_input_str=f.read()
 
 invalid_arg_file= 'invalid_json_argument_Configure.json'
 path= join(dirname(__file__), 'data', invalid_arg_file)
-with open(path, 'r') as file1:
-    configure_invalid_arg=file1.read()
+with open(path, 'r') as f:
+    configure_invalid_arg=f.read()
 
 invalid_arg_file2= 'invalid_json_argument_Track.json'
 path= join(dirname(__file__), 'data', invalid_arg_file2)
-with open(path, 'r') as file2:
-    track_invalid_arg=file2.read()
+with open(path, 'r') as f:
+    track_invalid_arg=f.read()
 
 invalid_key_file='invalid_key.json'
 path= join(dirname(__file__), 'data' , invalid_key_file)
-with open(path, 'r') as file3:
-    inavlid_key_str=file3.read()
-
-
+with open(path, 'r') as f:
+    inavlid_key_str=f.read()
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     # arrange:

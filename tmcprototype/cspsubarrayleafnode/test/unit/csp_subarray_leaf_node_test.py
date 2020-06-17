@@ -23,28 +23,28 @@ from ska.base.control_model import HealthState, ObsState, TestMode, SimulationMo
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
-with open(path, 'r') as file:
-    assign_input_str = file.read()
+with open(path, 'r') as f:
+    assign_input_str = f.read()
 
 scan_input_file='command_Scan.json'
 path= join(dirname(__file__), 'data' ,scan_input_file)
-with open(path, 'r') as file1:
-    scan_input_str=file1.read()
+with open(path, 'r') as f:
+    scan_input_str=f.read()
 
 configure_input_file= 'command_Configure.json'
 path= join(dirname(__file__), 'data' , configure_input_file)
-with open(path, 'r') as file2:
-    configure_str=file2.read()
+with open(path, 'r') as f:
+    configure_str=f.read()
 
 invalid_json_file='invalid_json.json'
 path= join(dirname(__file__), 'data' ,invalid_json_file)
-with open(path, 'r') as file3:
-    inavlid_json_str=file3.read()
+with open(path, 'r') as f:
+    inavlid_json_str=f.read()
 
 assign_invalid_key_file='invalid_key_AssignResources.json'
 path= join(dirname(__file__), 'data' , assign_invalid_key_file)
-with open(path, 'r') as file4:
-    assign_inavlid_key=file4.read()
+with open(path, 'r') as f:
+    assign_inavlid_key=f.read()
 
 
 def test_assign_command_with_callback_method():

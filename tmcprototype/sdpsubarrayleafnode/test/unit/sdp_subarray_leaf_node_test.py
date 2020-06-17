@@ -23,28 +23,28 @@ from ska.base.control_model import LoggingLevel
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
-with open(path, 'r') as file:
-    assign_input_str = file.read()
+with open(path, 'r') as f:
+    assign_input_str = f.read()
 
 scan_input_file= 'command_Scan.json'
 path= join(dirname(__file__), 'data', scan_input_file)
-with open(path, 'r') as file1:
-    scan_input_str=file1.read()
+with open(path, 'r') as f:
+    scan_input_str=f.read()
 
 configure_input_file= 'command_Configure.json'
 path= join(dirname(__file__), 'data' , configure_input_file)
-with open(path, 'r') as file2:
-    configure_str=file2.read()
+with open(path, 'r') as f:
+    configure_str=f.read()
 
 configure_invalid_key_file='invalid_key_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_key_file)
-with open(path, 'r') as file3:
-    configure_inavlid_key=file3.read()
+with open(path, 'r') as f:
+    configure_inavlid_key=f.read()
 
 configure_invalid_format_file='invalid_format_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_format_file)
-with open(path, 'r') as file4:
-    configure_invalid_format =file4.read()
+with open(path, 'r') as f:
+    configure_invalid_format =f.read()
 
 
 def test_end_sb_command_with_callback_method():
@@ -604,7 +604,3 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
-
-
-
-
