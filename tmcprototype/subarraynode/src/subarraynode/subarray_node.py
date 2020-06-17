@@ -133,7 +133,7 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         try:
             device_name = event.device.dev_name()
-            self.logger.info('Event logs : ' + str(event))
+            self.logger.info('Health State Attribute change event is : ' + str(event))
             if not event.err:
                 event_health_state = event.attr_value.value
                 self.subarray_ln_health_state_map[device_name] = event_health_state
@@ -163,7 +163,7 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Callback Event is : ' + str(evt))
+            self.logger.info('Device state attribute change event is : ' + str(evt))
             if not evt.err:
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
@@ -210,7 +210,7 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Callback Event is: ' + str(evt))
+            self.logger.info('Observation State Attribute change event is: ' + str(evt))
             if not evt.err:
                 self._observetion_state = evt.attr_value.value
 
@@ -404,7 +404,7 @@ class SubarrayNode(SKASubarray):
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
-        log_msg = "add_receptors_in_group::",allocation_success
+        log_msg = "List of Resources added to the Subarray::",allocation_success
         self.logger.debug(log_msg)
         return allocation_success
 
@@ -435,6 +435,7 @@ class SubarrayNode(SKASubarray):
             json_argument[const.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
             self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
+            self.logger.info(const.ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
@@ -467,6 +468,7 @@ class SubarrayNode(SKASubarray):
         try:
             str_json_arg = json.dumps(argin)
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
+            self.logger.info(const.ASSIGN_RESOURCES_INV_SDP_SALN)
             argout = argin
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
@@ -518,12 +520,11 @@ class SubarrayNode(SKASubarray):
             return
         
         try:
-            log_msg = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
-            self.logger.debug(log_msg)
             self._dish_leaf_node_group.remove_all()
             log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
             self.logger.debug(log_message)
             self._read_activity_message = log_message
+            self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
         except DevFailed as dev_failed:
             log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
             self.logger.error(log_message)
@@ -568,6 +569,7 @@ class SubarrayNode(SKASubarray):
         try:
             self._csp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
             self.logger.info(const.CMD_RELEASE_ALL_RESOURCES)
+            self.logger.info(const.RELEASE_ALL_RESOURCES_CSP_SALN)
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
             self.logger.debug(df)
@@ -584,6 +586,7 @@ class SubarrayNode(SKASubarray):
         try:
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
             self.logger.info(const.CMD_RELEASE_ALL_RESOURCES)
+            self.logger.info(const.RELEASE_ALL_RESOURCES_CSP_SALN)
 
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
@@ -787,10 +790,6 @@ class SubarrayNode(SKASubarray):
             self._sb_id = resource_json["sdp"]["id"]
             log_msg = "assign_resource_whole_json", resource_json
             self.logger.debug(log_msg)
-            log_msg = "assign_resource_receptor", receptor_list
-            self.logger.debug(log_msg)
-            log_msg = "assign_resource_SDP_resources", sdp_resources
-            self.logger.debug(log_msg)
 
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
@@ -932,7 +931,7 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Command Event is : ' + str(evt))
+            self.logger.info('Pointing state Attribute change event is : ' + str(evt))
             if not evt.err:
                 self._dish_pointing_state = evt.attr_value.value
                 self.dishPointingStateMap[evt.device] = self._dish_pointing_state

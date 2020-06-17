@@ -52,7 +52,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Callback event is : ' + str(evt))
+            self.logger.info('CspcbfHealth State attribute change event is : ' + str(evt))
             if not evt.err:
                 self._csp_cbf_health = evt.attr_value.value
                 if self._csp_cbf_health == HealthState.OK:
@@ -88,7 +88,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Callback event is : ' + str(evt))
+            self.logger.info('CsppssHealthState Attribute change event is : ' + str(evt))
             if not evt.err:
                 self._csp_pss_health = evt.attr_value.value
                 if self._csp_pss_health == HealthState.OK:
@@ -124,7 +124,7 @@ class CspMasterLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Callback event is : ' + str(evt))
+            self.logger.info('CsppstHealthState Attribute change event is : ' + str(evt))
             if not evt.err:
                 self._csp_pst_health = evt.attr_value.value
                 if self._csp_pst_health == HealthState.OK:

@@ -48,7 +48,8 @@ class CentralNode(SKABaseDevice):
         exception_count = 0
         exception_message = []
         try:
-            self.logger.info('Command event is :' + str(evt))
+            log_msg = 'Health state attribute change event is : ' + str(evt)
+            self.logger.info(log_msg )
             if not evt.err:
                 health_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
@@ -479,7 +480,8 @@ class CentralNode(SKABaseDevice):
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
-                self.logger.info(const.CMD_SET_OPERATE_MODE)
+                log_msg = const.CMD_SET_OPERATE_MODE + 'invoked on' + self._leaf_device_proxy[name]
+                self.logger.info(log_msg)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
@@ -671,7 +673,7 @@ class CentralNode(SKABaseDevice):
                 }
             else:
                 log_msg=const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
-                self._read_activity_message = const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
+                self._read_activity_message = log_msg
                 self.logger.info(log_msg)
                 argout = {
                     "dish": {
@@ -781,8 +783,7 @@ class CentralNode(SKABaseDevice):
                             self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                 else:
                     log_msg=const.STR_LIST_RES_NOT_REL + res_not_released
-                    self._read_activity_message = const.STR_LIST_RES_NOT_REL \
-                                                  + res_not_released
+                    self._read_activity_message = log_msg
                     self.logger.info(log_msg)
                     release_success = False
             else:

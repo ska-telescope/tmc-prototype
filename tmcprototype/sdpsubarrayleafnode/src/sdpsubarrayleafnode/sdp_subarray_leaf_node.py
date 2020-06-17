@@ -154,6 +154,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             self._active_processing_block = ""
             # Initialise Device status
             self.set_status(const.STR_SDPSALN_INIT_SUCCESS)
+            log_msg = const.STR_SDPSALN_INIT_SUCCESS
+            self.logger.info(log_msg)
+            self._read_activity_message = log_msg
+
             # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
             self._sdp_subarray_proxy = DeviceProxy(self.SdpSubarrayFQDN)
         except DevFailed as dev_failed:
@@ -332,13 +336,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         try:
             # Call SDP Subarray Command asynchronously
+            log_msg = "Input JSON for SDP Subarray Leaf Node AssignResource command is: " + argin
+            self.logger.debug(log_msg)
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
                                                                           argin, self.cmd_ended_cb)
             # Update the status of command execution status in activity message
             self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-            log_msg = "Input JSON for SDP Subarray Leaf Node AssignResource command is: " + argin
-            self.logger.debug(log_msg)
+
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON + str(value_error)
             self.logger.error(log_msg)
@@ -386,13 +391,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             jsonArgument = json.loads(argin)
             sdp_arg = jsonArgument["sdp"]
             sdpConfiguration = sdp_arg.copy()
+            log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
+            self.logger.debug(log_msg)
             self._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
                                                           self.cmd_ended_cb)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.debug(str(sdpConfiguration))
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
-            log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
-            self.logger.debug(log_msg)
+
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
@@ -442,11 +448,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             if sdp_subarray_obs_state == ObsState.READY:
                 # TODO : Pass id as a string argument to sdp Subarray Scan command
 
+                log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
+                self.logger.debug(log_msg)
                 self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, self.cmd_ended_cb)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
                 self.logger.info(const.STR_SCAN_SUCCESS)
-                log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
-                self.logger.debug(log_msg)
+
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
                 self.logger.error(const.ERR_DEVICE_NOT_READY)

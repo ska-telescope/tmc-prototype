@@ -394,6 +394,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR_CSPSALN, 0,
                                                                 const.STR_ERR_MSG)
             self.logger.debug(const.ERR_INIT_PROP_ATTR_CSPSALN)
+            self.logger.debug(const.STR_ERR_MSG,dev_failed)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
