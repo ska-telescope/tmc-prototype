@@ -61,9 +61,7 @@ class DishMaster(SKAMaster):
                 self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
                 self.change_azimuth_thread = threading.Thread(None, self.azimuth, 'DishMaster')
                 self.change_elevation_thread = threading.Thread(None, self.elevation, 'DishMaster')
-                self.logger.debug("Starting thread to change azimuth coordinates.")
                 self.change_azimuth_thread.start()
-                self.logger.debug("Starting thread to change elevation coordinates.")
                 self.change_elevation_thread.start()
                 self._pointing_state = PointingState.SLEW
                 self.logger.debug(const.STR_DISH_POINT_INPROG)
@@ -221,7 +219,7 @@ class DishMaster(SKAMaster):
             time.sleep(2)
         # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
         self._pointing_state = PointingState.TRACK
-        self.logger.debug("After Slew Dish pointing state is set to TRACK")
+        self.logger.debug("Dish pointing state is set to TRACK")
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -1066,6 +1064,7 @@ class DishMaster(SKAMaster):
         excpt_msg = []
         excpt_count = 0
         try:
+            self.logger.debug("Configure Json for DishMaster is" + str(argin))
             jsonArgument_DM_Config = json.loads(argin)
             AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
             EL = jsonArgument_DM_Config[const.STR_POINTING]["EL"]
@@ -1074,7 +1073,6 @@ class DishMaster(SKAMaster):
             receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
             self._configured_band = int(receiverBand)
             self.logger.debug(const.STR_CONFIG_SUCCESS)
-            self.logger.debug("Configure Json for DishMaster is" + str(argin))
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON + str(value_error)
