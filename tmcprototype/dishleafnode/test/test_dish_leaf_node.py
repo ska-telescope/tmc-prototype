@@ -338,7 +338,7 @@ class TestDishLeafNode(object):
         tango_context.device.SetOperateMode()
         eid = create_dish_proxy.subscribe_event(const.EVT_DISH_MODE,
                                                 EventType.CHANGE_EVENT,
-                                                DishLeafNode.dishModeCallback)
+                                                DishLeafNode.dish_mode_cb)
         time.sleep(2)
         assert tango_context.device.activityMessage == const.STR_DISH_OPERATE_MODE or \
                const.STR_SETOPERATE_SUCCESS
@@ -350,7 +350,7 @@ class TestDishLeafNode(object):
         tango_context.device.Scan("0")
         eid = create_dish_proxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
                                                 EventType.CHANGE_EVENT,
-                                                DishLeafNode.dishAchievedPointingCallback)
+                                                DishLeafNode.dish_achieved_pointing_cb)
         time.sleep(6)
         #assert tango_context.device.activityMessage == const.STR_DISH_POINT_STATE_SCAN
         assert create_dish_proxy.pointingState == "SCANNING" or 3
@@ -360,7 +360,7 @@ class TestDishLeafNode(object):
         """Test for capturing_change_event"""
         tango_context.device.StopCapture("0")
         eid = create_dish_proxy.subscribe_event(const.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT,
-                                                DishLeafNode.dishCapturingCallback)
+                                                DishLeafNode.dish_capturing_cb)
         time.sleep(6)
         assert tango_context.device.activityMessage == (const.STR_DISH_CAPTURING_FALSE) or \
                (const.STR_DISH_POINT_STATE_READY) or (const.STR_CAPTURE_EVENT)

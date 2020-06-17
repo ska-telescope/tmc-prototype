@@ -35,13 +35,27 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SdpSubarrayLeafNode.class_variable) ENABLED START #
 
-    def commandCallback(self, event):
-        """ Checks whether the command has been successfully invoked on SDP Subarray.
+    def cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully invoked on SDP Subarray.
 
-          :param argin:
-            event: response from SDP Subarray for the invoked command.
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
 
-          :return: None.
         """
         exception_count = 0
         exception_message = []
@@ -228,7 +242,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         try:
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                          self.commandCallback)
+                                                                          self.cmd_ended_cb)
 
             # Update the status of command execution status in activity message
             self._read_activity_message = const.STR_REL_RESOURCES
@@ -317,7 +331,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         try:
             # Call SDP Subarray Command asynchronously
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
-                                                                          argin, self.commandCallback)
+                                                                          argin, self.cmd_ended_cb)
             # Update the status of command execution status in activity message
             self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
         except ValueError as value_error:
@@ -368,7 +382,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             sdp_arg = jsonArgument["sdp"]
             sdpConfiguration = sdp_arg.copy()
             self._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
-                                                          self.commandCallback)
+                                                          self.cmd_ended_cb)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.debug(str(sdpConfiguration))
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
@@ -421,7 +435,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             if sdp_subarray_obs_state == ObsState.READY:
                 # TODO : Pass id as a string argument to sdp Subarray Scan command
 
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, self.commandCallback)
+                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, self.cmd_ended_cb)
                 self._read_activity_message = const.STR_SCAN_SUCCESS
                 self.logger.info(const.STR_SCAN_SUCCESS)
             else:
@@ -458,7 +472,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             if self._sdp_subarray_proxy.obsState == ObsState.SCANNING:
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.commandCallback)
+                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.cmd_ended_cb)
                 self._read_activity_message = const.STR_ENDSCAN_SUCCESS
                 self.logger.info(const.STR_ENDSCAN_SUCCESS)
             else:
@@ -491,7 +505,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         try:
             if self._sdp_subarray_proxy.obsState == ObsState.READY:
                 # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.commandCallback)
+                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.cmd_ended_cb)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
             else:

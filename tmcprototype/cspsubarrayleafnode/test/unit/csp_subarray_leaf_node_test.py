@@ -149,7 +149,7 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
 
         # assert:
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, '0',
-                                                             any_method(with_name='commandCallback'))
+                                                             any_method(with_name='cmd_ended_cb'))
 
 
 def test_start_scan_should_raise_devfailed_exception():
@@ -231,7 +231,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         for i in range(0, len(receptorIDList_str)):
             receptorIDList.append(int(receptorIDList_str[i]))
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
-                                                receptorIDList, any_method(with_name='commandCallback'))
+                                                receptorIDList, any_method(with_name='cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
 
@@ -290,7 +290,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources()
 
         # assert:
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_REMOVE_ALL_RECEPTORS,
-                                                               any_method(with_name='commandCallback'))
+                                                               any_method(with_name='cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
 
@@ -338,7 +338,7 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
         device_proxy = tango_context.device
         tango_context.device.EndScan()
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
-                                                        any_method(with_name='commandCallback'))
+                                                        any_method(with_name='cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
 
 
@@ -424,7 +424,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         if "pointing" in cspConfiguration:
             del cspConfiguration["pointing"]
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
-                                    json.dumps(cspConfiguration), any_method(with_name='commandCallback'))
+                                    json.dumps(cspConfiguration), any_method(with_name='cmd_ended_cb'))
 
 
 def test_configure_to_raise_devfailed_exception():
@@ -479,7 +479,7 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
         tango_context.device.GoToIdle()
 
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_GOTOIDLE,
-                                                            any_method(with_name='commandCallback'))
+                                                            any_method(with_name='cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
 
