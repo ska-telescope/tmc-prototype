@@ -6,7 +6,6 @@ image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
 default:
   tags:
     - auto-k8s
-    - docker-executor
 variables:
   DOCKER_DRIVER: overlay2
 
