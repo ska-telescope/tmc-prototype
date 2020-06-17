@@ -514,7 +514,7 @@ class DishLeafNode(SKABaseDevice):
             self.set_observer_lat_long_alt()
             log_msg = const.STR_DISHMASTER_FQDN + str(self.DishMasterFQDN)
             self.logger.debug(log_msg)
-            self._read_activity_message = const.STR_DISHMASTER_FQDN + str(self.DishMasterFQDN)
+            self._read_activity_message = log_msg
             self._dish_proxy = DeviceProxy(str(self.DishMasterFQDN))   #Creating proxy to the DishMaster
             self.event_track_time = threading.Event()
         except DevFailed as dev_failed:
@@ -995,6 +995,7 @@ class DishLeafNode(SKABaseDevice):
                                                                                     const.ERR_EXE_STOP_TRACK_CMD)
 
         except Exception as except_occurred:
+            log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(except_occurred)
             [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_EXE_STOP_TRACK_CMD)
 
