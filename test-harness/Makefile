@@ -39,21 +39,21 @@ test:
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2
 	retry --max=10 -- tango_admin --ping-device ska_mid/tm_central/central_node
 
-	cd /app/tmcprototype/dishmaster && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	cd /app/tmcprototype/dishmaster && python3 setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/dishmaster/dishmaster_coverage /build/dishmaster_coverage
-	cd /app/tmcprototype/dishleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	cd /app/tmcprototype/dishleafnode && python3 setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/dishleafnode/dishleafnode_coverage /build/dishleafnode_coverage
-	cd /app/tmcprototype/cspmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	cd /app/tmcprototype/cspmasterleafnode && python3 setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/cspmasterleafnode/cspmasterleafnode_coverage /build/cspmasterleafnode_coverage
-	cd /app/tmcprototype/cspsubarrayleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	cd /app/tmcprototype/cspsubarrayleafnode && python3 setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/cspsubarrayleafnode/cspsubarrayleafnode_coverage /build/cspsubarrayleafnode_coverage
-	cd /app/tmcprototype/sdpmasterleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	cd /app/tmcprototype/sdpmasterleafnode && python3 setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/sdpmasterleafnode/sdpmasterleafnode_coverage /build/sdpmasterleafnode_coverage
-	cd /app/tmcprototype/sdpsubarrayleafnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	cd /app/tmcprototype/sdpsubarrayleafnode && python3 setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/sdpsubarrayleafnode/sdpsubarrayleafnode_coverage /build/sdpsubarrayleafnode_coverage
-	cd /app/tmcprototype/subarraynode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	cd /app/tmcprototype/subarraynode && python3 setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/subarraynode/subarraynode_coverage /build/subarraynode_coverage
-	cd /app/tmcprototype/centralnode && python setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
+	cd /app/tmcprototype/centralnode && python3 setup.py test --addopts='-k-unit' | tee setup_py_test.stdout
 	mv /app/tmcprototype/centralnode/centralnode_coverage /build/centralnode_coverage
 	# Combine raw output from the coverage files of all the packages/devices and export to XML file
 	cd /build && coverage combine dishmaster_coverage dishleafnode_coverage cspmasterleafnode_coverage \
@@ -64,7 +64,7 @@ test:
 	cd /build && mv coverage.xml ./reports/runtest-code-coverage.xml
 
 	# Merge device-unit-tests.xml files of all the packages/devices into single unit-tests.xml file. Renamed unit-tests.xml to runtest-code-coverage as unit test cases combined coverage report is saved as runtest-unit-tests.xml in order to create badge with coverage report from mocking test case result.
-	pip3 install junitparser
+	python3 -m pip install junitparser
 	junitparser merge /build/reports/dish-leaf-node-unit-tests.xml \
                              /build/reports/dish-master-unit-tests.xml \
                              /build/reports/central-node-unit-tests.xml \
@@ -96,7 +96,7 @@ test:
 	mv /app/tmcprototype/centralnode/htmlcov /build/centralnode_htmlcov; \
 
 lint:
-	pip3 install pylint2junit junitparser; \
+	python3 -m pip install pylint2junit junitparser; \
 	mkdir -p /build/reports;
 # Code analysis of all the devices/packages using pylint
 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/dishmaster/src/dishmaster | tee /build/dish-master-code_analysis.stdout; \
