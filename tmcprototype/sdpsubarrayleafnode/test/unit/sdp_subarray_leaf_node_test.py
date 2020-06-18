@@ -544,7 +544,7 @@ def test_receive_addresses():
 def test_activity_message():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activityMessage == ""
+        assert tango_context.device.activityMessage == const.STR_SDPSALN_INIT_SUCCESS
 
 
 def test_write_receive_addresses():
