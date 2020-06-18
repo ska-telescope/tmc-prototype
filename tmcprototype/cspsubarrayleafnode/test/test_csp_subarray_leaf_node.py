@@ -154,11 +154,6 @@ class TestCspSubarrayLeafNode(object):
         time.sleep(4)
         tango_context.device.Configure(configure_input)
         time.sleep(10)
-        # Check
-        # create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":1,"totalChannels":0,'
-        #                                                                 '"receiveAddresses":'
-        #                                                                 '[{"fspId":1,"hosts":[]}]}')
-        # time.sleep(10)
         assert create_cspsubarray1_proxy.obsState == ObsState.READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Configure
 

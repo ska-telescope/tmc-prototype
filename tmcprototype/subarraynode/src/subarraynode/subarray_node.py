@@ -69,14 +69,6 @@ class SubarrayHealthState:
 
 
 class ElementDeviceData:
-    # def __init__(self):
-    #     subarray_node_obj = SubarrayNode(SKASubarray)
-    #     print("Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiii ::::::::::::::::::::::::::::::::::::::Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-        # self.digvi()
-    #
-    # def digvi(self):
-    #     a = self.subarray_node_obj.receive_addresses_map
-    #     print("a {} and its type {} ::::::::::::".format(a,type(a)))
     @staticmethod
     def build_up_sdp_cmd_data(scan_config):
         scan_config = scan_config.copy()
@@ -103,9 +95,6 @@ class ElementDeviceData:
         if csp_scan_config:
             scan_type = scan_config["sdp"]["scan_type"]
             # Invoke ska_telmodel library function to create csp configure schema
-            # subarray_node_obj = SubarrayNode(SKASubarray)
-            # receive_addresses_map = subarray_node_obj.receive_addresses_callback(event)
-            # global receive_addresses_map
             csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
                                 scan_type, json.dumps(csp_scan_config), receive_addresses_map)
             csp_config_schema = json.loads(csp_config_schema)
@@ -113,9 +102,6 @@ class ElementDeviceData:
                 for key, attribute_name in attr_name_map.items():
                     csp_config_schema[key] = attribute_name
                 csp_config_schema["pointing"] = scan_config["pointing"]
-                # ----------------------------------------------------------------
-                # This is temporary fix to pass hardcoded scan_id value to CSP.
-                # csp_scan_config["scanID"] = '1'
             else:
                 raise KeyError("CSP configuration schema must be given. Aborting CSP configuration.")
 
@@ -1122,8 +1108,6 @@ class SubarrayNode(SKASubarray):
         self.only_dishconfig_flag = False
         _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
         self.scan_thread = None
-        # self.receive_addresses_map = ''
-
         # Create proxy for CSP Subarray Leaf Node
         self._csp_subarray_ln_proxy = None
         self.create_csp_ln_proxy()
@@ -1171,7 +1155,6 @@ class SubarrayNode(SKASubarray):
             self._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
                                                self.device_state_callback, stateless=True)
             # Subscribe ReceiveAddresses of SdpSubarray
-            # attr_name = self.SdpSubarrayFQDN + "/receiveAddresses"
             self._sdp_sa_proxy.subscribe_event("receiveAddresses", EventType.CHANGE_EVENT,
                                                self.receive_addresses_callback, stateless=True)
             self.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
@@ -1265,9 +1248,7 @@ class SubarrayNode(SKASubarray):
             raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
-        self.logger.info("Inside _create_cmd_data")
         try:
-            self.logger.info("Inside _create_cmd_data try block ::::::::")
             method = getattr(ElementDeviceData, method_name)
             cmd_data = method(scan_config, *args)
         except KeyError as kerr:
@@ -1282,12 +1263,8 @@ class SubarrayNode(SKASubarray):
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
-        self.logger.info("inside _configure_csp")
-
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: self.CspSubarrayLNFQDN + "/delayModel",
-            #----------------------------------------------------
-            # const.STR_VIS_DESTIN_ADDR_SUB_POINT: self.SdpSubarrayFQDN + "/receiveAddresses"
         }
         cmd_data = self._create_cmd_data(
             "build_up_csp_cmd_data", scan_configuration, attr_name_map)
@@ -1303,7 +1280,6 @@ class SubarrayNode(SKASubarray):
 
         try:
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
-            self.logger.debug("------------------- TRACK DISH -------------------")
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
         except DevFailed as df:
             self._read_activity_message = df[0].desc
@@ -1333,9 +1309,7 @@ class SubarrayNode(SKASubarray):
         "fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,
         "channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":744,"outputLinkMap":[[0,4],[200,5]]}]},
         "sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0}}
-        ----------------------------------------------------------------------------------
-        CSP block in json string is as per earlier implementation and not aligned to SP-872
-        --------------------------------------------------------------------------------------
+
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
         :return: None
