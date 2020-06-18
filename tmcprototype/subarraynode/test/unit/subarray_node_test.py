@@ -124,11 +124,11 @@ class TestElementDeviceData:
         valid_scan_config = example_scan_configuration
         scan_id, attr_name_map = csp_func_args
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map)
-        expected_string_dict_file= 'expected_string_dict.json'
-        path = join(dirname(__file__), 'data', expected_string_dict_file)
+        expected_json_string_file= 'expected_json_string.json'
+        path = join(dirname(__file__), 'data', expected_json_string_file)
         with open(path, 'r') as f:
-            expected_dict=f.read()
-        expected_string=json.loads(expected_dict)
+            expected_json=f.read()
+        expected_string=json.loads(expected_json)
         expected_string_dict = json.dumps(expected_string)
         assert isinstance(csp_cmd_data, str)
         assert expected_string_dict == csp_cmd_data

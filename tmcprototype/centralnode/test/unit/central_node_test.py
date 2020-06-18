@@ -30,7 +30,7 @@ with open(path, 'r') as f:
 release_input_file='command_ReleaseResources.json'
 path= join(dirname(__file__), 'data' ,release_input_file)
 with open(path, 'r') as f:
-    relese_input_str= f.read()
+    release_input_str= f.read()
 
 invalid_json_Assign_Release_file='invalid_json_Assign_Release_Resources.json'
 path= join(dirname(__file__), 'data' ,invalid_json_Assign_Release_file)
@@ -340,10 +340,10 @@ def test_release_resources():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        tango_context.device.ReleaseResources(relese_input_str)
+        tango_context.device.ReleaseResources(release_input_str)
 
         # assert:
-        jsonArgument = json.loads(relese_input_str)
+        jsonArgument = json.loads(release_input_str)
         if jsonArgument['releaseALL'] == True:
             subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
@@ -369,7 +369,7 @@ def test_release_resources_should_raise_devfailed_exception():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(relese_input_str)
+            tango_context.device.ReleaseResources(release_input_str)
 
         # assert:
         assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
