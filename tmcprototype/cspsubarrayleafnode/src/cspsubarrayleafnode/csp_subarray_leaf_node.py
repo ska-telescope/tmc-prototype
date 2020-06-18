@@ -511,12 +511,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # Keep configuration specific to CSP and delete pointing configuration
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
+            log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
+            self.logger.debug(log_msg)
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
                                                        self.cmd_ended_cb)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
-            log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
-            self.logger.debug(log_msg)
+
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)

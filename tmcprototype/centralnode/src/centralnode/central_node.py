@@ -441,14 +441,14 @@ class CentralNode(SKABaseDevice):
 
         try:
             self._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
-            self.logger.info(const.CMD_STANDBY_CSP_DEV)
+            self.logger.info(const.STR_CMD_STANDBY_CSP_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
 
         try:
             self._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
-            self.logger.info(const.CMD_STANDBY_SDP_DEV)
+            self.logger.info(const.STR_CMD_STANDBY_SDP_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
@@ -456,7 +456,7 @@ class CentralNode(SKABaseDevice):
         try:
             for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
                 self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STANDBY)
-                self.logger.info(const.CMD_STANDBY_SA_DEV)
+                self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
@@ -488,13 +488,13 @@ class CentralNode(SKABaseDevice):
 
         try:
             self._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP,[])
-            self.logger.info(const.CMD_STARTUP_CSP_DEV)
+            self.logger.info(const.STR_CMD_STARTUP_CSP_DEV)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
         try:
             self._sdp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
-            self.logger.info(const.CMD_STARTUP_SDP_DEV)
+            self.logger.info(const.STR_CMD_STARTUP_SDP_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
@@ -502,7 +502,7 @@ class CentralNode(SKABaseDevice):
         try:
             for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
                 self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STARTUP)
-                self.logger.info(const.CMD_STARTUP_SA_DEV)
+                self.logger.info(const.STR_CMD_STARTUP_SA_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)

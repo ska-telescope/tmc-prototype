@@ -37,7 +37,6 @@ STR_POINTING = "pointing"
 STR_AZ_THREAD_START= "Starting thread to change azimuth coordinates."
 STR_EL_THREAD_START= "Starting thread to change elevation coordinates."
 
-
 #Error messages
 ERR_EXE_POINT_FN = "Error in executing POINT function on Dish"
 ERR_INIT_PROP_ATTR_DISH = "Error in initialising properties and attributes on Dish"

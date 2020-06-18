@@ -996,6 +996,7 @@ class DishLeafNode(SKABaseDevice):
 
         except Exception as except_occurred:
             log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(except_occurred.message)
+            self.logger.info(log_msg)
             [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_EXE_STOP_TRACK_CMD)
 

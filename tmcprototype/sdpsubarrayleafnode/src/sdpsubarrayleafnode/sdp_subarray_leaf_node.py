@@ -399,7 +399,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             self.logger.debug(str(sdpConfiguration))
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
-
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
             self.logger.info(log_msg)

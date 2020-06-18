@@ -528,17 +528,6 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = log_message
             return
 
-        log_msg = const.STR_DISH_PROXY_LIST + str(self._dish_leaf_node_proxy)
-        self.logger.debug(log_msg)
-        log_msg = const.STR_HEALTH_ID + str(self._health_event_id)
-        self.logger.debug(log_msg)
-        log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID)
-        self.logger.debug(log_msg)
-        log_msg = const.STR_POINTING_STATE_ID + str(self._pointing_state_event_id)
-        self.logger.debug(log_msg)
-        log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID +str(self._dishLnVsPointingStateEventID)
-        self.logger.debug(log_msg)
-
         self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
         self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
 
@@ -565,7 +554,6 @@ class SubarrayNode(SKASubarray):
         """
         try:
             self._csp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
-            self.logger.info(const.CMD_RELEASE_ALL_RESOURCES)
             self.logger.info(const.RELEASE_ALL_RESOURCES_CSP_SALN)
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
@@ -582,8 +570,7 @@ class SubarrayNode(SKASubarray):
         """
         try:
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
-            self.logger.info(const.CMD_RELEASE_ALL_RESOURCES)
-            self.logger.info(const.RELEASE_ALL_RESOURCES_CSP_SALN)
+            self.logger.info(const.RELEASE_ALL_RESOURCES_SDP_SALN)
 
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
@@ -929,7 +916,8 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Pointing state Attribute change event is : ' + str(evt))
+            log_msg= 'Pointing state Attribute change event is : ' + str(evt)
+            self.logger.info(log_msg)
             if not evt.err:
                 self._dish_pointing_state = evt.attr_value.value
                 self.dishPointingStateMap[evt.device] = self._dish_pointing_state
@@ -1255,9 +1243,9 @@ class SubarrayNode(SKASubarray):
 
         try:
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
-            self.logger.debug("---------Configure command is invoked on the Dish Leaf Nodes Group---------")
-            self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
+            self.logger.debug("Configure command is invoked on the Dish Leaf Nodes Group")
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
+            self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
         except DevFailed as df:
             self._read_activity_message = df[0].desc
             self.logger.error(df)
@@ -1338,11 +1326,11 @@ class SubarrayNode(SKASubarray):
             self.logger.debug("EndSB invoked on SubarrayNode.")
             if self._obs_state == ObsState.READY:
                 self._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
-                self.logger.info(const.CMD_ENDSB)
+                self.logger.info(const.STR_CMD_ENDSB_INV_SDP)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
-                self.logger.info(const.CMD_GOTOIDLE)
+                self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
                 self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-                self.logger.info(const.CMD_STOP_TRACK)
+                self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
                 self.set_status(const.STR_ENDSB_SUCCESS)
