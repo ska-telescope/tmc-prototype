@@ -24,9 +24,9 @@ from ska.base.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from . import const
-from .input_validator import AssignResourceValidator
-from centralnode.exceptions import InvalidJSONError, JsonKeyMissingError, JsonValueTypeMismatchError
-from centralnode.exceptions import InvalidParameterValue
+from centralnode.input_validator import AssignResourceValidator
+from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError,
+from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
@@ -640,11 +640,12 @@ class CentralNode(SKABaseDevice):
 
         ## Validate the input JSON string.
         try:
-            input_validator = AssignResourceValidator(self.logger)
+            self.logger.info("Validating input string.")
+            input_validator = AssignResourceValidator(self.TMMidSubarrayNodes, self._dish_leaf_node_devices, self.logger)
             input_validator.validate(argin)
-        except (InvalidJSONError, JsonKeyMissingError, JsonValueTypeMismatchError, InvalidParameterValue) as error:
-            self.logger.exception("Exception in validating input: %s", str(error))
-            self._read_activity_message = ERR_INVALID_JSON
+        except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
+            self.logger.exception("Exception in AssignResource(): %s", str(error))
+            self._read_activity_message = "Exception in validating input: " + str(error)
             argout = '{"dish": {"receptorIDList_success": []}}'
             return json.dumps(argout)
 
