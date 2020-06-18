@@ -260,7 +260,7 @@ unit tests:
     - make unit-test
   artifacts:
     paths:
-      - ./unit_test_report
+      - ./unit_test_reports
   retry: 2
 
 linting:
