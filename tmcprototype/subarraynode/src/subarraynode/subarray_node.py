@@ -153,7 +153,7 @@ class SubarrayNode(SKASubarray):
     other TM Components (such as OET, Central Node) for a Subarray.
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
-    def receive_addresses_callback(self, event):
+    def receive_addresses_cb(self, event):
         """
         Retrieves the receiveAddresses attribute of SDP Subarray.
 
@@ -161,7 +161,7 @@ class SubarrayNode(SKASubarray):
 
             :return: None
             """
-        if evt.err is false:
+        if not event.err:
             global receive_addresses_map
             receive_addresses_map = event.attr_value.value
         else:
@@ -1172,13 +1172,13 @@ class SubarrayNode(SKASubarray):
                                                         self.health_state_cb, stateless=True)
             # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
             self._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                        self.obsStateCallback, stateless=True)
+                                                        self.observation_state_cb, stateless=True)
             # Subscribe state of SdpSubarray
             self._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-                                               self.device_state_callback, stateless=True)
+                                               self.device_state_cb, stateless=True)
             # Subscribe ReceiveAddresses of SdpSubarray
             self._sdp_sa_proxy.subscribe_event("receiveAddresses", EventType.CHANGE_EVENT,
-                                               self.receive_addresses_callback, stateless=True)
+                                               self.receive_addresses_cb, stateless=True)
 
             self.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
