@@ -160,13 +160,13 @@ class TestCentralNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(CentralNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.4, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  CentralNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(CentralNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.5.1"
+        assert tango_context.device.versionId == "0.5.4"
         # PROTECTED REGION END #    //  CentralNode.test_versionId
 
     def test_loggingLevel(self, tango_context):
@@ -384,7 +384,7 @@ class TestCentralNode(object):
 
     def test_loggingTargets(self, tango_context):
         """Test for loggingTargets"""
-        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
-        # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+        # PROTECTED REGION ID(CentralNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  CentralNode.test_loggingTargets
