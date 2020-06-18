@@ -258,9 +258,6 @@ unit tests:
     - docker-executor
   script:
     - make unit-test
-  artifacts:
-    paths:
-      - ./unit_test_report
   retry: 2
 
 linting:
