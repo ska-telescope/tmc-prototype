@@ -1016,7 +1016,8 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act
-        tango_context.device.StopTrack()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StopTrack()
 
         # assert
         assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage

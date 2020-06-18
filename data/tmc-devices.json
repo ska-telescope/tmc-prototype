@@ -60,7 +60,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "subarray1healthstate",
@@ -142,7 +142,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -225,7 +225,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -308,7 +308,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -365,7 +365,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -412,7 +412,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -459,7 +459,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -506,7 +506,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -544,7 +544,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -595,7 +595,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -646,7 +646,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -697,7 +697,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -737,7 +737,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -783,7 +783,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -829,7 +829,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -875,7 +875,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -1126,7 +1126,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1213,7 +1213,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1300,7 +1300,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1387,7 +1387,7 @@
                                 "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
