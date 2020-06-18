@@ -109,6 +109,8 @@ class ElementDeviceData:
         csp_scan_config = scan_config.get("csp", {})
         if csp_scan_config:
             scan_type = scan_config["sdp"]["scan_type"]
+            if not scan_type:
+                raise KeyError("SDP Subarray scan_type is empty")
             # Invoke ska_telmodel library function to create csp configure schema
             if receive_addresses_map:
                 csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
@@ -157,8 +159,13 @@ class SubarrayNode(SKASubarray):
 
             :return: None
             """
-        global receive_addresses_map
-        receive_addresses_map = event.attr_value.value
+        if evt.err is false:
+            global receive_addresses_map
+            receive_addresses_map = event.attr_value.value
+        else:
+            log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(evt)
+            self.logger.debug(log_msg)
+            self._read_activity_message = log_msg
 
     def health_state_cb(self, event):
         """

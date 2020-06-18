@@ -171,6 +171,7 @@ ERR_SUBSR_CSPSDPSA_OBS_STATE = "Error in subscribing CSP/SDP Subarray obsState o
 ERR_SUBSR_CSPSDPSA_DEVICE_STATE = "Error in subscribing CSP/SDP Subarray Device state"
 ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarray attribute"
 ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
+ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA = "Error in subscribing receive addresses of SDP Subarray"
 
 # JSON keys
 STR_KEY_DISH = "dish"
