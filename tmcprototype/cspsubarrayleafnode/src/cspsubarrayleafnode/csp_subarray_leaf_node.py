@@ -8,7 +8,7 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 import datetime
 import threading
@@ -44,27 +44,39 @@ class CspSubarrayLeafNode(SKABaseDevice):
     _delay_in_advance = 60
     # _stop_delay_model_event = # type: Event
 
-    def commandCallback(self, event):
+    def cmd_ended_cb(self, event):
         """
-        Checks whether the command has been successfully invoked on CspSubarray.
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully invoked on CspSubarray.
 
-        :param event: response from CspSubarray for the invoked command
-
-        :return: None
-
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
         """
         exception_count = 0
         exception_message = []
+        # Update logs and activity message attribute with received event
         try:
             if event.err:
-                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
-                log = const.ERR_INVOKING_CMD + event.cmd_name
-                self.logger.error(log)
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
             else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self._read_activity_message = log
-                self.logger.info(log)
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                 exception_message, exception_count, const.ERR_EXCEPT_CMD_CB)
@@ -339,7 +351,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # create CspSubarray Proxy
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             except Exception:
-                self.logger.debug(const.ERR_IN_CREATE_PROXY_CSPSA)
+                log_msg = const.ERR_IN_CREATE_PROXY_CSPSA + str(Exception)
+                self.logger.debug(log_msg)
 
             # create CspSubarray Proxy
             # self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
@@ -375,7 +388,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR_CSPSALN, 0,
                                                                 const.STR_ERR_MSG)
             self.logger.debug(const.ERR_INIT_PROP_ATTR_CSPSALN)
-            self.logger.debug(const.STR_ERR_MSG, dev_failed)
+            self.logger.debug(const.STR_ERR_MSG,dev_failed)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -390,7 +403,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.logger.debug("Stopping delay model thread.")
         self._stop_delay_model_event.set()
         self.delay_model_calculator_thread.join()
-        self.logger.debug("Exiting.")
+        self.logger.debug("CSP Subarray Leaf Node is Exiting.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
 
     # ------------------
@@ -481,11 +494,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # Keep configuration specific to CSP and delete pointing configuration
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
+            log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
+            self.logger.debug(log_msg)
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
-                                                       self.commandCallback)
+                                                       self.cmd_ended_cb)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
-            self.logger.debug(argin)
+
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
@@ -529,12 +544,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
             #Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == ObsState.READY:
                 #Invoke StartScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", self.commandCallback)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", self.cmd_ended_cb)
                 self._read_activity_message = const.STR_STARTSCAN_SUCCESS
                 self.logger.info(const.STR_STARTSCAN_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
+                log_msg = const.STR_OBS_STATE + str(self.CspSubarrayProxy.obsState)
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
+                self.logger.error(log_msg)
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
@@ -567,12 +584,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
         try:
             if self.CspSubarrayProxy.obsState == ObsState.SCANNING:
                 # Invoke EndScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, self.commandCallback)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, self.cmd_ended_cb)
                 self._read_activity_message = const.STR_ENDSCAN_SUCCESS
                 self.logger.info(const.STR_ENDSCAN_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
+                log_msg = const.STR_OBS_STATE + str(self.CspSubarrayProxy.obsState)
                 self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
+                self.logger.error(log_msg)
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
@@ -606,7 +625,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.receptorIDList = []
             self.fsids_list = []
             self.update_config_params()
-            self.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
+            self.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, self.cmd_ended_cb)
             self._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
@@ -665,7 +684,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.update_config_params()
             # Invoke AddReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, self.receptorIDList,
-                                                           self.commandCallback)
+                                                           self.cmd_ended_cb)
             self._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
             self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
@@ -713,12 +732,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             if self.CspSubarrayProxy.obsState == ObsState.READY:
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, self.commandCallback)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, self.cmd_ended_cb)
                 self._read_activity_message = const.STR_GOTOIDLE_SUCCESS
                 self.logger.info(const.STR_GOTOIDLE_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
+                log_msg = const.STR_OBS_STATE + str(self.CspSubarrayProxy.obsState)
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
+                self.logger.error(log_msg)
         except DevFailed as dev_failed:
             [ exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
