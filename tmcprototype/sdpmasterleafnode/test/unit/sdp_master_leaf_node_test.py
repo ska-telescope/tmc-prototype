@@ -34,7 +34,7 @@ def test_on_should_command_sdp_master_leaf_node_to_start():
 
         # assert:
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
-                                                               any_method(with_name='commandCallback'))
+                                                               any_method(with_name='cmd_ended_cb'))
 
 
 def test_off_should_command_sdp_master_leaf_node_to_stop():
@@ -72,7 +72,7 @@ def test_standby_should_command_sdp_master_leaf_node_to_standby():
 
         # assert:
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY,
-                                                               any_method(with_name='commandCallback'))
+                                                               any_method(with_name='cmd_ended_cb'))
 
 
 def test_disable_should_command_sdp_master_leaf_node_to_disable():
