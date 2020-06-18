@@ -7,7 +7,8 @@ RUN ipython profile create
 #install lmc-base-classes
 USER root
 RUN python3 -m pip install ska-logging==0.3.0
-RUN python3 -m pip install lmcbaseclasses==0.5.4
+# install from state_machine branch, git hash 41626f0d03f3afa9c7112bbf5dfc960fa7e91a8a
+RUN python3 -m pip install pip install https://gitlab.com/ska-telescope/lmc-base-classes/-/archive/41626f0d03f3afa9c7112bbf5dfc960fa7e91a8a/lmc-base-classes-41626f0d03f3afa9c7112bbf5dfc960fa7e91a8a.zip
 
 # install all local TMC packages
 RUN python3 -m pip install \

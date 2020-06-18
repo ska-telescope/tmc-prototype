@@ -237,7 +237,7 @@ def test_build_state():
     """Test for buildState"""
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.buildState == (
-        "lmcbaseclasses, 0.5.4, A set of generic base devices for SKA Telescope.")
+        "lmcbaseclasses, 0.6.0, A set of generic base devices for SKA Telescope.")
 
 
 def test_configuration_delay_expected():
@@ -291,7 +291,7 @@ def test_test_mode():
 def test_version_id():
     """Test for versionId"""
     with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.versionId == "0.5.4"
+        assert tango_context.device.versionId == "0.6.0"
 
 
 def test_scan_id():
