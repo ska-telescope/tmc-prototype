@@ -136,6 +136,7 @@ unit-test: build
 	docker run -i --rm \
 	   -e TANGO_HOST=$(TANGO_HOST) \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
+	   -v unit_test_reports:/unit_test_reports \
 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	bash -c "cd /app/tmcprototype && \
 	sudo chown -R tango:tango /report && \
@@ -154,7 +155,6 @@ lint: build up ##lint the application (static code analysis)
 	cp ./unit_test_reports/report/code-coverage.xml ./build/reports	
 	cp ./unit_test_reports/report/unit-tests.xml ./build/reports
 	cp -r ./unit_test_reports/report/unit_test ./build
-	rm -r ./unit_test_reports	
 	exit $$status
 
 pull:  ## download the application image
