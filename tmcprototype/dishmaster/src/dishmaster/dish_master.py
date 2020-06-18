@@ -1061,7 +1061,8 @@ class DishMaster(SKAMaster):
         excpt_msg = []
         excpt_count = 0
         try:
-            self.logger.debug("Configure Json for DishMaster is" + str(argin))
+            log_msg = "Configure Json for DishMaster is" + str(argin)
+            self.logger.debug(log_msg)
             jsonArgument_DM_Config = json.loads(argin)
             AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
             EL = jsonArgument_DM_Config[const.STR_POINTING]["EL"]

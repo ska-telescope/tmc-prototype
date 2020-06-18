@@ -434,7 +434,8 @@ class CentralNode(SKABaseDevice):
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
-                self.logger.info(const.CMD_SET_STANDBY_MODE + "invoked on" + str(self._leaf_device_proxy[name]))
+                log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(self._leaf_device_proxy[name])
+                self.logger.info(log_msg)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)

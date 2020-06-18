@@ -133,7 +133,8 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         try:
             device_name = event.device.dev_name()
-            self.logger.info('Health State Attribute change event is : ' + str(event))
+            log_msg = 'Health State Attribute change event is : ' + str(event)
+            self.logger.info(log_msg)
             if not event.err:
                 event_health_state = event.attr_value.value
                 self.subarray_ln_health_state_map[device_name] = event_health_state
@@ -163,7 +164,8 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Device state attribute change event is : ' + str(evt))
+            log_msg = 'Device state attribute change event is : ' + str(evt)
+            self.logger.info(log_msg)
             if not evt.err:
                 if self.CspSubarrayFQDN in evt.attr_name:
                     self._csp_sa_device_state = evt.attr_value.value
@@ -209,7 +211,8 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            self.logger.info('Observation State Attribute change event is: ' + str(evt))
+            log_msg = 'Observation State Attribute change event is: ' + str(evt)
+            self.logger.info(log_msg)
             if not evt.err:
                 self._observetion_state = evt.attr_value.value
 
