@@ -206,13 +206,13 @@ class TestElementDeviceData:
 def test_status():
     """Test for Status"""
     with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.Status() == const.STR_SA_INIT_SUCCESS
+        assert tango_context.device.Status() == "The device is in OFF state."
 
 
 def test_state():
     """Test for State"""
     with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.State() == DevState.DISABLE
+        assert tango_context.device.State() == DevState.OFF
 
 
 def test_health_state():
@@ -230,7 +230,7 @@ def test_activation_time():
 def test_admin_mode():
     """Test for adminMode"""
     with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.OFFLINE
+        assert tango_context.device.adminMode == AdminMode.MAINTENANCE
 
 
 def test_build_state():
@@ -269,7 +269,7 @@ def test_obs_mode():
 def test_obs_state():
     """Test for obsState"""
     with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.obsState == ObsState.IDLE
+        assert tango_context.device.obsState == ObsState.EMPTY
 
 
 def test_simulation_mode():
@@ -332,20 +332,21 @@ def test_receptor_id_list():
 
 
 # Test cases for Commands
-def test_on_command_should_change_subarray_device_state_from_disable_to_off():
+def test_on_command_should_change_subarray_device_state_to_on():
     with fake_tango_system(SubarrayNode) as tango_context:
         # act:
         tango_context.device.On()
         # assert:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
+        assert tango_context.device.state() == DevState.ON
 
 
-def test_standby_command_should_change_subarray_device_state_to_disable():
+def test_off_command_should_change_subarray_device_state_to_off():
     with fake_tango_system(SubarrayNode) as tango_context:
         # act:
-        tango_context.device.Standby()
+        tango_context.device.On()
+        tango_context.device.Off()
         # assert:
-        assert tango_context.device.state() == DevState.DISABLE
+        assert tango_context.device.state() == DevState.OFF
 
 
 def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources():
@@ -418,9 +419,10 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
 
 
-def test_assign_resource_should_raise_exception_when_called_when_device_state_disable():
+def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
     # act
     with fake_tango_system(SubarrayNode) as tango_context:
+        print("***** tango_context.device.State() %s" % tango_context.device.State())
         assign_input = {"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"
                         ,"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",
                         "ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"
@@ -439,7 +441,7 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_di
             tango_context.device.AssignResources(json.dumps(assign_input))
 
         # assert:
-        assert tango_context.device.State() == DevState.DISABLE
+        assert tango_context.device.State() == DevState.OFF
 
 
 def test_assign_resource_should_raise_exception_when_called_with_invalid_input():
@@ -473,7 +475,7 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
 
         # assert:
         assert tango_context.device.State() == DevState.OFF
-        assert tango_context.device.obsState == ObsState.IDLE
+        assert tango_context.device.obsState == ObsState.EMPTY
 
 
 def test_assign_resource_should_raise_devfailed_exception():
@@ -717,6 +719,7 @@ def test_configure_command_subarray():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+        tango_context.device.On()
         attribute = "state"
         dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
         event_subscription_map[attribute](dummy_event)
