@@ -266,134 +266,7 @@ class TestElementDeviceData:
         valid_scan_config = example_scan_configuration
         attr_name_map = csp_func_args
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map)
-        expected_string_dict ={
-              "id": "sbi-mvp01-20200325-00001-science_A",
-              "frequencyBand": "1",
-              "fsp": [
-                {
-                  "fspID": 1,
-                  "functionMode": "CORR",
-                  "frequencySliceID": 1,
-                  "integrationTime": 1400,
-                  "corrBandwidth": 0,
-                  "channelAveragingMap": [
-                    [
-                      0,
-                      2
-                    ],
-                    [
-                      744,
-                      0
-                    ]
-                  ],
-                  "outputChannelOffset": 0,
-                  "outputLinkMap": [
-                    [
-                      0,
-                      0
-                    ],
-                    [
-                      200,
-                      1
-                    ]
-                  ],
-                  "outputHost": [
-                    [
-                      0,
-                      "192.168.0.1"
-                    ],
-                    [
-                      400,
-                      "192.168.0.2"
-                    ]
-                  ],
-                  "outputMac": [
-                    [
-                      0,
-                      "06-00-00-00-00-00"
-                    ]
-                  ],
-                  "outputPort": [
-                    [
-                      0,
-                      9000,
-                      1
-                    ],
-                    [
-                      400,
-                      9000,
-                      1
-                    ]
-                  ]
-                },
-                {
-                  "fspID": 2,
-                  "functionMode": "CORR",
-                  "frequencySliceID": 2,
-                  "integrationTime": 1400,
-                  "corrBandwidth": 0,
-                  "channelAveragingMap": [
-                    [
-                      0,
-                      2
-                    ],
-                    [
-                      744,
-                      0
-                    ]
-                  ],
-                  "outputChannelOffset": 744,
-                  "outputLinkMap": [
-                    [
-                      0,
-                      4
-                    ],
-                    [
-                      200,
-                      5
-                    ]
-                  ],
-                  "outputHost": [
-                    [
-                      0,
-                      "192.168.0.3"
-                    ],
-                    [
-                      400,
-                      "192.168.0.4"
-                    ]
-                  ],
-                  "outputMac": [
-                    [
-                      0,
-                      "06-00-00-00-00-01"
-                    ]
-                  ],
-                  "outputPort": [
-                    [
-                      0,
-                      9000,
-                      1
-                    ],
-                    [
-                      400,
-                      9000,
-                      1
-                    ]
-                  ]
-                }
-              ],
-              "string1": "attr1",
-              "string2": "attr2",
-              "pointing": {
-                "target": {
-                  "system": "ICRS",
-                  "name": "Polaris Australis",
-                  "RA": "21:08:47.92",
-                  "dec": "-88:57:22.9"
-                }
-              }
-            }
+        expected_string_dict ={"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost":[[0,"192.168.0.1"],[400,"192.168.0.2"]],"outputMac":[[0,"06-00-00-00-00-00"]],"outputPort":[[0,9000,1],[400,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":744,"outputLinkMap":[[0,4],[200,5]],"outputHost":[[0,"192.168.0.3"],[400,"192.168.0.4"]],"outputMac":[[0,"06-00-00-00-00-01"]],"outputPort":[[0,9000,1],[400,9000,1]]}],"string1":"attr1","string2":"attr2","pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
 
         expected_string_dict = json.dumps(expected_string_dict)
         assert isinstance(csp_cmd_data, str)
@@ -992,7 +865,7 @@ def test_configure_command_subarray():
         sdp_config = '{"sdp": {"scan_type": "science_A"}}'
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, sdp_config)
 
-        csp_config = '{"id": "sbi-mvp01-20200325-00001-science_A", "frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0, "channelAveragingMap": [[0, 2], [744, 0]], "outputChannelOffset": 0, "outputLinkMap": [[0, 0], [200, 1]], "outputHost": [[0, "192.168.0.1"], [400, "192.168.0.2"]], "outputMac": [[0, "06-00-00-00-00-00"]], "outputPort": [[0, 9000, 1], [400, 9000, 1]]}, {"fspID": 2, "functionMode": "CORR", "frequencySliceID": 2, "integrationTime": 1400, "corrBandwidth": 0, "channelAveragingMap": [[0, 2], [744, 0]], "outputChannelOffset": 744, "outputLinkMap": [[0, 4], [200, 5]], "outputHost": [[0, "192.168.0.3"], [400, "192.168.0.4"]], "outputMac": [[0, "06-00-00-00-00-01"]], "outputPort": [[0, 9000, 1], [400, 9000, 1]]}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92", "dec": "-88:57:22.9"}}}'
+        csp_config = '{"id": "sbi-mvp01-20200325-00001-science_A", "frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0, "channelAveragingMap": [[0, 2], [744, 0]], "outputChannelOffset": 0, "outputLinkMap": [[0, 0], [200, 1]], "fspChannelOffset": 0, "outputHost": [[0, "192.168.0.1"], [400, "192.168.0.2"], [744, "192.168.0.3"], [1144, "192.168.0.4"]], "outputMac": [[0, "06-00-00-00-00-00"], [744, "06-00-00-00-00-01"]], "outputPort": [[0, 9000, 1], [400, 9000, 1], [744, 9000, 1], [1144, 9000, 1]]}, {"fspID": 2, "functionMode": "CORR", "frequencySliceID": 2, "integrationTime": 1400, "corrBandwidth": 0, "channelAveragingMap": [[0, 2], [744, 0]], "outputChannelOffset": 744, "outputLinkMap": [[0, 4], [200, 5]], "fspChannelOffset": 14880, "outputHost": [[0, "192.168.0.4"]], "outputMac": [[0, "06-00-00-00-00-01"]], "outputPort": [[0, 22736, 1]]}], "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel", "pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92", "dec": "-88:57:22.9"}}}'
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_config)
 
 

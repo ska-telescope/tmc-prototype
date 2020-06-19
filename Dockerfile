@@ -10,7 +10,7 @@ RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/p
 RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.5.4+d12da018/lmcbaseclasses-0.5.4+d12da018.tar.gz
 
 #install ska-telescope-model
-RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-telescope-model/0.1.0/ska-telescope-model-0.1.0.tar.gz
+RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/ska-telescope-model/0.1.4/ska-telescope-model-0.1.4.tar.gz
 
 # install all local TMC packages
 RUN python3 -m pip install \

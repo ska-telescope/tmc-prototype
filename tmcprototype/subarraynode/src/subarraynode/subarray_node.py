@@ -113,7 +113,7 @@ class ElementDeviceData:
                 # Invoke ska_telmodel library function to create csp configure schema
                 if receive_addresses_map:
                     csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
-                                        scan_type, json.dumps(csp_scan_config), receive_addresses_map)
+                                        scan_type, csp_scan_config, receive_addresses_map)
                     csp_config_schema = json.loads(csp_config_schema)
                 else:
                     raise KeyError("Receive addresses must be given. Aborting CSP configuration.")
@@ -1353,8 +1353,6 @@ class SubarrayNode(SKASubarray):
         tmc_configure = scan_configuration["tmc"]
         self.scan_duration = int(tmc_configure["scanDuration"])
         self._configure_csp(scan_configuration)
-        # Reason for the sleep: https://gitlab.com/ska-telescope/tmc-prototype/-/merge_requests/29/diffs#note_284094726
-        time.sleep(2)
         self._configure_sdp(scan_configuration)
         self._configure_dsh(scan_configuration, argin)
         ## PROTECTED REGION END #    //  SubarrayNode.Configure
