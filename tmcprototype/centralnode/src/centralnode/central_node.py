@@ -13,6 +13,7 @@ of state and mode attributes defined by the SKA Control Model.
 """
 from __future__ import print_function
 from __future__ import absolute_import
+import json
 
 # Tango imports
 import tango
@@ -23,8 +24,10 @@ from ska.base.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from . import const
+from centralnode.input_validator import AssignResourceValidator
+from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError,
+from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 
-import json
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
@@ -633,6 +636,18 @@ class CentralNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         argout = []
+
+        ## Validate the input JSON string.
+        try:
+            self.logger.info("Validating input string.")
+            input_validator = AssignResourceValidator(self.TMMidSubarrayNodes, self._dish_leaf_node_devices, self.logger)
+            input_validator.validate(argin)
+        except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
+            self.logger.exception("Exception in AssignResource(): %s", str(error))
+            self._read_activity_message = "Exception in validating input: " + str(error)
+            argout = '{"dish": {"receptorIDList_success": []}}'
+            return json.dumps(argout)
+
         try:
             # serialize the json
             jsonArgument = json.loads(argin)
