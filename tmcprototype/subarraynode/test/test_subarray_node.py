@@ -105,7 +105,7 @@ def example_scan_configuration():
                     0
                   ]
                 ],
-                "outputChannelOffset": 0,
+                "fspChannelOffset": 0,
                 "outputLinkMap": [
                   [
                     0,
@@ -133,7 +133,7 @@ def example_scan_configuration():
                     0
                   ]
                 ],
-                "outputChannelOffset": 744,
+                "fspChannelOffset": 744,
                 "outputLinkMap": [
                   [
                     0,
@@ -213,7 +213,7 @@ class TestElementDeviceData:
                       0
                     ]
                   ],
-                  "outputChannelOffset": 0,
+                  "fspChannelOffset": 0,
                   "outputLinkMap": [
                     [
                       0,
@@ -241,7 +241,7 @@ class TestElementDeviceData:
                       0
                     ]
                   ],
-                  "outputChannelOffset": 744,
+                  "fspChannelOffset": 744,
                   "outputLinkMap": [
                     [
                       0,

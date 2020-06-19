@@ -404,10 +404,10 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         device_proxy = tango_context.device
         csp_config = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,' \
                      '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,' \
-                     '"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":0,"outputLinkMap":' \
+                     '"channelAveragingMap":[[0,2],[744,0]],"ChannelOffset":0,"outputLinkMap":' \
                      '[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":[[0,9000,1]]},' \
                      '{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,' \
-                     '"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":744,' \
+                     '"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,' \
                      '"outputLinkMap":[[0,4],[200,5]],"outputHost":[[0,"192.168.1.1"]],"outputPort":' \
                      '[[0,9744,1]]}],"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/' \
                      'delayModel","pointing":{"target":{"system":"ICRS","name":"Polaris Australis",' \
@@ -447,10 +447,10 @@ def test_configure_to_raise_devfailed_exception():
         device_proxy = tango_context.device
         csp_config = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,' \
                      '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,' \
-                     '"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":0,"outputLinkMap":' \
+                     '"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":0,"outputLinkMap":' \
                      '[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":[[0,9000,1]]},' \
                      '{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,' \
-                     '"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"outputChannelOffset":744,' \
+                     '"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,' \
                      '"outputLinkMap":[[0,4],[200,5]],"outputHost":[[0,"192.168.1.1"]],"outputPort":' \
                      '[[0,9744,1]]}],"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/' \
                      'delayModel","pointing":{"target":{"system":"ICRS","name":"Polaris Australis",' \
