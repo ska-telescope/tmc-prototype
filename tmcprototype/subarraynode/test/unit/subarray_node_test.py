@@ -623,12 +623,10 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
 
         assign_input = {"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001","max_length"
         :100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":
-            "-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map"
-        :[[1,0],[101,1]]}],"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
+            "-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
         :0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
         "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",
-        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,
-         "freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[{"count":744,"start":0,
+        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,
         "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
         {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
         [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime"
@@ -658,12 +656,10 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_di
     with fake_tango_system(SubarrayNode) as tango_context:
         assign_input = {"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001","max_length"
         :100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":
-            "-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map"
-        :[[1,0],[101,1]]}],"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
+            "-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
         :0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
         "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",
-        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,
-         "freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[{"count":744,"start":0,
+        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,
         "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
         {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
         [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime"
@@ -741,12 +737,10 @@ def test_assign_resource_should_raise_devfailed_exception():
 
         assign_input = {"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001","max_length"
         :100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":
-            "-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map"
-        :[[1,0],[101,1]]}],"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
+            "-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
         :0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
         "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",
-        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,
-         "freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[{"count":744,"start":0,
+        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,
         "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
         {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
         [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime"
@@ -805,12 +799,10 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
 
         assign_input = {"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001","max_length"
         :100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":
-            "-00:00:47.84","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map"
-        :[[1,0],[101,1]]}],"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
+            "-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
         :0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
         "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",
-        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[{"freq_min":0.35e9,
-         "freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[{"count":744,"start":0,
+        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,
         "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
         {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
         [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime"
@@ -869,14 +861,11 @@ def test_release_resource_command_subarray():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -975,14 +964,11 @@ def test_configure_command_subarray():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -1056,14 +1042,11 @@ def test_configure_command_subarray_with_invalid_key():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -1132,14 +1115,11 @@ def test_configure_command_subarray_with_invalid_configure_input():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -1228,14 +1208,11 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -1337,14 +1314,11 @@ def test_start_scan_should_should_raise_devfailed_exception():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -1513,14 +1487,11 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -1793,14 +1764,11 @@ def test_track_command_subarray():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -1881,14 +1849,11 @@ def test_obs_state_is_ready_when_other_leaf_node_is_ready_after_start():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -1981,14 +1946,11 @@ def test_obs_state_is_scanning_when_other_leaf_node_is_scanning_after_start():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -2221,14 +2183,11 @@ def test_pointing_state_is_slew():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -2301,14 +2260,11 @@ def test_pointing_state_is_scan():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -2381,14 +2337,11 @@ def test_pointing_state_is_ready():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
@@ -2459,14 +2412,11 @@ def test_pointing_state_with_error_event():
 
         assign_input = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"02:42:40.771","dec":"-00:00:47.84","subbands":[{"freq_min":0.35e9,' \
-                        '"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}],"channels":[' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
                         '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
                         ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
                         ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","subbands":[' \
-                        '{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]' \
-                        ',"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
                         '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
