@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 import pytz
 import katpoint
 import numpy as np
+import json
 
 # PyTango imports
 import tango
@@ -25,10 +26,8 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
-import json
-
-from tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.exceptions import InvalidObsStateError
 from . import const
+from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
 
