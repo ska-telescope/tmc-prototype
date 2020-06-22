@@ -204,6 +204,15 @@ def csp_func_args():
     return attr_name_map
 
 
+@pytest.fixture(scope="function")
+def receive_addresses():
+    receive_addresses_map = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],' \
+                            '[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]]' \
+                            ',"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{' \
+                            '"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
+    return receive_addresses_map
+
+
 class TestElementDeviceData:
 
     def test_build_up_sdp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
@@ -233,60 +242,40 @@ class TestElementDeviceData:
         expected_msg = "SDP configuration must be given. Aborting SDP configuration."
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, csp_func_args):
-        receiveAddresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
-        sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
-        sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-
-        dut_properties = {
-            'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
-            'SdpSubarrayFQDN': sdp_subarray1_fqdn,
-        }
-
-        sdp_subarray1_ln_proxy_mock = Mock()
-        sdp_subarray1_proxy_mock = Mock()
-
-        proxies_to_mock = {
-            sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
-            sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
-        }
-
-        event_subscription_map = {}
-
-        sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
-            lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-                update({attr_name: callback}))
-
-        with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
-                               proxies_to_mock=proxies_to_mock) as tango_context:
-            attribute = "receiveAddresses"
-            dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                                   receiveAddresses)
-            event_subscription_map[attribute](dummy_event)
+    def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, csp_func_args, receive_addresses):
         valid_scan_config = example_scan_configuration
         attr_name_map = csp_func_args
-        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map)
-
-        print("----------------- csp_cmd_data ", csp_cmd_data)
+        receive_addresses_map = receive_addresses
+        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map,receive_addresses_map)
         expected_string_dict ={"id": "sbi-mvp01-20200325-00001-science_A", "frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0, "channelAveragingMap": [[0, 2], [744, 0]], "fspChannelOffset": 0, "outputLinkMap": [[0, 0], [200, 1]], "outputHost": [[0, "192.168.0.1"], [400, "192.168.0.2"]], "outputMac": [[0, "06-00-00-00-00-00"]], "outputPort": [[0, 9000, 1], [400, 9000, 1]]}, {"fspID": 2, "functionMode": "CORR", "frequencySliceID": 2, "integrationTime": 1400, "corrBandwidth": 0, "channelAveragingMap": [[0, 2], [744, 0]], "fspChannelOffset": 744, "outputLinkMap": [[0, 4], [200, 5]], "outputHost": [[0, "192.168.0.3"], [400, "192.168.0.4"]], "outputMac": [[0, "06-00-00-00-00-01"]], "outputPort": [[0, 9000, 1], [400, 9000, 1]]}], "string1": "attr1", "string2": "attr2", "pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92", "dec": "-88:57:22.9"}}}
-
         expected_string_dict = json.dumps(expected_string_dict)
         assert isinstance(csp_cmd_data, str)
         assert expected_string_dict == csp_cmd_data
 
-    def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, csp_func_args):
+    def test_build_up_csp_cmd_data_with_empty_receive_addresses(self, example_scan_configuration, csp_func_args):
+        valid_scan_config = example_scan_configuration
+        attr_name_map = csp_func_args
+        receive_addresses_map = ''
+        with pytest.raises(KeyError) as exception:
+            ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map, receive_addresses_map)
+        expected_msg = "Receive addresses must be given. Aborting CSP configuration."
+        assert exception.value.args[0] == expected_msg
+
+    def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, csp_func_args, receive_addresses):
         empty_scan_config = {}
         attr_name_map = csp_func_args
+        receive_addresses_map = receive_addresses
         with pytest.raises(KeyError) as exception:
-            ElementDeviceData.build_up_csp_cmd_data(empty_scan_config, attr_name_map)
+            ElementDeviceData.build_up_csp_cmd_data(empty_scan_config, attr_name_map, receive_addresses_map)
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration, csp_func_args):
+    def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration, csp_func_args, receive_addresses):
         invalid_scan_config = example_scan_configuration.pop("csp")
         attr_name_map = csp_func_args
+        receive_addresses_map = receive_addresses
         with pytest.raises(KeyError) as exception:
-            ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, attr_name_map)
+            ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, attr_name_map, receive_addresses_map)
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
