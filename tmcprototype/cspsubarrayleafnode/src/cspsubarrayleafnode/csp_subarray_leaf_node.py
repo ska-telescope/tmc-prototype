@@ -107,11 +107,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
-    visDestinationAddress = attribute(
-        dtype='str',
-        access=AttrWriteType.READ_WRITE,
-    )
-
     versionInfo = attribute(
         dtype='str',
     )
@@ -363,7 +358,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             self._read_activity_message = " "
             self._delay_model = " "
-            self._visdestination_address = " "
             self._versioninfo = " "
             self.receptorIDList = []
             self.fsp_ids_object =[]
@@ -434,18 +428,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self._delay_model = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_write
 
-    def read_visDestinationAddress(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.visDestinationAddress_read) ENABLED START #
-        '''Internal construct of TANGO. Returns the destination address.'''
-        return self._visdestination_address
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.visDestinationAddress_read
-
-    def write_visDestinationAddress(self, value):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.visDestinationAddress_write) ENABLED START #
-        '''Internal construct of TANGO. Sets the destination address.'''
-        self._visdestination_address = value
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.visDestinationAddress_write
-
     def read_versionInfo(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.versionInfo_read) ENABLED START #
         '''Internal construct of TANGO. Returns the version information.'''
@@ -483,13 +465,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
         :param argin: The string in JSON format. The JSON contains following values:
 
         Example:
-
-        {"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,
-        "integrationTime":1400,"corrBandwidth":0}],"delayModelSubscriptionPoint":
-        "ska_mid/tm_leaf_node/csp_subarray01/delayModel","visDestinationAddressSubscriptionPoint":
-        "mid_sdp/elt/subarray_1/receiveAddresses","pointing":{"target":{"system":"ICRS","name":"Polaris Australis",
-        "RA":"21:08:47.92","dec":"-88:57:22.9"}},"scanID":"1"}
-
+        {"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",
+        "frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],
+        "fspChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":
+        [[0,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,
+        "channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,"outputLinkMap":[[0,4],[200,5]],"outputHost":
+        [[0,"192.168.1.1"]],"outputPort":[[0,9744,1]]}],"delayModelSubscriptionPoint":
+        "ska_mid/tm_leaf_node/csp_subarray01/delayModel","pointing":{"target":{"system":"ICRS",
+        "name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
 
         :return: None.
         """

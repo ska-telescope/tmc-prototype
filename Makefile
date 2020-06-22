@@ -151,10 +151,10 @@ lint: build up ##lint the application (static code analysis)
 	$(call make,lint); \
 	status=$$?; \
 	docker cp $(BUILD):/build .; \
-	$(MAKE) down; \
-	cp ./unit_test_reports/report/code-coverage.xml ./build/reports	
+	cp ./unit_test_reports/report/code-coverage.xml ./build/reports
 	cp ./unit_test_reports/report/unit-tests.xml ./build/reports
 	cp -r ./unit_test_reports/report/unit_test ./build
+	$(MAKE) down; \
 	exit $$status
 
 pull:  ## download the application image

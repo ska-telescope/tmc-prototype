@@ -402,15 +402,16 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
-        csp_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
-                              '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
-                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/' \
-                     'delayModel", ' \
-                              '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/' \
-                     'sdp_subarray01/receiveAddresses", ' \
-                              '"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", ' \
-                     '"RA": "21:08:47.92", ' \
-                              '"dec": "-88:57:22.9"}}, "scanID": "1"}'
+        csp_config = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,' \
+                     '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,' \
+                     '"channelAveragingMap":[[0,2],[744,0]],"ChannelOffset":0,"outputLinkMap":' \
+                     '[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":[[0,9000,1]]},' \
+                     '{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,' \
+                     '"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,' \
+                     '"outputLinkMap":[[0,4],[200,5]],"outputHost":[[0,"192.168.1.1"]],"outputPort":' \
+                     '[[0,9744,1]]}],"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/' \
+                     'delayModel","pointing":{"target":{"system":"ICRS","name":"Polaris Australis",' \
+                     '"RA":"21:08:47.92","dec":"-88:57:22.9"}}}'
         assign_input='{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_input)
@@ -444,15 +445,16 @@ def test_configure_to_raise_devfailed_exception():
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
-        csp_config = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", ' \
-                              '"frequencySliceID": 1, "integrationTime": 1400, "corrBandwidth": 0}], ' \
-                              '"delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/' \
-                     'delayModel", ' \
-                              '"visDestinationAddressSubscriptionPoint": "ska_mid/tm_leaf_node/' \
-                     'sdp_subarray01/receiveAddresses", ' \
-                              '"pointing": {"target": {"system": "ICRS", "name": "Polaris Australis", ' \
-                     '"RA": "21:08:47.92", ' \
-                              '"dec": "-88:57:22.9"}}, "scanID": "1"}'
+        csp_config = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,' \
+                     '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,' \
+                     '"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":0,"outputLinkMap":' \
+                     '[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":[[0,9000,1]]},' \
+                     '{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,' \
+                     '"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,' \
+                     '"outputLinkMap":[[0,4],[200,5]],"outputHost":[[0,"192.168.1.1"]],"outputPort":' \
+                     '[[0,9744,1]]}],"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/' \
+                     'delayModel","pointing":{"target":{"system":"ICRS","name":"Polaris Australis",' \
+                     '"RA":"21:08:47.92","dec":"-88:57:22.9"}}}'
         with pytest.raises(tango.DevFailed):
             device_proxy.Configure(csp_config)
         # Assert
@@ -628,13 +630,6 @@ def test_test_mode():
         test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
-
-
-def test_visdestination_address():
-    # act & assert:
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        tango_context.device.visDestinationAddress = "test"
-        assert tango_context.device.visDestinationAddress == "test"
 
 
 def test_read_activity_message():
