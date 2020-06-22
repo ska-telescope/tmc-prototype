@@ -798,7 +798,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(log)
 
         except tango.DevFailed as df:
-            tango.Except.re_throw_exception(df, "Add Receptors at CSP LMC_CommandFailed",
+            tango.Except.re_throw_exception(df, "CSP subarray gave an error response",
+                                            "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
                                             "AddReceptors", tango.ErrSeverity.ERR)
 
 
