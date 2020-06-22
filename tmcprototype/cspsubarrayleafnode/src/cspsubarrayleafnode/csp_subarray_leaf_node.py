@@ -27,6 +27,8 @@ from ska.base.control_model import HealthState, ObsState
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 import json
+
+from tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.exceptions import InvalidObsStateError
 from . import const
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
@@ -693,6 +695,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
+            self.validate_obs_state()
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+
+        try:
             # Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
             self.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
@@ -797,7 +804,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                             "AddReceptors", tango.ErrSeverity.ERR)
 
 
-# ApiUtil.instance().get_asynch_replies()
+    def validate_obs_state(self):
+        if self._obs_state == ObsState.IDLE:
+            self.logger.info("Subarray is in required obsState, resources will be assigned")
+        else:
+            self.logger.exception("Subarray is not in IDLE obsState")
+            self._read_activity_message = "Error in device obsState"
+            raise InvalidObsStateError
+
+
 
 # pylint: enable=protected-access,unused-argument,unused-variable
 
