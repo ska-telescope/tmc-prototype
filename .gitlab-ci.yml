@@ -312,14 +312,14 @@ pages:
     - master
   script:
     - mv build public
-    - mv public/dishmaster_htmlcov/* public
-    - mv public/cspmasterleafnode_htmlcov/* public
-    - mv public/cspsubarrayleafnode_htmlcov/* public
-    - mv public/sdpsubarrayleafnode_htmlcov/* public
-    - mv public/sdpmasterleafnode_htmlcov/* public
-    - mv public/dishleafnode_htmlcov/* public
-    - mv public/subarraynode_htmlcov/* public
-    - mv public/centralnode_htmlcov/* public
+    - mv public/unit_test/dishmaster_htmlcov/* public
+    - mv public/unit_test/cspmasterleafnode_htmlcov/* public
+    - mv public/unit_test/cspsubarrayleafnode_htmlcov/* public
+    - mv public/unit_test/sdpsubarrayleafnode_htmlcov/* public
+    - mv public/unit_test/sdpmasterleafnode_htmlcov/* public
+    - mv public/unit_test/dishleafnode_htmlcov/* public
+    - mv public/unit_test/subarraynode_htmlcov/* public
+    - mv public/unit_test/centralnode_htmlcov/* public
     - make push
   artifacts:
     paths:
