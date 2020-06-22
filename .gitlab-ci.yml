@@ -312,7 +312,6 @@ pages:
     - master
   script:
     - mv build public
-    - mv public/unit_test/dishmaster_htmlcov/* public
     - mv public/unit_test/cspmasterleafnode_htmlcov/* public
     - mv public/unit_test/cspsubarrayleafnode_htmlcov/* public
     - mv public/unit_test/sdpsubarrayleafnode_htmlcov/* public

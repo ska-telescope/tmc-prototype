@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.1.11"
+version = "0.2.0"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -10,9 +10,9 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.1.11
-tag=0.1.11
-tag_description=Updated SDP image to 0.8.0-hack-1, Updated Central Node to update the output argument for assignResource command, Removed bug of initilaizing heatlhState to UNKNOWN in Subarray Node
-release_notes=This release Contains: <br /><ul> <li>First point</li> <li>Second point</li><li>Third point</li></ul>
+release=0.2.0
+tag=0.2.0
+tag_description=Updated tmc-prototype to be aligned with SP-1039 (ADR-10 changes) and SP-985 (ADR-3 and ADR-4 changes).
+release_notes=This release Contains: <br /><ul> <li>Updated TMC devices to support JSON strings from ADR 3.</li> <li>Updated tmc-prototype (Configure functionality) according to ADR-10.</li><li>Updated tmc-prototype according to ADR-4.</li></ul>
 gitlab_username=JayantKumbhar
 private_token=LmMeweawasu3MB-igzbx
