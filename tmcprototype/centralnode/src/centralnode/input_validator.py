@@ -20,10 +20,20 @@ from centralnode.exceptions import InvalidParameterValue
 module_logger = logging.getLogger(__name__)
 
 class AssignResourceValidator():
+    
     """Class to validate the input string of AssignResources command of Central Node"""
 
-    def __init__(self, logger=module_logger):
+    def __init__(self, subarray_list, receptor_list, logger=module_logger):
         self.logger = logger
+        self.subarrays = []
+
+        # get the ids of the numerical ids of  available subarrays
+        for subarray in subarray_list:
+            tokens = subarray.split('/')
+            self.subarrays.append = int(tokens[2])
+        self.logger.debug("Available subarray ids: %s", str(self.subarrays))
+        self.receptors = receptor_list
+        self.logger.debug("Available subarray ids: %s", str(self.receptor_list))
 
     def _validate_subarray_id(self, subarray_id):
         """Applies validation on Subarray ID value
@@ -36,22 +46,23 @@ class AssignResourceValidator():
             JsonValueTypeMismatchError: When subarray ID is not integer.
 
             InvalidParameterValue: When a value of a JSON key is not valid. E.g. Subarray device 
-            for the specified id is not present.
+            for the speyes cified id is not present.
         """
-        try:
-            assert type(subarray_id) == int
-            self.logger.info("SubarrayID type correct.")
-        except AssertionError as ae:
-            self.logger.exception("Exception: %s", ae)
-            raise JsonValueTypeMismatchError("Subarray ID must be an integer value.")
+        # try:
+        #     assert type(subarray_id) == int
+        #     self.logger.info("SubarrayID type correct.")
+        # except AssertionError as ae:
+        #     self.logger.exception("Exception: %s", ae)
+        #     raise JsonValueTypeMismatchError("Subarray ID must be an integer value.")
 
-        if not 1<= subarray_id <= 3:
+        # if not 1<= subarray_id <= 3:
+        if not subarray_id in self.subarrays:
             self.logger.error("Invalid subarray ID. Subarray ID must be between 1 and 3.")
             raise InvalidParameterValue("Invalid subarray ID. Subarray ID must be between 1 and 3.")
 
     def _validate_receptor_id_list(self, receptor_id_list):
         """Applies validation on receptorIDList value
-        
+
         :param: receptor_id_list: List of strings 
 
         :return: None

@@ -39,7 +39,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
         # assert:
         if type(float(scan_input)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, scan_input,
-                                                                    any_method(with_name='commandCallback'))
+                                                                    any_method(with_name='cmd_ended_cb'))
 
 
 # TODO: actual AZ and EL values need to be generated.
@@ -80,7 +80,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
 
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
                                                                 str(dish_str_ip),
-                                                                any_method(with_name='commandCallback'))
+                                                                any_method(with_name='cmd_ended_cb'))
 
 
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
@@ -101,7 +101,7 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
         # assert:
         if type(float(scan_input)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, scan_input,
-                                                                    any_method(with_name='commandCallback'))
+                                                                    any_method(with_name='cmd_ended_cb'))
 
 
 def test_standby_lp_mode_should_command_dish_to_standby():
@@ -121,7 +121,7 @@ def test_standby_lp_mode_should_command_dish_to_standby():
 
         # assert:
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYLP_MODE,
-                                                                any_method(with_name='commandCallback'))
+                                                                any_method(with_name='cmd_ended_cb'))
 
 
 def test_set_operate_mode_should_command_dish_to_start():
@@ -140,7 +140,7 @@ def test_set_operate_mode_should_command_dish_to_start():
 
         # assert:
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE,
-                                                                any_method(with_name='commandCallback'))
+                                                                any_method(with_name='cmd_ended_cb'))
 
 
 @pytest.mark.xfail
@@ -167,7 +167,7 @@ def test_track_should_command_dish_to_start_tracking():
         dec_value = (jsonArgument["pointing"]["target"]["dec"])
         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0",
-                                                                any_method(with_name='commandCallback'))
+                                                                any_method(with_name='cmd_ended_cb'))
 
 
 def test_stop_track_should_command_dish_to_stop_tracking():
@@ -186,7 +186,7 @@ def test_stop_track_should_command_dish_to_stop_tracking():
 
         # assert:
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_TRACK,
-                                                                any_method(with_name='commandCallback'))
+                                                                any_method(with_name='cmd_ended_cb'))
 
 
 def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinates():
@@ -206,7 +206,7 @@ def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinat
         # assert:
         if type(float(slew_arg)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW, slew_arg,
-                                                                    any_method(with_name='commandCallback'))
+                                                                    any_method(with_name='cmd_ended_cb'))
 
 
 def test_start_capture_should_command_dish_to_start_capture_on_the_set_configured_band():
@@ -226,7 +226,7 @@ def test_start_capture_should_command_dish_to_start_capture_on_the_set_configure
         # assert:
         if type(float(capture_arg)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE, capture_arg,
-                                                                    any_method(with_name='commandCallback'))
+                                                                    any_method(with_name='cmd_ended_cb'))
 
 
 def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_band():
@@ -246,7 +246,7 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
         # assert:
         if type(float(capture_arg)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, capture_arg,
-                                                                    any_method(with_name='commandCallback'))
+                                                                    any_method(with_name='cmd_ended_cb'))
 
 
 def test_set_standby_fp_mode_should_command_dish_to_transition_to_standby_fp_mode():
@@ -264,7 +264,7 @@ def test_set_standby_fp_mode_should_command_dish_to_transition_to_standby_fp_mod
 
         # assert:
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYFP_MODE,
-                                                                 any_method(with_name='commandCallback'))
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 def test_set_stow_mode_should_command_dish_to_transit_to_stow_mode():
@@ -282,7 +282,7 @@ def test_set_stow_mode_should_command_dish_to_transit_to_stow_mode():
 
         # assert:
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STOW_MODE,
-                                                                 any_method(with_name='commandCallback'))
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 def create_dummy_event_for_dishmode(device_fqdn,dish_mode_value,attribute):
@@ -1016,7 +1016,8 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act
-        tango_context.device.StopTrack()
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.StopTrack()
 
         # assert
         assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
