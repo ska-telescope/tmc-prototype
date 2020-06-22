@@ -34,6 +34,7 @@ from . import const
 from .const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
 from ska.base import SKASubarray
+from subarraynode.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main"]
 
@@ -769,6 +770,14 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         exception_message = []
 
+        # Validate if Subarray is in IDLE obsState
+        try:
+            self.validate_obs_state()
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.re_throw_exception(error, "SubarrayNode raised exception in AssignResources command",
+                                            "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
+
         # 1. Argument validation
         try:
             # Allocation success and failure lists
@@ -979,6 +988,17 @@ class SubarrayNode(SKASubarray):
         for item in excpt_msg_list:
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+
+    def validate_obs_state(self):
+        if self._obs_state == ObsState.IDLE:
+            self.logger.info("Subarray is in required obsstate, hence resources will be assigned.")
+        else:
+            self.logger.exception("Subarray is not in IDLE obsState")
+            self._read_activity_message = "Error in device obsState."
+            raise InvalidObsStateError("Subarray is not in IDLE obsState, please check the subarray obsState")
+            # argout = '{"dish": {"receptorIDList_success": []}}'
+            # return json.dumps(argout)
+
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 
     # -----------------
