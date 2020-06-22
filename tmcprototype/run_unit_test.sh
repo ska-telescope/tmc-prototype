@@ -1,7 +1,6 @@
 #!/bin/bash
 #Entering into a bash shell script to run unit-test cases and generating reports
 cd /app/tmcprototype;
-
 #For each node sub-package inside tmc-prototype, coverage report for each device is generated using unit-test job.
 #Coverage report are generated in .coverage, .xml and .html format. Each device's .coverage report is moved in unit_test folder to generate the combine report further.
 for path in $(find ./*/test  -type d -name unit); do
@@ -28,7 +27,3 @@ junitparser merge /report/unit_test/dishleafnode-unit-tests.xml \
                 /report/unit_test/subarraynode-unit-tests.xml \
                 /report/unit_test/unit-tests.xml
 mv /report/unit_test/unit-tests.xml /report/unit-tests.xml
-
-
-
-

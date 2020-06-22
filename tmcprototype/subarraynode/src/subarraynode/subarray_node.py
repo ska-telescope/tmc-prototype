@@ -15,7 +15,6 @@ other TM Components (such as OET, Central Node) for a Subarray.
 from __future__ import print_function
 from __future__ import absolute_import
 
-import time
 import threading
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 
@@ -38,9 +37,6 @@ from ska_telmodel.csp import interface
 
 __all__ = ["SubarrayNode", "main"]
 
-# We are looking for a way to create SubarrayNode object in the test case (using the mocking framework).
-# In the interim, we have utilised the global variable approach. When this change will be reverted,
-# .pylintrc needs to be updated.
 csp_interface_version = 0
 sdp_interface_version = 0
 
