@@ -18,7 +18,7 @@
           0
         ]
       ],
-      "outputChannelOffset": 0,
+      "ChannelOffset": 0,
       "outputLinkMap": [
         [
           0,
@@ -59,7 +59,7 @@
           0
         ]
       ],
-      "outputChannelOffset": 744,
+      "fspChannelOffset": 744,
       "outputLinkMap": [
         [
           0,
@@ -85,7 +85,7 @@
       ]
     }
   ],
-  "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel",
+  "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/                      delayModel",
   "pointing": {
     "target": {
       "system": "ICRS",

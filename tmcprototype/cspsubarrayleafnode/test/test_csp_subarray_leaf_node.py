@@ -5,7 +5,7 @@
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 """Contain the tests for the ."""
 
@@ -141,18 +141,18 @@ class TestCspSubarrayLeafNode(object):
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_Configure) ENABLED START #
         create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses','Null')
         time.sleep(2)
-        configure_input = '{"frequencyBand": "1", "fsp": [{"fspID": 1, "functionMode": "CORR", "frequencySliceID": 1, ' \
-                          '"integrationTime": 1400, "corrBandwidth": 0}], "delayModelSubscriptionPoint": ' \
-                          '"ska_mid/tm_leaf_node/csp_subarray01/delayModel", "visDestinationAddressSubscriptionPoint":' \
-                          '"ska_mid/tm_leaf_node/sdp_subarray01/receiveAddresses", "pointing": {"target": {"system": ' \
-                          '"ICRS", "name": "Polaris Australis", "RA": "21:08:47.92", "dec": "-88:57:22.9"}}, ' \
-                          '"scanID": "1"}'
+        configure_input = '{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,' \
+                     '"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,' \
+                     '"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":0,"outputLinkMap":' \
+                     '[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":[[0,9000,1]]},' \
+                     '{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,' \
+                     '"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,' \
+                     '"outputLinkMap":[[0,4],[200,5]],"outputHost":[[0,"192.168.1.1"]],"outputPort":' \
+                     '[[0,9744,1]]}],"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/' \
+                     'delayModel","pointing":{"target":{"system":"ICRS","name":"Polaris Australis",' \
+                     '"RA":"21:08:47.92","dec":"-88:57:22.9"}}}'
         time.sleep(4)
         tango_context.device.Configure(configure_input)
-        time.sleep(10)
-        create_sdpsubarrayln1_proxy.write_attribute('receiveAddresses', '{"scanId":1,"totalChannels":0,'
-                                                                        '"receiveAddresses":'
-                                                                        '[{"fspId":1,"hosts":[]}]}')
         time.sleep(10)
         assert create_cspsubarray1_proxy.obsState == ObsState.READY
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_Configure
@@ -267,13 +267,13 @@ class TestCspSubarrayLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.4, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.5.1"
+        assert tango_context.device.versionId == "0.5.4"
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_versionId
 
     def test_healthState(self, tango_context):
@@ -312,13 +312,6 @@ class TestCspSubarrayLeafNode(object):
         assert tango_context.device.testMode == test_mode
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_testMode
 
-    def test_visDestinationAddress(self, tango_context):
-        """Test for visDestinationAddress"""
-        # PROTECTED REGION ID(CspSubarrayLeafNode.test_visDestinationAddress) ENABLED START #
-        tango_context.device.visDestinationAddress = "test"
-        assert tango_context.device.visDestinationAddress == "test"
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_visDestinationAddress
-
     def test_activityMessage(self, tango_context):
         """Test for activityMessage"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_activityMessage) ENABLED START #
@@ -336,6 +329,6 @@ class TestCspSubarrayLeafNode(object):
     def test_loggingTargets(self, tango_context):
         """Test for loggingTargets"""
         # PROTECTED REGION ID(CspSubarrayLeafNode.test_loggingTargets) ENABLED START #
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.test_loggingTargets

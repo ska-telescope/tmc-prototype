@@ -57,10 +57,10 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "subarray1healthstate",
@@ -139,10 +139,10 @@
                                 "2"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -222,10 +222,10 @@
                                 "2"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -305,10 +305,10 @@
                                 "2"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -362,10 +362,10 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -409,10 +409,10 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -456,10 +456,10 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -503,10 +503,10 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -541,10 +541,10 @@
                                 "mid_csp/elt/master"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -592,10 +592,10 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -643,10 +643,10 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -694,10 +694,10 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "adminmode",
@@ -734,10 +734,10 @@
                                 "mid_sdp/elt/master"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -780,10 +780,10 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -826,10 +826,10 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -872,10 +872,10 @@
                                 "3"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "activitymessage",
@@ -1123,10 +1123,10 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1210,10 +1210,10 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1297,10 +1297,10 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "achievedpointing",
@@ -1384,10 +1384,10 @@
                                 "1"
                             ],
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ],
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ],
                             "polled_attr": [
                                 "achievedpointing",

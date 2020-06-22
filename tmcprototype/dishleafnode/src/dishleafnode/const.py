@@ -49,7 +49,7 @@ STR_DESIRED_POINTING = "Desired Pointing :-> "
 
 STR_INIT_LEAF_NODE = "Initializing Leaf Node..."
 
-STR_DISHMASTER_FQN = "DishMasterFQDN :-> "
+STR_DISHMASTER_FQDN = "DishMasterFQDN :-> "
 STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
 
 STR_DISH_INIT_SUCCESS = "Dish Leaf Node initialized successfully."

@@ -14,23 +14,6 @@
         "coordinate_system": "ICRS",
         "ra": "02:42:40.771",
         "dec": "-00:00:47.84",
-        "subbands": [
-          {
-            "freq_min": 0.35e9,
-            "freq_max": 1.05e9,
-            "nchan": 372,
-            "input_link_map": [
-              [
-                1,
-                0
-              ],
-              [
-                101,
-                1
-              ]
-            ]
-          }
-        ],
         "channels": [
           {
             "count": 744,
@@ -81,23 +64,6 @@
         "coordinate_system": "ICRS",
         "ra": "12:29:06.699",
         "dec": "02:03:08.598",
-        "subbands": [
-          {
-            "freq_min": 0.35e9,
-            "freq_max": 1.05e9,
-            "nchan": 372,
-            "input_link_map": [
-              [
-                1,
-                0
-              ],
-              [
-                101,
-                1
-              ]
-            ]
-          }
-        ],
         "channels": [
           {
             "count": 744,

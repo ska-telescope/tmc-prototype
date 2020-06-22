@@ -39,7 +39,7 @@ with open(path, 'r') as f:
 configure_invalid_key_file='invalid_key_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_key_file)
 with open(path, 'r') as f:
-    configure_inavlid_key=f.read()
+    configure_invalid_key=f.read()
 
 configure_invalid_format_file='invalid_format_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_format_file)
@@ -102,6 +102,7 @@ def test_assign_command_with_callback_method_with_command_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+
         # act:
         with pytest.raises(Exception):
             tango_context.device.AssignResources(assign_input_str)
@@ -157,7 +158,7 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
 
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, scan_input_str,
-                                                                 any_method(with_name='commandCallback'))
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 def test_start_scan_should_raise_devfailed_exception():
@@ -209,7 +210,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,
                                                                         assign_input_str,
-                                                                  any_method(with_name='commandCallback'))
+                                                                  any_method(with_name='cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
@@ -259,7 +260,7 @@ def test_release_resources_when_sdp_subarray_is_idle():
 
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RELEASE_RESOURCES,
-                                                                 any_method(with_name='commandCallback'))
+                                                                 any_method(with_name='cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_REL_RESOURCES)
 
 
@@ -312,7 +313,7 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
         sdp_configuration = sdp_arg.copy()
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
                                                                         json.dumps(sdp_configuration),
-                                                                     any_method(with_name='commandCallback'))
+                                                                     any_method(with_name='cmd_ended_cb'))
 
 
 def test_configure_should_raise_devfailed_exception():
@@ -360,7 +361,7 @@ def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
 
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
-                                                                     any_method(with_name='commandCallback'))
+                                                                     any_method(with_name='cmd_ended_cb'))
 
 
 def test_end_scan_should_raise_devfailed_exception():
@@ -408,7 +409,7 @@ def test_end_sb_should_command_sdp_subarray_to_reset_when_it_is_ready():
 
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESET,
-                                                                     any_method(with_name='commandCallback'))
+                                                                     any_method(with_name='cmd_ended_cb'))
 
 
 def test_end_sb_should_raise_devfailed_exception():
@@ -513,7 +514,7 @@ def test_receive_addresses():
 def test_activity_message():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activityMessage == ""
+        assert tango_context.device.activityMessage == const.STR_SDPSALN_INIT_SUCCESS
 
 
 def test_write_receive_addresses():
@@ -547,7 +548,7 @@ def test_configure_invalid_key():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(configure_inavlid_key)
+            tango_context.device.Configure(configure_invalid_key)
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 

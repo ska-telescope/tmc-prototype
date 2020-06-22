@@ -258,6 +258,7 @@ def test_assign_resources():
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+
         device_proxy=tango_context.device
         device_proxy.AssignResources(assign_input_str)
         # assert:

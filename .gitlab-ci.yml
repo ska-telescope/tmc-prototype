@@ -237,6 +237,7 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
+# CSP, SDP images are not available as per new implementation(SP-985 and SP-1039). Because of that Test cases are failing
 #run tests:
 #  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
 #  stage: test
@@ -260,7 +261,7 @@ unit tests:
     - make unit-test
   artifacts:
     paths:
-      - ./unit_test_report
+      - ./unit_test_reports
   retry: 2
 
 linting:

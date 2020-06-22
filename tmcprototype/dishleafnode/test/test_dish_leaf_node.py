@@ -281,13 +281,13 @@ class TestDishLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(DishLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.4, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  DishLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(DishLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.5.1"
+        assert tango_context.device.versionId == "0.5.4"
         # PROTECTED REGION END #    //  DishLeafNode.test_versionId
 
     def test_healthState(self, tango_context):
@@ -338,7 +338,7 @@ class TestDishLeafNode(object):
         tango_context.device.SetOperateMode()
         eid = create_dish_proxy.subscribe_event(const.EVT_DISH_MODE,
                                                 EventType.CHANGE_EVENT,
-                                                DishLeafNode.dishModeCallback)
+                                                DishLeafNode.dish_mode_cb)
         time.sleep(2)
         assert tango_context.device.activityMessage == const.STR_DISH_OPERATE_MODE or \
                const.STR_SETOPERATE_SUCCESS
@@ -350,7 +350,7 @@ class TestDishLeafNode(object):
         tango_context.device.Scan("0")
         eid = create_dish_proxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
                                                 EventType.CHANGE_EVENT,
-                                                DishLeafNode.dishAchievedPointingCallback)
+                                                DishLeafNode.dish_achieved_pointing_cb)
         time.sleep(6)
         #assert tango_context.device.activityMessage == const.STR_DISH_POINT_STATE_SCAN
         assert create_dish_proxy.pointingState == "SCANNING" or 3
@@ -360,7 +360,7 @@ class TestDishLeafNode(object):
         """Test for capturing_change_event"""
         tango_context.device.StopCapture("0")
         eid = create_dish_proxy.subscribe_event(const.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT,
-                                                DishLeafNode.dishCapturingCallback)
+                                                DishLeafNode.dish_capturing_cb)
         time.sleep(6)
         assert tango_context.device.activityMessage == (const.STR_DISH_CAPTURING_FALSE) or \
                (const.STR_DISH_POINT_STATE_READY) or (const.STR_CAPTURE_EVENT)
@@ -377,7 +377,7 @@ class TestDishLeafNode(object):
 
     def test_loggingTargets(self, tango_context):
         """Test for loggingTargets"""
-        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
-        # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+        # PROTECTED REGION ID(DishLeafNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  DishLeafNode.test_loggingTargets
