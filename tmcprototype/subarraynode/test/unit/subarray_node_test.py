@@ -39,7 +39,7 @@ with open(path, 'r') as f:
 configure_invalid_key_file='invalid_key_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_key_file)
 with open(path, 'r') as f:
-    configure_inavlid_key=f.read()
+    configure_invalid_key=f.read()
 
 configure_invalid_input_file='invalid_input_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_input_file)
@@ -49,7 +49,7 @@ with open(path, 'r') as f:
 assign_invalid_key_file='invalid_key_AssignResources.json'
 path= join(dirname(__file__), 'data' , assign_invalid_key_file)
 with open(path, 'r') as f:
-    assign_inavlid_key=f.read()
+    assign_invalid_key=f.read()
 
 sdp_configure_input_file= 'command_sdp_Configure.json'
 path= join(dirname(__file__), 'data' , sdp_configure_input_file)
@@ -388,7 +388,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
         event_subscription_map[attribute](dummy_event)
 
-        assign_input_dict=json.loads((assign_input_str))
+        assign_input_dict=json.loads(assign_input_str)
         tango_context.device.AssignResources(assign_input_str)
 
         str_json_arg = json.dumps(assign_input_dict.get("sdp"))
@@ -441,7 +441,7 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
         event_subscription_map[attribute](dummy_event)
 
         with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(assign_inavlid_key)
+            tango_context.device.AssignResources(assign_invalid_key)
 
         # assert:
         assert tango_context.device.State() == DevState.OFF
@@ -710,7 +710,7 @@ def test_configure_command_subarray_with_invalid_key():
 
         tango_context.device.AssignResources(assign_input_str)
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(configure_inavlid_key)
+            tango_context.device.Configure(configure_invalid_key)
         # assert:
         assert tango_context.device.obsState == ObsState.IDLE
 

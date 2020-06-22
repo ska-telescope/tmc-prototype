@@ -45,7 +45,7 @@ with open(path, 'r') as f:
 release_invalid_key_file='invalid_key_ReleaseResources.json'
 path= join(dirname(__file__), 'data' , release_invalid_key_file)
 with open(path, 'r') as f:
-    release_inavlid_key=f.read()
+    release_invalid_key=f.read()
 
 
 @pytest.fixture( scope="function",
@@ -392,7 +392,7 @@ def test_release_resources_invalid_key():
     with fake_tango_system(CentralNode) \
             as tango_context:
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(release_inavlid_key)
+            tango_context.device.ReleaseResources(release_invalid_key)
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
