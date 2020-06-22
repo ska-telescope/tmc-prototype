@@ -11,6 +11,7 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
 import datetime
+import time
 import threading
 from datetime import datetime, timedelta
 import pytz
@@ -19,17 +20,19 @@ import numpy as np
 
 # PyTango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
-from tango.server import run,attribute, command, device_property
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed, ApiUtil
+from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 import json
 from . import const
+
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]
+
 
 # pylint: disable=protected-access,unused-argument,unused-variable
 class CspSubarrayLeafNode(SKABaseDevice):
@@ -42,6 +45,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # _delay_in_advance variable (in seconds) is added to current timestamp and is used to calculate advance
     # delay coefficients.
     _delay_in_advance = 60
+
     # _stop_delay_model_event = # type: Event
 
     def commandCallback(self, event):
@@ -67,7 +71,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(log)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, const.ERR_EXCEPT_CMD_CB)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
         if exception_count > 0:
@@ -111,7 +117,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     cspsubarrayHealthState = attribute(name="cspsubarrayHealthState", label="cspsubarrayHealthState",
                                        forwarded=True
-                                      )
+                                       )
 
     cspSubarrayObsState = attribute(name="cspSubarrayObsState", label="cspSubarrayObsState", forwarded=True)
 
@@ -221,7 +227,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         """
         assigned_receptors_dict = {}
-        assigned_receptors =[]
+        assigned_receptors = []
 
         # Load a set of antenna descriptions and construct Antenna objects from them
         with open("/venv/lib/python3.7/site-packages/cspsubarrayleafnode/ska_antennas.txt") as f:
@@ -262,7 +268,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         delay_update_interval = argin
 
         while not self._stop_delay_model_event.isSet():
-            if(self.CspSubarrayProxy.obsState == ObsState.CONFIGURING
+            if (self.CspSubarrayProxy.obsState == ObsState.CONFIGURING
                     or self.CspSubarrayProxy.obsState == ObsState.READY
                     or self.CspSubarrayProxy.obsState == ObsState.SCANNING):
                 self.logger.info("Calculating delays.")
@@ -283,7 +289,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                         fsid_delay_object["fsid"] = fsid
                         delay_coeff_array = []
                         receptor_delay_coeffs = delay_corrections_h_array_dict[receptor]
-                        for i in range (0,len(receptor_delay_coeffs)):
+                        for i in range(0, len(receptor_delay_coeffs)):
                             delay_coeff_array.append(receptor_delay_coeffs[i])
                         fsid_delay_object["delayCoeff"] = delay_coeff_array
                         receptor_specific_delay_details.append(fsid_delay_object)
@@ -317,7 +323,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return [except_msg_list, exception_count]
 
     # Function for handling all generic exception
-    def _handle_generic_exception(self, exception, except_msg_list, exception_count,read_actvity_msg ):
+    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(exception)
         self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(exception)
@@ -353,7 +359,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self._visdestination_address = " "
             self._versioninfo = " "
             self.receptorIDList = []
-            self.fsp_ids_object =[]
+            self.fsp_ids_object = []
             self.fsids_list = []
             self.target_Ra = ""
             self.target_Dec = ""
@@ -379,7 +385,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR_CSPSALN, 0,
-                                                                const.STR_ERR_MSG)
+                                             const.STR_ERR_MSG)
             self.logger.debug(const.ERR_INIT_PROP_ATTR_CSPSALN)
             self.logger.debug(const.STR_ERR_MSG, dev_failed)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
@@ -451,7 +457,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_write
 
-
     # --------
     # Commands
     # --------
@@ -513,11 +518,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_CONFIGURE_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception( except_occurred,
-                                    exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_CONFIGURE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
@@ -543,9 +552,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            #Check if CspSubarray is in READY state
+            # Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == ObsState.READY:
-                #Invoke StartScan command on CspSubarray
+                # Invoke StartScan command on CspSubarray
                 self.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", self.commandCallback)
                 self._read_activity_message = const.STR_STARTSCAN_SUCCESS
                 self.logger.info(const.STR_STARTSCAN_SUCCESS)
@@ -555,18 +564,21 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_STARTSCAN_RESOURCES)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_STARTSCAN_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_START_SCAN_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
-
 
     @command(
     )
@@ -593,11 +605,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_ENDSCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_ENDSCAN_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
@@ -619,7 +635,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            #Invoke RemoveAllReceptors command on CspSubarray
+            # Invoke RemoveAllReceptors command on CspSubarray
             self.receptorIDList = []
             self.fsids_list = []
             self.update_config_params()
@@ -629,10 +645,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_RELEASE_ALL_RESOURCES)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_RELEASE_ALL_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
@@ -673,16 +693,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            #Parse receptorIDList from JSON string.
+            # Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
             self.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
-            #convert receptorIDList from list of string to list of int
+            # convert receptorIDList from list of string to list of int
             for i in range(0, len(self.receptorIDList_str)):
                 self.receptorIDList.append(int(self.receptorIDList_str[i]))
             self.update_config_params()
             # Invoke AddReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, self.receptorIDList,
-                                                           self.commandCallback)
+                                                       self.AddReceptors_ended)
             self._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
             self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
@@ -701,16 +721,20 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                         exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_ASSGN_RESOURCES)
 
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                         exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_ASSGN_RESOURCES)
 
         # throw exception:
         if exception_count:
-            print ("Exception in AssignResource:", exception_message)
+            print("Exception in AssignResource:", exception_message)
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
@@ -737,18 +761,43 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
-            [ exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_GOTOIDLE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_GOTOIDLE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_GOTOIDLE_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
+
+    @DebugIt()
+    def AddReceptors_ended(self, event):
+        try:
+            if event.err:
+                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                    event.errors)
+                log = const.ERR_INVOKING_CMD + event.cmd_name
+                self.logger.error(log)
+                raise tango.DevFailed
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+
+        except tango.DevFailed as df:
+            tango.Except.re_throw_exception(df, "Add Receptors at CSP LMC_CommandFailed",
+                                            "AddReceptors", tango.ErrSeverity.ERR)
+
+
+# ApiUtil.instance().get_asynch_replies()
 
 # pylint: enable=protected-access,unused-argument,unused-variable
 
@@ -767,6 +816,7 @@ def main(args=None, **kwargs):
     """
     return run((CspSubarrayLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.main
+
 
 if __name__ == '__main__':
     main()
