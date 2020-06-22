@@ -15,7 +15,6 @@ other TM Components (such as OET, Central Node) for a Subarray.
 from __future__ import print_function
 from __future__ import absolute_import
 
-import time
 import threading
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 
