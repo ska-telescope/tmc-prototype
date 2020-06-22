@@ -96,11 +96,8 @@ def csp_func_args():
 
 
 @pytest.fixture(scope="function")
-def receive_addresses():
-    receive_addresses_map = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],' \
-                            '[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]]' \
-                            ',"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{' \
-                            '"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
+def sdp_func_receive_addresses():
+    receive_addresses_map = receive_addresses
     return receive_addresses_map
 
 
@@ -133,19 +130,17 @@ class TestElementDeviceData:
         expected_msg = "SDP configuration must be given. Aborting SDP configuration."
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, csp_func_args, receive_addresses):
+    def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, csp_func_args,
+                                                                 sdp_func_receive_addresses):
         valid_scan_config = example_scan_configuration
         attr_name_map = csp_func_args
-        receive_addresses_map = receive_addresses
+        receive_addresses_map = sdp_func_receive_addresses
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map,receive_addresses_map)
         expected_json_string_file= 'expected_json_string.json'
         path = join(dirname(__file__), 'data', expected_json_string_file)
         with open(path, 'r') as f:
             expected_json=f.read()
-        # expected_string=json.loads(expected_json)
-        # expected_string_dict = json.dumps(expected_string)
         assert isinstance(csp_cmd_data, str)
-        # assert expected_string_dict == csp_cmd_data
         assert expected_json == csp_cmd_data
 
     def test_build_up_csp_cmd_data_with_empty_receive_addresses(self, example_scan_configuration, csp_func_args):
@@ -157,19 +152,21 @@ class TestElementDeviceData:
         expected_msg = "Receive addresses must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, csp_func_args, receive_addresses):
+    def test_build_up_csp_cmd_data_with_empty_scan_configuration(self, csp_func_args,
+                                                                 sdp_func_receive_addresses):
         empty_scan_config = {}
         attr_name_map = csp_func_args
-        receive_addresses_map = receive_addresses
+        receive_addresses_map = sdp_func_receive_addresses
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_csp_cmd_data(empty_scan_config, attr_name_map, receive_addresses_map)
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration, csp_func_args, receive_addresses):
+    def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration, csp_func_args,
+                                                                   sdp_func_receive_addresses):
         invalid_scan_config = example_scan_configuration.pop("csp")
         attr_name_map = csp_func_args
-        receive_addresses_map = receive_addresses
+        receive_addresses_map = sdp_func_receive_addresses
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_csp_cmd_data(invalid_scan_config, attr_name_map, receive_addresses_map)
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
