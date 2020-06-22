@@ -74,7 +74,7 @@ with open(path, 'r') as f:
 receive_addresses_file= 'receive_addresses.json'
 path= join(dirname(__file__), 'data' , receive_addresses_file)
 with open(path, 'r') as f:
-    receive_addresses=f.read()
+    receive_addresses_map=f.read()
 
 @pytest.fixture(scope="function")
 def example_scan_configuration():
@@ -97,7 +97,6 @@ def csp_func_args():
 
 @pytest.fixture(scope="function")
 def sdp_func_receive_addresses():
-    receive_addresses_map = receive_addresses
     return receive_addresses_map
 
 
