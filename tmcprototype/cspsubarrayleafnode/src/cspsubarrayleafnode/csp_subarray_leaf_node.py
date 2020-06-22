@@ -791,17 +791,17 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     event.errors)
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
-                raise tango.DevFailed
+                # raise tango.DevFailed
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
                 self.logger.info(log)
 
         except tango.DevFailed as df:
+            self.logger.exception(df)
             tango.Except.re_throw_exception(df, "CSP subarray gave an error response",
                                             "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
                                             "AddReceptors", tango.ErrSeverity.ERR)
-
 
     def validate_obs_state(self):
         if self.CspSubarrayProxy.obsState == ObsState.IDLE:

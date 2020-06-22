@@ -71,12 +71,12 @@ def test_assign_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_ADD_RECEPTORS)
         event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
         # assert:
-        #assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
-        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.ERR_INVOKING_CMD,
-                                                                         '0',
-                                                                         any_method(with_name=
-                                                                                    'AddReceptors_end'))
+        #csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.ERR_INVOKING_CMD,
+         #                                                                '0',
+         #                                                                any_method(with_name=
+         #                                                                           'AddReceptors_end'))
 
 def test_assign_command_with_callback_method_with_command_error():
     # arrange:
