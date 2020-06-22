@@ -8,7 +8,7 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 #
 #
 #
-# Distributed under the terms of the BSD-3-Clause license.
+# Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
 import datetime
 import threading
@@ -16,20 +16,23 @@ from datetime import datetime, timedelta
 import pytz
 import katpoint
 import numpy as np
+import json
 
 # PyTango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
-from tango.server import run,attribute, command, device_property
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed, ApiUtil
+from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 # Additional import
 # PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
-import json
 from . import const
+from .exceptions import InvalidObsStateError
+
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]
+
 
 # pylint: disable=protected-access,unused-argument,unused-variable
 class CspSubarrayLeafNode(SKABaseDevice):
@@ -42,44 +45,35 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # _delay_in_advance variable (in seconds) is added to current timestamp and is used to calculate advance
     # delay coefficients.
     _delay_in_advance = 60
+
     # _stop_delay_model_event = # type: Event
 
-    def cmd_ended_cb(self, event):
+    def commandCallback(self, event):
         """
-        Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the command has been successfully invoked on CspSubarray.
+        Checks whether the command has been successfully invoked on CspSubarray.
 
-        :param event: a CmdDoneEvent object. This class is used to pass data
-            to the callback method in asynchronous callback model for command
-            execution.
-        :type: CmdDoneEvent object
-            It has the following members:
-                - device     : (DeviceProxy) The DeviceProxy object on which the
-                               call was executed.
-                - cmd_name   : (str) The command name
-                - argout_raw : (DeviceData) The command argout
-                - argout     : The command argout
-                - err        : (bool) A boolean flag set to true if the command
-                               failed. False otherwise
-                - errors     : (sequence<DevError>) The error stack
-                - ext
-        :return: none
+        :param event: response from CspSubarray for the invoked command
+
+        :return: None
+
         """
         exception_count = 0
         exception_message = []
-        # Update logs and activity message attribute with received event
         try:
             if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                self._read_activity_message = log_msg
+                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                    event.errors)
+                log = const.ERR_INVOKING_CMD + event.cmd_name
+                self.logger.error(log)
             else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                self._read_activity_message = log_msg
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, const.ERR_EXCEPT_CMD_CB)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
         if exception_count > 0:
@@ -123,7 +117,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     cspsubarrayHealthState = attribute(name="cspsubarrayHealthState", label="cspsubarrayHealthState",
                                        forwarded=True
-                                      )
+                                       )
 
     cspSubarrayObsState = attribute(name="cspSubarrayObsState", label="cspSubarrayObsState", forwarded=True)
 
@@ -233,7 +227,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         """
         assigned_receptors_dict = {}
-        assigned_receptors =[]
+        assigned_receptors = []
 
         # Load a set of antenna descriptions and construct Antenna objects from them
         with open("/venv/lib/python3.7/site-packages/cspsubarrayleafnode/ska_antennas.txt") as f:
@@ -274,7 +268,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         delay_update_interval = argin
 
         while not self._stop_delay_model_event.isSet():
-            if(self.CspSubarrayProxy.obsState == ObsState.CONFIGURING
+            if (self.CspSubarrayProxy.obsState == ObsState.CONFIGURING
                     or self.CspSubarrayProxy.obsState == ObsState.READY
                     or self.CspSubarrayProxy.obsState == ObsState.SCANNING):
                 self.logger.info("Calculating delays.")
@@ -295,7 +289,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                         fsid_delay_object["fsid"] = fsid
                         delay_coeff_array = []
                         receptor_delay_coeffs = delay_corrections_h_array_dict[receptor]
-                        for i in range (0,len(receptor_delay_coeffs)):
+                        for i in range(0, len(receptor_delay_coeffs)):
                             delay_coeff_array.append(receptor_delay_coeffs[i])
                         fsid_delay_object["delayCoeff"] = delay_coeff_array
                         receptor_specific_delay_details.append(fsid_delay_object)
@@ -329,7 +323,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return [except_msg_list, exception_count]
 
     # Function for handling all generic exception
-    def _handle_generic_exception(self, exception, except_msg_list, exception_count,read_actvity_msg ):
+    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(exception)
         self.logger.error(log_msg)
         self._read_activity_message = read_actvity_msg + str(exception)
@@ -365,7 +359,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self._visdestination_address = " "
             self._versioninfo = " "
             self.receptorIDList = []
-            self.fsp_ids_object =[]
+            self.fsp_ids_object = []
             self.fsids_list = []
             self.target_Ra = ""
             self.target_Dec = ""
@@ -391,7 +385,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR_CSPSALN, 0,
-                                                                const.STR_ERR_MSG)
+                                             const.STR_ERR_MSG)
             self.logger.debug(const.ERR_INIT_PROP_ATTR_CSPSALN)
             self.logger.debug(const.STR_ERR_MSG, dev_failed)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
@@ -463,7 +457,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_write
 
-
     # --------
     # Commands
     # --------
@@ -511,7 +504,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
-                                                       self.cmd_ended_cb)
+                                                       self.commandCallback)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
             self.logger.debug(argin)
@@ -525,11 +518,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_CONFIGURE_INVOKING_CMD)
 
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception( except_occurred,
-                                    exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_CONFIGURE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
@@ -555,10 +552,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            #Check if CspSubarray is in READY state
+            # Check if CspSubarray is in READY state
             if self.CspSubarrayProxy.obsState == ObsState.READY:
-                #Invoke StartScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", self.cmd_ended_cb)
+                # Invoke StartScan command on CspSubarray
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", self.commandCallback)
                 self._read_activity_message = const.STR_STARTSCAN_SUCCESS
                 self.logger.info(const.STR_STARTSCAN_SUCCESS)
             else:
@@ -567,18 +564,21 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_STARTSCAN_RESOURCES)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_STARTSCAN_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_START_SCAN_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
-
 
     @command(
     )
@@ -596,7 +596,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         try:
             if self.CspSubarrayProxy.obsState == ObsState.SCANNING:
                 # Invoke EndScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, self.cmd_ended_cb)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, self.commandCallback)
                 self._read_activity_message = const.STR_ENDSCAN_SUCCESS
                 self.logger.info(const.STR_ENDSCAN_SUCCESS)
             else:
@@ -605,11 +605,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_ENDSCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_ENDSCAN_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
@@ -631,20 +635,24 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            #Invoke RemoveAllReceptors command on CspSubarray
+            # Invoke RemoveAllReceptors command on CspSubarray
             self.receptorIDList = []
             self.fsids_list = []
             self.update_config_params()
-            self.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, self.cmd_ended_cb)
+            self.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
             self._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_RELEASE_ALL_RESOURCES)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_RELEASE_ALL_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
@@ -685,16 +693,21 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_message = []
         exception_count = 0
         try:
-            #Parse receptorIDList from JSON string.
+            self.validate_obs_state()
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+
+        try:
+            # Parse receptorIDList from JSON string.
             jsonArgument = json.loads(argin[0])
             self.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
-            #convert receptorIDList from list of string to list of int
+            # convert receptorIDList from list of string to list of int
             for i in range(0, len(self.receptorIDList_str)):
                 self.receptorIDList.append(int(self.receptorIDList_str[i]))
             self.update_config_params()
             # Invoke AddReceptors command on CspSubarray
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, self.receptorIDList,
-                                                           self.cmd_ended_cb)
+                                                       self.AddReceptors_ended)
             self._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
             self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
@@ -713,16 +726,20 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                         exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_ASSGN_RESOURCES)
 
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                         exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_ASSGN_RESOURCES)
 
         # throw exception:
         if exception_count:
-            print ("Exception in AssignResource:", exception_message)
+            print("Exception in AssignResource:", exception_message)
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
@@ -742,25 +759,57 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             if self.CspSubarrayProxy.obsState == ObsState.READY:
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, self.cmd_ended_cb)
+                self.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, self.commandCallback)
                 self._read_activity_message = const.STR_GOTOIDLE_SUCCESS
                 self.logger.info(const.STR_GOTOIDLE_SUCCESS)
             else:
                 self._read_activity_message = const.ERR_DEVICE_NOT_READY
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
         except DevFailed as dev_failed:
-            [ exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                                                    exception_message,
+                                                                                    exception_count,
+                                                                                    const.ERR_GOTOIDLE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_GOTOIDLE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_GOTOIDLE_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
+
+    @DebugIt()
+    def AddReceptors_ended(self, event):
+        try:
+            if event.err:
+                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                    event.errors)
+                log = const.ERR_INVOKING_CMD + event.cmd_name
+                self.logger.error(log)
+                raise tango.DevFailed
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+
+        except tango.DevFailed as df:
+            tango.Except.re_throw_exception(df, "Add Receptors at CSP LMC_CommandFailed",
+                                            "AddReceptors", tango.ErrSeverity.ERR)
+
+
+    def validate_obs_state(self):
+        if self.CspSubarrayProxy.obsState == ObsState.IDLE:
+            self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
+        else:
+            self.logger.exception("CSP Subarray is not in IDLE obsState")
+            self._read_activity_message = "Error in device obsState"
+            raise InvalidObsStateError
+
 
 # pylint: enable=protected-access,unused-argument,unused-variable
 
@@ -779,6 +828,7 @@ def main(args=None, **kwargs):
     """
     return run((CspSubarrayLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.main
+
 
 if __name__ == '__main__':
     main()
