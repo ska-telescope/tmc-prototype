@@ -30,7 +30,7 @@
             0
           ]
         ],
-        "outputChannelOffset": 0,
+        "fspChannelOffset": 0,
         "outputLinkMap": [
           [
             0,
@@ -58,7 +58,7 @@
             0
           ]
         ],
-        "outputChannelOffset": 744,
+        "fspChannelOffset": 744,
         "outputLinkMap": [
           [
             0,
