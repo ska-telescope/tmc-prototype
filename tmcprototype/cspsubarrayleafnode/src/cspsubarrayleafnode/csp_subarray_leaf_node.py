@@ -804,13 +804,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
 
     def validate_obs_state(self):
-        if self._obs_state == ObsState.IDLE:
-            self.logger.info("Subarray is in required obsState, resources will be assigned")
+        if self.CspSubarrayProxy.obsState == ObsState.IDLE:
+            self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
-            self.logger.exception("Subarray is not in IDLE obsState")
+            self.logger.exception("CSP Subarray is not in IDLE obsState")
             self._read_activity_message = "Error in device obsState"
             raise InvalidObsStateError
-
 
 
 # pylint: enable=protected-access,unused-argument,unused-variable
