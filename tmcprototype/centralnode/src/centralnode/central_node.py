@@ -14,6 +14,7 @@ of state and mode attributes defined by the SKA Control Model.
 from __future__ import print_function
 from __future__ import absolute_import
 import json
+from json import JSONDecodeError
 
 # Tango imports
 import tango
@@ -25,7 +26,7 @@ from ska.base.control_model import AdminMode, HealthState
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from . import const
 from centralnode.input_validator import AssignResourceValidator
-from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError,
+from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
@@ -516,6 +517,37 @@ class CentralNode(SKABaseDevice):
                 self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
+    @DebugIt()
+    def _check_receptor_reassignment(self, input_receptors_list):
+        """
+        Checks if any of the receptors are already allocated to other subarray when
+        AssignResources command is called.
+
+        :param:
+
+        :return: None
+
+        :throws:
+            ResourceReassignmentError: Thrown when an already assigned resource is received
+            in Assignresources command.
+        """
+        self.logger.info("Checking for duplicate allocation of dishes.")
+        duplicate_allocation_count = 0
+        duplicate_allocation_dish_ids = []
+
+        for receptor in input_receptors_list:
+            dish_ID = "dish" + receptor
+            self.logger.debug("Checking allocation status of dish %s.", dish_ID)
+            if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
+                self.logger.debug("Dish %s is already allocated.", dish_ID)
+                duplicate_allocation_dish_ids.append(dish_ID)
+                duplicate_allocation_count = duplicate_allocation_count + 1
+        self.logger.debug("No of dishes already allocated: %d", duplicate_allocation_count)
+        self.logger.debug("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
+
+        if duplicate_allocation_count > 0:
+            raise ResourceReassignmentError("Resources already assigned.", duplicate_allocation_dish_ids)
+
 
     @command(
         dtype_in='str',
@@ -641,81 +673,76 @@ class CentralNode(SKABaseDevice):
         ## Validate the input JSON string.
         try:
             self.logger.info("Validating input string.")
-            input_validator = AssignResourceValidator(self.TMMidSubarrayNodes, self._dish_leaf_node_devices, self.logger)
+            input_validator = AssignResourceValidator(self.TMMidSubarrayNodes, self._dish_leaf_node_devices, 
+                self.DishLeafNodePrefix, self.logger)
             input_validator.validate(argin)
-        except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
-            self.logger.exception("Exception in AssignResource(): %s", str(error))
-            self._read_activity_message = "Exception in validating input: " + str(error)
-            argout = '{"dish": {"receptorIDList_success": []}}'
-            return json.dumps(argout)
-
-        try:
+        
+            # TODO: use the JSON object returned by cdm library
+            # This part will change once cdm-shared library is integrated in Central Node.
             # serialize the json
             jsonArgument = json.loads(argin)
+        
             # Create subarray proxy
             subarrayID = int(jsonArgument['subarrayID'])
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-            # Check for the duplicate receptor allocation
-            duplicate_allocation_count = 0
-            duplicate_allocation_dish_ids = []
-            input_receptor_list = jsonArgument["dish"]["receptorIDList"]
-            len_input_receptor_list= len(input_receptor_list)
-            for dish in range(0, len_input_receptor_list):
-                dish_ID = "dish" + input_receptor_list[dish]
-                if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
-                    duplicate_allocation_dish_ids.append(dish_ID)
-                    duplicate_allocation_count = duplicate_allocation_count + 1
-            if duplicate_allocation_count == 0:
-                # Remove Subarray Id key from input json argument and send the json with
-                # receptor Id list and SDP block to TMC Subarray Node
-                input_json_subarray = jsonArgument.copy()
-                del input_json_subarray["subarrayID"]
-                input_to_sa = json.dumps(input_json_subarray)
-                self._resources_allocated = subarrayProxy.command_inout(
-                    const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                # Update self._subarray_allocation variable to update subarray allocation
-                # for the related dishes.
-                # Also append the allocated dish to out argument.
-                for dish in range(0, len(self._resources_allocated)):
-                    dish_ID = "dish" + (self._resources_allocated[dish])
-                    self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                    receptorIDList.append(self._resources_allocated[dish])
-                self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-                self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-                self.logger.info(receptorIDList)
-                argout = {
-                    "dish": {
-                        "receptorIDList_success": receptorIDList
-                    }
-                }
-            else:
-                self._read_activity_message = const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
-                argout = {
-                    "dish": {
-                        "receptorIDList_success": receptorIDList
-                    }
-                }
-        except ValueError as value_error:
-            self.logger.error(const.ERR_INVALID_JSON)
-            self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
 
-        except KeyError as key_error:
-            self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+            ## check for duplicate allocation
+            self.logger.info("Checking for resource reallocation.")
+            self._check_receptor_reassignment(jsonArgument["dish"]["receptorIDList"])
 
+            ## Allocate resources to subarray
+            # Remove Subarray Id key from input json argument and send the json with
+            # receptor Id list and SDP block to TMC Subarray Node
+            self.logger.info("Allocating resource to subarray %d", subarrayID)
+            input_json_subarray = jsonArgument.copy()
+            del input_json_subarray["subarrayID"]
+            input_to_sa = json.dumps(input_json_subarray)
+            self._resources_allocated = subarrayProxy.command_inout(
+                const.CMD_ASSIGN_RESOURCES, input_to_sa)
+            # Update self._subarray_allocation variable to update subarray allocation
+            # for the related dishes.
+            # Also append the allocated dish to out argument.
+            for dish in range(0, len(self._resources_allocated)):
+                dish_ID = "dish" + (self._resources_allocated[dish])
+                self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+                receptorIDList.append(self._resources_allocated[dish])
+            self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+            self.logger.info(receptorIDList)
+
+            #Allocation successful
+            self.logger.info("Resource allocation successful.")
+            # Prepare output argument
+            argout = {
+                "dish": {
+                    "receptorIDList_success": receptorIDList
+                }
+            }
+            self.logger.debug(argout)
+        except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
+            self.logger.exception("Exception in AssignResource(): %s", str(error))
+            self._read_activity_message = "Exception in validating input: " + str(error)
+            exception_message = "Exception in validating input: " + str(error)
+            exception_count += 1
+        except(JSONDecodeError) as json_error:
+            self.logger.exception(json_error.msg)
+            self._read_activity_message = "Exception parsing input JSON: " + json_error.msg
+            exception_message = "Exception in validating input: " + json_error
+            exception_count += 1
+        except ResourceReassignmentError as resource_error:
+            self.logger.exception(resource_error)
+            self.logger.exception("List of the dishes that are already allocated: %s", \
+                str(resource_error.resources_reallocation))
+            self._read_activity_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
+            exception_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
+            exception_count += 1
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
+        # except Exception as except_occurred:
+        #     [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+        #                                     exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-
-        self.logger.info(argout)
         #throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)

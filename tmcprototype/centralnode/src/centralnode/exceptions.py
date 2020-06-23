@@ -5,6 +5,11 @@ class InvalidObsStateError(ValueError):
 
 class ResourceReassignmentError(Exception):
     """Raised when the resource is already assigned to another subarray"""
+    def __init__(self, message, resources=None):
+        super.__init__()
+        self.value = message
+        self.resources_reallocation = []
+        self.resources_reallocation = resources
 
 class InvalidJSONError(JSONDecodeError):
     """Raised when The JSON format is invalid"""

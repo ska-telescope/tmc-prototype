@@ -306,11 +306,11 @@ def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         test_input = '{"invalid_json"}'
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(test_input)
 
         # assert:
-        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert "Exception in validating input" in str(df.value)
 
 
 def test_assign_resources_invalid_key():
