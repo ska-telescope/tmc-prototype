@@ -2,6 +2,8 @@
 #Entering into a bash shell script to run unit-test cases and generating reports
 cd /app/tmcprototype;
 
+python3 -m pip install pytest-forked
+
 #For each node sub-package inside tmc-prototype, coverage report for each device is generated using unit-test job.
 #Coverage report are generated in .coverage, .xml and .html format. Each device's .coverage report is moved in unit_test folder to generate the combine report further.
 for path in $(find ./*/test  -type d -name unit); do
@@ -18,7 +20,7 @@ coverage combine dishleafnode_coverage cspmasterleafnode_coverage \
 	 subarraynode_coverage centralnode_coverage  && coverage xml && coverage html
 mv /report/unit_test/coverage.xml /report/code-coverage.xml
 #Combine the unit_test.xml reports
-pip3 install junitparser
+python3 -m pip install junitparser
 junitparser merge /report/unit_test/dishleafnode-unit-tests.xml \
                 /report/unit_test/centralnode-unit-tests.xml \
                 /report/unit_test/cspmasterleafnode-unit-tests.xml \
