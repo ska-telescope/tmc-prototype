@@ -94,7 +94,56 @@ def example_scan_configuration():
                 "functionMode": "CORR",
                 "frequencySliceID": 1,
                 "integrationTime": 1400,
-                "corrBandwidth": 0
+                "corrBandwidth": 0,
+                "channelAveragingMap": [
+                  [
+                    0,
+                    2
+                  ],
+                  [
+                    744,
+                    0
+                  ]
+                ],
+                "fspChannelOffset": 0,
+                "outputLinkMap": [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    200,
+                    1
+                  ]
+                ]
+              },
+              {
+                "fspID": 2,
+                "functionMode": "CORR",
+                "frequencySliceID": 2,
+                "integrationTime": 1400,
+                "corrBandwidth": 0,
+                "channelAveragingMap": [
+                  [
+                    0,
+                    2
+                  ],
+                  [
+                    744,
+                    0
+                  ]
+                ],
+                "fspChannelOffset": 744,
+                "outputLinkMap": [
+                  [
+                    0,
+                    4
+                  ],
+                  [
+                    200,
+                    5
+                  ]
+                ]
               }
             ]
           },
@@ -145,26 +194,66 @@ class TestElementDeviceData:
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map)
 
         expected_string_dict = {
-                "id": "sbi-mvp01-20200325-00001-science_A",
-                "frequencyBand": "1",
-                "fsp": [
-                    {
-                        "fspID": 1,
-                        "functionMode": "CORR",
-                        "frequencySliceID": 1,
-                        "integrationTime": 1400,
-                        "corrBandwidth": 0
-                    }
-                ],
-                "string1": "attr1", "string2": "attr2",
-                "pointing":
-                    {
-                        "target":
-                            {
-                                "system": "ICRS", "name": "Polaris Australis", "RA": "21:08:47.92", "dec": "-88:57:22.9"
-                            }
-                    },
-                "scanID": "1"
+              "id": "sbi-mvp01-20200325-00001-science_A",
+              "frequencyBand": "1",
+              "fsp": [
+                {
+                  "fspID": 1,
+                  "functionMode": "CORR",
+                  "frequencySliceID": 1,
+                  "integrationTime": 1400,
+                  "corrBandwidth": 0,
+                  "channelAveragingMap": [
+                    [
+                      0,
+                      2
+                    ],
+                    [
+                      744,
+                      0
+                    ]
+                  ],
+                  "fspChannelOffset": 0,
+                  "outputLinkMap": [
+                    [
+                      0,
+                      0
+                    ],
+                    [
+                      200,
+                      1
+                    ]
+                  ]
+                },
+                {
+                  "fspID": 2,
+                  "functionMode": "CORR",
+                  "frequencySliceID": 2,
+                  "integrationTime": 1400,
+                  "corrBandwidth": 0,
+                  "channelAveragingMap": [
+                    [
+                      0,
+                      2
+                    ],
+                    [
+                      744,
+                      0
+                    ]
+                  ],
+                  "fspChannelOffset": 744,
+                  "outputLinkMap": [
+                    [
+                      0,
+                      4
+                    ],
+                    [
+                      200,
+                      5
+                    ]
+                  ]
+                }
+              ]
             }
         expected_string_dict = json.dumps(expected_string_dict)
         assert isinstance(csp_cmd_data, str)
@@ -286,19 +375,23 @@ class TestSubarrayNode(object):
     def test_AssignResourcesfailure_before_startup(self, tango_context):
         """Test for AssignResources"""
         #PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        receptor_list = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
+        receptor_list = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
                         '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                        '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B","coordinate_system":' \
-                        '"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":' \
-                        '1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],"processing_blocks":[{"id":' \
-                        '"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
-                        '"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":' \
-                        '"test_realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                        '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":' \
-                        '[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004"' \
-                        ',"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},"parameters":{},"dependencies"' \
-                        ':[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}}'
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
+                        '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
+                        ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
+                        ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
+                        '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
+                        '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
+                        '"version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":' \
+                        '"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":' \
+                        '"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
+                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]}' \
+                        ',{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"}' \
+                        ',"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
+                        '"type":["calibration"]}]}]}}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(receptor_list)
         time.sleep(10)
@@ -321,20 +414,23 @@ class TestSubarrayNode(object):
     def test_AssignResources(self, tango_context):
         """Test for AssignResources"""
         # PROTECTED REGION ID(SubarrayNode.test_AssignResources) ENABLED START #
-        receptor_list = '{"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001"' \
-                        ',"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
-                        '"ra":"21:08:47.92","dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max"' \
-                        ':1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]},{"id":"calibration_B",' \
-                        '"coordinate_system":"ICRS","ra":"21:08:47.92","dec":"-88:57:22.9","subbands":' \
-                        '[{"freq_min":0.35e9,"freq_max":1.05e9,"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                        '"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime",' \
-                        '"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002"' \
-                        ',"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},' \
-                        '{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"}' \
-                        ',"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"' \
-                        ']}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":' \
-                        '"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":' \
-                        '["calibration"]}]}]}}'
+        receptor_list = '{"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001",' \
+                        '"max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS",' \
+                        '"ra":"02:42:40.771","dec":"-00:00:47.84","channels":[' \
+                        '{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map"' \
+                        ':[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min"' \
+                        ':0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",' \
+                        '"coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                        '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
+                        '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":' \
+                        '[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive",' \
+                        '"version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":' \
+                        '"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":' \
+                        '"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
+                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]}' \
+                        ',{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"}' \
+                        ',"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
+                        '"type":["calibration"]}]}]}}'
         tango_context.device.AssignResources(receptor_list)
         time.sleep(10)
         assert tango_context.device.State() == DevState.ON
