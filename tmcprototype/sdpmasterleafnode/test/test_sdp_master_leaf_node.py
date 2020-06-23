@@ -99,13 +99,13 @@ class TestSdpMasterLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.5.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.5.4, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(SdpMasterLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == '0.5.1'
+        assert tango_context.device.versionId == '0.5.4'
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_versionId
 
     def test_healthState(self, tango_context):
@@ -176,7 +176,7 @@ class TestSdpMasterLeafNode(object):
         # PROTECTED REGION ID(SdpMasterLeafNode.test_off_devfailed_exception) ENABLED START #
         tango_context.device.testMode = TestMode.TEST
         tango_context.device.Off()
-        assert const.ERR_MSG in tango_context.device.activityMessage
+        assert const.ERR_OFF_CMD_FAIL in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  SdpMasterLeafNode.test_off_devfailed_exception
 
     def test_Disable(self, tango_context):
@@ -188,14 +188,14 @@ class TestSdpMasterLeafNode(object):
 
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
-        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_loggingLevel) ENABLED START #
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
-        # PROTECTED REGION END #    //  DishMaster.test_loggingLevel
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_loggingLevel
 
     def test_loggingTargets(self, tango_context):
         """Test for loggingTargets"""
-        # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
-        # PROTECTED REGION END #    //  DishMaster.test_loggingTargets
+        # PROTECTED REGION ID(SdpMasterLeafNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  SdpMasterLeafNode.test_loggingTargets

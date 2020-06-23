@@ -20,6 +20,7 @@ STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = " invoked successfully."
 STR_CMD_FAILED = "SdpSubarray_Commandfailed"
 STR_SDP_CMD_CALLBK = "SdpMasterLeafNode Command callback"
+STR_ERR_MSG = "Error message is: "
 
 # Error messages
 ERR_INIT_PROP_ATTR = "Error on initialising properties and attributes "

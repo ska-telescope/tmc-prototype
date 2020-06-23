@@ -6,7 +6,13 @@ CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_RESOURCES = "ReleaseAllResources"
 
 CMD_STANDBY = "Standby"
+STR_CMD_STANDBY_CSP_DEV = "Standby invoked on CspMasterLeafNode device "
+STR_CMD_STANDBY_SDP_DEV = "Standby invoked on SdpMasterleafNode device "
+STR_CMD_STANDBY_SA_DEV = "Standby invoked on SubarrayNode device"
 CMD_STARTUP = "On"
+STR_CMD_STARTUP_CSP_DEV = "On invoked on CspMasterLeafNode device"
+STR_CMD_STARTUP_SDP_DEV = "On invoked on SdpMasterLeafNode device"
+STR_CMD_STARTUP_SA_DEV = "On invoked on SubarrayNode device"
 
 #Event messages
 EVT_UNKNOWN = "Event from the Unknown device!"

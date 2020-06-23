@@ -36,7 +36,7 @@ def test_on_should_command_csp_master_leaf_node_to_start():
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
-                                                                    any_method(with_name='commandCallback'))
+                                                                    any_method(with_name='cmd_ended_cb'))
 
 
 def raise_devfailed_exception(evt_name, evt_type, callaback, stateless=True):
@@ -82,7 +82,7 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_input,
-                                                                    any_method(with_name='commandCallback'))
+                                                                    any_method(with_name='cmd_ended_cb'))
 
 
 def test_standby_should_command_csp_master_leaf_node_to_standby():
@@ -103,7 +103,7 @@ def test_standby_should_command_csp_master_leaf_node_to_standby():
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_input,
-                                                                    any_method(with_name='commandCallback'))
+                                                                    any_method(with_name='cmd_ended_cb'))
 
 
 def test_standby_should_command_with_callback_method():
