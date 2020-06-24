@@ -134,7 +134,8 @@ from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 class TestAssignResourceValidator():
     """Class to test the AssignResourceValidator class methods"""
     _test_subarray_list = ["test/subarray/1", "test/subarray/2", "test/subarray/3"]
-    _test_receptor_id_list = ["0001", "0002", "0003", "0004"]
+    _test_receptor_id_list = ["ska_mid/tm_leaf_node/d0001", "ska_mid/tm_leaf_node/d0002",
+                              "ska_mid/tm_leaf_node/d0003", "ska_mid/tm_leaf_node/d0004"]
 
     def test_validate_good_json(self):
         """This function tests the validate method when good formatted json is provided"""

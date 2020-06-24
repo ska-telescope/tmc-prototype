@@ -147,7 +147,9 @@ class CentralNode(SKABaseDevice):
 
     def throw_exception(self, excpt_msg_list, read_actvity_msg):
         err_msg = ''
+        self.logger.info("Raising exception with message(s):")
         for item in excpt_msg_list:
+            self.logger.info(item)
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
         self.logger.error(const.STR_CMD_FAILED)
@@ -536,13 +538,13 @@ class CentralNode(SKABaseDevice):
 
         for receptor in input_receptors_list:
             dish_ID = "dish" + receptor
-            self.logger.debug("Checking allocation status of dish %s.", dish_ID)
+            self.logger.info("Checking allocation status of dish %s.", dish_ID)
             if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
-                self.logger.debug("Dish %s is already allocated.", dish_ID)
+                self.logger.info("Dish %s is already allocated.", dish_ID)
                 duplicate_allocation_dish_ids.append(dish_ID)
                 duplicate_allocation_count = duplicate_allocation_count + 1
-        self.logger.debug("No of dishes already allocated: %d", duplicate_allocation_count)
-        self.logger.debug("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
+        self.logger.info("No of dishes already allocated: %d", duplicate_allocation_count)
+        self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
 
         if duplicate_allocation_count > 0:
             raise ResourceReassignmentError("Resources already assigned.", duplicate_allocation_dish_ids)
@@ -721,19 +723,19 @@ class CentralNode(SKABaseDevice):
         except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
             self.logger.exception("Exception in AssignResource(): %s", str(error))
             self._read_activity_message = "Exception in validating input: " + str(error)
-            exception_message = "Exception in validating input: " + str(error)
+            exception_message.append("Exception in validating input: " + str(error))
             exception_count += 1
         except(JSONDecodeError) as json_error:
             self.logger.exception(json_error.msg)
             self._read_activity_message = "Exception parsing input JSON: " + json_error.msg
-            exception_message = "Exception in validating input: " + json_error
+            exception_message.append("Exception in validating input: " + str(json_error))
             exception_count += 1
         except ResourceReassignmentError as resource_error:
             self.logger.exception(resource_error)
             self.logger.exception("List of the dishes that are already allocated: %s", \
                 str(resource_error.resources_reallocation))
             self._read_activity_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
-            exception_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
+            exception_message.append(const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation))
             exception_count += 1
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
