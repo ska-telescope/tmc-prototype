@@ -15,7 +15,9 @@ import logging
 # SKA specific imports
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
-# import ska.logging as ska_logging
+from ska.cdm.schemas import CODEC
+from ska.cdm.messages.central_node.assign_resources import AssignResourcesRequest
+from ska.cdm.messages.central_node.assign_resources import DishAllocation
 
 module_logger = logging.getLogger(__name__)
 
@@ -47,8 +49,6 @@ class AssignResourceValidator():
         :return: None.
 
         :throws:
-            TODO: Update docstring. JsonValueTypeMismatchError: When subarray ID is not integer.
-
             SubarrayNotPresentError: When a value of a JSON key is not valid. E.g. Subarray device 
             for the speyes cified id is not present.
         """
@@ -90,17 +90,15 @@ class AssignResourceValidator():
 
             JsonKeyMissingError: When a mandatory key from the JSON string is missing.
         """
-        ret_val = False
         
         ## Check if JSON is correct
-        #TODO: Call cdm library api and validate JSON format
         self.logger.info("Checking JSON format.")
-        # try:
-        input_json = json.loads(input_string)
-        #     self.logger.info("The JSON format is correct.")
-        # except JSONDecodeError as json_error:
-        #     self.logger.exception("Exception: %s", str(json_error))
-        #     raise InvalidJSONError("Malformed input string. Please check the JSON format.")
+        try:
+            input_json = CODEC.loads(AssignResourcesRequest, input_string)
+            self.logger.info("The JSON format is correct.")
+        except JSONDecodeError as json_error:
+            self.logger.exception("Exception: %s", str(json_error))
+            raise InvalidJSONError("Malformed input string. Please check the JSON format.")
 
         ## Validate subarray ID
         self.logger.info("Validating subarrayID")
@@ -124,5 +122,4 @@ class AssignResourceValidator():
         self._validate_receptor_id_list(input_json["dish"]["receptorIDList"])
         self.logger.info("receptor_id_list validation successful.")
 
-        ret_val = True
-        return ret_val
+        return input_json
