@@ -42,7 +42,7 @@ class DishLeafNode(SKABaseDevice):
     """
 
     # PROTECTED REGION ID(DishLeafNode.class_variable) ENABLED START #
-    def dishModeCallback(self, evt):
+    def dish_mode_cb(self, evt):
         """
         Retrieves the subscribed dishMode attribute of DishMaster.
 
@@ -50,9 +50,11 @@ class DishLeafNode(SKABaseDevice):
 
         :return: None
 
-        """ 
-        if evt.err is False:
-            try:
+        """
+        try:
+            log_msg = "DishMode Event is: " + str(evt)
+            self.logger.info(log_msg)
+            if not evt.err:
                 self._dish_mode = evt.attr_value.value
                 if self._dish_mode == 0:
                     self.logger.debug(const.STR_DISH_OFF_MODE)
@@ -85,17 +87,18 @@ class DishLeafNode(SKABaseDevice):
                     log_msg = const.STR_DISH_UNKNOWN_MODE + str(evt)
                     self.logger.debug(log_msg)
                     self._read_activity_message = const.STR_DISH_UNKNOWN_MODE + str(evt)
-            except Exception as except_occurred:
-                log_msg = const.ERR_DISH_MODE_CB + str(except_occurred.message)
-                self.logger.error(log_msg)
-                self._handle_generic_exception(except_occurred, [], 0, const.ERR_DISH_MODE_CB)
-        else:
-            log_msg = const.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
-            self.logger.debug(log_msg)
-            self._read_activity_message = const.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
-            self.logger.error(const.ERR_ON_SUBS_DISH_MODE_ATTR)
+            else:
+                log_msg = const.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
+                self.logger.debug(log_msg)
+                self._read_activity_message = const.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
+                self.logger.error(const.ERR_ON_SUBS_DISH_MODE_ATTR)
+        except Exception as except_occurred:
+            log_msg = const.ERR_DISH_MODE_CB + str(except_occurred.message)
+            self.logger.error(log_msg)
+            self._handle_generic_exception(except_occurred, [], 0, const.ERR_DISH_MODE_CB)
 
-    def dishCapturingCallback(self, evt):
+
+    def dish_capturing_cb(self, evt):
         """
         Retrieves the subscribed capturing attribute of DishMaster.
 
@@ -104,8 +107,10 @@ class DishLeafNode(SKABaseDevice):
         :return: None
 
         """
-        if evt.err is False:
-            try:
+        try:
+            log_msg = "Capturing attribute Event is: " + str(evt)
+            self.logger.info(log_msg)
+            if not evt.err:
                 self._dish_capturing = evt.attr_value.value
                 if self._dish_capturing is True:
                     self.logger.debug(const.STR_DISH_CAPTURING_TRUE)
@@ -117,17 +122,17 @@ class DishLeafNode(SKABaseDevice):
                     log_msg = const.STR_DISH_CAPTURING_UNKNOWN + str(evt)
                     self.logger.debug(log_msg)
                     self._read_activity_message = const.STR_DISH_CAPTURING_UNKNOWN + str(evt)
-            except Exception as except_occurred:
-                log_msg = const.ERR_DISH_CAPTURING_CB + str(except_occurred.message)
+            else:
+                log_msg = const.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
                 self.logger.error(log_msg)
-                self._handle_generic_exception(except_occurred, [], 0, const.ERR_DISH_CAPTURING_CB)
-        else:
-            log_msg = const.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
+                self._read_activity_message = const.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
+                self.logger.error(const.ERR_SUBSR_CAPTURING_ATTR)
+        except Exception as except_occurred:
+            log_msg = const.ERR_DISH_CAPTURING_CB + str(except_occurred.message)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
-            self.logger.error(const.ERR_SUBSR_CAPTURING_ATTR)
+            self._handle_generic_exception(except_occurred, [], 0, const.ERR_DISH_CAPTURING_CB)
 
-    def dishAchievedPointingCallback(self, evt):
+    def dish_achieved_pointing_cb(self, evt):
         """
         Retrieves the subscribed achievedPointing attribute of DishMaster.
 
@@ -136,23 +141,26 @@ class DishLeafNode(SKABaseDevice):
         :return: None
 
         """
-        if evt.err is False:
-            try:
+        try:
+            log_msg = "AchievedPointing attribute Event is: " + str(evt)
+            self.logger.info(log_msg)
+            if not evt.err:
                 self._achieved_pointing = evt.attr_value.value
                 log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
                 self.logger.debug(log_msg)
                 self._read_activity_message = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
-            except Exception as except_occurred:
-                log_msg = const.ERR_DISH_ACHVD_POINT + str(except_occurred.message)
+            else:
+                log_msg = const.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
                 self.logger.error(log_msg)
-                self._handle_generic_exception(except_occurred, [], 0, const.ERR_DISH_ACHVD_POINT)
-        else:
-            log_msg = const.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
+                self._read_activity_message = const.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
+                self.logger.error(const.ERR_ON_SUBS_DISH_ACHVD_ATTR)
+        except Exception as except_occurred:
+            log_msg = const.ERR_DISH_ACHVD_POINT + str(except_occurred.message)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
-            self.logger.error(const.ERR_ON_SUBS_DISH_ACHVD_ATTR)
+            self._handle_generic_exception(except_occurred, [], 0, const.ERR_DISH_ACHVD_POINT)
 
-    def dishDesiredPointingCallback(self, evt):
+
+    def dish_desired_pointing_cb(self, evt):
         """
         Retrieves the subscribed desiredPointing attribute of DishMaster.
 
@@ -161,44 +169,60 @@ class DishLeafNode(SKABaseDevice):
         :return: None
 
         """
-        if evt.err is False:
-            try:
+        try:
+            log_msg = "DesiredPointing attribute Event is: " + str(evt)
+            self.logger.info(log_msg)
+            if not evt.err:
                 self._desired_pointing = evt.attr_value.value
                 log_msg = const.STR_DESIRED_POINTING + str(self._desired_pointing)
                 self.logger.error(log_msg)
                 self._read_activity_message = const.STR_DESIRED_POINTING + str(self._desired_pointing)
-            except Exception as except_occurred:
-                log_msg = const.ERR_DISH_DESIRED_POINT + str(except_occurred.message)
+            else:
+                log_msg = const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
                 self.logger.error(log_msg)
-                self._handle_generic_exception(except_occurred, [], 0, const.ERR_DISH_DESIRED_POINT)
-        else:
-            log_msg = const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
+                self._read_activity_message = const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
+                self.logger.error(const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR)
+        except Exception as except_occurred:
+            log_msg = const.ERR_DISH_DESIRED_POINT + str(except_occurred.message)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
-            self.logger.error(const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR)
+            self._handle_generic_exception(except_occurred, [], 0, const.ERR_DISH_DESIRED_POINT)
 
-    def commandCallback(self, event):
+
+    def cmd_ended_cb(self, event):
         """
-        Checks whether the command has been successfully invoked on DishMaster.
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully invoked on DishMaster.
 
-        :param event: response from DishMaster for the invoked command
-
-
-        :return: None
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
 
         """
         exception_count = 0
         exception_message = []
+        # Update logs and activity message attribute with received event
         try:
             if event.err:
-                log = const.ERR_INVOKING_CMD + event.cmd_name
-                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
-                self.logger.error(log)
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
             else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self._read_activity_message = log
-                self.logger.info(log)
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+
         except Exception as except_occurred:
             [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
                                                 exception_message, exception_count, const.ERR_EXCEPT_CMD_CB)
@@ -341,7 +365,7 @@ class DishLeafNode(SKABaseDevice):
                         # assign calculated AzEl to desiredPointing attribute of Dishmaster
                         self._dish_proxy.desiredPointing = spectrum
                         # Invoke Track command of Dish Master
-                        self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.commandCallback)
+                        self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
                     else:
                         self.el_limit = True
                         self._read_activity_message = const.ERR_ELE_LIM
@@ -354,6 +378,15 @@ class DishLeafNode(SKABaseDevice):
             self.logger.error(const.ERR_EXE_TRACK, str(except_occurred))
             self.logger.error(const.ERR_EXE_TRACK)
             self._handle_generic_exception(except_occurred, [], 0, const.ERR_EXE_TRACK)
+
+    # Function for handling all Devfailed exception
+    def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
+        log_msg = read_actvity_msg + str(df)
+        self.logger.error(log_msg)
+        self._read_activity_message = read_actvity_msg + str(df)
+        except_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [except_msg_list, exception_count]
 
     def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(exception)
@@ -474,18 +507,18 @@ class DishLeafNode(SKABaseDevice):
         self.horizon_el = 0
         self.ele_min_lim = 17.5
         self.el_limit = False
+        exception_message = []
+        exception_count = 0
         try:
             self.set_dish_name_number()
             self.set_observer_lat_long_alt()
-            log_msg = const.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
+            log_msg = const.STR_DISHMASTER_FQDN + str(self.DishMasterFQDN)
             self.logger.debug(log_msg)
-            self._read_activity_message = const.STR_DISHMASTER_FQN + str(self.DishMasterFQDN)
+            self._read_activity_message = log_msg
             self._dish_proxy = DeviceProxy(str(self.DishMasterFQDN))   #Creating proxy to the DishMaster
             self.event_track_time = threading.Event()
         except DevFailed as dev_failed:
-            log_msg = const.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
+            self._handle_devfailed_exception(dev_failed,exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
             self.set_state(DevState.FAULT)
         self._admin_mode = AdminMode.ONLINE                                    #Setting adminMode to "ONLINE"
         self._health_state = HealthState.OK                                    #Setting healthState to "OK"
@@ -497,22 +530,19 @@ class DishLeafNode(SKABaseDevice):
         # Subscribing to DishMaster Attributes
         try:
             self._dish_proxy.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT,
-                                             self.dishModeCallback, stateless=True)
-            # self._dish_proxy.subscribe_event(const.EVT_DISH_POINTING_STATE, EventType.CHANGE_EVENT,
-            #                                  self.dishPointingStateCallback, stateless=True)
+                                             self.dish_mode_cb, stateless=True)
             self._dish_proxy.subscribe_event(const.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT,
-                                             self.dishCapturingCallback, stateless=True)
+                                             self.dish_capturing_cb, stateless=True)
             self._dish_proxy.subscribe_event(const.EVT_ACHVD_POINT, EventType.CHANGE_EVENT,
-                                             self.dishAchievedPointingCallback, stateless=True)
+                                             self.dish_achieved_pointing_cb, stateless=True)
             self._dish_proxy.subscribe_event(const.EVT_DESIRED_POINT, EventType.CHANGE_EVENT,
-                                             self.dishDesiredPointingCallback, stateless=True)
+                                             self.dish_desired_pointing_cb, stateless=True)
             self.set_state(DevState.ON)
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.info(const.STR_DISH_INIT_SUCCESS)
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBS_DISH_ATTR + str(dev_failed)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SUBS_DISH_ATTR + str(dev_failed)
+            self._handle_devfailed_exception(dev_failed,exception_message, exception_count,
+                                             const.ERR_SUBS_DISH_ATTR)
             self.set_state(DevState.FAULT)
             self.set_status(const.ERR_DISH_INIT)
             self.logger.error(const.ERR_DISH_INIT)
@@ -554,7 +584,7 @@ class DishLeafNode(SKABaseDevice):
     def SetStowMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStowMode) ENABLED START #
         """ Triggers the DishMaster to transit into Stow Mode. """
-        self._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.commandCallback)
+        self._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.cmd_ended_cb)
         # PROTECTED REGION END #    //  DishLeafNode.SetStowMode
 
     def is_SetStowMode_allowed(self):
@@ -568,7 +598,7 @@ class DishLeafNode(SKABaseDevice):
     def SetStandByLPMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStandByLPMode) ENABLED START #
         """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State). """
-        self._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.commandCallback)
+        self._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.cmd_ended_cb)
         # PROTECTED REGION END #    //  DishLeafNode.SetStandByLPMode
 
     def is_SetStandByLPMode_allowed(self):
@@ -583,7 +613,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(DishLeafNode.SetOperateMode) ENABLED START #
         """ Triggers the DishMaster to transit into Operate mode. """
 
-        self._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.commandCallback)
+        self._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.cmd_ended_cb)
         # PROTECTED REGION END #    //  DishLeafNode.SetOperateMode
 
     def is_SetOperateMode_allowed(self):
@@ -617,10 +647,9 @@ class DishLeafNode(SKABaseDevice):
         # print("Scan duration:", scan_duration)
         try:
             if type(float(argin)) == float:
-            #if type(float(scan_duration)) == float:
                 self.logger.debug(const.STR_IN_SCAN)
                 self._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
-                                                      argin, self.commandCallback)
+                                                      argin, self.cmd_ended_cb)
                 self.logger.debug(const.STR_OUT_SCAN)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
@@ -660,7 +689,7 @@ class DishLeafNode(SKABaseDevice):
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
-                                                      argin, self.commandCallback)
+                                                      argin, self.cmd_ended_cb)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
             self.logger.error(log_msg)
@@ -726,7 +755,7 @@ class DishLeafNode(SKABaseDevice):
             dish_str_ip = json.dumps(arg_list)
             # Send configure command to Dish Master
             self._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
-                                                  self.commandCallback)
+                                                  self.cmd_ended_cb)
 
         except ValueError as value_error:
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
@@ -743,10 +772,9 @@ class DishLeafNode(SKABaseDevice):
             exception_count += 1
 
         except DevFailed as dev_failed:
-            self._read_activity_message = const.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
-            log_msg = const.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
-            self.logger.error(log_msg)
-            exception_message.append(const.ERR_EXE_CONFIGURE_CMD + str(dev_failed))
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                                                    exception_message, exception_count,
+                                                                                    const.ERR_EXE_CONFIGURE_CMD)
 
         except Exception as except_occurred:
             log_msg = const.ERR_EXE_CONFIGURE_CMD + str(except_occurred)
@@ -785,7 +813,7 @@ class DishLeafNode(SKABaseDevice):
         try:
             if type(float(argin)) == float:
                 self._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
-                                                      argin, self.commandCallback)
+                                                      argin, self.cmd_ended_cb)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
             self.logger.error(log_msg)
@@ -819,7 +847,7 @@ class DishLeafNode(SKABaseDevice):
         exception_message = []
         try:
             if type(float(argin)) == float:
-                self._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE, argin, self.commandCallback)
+                self._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE, argin, self.cmd_ended_cb)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
             self.logger.error(log_msg)
@@ -839,7 +867,7 @@ class DishLeafNode(SKABaseDevice):
     def SetStandbyFPMode(self):
         # PROTECTED REGION ID(DishLeafNode.SetStandbyFPMode) ENABLED START #
         """ Triggers the DishMaster to transition into the STANDBY-FP (Standby-Full power) mode. """
-        self._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, self.commandCallback)
+        self._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, self.cmd_ended_cb)
         # PROTECTED REGION END #    //  DishLeafNode.SetStandbyFPMode
 
     def is_SetStandbyFPMode_allowed(self):
@@ -866,13 +894,12 @@ class DishLeafNode(SKABaseDevice):
         exception_message = []
         try:
             if type(float(argin)) == float:
-                self._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW, argin, self.commandCallback)
+                self._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW, argin, self.cmd_ended_cb)
         except ValueError as value_error:
             log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
             self.logger.error(log_msg)
             self._read_activity_message = const.ERR_EXE_SLEW_CMD + "\n" + const.ERR_INVALID_DATATYPE +\
                                           str(value_error)
-            self.logger.error(const.ERR_EXE_SLEW_CMD)
             exception_message.append(self._read_activity_message)
             exception_count += 1
 
@@ -960,17 +987,16 @@ class DishLeafNode(SKABaseDevice):
         exception_message = []
         try:
             self.event_track_time.set()
-            self._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.commandCallback)
+            self._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.cmd_ended_cb)
 
         except DevFailed as dev_failed:
-            self._read_activity_message = const.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)
-            log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)
-            self.logger.error(log_msg)
-            exception_message.append(const.ERR_EXE_STOP_TRACK_CMD + str(dev_failed))
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                                                    exception_message, exception_count,
+                                                                                    const.ERR_EXE_STOP_TRACK_CMD)
 
         except Exception as except_occurred:
-            log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(except_occurred)
-            self.logger.error(log_msg)
+            log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(except_occurred.message)
+            self.logger.info(log_msg)
             [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_EXE_STOP_TRACK_CMD)
 

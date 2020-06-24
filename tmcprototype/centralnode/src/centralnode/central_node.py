@@ -14,6 +14,7 @@ of state and mode attributes defined by the SKA Control Model.
 from __future__ import print_function
 from __future__ import absolute_import
 import json
+from json import JSONDecodeError
 
 # Tango imports
 import tango
@@ -24,9 +25,9 @@ from ska.base.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from . import const
-from .input_validator import AssignResourceValidator
-from centralnode.exceptions import InvalidJSONError, JsonKeyMissingError, JsonValueTypeMismatchError
-from centralnode.exceptions import InvalidParameterValue
+from centralnode.input_validator import AssignResourceValidator
+from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
+from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
@@ -39,7 +40,7 @@ class CentralNode(SKABaseDevice):
     """
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
 
-    def healthStateCallback(self, evt):
+    def health_state_cb(self, evt):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
         telescope health state.
@@ -48,9 +49,12 @@ class CentralNode(SKABaseDevice):
 
         :return: None
         """
-
-        if evt.err is False:
-            try:
+        exception_count = 0
+        exception_message = []
+        try:
+            log_msg = 'Health state attribute change event is : ' + str(evt)
+            self.logger.info(log_msg )
+            if not evt.err:
                 health_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     self._subarray1_health_state = health_state
@@ -69,36 +73,7 @@ class CentralNode(SKABaseDevice):
                     self.logger.debug(const.EVT_UNKNOWN)
                     # TODO: For future reference
                     # self._read_activity_message = const.EVT_UNKNOWN
-
-                if health_state == HealthState.OK:
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
-                    self.logger.info(str_log)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                    #                                                            ) + const.STR_OK
-                elif health_state == HealthState.DEGRADED:
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
-                    self.logger.info(str_log)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                    #                                                            ) + const.STR_DEGRADED
-                elif health_state == HealthState.FAILED:
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
-                    self.logger.info(str_log)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                    #                                                            ) + const.STR_FAILED
-                elif health_state == HealthState.UNKNOWN:
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
-                    self.logger.info(str_log)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE + str(
-                    #     evt.device) + const.STR_UNKNOWN
-                else:
-                    self.logger.info(const.STR_HEALTH_STATE_UNKNOWN_VAL)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.STR_HEALTH_STATE_UNKNOWN_VAL + str(evt)
-
+                
                 counts = {
                         HealthState.OK: 0,
                         HealthState.DEGRADED: 0,
@@ -113,33 +88,45 @@ class CentralNode(SKABaseDevice):
                 for subarray_health_state in list(self.subarray_health_state_map.values()):
                     counts[subarray_health_state] += 1
 
+                # Calculating health_state for SubarrayNode, CspMasterLeafNode, SdpMasterLeafNode
                 if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 2:
                     self._telescope_health_state = HealthState.OK
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
+                    self.logger.info(str_log)
+                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + const.STR_OK
                 elif counts[HealthState.FAILED] != 0:
                     self._telescope_health_state = HealthState.FAILED
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
+                    self.logger.info(str_log)
+                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + const.STR_FAILED
                 elif counts[HealthState.DEGRADED] != 0:
                     self._telescope_health_state = HealthState.DEGRADED
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
+                    self.logger.info(str_log)
+                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + const.STR_DEGRADED
                 else:
                     self._telescope_health_state = HealthState.UNKNOWN
-
-            except KeyError as key_error:
+                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
+                    self.logger.info(str_log)
+                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
+                                                                               ) + const.STR_UNKNOWN
+            else:
                 # TODO: For future reference
-                # self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-                log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
-                self.logger.critical(log_msg)
-            except DevFailed:
-                # TODO: For future reference
-                # self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                self.logger.exception(const.ERR_HEALTH_STATE_CB, evt)
-            except Exception as except_occured:
-                # TODO: For future reference
-                # self._read_activity_message = const.ERR_AGGR_HEALTH_STATE + str(except_occured)
-                log_msg = const.ERR_AGGR_HEALTH_STATE + ": " + str(except_occured)
-                self.logger.critical(log_msg)
-        else:
+                # self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
+                self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
+        except KeyError as key_error:
             # TODO: For future reference
-            # self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
-            self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
+            # self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+            self.logger.critical(log_msg)
+        except Exception as except_occured:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+                                                exception_message, exception_count, const.ERR_AGGR_HEALTH_STATE)
+
+
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
     def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
@@ -160,7 +147,9 @@ class CentralNode(SKABaseDevice):
 
     def throw_exception(self, excpt_msg_list, read_actvity_msg):
         err_msg = ''
+        self.logger.info("Raising exception with message(s):")
         for item in excpt_msg_list:
+            self.logger.info(item)
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
         self.logger.error(const.STR_CMD_FAILED)
@@ -297,7 +286,7 @@ class CentralNode(SKABaseDevice):
             self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN)
             self._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
                                                         EventType.CHANGE_EVENT,
-                                                        self.healthStateCallback, stateless=True)
+                                                        self.health_state_cb, stateless=True)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                     exception_message, exception_count,const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
@@ -308,7 +297,7 @@ class CentralNode(SKABaseDevice):
             self._sdp_master_leaf_proxy = DeviceProxy(self.SdpMasterLeafNodeFQDN)
             self._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
                                                         EventType.CHANGE_EVENT,
-                                                        self.healthStateCallback, stateless=True)
+                                                        self.health_state_cb, stateless=True)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                 exception_message, exception_count,const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
@@ -320,7 +309,7 @@ class CentralNode(SKABaseDevice):
                 self.subarray_health_state_map[subarray_proxy] = -1
                 subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
                                                EventType.CHANGE_EVENT,
-                                               self.healthStateCallback, stateless=True)
+                                               self.health_state_cb, stateless=True)
 
                 #populate subarrayID-subarray proxy map
                 tokens = self.TMMidSubarrayNodes[subarray].split('/')
@@ -407,8 +396,9 @@ class CentralNode(SKABaseDevice):
             for leafId in range(0, len(argin)):
                 if type(float(argin[leafId])) == float:
                     pass
-            self.logger.info(const.STR_STOW_CMD_ISSUED_CN)
-            self._read_activity_message = const.STR_STOW_CMD_ISSUED_CN
+            log_msg=const.STR_STOW_CMD_ISSUED_CN
+            self.logger.info(log_msg)
+            self._read_activity_message = log_msg
             for i in range(0, len(argin)):
                 device_name = self.DishLeafNodePrefix + argin[i]
                 try:
@@ -444,23 +434,28 @@ class CentralNode(SKABaseDevice):
         """ Set the Elements into STANDBY state (i.e. Low Power State). """
         exception_count =0
         exception_message =[]
-        self.logger.info(const.STR_STANDBY_CMD_ISSUED)
-        self._read_activity_message = const.STR_STANDBY_CMD_ISSUED
+        log_msg=const.STR_STANDBY_CMD_ISSUED
+        self.logger.info(log_msg)
+        self._read_activity_message = log_msg
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
+                log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(self._leaf_device_proxy[name])
+                self.logger.info(log_msg)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
 
         try:
             self._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
+            self.logger.info(const.STR_CMD_STANDBY_CSP_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
 
         try:
             self._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
+            self.logger.info(const.STR_CMD_STANDBY_SDP_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
@@ -468,6 +463,7 @@ class CentralNode(SKABaseDevice):
         try:
             for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
                 self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STANDBY)
+                self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                         exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
@@ -485,22 +481,27 @@ class CentralNode(SKABaseDevice):
         model.Set the Elements into ON state from STANDBY state. """
         exception_count =0
         exception_message = []
-        self.logger.info(const.STR_STARTUP_CMD_ISSUED)
-        self._read_activity_message = const.STR_STARTUP_CMD_ISSUED
+        log_msg=const.STR_STARTUP_CMD_ISSUED
+        self.logger.info(log_msg)
+        self._read_activity_message = log_msg
         for name in range(0, len(self._dish_leaf_node_devices)):
             try:
                 self._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
+                log_msg = const.CMD_SET_OPERATE_MODE + 'invoked on' + str(self._leaf_device_proxy[name])
+                self.logger.info(log_msg)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
 
         try:
             self._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP,[])
+            self.logger.info(const.STR_CMD_STARTUP_CSP_DEV)
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
         try:
             self._sdp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
+            self.logger.info(const.STR_CMD_STARTUP_SDP_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
@@ -508,6 +509,7 @@ class CentralNode(SKABaseDevice):
         try:
             for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
                 self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STARTUP)
+                self.logger.info(const.STR_CMD_STARTUP_SA_DEV)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
@@ -515,6 +517,37 @@ class CentralNode(SKABaseDevice):
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
+
+    @DebugIt()
+    def _check_receptor_reassignment(self, input_receptors_list):
+        """
+        Checks if any of the receptors are already allocated to other subarray when
+        AssignResources command is called.
+
+        :param:
+
+        :return: None
+
+        :throws:
+            ResourceReassignmentError: Thrown when an already assigned resource is received
+            in Assignresources command.
+        """
+        self.logger.info("Checking for duplicate allocation of dishes.")
+        duplicate_allocation_count = 0
+        duplicate_allocation_dish_ids = []
+
+        for receptor in input_receptors_list:
+            dish_ID = "dish" + receptor
+            self.logger.info("Checking allocation status of dish %s.", dish_ID)
+            if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
+                self.logger.info("Dish %s is already allocated.", dish_ID)
+                duplicate_allocation_dish_ids.append(dish_ID)
+                duplicate_allocation_count = duplicate_allocation_count + 1
+        self.logger.info("No of dishes already allocated: %d", duplicate_allocation_count)
+        self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
+
+        if duplicate_allocation_count > 0:
+            raise ResourceReassignmentError("Resources already assigned.", duplicate_allocation_dish_ids)
 
 
     @command(
@@ -640,81 +673,77 @@ class CentralNode(SKABaseDevice):
 
         ## Validate the input JSON string.
         try:
-            input_validator = AssignResourceValidator(self.logger)
+            self.logger.info("Validating input string.")
+            input_validator = AssignResourceValidator(self.TMMidSubarrayNodes, self._dish_leaf_node_devices, 
+                self.DishLeafNodePrefix, self.logger)
             input_validator.validate(argin)
-        except (InvalidJSONError, JsonKeyMissingError, JsonValueTypeMismatchError, InvalidParameterValue) as error:
-            self.logger.exception("Exception in validating input: %s", str(error))
-            self._read_activity_message = ERR_INVALID_JSON
-            argout = '{"dish": {"receptorIDList_success": []}}'
-            return json.dumps(argout)
-
-        try:
+        
+            # TODO: use the JSON object returned by cdm library
+            # This part will change once cdm-shared library is integrated in Central Node.
             # serialize the json
             jsonArgument = json.loads(argin)
+        
             # Create subarray proxy
             subarrayID = int(jsonArgument['subarrayID'])
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-            # Check for the duplicate receptor allocation
-            duplicate_allocation_count = 0
-            duplicate_allocation_dish_ids = []
-            input_receptor_list = jsonArgument["dish"]["receptorIDList"]
-            len_input_receptor_list= len(input_receptor_list)
-            for dish in range(0, len_input_receptor_list):
-                dish_ID = "dish" + input_receptor_list[dish]
-                if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
-                    duplicate_allocation_dish_ids.append(dish_ID)
-                    duplicate_allocation_count = duplicate_allocation_count + 1
-            if duplicate_allocation_count == 0:
-                # Remove Subarray Id key from input json argument and send the json with
-                # receptor Id list and SDP block to TMC Subarray Node
-                input_json_subarray = jsonArgument.copy()
-                del input_json_subarray["subarrayID"]
-                input_to_sa = json.dumps(input_json_subarray)
-                self._resources_allocated = subarrayProxy.command_inout(
-                    const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                # Update self._subarray_allocation variable to update subarray allocation
-                # for the related dishes.
-                # Also append the allocated dish to out argument.
-                for dish in range(0, len(self._resources_allocated)):
-                    dish_ID = "dish" + (self._resources_allocated[dish])
-                    self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                    receptorIDList.append(self._resources_allocated[dish])
-                self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-                self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-                self.logger.info(receptorIDList)
-                argout = {
-                    "dish": {
-                        "receptorIDList_success": receptorIDList
-                    }
-                }
-            else:
-                self._read_activity_message = const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
-                argout = {
-                    "dish": {
-                        "receptorIDList_success": receptorIDList
-                    }
-                }
-        except ValueError as value_error:
-            self.logger.error(const.ERR_INVALID_JSON)
-            self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
 
-        except KeyError as key_error:
-            self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+            ## check for duplicate allocation
+            self.logger.info("Checking for resource reallocation.")
+            self._check_receptor_reassignment(jsonArgument["dish"]["receptorIDList"])
 
+            ## Allocate resources to subarray
+            # Remove Subarray Id key from input json argument and send the json with
+            # receptor Id list and SDP block to TMC Subarray Node
+            self.logger.info("Allocating resource to subarray %d", subarrayID)
+            input_json_subarray = jsonArgument.copy()
+            del input_json_subarray["subarrayID"]
+            input_to_sa = json.dumps(input_json_subarray)
+            self._resources_allocated = subarrayProxy.command_inout(
+                const.CMD_ASSIGN_RESOURCES, input_to_sa)
+            # Update self._subarray_allocation variable to update subarray allocation
+            # for the related dishes.
+            # Also append the allocated dish to out argument.
+            for dish in range(0, len(self._resources_allocated)):
+                dish_ID = "dish" + (self._resources_allocated[dish])
+                self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+                receptorIDList.append(self._resources_allocated[dish])
+            self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+            self.logger.info(receptorIDList)
+
+            #Allocation successful
+            self.logger.info("Resource allocation successful.")
+            # Prepare output argument
+            argout = {
+                "dish": {
+                    "receptorIDList_success": receptorIDList
+                }
+            }
+            self.logger.debug(argout)
+        except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
+            self.logger.exception("Exception in AssignResource(): %s", str(error))
+            self._read_activity_message = "Exception in validating input: " + str(error)
+            exception_message.append("Exception in validating input: " + str(error))
+            exception_count += 1
+        except(JSONDecodeError) as json_error:
+            self.logger.exception(json_error.msg)
+            self._read_activity_message = "Exception parsing input JSON: " + json_error.msg
+            exception_message.append("Exception in validating input: " + str(json_error))
+            exception_count += 1
+        except ResourceReassignmentError as resource_error:
+            self.logger.exception(resource_error)
+            self.logger.exception("List of the dishes that are already allocated: %s", \
+                str(resource_error.resources_reallocation))
+            self._read_activity_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
+            exception_message.append(const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation))
+            exception_count += 1
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
+        # except Exception as except_occurred:
+        #     [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+        #                                     exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
 
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-
-        self.logger.info(argout)
         #throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
@@ -787,19 +816,22 @@ class CentralNode(SKABaseDevice):
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
                 res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
-                self._read_activity_message = const.STR_REL_RESOURCES
-                self.logger.info(const.STR_REL_RESOURCES)
+                log_msg=const.STR_REL_RESOURCES
+                self._read_activity_message = log_msg
+                self.logger.info(log_msg)
                 if not res_not_released:
                     release_success = True
                     for Dish_ID, Dish_Status in self._subarray_allocation.items():
                         if Dish_Status == subarray_name:
                             self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                 else:
-                    self._read_activity_message = const.STR_LIST_RES_NOT_REL \
-                                                  + res_not_released
+                    log_msg=const.STR_LIST_RES_NOT_REL + res_not_released
+                    self._read_activity_message = log_msg
+                    self.logger.info(log_msg)
                     release_success = False
             else:
                 self._read_activity_message = const.STR_FALSE_TAG
+                self.logger.info(const.STR_FALSE_TAG)
         except ValueError as value_error:
             self.logger.error(const.ERR_INVALID_JSON)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
