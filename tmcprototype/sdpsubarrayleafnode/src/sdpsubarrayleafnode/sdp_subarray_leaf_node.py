@@ -19,9 +19,11 @@ from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
+
 # Additional imports
 import json
 from . import const
+from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
@@ -75,6 +77,34 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # Throw Exception
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+
+    def AssignResources_ended(self, event):
+        """ Checks whether the command has been successfully invoked on SDP Subarray.
+
+          :param argin:
+            event: response from SDP Subarray for the invoked assign resource command.
+
+          :return: None.
+        """
+        exception_count = 0
+        exception_message = []
+        try:
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self._read_activity_message = log
+                self.logger.error(log)
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+
+        except tango.DevFailed as df:
+            self.logger.exception(df)
+            tango.Except.re_throw_exception(df,
+                                              "Exception occured in Assign resource of SDP subarray",
+                                              "SDP.AssignResources",
+                                              tango.ErrSeverity.ERR)
 
     # Throw exceptions
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
@@ -218,7 +248,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return self._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
 
-
+    def validate_obs_state(self):
+        sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
+        # Check if SDP Subarray obsState is READY
+        if sdp_subarray_obs_state == ObsState.IDLE:
+            self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
+        else:
+            self.logger.exception("Subarray is not in Idle obstate")
+            self._read_activity_message("Error in device obstate.")
+            raise InvalidObsStateError("SDP subarray is not in idle obstate.")
     # --------
     # Commands
     # --------
@@ -333,13 +371,21 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         exception_message = []
         exception_count = 0
+        try:
+            self.validate_obs_state()
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception("obstate is not in idle state","SDP subarray node raises exception.",
+                                         "SDP.AssignResources",tango.ErrSeverity.ERR)
+
 
         try:
             # Call SDP Subarray Command asynchronously
             log_msg = "Input JSON for SDP Subarray Leaf Node AssignResource command is: " + argin
             self.logger.debug(log_msg)
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
-                                                                          argin, self.cmd_ended_cb)
+                                                                          argin, self.AssignResources_ended)
+
             # Update the status of command execution status in activity message
             self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
