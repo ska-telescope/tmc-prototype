@@ -11,6 +11,7 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 import datetime
+import importlib.resources
 import threading
 from datetime import datetime, timedelta
 import pytz
@@ -231,7 +232,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         assigned_receptors =[]
 
         # Load a set of antenna descriptions and construct Antenna objects from them
-        with open("/venv/lib/python3.7/site-packages/cspsubarrayleafnode/ska_antennas.txt") as f:
+        with importlib.resources.open_text("cspsubarrayleafnode", "ska_antennas.txt") as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         # Create a dictionary including antenna objects
