@@ -696,6 +696,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.validate_obs_state()
         except InvalidObsStateError as error:
             self.logger.exception(error)
+            tango.Except.throw_exception("obstate is not in idle state","CSP subarray node raises exception.",
+                                         "CSP.AddReceptors", tango.ErrSeverity.ERR)
 
         try:
             # Parse receptorIDList from JSON string.
@@ -791,7 +793,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     event.errors)
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
-                # raise tango.DevFailed
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
@@ -809,7 +810,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         else:
             self.logger.exception("CSP Subarray is not in IDLE obsState")
             self._read_activity_message = "Error in device obsState"
-            raise InvalidObsStateError
+            raise InvalidObsStateError("CSP Subarray is not in IDLE obsState")
 
 
 # pylint: enable=protected-access,unused-argument,unused-variable
