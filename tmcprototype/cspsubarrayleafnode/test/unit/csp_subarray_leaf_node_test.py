@@ -628,7 +628,7 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
 
         with pytest.raises(Exception) as exc:
             device_proxy.AssignResources(assign_resources_input)
-            dummy_event = add_receptors_with_invalid_obs_state_exception()
+            dummy_event = command_callback_with_event_error(const.CMD_ADD_RECEPTORS)
             event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
         # assert:
         assert "ObsState is not in idle state" in str(exc.value)
