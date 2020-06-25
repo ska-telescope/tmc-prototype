@@ -1,7 +1,7 @@
 # GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
 # Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
 # In this case we use the latest python docker image to build and test this project.
-image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.2.2
+image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:9.3.2
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -32,7 +32,7 @@ build CentralNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./tmcprototype/centralnode
-    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -45,7 +45,7 @@ build CentralNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./tmcprototype/centralnode
-    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -58,7 +58,7 @@ build SubarrayNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./tmcprototype/subarraynode
-    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -71,7 +71,7 @@ build SubarrayNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./tmcprototype/subarraynode
-    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -84,7 +84,7 @@ build DishLeafNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./tmcprototype/dishleafnode
-    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -97,7 +97,7 @@ build DishLeafNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./tmcprototype/dishleafnode
-    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -110,7 +110,7 @@ build CspMasterLeafNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./tmcprototype/cspmasterleafnode
-    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -123,7 +123,7 @@ build CspMasterLeafNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./tmcprototype/cspmasterleafnode
-    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -136,7 +136,7 @@ build CspSubarrayLeafNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./tmcprototype/cspsubarrayleafnode
-    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -150,7 +150,7 @@ build SdpMasterLeafNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./tmcprototype/sdpmasterleafnode
-    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -164,7 +164,7 @@ build SdpMasterLeafNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./tmcprototype/sdpmasterleafnode
-    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -177,7 +177,7 @@ build CspSubarrayLeafNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./tmcprototype/cspsubarrayleafnode
-    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -190,7 +190,7 @@ build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./tmcprototype/sdpsubarrayleafnode
-    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -203,7 +203,7 @@ build SdpSubarrayLeafNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./tmcprototype/sdpsubarrayleafnode
-    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -217,7 +217,7 @@ build DishMaster wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./tmcprototype/dishmaster
-    - python setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -230,7 +230,7 @@ build DishMaster wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./tmcprototype/dishmaster
-    - python setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -270,8 +270,6 @@ linting:
   tags:
     - docker-executor
   script:
-    - apt-get -y update
-    - apt-get install -y python3-pip python3-setuptools python3-wheel --no-install-recommends
     - make lint
   allow_failure: true
   artifacts:
@@ -286,7 +284,7 @@ publish to nexus:
     TWINE_USERNAME: $TWINE_USERNAME
     TWINE_PASSWORD: $TWINE_PASSWORD
   script:
-    - pip install twine
+    - python3 -m pip install twine
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/centralnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/subarraynode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishleafnode/dist/*
