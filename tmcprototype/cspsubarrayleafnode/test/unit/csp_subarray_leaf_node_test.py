@@ -152,6 +152,12 @@ def command_callback_with_devfailed_exception():
                                  "CspSubarrayLeafNode_Commandfailed in callback", " ", tango.ErrSeverity.ERR)
 
 
+def add_receptors_with_invalid_obs_state_exception():
+    tango.Except.throw_exception("This is error message for devfailed",
+                                 "CspSubarrayLeafNode_Commandfailed in callback", " ", tango.ErrSeverity.ERR)
+
+
+
 def raise_devfailed_exception():
     tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
@@ -602,7 +608,7 @@ def test_configure_should_raise_exception_when_called_invalid_json():
         assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
 
 
-def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obstate():
+def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_state():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
@@ -619,12 +625,13 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obsta
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_input)
-
-        # act
+        # act:
         with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.AssignResources()
-        #assert
-        assert "obstate is not in idle state" in str(df.value)
+            tango_context.device.AssignResources(assign_resources_input)
+            dummy_event = add_receptors_with_invalid_obs_state_exception()
+            event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
+        # assert
+        assert "ObsState is not in idle state" in str(df.value)
 
 
 def test_state():
