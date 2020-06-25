@@ -696,7 +696,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.validate_obs_state()
         except InvalidObsStateError as error:
             self.logger.exception(error)
-            tango.Except.throw_exception("Obs State is not in idle state","CSP subarray node raises exception.",
+            tango.Except.throw_exception("Obs State is not in idle state","CSP subarray leaf node raised exception",
                                          "CSP.AddReceptors", tango.ErrSeverity.ERR)
 
         try:
