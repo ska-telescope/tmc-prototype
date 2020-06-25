@@ -120,7 +120,7 @@ def test_assign_command_with_callback_method_with_devfailed_error():
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_input)
             dummy_event = command_callback_with_devfailed_exception()
-            event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
+            event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
 
         # assert:
         assert "CspSubarrayLeafNode_Commandfailed in callback" in str(df.value)
