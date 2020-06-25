@@ -611,7 +611,7 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
     proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
     event_subscription_map = {}
 
