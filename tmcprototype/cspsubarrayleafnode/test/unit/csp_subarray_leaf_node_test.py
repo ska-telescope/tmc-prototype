@@ -153,7 +153,7 @@ def command_callback_with_devfailed_exception():
 
 
 def add_receptors_with_invalid_obs_state_exception():
-    return ValueError("ObsState is not in idle state")
+    return Exception("ObsState is not in idle state")
 
 
 def raise_devfailed_exception():
@@ -623,13 +623,15 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_input)
+        device_proxy = tango_context.device
         # act:
-        with pytest.raises(ValueError) as ve:
-            tango_context.device.AssignResources(assign_resources_input)
+
+        with pytest.raises(Exception) as exc:
+            device_proxy.AssignResources(assign_resources_input)
             dummy_event = add_receptors_with_invalid_obs_state_exception()
             event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
-        # assert
-        assert "ObsState is not in idle state" in str(ve.value)
+        # assert:
+        assert "ObsState is not in idle state" in str(exc.value)
 
 
 def test_state():
