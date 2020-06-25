@@ -116,9 +116,11 @@ def test_assign_command_with_callback_method_with_devfailed_error():
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_resources_input = []
+        assign_resources_input.append(assign_input)
         # act:
         with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.AssignResources(assign_input)
+            tango_context.device.AssignResources(assign_resources_input)
             dummy_event = command_callback_with_devfailed_exception()
             event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
 
@@ -566,6 +568,7 @@ def any_method(with_name=None):
 
     return AnyMethod()
 
+
 @pytest.mark.xfail
 def test_assign_resource_should_raise_exception_when_called_invalid_json():
     # act
@@ -575,6 +578,7 @@ def test_assign_resource_should_raise_exception_when_called_invalid_json():
             tango_context.device.AssignResources(assignresources_input)
         # assert:
         assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
+
 
 @pytest.mark.xfail
 def test_assign_resource_should_raise_exception_when_key_not_found():
