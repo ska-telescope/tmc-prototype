@@ -148,8 +148,8 @@ def command_callback_with_command_exception():
 
 
 def command_callback_with_devfailed_exception():
-    tango.Except.throw_exception("CSPSubarrayLeafNode_Commandfailed in callback",
-                                 "This is error message for devfailed"," ", tango.ErrSeverity.ERR)
+    tango.Except.throw_exception("This is error message for devfailed",
+                                 "CSPSubarrayLeafNode_Commandfailed in callback", " ", tango.ErrSeverity.ERR)
 
 
 def raise_devfailed_exception():
