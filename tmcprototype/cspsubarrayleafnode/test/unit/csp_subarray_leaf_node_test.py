@@ -10,6 +10,16 @@ import mock
 from mock import Mock
 from mock import MagicMock
 
+# Sample 'good' JSON
+sample_json = {
+  "dish": {
+    "receptorIDList": [
+      "0001",
+      "0002"
+    ]
+  }
+}
+
 # Tango imports
 from tango import DevState
 from tango.test_context import DeviceTestContext
@@ -152,10 +162,6 @@ def command_callback_with_devfailed_exception():
                                  "CspSubarrayLeafNode_Commandfailed in callback", " ", tango.ErrSeverity.ERR)
 
 
-def add_receptors_with_invalid_obs_state_exception():
-    return Exception("ObsState is not in idle state")
-
-
 def raise_devfailed_exception():
     tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
@@ -182,8 +188,8 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
         tango_context.device.StartScan([json.dumps(scan_input)])
 
         # assert:
-        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, '0',
-                                                                         any_method(with_name='commandCallback'))
+        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with\
+            (const.CMD_STARTSCAN, '0', any_method(with_name='commandCallback'))
 
 
 def test_start_scan_should_raise_devfailed_exception():
@@ -323,8 +329,8 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources()
         device_proxy.ReleaseAllResources()
 
         # assert:
-        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_REMOVE_ALL_RECEPTORS,
-                                                                         any_method(with_name='commandCallback'))
+        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with\
+            (const.CMD_REMOVE_ALL_RECEPTORS, any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
 
@@ -371,8 +377,8 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         tango_context.device.EndScan()
-        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
-                                                                         any_method(with_name='commandCallback'))
+        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with\
+            (const.CMD_ENDSCAN, any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
 
 
@@ -457,9 +463,8 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         cspConfiguration = argin_json.copy()
         if "pointing" in cspConfiguration:
             del cspConfiguration["pointing"]
-        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
-                                                                         json.dumps(cspConfiguration),
-                                                                         any_method(with_name='commandCallback'))
+        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with\
+            (const.CMD_CONFIGURE, json.dumps(cspConfiguration), any_method(with_name='commandCallback'))
 
 
 def test_configure_to_raise_devfailed_exception():
@@ -513,8 +518,8 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
         device_proxy = tango_context.device
         tango_context.device.GoToIdle()
 
-        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_GOTOIDLE,
-                                                                         any_method(with_name='commandCallback'))
+        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with\
+            (const.CMD_GOTOIDLE, any_method(with_name='commandCallback'))
         assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
 
@@ -625,12 +630,8 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
         assign_resources_input.append(assign_input)
 
         # act:
-
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(json.dumps(assign_resources_input))
-
-        # print("____________Exception message is_________",str(df.args[0].desc))
-        # print("________index value_______", df[1])
 
         # assert:
         assert "CSP subarray leaf node raised exception" in str(df.value)

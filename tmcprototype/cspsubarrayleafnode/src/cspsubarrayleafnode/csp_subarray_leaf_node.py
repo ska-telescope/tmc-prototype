@@ -479,7 +479,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         {"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,
         "integrationTime":1400,"corrBandwidth":0}],"delayModelSubscriptionPoint":
         "ska_mid/tm_leaf_node/csp_subarray01/delayModel","visDestinationAddressSubscriptionPoint":
-        "mid_sdp/elt/subarray_1/receiveAddresses","pointing":{"target":{"system":"ICRS","name":"Polaris Australis",
+        "mid_sdp/elt/subarray_1/receiveAddresses","pointing":{"target":{"system":"ICRS",
+        "name":"Polaris Australis",
         "RA":"21:08:47.92","dec":"-88:57:22.9"}},"scanID":"1"}
 
 
@@ -517,16 +518,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_count += 1
 
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.ERR_CONFIGURE_INVOKING_CMD)
+            [exception_message, exception_count] = self.\
+                _handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                            const.ERR_CONFIGURE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                                                   exception_message,
                                                                                   exception_count,
-                                                                                  const.ERR_CONFIGURE_INVOKING_CMD)
+                                                                                  const.
+                                                                                  ERR_CONFIGURE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
@@ -566,13 +567,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                                                     exception_message,
                                                                                     exception_count,
-                                                                                    const.ERR_STARTSCAN_RESOURCES)
+                                                                                    const.
+                                                                                    ERR_STARTSCAN_RESOURCES)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                                                   exception_message,
                                                                                   exception_count,
-                                                                                  const.ERR_STARTSCAN_RESOURCES)
+                                                                                  const.
+                                                                                  ERR_STARTSCAN_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
@@ -607,13 +610,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                                                     exception_message,
                                                                                     exception_count,
-                                                                                    const.ERR_ENDSCAN_INVOKING_CMD)
+                                                                                    const.
+                                                                                    ERR_ENDSCAN_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                                                   exception_message,
                                                                                   exception_count,
-                                                                                  const.ERR_ENDSCAN_INVOKING_CMD)
+                                                                                  const.
+                                                                                  ERR_ENDSCAN_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
@@ -647,12 +652,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                                                     exception_message,
                                                                                     exception_count,
-                                                                                    const.ERR_RELEASE_ALL_RESOURCES)
+                                                                                    const.
+                                                                                    ERR_RELEASE_ALL_RESOURCES)
+
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                                                   exception_message,
                                                                                   exception_count,
-                                                                                  const.ERR_RELEASE_ALL_RESOURCES)
+                                                                                  const.
+                                                                                  ERR_RELEASE_ALL_RESOURCES)
 
         # throw exception:
         if exception_count > 0:
@@ -696,7 +704,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.validate_obs_state()
         except InvalidObsStateError as error:
             self.logger.exception(error)
-            tango.Except.throw_exception("ObsState is not in idle state","CSP subarray leaf node raised exception",
+            tango.Except.throw_exception("ObsState is not in idle state","CSP subarray leaf node raised "
+                                                                         "exception",
                                          "CSP.AddReceptors", tango.ErrSeverity.ERR)
 
         try:
@@ -732,13 +741,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                                                     exception_count,
                                                                                     const.ERR_ASSGN_RESOURCES)
 
-
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_ASSGN_RESOURCES)
-
         # throw exception:
         if exception_count:
             print("Exception in AssignResource:", exception_message)
@@ -771,13 +773,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                                                     exception_message,
                                                                                     exception_count,
-                                                                                    const.ERR_GOTOIDLE_INVOKING_CMD)
+                                                                                    const.
+                                                                                    ERR_GOTOIDLE_INVOKING_CMD)
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                                                   exception_message,
                                                                                   exception_count,
-                                                                                  const.ERR_GOTOIDLE_INVOKING_CMD)
+                                                                                  const.
+                                                                                  ERR_GOTOIDLE_INVOKING_CMD)
 
         # throw exception:
         if exception_count > 0:
