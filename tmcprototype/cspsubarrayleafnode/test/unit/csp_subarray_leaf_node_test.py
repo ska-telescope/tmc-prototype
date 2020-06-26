@@ -275,34 +275,6 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
 
-def test_assign_resources_should_raise_devfailed_exception():
-    # arrange:
-    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
-    dut_properties = {
-        'CspSubarrayFQDN': csp_subarray1_fqdn
-    }
-
-    csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
-
-    proxies_to_mock = {
-        csp_subarray1_fqdn: csp_subarray1_proxy_mock
-    }
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
-        assign_resources_input = []
-        assign_resources_input.append(assign_input)
-        device_proxy = tango_context.device
-        ##act
-        with pytest.raises(tango.DevFailed):
-            device_proxy.AssignResources(assign_resources_input)
-        # assert
-
-        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
-
-
 def test_release_resource_should_command_csp_subarray_to_release_all_resources():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -576,29 +548,6 @@ def any_method(with_name=None):
             return other.__func__.__name__ == with_name if with_name else True
 
     return AnyMethod()
-
-
-@pytest.mark.xfail
-def test_assign_resource_should_raise_exception_when_called_invalid_json():
-    # act
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assignresources_input = '{"invalid_key"}'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(assignresources_input)
-        # assert:
-        assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
-
-
-@pytest.mark.xfail
-def test_assign_resource_should_raise_exception_when_key_not_found():
-    # act
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assignresources_input = []
-        assignresources_input.append('{"dis":{"receptorIDList":["0001","0002"]}}')
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(assignresources_input)
-        # assert:
-        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
 def test_configure_should_raise_exception_when_called_invalid_json():
