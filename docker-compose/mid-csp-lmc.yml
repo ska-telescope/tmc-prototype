@@ -27,20 +27,20 @@ services:
     volumes:
       - ..:/tmc-prototype
 
-  midcsp_dumpdsconfig:
-    image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
-    network_mode: ${NETWORK_MODE}
-    container_name: ${CONTAINER_NAME_PREFIX}midcsp_dumpdsconfig
-    depends_on:
-      - databaseds
-      - midcspsubarray01
-    environment:
-      - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
-             python -m dsconfig.dump > /tmc-prototype/data/config_result.json && sleep infinity "
-    volumes:
-      - ..:/tmc-prototype
+  # midcsp_dumpdsconfig:
+  #   image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
+  #   network_mode: ${NETWORK_MODE}
+  #   container_name: ${CONTAINER_NAME_PREFIX}midcsp_dumpdsconfig
+  #   depends_on:
+  #     - databaseds
+  #     - midcspsubarray01
+  #   environment:
+  #     - TANGO_HOST=${TANGO_HOST}
+  #   command: >
+  #     sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=60 --strict --
+  #            python -m dsconfig.dump > /tmc-prototype/data/config_result.json && sleep infinity "
+  #   volumes:
+  #     - ..:/tmc-prototype
 
   midcspsubarray01:
     image: ${DOCKER_REGISTRY_HOST}/ska-docker/mid-csp-lmc:0.5.7-4028dc62
