@@ -809,7 +809,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
             self.logger.exception("CSP Subarray is not in IDLE obsState")
-            self._read_activity_message = "Error in device obsState"
+            #self._read_activity_message = "Error in device obsState"
             raise InvalidObsStateError("CSP Subarray is not in IDLE obsState")
 
 

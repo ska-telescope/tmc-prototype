@@ -611,10 +611,9 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
     csp_subarray1_proxy_mock = Mock()
-    #csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
     proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
     event_subscription_map = {}
-    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
         lambda command_name, argument, callback, *args,
@@ -625,16 +624,6 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
         assign_resources_input = []
         assign_resources_input.append(assign_input)
 
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute,
-                                               DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-
-        attribute = "ObsState"
-        dummy_event_csp = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn,
-                                                   attribute, ObsState.READY)
-        event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
-
         # act:
 
         with pytest.raises(tango.DevFailed) as df:
@@ -644,7 +633,7 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
         # print("________index value_______", df[1])
 
         # assert:
-        assert "ObsState is not in idle state" in str(df.value)
+        assert "CSP subarray leaf node raised exception" in str(df.value)
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
