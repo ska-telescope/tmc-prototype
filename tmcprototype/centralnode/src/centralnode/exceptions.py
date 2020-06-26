@@ -1,4 +1,4 @@
-from json import JSONDecodeError
+from marshmallow import ValidationError
 
 class InvalidObsStateError(ValueError):
     """Raised when the device obsState does not allow to invoke the command as per SKA state model"""
@@ -11,7 +11,7 @@ class ResourceReassignmentError(Exception):
         self.resources_reallocation = []
         self.resources_reallocation = resources
 
-class InvalidJSONError(JSONDecodeError):
+class InvalidJSONError(ValidationError):
     """Raised when The JSON format is invalid"""
 
 class ResourceNotPresentError(ValueError):
@@ -19,15 +19,3 @@ class ResourceNotPresentError(ValueError):
 
 class SubarrayNotPresentError(ValueError):
     """Raised when a subarray is requested but not present."""
-
-# class JsonKeyMissingError(KeyError):
-#     """Raised when a mandatory key in the input string is missing"""
-
-# class JsonValueTypeMismatchError(TypeError):
-#     """Raised when the key data type is different than that of value"""
-
-# class JsonValueMissingError(ValueError):
-#     """Raised when the key is missing"""
-
-# class InvalidParameterValue(ValueError):
-#     """Raised when there is a violation of business rule."""

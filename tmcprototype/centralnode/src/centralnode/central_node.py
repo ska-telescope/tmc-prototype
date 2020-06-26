@@ -676,12 +676,7 @@ class CentralNode(SKABaseDevice):
             self.logger.info("Validating input string.")
             input_validator = AssignResourceValidator(self.TMMidSubarrayNodes, self._dish_leaf_node_devices, 
                 self.DishLeafNodePrefix, self.logger)
-            input_validator.validate(argin)
-        
-            # TODO: use the JSON object returned by cdm library
-            # This part will change once cdm-shared library is integrated in Central Node.
-            # serialize the json
-            jsonArgument = json.loads(argin)
+            jsonArgument = input_validator.validate(argin)
         
             # Create subarray proxy
             subarrayID = int(jsonArgument['subarrayID'])
@@ -700,6 +695,7 @@ class CentralNode(SKABaseDevice):
             input_to_sa = json.dumps(input_json_subarray)
             self._resources_allocated = subarrayProxy.command_inout(
                 const.CMD_ASSIGN_RESOURCES, input_to_sa)
+
             # Update self._subarray_allocation variable to update subarray allocation
             # for the related dishes.
             # Also append the allocated dish to out argument.
@@ -725,11 +721,6 @@ class CentralNode(SKABaseDevice):
             self._read_activity_message = "Exception in validating input: " + str(error)
             exception_message.append("Exception in validating input: " + str(error))
             exception_count += 1
-        except(JSONDecodeError) as json_error:
-            self.logger.exception(json_error.msg)
-            self._read_activity_message = "Exception parsing input JSON: " + json_error.msg
-            exception_message.append("Exception in validating input: " + str(json_error))
-            exception_count += 1
         except ResourceReassignmentError as resource_error:
             self.logger.exception(resource_error)
             self.logger.exception("List of the dishes that are already allocated: %s", \
@@ -740,10 +731,7 @@ class CentralNode(SKABaseDevice):
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
-        # except Exception as except_occurred:
-        #     [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-        #                                     exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-
+        
         #throw exception:
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)

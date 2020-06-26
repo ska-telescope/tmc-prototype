@@ -18,6 +18,7 @@ from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 from ska.cdm.schemas import CODEC
 from ska.cdm.messages.central_node.assign_resources import AssignResourcesRequest
 from ska.cdm.messages.central_node.assign_resources import DishAllocation
+from marshmallow import ValidationError
 
 module_logger = logging.getLogger(__name__)
 
@@ -74,7 +75,8 @@ class AssignResourceValidator():
             self.logger.info("Checking for receptor %s", receptor_id)
             if receptor_id not in self._receptor_list:
                 self.logger.error("Invalid value in receptorIDList.")
-                raise ResourceNotPresentError("Invalid value in receptorIDList. Valid values are '0001', '0002', '0003', '0004'")
+                exception_message = "Invalid value in receptorIDList. Valid values are " + str(self._receptor_list)
+                raise ResourceNotPresentError(exception_message)
             self.logger.info("Receptor ID is valid")
 
     def validate(self, input_string):
@@ -86,9 +88,7 @@ class AssignResourceValidator():
         :return: True if input string is valid.
 
         :throws:
-            TODO: Update docstring. InvalidJSONError: When the JSON string is not formatted properly.
-
-            JsonKeyMissingError: When a mandatory key from the JSON string is missing.
+            InvalidJSONError: When the JSON string is not formatted properly.
         """
         
         ## Check if JSON is correct
@@ -96,29 +96,22 @@ class AssignResourceValidator():
         try:
             input_json = CODEC.loads(AssignResourcesRequest, input_string)
             self.logger.info("The JSON format is correct.")
-        except JSONDecodeError as json_error:
+        except ValidationError as json_error:
             self.logger.exception("Exception: %s", str(json_error))
             raise InvalidJSONError("Malformed input string. Please check the JSON format.")
 
         ## Validate subarray ID
         self.logger.info("Validating subarrayID")
-        # try:
-        # subarray_id = input_json["subarrayID"]
-        # except KeyError as ke:
-        #     self.logger.exception("Exception: %s", str(ke))
-        #     raise JsonKeyMissingError("A mandatory key subarrayID is missing from input JSON.")
+        # NOTE: To avoid refactoring the code to use the classes from 
+        # cdm library which was integrated after this code was written.
+        # TODO: Refactor the validation to use cdm given object.
+        input_json = json.loads(input_string)
 
         self._validate_subarray_id(input_json["subarrayID"])
         self.logger.info("SubarrayID validation successful.")
 
         ## Validate receptorIDList
         self.logger.info("Validating receptorIDList")
-        # try:
-        # receptor_id_list = input_json["dish"]["receptorIDList"]
-        # except KeyError as ke:
-        #     self.logger.exception("Exception: %s", str(ke))
-        #     raise JsonKeyMissingError("A mandatory key receptorIDList is missing from input JSON.")
-
         self._validate_receptor_id_list(input_json["dish"]["receptorIDList"])
         self.logger.info("receptor_id_list validation successful.")
 
