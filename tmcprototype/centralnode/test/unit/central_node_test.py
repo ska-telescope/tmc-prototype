@@ -15,7 +15,7 @@ from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from centralnode import CentralNode,const
+from centralnode import CentralNode, const
 from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
     STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
@@ -286,7 +286,8 @@ def test_assign_resources_should_raise_devfailed_exception():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":' \
                          '"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",' \
-                         '"coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
+                         '"coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":' \
+                         '[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
                          '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
                          '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":' \
                          '"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",' \

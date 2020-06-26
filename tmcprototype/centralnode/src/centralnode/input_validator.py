@@ -13,11 +13,10 @@ from json import JSONDecodeError
 import logging
 
 # SKA specific imports
-from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
+from centralnode.exceptions import ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 from ska.cdm.schemas import CODEC
 from ska.cdm.messages.central_node.assign_resources import AssignResourcesRequest
-from ska.cdm.messages.central_node.assign_resources import DishAllocation
 from marshmallow import ValidationError
 
 module_logger = logging.getLogger(__name__)
@@ -55,8 +54,9 @@ class AssignResourceValidator():
         """
         self.logger.debug("Subarray ID: %d", subarray_id)
         if not subarray_id in self._subarrays:
-            self.logger.error("Invalid subarray ID. Subarray ID must be between 1 and 3.")
-            raise SubarrayNotPresentError("Invalid subarray ID. Subarray ID must be between 1 and 3.")
+            self.logger.error("Incorrect Subarray ID. The subarray does not exist.")
+            exception_message = "Invalid subarray ID. Available subarrays are: " + str(self._subarrays)
+            raise SubarrayNotPresentError(exception_message)
 
     def _validate_receptor_id_list(self, receptor_id_list):
         """Applies validation on receptorIDList value
@@ -75,7 +75,7 @@ class AssignResourceValidator():
             self.logger.info("Checking for receptor %s", receptor_id)
             if receptor_id not in self._receptor_list:
                 self.logger.error("Invalid value in receptorIDList.")
-                exception_message = "Invalid value in receptorIDList. Valid values are " + str(self._receptor_list)
+                exception_message = "Invalid value in receptorIDList. Valid values are: " + str(self._receptor_list)
                 raise ResourceNotPresentError(exception_message)
             self.logger.info("Receptor ID is valid")
 
@@ -96,7 +96,7 @@ class AssignResourceValidator():
         try:
             input_json = CODEC.loads(AssignResourcesRequest, input_string)
             self.logger.info("The JSON format is correct.")
-        except ValidationError as json_error:
+        except(ValidationError, JSONDecodeError) as json_error:
             self.logger.exception("Exception: %s", str(json_error))
             raise InvalidJSONError("Malformed input string. Please check the JSON format.")
 
@@ -104,7 +104,6 @@ class AssignResourceValidator():
         self.logger.info("Validating subarrayID")
         # NOTE: To avoid refactoring the code to use the classes from 
         # cdm library which was integrated after this code was written.
-        # TODO: Refactor the validation to use cdm given object.
         input_json = json.loads(input_string)
 
         self._validate_subarray_id(input_json["subarrayID"])

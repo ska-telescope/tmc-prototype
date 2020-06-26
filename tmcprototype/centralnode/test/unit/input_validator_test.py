@@ -185,7 +185,6 @@ sample_json = {
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
-from marshmallow import ValidationError
 
 class TestAssignResourceValidator():
     """Class to test the AssignResourceValidator class methods"""
@@ -202,46 +201,35 @@ class TestAssignResourceValidator():
         output_json = input_validator.validate(json.dumps(sample_json))
         assert output_json == sample_json
 
-    # def test_validate_wrong_subarray_id(self):
-    #     """
-    #     Tests that InvalidJSONError is raised when a wrong subarray id is given in the input string.
-    #     """
+    def test_validate_wrong_subarray_id(self):
+        """
+        Tests that InvalidJSONError is raised when a wrong subarray id is given 
+        in the input string.
+        """
 
-    #     # Set wrong subarray id.
-    #     input_json = sample_json
-    #     input_json["subarrayID"] = 99
+        # Set wrong subarray id.
+        input_json = sample_json
+        input_json["subarrayID"] = 99
 
-    #     with pytest.raises(SubarrayNotPresentError) as excinfo:
-    #         input_validator = AssignResourceValidator(self._test_subarray_list,
-    #           self._test_receptor_id_list, "ska_mid/tm_leaf_node/d")
-    #         input_validator.validate(json.dumps(input_json))
-    #     assert "Invalid subarray ID. Subarray ID must be between 1 and 3." in str(excinfo.value)
+        with pytest.raises(SubarrayNotPresentError) as excinfo:
+            input_validator = AssignResourceValidator(self._test_subarray_list,
+              self._test_receptor_id_list, "ska_mid/tm_leaf_node/d")
+            input_validator.validate(json.dumps(input_json))
+        assert "Invalid subarray ID. Available subarrays are" in str(excinfo.value)
 
-    # def test_validate_incorrect_receptor_id(self):
-    #     """
-    #     Tests that InvalidJSONError is raised when a receptor id is given incorrect value in the input string.
-    #     """
+    def test_validate_incorrect_receptor_id(self):
+        """
+        Tests that ResourceNotPresentError is raised when a receptor id is given incorrect 
+        value in the input string.
+        """
 
-    #     input_json = sample_json
-    #     invalid_receptor_id_list = ["9999"]
-    #     input_json["dish"]["receptorIDList"] = invalid_receptor_id_list
+        input_json = sample_json
+        invalid_receptor_id_list = ["9999"]
+        input_json["dish"]["receptorIDList"] = invalid_receptor_id_list
 
-    #     with pytest.raises(ResourceNotPresentError) as excinfo:
-    #         input_validator = AssignResourceValidator(self._test_subarray_list,
-    #           self._test_receptor_id_list, "ska_mid/tm_leaf_node/d")
-    #         input_validator.validate(json.dumps(input_json))
+        with pytest.raises(ResourceNotPresentError) as excinfo:
+            input_validator = AssignResourceValidator(self._test_subarray_list,
+              self._test_receptor_id_list, "ska_mid/tm_leaf_node/d")
+            input_validator.validate(json.dumps(input_json))
 
-    #     assert "Invalid value in receptorIDList. Valid values are '0001', '0002', '0003', '0004'" in str(excinfo.value)
-
-    # def test_validate_non_int_subarray_id(self):
-    #     """
-    #     Tests that InvalidJSONError is raised when a wrong subarray id is given in the input string.
-    #     """
-    #     input_json = sample_json
-    #     input_json["subarrayID"] = 12.34
-
-    #     with pytest.raises(ValidationError) as excinfo:
-    #         input_validator = AssignResourceValidator(self._test_subarray_list,
-    #           self._test_receptor_id_list, "ska_mid/tm_leaf_node/d")
-    #         input_validator.validate(json.dumps(input_json))
-    #     assert "Malformed input string. Please check the JSON format." in str(excinfo.value)
+        assert "Invalid value in receptorIDList. Valid values are: " in str(excinfo.value)
