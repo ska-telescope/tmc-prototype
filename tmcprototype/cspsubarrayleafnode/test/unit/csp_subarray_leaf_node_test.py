@@ -611,9 +611,10 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.READY
+    #csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
     event_subscription_map = {}
+    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
         lambda command_name, argument, callback, *args,
@@ -623,15 +624,36 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
         assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
         assign_resources_input = []
         assign_resources_input.append(assign_input)
-        device_proxy = tango_context.device
+
+        attribute = "state"
+        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute,
+                                               DevState.OFF)
+        event_subscription_map[attribute](dummy_event)
+
+        attribute = "ObsState"
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn,
+                                                   attribute, ObsState.READY)
+        event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+
         # act:
 
-        with pytest.raises(Exception) as exc:
-            device_proxy.AssignResources(assign_resources_input)
-            dummy_event = command_callback_with_event_error(const.CMD_ADD_RECEPTORS)
-            event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.AssignResources(json.dumps(assign_resources_input))
+
+        # print("____________Exception message is_________",str(df.args[0].desc))
+        # print("________index value_______", df[1])
+
         # assert:
-        assert "ObsState is not in idle state" in str(exc.value)
+        assert "ObsState is not IDLE" in str(df.value)
+
+
+def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = attr_value
+    fake_event.device = proxy_mock
+    return fake_event
 
 
 def test_state():
