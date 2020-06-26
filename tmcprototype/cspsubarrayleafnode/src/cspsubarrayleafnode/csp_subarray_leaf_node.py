@@ -696,7 +696,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 }
 
          Note: Enter input without spaces as:{"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]}}
+        
         :return: None.
+
+        :throws: DevFailed.
         """
         exception_message = []
         exception_count = 0
@@ -705,8 +708,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         except InvalidObsStateError as error:
             self.logger.exception(error)
             tango.Except.throw_exception("ObsState is not in idle state","CSP subarray leaf node raised "
-                                                                         "exception",
-                                         "CSP.AddReceptors", tango.ErrSeverity.ERR)
+                                        "exception",
+                                        "CSP.AddReceptors", tango.ErrSeverity.ERR)
 
         try:
             # Parse receptorIDList from JSON string.
@@ -737,13 +740,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.ERR_ASSGN_RESOURCES)
+                exception_message,
+                exception_count,
+                const.ERR_ASSGN_RESOURCES)
 
         # throw exception:
         if exception_count:
-            print("Exception in AssignResource:", exception_message)
+            self.logger.info("Exception in AssignResource: %s", exception_message)
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources

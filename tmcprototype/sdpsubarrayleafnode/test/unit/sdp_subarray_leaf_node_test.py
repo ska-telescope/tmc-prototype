@@ -354,26 +354,26 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
 
 
 def test_assign_resources_should_raise_devfailed_for_invalid_obstate():
-        # arrange:
-        sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-        dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
-        sdp_subarray1_proxy_mock = Mock()
-        sdp_subarray1_proxy_mock.obsState = ObsState.READY
-        proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
-        event_subscription_map = {}
-        sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
-            lambda command_name, argument, callback, *args,
-                   **kwargs: event_subscription_map.update({command_name: callback}))
-        with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-                               proxies_to_mock=proxies_to_mock) as tango_context:
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+                **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                            proxies_to_mock=proxies_to_mock) as tango_context:
 
-            assign_input = json.dumps(sample_json)
-            # act:
-            with pytest.raises(tango.DevFailed) as df:
-                tango_context.device.AssignResources(assign_input)
+        assign_input = json.dumps(sample_json)
+        # act:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.AssignResources(assign_input)
 
-        # assert:
-            assert "SDP subarray node raises exception." in str(df)
+    # assert:
+        assert "SDP subarray node raises exception." in str(df)
 
 
 def test_release_resources_when_sdp_subarray_is_idle():

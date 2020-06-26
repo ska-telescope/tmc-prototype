@@ -371,6 +371,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             Note: Enter input without spaces
 
         :return: Empty String.
+
+        :throws: DevFailed.
         """
         exception_message = []
         exception_count = 0
