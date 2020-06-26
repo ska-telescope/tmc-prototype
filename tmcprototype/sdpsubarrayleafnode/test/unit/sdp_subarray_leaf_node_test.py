@@ -62,46 +62,6 @@ def test_end_sb_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
-@pytest.mark.xfail
-def test_assign_command_with_callback_method_with_command_error():
-    # arrange:
-    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
-    sdp_subarray1_proxy_mock = Mock()
-    sdp_subarray1_proxy_mock.obsState = ObsState.READY
-    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
-    event_subscription_map = {}
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
-                       '[{"id":"science_A","coordinate_system":"ICRS","ra":"21:08:47.92",' \
-                       '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                       '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
-                       '{"id":"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92",' \
-                       '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                       '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                       '"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                       '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
-                       '"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
-                       '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},' \
-                       '"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                       '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
-                       '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",' \
-                       '"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004",' \
-                       '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                       '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
-                       '"type":["calibration"]}]}]}'
-        # act:
-        with pytest.raises(Exception):
-            tango_context.device.AssignResources(assign_input)
-            dummy_event = command_callback_with_command_exception()
-            event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
-        # assert:
-        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
-
 
 def test_assign_command_with_callback_method_with_devfailed_error():
     # arrange:
@@ -391,45 +351,43 @@ def test_assign_resources_should_raise_devfailed_exception():
 
 
 def test_assign_resources_should_raise_devfailed_for_invalid_obstate():
-    # arrange:
-    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-    dut_properties = {
-        'SdpSubarrayFQDN': sdp_subarray1_fqdn
-    }
+        # arrange:
+        sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+        dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+        sdp_subarray1_proxy_mock = Mock()
+        sdp_subarray1_proxy_mock.obsState = ObsState.READY
+        proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+        event_subscription_map = {}
+        sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+            lambda command_name, argument, callback, *args,
+                   **kwargs: event_subscription_map.update({command_name: callback}))
+        with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                               proxies_to_mock=proxies_to_mock) as tango_context:
 
-    sdp_subarray1_proxy_mock = Mock()
-    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-    proxies_to_mock = {
-        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-    }
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) \
-            as tango_context:
-        assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
-                        '[{"id":"science_A","coordinate_system":"ICRS","ra":"21:08:47.92",' \
-                        '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                        '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
-                        '{"id":"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92",' \
-                        '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
-                        '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
-                        '"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
-                        '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
-                        '"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
-                        '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},' \
-                        '"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
-                        '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
-                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",' \
-                        '"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004",' \
-                        '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                        '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
-                        '"type":["calibration"]}]}]}'
-        device_proxy = tango_context.device
-        # act:
-        with pytest.raises(tango.DevFailed) as df:
-            device_proxy.AssignResources(assign_input)
+            assign_input = '{"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":' \
+                           '[{"id":"science_A","coordinate_system":"ICRS","ra":"21:08:47.92",' \
+                           '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                           '"nchan":372,"input_link_map":[[1,0],[101,1]]}]},' \
+                           '{"id":"calibration_B","coordinate_system":"ICRS","ra":"21:08:47.92",' \
+                           '"dec":"-88:57:22.9","subbands":[{"freq_min":0.35e9,"freq_max":1.05e9,' \
+                           '"nchan":372,"input_link_map":[[1,0],[101,1]]}]}],' \
+                           '"processing_blocks":[{"id":"pb-mvp01-20200325-00001",' \
+                           '"workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},' \
+                           '"parameters":{}},{"id":"pb-mvp01-20200325-00002",' \
+                           '"workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},' \
+                           '"parameters":{}},{"id":"pb-mvp01-20200325-00003",' \
+                           '"workflow":{"type":"batch","id":"ical","version":"0.1.0"},' \
+                           '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",' \
+                           '"type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004",' \
+                           '"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
+                           '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003",' \
+                           '"type":["calibration"]}]}]}'
+            # act:
+            with pytest.raises(tango.DevFailed) as df:
+                tango_context.device.AssignResources(assign_input)
+
         # assert:
-        assert "obstate is not in idle state" in str(df.value)
+            assert "SDP subarray node raises exception." in str(df)
 
 
 def test_release_resources_when_sdp_subarray_is_idle():
