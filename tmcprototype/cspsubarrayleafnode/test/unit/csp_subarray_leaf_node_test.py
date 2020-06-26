@@ -644,7 +644,7 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
         # print("________index value_______", df[1])
 
         # assert:
-        assert "ObsState is not IDLE" in str(df.value)
+        assert "ObsState is not in idle state" in str(df.value)
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
