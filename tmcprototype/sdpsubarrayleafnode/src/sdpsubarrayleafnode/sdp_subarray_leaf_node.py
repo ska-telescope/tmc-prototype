@@ -61,6 +61,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         exception_count = 0
         exception_message = []
+        self.logger.debug(str(event.errors))
         try:
             if event.err:
                 log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
@@ -89,8 +90,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         exception_count = 0
         exception_message = []
+        self.logger.debug(str(event.errors))
         try:
             if event.err:
+                self.logger.debug(str(event.errors))
                 log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self._read_activity_message = log
                 self.logger.error(log)
@@ -255,7 +258,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
         else:
             self.logger.exception("Subarray is not in Idle obstate")
-            self._read_activity_message("Error in device obstate.")
+            self._read_activity_message = "Error in device obstate."
             raise InvalidObsStateError("SDP subarray is not in idle obstate.")
     # --------
     # Commands
