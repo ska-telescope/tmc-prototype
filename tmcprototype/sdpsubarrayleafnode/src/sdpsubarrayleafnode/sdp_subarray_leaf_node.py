@@ -403,9 +403,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
 
         # throw exception:
         if exception_count > 0:

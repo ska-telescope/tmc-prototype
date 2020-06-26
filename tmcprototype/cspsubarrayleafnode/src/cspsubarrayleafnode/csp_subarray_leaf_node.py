@@ -20,7 +20,7 @@ import json
 
 # PyTango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed, ApiUtil
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
 from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
