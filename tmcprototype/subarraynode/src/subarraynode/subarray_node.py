@@ -385,6 +385,7 @@ class SubarrayNode(SKASubarray):
                 self.set_status(const.STR_ASSIGN_RES_SUCCESS)
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
+                allocation_success.append(dev_failed)
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                     exception_message, exception_count, const.ERR_ADDING_LEAFNODE)
                 allocation_failure.append(str_leafId)
@@ -398,9 +399,14 @@ class SubarrayNode(SKASubarray):
 
                 if self._dishLnVsPointingStateEventID[devProxy]:
                     devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
-            except(DevFailed, Exception) as except_occurred:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ASSIGN_RES_CMD)
+
+            except (TypeError, ArgumentError) as except_occurred:
+                allocation_success.append(except_occurred)
+                self.logger.exception(except_occurred)
+            # except(DevFailed, Exception) as except_occurred:
+            #     allocation_success.append(dev_failed)
+            #     [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+            #                                 exception_message, exception_count, const.ERR_ASSIGN_RES_CMD)
         # Throw Exception
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
@@ -441,6 +447,7 @@ class SubarrayNode(SKASubarray):
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
             self.logger.debug(df)
+            argout = [df]
 
         # For this PI CSP Subarray Leaf Node does not return anything. So this function is
         # looping the receptor ids back.
@@ -474,6 +481,7 @@ class SubarrayNode(SKASubarray):
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
             self.logger.debug(df)
+            argout = [df]
 
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
@@ -769,14 +777,15 @@ class SubarrayNode(SKASubarray):
         """
         exception_count = 0
         exception_message = []
-
+        argout = []
         # Validate if Subarray is in IDLE obsState
         try:
             self.validate_obs_state()
         except InvalidObsStateError as error:
             self.logger.exception(error)
-            tango.Except.re_throw_exception(error, "SubarrayNode raised exception in AssignResources command",
-                                            "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception("Subarray is not in IDLE obsState",
+                            "SubarrayNode raised InvalidObsStateError in AssignResources command",
+                                        "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
 
         # 1. Argument validation
         try:
@@ -834,25 +843,60 @@ class SubarrayNode(SKASubarray):
             log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
             self.logger.debug(log_msg)
 
+            try:
+                dish_allocation_result.sort()
+                receptor_list.sort()
+                assert dish_allocation_result == receptor_list
+                self.logger.info("Dish group is created successfully")
+            except AssertionError as error:
+                dish_argout_df = dish_allocation_result[0]
+                dish_df_desc = str(dish_argout_df.args[0].desc)
+                self.logger.exception(error)
+                self.logger.exception(dish_df_desc)
+                tango.Except.throw_exception("Failed to create dish group", dish_df_desc,
+                                             "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
+
             csp_allocation_result = csp_allocation_status.result()
             log_msg = const.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
             self.logger.debug(log_msg)
+
+            try:
+                csp_allocation_result.sort()
+                assert csp_allocation_result == receptor_list
+                self.logger.info("Assign Resources on CSPSubarray successful")
+            except AssertionError as error:
+                csp_argout_df = csp_allocation_result[0]
+                csp_df_desc = str(csp_argout_df.args[0].desc)
+                self.logger.exception(error)
+                self.logger.exception(csp_df_desc)
+                tango.Except.throw_exception("Assign resources failed on CspSubarrayLeafNode", csp_df_desc,
+                                             "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
 
             sdp_allocation_result = sdp_allocation_status.result()
             log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
             self.logger.debug(log_msg)
 
-            dish_allocation_result.sort()
-            receptor_list.sort()
+            try:
+                assert sdp_allocation_result == sdp_resources
+                self.logger.info("Assign Resources on SDPSubarray successful")
+            except AssertionError as error:
+                sdp_argout_df = sdp_allocation_result[0]
+                sdp_df_desc = str(sdp_argout_df.args[0].desc)
+                self.logger.exception(error)
+                self.logger.exception(sdp_df_desc)
+                tango.Except.throw_exception("Assign resources failed on SdpSubarrayLeafNode", sdp_df_desc,
+                                             "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
 
-            if(dish_allocation_result == receptor_list and
-                csp_allocation_result == receptor_list and
-                sdp_allocation_result == sdp_resources
-              ):
-                # Currently sending dish allocation and SDP allocation results.
-                argout = dish_allocation_result
-            else:
-                argout = []
+            # if(dish_allocation_result == receptor_list and
+            #     csp_allocation_result == receptor_list and
+            #     sdp_allocation_result == sdp_resources
+            #   ):
+            #     # Currently sending dish allocation and SDP allocation results.
+            #     argout = dish_allocation_result
+            # else:
+            #     argout = []
+
+            argout = dish_allocation_result
         # return dish_allocation_result.
         log_msg = "assign_resource_argout",argout
         self.logger.debug(log_msg)
