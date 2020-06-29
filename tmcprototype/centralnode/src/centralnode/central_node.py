@@ -605,15 +605,6 @@ class CentralNode(SKABaseDevice):
                         DevString
                     Dec:
                         DevString
-                    subbands:
-                        freq_min:
-                            DevDouble
-                        freq_max:
-                            DevDouble
-                        nchan:
-                            DevDouble
-                        input_link_map:
-                            Array of DevVarDoubleArray
 
                 processing_blocks:
                     array of the blocks each consisting following parameters
@@ -669,7 +660,8 @@ class CentralNode(SKABaseDevice):
                 "receptorIDList_success": ["0001", "0002"]
                 }
                 }
-            Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
+        
+        :throws: DevFailed.
         """
         receptorIDList = []
         exception_message = []

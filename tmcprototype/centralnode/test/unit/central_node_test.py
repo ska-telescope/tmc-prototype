@@ -8,6 +8,7 @@ import pytest
 import mock
 from mock import MagicMock
 from mock import Mock
+from os.path import dirname, join
 
 # Tango imports
 import tango
@@ -20,6 +21,31 @@ from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
     STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
+
+assign_input_file = 'command_AssignResources.json'
+path = join(dirname(__file__), 'data', assign_input_file)
+with open(path, 'r') as f:
+    assign_input_str = f.read()
+
+release_input_file='command_ReleaseResources.json'
+path= join(dirname(__file__), 'data' ,release_input_file)
+with open(path, 'r') as f:
+    release_input_str= f.read()
+
+invalid_json_Assign_Release_file='invalid_json_Assign_Release_Resources.json'
+path= join(dirname(__file__), 'data', invalid_json_Assign_Release_file)
+with open(path, 'r') as f:
+    assign_release_invalid_str= f.read()
+
+assign_invalid_key_file='invalid_key_AssignResources.json'
+path= join(dirname(__file__), 'data', assign_invalid_key_file)
+with open(path, 'r') as f:
+    assign_invalid_key=f.read()
+
+release_invalid_key_file='invalid_key_ReleaseResources.json'
+path= join(dirname(__file__), 'data', release_invalid_key_file)
+with open(path, 'r') as f:
+    release_invalid_key=f.read()
 
 
 @pytest.fixture( scope="function",
@@ -233,29 +259,10 @@ def test_assign_resources():
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":' \
-                         '"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",' \
-                         '"coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
-                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
-                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":' \
-                         '"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",' \
-                         '"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,' \
-                         '"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,' \
-                         '"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],' \
-                         '[2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":' \
-                         '{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},' \
-                         '{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime",' \
-                         '"version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":' \
-                         '{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[' \
-                         '{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":' \
-                         '"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                         '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":' \
-                         '["calibration"]}]}]}}'
-
         device_proxy=tango_context.device
-        device_proxy.AssignResources(assign_command)
+        device_proxy.AssignResources(assign_input_str)
         # assert:
-        jsonArgument = json.loads(assign_command)
+        jsonArgument = json.loads(assign_input_str)
         input_json_subarray = jsonArgument.copy()
         del input_json_subarray["subarrayID"]
         input_to_sa = json.dumps(input_json_subarray)
@@ -284,39 +291,17 @@ def test_assign_resources_should_raise_devfailed_exception():
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_command = '{"subarrayID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":' \
-                         '"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",' \
-                         '"coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":' \
-                         '[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,' \
-                         '"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,' \
-                         '"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":' \
-                         '"calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",' \
-                         '"channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,' \
-                         '"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,' \
-                         '"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],' \
-                         '[2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":' \
-                         '{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},' \
-                         '{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime",' \
-                         '"version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":' \
-                         '{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[' \
-                         '{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":' \
-                         '"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},' \
-                         '"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":' \
-                         '["calibration"]}]}]}}'
-
-        with pytest.raises(tango.DevFailed)as df:
-            tango_context.device.AssignResources(assign_command)
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.AssignResources(assign_input_str)
 
         # assert:
-        assert "Exception in validating input: Invalid value in receptorIDList" in str(df)
-
+        assert "Error occurred while assigning resources to the Subarray" in str(df)
 
 def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
-        test_input = '{"invalid_json"}'
         with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.AssignResources(test_input)
+            tango_context.device.AssignResources(assign_release_invalid_str)
 
         # assert:
         assert "Exception in validating input" in str(df.value)
@@ -327,9 +312,8 @@ def test_assign_resources_invalid_key():
     with fake_tango_system(CentralNode) \
             as tango_context:
         result = 'test'
-        test_input = '{"dish":{"receptorIDList":["0001"]}}'
         with pytest.raises(tango.DevFailed):
-            result = tango_context.device.AssignResources(test_input)
+            result = tango_context.device.AssignResources(assign_invalid_key)
 
         # assert:
         assert 'test' in result
@@ -356,11 +340,10 @@ def test_release_resources():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-        tango_context.device.ReleaseResources(release_input)
+        tango_context.device.ReleaseResources(release_input_str)
 
         # assert:
-        jsonArgument = json.loads(release_input)
+        jsonArgument = json.loads(release_input_str)
         if jsonArgument['releaseALL'] == True:
             subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
@@ -385,9 +368,8 @@ def test_release_resources_should_raise_devfailed_exception():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        release_input= '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(release_input)
+            tango_context.device.ReleaseResources(release_input_str)
 
         # assert:
         assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
@@ -397,9 +379,8 @@ def test_release_resources_invalid_json_value():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        test_input = '{"invalid_json"}'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(test_input)
+            tango_context.device.ReleaseResources(assign_release_invalid_str)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
@@ -409,9 +390,8 @@ def test_release_resources_invalid_key():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        test_input = '{"releaseALL":true,"receptorIDList":[]}'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ReleaseResources(test_input)
+            tango_context.device.ReleaseResources(release_invalid_key)
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 

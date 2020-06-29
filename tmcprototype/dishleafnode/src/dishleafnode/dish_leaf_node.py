@@ -14,6 +14,8 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import json
+import importlib.resources
+
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
@@ -429,7 +431,7 @@ class DishLeafNode(SKABaseDevice):
     def set_observer_lat_long_alt(self):
         # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates) from text file and
         # construct Antenna objects from them. Currently the text file contains Meerkat Antenna parameters.
-        with open("/venv/lib/python3.7/site-packages/dishleafnode/ska_antennas.txt") as f:
+        with importlib.resources.open_text("dishleafnode", "ska_antennas.txt") as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         for ant in antennas:

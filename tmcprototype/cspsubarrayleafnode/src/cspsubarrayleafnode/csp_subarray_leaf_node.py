@@ -11,6 +11,7 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # Distributed under the terms of the GPL license.
 # See LICENSE.txt for more info.
 import datetime
+import importlib.resources
 import threading
 from datetime import datetime, timedelta
 import pytz
@@ -97,11 +98,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     )
 
     delayModel = attribute(
-        dtype='str',
-        access=AttrWriteType.READ_WRITE,
-    )
-
-    visDestinationAddress = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
     )
@@ -229,8 +225,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
         assigned_receptors_dict = {}
         assigned_receptors = []
 
+        self.logger.info("Updating config parameters.")
+
         # Load a set of antenna descriptions and construct Antenna objects from them
-        with open("/venv/lib/python3.7/site-packages/cspsubarrayleafnode/ska_antennas.txt") as f:
+        with importlib.resources.open_text("cspsubarrayleafnode", "ska_antennas.txt") as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
         # Create a dictionary including antenna objects
@@ -356,7 +354,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             self._read_activity_message = " "
             self._delay_model = " "
-            self._visdestination_address = " "
             self._versioninfo = " "
             self.receptorIDList = []
             self.fsp_ids_object = []
@@ -427,18 +424,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self._delay_model = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_write
 
-    def read_visDestinationAddress(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.visDestinationAddress_read) ENABLED START #
-        '''Internal construct of TANGO. Returns the destination address.'''
-        return self._visdestination_address
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.visDestinationAddress_read
-
-    def write_visDestinationAddress(self, value):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.visDestinationAddress_write) ENABLED START #
-        '''Internal construct of TANGO. Sets the destination address.'''
-        self._visdestination_address = value
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.visDestinationAddress_write
-
     def read_versionInfo(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.versionInfo_read) ENABLED START #
         '''Internal construct of TANGO. Returns the version information.'''
@@ -475,14 +460,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
         :param argin: The string in JSON format. The JSON contains following values:
 
         Example:
-
-        {"frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,
-        "integrationTime":1400,"corrBandwidth":0}],"delayModelSubscriptionPoint":
-        "ska_mid/tm_leaf_node/csp_subarray01/delayModel","visDestinationAddressSubscriptionPoint":
-        "mid_sdp/elt/subarray_1/receiveAddresses","pointing":{"target":{"system":"ICRS",
-        "name":"Polaris Australis",
-        "RA":"21:08:47.92","dec":"-88:57:22.9"}},"scanID":"1"}
-
+        {"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",
+        "frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],
+        "fspChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":
+        [[0,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,
+        "channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,"outputLinkMap":[[0,4],[200,5]],"outputHost":
+        [[0,"192.168.1.1"]],"outputPort":[[0,9744,1]]}],"delayModelSubscriptionPoint":
+        "ska_mid/tm_leaf_node/csp_subarray01/delayModel","pointing":{"target":{"system":"ICRS",
+        "name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
 
         :return: None.
         """
@@ -531,7 +516,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         # throw exception:
         if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_CONFIG_SCAN_EXEC)
+            self.throw_exception(exception_message, const.ERR_INVALID_JSON_CONFIG)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.Configure
 
     @command(
@@ -689,13 +674,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
         Example:
                 {
-                "subarrayID": 1,
                 "dish": {
                 "receptorIDList": ["0001", "0002"]
                 }
                 }
 
-         Note: Enter input without spaces as:{"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]}}
+         Note: Enter input without spaces as: {"dish":{"receptorIDList":["0001","0002"]}}
         
         :return: None.
 
@@ -705,6 +689,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             self.validate_obs_state()
+
         except InvalidObsStateError as error:
             self.logger.exception(error)
             tango.Except.throw_exception("ObsState is not in idle state","CSP subarray leaf node raised "
@@ -718,10 +703,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # convert receptorIDList from list of string to list of int
             for i in range(0, len(self.receptorIDList_str)):
                 self.receptorIDList.append(int(self.receptorIDList_str[i]))
+            self.logger.info("receptorIDList: %s", str(self.receptorIDList))
             self.update_config_params()
             # Invoke AddReceptors command on CspSubarray
+            self.logger.info("Invoking AddReceptors on CSP subarray")
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, self.receptorIDList,
                                                        self.AddReceptors_ended)
+            self.logger.info("After invoking AddReceptors on CSP subarray")
             self._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
             self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
@@ -794,6 +782,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     @DebugIt()
     def AddReceptors_ended(self, event):
+        self.logger.info("Executing callback AddReceptors_ended")
         try:
             if event.err:
                 self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
@@ -816,7 +805,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
             self.logger.exception("CSP Subarray is not in IDLE obsState")
-            #self._read_activity_message = "Error in device obsState"
+            self._read_activity_message = "Error in device obsState"
             raise InvalidObsStateError("CSP Subarray is not in IDLE obsState")
 
 
