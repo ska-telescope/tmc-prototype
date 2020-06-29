@@ -31,6 +31,7 @@ from tango.server import run,attribute, command, device_property
 # Additional import
 from . import const
 from .const import PointingState
+from ska.base.commands import ActionCommand, ReturnCode, ResponseCommand
 from ska.base.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
@@ -39,6 +40,7 @@ __all__ = ["SubarrayNode", "main"]
 
 csp_interface_version = 0
 sdp_interface_version = 0
+
 
 class SubarrayHealthState:
 
@@ -151,6 +153,7 @@ class SubarrayNode(SKASubarray):
     other TM Components (such as OET, Central Node) for a Subarray.
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
+
     def receive_addresses_cb(self, event):
         """
         Retrieves the receiveAddresses attribute of SDP Subarray.
@@ -307,7 +310,9 @@ class SubarrayNode(SKASubarray):
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                self._obs_state = ObsState.READY
+                # self._obs_state = ObsState.READY
+                # TODO:# Call ConfigureCommand's succeeded() method?
+                self.ConfigureCommand.succeeded()
         elif self._csp_sa_obs_state == ObsState.CONFIGURING or \
                 self._sdp_sa_obs_state == ObsState.CONFIGURING:
             self._obs_state = ObsState.CONFIGURING
@@ -564,7 +569,7 @@ class SubarrayNode(SKASubarray):
         """
         if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
             return
-        
+
         try:
             self._dish_leaf_node_group.remove_all()
             log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
@@ -625,148 +630,218 @@ class SubarrayNode(SKASubarray):
             self.logger.error(const.ERR_SDP_CMD)
             self.logger.debug(df)
 
-    @command(
-        dtype_in='str',
-        doc_in="Execute Scan on the Subarray",
-    )
-    @DebugIt()
-    def Scan(self, argin):
+    def call_end_scan_command(self):
+        self.EndScanCommand.do()
+
+    class ScanCommand(SKASubarray.ScanCommand):
         """
-        This command accepts id as input. And it Schedule scan on subarray
-        from where scan command is invoked on respective CSP and SDP subarray node for the
-        provided interval of time. It checks whether the scan is already in progress. If yes it
-        throws error showing duplication of command.
-
-        :param argin: DevVarStringArray. JSON string containing id.
-
-        JSON string example as follows:
-
-        {"id": 1}
-
-        Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
-
-        :return: None
+        A class for SubarrayNode's Scan() command.
         """
-        exception_count = 0
-        exception_message = []
-        try:
-            self.logger.debug(const.STR_SCAN_IP_ARG, argin)
-            assert self._obs_state != ObsState.SCANNING, const.SCAN_ALREADY_IN_PROGRESS
-            if self._obs_state == ObsState.READY:
-                self._read_activity_message = const.STR_SCAN_IP_ARG + argin
-                self.isScanning = True
+
+        def do(self, argin):
+            """
+            This command accepts id as input. And it Schedule scan on subarray
+            from where scan command is invoked on respective CSP and SDP subarray node for the
+            provided interval of time. It checks whether the scan is already in progress. If yes it
+            throws error showing duplication of command.
+
+            :param argin: DevString. JSON string containing id.
+
+            JSON string example as follows:
+
+            {"id": 1}
+
+            Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
+
+            :return: A tuple containing a return code and a string
+                        message indicating status. The message is for
+                        information purpose only.
+            :rtype: (ReturnCode, str)
+            """
+            device = self.target
+
+            device.configure_device.do()
+            exception_count = 0
+            exception_message = []
+            try:
+                self.logger.debug(const.STR_SCAN_IP_ARG, argin)
+                device._read_activity_message = const.STR_SCAN_IP_ARG + argin
+                device.isScanning = True
                 # Invoke scan command on Sdp Subarray Leaf Node with input argument as scan id
-                self._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
+                device._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
                 self.logger.debug(const.STR_SDP_SCAN_INIT)
-                self._read_activity_message = const.STR_SDP_SCAN_INIT
+                device._read_activity_message = const.STR_SDP_SCAN_INIT
                 # Invoke Scan command on CSP Subarray Leaf Node
-                csp_argin = []
-                csp_argin.append(argin)
-                self._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
+                csp_argin = [argin]
+                device._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
                 self.logger.debug(const.STR_CSP_SCAN_INIT)
-                self._read_activity_message = const.STR_CSP_SCAN_INIT
+                device._read_activity_message = const.STR_CSP_SCAN_INIT
 
-                if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
-                        ObsState.IDLE:
-                    if len(self.dishPointingStateMap.values()) != 0:
-                        self.calculate_observation_state()
+                # TODO: Update observation state aggregation logic
+                # if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
+                #         ObsState.IDLE:
+                #     if len(self.dishPointingStateMap.values()) != 0:
+                #         self.calculate_observation_state()
 
-                self.set_status(const.STR_SA_SCANNING)
+                device.set_status(const.STR_SA_SCANNING)
                 self.logger.info(const.STR_SA_SCANNING)
-                self._read_activity_message = const.STR_SCAN_SUCCESS
-            else:
-                self.logger.info('Scan command can be invoked on Subarray Node.')
-                log_msg="obs state of subarray is :", self._obs_state
-                self.logger.info(log_msg)
-                log_msg="device state of Subarray is:::", self.get_state()
-                self.logger.info(log_msg)
+                device._read_activity_message = const.STR_SCAN_SUCCESS
 
-            self.scan_thread = threading.Timer(self.scan_duration, self.EndScan)
-            self.scan_thread.start()
+                # TODO: Check how to call EndScan command
+                # device.scan_thread = threading.Timer(device.scan_duration, EndScanCommand.do(self))
+                device.scan_thread = threading.Timer(device.scan_duration, self.call_end_scan_command())
+                device.scan_thread.start()
+                return (ReturnCode.STARTED, const.STR_SCAN_SUCCESS)
 
-        except AssertionError as assert_error:
-            str_log = const.ERR_SCAN_CMD + "\n" +str(assert_error) + const.ERR_DUPLICATE_SCAN_CMD
-            self.logger.error(str_log)
-            self._read_activity_message = const.ERR_DUPLICATE_SCAN_CMD + str(assert_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                    exception_message, exception_count, const.ERR_SCAN_CMD)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                    exception_message, exception_count, const.ERR_SCAN_CMD)
-        #Throw Exception
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_SCAN_EXEC)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                        exception_message, exception_count, const.ERR_SCAN_CMD)
+                return (ReturnCode.FAILED, const.ERR_SCAN_CMD)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                        exception_message, exception_count, const.ERR_SCAN_CMD)
+                return (ReturnCode.FAILED, const.ERR_SCAN_CMD)
 
-    def is_Scan_allowed(self):
-        """ This method is an internal construct of TANGO """
-        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-                                        DevState.STANDBY]
-    @command(
-    )
-    @DebugIt()
-    def EndScan(self):
-        """ Ends the scan. It is invoked on subarray after completion of the scan duration. It can
-        also be invoked by an external client while a scan is in progress, Which stops the scan
-        immediately irrespective of the provided scan duration.
+            # TODO: For furure reference
+            # # Throw Exception
+            # if exception_count > 0:
+            #     self.throw_exception(exception_message, const.STR_SCAN_EXEC)
 
-        :param argin: DevVoid.
 
-        :return: None
+    # @command(
+    # )
+    # @DebugIt()
+    # def EndScan(self):
+    #     """ Ends the scan. It is invoked on subarray after completion of the scan duration. It can
+    #     also be invoked by an external client while a scan is in progress, Which stops the scan
+    #     immediately irrespective of the provided scan duration.
+    #
+    #     :param argin: DevVoid.
+    #
+    #     :return: None
+    #     """
+    #     exception_count = 0
+    #     exception_message = []
+    #
+    #     try:
+    #         if self.scan_thread:
+    #             if self.scan_thread.is_alive():
+    #                 self.scan_thread.cancel()  # stop timer when EndScan command is called
+    #
+    #         assert self._obs_state == ObsState.SCANNING, const.SCAN_ALREADY_COMPLETED
+    #         if self._obs_state == ObsState.SCANNING:
+    #             self.isScanning = False
+    #             # Invoke EndScan command on SDP Subarray Leaf Node
+    #             self._sdp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
+    #             self.logger.debug(const.STR_SDP_END_SCAN_INIT)
+    #             self._read_activity_message = const.STR_SDP_END_SCAN_INIT
+    #
+    #             # Invoke EndScan command on CSP Subarray Leaf Node
+    #             self._csp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
+    #             self.logger.debug(const.STR_CSP_END_SCAN_INIT)
+    #             self._read_activity_message = const.STR_CSP_END_SCAN_INIT
+    #             self._scan_id = ""
+    #
+    #             if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
+    #                     ObsState.IDLE:
+    #                 if len(self.dishPointingStateMap.values()) != 0:
+    #                     self.calculate_observation_state()
+    #
+    #             self.set_status(const.STR_SCAN_COMPLETE)
+    #             self.logger.info(const.STR_SCAN_COMPLETE)
+    #             self._read_activity_message = const.STR_END_SCAN_SUCCESS
+    #
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                     exception_message, exception_count, const.ERR_END_SCAN_CMD_ON_GROUP)
+    #     except AssertionError as assert_err:
+    #         str_log = const.ERR_DUPLICATE_END_SCAN_CMD + "\n" + str(assert_err)
+    #         self.logger.error(str_log)
+    #         self._read_activity_message = const.ERR_DUPLICATE_END_SCAN_CMD
+    #         exception_message.append(self._read_activity_message)
+    #         exception_count += 1
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                             exception_message, exception_count, const.ERR_END_SCAN_CMD)
+    #     # Throw Exception
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+    #
+    # def is_EndScan_allowed(self):
+    #     """ This method is an internal construct of TANGO """
+    #     return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+    #                                     DevState.STANDBY]
+
+    class EndScanCommand(SKASubarray.EndScanCommand):
         """
-        exception_count = 0
-        exception_message = []
+        A class for SubarrayNode's Scan() command.
+        """
 
-        try:
-            if self.scan_thread:
-                if self.scan_thread.is_alive():
-                    self.scan_thread.cancel()  # stop timer when EndScan command is called
+        def do(self):
+            """
+            Ends the scan. It is invoked on subarray after completion of the scan duration. It can
+            also be invoked by an external client while a scan is in progress, Which stops the scan
+            immediately irrespective of the provided scan duration.
 
-            assert self._obs_state == ObsState.SCANNING, const.SCAN_ALREADY_COMPLETED
-            if self._obs_state == ObsState.SCANNING:
-                self.isScanning = False
+            :return: A tuple containing a return code and a string
+                        message indicating status. The message is for
+                        information purpose only.
+            :rtype: (ReturnCode, str)
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if device.scan_thread:
+                    if device.scan_thread.is_alive():
+                        device.scan_thread.cancel()  # stop timer when EndScan command is called
+
+                # if self._obs_state == ObsState.SCANNING:
+                device.isScanning = False
                 # Invoke EndScan command on SDP Subarray Leaf Node
-                self._sdp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
+                device._sdp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
                 self.logger.debug(const.STR_SDP_END_SCAN_INIT)
-                self._read_activity_message = const.STR_SDP_END_SCAN_INIT
+                device._read_activity_message = const.STR_SDP_END_SCAN_INIT
 
                 # Invoke EndScan command on CSP Subarray Leaf Node
-                self._csp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
+                device._csp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
                 self.logger.debug(const.STR_CSP_END_SCAN_INIT)
-                self._read_activity_message = const.STR_CSP_END_SCAN_INIT
-                self._scan_id = ""
+                device._read_activity_message = const.STR_CSP_END_SCAN_INIT
+                device._scan_id = ""
 
-                if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
+                if device._csp_sa_obs_state == ObsState.IDLE and device._sdp_sa_obs_state ==\
                         ObsState.IDLE:
-                    if len(self.dishPointingStateMap.values()) != 0:
-                        self.calculate_observation_state()
+                    if len(device.dishPointingStateMap.values()) != 0:
+                        device.calculate_observation_state()
 
-                self.set_status(const.STR_SCAN_COMPLETE)
+                device.set_status(const.STR_SCAN_COMPLETE)
                 self.logger.info(const.STR_SCAN_COMPLETE)
-                self._read_activity_message = const.STR_END_SCAN_SUCCESS
+                device._read_activity_message = const.STR_END_SCAN_SUCCESS
+                return (ReturnCode.STARTED, const.STR_END_SCAN_SUCCESS)
 
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_END_SCAN_CMD_ON_GROUP)
-        except AssertionError as assert_err:
-            str_log = const.ERR_DUPLICATE_END_SCAN_CMD + "\n" + str(assert_err)
-            self.logger.error(str_log)
-            self._read_activity_message = const.ERR_DUPLICATE_END_SCAN_CMD
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, const.ERR_END_SCAN_CMD)
-        # Throw Exception
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, const.ERR_END_SCAN_CMD_ON_GROUP)
+                return (ReturnCode.FAILED, const.ERR_END_SCAN_CMD_ON_GROUP)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                    exception_message, exception_count, const.ERR_END_SCAN_CMD)
+                return (ReturnCode.FAILED, const.ERR_END_SCAN_CMD)
 
-    def is_EndScan_allowed(self):
-        """ This method is an internal construct of TANGO """
-        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-                                        DevState.STANDBY]
+            # TODO: For Future use
+            # # Throw Exception
+            # if exception_count > 0:
+            #     self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+
+
+
+
+
+
+
+
+
 
     @command(
         dtype_in='str',
@@ -1088,114 +1163,112 @@ class SubarrayNode(SKASubarray):
     # General methods
     # ---------------
 
-    def init_device(self):
+    class InitCommand(SKASubarray.InitCommand):
         """
-        Initializes the attributes and properties of the Subarray node.
-
-        :return: None
+        A class for the TMC SubarrayNode's init_device() "command".
         """
-        SKASubarray.init_device(self)
-        # PROTECTED REGION ID(SubarrayNode.init_device) ENABLED START #
-        self.set_state(DevState.INIT)
-        self.set_status(const.STR_SA_INIT)
-        self.SkaLevel = 2  # set SKALevel to "2"
-        self._admin_mode = AdminMode.OFFLINE
-        self._health_state = HealthState.OK
-        self._obs_state = ObsState.IDLE
-        self._obs_mode = ObsMode.IDLE
-        self._simulation_mode = SimulationMode.FALSE
-        self.isScanning = False
-        self._scan_id = ""
-        self._receive_addresses_map = ""
-        self._sb_id = ""
-        self.scan_duration = 0
-        self._receptor_id_list = []
-        self.dishPointingStateMap = {}
-        self._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
-        self._dish_leaf_node_proxy = []
-        self._health_event_id = []
-        self._pointing_state_event_id = []
-        self._dishLnVsHealthEventID = {}
-        self._dishLnVsPointingStateEventID = {}
-        self.subarray_ln_health_state_map = {}
-        self._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
-        self._csp_sa_obs_state = ObsState.IDLE
-        self._sdp_sa_obs_state = ObsState.IDLE
-        self._csp_sa_device_state = DevState.DISABLE
-        self._sdp_sa_device_state = DevState.OFF
-        self.only_dishconfig_flag = False
-        _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
-        self.scan_thread = None
-        # Create proxy for CSP Subarray Leaf Node
-        self._csp_subarray_ln_proxy = None
-        self.create_csp_ln_proxy()
-        # Create proxy for SDP Subarray Leaf Node
-        self._sdp_subarray_ln_proxy = None
-        self.create_sdp_ln_proxy()
-        self._csp_sa_proxy = DeviceProxy(self.CspSubarrayFQDN)
-        self._sdp_sa_proxy = DeviceProxy(self.SdpSubarrayFQDN)
+        def do(self):
+            """
+            Stateless hook for device initialisation.
 
-        try:
-            self.subarray_ln_health_state_map[self._csp_subarray_ln_proxy.dev_name()] = (
-                HealthState.UNKNOWN)
-            # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
-            self._csp_subarray_ln_proxy.subscribe_event(
-                const.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,self.health_state_cb,
-                stateless=True)
-            # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
-            self._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                        self.observation_state_cb, stateless=True)
-            # Subscribe state of CspSubarray
-            self._csp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-                                                        self.device_state_cb, stateless=True)
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ReturnCode, str)
+            """
+            super().do()
 
-            self.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
-            self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
-        except DevFailed as dev_failed:
-            log_msg=const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
-            self.set_state(DevState.FAULT)
-            _state_fault_flag = True
-            self.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
-            self.logger.error(const.ERR_CSP_SA_LEAF_INIT)
+            device = self.target
 
-        try:
-            self.subarray_ln_health_state_map[self._sdp_subarray_ln_proxy.dev_name()] = (
-                HealthState.UNKNOWN)
-            # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
-            self._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
-                                                        self.health_state_cb, stateless=True)
-            # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
-            self._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                        self.observation_state_cb, stateless=True)
-            # Subscribe state of SdpSubarray
-            self._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-                                               self.device_state_cb, stateless=True)
-            # Subscribe ReceiveAddresses of SdpSubarray
-            self._sdp_sa_proxy.subscribe_event("receiveAddresses", EventType.CHANGE_EVENT,
-                                               self.receive_addresses_cb, stateless=True)
+            device.set_status(const.STR_SA_INIT)
+            device.SkaLevel = 2  # set SKALevel to "2"
+            device._obs_mode = ObsMode.IDLE
+            device.isScanning = False
+            device._scan_id = ""
+            device._sb_id = ""
+            device.scan_duration = 0
+            device._receptor_id_list = []
+            device.dishPointingStateMap = {}
+            device._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
+            device._dish_leaf_node_proxy = []
+            device._health_event_id = []
+            device._pointing_state_event_id = []
+            device._dishLnVsHealthEventID = {}
+            device._dishLnVsPointingStateEventID = {}
+            device.subarray_ln_health_state_map = {}
+            device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
+            device._csp_sa_obs_state = ObsState.IDLE
+            device._sdp_sa_obs_state = ObsState.IDLE
+            device._csp_sa_device_state = DevState.DISABLE
+            device._sdp_sa_device_state = DevState.OFF
+            device.only_dishconfig_flag = False
+            device._scan_type = ''
+            _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
+            device.scan_thread = None
 
-            self.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
-        except DevFailed as dev_failed:
-            log_msg=const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
-            self.set_state(DevState.FAULT)
-            _state_fault_flag = True
-            self.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
+            # Create proxy for CSP Subarray Leaf Node
+            device._csp_subarray_ln_proxy = None
+            device.create_csp_ln_proxy()
+            # Create proxy for SDP Subarray Leaf Node
+            device._sdp_subarray_ln_proxy = None
+            device.create_sdp_ln_proxy()
+            device._csp_sa_proxy = DeviceProxy(device.CspSubarrayFQDN)
+            device._sdp_sa_proxy = DeviceProxy(device.SdpSubarrayFQDN)
 
-        self._read_activity_message = const.STR_SA_INIT_SUCCESS
-        self.set_status(const.STR_SA_INIT_SUCCESS)
-        self.logger.info(const.STR_SA_INIT_SUCCESS)
+            try:
+                device.subarray_ln_health_state_map[device._csp_subarray_ln_proxy.dev_name()] = (
+                    HealthState.UNKNOWN)
+                # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
+                device._csp_subarray_ln_proxy.subscribe_event(
+                    const.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,device.health_state_cb,
+                    stateless=True)
+                # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
+                device._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
+                                                              device.observation_state_cb, stateless=True)
+                device._csp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
+                                                     device.device_state_cb, stateless=True)
 
-        if(_state_fault_flag == True):
-            self.set_state(DevState.FAULT)           # Set state = FAULT
-        else:
-            self.set_state(DevState.DISABLE)         # Set state = DISABLE
+                device.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
+                self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+                device.set_state(DevState.FAULT)  ## state machine only?
+                _state_fault_flag = True
+                device.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
+                self.logger.error(const.ERR_CSP_SA_LEAF_INIT)
 
-        # PROTECTED REGION END #    //  SubarrayNode.init_device
+            try:
+                device.subarray_ln_health_state_map[device._sdp_subarray_ln_proxy.dev_name()] = (
+                    HealthState.UNKNOWN)
+                # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
+                device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
+                                                            device.health_state_cb, stateless=True)
+                # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
+                device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
+                                                            device.observation_state_cb, stateless=True)
+                device._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
+                                                   device.device_state_cb, stateless=True)
+                device.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+                device.set_state(DevState.FAULT)  ## state machine only?
+                _state_fault_flag = True
+                device.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
 
+            if _state_fault_flag:
+                message = const.ERR_SA_INIT
+                return_code = ReturnCode.FAILED
+            else:
+                message = const.STR_SA_INIT_SUCCESS
+                return_code = ReturnCode.OK
+
+            device._read_activity_message = message
+            self.logger.info(message)
+            return (return_code, message)
 
     def always_executed_hook(self):
         """ Internal construct of TANGO. """
@@ -1305,62 +1378,58 @@ class SubarrayNode(SKASubarray):
             self.logger.error(df)
             raise
 
-    @command(
-        dtype_in='str',
-        doc_in="Pointing parameters of Dish - Right ascension and Declination coordinates.",
-    )
-    @DebugIt()
-    def Configure(self, argin):
-        # PROTECTED REGION ID(SubarrayNode.Configure) ENABLED START #
+    class ConfigureCommand(SKASubarray.ConfigureCommand):
         """
-        Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
-        extracted out of the input configuration string and relayed to the respective underlying devices (SDP
-        Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
-
-        :param argin: DevString.
-        JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
-        Configuration and SDP Configuration parameters.
-        JSON string example is:
-        {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
-        "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[
-        {"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,
-        "channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":0,"outputLinkMap":[[0,0],[200,1]]},{
-        "fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,
-        "channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,"outputLinkMap":[[0,4],[200,5]]}]},
-        "sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0}}
-
-        Note: While invoking this command from JIVE, provide above JSON string without any space.
-
-        :return: None
+        A class for SubarrayNode's Configure() command.
         """
-        self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        log_msg=const.STR_CONFIGURE_IP_ARG + str(argin)
-        self.logger.info(log_msg)
-        self.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        self._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
-        if self._obs_state not in [ObsState.IDLE, ObsState.READY]:
-            return
-        try:
-            scan_configuration = json.loads(argin)
-        except json.JSONDecodeError as jerror:
-            log_message = const.ERR_INVALID_JSON + str(jerror)
-            self.logger.error(log_message)
-            self._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-        tmc_configure = scan_configuration["tmc"]
-        self.scan_duration = int(tmc_configure["scanDuration"])
-        self._configure_csp(scan_configuration)
-        self._configure_sdp(scan_configuration)
-        self._configure_dsh(scan_configuration, argin)
-        ## PROTECTED REGION END #    //  SubarrayNode.Configure
+        def do(self, argin):
+            """
+            Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
+            extracted out of the input configuration string and relayed to the respective underlying devices (SDP
+            Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
 
-    def is_Configure_allowed(self):
-        # PROTECTED REGION ID(SubarrayNode.is_Configure_allowed) ENABLED START #
-        """ Checks if the Configure command is allowed in the current state of the Subarray. """
-        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-                                        DevState.STANDBY]
-        # PROTECTED REGION END #    //  SubarrayNode.is_Configure_allowed
+            :param argin: DevString.
+            JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
+            Configuration and SDP Configuration parameters.
+            JSON string example is:
+            {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
+            "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",
+            "fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},
+            "sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0}}
+            CSP block in json string is as per earlier implementation and not aligned to SP-872
+            Note: While invoking this command from JIVE, provide above JSON string without any space.
+
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ReturnCode, str)
+            """
+            device = self.target
+
+            self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
+            log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
+            self.logger.info(log_msg)
+            device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
+            device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
+
+            try:
+                scan_configuration = json.loads(argin)
+            except json.JSONDecodeError as jerror:
+                log_message = const.ERR_INVALID_JSON + str(jerror)
+                self.logger.error(log_message)
+                device._read_activity_message = log_message
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+                                             const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+
+            tmc_configure = scan_configuration["tmc"]
+            device.scan_duration = int(tmc_configure["scanDuration"])
+            device._configure_csp(scan_configuration)
+            device._configure_sdp(scan_configuration)
+            device._configure_dsh(scan_configuration, argin)
+
+            message = "Configure command invoked"
+            self.logger.info(message)
+            return (ReturnCode.STARTED, message)
 
     @command(
     )
@@ -1401,14 +1470,183 @@ class SubarrayNode(SKASubarray):
             self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
         # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
+    # @command(
+    #     dtype_in='str',
+    #     doc_in="Initial Pointing parameters of Dish - Right Ascension and Declination coordinates.",
+    # )
+    # @DebugIt()
+    # def Track(self, argin):
+    #     # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
+    #     """ Invokes Track command on the Dishes assigned to the Subarray.
+    #
+    #     :param argin: DevString
+    #
+    #     Example:
+    #     radec|21:08:47.92|-88:57:22.9 as argin
+    #     Argin to be provided is the Ra and Dec values where first value is tag that is radec, second value is Ra
+    #     in Hr:Min:Sec, and third value is Dec in Deg:Min:Sec.
+    #
+    #     :return: None
+    #
+    #     """
+    #     exception_message= []
+    #     exception_count = 0
+    #     log_msg = "Track:",argin
+    #     self.logger.debug(log_msg)
+    #     try:
+    #         self._read_activity_message = const.STR_TRACK_IP_ARG + argin
+    #         # set obsState to CONFIGURING when the configuration is started
+    #         # self._obs_state = ObsState.CONFIGURING
+    #         cmd_input = []
+    #         cmd_input.append(argin)
+    #         cmdData = tango.DeviceData()
+    #         cmdData.insert(tango.DevVarStringArray, cmd_input)
+    #         self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmdData)
+    #         # set obsState to READY when the configuration is completed
+    #         # self._obs_state = ObsState.READY
+    #         self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+    #         #self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+    #         self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
+    #
+    #     except tango.DevFailed as devfailed:
+    #         exception_message.append(const.ERR_TRACK_CMD + ": " + \
+    #                        str(devfailed.args[0].desc))
+    #         exception_count += 1
+    #     except Exception as except_occured:
+    #         str_log = const.ERR_TRACK_CMD + "\n" + str(except_occured)
+    #         self.logger.error(str_log)
+    #         self._read_activity_message = const.ERR_TRACK_CMD + str(except_occured)
+    #         self.logger.error(const.ERR_TRACK_CMD)
+    #         exception_message.append(const.ERR_TRACK_CMD + ": " + \
+    #                          str(except_occured.args[0].desc))
+    #         exception_count += 1
+    #
+    #     # throw exception
+    #     if exception_count > 0:
+    #         err_msg = ' '
+    #         for item in exception_message:
+    #             err_msg += item + "\n"
+    #         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+    #                                      const.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
+    #     # PROTECTED REGION END #    //  SubarrayNode.Track
+
+
+    class TrackCommand(ResponseCommand):
+        """
+        A class for SubarrayNode's Track command.
+        """
+        # def check_allowed(self):
+        #     """
+        #     Whether this command is allowed to be run in current device
+        #     state
+        #
+        #     :return: True if this command is allowed to be run in
+        #         current device state
+        #     :rtype: boolean
+        #     :raises: DevFailed if this command is not allowed to be run
+        #         in current device state
+        #     """
+        #     if not self.state_model.dev_state in [
+        #         DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+        #     ]:
+        #         tango_raise(
+        #             "Track() is not allowed in current state"
+        #         )
+        #
+        #     return True
+
+        def do(self, argin):
+            """ Invokes Track command on the Dishes assigned to the Subarray.
+
+            :param argin: DevString
+
+            Example:
+            radec|21:08:47.92|-88:57:22.9 as argin
+            Argin to be provided is the Ra and Dec values where first value is tag that is radec, second value is Ra
+            in Hr:Min:Sec, and third value is Dec in Deg:Min:Sec.
+
+            :return: None
+
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            log_msg = "Track:", argin
+            self.logger.debug(log_msg)
+            try:
+                device._read_activity_message = const.STR_TRACK_IP_ARG + argin
+                # set obsState to CONFIGURING when the configuration is started
+                # self._obs_state = ObsState.CONFIGURING
+                cmd_input = []
+                cmd_input.append(argin)
+                cmdData = tango.DeviceData()
+                cmdData.insert(tango.DevVarStringArray, cmd_input)
+                device._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmdData)
+                # set obsState to READY when the configuration is completed
+                # self._obs_state = ObsState.READY
+                device._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+                #self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+                self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
+                return (ReturnCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
+            except tango.DevFailed as devfailed:
+                exception_message.append(const.ERR_TRACK_CMD + ": " + \
+                               str(devfailed.args[0].desc))
+                exception_count += 1
+                return (ReturnCode.FAILED, const.ERR_TRACK_CMD)
+            except Exception as except_occured:
+                str_log = const.ERR_TRACK_CMD + "\n" + str(except_occured)
+                self.logger.error(str_log)
+                self._read_activity_message = const.ERR_TRACK_CMD + str(except_occured)
+                self.logger.error(const.ERR_TRACK_CMD)
+                exception_message.append(const.ERR_TRACK_CMD + ": " + \
+                                 str(except_occured.args[0].desc))
+                exception_count += 1
+                return (ReturnCode.FAILED, const.ERR_TRACK_CMD)
+
+            # TODO: For Future use
+            # # throw exception
+            # if exception_count > 0:
+            #     err_msg = ' '
+            #     for item in exception_message:
+            #         err_msg += item + "\n"
+            #     tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+            #                                  const.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
+            # PROTECTED REGION END #    //  SubarrayNode.Track
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super.init_command_objects()
+        self.register_command_object(
+            "Track",
+            self.TrackCommand(self, self.state_model, self.logger)
+        )
+
+    def is_Track_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("Track")
+        return handler.check_allowed()
+
+
     @command(
         dtype_in='str',
         doc_in="Initial Pointing parameters of Dish - Right Ascension and Declination coordinates.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
     def Track(self, argin):
-        # PROTECTED REGION ID(SubarrayNode.Track) ENABLED START #
-        """ Invokes Track command on the Dishes assigned to the Subarray.
+        """
+        Invokes Track command on the Dishes assigned to the Subarray.
 
         :param argin: DevString
 
@@ -1420,46 +1658,13 @@ class SubarrayNode(SKASubarray):
         :return: None
 
         """
-        exception_message= []
-        exception_count = 0
-        log_msg = "Track:",argin
-        self.logger.debug(log_msg)
-        try:
-            self._read_activity_message = const.STR_TRACK_IP_ARG + argin
-            # set obsState to CONFIGURING when the configuration is started
-            # self._obs_state = ObsState.CONFIGURING
-            cmd_input = []
-            cmd_input.append(argin)
-            cmdData = tango.DeviceData()
-            cmdData.insert(tango.DevVarStringArray, cmd_input)
-            self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmdData)
-            # set obsState to READY when the configuration is completed
-            # self._obs_state = ObsState.READY
-            self._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-            #self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-            self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
 
-        except tango.DevFailed as devfailed:
-            exception_message.append(const.ERR_TRACK_CMD + ": " + \
-                           str(devfailed.args[0].desc))
-            exception_count += 1
-        except Exception as except_occured:
-            str_log = const.ERR_TRACK_CMD + "\n" + str(except_occured)
-            self.logger.error(str_log)
-            self._read_activity_message = const.ERR_TRACK_CMD + str(except_occured)
-            self.logger.error(const.ERR_TRACK_CMD)
-            exception_message.append(const.ERR_TRACK_CMD + ": " + \
-                             str(except_occured.args[0].desc))
-            exception_count += 1
+        handler = self.get_command_object("Track")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
-        # throw exception
-        if exception_count > 0:
-            err_msg = ' '
-            for item in exception_message:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-                                         const.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
-        # PROTECTED REGION END #    //  SubarrayNode.Track
+
+
     @command(
     )
     @DebugIt()
@@ -1469,7 +1674,7 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
-        self._admin_mode = AdminMode.ONLINE
+        pass
         # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
     @command(
@@ -1481,9 +1686,10 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
-        self._admin_mode = AdminMode.OFFLINE
-        self.set_state(DevState.DISABLE)  # Set state = DISABLED
+        pass
         # PROTECTED REGION END #    //  SubarrayNode.Standby
+
+
 # ----------
 # Run server
 # ----------

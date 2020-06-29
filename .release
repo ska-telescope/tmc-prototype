@@ -16,3 +16,4 @@ tag_description=Updated tmc-prototype to be aligned with SP-1039 (ADR-10 changes
 release_notes=This release Contains: <br /><ul> <li>Updated TMC devices to support JSON strings from ADR 3.</li> <li>Updated tmc-prototype (Configure functionality) according to ADR-10.</li><li>Updated tmc-prototype according to ADR-4.</li></ul>
 gitlab_username=apurvapatkar
 private_token=Kd5-Y8uEEejSPUQ7EZTz
+
