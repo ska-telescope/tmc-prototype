@@ -14,7 +14,6 @@ of state and mode attributes defined by the SKA Control Model.
 from __future__ import print_function
 from __future__ import absolute_import
 import json
-from json import JSONDecodeError
 
 # Tango imports
 import tango

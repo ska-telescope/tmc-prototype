@@ -446,7 +446,7 @@ class SubarrayNode(SKASubarray):
                 if self._dishLnVsPointingStateEventID[devProxy]:
                     devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
 
-            except (TypeError, ArgumentError) as except_occurred:
+            except (TypeError) as except_occurred:
                 allocation_success.append(except_occurred)
                 self.logger.exception(except_occurred)
         # Throw Exception
