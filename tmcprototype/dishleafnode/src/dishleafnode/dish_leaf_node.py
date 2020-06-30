@@ -21,6 +21,7 @@ import importlib.resources
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
+from ska.base.commands import ActionCommand, ResultCode, ResponseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import AdminMode, HealthState, SimulationMode
 
@@ -489,66 +490,147 @@ class DishLeafNode(SKABaseDevice):
     # General methods
     # ---------------
 
-    def init_device(self):
-        """
-        Initializes the attributes and properties of DishLeafNode and subscribes change event
-        on attributes of DishMaster.
+    # def init_device(self):
+    #     """
+    #     Initializes the attributes and properties of DishLeafNode and subscribes change event
+    #     on attributes of DishMaster.
+    #
+    #     :return: None
+    #
+    #     """
+    #     SKABaseDevice.init_device(self)
+    #     # PROTECTED REGION ID(DishLeafNode.init_device) ENABLED START #
+    #     self.logger.info(const.STR_INIT_LEAF_NODE)
+    #     self._read_activity_message = const.STR_INIT_LEAF_NODE
+    #     self.SkaLevel = 3
+    #     self.el = 50.0
+    #     self.az = 0
+    #     self.RaDec_AzEl_Conversion = False
+    #     self.ele_max_lim = 90
+    #     self.horizon_el = 0
+    #     self.ele_min_lim = 17.5
+    #     self.el_limit = False
+    #     exception_message = []
+    #     exception_count = 0
+    #     try:
+    #         self.set_dish_name_number()
+    #         self.set_observer_lat_long_alt()
+    #         log_msg = const.STR_DISHMASTER_FQDN + str(self.DishMasterFQDN)
+    #         self.logger.debug(log_msg)
+    #         self._read_activity_message = log_msg
+    #         self._dish_proxy = DeviceProxy(str(self.DishMasterFQDN))   #Creating proxy to the DishMaster
+    #         self.event_track_time = threading.Event()
+    #     except DevFailed as dev_failed:
+    #         self._handle_devfailed_exception(dev_failed,exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
+    #         self.set_state(DevState.FAULT)
+    #     self._admin_mode = AdminMode.ONLINE                                    #Setting adminMode to "ONLINE"
+    #     self._health_state = HealthState.OK                                    #Setting healthState to "OK"
+    #     self._simulation_mode = SimulationMode.FALSE                           #Enabling the simulation mode
+    #     ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+    #     log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+    #     self.logger.error(log_msg)
+    #     self._read_activity_message = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+    #     # Subscribing to DishMaster Attributes
+    #     try:
+    #         self._dish_proxy.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT,
+    #                                          self.dish_mode_cb, stateless=True)
+    #         self._dish_proxy.subscribe_event(const.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT,
+    #                                          self.dish_capturing_cb, stateless=True)
+    #         self._dish_proxy.subscribe_event(const.EVT_ACHVD_POINT, EventType.CHANGE_EVENT,
+    #                                          self.dish_achieved_pointing_cb, stateless=True)
+    #         self._dish_proxy.subscribe_event(const.EVT_DESIRED_POINT, EventType.CHANGE_EVENT,
+    #                                          self.dish_desired_pointing_cb, stateless=True)
+    #         self.set_state(DevState.ON)
+    #         self.set_status(const.STR_DISH_INIT_SUCCESS)
+    #         self.logger.info(const.STR_DISH_INIT_SUCCESS)
+    #     except DevFailed as dev_failed:
+    #         self._handle_devfailed_exception(dev_failed,exception_message, exception_count,
+    #                                          const.ERR_SUBS_DISH_ATTR)
+    #         self.set_state(DevState.FAULT)
+    #         self.set_status(const.ERR_DISH_INIT)
+    #         self.logger.error(const.ERR_DISH_INIT)
+    #     # PROTECTED REGION END #    //  DishLeafNode.init_device
 
-        :return: None
 
+    class InitCommand(SKABaseDevice.InitCommand):
         """
-        SKABaseDevice.init_device(self)
-        # PROTECTED REGION ID(DishLeafNode.init_device) ENABLED START #
-        self.logger.info(const.STR_INIT_LEAF_NODE)
-        self._read_activity_message = const.STR_INIT_LEAF_NODE
-        self.SkaLevel = 3
-        self.el = 50.0
-        self.az = 0
-        self.RaDec_AzEl_Conversion = False
-        self.ele_max_lim = 90
-        self.horizon_el = 0
-        self.ele_min_lim = 17.5
-        self.el_limit = False
-        exception_message = []
-        exception_count = 0
-        try:
-            self.set_dish_name_number()
-            self.set_observer_lat_long_alt()
-            log_msg = const.STR_DISHMASTER_FQDN + str(self.DishMasterFQDN)
-            self.logger.debug(log_msg)
-            self._read_activity_message = log_msg
-            self._dish_proxy = DeviceProxy(str(self.DishMasterFQDN))   #Creating proxy to the DishMaster
-            self.event_track_time = threading.Event()
-        except DevFailed as dev_failed:
-            self._handle_devfailed_exception(dev_failed,exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
-            self.set_state(DevState.FAULT)
-        self._admin_mode = AdminMode.ONLINE                                    #Setting adminMode to "ONLINE"
-        self._health_state = HealthState.OK                                    #Setting healthState to "OK"
-        self._simulation_mode = SimulationMode.FALSE                           #Enabling the simulation mode
-        ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-        log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
-        self.logger.error(log_msg)
-        self._read_activity_message = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
-        # Subscribing to DishMaster Attributes
-        try:
-            self._dish_proxy.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT,
-                                             self.dish_mode_cb, stateless=True)
-            self._dish_proxy.subscribe_event(const.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT,
-                                             self.dish_capturing_cb, stateless=True)
-            self._dish_proxy.subscribe_event(const.EVT_ACHVD_POINT, EventType.CHANGE_EVENT,
-                                             self.dish_achieved_pointing_cb, stateless=True)
-            self._dish_proxy.subscribe_event(const.EVT_DESIRED_POINT, EventType.CHANGE_EVENT,
-                                             self.dish_desired_pointing_cb, stateless=True)
-            self.set_state(DevState.ON)
-            self.set_status(const.STR_DISH_INIT_SUCCESS)
-            self.logger.info(const.STR_DISH_INIT_SUCCESS)
-        except DevFailed as dev_failed:
-            self._handle_devfailed_exception(dev_failed,exception_message, exception_count,
-                                             const.ERR_SUBS_DISH_ATTR)
-            self.set_state(DevState.FAULT)
-            self.set_status(const.ERR_DISH_INIT)
-            self.logger.error(const.ERR_DISH_INIT)
-        # PROTECTED REGION END #    //  DishLeafNode.init_device
+        A class for the TMC DishLeafNode's init_device() "command".
+        """
+        def do(self):
+            """
+            Stateless hook for device initialisation.
+
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            super().do()
+            device = self.target
+
+            self.logger.info(const.STR_INIT_LEAF_NODE)
+            device.SkaLevel = 3
+            device.el = 50.0
+            device.az = 0
+            device.RaDec_AzEl_Conversion = False
+            device.ele_max_lim = 90
+            device.horizon_el = 0
+            device.ele_min_lim = 17.5
+            device.el_limit = False
+            _state_fault_flag = False  # flag use to check whether state set to fault if exception occurs.
+            exception_message = []
+            exception_count = 0
+            try:
+                device.set_dish_name_number()
+                device.set_observer_lat_long_alt()
+                log_msg = const.STR_DISHMASTER_FQDN + str(device.DishMasterFQDN)
+                self.logger.debug(log_msg)
+                device._read_activity_message = log_msg
+                device._dish_proxy = DeviceProxy(str(device.DishMasterFQDN))   #Creating proxy to the DishMaster
+                device.event_track_time = threading.Event()
+            except DevFailed as dev_failed:
+                _state_fault_flag = True
+                device._handle_devfailed_exception(dev_failed,exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
+             #   device.set_state(DevState.FAULT)
+            #device._admin_mode = AdminMode.ONLINE                                    #Setting adminMode to "ONLINE"
+            device._health_state = HealthState.OK                                    #Setting healthState to "OK"
+            device._simulation_mode = SimulationMode.FALSE                           #Enabling the simulation mode
+            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+            self.logger.error(log_msg)
+            device._read_activity_message = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+            # Subscribing to DishMaster Attributes
+            try:
+                device._dish_proxy.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT,
+                                                 device.dish_mode_cb, stateless=True)
+                device._dish_proxy.subscribe_event(const.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT,
+                                                 device.dish_capturing_cb, stateless=True)
+                device._dish_proxy.subscribe_event(const.EVT_ACHVD_POINT, EventType.CHANGE_EVENT,
+                                                 device.dish_achieved_pointing_cb, stateless=True)
+                device._dish_proxy.subscribe_event(const.EVT_DESIRED_POINT, EventType.CHANGE_EVENT,
+                                                 device.dish_desired_pointing_cb, stateless=True)
+                #device.set_state(DevState.ON)
+                device.set_status(const.STR_DISH_INIT_SUCCESS)
+                self.logger.info(const.STR_DISH_INIT_SUCCESS)
+            except DevFailed as dev_failed:
+                device._handle_devfailed_exception(dev_failed,exception_message, exception_count,
+                                                 const.ERR_SUBS_DISH_ATTR)
+                #device.set_state(DevState.FAULT)
+                device.set_status(const.ERR_DISH_INIT)
+                _state_fault_flag = True
+                self.logger.error(const.ERR_DISH_INIT)
+
+            if _state_fault_flag:
+                message = const.ERR_DISH_INIT
+                return_code = ResultCode.FAILED
+            else:
+                message = const.STR_DISH_INIT_SUCCESS
+                return_code = ResultCode.OK
+
+            device._read_activity_message = message
+            self.logger.info(message)
+            return (return_code, message)
+
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(DishLeafNode.always_executed_hook) ENABLED START #
@@ -575,24 +657,131 @@ class DishLeafNode(SKABaseDevice):
         """ Internal construct of TANGO. Sets the activityMessage """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  DishLeafNode.activityMessage_write
+#------------------------------------------------------------------------------------------------
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("SetStowMode", self.SetStowModeCommand(*args))
+        self.register_command_object("SetStandByLPMode", self.SetStowModeCommand(*args))
+#------------------------------------------------------------------------------------------------
 
     # --------
     # Commands
     # --------
 
+#1--------------------------------------------------------------------------------------------------------
+    class SetStowModeCommand(ResponseCommand):
+        """
+        A class for DishLeafNode's SetStowMode command.
+        """
+        def do(self):
+            """ Triggers the DishMaster to transit into Stow Mode. """
+            device = self.target
+            device._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.cmd_ended_cb)
+            return (ResultCode.STARTED, const.CMD_SET_STOW_MODE)
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if not self.state_model.dev_state in [
+                DevState.ON, DevState.ALARM
+            ]:
+                tango_raise(
+                    "SetStowMode() is not allowed in current state"
+                )
+
+            return True
+
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
     def SetStowMode(self):
-        # PROTECTED REGION ID(DishLeafNode.SetStowMode) ENABLED START #
         """ Triggers the DishMaster to transit into Stow Mode. """
-        self._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.cmd_ended_cb)
-        # PROTECTED REGION END #    //  DishLeafNode.SetStowMode
+        handler = self.get_command_object("SetStowMode")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
 
     def is_SetStowMode_allowed(self):
-        # PROTECTED REGION ID(DishLeafNode.is_SetStowMode_allowed) ENABLED START #
-        return self._dish_proxy.state() not in [DevState.ON, DevState.ALARM]
-        # PROTECTED REGION END #    //  DishLeafNode.is_SetStowMode_allowed
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("SetStowMode")
+        return handler.check_allowed()
+#2-------------------------------------------------------------------------------------------------
+
+    # class SetStandByLPModeCommand(ResponseCommand):
+    #     """
+    #     A class for DishLeafNode's SetStandByLPMode command.
+    #     """
+    #     def do(self):
+    #         """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State). """
+    #         device = self.target
+    #         device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.cmd_ended_cb)
+    #         return (ResultCode.STARTED, const.CMD_SET_STANDBYLP_MODE)
+    #
+    #     def check_allowed(self):
+    #
+    #         """
+    #         Whether this command is allowed to be run in current device
+    #         state
+    #
+    #         :return: True if this command is allowed to be run in
+    #             current device state
+    #         :rtype: boolean
+    #         :raises: DevFailed if this command is not allowed to be run
+    #             in current device state
+    #         """
+    #         if not self.state_model.pointingState in [1, 2, 3]:
+    #             tango_raise(
+    #                 "SetStowMode() is not allowed in current pointing state"
+    #             )
+    #
+    #         return True
+    #
+    # @command(
+    #     dtype_out="DevVarLongStringArray",
+    #     doc_out="[ResultCode, information-only string]",
+    # )
+    # def SetStandByLPMode(self):
+    #     """ Triggers the DishMaster to transit into Stow Mode. """
+    #     handler = self.get_command_object("SetStandByLPMode")
+    #     (result_code, message) = handler()
+    #     return [[result_code], [message]]
+    #
+    # def is_SetStandByLPMode_allowed(self):
+    #     """
+    #     Whether this command is allowed to be run in current device
+    #     state
+    #     :return: True if this command is allowed to be run in
+    #         current device state
+    #     :rtype: boolean
+    #     :raises: DevFailed if this command is not allowed to be run
+    #         in current device state
+    #     """
+    #     handler = self.get_command_object("SetStowMode")
+    #     return handler.check_allowed()
+
+#--------------------------------------------------------------------------------------------------
 
     @command(
     )

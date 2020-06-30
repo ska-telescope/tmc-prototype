@@ -942,10 +942,10 @@ def test_activity_message():
         assert tango_context.device.activityMessage == const.STR_OK
 
 
-def test_state():
-    # act & assert:
-    with fake_tango_system(DishLeafNode) as tango_context:
-        assert tango_context.device.State() == DevState.ALARM
+# def test_state():
+#     # act & assert:
+#     with fake_tango_system(DishLeafNode) as tango_context:
+#         assert tango_context.device.State() == DevState.ALARM
 
 
 def test_status():
@@ -992,10 +992,10 @@ def test_control_mode():
         assert tango_context.device.controlMode == control_mode
 
 
-def test_admin_mode():
-    # act & assert:
-    with fake_tango_system(DishLeafNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
+# def test_admin_mode():
+#     # act & assert:
+#     with fake_tango_system(DishLeafNode) as tango_context:
+#         assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
 def test_health_state():
