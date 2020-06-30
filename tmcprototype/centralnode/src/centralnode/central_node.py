@@ -520,17 +520,19 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def _check_receptor_reassignment(self, input_receptors_list):
         """
-        Checks if any of the receptors are already allocated to other subarray when
-        AssignResources command is called.
+            Checks if any of the receptors are already allocated to other subarray when
+            AssignResources command is called.
 
-        :param:
+            :param:
 
-        :return: None
+            :return: None
 
-        :throws:
-            ResourceReassignmentError: Thrown when an already assigned resource is received
-            in Assignresources command.
+            :throws:
+                ResourceReassignmentError: Thrown when an already assigned resource is received
+                in Assignresources command.
+
         """
+        
         self.logger.info("Checking for duplicate allocation of dishes.")
         duplicate_allocation_count = 0
         duplicate_allocation_dish_ids = []
