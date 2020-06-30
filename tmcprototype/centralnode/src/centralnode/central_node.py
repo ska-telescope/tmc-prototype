@@ -18,7 +18,8 @@ from __future__ import absolute_import
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run,attribute, command, device_property
-from ska.base import SKABaseDevice
+from ska.base import SKABaseDevice, SKASubarray
+from ska.base.commands import ActionCommand, Re, ResponseCommand
 from ska.base.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
@@ -30,7 +31,7 @@ import json
 __all__ = ["CentralNode", "main"]
 
 
-class CentralNode(SKABaseDevice):
+class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Command class i heritance will be as per base class.
     """
     Central Node is a coordinator of the complete M&C system.
     """
@@ -215,106 +216,231 @@ class CentralNode(SKABaseDevice):
     # General methods
     # ---------------
 
-    def init_device(self):
-        # PROTECTED REGION ID(CentralNode.init_device) ENABLED START #
-        """ Initializes the attributes and properties of the Central Node. """
-        exception_count = 0
-        exception_message = []
-        try:
-            SKABaseDevice.init_device(self)
-            self.logger.info("Device initialisating...")
-            self._subarray1_health_state = HealthState.OK
-            self._subarray2_health_state = HealthState.OK
-            self._subarray3_health_state = HealthState.OK
-            self._sdp_master_leaf_health = HealthState.OK
-            self._csp_master_leaf_health = HealthState.OK
-            self.set_state(DevState.ON)
-            # Initialise Attributes
-            self._health_state = HealthState.OK
-            self._admin_mode = AdminMode.ONLINE
-            self._telescope_health_state = HealthState.OK
-            self.subarray_health_state_map = {}
-            self._dish_leaf_node_devices = []
-            self._leaf_device_proxy = []
-            self.subarray_FQDN_dict = {}
-            self._subarray_allocation = {}
-            self._read_activity_message = ""
-            self.set_status(const.STR_INIT_SUCCESS)
-            self.logger.debug(const.STR_INIT_SUCCESS)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
-                                                                    exception_count,const.ERR_INIT_PROP_ATTR_CN)
+    # def init_device(self):
+    #     # PROTECTED REGION ID(CentralNode.init_device) ENABLED START #
+    #     """ Initializes the attributes and properties of the Central Node. """
+    #     exception_count = 0
+    #     exception_message = []
+    #     try:
+    #         SKABaseDevice.init_device(self)
+    #         self.logger.info("Device initialisating...")
+    #         self._subarray1_health_state = HealthState.OK
+    #         self._subarray2_health_state = HealthState.OK
+    #         self._subarray3_health_state = HealthState.OK
+    #         self._sdp_master_leaf_health = HealthState.OK
+    #         self._csp_master_leaf_health = HealthState.OK
+    #         self.set_state(DevState.ON)
+    #         # Initialise Attributes
+    #         self._health_state = HealthState.OK
+    #         self._admin_mode = AdminMode.ONLINE
+    #         self._telescope_health_state = HealthState.OK
+    #         self.subarray_health_state_map = {}
+    #         self._dish_leaf_node_devices = []
+    #         self._leaf_device_proxy = []
+    #         self.subarray_FQDN_dict = {}
+    #         self._subarray_allocation = {}
+    #         self._read_activity_message = ""
+    #         self.set_status(const.STR_INIT_SUCCESS)
+    #         self.logger.debug(const.STR_INIT_SUCCESS)
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,\
+    #                                                                 exception_count,const.ERR_INIT_PROP_ATTR_CN)
+    #
+    #     #  Get Dish Leaf Node devices List
+    #     # TODO: Getting DishLeafNode devices list from TANGO DB
+    #     # self.tango_db = PyTango.Database()
+    #     # try:
+    #     #     self.dev_dbdatum = self.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
+    #     #     self._dish_leaf_node_devices.extend(self.dev_bdatum.value_string)
+    #     #     print self._dish_leaf_node_devices
+    #     #
+    #     # except Exception as except_occured:
+    #     #     print const.ERR_IN_READ_DISH_LN_DEVS, except_occured
+    #     #     self._read_activity_message = const.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
+    #     #     self.dev_logging(const.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
+    #
+    #
+    #     for dish in range(1, (self.NumDishes+1)):
+    #         # Update self._dish_leaf_node_devices variable
+    #         self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
+    #
+    #         # Initialize self.subarray_allocation variable to indicate availability of the dishes
+    #         dish_ID = "dish000" + str(dish)
+    #         self._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
+    #
+    #     # Create proxies of Dish Leaf Node devices
+    #     for name in range(0, len(self._dish_leaf_node_devices)):
+    #         try:
+    #             self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
+    #         except (DevFailed, KeyError) as except_occurred:
+    #             [exception_message, exception_count] = self._handle_devfailed_exception(except_occurred,
+    #                                             exception_message, exception_count,const.ERR_IN_CREATE_PROXY)
+    #
+    #     # Create device proxy for CSP Master Leaf Node
+    #     try:
+    #         self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN)
+    #         self._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
+    #                                                     EventType.CHANGE_EVENT,
+    #                                                     self.health_state_cb, stateless=True)
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                 exception_message, exception_count,const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
+    #
+    #
+    #     # Create device proxy for SDP Master Leaf Node
+    #     try:
+    #         self._sdp_master_leaf_proxy = DeviceProxy(self.SdpMasterLeafNodeFQDN)
+    #         self._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
+    #                                                     EventType.CHANGE_EVENT,
+    #                                                     self.health_state_cb, stateless=True)
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                             exception_message, exception_count,const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
+    #
+    #     # Create device proxy for Subarray Node
+    #     for subarray in range(0, len(self.TMMidSubarrayNodes)):
+    #         try:
+    #             subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
+    #             self.subarray_health_state_map[subarray_proxy] = -1
+    #             subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
+    #                                            EventType.CHANGE_EVENT,
+    #                                            self.health_state_cb, stateless=True)
+    #
+    #             #populate subarrayID-subarray proxy map
+    #             tokens = self.TMMidSubarrayNodes[subarray].split('/')
+    #             subarrayID = int(tokens[2])
+    #             self.subarray_FQDN_dict[subarrayID] = subarray_proxy
+    #         except DevFailed as dev_failed:
+    #             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                     exception_message, exception_count,const.ERR_SUBSR_SA_HEALTH_STATE)
+    #
+    #
+    #     # PROTECTED REGION END #    //  CentralNode.init_device
 
-        #  Get Dish Leaf Node devices List
-        # TODO: Getting DishLeafNode devices list from TANGO DB
-        # self.tango_db = PyTango.Database()
-        # try:
-        #     self.dev_dbdatum = self.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
-        #     self._dish_leaf_node_devices.extend(self.dev_bdatum.value_string)
-        #     print self._dish_leaf_node_devices
-        #
-        # except Exception as except_occured:
-        #     print const.ERR_IN_READ_DISH_LN_DEVS, except_occured
-        #     self._read_activity_message = const.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
-        #     self.dev_logging(const.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
+   class InitCommand(SKASubarray.InitCommand):
+       """
+        A class for the TMC CentralNode's init_device() "command".
+        """
 
+       def do(self):
+           """
+           Stateless hook for device initialisation.
+           Initializes the attributes and properties of the Central Node.
 
-        for dish in range(1, (self.NumDishes+1)):
-            # Update self._dish_leaf_node_devices variable
-            self._dish_leaf_node_devices.append(self.DishLeafNodePrefix + "000" + str(dish))
+           :return: A tuple containing a return code and a string
+               message indicating status. The message is for
+               information purpose only.
+           :rtype: (ReturnCode, str)
+           """
+           super().do()
 
-            # Initialize self.subarray_allocation variable to indicate availability of the dishes
-            dish_ID = "dish000" + str(dish)
-            self._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
+           device = self.target
+           # PROTECTED REGION ID(CentralNode.init_device) ENABLED START #
 
-        # Create proxies of Dish Leaf Node devices
-        for name in range(0, len(self._dish_leaf_node_devices)):
-            try:
-                self._leaf_device_proxy.append(DeviceProxy(self._dish_leaf_node_devices[name]))
-            except (DevFailed, KeyError) as except_occurred:
-                [exception_message, exception_count] = self._handle_devfailed_exception(except_occurred,
-                                                exception_message, exception_count,const.ERR_IN_CREATE_PROXY)
+           exception_count = 0
+           exception_message = []
+           try:
+               SKABaseDevice.init_device(self)
+               self.logger.info("Device initialisating...")
+               device._subarray1_health_state = HealthState.OK
+               device._subarray2_health_state = HealthState.OK
+               device._subarray3_health_state = HealthState.OK
+               device._sdp_master_leaf_health = HealthState.OK
+               device._csp_master_leaf_health = HealthState.OK
+               #self.set_state(DevState.ON)
+               # Initialise Attributes
+               device._health_state = HealthState.OK
+               #device._admin_mode = AdminMode.ONLINE
+               device._telescope_health_state = HealthState.OK
+               device.subarray_health_state_map = {}
+               device._dish_leaf_node_devices = []
+               device._leaf_device_proxy = []
+               device.subarray_FQDN_dict = {}
+               device._subarray_allocation = {}
+               device._read_activity_message = ""
+               #device.set_status(const.STR_INIT_SUCCESS)
+               self.logger.debug(const.STR_INIT_SUCCESS)
+           except DevFailed as dev_failed:
+               [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,
+                                                                                        exception_count, const.ERR_INIT_PROP_ATTR_CN)
 
-        # Create device proxy for CSP Master Leaf Node
-        try:
-            self._csp_master_leaf_proxy = DeviceProxy(self.CspMasterLeafNodeFQDN)
-            self._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
-                                                        EventType.CHANGE_EVENT,
-                                                        self.health_state_cb, stateless=True)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                    exception_message, exception_count,const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
+               #  Get Dish Leaf Node devices List
+               # TODO: Getting DishLeafNode devices list from TANGO DB
+               # self.tango_db = PyTango.Database()
+               # try:
+               #     self.dev_dbdatum = self.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
+               #     self._dish_leaf_node_devices.extend(self.dev_bdatum.value_string)
+               #     print self._dish_leaf_node_devices
+               #
+               # except Exception as except_occured:
+               #     print const.ERR_IN_READ_DISH_LN_DEVS, except_occured
+               #     self._read_activity_message = const.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
+               #     self.dev_logging(const.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
 
+           # NumDishes is a device property,  keeping it to device.NumDishes ..check while testing.
+           for dish in range(1, (device.NumDishes + 1)):
+               # Update self._dish_leaf_node_devices variable
+               device._dish_leaf_node_devices.append(device.DishLeafNodePrefix + "000" + str(dish))
 
-        # Create device proxy for SDP Master Leaf Node
-        try:
-            self._sdp_master_leaf_proxy = DeviceProxy(self.SdpMasterLeafNodeFQDN)
-            self._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
-                                                        EventType.CHANGE_EVENT,
-                                                        self.health_state_cb, stateless=True)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count,const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
+               # Initialize self.subarray_allocation variable to indicate availability of the dishes
+               dish_ID = "dish000" + str(dish)
+               device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
 
-        # Create device proxy for Subarray Node
-        for subarray in range(0, len(self.TMMidSubarrayNodes)):
-            try:
-                subarray_proxy = DeviceProxy(self.TMMidSubarrayNodes[subarray])
-                self.subarray_health_state_map[subarray_proxy] = -1
-                subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
-                                               EventType.CHANGE_EVENT,
-                                               self.health_state_cb, stateless=True)
+               # Create proxies of Dish Leaf Node devices
+           for name in range(0, len(device._dish_leaf_node_devices)):
+               try:
+                   device._leaf_device_proxy.append(DeviceProxy(device._dish_leaf_node_devices[name]))
+               except (DevFailed, KeyError) as except_occurred:
+                   [exception_message, exception_count] = device._handle_devfailed_exception(except_occurred,
+                                                                                           exception_message,
+                                                                                           exception_count,
+                                                                                           const.ERR_IN_CREATE_PROXY)
 
-                #populate subarrayID-subarray proxy map
-                tokens = self.TMMidSubarrayNodes[subarray].split('/')
-                subarrayID = int(tokens[2])
-                self.subarray_FQDN_dict[subarrayID] = subarray_proxy
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count,const.ERR_SUBSR_SA_HEALTH_STATE)
+               # Create device proxy for CSP Master Leaf Node
+           try:
+               device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
+               device._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
+                                                           EventType.CHANGE_EVENT,
+                                                           device.health_state_cb, stateless=True)
+           except DevFailed as dev_failed:
+               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                       exception_message,
+                                                                                       exception_count,
+                                                                                       const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
 
+               # Create device proxy for SDP Master Leaf Node
+           try:
+               device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
+               device._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
+                                                           EventType.CHANGE_EVENT,
+                                                           device.health_state_cb, stateless=True)
+           except DevFailed as dev_failed:
+               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                       exception_message,
+                                                                                       exception_count,
+                                                                                       const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
 
-        # PROTECTED REGION END #    //  CentralNode.init_device
+               # Create device proxy for Subarray Node
+           for subarray in range(0, len(device.TMMidSubarrayNodes)):
+               try:
+                   subarray_proxy = DeviceProxy(device.TMMidSubarrayNodes[subarray])
+                   device.subarray_health_state_map[subarray_proxy] = -1
+                   subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
+                                                  EventType.CHANGE_EVENT,
+                                                  device.health_state_cb, stateless=True)
+
+                   # populate subarrayID-subarray proxy map
+                   tokens = device.TMMidSubarrayNodes[subarray].split('/')
+                   subarrayID = int(tokens[2])
+                   device.subarray_FQDN_dict[subarrayID] = subarray_proxy
+               except DevFailed as dev_failed:
+                   [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                           exception_message,
+                                                                                           exception_count,
+                                                                                           const.ERR_SUBSR_SA_HEALTH_STATE)
+
+           # PROTECTED REGION END #    //  CentralNode.init_device
+
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CentralNode.always_executed_hook) ENABLED START #
@@ -513,302 +639,639 @@ class CentralNode(SKABaseDevice):
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
 
-    @command(
-        dtype_in='str',
-        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-        "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
-        "The individual string should contain dish numbers in string format with "
-        "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-        dtype_out='str',
-        doc_out="The string in JSON format. The JSON contains following values:\ndish:"
-        " JSON object consisting receptors allocated successfully: DevVarStringArray."
-        " The individual string should contain dish numbers in string format with "
-        "preceding zeroes upto 3 digits. E.g. 0001, 0002", )
-    @DebugIt()
-    def AssignResources(self, argin):
-        # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
+    # @command(
+    #     dtype_in='str',
+    #     doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
+    #     "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
+    #     "The individual string should contain dish numbers in string format with "
+    #     "preceding zeroes upto 3 digits. E.g. 0001, 0002",
+    #     dtype_out='str',
+    #     doc_out="The string in JSON format. The JSON contains following values:\ndish:"
+    #     " JSON object consisting receptors allocated successfully: DevVarStringArray."
+    #     " The individual string should contain dish numbers in string format with "
+    #     "preceding zeroes upto 3 digits. E.g. 0001, 0002", )
+    # @DebugIt()
+    # def AssignResources(self, argin):
+    #     # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
+    #     """
+    #     Assigns resources to given subarray. It accepts the subarray id,
+    #     receptor id list and SDP block in JSON string format. Upon successful execution, the
+    #     'receptorIDList' attribute of the given subarray is populated with the given
+    #     receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throw
+    #     error message regarding the prior existence of resource.
+    #
+    #     :param argin: The string in JSON format. The JSON contains following values:
+    #
+    #
+    #         subarrayID:
+    #             DevShort. Mandatory.
+    #
+    #         dish:
+    #             Mandatory JSON object consisting of
+    #
+    #             receptorIDList:
+    #                 DevVarStringArray
+    #                 The individual string should contain dish numbers in string format
+    #                 with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+    #
+    #         sdp:
+    #             Mandatory JSON object consisting of
+    #
+    #             id:
+    #                 DevString
+    #                 The SBI id.
+    #             max_length:
+    #                 DevDouble
+    #                 Maximum length of the SBI in seconds.
+    #             scan_types:
+    #                 array of the blocks each consisting following parameters
+    #                 id:
+    #                     DevString
+    #                     The scan id.
+    #                 coordinate_system:
+    #                     DevString
+    #                 ra:
+    #                     DevString
+    #                 Dec:
+    #                     DevString
+    #
+    #             processing_blocks:
+    #                 array of the blocks each consisting following parameters
+    #                 id:
+    #                     DevString
+    #                     The Processing Block id.
+    #                 workflow:
+    #                     type:
+    #                         DevString
+    #                     id:
+    #                         DevString
+    #                     version:
+    #                         DevString
+    #                 parameters:
+    #                     {}
+    #
+    #         Example:
+    #             {"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",
+    #             "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771"
+    #             ,"dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":
+    #             0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,
+    #             "stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
+    #             "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":
+    #             [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1]
+    #             ,[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
+    #             "link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
+    #             "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":
+    #             "pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
+    #             "parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical",
+    #             "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":
+    #             ["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
+    #             "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
+    #             ["calibration"]}]}]}}
+    #
+    #     Note: From Jive, enter above input string without any space.
+    #
+    #     :return: The string in JSON format. The JSON contains following values:
+    #
+    #         dish:
+    #             Mandatory JSON object consisting of
+    #
+    #             receptorIDList_success:
+    #                 DevVarStringArray
+    #                 Contains ids of the receptors which are successfully allocated. Empty on unsuccessful
+    #                 allocation.
+    #
+    #
+    #         Example:
+    #             {
+    #             "dish": {
+    #             "receptorIDList_success": ["0001", "0002"]
+    #             }
+    #             }
+    #         Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
+    #     """
+    #     receptorIDList = []
+    #     exception_message = []
+    #     exception_count = 0
+    #     argout = []
+    #     try:
+    #         # serialize the json
+    #         jsonArgument = json.loads(argin)
+    #         # Create subarray proxy
+    #         subarrayID = int(jsonArgument['subarrayID'])
+    #         subarrayProxy = self.subarray_FQDN_dict[subarrayID]
+    #         # Check for the duplicate receptor allocation
+    #         duplicate_allocation_count = 0
+    #         duplicate_allocation_dish_ids = []
+    #         input_receptor_list = jsonArgument["dish"]["receptorIDList"]
+    #         len_input_receptor_list= len(input_receptor_list)
+    #         for dish in range(0, len_input_receptor_list):
+    #             dish_ID = "dish" + input_receptor_list[dish]
+    #             if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
+    #                 duplicate_allocation_dish_ids.append(dish_ID)
+    #                 duplicate_allocation_count = duplicate_allocation_count + 1
+    #         if duplicate_allocation_count == 0:
+    #             # Remove Subarray Id key from input json argument and send the json with
+    #             # receptor Id list and SDP block to TMC Subarray Node
+    #             input_json_subarray = jsonArgument.copy()
+    #             del input_json_subarray["subarrayID"]
+    #             input_to_sa = json.dumps(input_json_subarray)
+    #             self._resources_allocated = subarrayProxy.command_inout(
+    #                 const.CMD_ASSIGN_RESOURCES, input_to_sa)
+    #             # Update self._subarray_allocation variable to update subarray allocation
+    #             # for the related dishes.
+    #             # Also append the allocated dish to out argument.
+    #             for dish in range(0, len(self._resources_allocated)):
+    #                 dish_ID = "dish" + (self._resources_allocated[dish])
+    #                 self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+    #                 receptorIDList.append(self._resources_allocated[dish])
+    #             self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+    #             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+    #             self.logger.info(receptorIDList)
+    #             argout = {
+    #                 "dish": {
+    #                     "receptorIDList_success": receptorIDList
+    #                 }
+    #             }
+    #         else:
+    #             log_msg=const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
+    #             self._read_activity_message = log_msg
+    #             self.logger.info(log_msg)
+    #             argout = {
+    #                 "dish": {
+    #                     "receptorIDList_success": receptorIDList
+    #                 }
+    #             }
+    #     except ValueError as value_error:
+    #         self.logger.error(const.ERR_INVALID_JSON)
+    #         self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
+    #         exception_message.append(self._read_activity_message)
+    #         exception_count += 1
+    #
+    #     except KeyError as key_error:
+    #         self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
+    #         self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+    #         exception_message.append(self._read_activity_message)
+    #         exception_count += 1
+    #
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                             exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
+    #
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                         exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+    #
+    #     self.logger.info(argout)
+    #     #throw exception:
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+    #         argout = '{"dish": {"receptorIDList_success": []}}'
+    #
+    #     return json.dumps(argout)
+    #     # PROTECTED REGION END #    //  CentralNode.AssignResources
+
+    class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         """
-        Assigns resources to given subarray. It accepts the subarray id,
-        receptor id list and SDP block in JSON string format. Upon successful execution, the
-        'receptorIDList' attribute of the given subarray is populated with the given
-        receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throw
-        error message regarding the prior existence of resource.
-
-        :param argin: The string in JSON format. The JSON contains following values:
-
-
-            subarrayID:
-                DevShort. Mandatory.
-
-            dish:
-                Mandatory JSON object consisting of
-
-                receptorIDList:
-                    DevVarStringArray
-                    The individual string should contain dish numbers in string format
-                    with preceding zeroes upto 3 digits. E.g. 0001, 0002.
-
-            sdp:
-                Mandatory JSON object consisting of
-
-                id:
-                    DevString
-                    The SBI id.
-                max_length:
-                    DevDouble
-                    Maximum length of the SBI in seconds.
-                scan_types:
-                    array of the blocks each consisting following parameters
-                    id:
-                        DevString
-                        The scan id.
-                    coordinate_system:
-                        DevString
-                    ra:
-                        DevString
-                    Dec:
-                        DevString
-
-                processing_blocks:
-                    array of the blocks each consisting following parameters
-                    id:
-                        DevString
-                        The Processing Block id.
-                    workflow:
-                        type:
-                            DevString
-                        id:
-                            DevString
-                        version:
-                            DevString
-                    parameters:
-                        {}
-
-            Example:
-                {"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",
-                "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771"
-                ,"dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":
-                0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,
-                "stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
-                "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":
-                [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1]
-                ,[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
-                "link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
-                "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":
-                "pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
-                "parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical",
-                "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":
-                ["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
-                "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
-                ["calibration"]}]}]}}
-
-        Note: From Jive, enter above input string without any space.
-
-        :return: The string in JSON format. The JSON contains following values:
-
-            dish:
-                Mandatory JSON object consisting of
-
-                receptorIDList_success:
-                    DevVarStringArray
-                    Contains ids of the receptors which are successfully allocated. Empty on unsuccessful
-                    allocation.
-
-
-            Example:
-                {
-                "dish": {
-                "receptorIDList_success": ["0001", "0002"]
-                }
-                }
-            Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
+           A class for CentralNode's AssignResources() command.
         """
-        receptorIDList = []
-        exception_message = []
-        exception_count = 0
-        argout = []
-        try:
-            # serialize the json
-            jsonArgument = json.loads(argin)
-            # Create subarray proxy
-            subarrayID = int(jsonArgument['subarrayID'])
-            subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-            # Check for the duplicate receptor allocation
-            duplicate_allocation_count = 0
-            duplicate_allocation_dish_ids = []
-            input_receptor_list = jsonArgument["dish"]["receptorIDList"]
-            len_input_receptor_list= len(input_receptor_list)
-            for dish in range(0, len_input_receptor_list):
-                dish_ID = "dish" + input_receptor_list[dish]
-                if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
-                    duplicate_allocation_dish_ids.append(dish_ID)
-                    duplicate_allocation_count = duplicate_allocation_count + 1
-            if duplicate_allocation_count == 0:
-                # Remove Subarray Id key from input json argument and send the json with
-                # receptor Id list and SDP block to TMC Subarray Node
-                input_json_subarray = jsonArgument.copy()
-                del input_json_subarray["subarrayID"]
-                input_to_sa = json.dumps(input_json_subarray)
-                self._resources_allocated = subarrayProxy.command_inout(
-                    const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                # Update self._subarray_allocation variable to update subarray allocation
-                # for the related dishes.
-                # Also append the allocated dish to out argument.
-                for dish in range(0, len(self._resources_allocated)):
-                    dish_ID = "dish" + (self._resources_allocated[dish])
-                    self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                    receptorIDList.append(self._resources_allocated[dish])
-                self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-                self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-                self.logger.info(receptorIDList)
-                argout = {
-                    "dish": {
-                        "receptorIDList_success": receptorIDList
+        def do(self, argin):
+            """
+               Assigns resources to given subarray. It accepts the subarray id,
+               receptor id list and SDP block in JSON string format. Upon successful execution, the
+               'receptorIDList' attribute of the given subarray is populated with the given
+               receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throw
+               error message regarding the prior existence of resource.
+
+               :param argin: The string in JSON format. The JSON contains following values:
+
+
+                   subarrayID:
+                       DevShort. Mandatory.
+
+                   dish:
+                       Mandatory JSON object consisting of
+
+                       receptorIDList:
+                           DevVarStringArray
+                           The individual string should contain dish numbers in string format
+                           with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+
+                   sdp:
+                       Mandatory JSON object consisting of
+
+                       id:
+                           DevString
+                           The SBI id.
+                       max_length:
+                           DevDouble
+                           Maximum length of the SBI in seconds.
+                       scan_types:
+                           array of the blocks each consisting following parameters
+                           id:
+                               DevString
+                               The scan id.
+                           coordinate_system:
+                               DevString
+                           ra:
+                               DevString
+                           Dec:
+                               DevString
+
+                       processing_blocks:
+                           array of the blocks each consisting following parameters
+                           id:
+                               DevString
+                               The Processing Block id.
+                           workflow:
+                               type:
+                                   DevString
+                               id:
+                                   DevString
+                               version:
+                                   DevString
+                           parameters:
+                               {}
+
+                   Example:
+                       {"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",
+                       "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771"
+                       ,"dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":
+                       0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,
+                       "stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
+                       "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":
+                       [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1]
+                       ,[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
+                       "link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
+                       "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":
+                       "pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
+                       "parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical",
+                       "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":
+                       ["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
+                       "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
+                       ["calibration"]}]}]}}
+
+               Note: From Jive, enter above input string without any space.
+
+               :return: The string in JSON format. The JSON contains following values:
+
+                   dish:
+                       Mandatory JSON object consisting of
+
+                       receptorIDList_success:
+                           DevVarStringArray
+                           Contains ids of the receptors which are successfully allocated. Empty on unsuccessful
+                           allocation.
+
+
+                   Example:
+                       {
+                       "dish": {
+                       "receptorIDList_success": ["0001", "0002"]
+                       }
+                       }
+                   Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
+                   """
+
+            device = self.target
+            receptorIDList = []
+            exception_message = []
+            exception_count = 0
+            argout = []
+            try:
+                # serialize the json
+                jsonArgument = json.loads(argin)
+                # Create subarray proxy
+                subarrayID = int(jsonArgument['subarrayID'])
+                subarrayProxy = device.subarray_FQDN_dict[subarrayID]
+                # Check for the duplicate receptor allocation
+                duplicate_allocation_count = 0
+                duplicate_allocation_dish_ids = []
+                input_receptor_list = jsonArgument["dish"]["receptorIDList"]
+                len_input_receptor_list = len(input_receptor_list)
+                for dish in range(0, len_input_receptor_list):
+                    dish_ID = "dish" + input_receptor_list[dish]
+                    if device._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
+                        duplicate_allocation_dish_ids.append(dish_ID)
+                        duplicate_allocation_count = duplicate_allocation_count + 1
+                if duplicate_allocation_count == 0:
+                    # Remove Subarray Id key from input json argument and send the json with
+                    # receptor Id list and SDP block to TMC Subarray Node
+                    input_json_subarray = jsonArgument.copy()
+                    del input_json_subarray["subarrayID"]
+                    input_to_sa = json.dumps(input_json_subarray)
+                    device._resources_allocated = subarrayProxy.command_inout(
+                        const.CMD_ASSIGN_RESOURCES, input_to_sa)
+                    # Update self._subarray_allocation variable to update subarray allocation
+                    # for the related dishes.
+                    # Also append the allocated dish to out argument.
+                    for dish in range(0, len(device._resources_allocated)):
+                        dish_ID = "dish" + (device._resources_allocated[dish])
+                        device._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+                        receptorIDList.append(device._resources_allocated[dish])
+                    device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+                    self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+                    self.logger.info(receptorIDList)
+                    argout = {
+                        "dish": {
+                            "receptorIDList_success": receptorIDList
+                        }
                     }
-                }
-            else:
-                log_msg=const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
-                self._read_activity_message = log_msg
-                self.logger.info(log_msg)
-                argout = {
-                    "dish": {
-                        "receptorIDList_success": receptorIDList
+                    message = json.dumps(argout)
+                    self.logger.info(message)
+                    return (ResultCode.STARTED, message)
+                else:
+                    log_msg = const.STR_DISH_DUPLICATE + str(duplicate_allocation_dish_ids)
+                    device._read_activity_message = log_msg
+                    self.logger.info(log_msg)
+                    argout = {
+                        "dish": {
+                            "receptorIDList_success": receptorIDList
+                        }
                     }
-                }
-        except ValueError as value_error:
-            self.logger.error(const.ERR_INVALID_JSON)
-            self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+                    message = json.dumps(argout)
+                    self.logger.info(message)
+                    return (ResultCode.FAILED, message)
+            except ValueError as value_error:
+                self.logger.error(const.ERR_INVALID_JSON)
+                device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                message = const.ERR_INVALID_JSON
+                self.logger.info(message)
+                return (ResultCode.FAILED, message)
 
-        except KeyError as key_error:
-            self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+            except KeyError as key_error:
+                self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
+                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                message = const.ERR_JSON_KEY_NOT_FOUND
+                self.logger.info(message)
+                return (ResultCode.FAILED, message)
 
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_ASSGN_RESOURCES)
+                message = const.ERR_ASSGN_RESOURCES
+                self.logger.info(message)
+                return (ResultCode.FAILED, message)
 
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_ASSGN_RESOURCES)
+                message = const.ERR_ASSGN_RESOURCES
+                self.logger.info(message)
+                return (ResultCode.FAILED, message)
 
-        self.logger.info(argout)
-        #throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-            argout = '{"dish": {"receptorIDList_success": []}}'
 
-        return json.dumps(argout)
-        # PROTECTED REGION END #    //  CentralNode.AssignResources
+            # TODO: throw exception:
+            #if exception_count > 0:
+             #   self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+             #   argout = '{"dish": {"receptorIDList_success": []}}'
 
-    @command(dtype_in='str', dtype_out='str', )
-    @DebugIt()
-    def ReleaseResources(self, argin):
+            # PROTECTED REGION END #    //  CentralNode.AssignResources
+
+    # @command(dtype_in='str', dtype_out='str', )
+    # @DebugIt()
+    # def ReleaseResources(self, argin):
+    #     # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
+    #
+    #     """
+    #     Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
+    #     receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+    #     is invoked on the respective SubarrayNode. In this case, the receptorIDList tag is empty as all
+    #     the resources of the Subarray are to be released.
+    #     When releaseALL is False, ReleaseResources will be invoked on the SubarrayNode and the resources provided
+    #     in receptorIDList tag, are to be released from the Subarray. The selective release of the resources when
+    #     releaseALL Flag is False is not yet supported.
+    #
+    #     :param argin: The string in JSON format. The JSON contains following values:
+    #
+    #         subarrayID:
+    #             DevShort. Mandatory.
+    #
+    #         releaseALL:
+    #             Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
+    #
+    #         receptorIDList:
+    #             DevVarStringArray. Empty when releaseALL tag is True.
+    #
+    #         Example:
+    #             {
+    #                 "subarrayID": 1,
+    #                 "releaseALL": true,
+    #                 "receptorIDList": []
+    #             }
+    #
+    #
+    #         Note: From Jive, enter input as:
+    #             {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
+    #
+    #         :return: argout: The string in JSON format. The JSON contains following values:
+    #
+    #             releaseALL:
+    #                 Boolean(True or False). If True, all the resources are successfully released from the
+    #                 Subarray.
+    #
+    #             receptorIDList:
+    #                 DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
+    #                 resources (device names) that are noe released from the subarray.
+    #
+    #             Example:
+    #                 argout =
+    #                 {
+    #                     "ReleaseAll" : True,
+    #                     "receptorIDList" : []
+    #                 }
+    #     """
+    #     exception_count = 0
+    #     exception_message =[]
+    #     try:
+    #         release_success = False
+    #         res_not_released = []
+    #         jsonArgument = json.loads(argin)
+    #         subarrayID = jsonArgument['subarrayID']
+    #         subarrayProxy = self.subarray_FQDN_dict[subarrayID]
+    #         subarray_name = "SA" + str(subarrayID)
+    #         if jsonArgument['releaseALL'] == True:
+    #             res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
+    #             log_msg=const.STR_REL_RESOURCES
+    #             self._read_activity_message = log_msg
+    #             self.logger.info(log_msg)
+    #             if not res_not_released:
+    #                 release_success = True
+    #                 for Dish_ID, Dish_Status in self._subarray_allocation.items():
+    #                     if Dish_Status == subarray_name:
+    #                         self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
+    #             else:
+    #                 log_msg=const.STR_LIST_RES_NOT_REL + res_not_released
+    #                 self._read_activity_message = log_msg
+    #                 self.logger.info(log_msg)
+    #                 release_success = False
+    #         else:
+    #             self._read_activity_message = const.STR_FALSE_TAG
+    #             self.logger.info(const.STR_FALSE_TAG)
+    #     except ValueError as value_error:
+    #         self.logger.error(const.ERR_INVALID_JSON)
+    #         self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
+    #         exception_message.append(self._read_activity_message)
+    #         exception_count += 1
+    #     except KeyError as key_error:
+    #         self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
+    #         self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+    #         exception_message.append(self._read_activity_message)
+    #         exception_count += 1
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                     exception_message, exception_count,  const.ERR_RELEASE_RESOURCES)
+    #
+    #
+    #     # throw exception:
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+    #
+    #     argout = {
+    #         "ReleaseAll" : release_success,
+    #         "receptorIDList" : res_not_released
+    #     }
+    #     return json.dumps(argout)
+    #     # PROTECTED REGION END #    //  CentralNode.ReleaseResource
+
+
+    class ReleaseResourcesCommand(SKASubarray.ReleaseResourcesCommand):
+        """
+        A class for CentralNode's ReleaseResources() command.
+        """
         # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
 
-        """
-        Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
-        receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-        is invoked on the respective SubarrayNode. In this case, the receptorIDList tag is empty as all
-        the resources of the Subarray are to be released.
-        When releaseALL is False, ReleaseResources will be invoked on the SubarrayNode and the resources provided
-        in receptorIDList tag, are to be released from the Subarray. The selective release of the resources when
-        releaseALL Flag is False is not yet supported.
+        def do(self, argin):
 
-        :param argin: The string in JSON format. The JSON contains following values:
+            """
+            Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
+            receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+            is invoked on the respective SubarrayNode. In this case, the receptorIDList tag is empty as all
+            the resources of the Subarray are to be released.
+            When releaseALL is False, ReleaseResources will be invoked on the SubarrayNode and the resources provided
+            in receptorIDList tag, are to be released from the Subarray. The selective release of the resources when
+            releaseALL Flag is False is not yet supported.
 
-            subarrayID:
-                DevShort. Mandatory.
+            :param argin: The string in JSON format. The JSON contains following values:
 
-            releaseALL:
-                Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
-
-            receptorIDList:
-                DevVarStringArray. Empty when releaseALL tag is True.
-
-            Example:
-                {
-                    "subarrayID": 1,
-                    "releaseALL": true,
-                    "receptorIDList": []
-                }
-
-
-            Note: From Jive, enter input as:
-                {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
-
-            :return: argout: The string in JSON format. The JSON contains following values:
+                subarrayID:
+                    DevShort. Mandatory.
 
                 releaseALL:
-                    Boolean(True or False). If True, all the resources are successfully released from the
-                    Subarray.
+                    Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
 
                 receptorIDList:
-                    DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
-                    resources (device names) that are noe released from the subarray.
+                    DevVarStringArray. Empty when releaseALL tag is True.
 
                 Example:
-                    argout =
                     {
-                        "ReleaseAll" : True,
-                        "receptorIDList" : []
+                        "subarrayID": 1,
+                        "releaseALL": true,
+                        "receptorIDList": []
                     }
-        """
-        exception_count = 0
-        exception_message =[]
-        try:
-            release_success = False
-            res_not_released = []
-            jsonArgument = json.loads(argin)
-            subarrayID = jsonArgument['subarrayID']
-            subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-            subarray_name = "SA" + str(subarrayID)
-            if jsonArgument['releaseALL'] == True:
-                res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
-                log_msg=const.STR_REL_RESOURCES
-                self._read_activity_message = log_msg
-                self.logger.info(log_msg)
-                if not res_not_released:
-                    release_success = True
-                    for Dish_ID, Dish_Status in self._subarray_allocation.items():
-                        if Dish_Status == subarray_name:
-                            self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
-                else:
-                    log_msg=const.STR_LIST_RES_NOT_REL + res_not_released
-                    self._read_activity_message = log_msg
+
+                Note: From Jive, enter input as:
+                    {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
+
+                :return: argout: The string in JSON format. The JSON contains following values:
+
+                    releaseALL:
+                        Boolean(True or False). If True, all the resources are successfully released from the
+                        Subarray.
+
+                    receptorIDList:
+                        DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
+                        resources (device names) that are noe released from the subarray.
+
+                    Example:
+                        argout =
+                        {
+                            "ReleaseAll" : True,
+                            "receptorIDList" : []
+                        }
+            """
+            exception_count = 0
+            exception_message = []
+            try:
+                release_success = False
+                res_not_released = []
+                jsonArgument = json.loads(argin)
+                subarrayID = jsonArgument['subarrayID']
+                subarrayProxy = device.subarray_FQDN_dict[subarrayID]
+                subarray_name = "SA" + str(subarrayID)
+                if jsonArgument['releaseALL'] == True:
+                    #the const string for "CMD_RELEASE_RESOURCES" is "ReleaseAllResources"
+                    res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
+                    log_msg = const.STR_REL_RESOURCES
+                    device._read_activity_message = log_msg
                     self.logger.info(log_msg)
-                    release_success = False
-            else:
-                self._read_activity_message = const.STR_FALSE_TAG
-                self.logger.info(const.STR_FALSE_TAG)
-        except ValueError as value_error:
-            self.logger.error(const.ERR_INVALID_JSON)
-            self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except KeyError as key_error:
-            self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count,  const.ERR_RELEASE_RESOURCES)
+                    if not res_not_released:
+                        release_success = True
+                        for Dish_ID, Dish_Status in device._subarray_allocation.items():
+                            if Dish_Status == subarray_name:
+                                device._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
+                        argout = {
+                            "ReleaseAll": release_success,
+                            "receptorIDList": res_not_released
+                        }
+                        message = json.dumps(argout)
+                        self.logger.info(message)
+                        return (ResultCode.OK,message)
+                    else:
+                        log_msg = const.STR_LIST_RES_NOT_REL + res_not_released
+                        device._read_activity_message = log_msg
+                        self.logger.info(log_msg)
+                        release_success = False
+                        message = json.dumps(argout)
+                        self.logger.info(message)
+                        return (ResultCode.FAILED, message)
+                else:
+                    device._read_activity_message = const.STR_FALSE_TAG
+                    self.logger.info(const.STR_FALSE_TAG)
+                    message = const.STR_FALSE_TAG
+                    self.logger.info(message)
+                    return (ResultCode.FAILED, message)
+            except ValueError as value_error:
+                self.logger.error(const.ERR_INVALID_JSON)
+                device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                message = const.ERR_INVALID_JSON
+                self.logger.info(message)
+                return (ResultCode.FAILED, message)
+            except KeyError as key_error:
+                self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
+                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                message = const.ERR_JSON_KEY_NOT_FOUND
+                self.logger.info(message)
+                return (ResultCode.FAILED, message)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message, exception_count,
+                                                                                        const.ERR_RELEASE_RESOURCES)
+                message = const.ERR_RELEASE_RESOURCES
+                self.logger.info(message)
+                return (ResultCode.FAILED, message)
 
+            # TODO:for future reference - throw exception:
+            # if exception_count > 0:
+            #     device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
 
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
-
-        argout = {
-            "ReleaseAll" : release_success,
-            "receptorIDList" : res_not_released
-        }
-        return json.dumps(argout)
-        # PROTECTED REGION END #    //  CentralNode.ReleaseResource
+            # argout = {
+            #     "ReleaseAll": release_success,
+            #     "receptorIDList": res_not_released
+            # }
+            # return json.dumps(argout)
+            # PROTECTED REGION END #    //  CentralNode.ReleaseResource
 # ----------
 # Run server
 # ----------
