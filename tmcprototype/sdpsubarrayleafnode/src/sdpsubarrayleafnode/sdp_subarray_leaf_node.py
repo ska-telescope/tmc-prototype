@@ -17,7 +17,7 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 import tango
 from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
-from ska.base import SKABaseDevice
+from ska.base import SKABaseDevice, SKASubarray
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
 # Additional imports
@@ -29,7 +29,7 @@ from . import const
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 # pylint: disable=unused-argument,unused-variable
-class SdpSubarrayLeafNode(SKABaseDevice):
+class SdpSubarrayLeafNode(SKASubarray):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
     """
@@ -170,7 +170,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
 
-    class InitCommand(SKABaseDevice.InitCommand):
+    class InitCommand(SKASubarray.InitCommand):
         """ Initializes the attributes and properties of the Central Node. """
         # PROTECTED REGION ID(SdpSubarrayLeafNode.init_device) ENABLED START #
         def do(self):
@@ -191,9 +191,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.STR_SDPSALN_INIT_SUCCESS
                 self.logger.info(log_msg)
                 device._read_activity_message = log_msg
-
+                return (ResultCode.OK,const.STR_SDPSALN_INIT_SUCCESS)
                 # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
                 self._sdp_subarray_proxy = DeviceProxy(self.SdpSubarrayFQDN)
+
 
             except DevFailed as dev_failed:
                 self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
@@ -201,6 +202,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
                 device._read_activity_message = const.STR_ERR_MSG + str(dev_failed)
                 self.logger.error(const.STR_ERR_MSG, dev_failed)
+                return(ResultCode.FAILED,ERR_INIT_PROP_ATTR_CN)
 
                 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
 
@@ -507,7 +509,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #
     # # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
-    class ScanCommand(SKABaseDevice.ScanCommand):
+    class ScanCommand(SKASubarray.ScanCommand):
         """ Invoke Scan command to SDP subarray.
         """
 
@@ -526,29 +528,32 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             exception_count = 0
             try:
-                sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
+                sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
                 # Check if SDP Subarray obsState is READY
                 if sdp_subarray_obs_state == ObsState.READY:
                  # TODO : Pass id as a string argument to sdp Subarray Scan command
 
                     log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
                     self.logger.debug(log_msg)
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, self.cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_SCAN_SUCCESS
                     self.logger.info(const.STR_SCAN_SUCCESS)
+                    return(ResultCode.STARTED,const.STR_SCAN_SUCCESS)
 
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
+                    return(ResultCode.FAILED,const.ERR_SCAN)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                             exception_message, exception_count, const.ERR_SCAN)
+                return(ResultCode.FAILED,const.ERR_SCAN)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                             exception_message, exception_count, const.ERR_SCAN)
-                return(ResultCode.STARTED,const.STR_SCAN_SUCCESS)
+                return(ResultCode.FAILED,const.ERR_SCAN)
             # throw exception:
             #     if exception_count > 0:
             #         self.throw_exception(exception_message, const.STR_SCAN_EXEC)
@@ -556,75 +561,115 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
 
-    @command(
-    )
-    @DebugIt()
-    def EndScan(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
+    # @command(
+    # )
+    # @DebugIt()
+    # def EndScan(self):
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
+    #     """
+    #     It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in
+    #     SCANNING state.
+    #
+    #                     :param argin: None.
+    #
+    #                     :return: None.
+    #                     """
+    #
+    #     exception_message = []
+    #     exception_count = 0
+    #     try:
+    #         if self._sdp_subarray_proxy.obsState == ObsState.SCANNING:
+    #             self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.cmd_ended_cb)
+    #             self._read_activity_message = const.STR_ENDSCAN_SUCCESS
+    #             self.logger.info(const.STR_ENDSCAN_SUCCESS)
+    #         else:
+    #             self._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
+    #             self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                     exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                     exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
+    #
+    #     # throw exception:
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
+    #
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndScan
+
+    class EndScanCommand(SKASubarray.EndScanCommand):
+
+    # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
         """
         It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in
         SCANNING state.
+        """
+        def do(self):
+            """:param argin: None.
 
-                        :param argin: None.
+              :return: None."""
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device._sdp_subarray_proxy.obsState == ObsState.SCANNING:
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_ENDSCAN_SUCCESS
+                    self.logger.info(const.STR_ENDSCAN_SUCCESS)
+                    return(ResultCode.STARTED,const.STR_ENDSCAN_SUCCESS)
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
+                    self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
+                    return(ResultCode.FAILED,const.ERR_ENDSCAN_INVOKING_CMD)
 
-                        :return: None.
-                        """
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_ENDSCAN_INVOKING_CMD)
+                return (ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
 
-        exception_message = []
-        exception_count = 0
-        try:
-            if self._sdp_subarray_proxy.obsState == ObsState.SCANNING:
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.cmd_ended_cb)
-                self._read_activity_message = const.STR_ENDSCAN_SUCCESS
-                self.logger.info(const.STR_ENDSCAN_SUCCESS)
-            else:
-                self._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
-                self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_ENDSCAN_INVOKING_CMD)
+                return(ResultCode.FAILED,const.ERR_ENDSCAN_INVOKING_CMD)
 
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
 
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndScan
-
-    @command(
-    )
-    @DebugIt()
-    def EndSB(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
-        """ This command invokes EndSB command on SDP subarray to
-         end the current Scheduling block."""
-
-        # TODO: For future use
-        exception_message = []
-        exception_count = 0
-        try:
-            if self._sdp_subarray_proxy.obsState == ObsState.READY:
-                # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
-                self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.cmd_ended_cb)
-                self._read_activity_message = const.STR_ENDSB_SUCCESS
-                self.logger.info(const.STR_ENDSB_SUCCESS)
-            else:
-                self._read_activity_message = const.ERR_DEVICE_NOT_READY
-                self.logger.error(const.ERR_DEVICE_NOT_READY)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                        exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
-
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
+    # @command(
+    # )
+    # @DebugIt()
+    # def EndSB(self):
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
+    #     """ This command invokes EndSB command on SDP subarray to
+    #      end the current Scheduling block."""
+    #
+    #     # TODO: For future use
+    #     exception_message = []
+    #     exception_count = 0
+    #     try:
+    #         if self._sdp_subarray_proxy.obsState == ObsState.READY:
+    #             # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
+    #             self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.cmd_ended_cb)
+    #             self._read_activity_message = const.STR_ENDSB_SUCCESS
+    #             self.logger.info(const.STR_ENDSB_SUCCESS)
+    #         else:
+    #             self._read_activity_message = const.ERR_DEVICE_NOT_READY
+    #             self.logger.error(const.ERR_DEVICE_NOT_READY)
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                         exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                     exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+    #
+    #     # throw exception:
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+    #
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 
     @command(
     )
