@@ -454,7 +454,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             device = self.target
 
-            device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, self.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ReturnCode.STARTED, const.STR_ON_CMD_ISSUED)
 
@@ -501,7 +501,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             device = self.target
 
-            device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, self.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             return (ReturnCode.STARTED, const.STR_OFF_CMD_ISSUED)
 
@@ -529,7 +529,7 @@ class CspMasterLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
 
-    class StandbyCommand(SKASubarray.StandbyCommand):
+    class StandbyCommand(ResponseCommand):
         """
         A class for CSP Master Leaf Node's Standby() command.
         """
@@ -550,7 +550,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             device = self.target
 
-            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
             return (ReturnCode.STARTED, const.STR_STANDBY_CMD_ISSUED)
 
