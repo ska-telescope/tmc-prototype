@@ -1126,6 +1126,27 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
 
+    class OnCommand(SKASubarray.OnCommand):
+        """
+        A class for the cspsubarrayleafnode's On() command.
+        """
+
+        def do(self):
+            """
+            Stateless hook for On() command functionality.
+
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            print("On command device object:", device)
+            device.do_something("Test")
+            message = "On command completed OK"
+            self.logger.info(message)
+            return (ResultCode.OK, message)
+
 
 # pylint: enable=protected-access,unused-argument,unused-variable
 
