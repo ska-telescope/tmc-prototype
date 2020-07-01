@@ -554,6 +554,18 @@ class CspMasterLeafNode(SKABaseDevice):
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
             return (ResultCode.STARTED, const.STR_STANDBY_CMD_ISSUED)
 
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        self.register_command_object(
+            "Standby",
+            self.StandbyCommand(self, self.state_model, self.logger)
+        )
+
+
 
 # ----------
 # Run server
