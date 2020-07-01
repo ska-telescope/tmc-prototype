@@ -1849,6 +1849,10 @@ class SubarrayNode(SKASubarray):
             "AssignResources",
             self.AssignResourcesCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "ReleaseAllResources",
+            self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
+        )
 
     def is_Track_allowed(self):
         """
@@ -1916,9 +1920,9 @@ class SubarrayNode(SKASubarray):
                 information purpose only.
             :rtype: (ResultCode, str)
             """
-            var = self.target
-            print("On command device object:", var)
-            var.do_something("Test")
+            device = self.target
+            print("On command device object:", device)
+            device.do_something("Test")
             message = "On command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)

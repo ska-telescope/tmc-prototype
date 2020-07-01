@@ -348,9 +348,8 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         json_argument[const.STR_KEY_DISH] = dish
         arg_list.append(json.dumps(json_argument))
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
-        assert tango_context.device.obsState == ObsState.RESOURCING
 
-'''
+
 def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
     # act
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -393,8 +392,8 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
             tango_context.device.AssignResources(assign_invalid_key)
 
         # assert:
-        assert tango_context.device.State() == DevState.OFF
-        assert tango_context.device.obsState == ObsState.EMPTY
+        assert tango_context.device.State() == DevState.ON
+        assert tango_context.device.obsState == ObsState.FAULT
 
 
 # def test_assign_resource_should_raise_devfailed_exception():
@@ -473,7 +472,7 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
         tango_context.device.AssignResources(assign_input_str)
 
         # assert
-        assert tango_context.device.State() == DevState.OFF
+        assert tango_context.device.State() == DevState.ON
 
 
 def test_release_resource_command_subarray():
@@ -523,7 +522,7 @@ def test_release_resource_command_subarray():
         # assert:
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
-        assert tango_context.device.state == DevState.OFF()
+        assert tango_context.device.state == DevState.ON()
         assert tango_context.device.obsState == ObsState.EMPTY
 
 
@@ -556,9 +555,9 @@ def test_release_resource_should_raise_exception_when_called_before_assign_resou
             tango_context.device.ReleaseAllResources()
 
         # assert:
-        assert tango_context.device.State() == DevState.OFF
+        assert tango_context.device.State() == DevState.ON
         assert const.RESOURCE_ALREADY_RELEASED in tango_context.device.activityMessage
-
+'''
 
 def test_configure_command_subarray():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
@@ -2313,12 +2312,12 @@ def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("SubarrayNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
-
+'''
 def raise_devfailed_with_arg(cmd_name, input_arg):
     tango.Except.throw_exception("SubarrayNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
-
+'''
 def raise_devfailed_for_event_subscription(evt_name,evt_type,callaback, stateless=True):
     tango.Except.throw_exception("SubarrayNode_CommandCallbackfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)

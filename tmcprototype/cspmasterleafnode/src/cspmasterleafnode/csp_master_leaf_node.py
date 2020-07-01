@@ -303,7 +303,7 @@ class CspMasterLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  CspMasterLeafNode.init_device
 
-    class InitCommand(SKASubarray.InitCommand):
+    class InitCommand(SKABaseDevice.InitCommand):
         """
         A class for the TMC CSP Master Leaf Node's init_device() "command".
         """
@@ -336,7 +336,7 @@ class CspMasterLeafNode(SKABaseDevice):
                 device._csp_proxy = DeviceProxy(str(device.CspMasterFQDN))
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
-                device.set_state(DevState.FAULT)
+                #device.set_state(DevState.FAULT)
                 _state_fault_flag = True
                 device._handle_devfailed_exception(dev_failed, [], 0, const.ERR_IN_CREATE_PROXY)
 
@@ -349,13 +349,13 @@ class CspMasterLeafNode(SKABaseDevice):
                 device._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
                                                   device.csp_pst_health_state_cb, stateless=True)
 
-                device.set_state(DevState.ON)
+                #device.set_state(DevState.ON)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
                 device._handle_devfailed_exception(dev_failed, [], 0, const.ERR_CSP_MASTER_LEAF_INIT)
-                device.set_state(DevState.FAULT)
+                #device.set_state(DevState.FAULT)
                 _state_fault_flag = True
                 device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
 
@@ -553,6 +553,18 @@ class CspMasterLeafNode(SKABaseDevice):
             device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
             return (ResultCode.STARTED, const.STR_STANDBY_CMD_ISSUED)
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        self.register_command_object(
+            "Standby",
+            self.StandbyCommand(self, self.state_model, self.logger)
+        )
+
 
 
 # ----------

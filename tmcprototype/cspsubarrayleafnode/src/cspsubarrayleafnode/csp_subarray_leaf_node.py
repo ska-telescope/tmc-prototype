@@ -37,7 +37,7 @@ from . import const
 __all__ = ["CspSubarrayLeafNode", "main"]
 
 # pylint: disable=protected-access,unused-argument,unused-variable
-class CspSubarrayLeafNode(SKABaseDevice):
+class CspSubarrayLeafNode(SKASubarray):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
     """
@@ -343,7 +343,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
-    class InitCommand(SKABaseDevice.InitCommand):
+    class InitCommand(SKASubarray.InitCommand):
         """
         A class for the CspSubarrayLeafNode's init_device() "command".
         """
@@ -418,6 +418,21 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.delay_model_calculator_thread.join()
         self.logger.debug("CSP Subarray Leaf Node is Exiting.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        self.register_command_object(
+            "AssignResources",
+            self.AssignResourcesCommand(self, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "ReleaseAllResources",
+            self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
+        )
 
     # ------------------
     # Attributes methods
@@ -838,8 +853,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.ReleaseResources
 
 
-
-
     class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         # PROTECTED REGION ID(CspSubarrayLeafNode.ReleaseResources) ENABLED START #
         def do(self):
@@ -958,90 +971,90 @@ class CspSubarrayLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
 
-        class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
-            # PROTECTED REGION ID(CspSubarrayLeafNode.GoToIdle) ENABLED START #
+    class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.GoToIdle) ENABLED START #
+        """
+        A class for CspSubarrayLeafNode's AssignResources command.
+        """
+        def do(self,argin):
             """
-            A class for CspSubarrayLeafNode's AssignResources command.
+            It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
+            with receptorIDList (list of integers) as an input argument.
+
+            :param argin: The string in JSON format. The JSON contains following values:
+
+                dish:
+                    Mandatory JSON object consisting of
+
+                    receptorIDList:
+                        DevVarString
+                        The individual string should contain dish numbers in string format
+                        with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+            Example:
+                    {
+                    "subarrayID": 1,
+                    "dish": {
+                    "receptorIDList": ["0001", "0002"]
+                    }
+                    }
+
+            Note: Enter input without spaces as:{"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]}}
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
             """
-            def do(self,argin):
-                """
-                It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
-                with receptorIDList (list of integers) as an input argument.
+            device=self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                #Parse receptorIDList from JSON string.
+                jsonArgument = json.loads(argin)
+                device.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
+                #convert receptorIDList from list of string to list of int
+                for i in range(0, len(device.receptorIDList_str)):
+                    device.receptorIDList.append(int(device.receptorIDList_str[i]))
+                device.update_config_params()
+                # Invoke AddReceptors command on CspSubarray
+                device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, device.receptorIDList,
+                                                               device.cmd_ended_cb)
+                device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
+                self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
+                return (ResultCode.STARTED,const.STR_ADD_RECEPTORS_SUCCESS)
 
-                :param argin: The string in JSON format. The JSON contains following values:
+            except ValueError as value_error:
+                log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
+                self.logger.error(log_msg)
+                device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                return (ResultCode.FAILED,const.ERR_INVALID_JSON_ASSIGN_RES)
 
-                    dish:
-                        Mandatory JSON object consisting of
+            except KeyError as key_error:
+                log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                self.logger.error(log_msg)
+                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                return (ResultCode.FAILED,const.ERR_JSON_KEY_NOT_FOUND)
 
-                        receptorIDList:
-                            DevVarString
-                            The individual string should contain dish numbers in string format
-                            with preceding zeroes upto 3 digits. E.g. 0001, 0002.
-                Example:
-                        {
-                        "subarrayID": 1,
-                        "dish": {
-                        "receptorIDList": ["0001", "0002"]
-                        }
-                        }
-
-                Note: Enter input without spaces as:{"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]}}
-                :return: A tuple containing a return code and a string
-                    message indicating status. The message is for
-                    information purpose only.
-                :rtype: (ResultCode, str)
-                """
-                device=self.target
-                exception_message = []
-                exception_count = 0
-                try:
-                    #Parse receptorIDList from JSON string.
-                    jsonArgument = json.loads(argin[0])
-                    device.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
-                    #convert receptorIDList from list of string to list of int
-                    for i in range(0, len(self.receptorIDList_str)):
-                        self.receptorIDList.append(int(self.receptorIDList_str[i]))
-                    device.update_config_params()
-                    # Invoke AddReceptors command on CspSubarray
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, device.receptorIDList,
-                                                                   device.cmd_ended_cb)
-                    device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
-                    self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
-                    return (ResultCode.STARTED,const.STR_ADD_RECEPTORS_SUCCESS)
-
-                except ValueError as value_error:
-                    log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-                    self.logger.error(log_msg)
-                    device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-                    exception_message.append(self._read_activity_message)
-                    exception_count += 1
-                    return (ResultCode.FAILED,const.ERR_INVALID_JSON_ASSIGN_RES)
-
-                except KeyError as key_error:
-                    log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                    self.logger.error(log_msg)
-                    device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                    exception_message.append(self._read_activity_message)
-                    exception_count += 1
-                    return (ResultCode.FAILED,const.ERR_JSON_KEY_NOT_FOUND)
-
-                except DevFailed as dev_failed:
-                    [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                 exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-                    return (ResultCode.FAILED,const.ERR_ASSGN_RESOURCES)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+                return (ResultCode.FAILED,const.ERR_ASSGN_RESOURCES)
 
 
-                except Exception as except_occurred:
-                    [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                 exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-                    return (ResultCode.FAILED,const.ERR_ASSGN_RESOURCES)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+                return (ResultCode.FAILED,const.ERR_ASSGN_RESOURCES)
 
-                # throw exception:
-                # if exception_count:
-                #     print ("Exception in AssignResource:", exception_message)
-                #     self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+            # throw exception:
+            # if exception_count:
+            #     print ("Exception in AssignResource:", exception_message)
+            #     self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
+    # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
 
 
 
@@ -1142,7 +1155,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             print("On command device object:", device)
-            device.do_something("Test")
             message = "On command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)
