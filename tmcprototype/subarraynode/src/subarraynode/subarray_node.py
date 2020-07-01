@@ -31,7 +31,7 @@ from tango.server import run,attribute, command, device_property
 # Additional import
 from . import const
 from .const import PointingState
-from ska.base.commands import ActionCommand, ReturnCode, ResponseCommand
+from ska.base.commands import ActionCommand, ResultCode, ResponseCommand
 from ska.base.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
@@ -146,6 +146,29 @@ class ElementDeviceData:
 
 
 # PROTECTED REGION END #    //  SubarrayNode.additionnal_import
+
+class Utility:
+    def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
+        log_msg=read_actvity_msg + str(exception)
+        self.logger.error(log_msg)
+        self._read_activity_message = read_actvity_msg + str(exception)
+        excpt_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [excpt_msg_list, exception_count]
+
+    def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
+        log_msg=read_actvity_msg + str(df)
+        self.logger.error(log_msg)
+        self._read_activity_message = read_actvity_msg + str(df)
+        excpt_msg_list.append(self._read_activity_message)
+        exception_count += 1
+        return [excpt_msg_list, exception_count]
+
+    def throw_exception(self, excpt_msg_list, read_actvity_msg):
+        err_msg = ''
+        for item in excpt_msg_list:
+            err_msg += item + "\n"
+        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
 class SubarrayNode(SKASubarray):
     """
@@ -367,169 +390,8 @@ class SubarrayNode(SKASubarray):
 
         return proxy_created_flag
 
-    def add_receptors_in_group(self, argin):
-        """
-        Creates a tango group of the successfully allocated resources in the subarray.
-        Device proxy for each of the resources is created. The healthState and pointintgState attributes
-        from all the devices in the group are subscribed so that the changes in the respective device are
-        received at Subarray Node.
 
 
-        Note: Currently there are only receptors allocated so the group contains only receptor ids.
-
-        :param argin:
-            DevVarStringArray. List of receptor IDs to be allocated to subarray.
-            Example: ['0001', '0002']
-
-        :return:
-            DevVarStringArray. List of Resources added to the Subarray.
-            Example: ['0001', '0002']
-        """
-        exception_count = 0
-        exception_message = []
-        allocation_success = []
-        allocation_failure = []
-        # Add each dish into the tango group
-        log_msg = "add_receptors_in_group::",argin
-        self.logger.debug(log_msg)
-        for leafId in range(0, len(argin)):
-            try:
-                str_leafId = argin[leafId]
-                self._dish_leaf_node_group.add(self.DishLeafNodePrefix +  str_leafId)
-                devProxy = DeviceProxy(self.DishLeafNodePrefix + str_leafId)
-                self._dish_leaf_node_proxy.append(devProxy)
-                # Update the list allocation_success with the dishes allocated successfully to subarray
-                allocation_success.append(str_leafId)
-                # Subscribe Dish Health State
-                self._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
-                                                          tango.EventType.CHANGE_EVENT,
-                                                          self.health_state_cb,
-                                                          stateless=True)
-                self._dishLnVsHealthEventID[devProxy] = self._event_id
-                self._health_event_id.append(self._event_id)
-                log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID +str(self._dishLnVsHealthEventID)
-                self.logger.debug(log_msg)
-
-                # Subscribe Dish Pointing State
-                self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
-                                                          tango.EventType.CHANGE_EVENT,
-                                                          self.pointing_state_cb,
-                                                          stateless=True)
-                self._dishLnVsPointingStateEventID[devProxy] = self._event_id
-                self._pointing_state_event_id.append(self._event_id)
-                self.dishPointingStateMap[devProxy] = -1
-                log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID)
-                self.logger.debug(log_msg)
-                self._receptor_id_list.append(int(str_leafId))
-                self._read_activity_message = const.STR_GRP_DEF + str(
-                    self._dish_leaf_node_group.get_device_list(True))
-                self._read_activity_message = const.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
-                self.logger.debug(const.STR_SUBS_ATTRS_LN)
-                self._read_activity_message = const.STR_SUBS_ATTRS_LN
-                # TODO: FOR FUTURE REFERENCE
-                # self.logger.debug(const.STR_HS_EVNT_ID +str(self._health_event_id))
-                # self._read_activity_message = const.STR_HS_EVNT_ID + str(self._health_event_id)
-                # Set state = ON
-                # set obsState to "IDLE"
-                self._obs_state = ObsState.IDLE
-                self.set_status(const.STR_ASSIGN_RES_SUCCESS)
-                self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                    exception_message, exception_count, const.ERR_ADDING_LEAFNODE)
-                allocation_failure.append(str_leafId)
-                # Exception Logic to remove Id from subarray group
-                group_dishes = self._dish_leaf_node_group.get_device_list()
-                if group_dishes.contains(self.DishLeafNodePrefix +  str_leafId):
-                    self._dish_leaf_node_group.remove(self.DishLeafNodePrefix + str_leafId)
-                # unsubscribe event
-                if self._dishLnVsHealthEventID[devProxy]:
-                    devProxy.unsubscribe_event(self._dishLnVsHealthEventID[devProxy])
-
-                if self._dishLnVsPointingStateEventID[devProxy]:
-                    devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
-            except(DevFailed, Exception) as except_occurred:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ASSIGN_RES_CMD)
-        # Throw Exception
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-
-        log_msg = "List of Resources added to the Subarray::",allocation_success
-        self.logger.debug(log_msg)
-        return allocation_success
-
-    def assign_csp_resources(self, argin):
-        """
-        This function accepts the receptor IDs list as input and invokes the assign resources command on
-        the CSP Subarray Leaf Node.
-
-        :param argin: List of strings
-            Contains the list of strings that has the resources ids. Currently this list contains only
-            receptor ids.
-
-        :return: List of strings.
-
-        Example: ['0001', '0002']
-
-            Returns the list of CSP resources successfully assigned to the Subarray. Currently, the
-            CSPSubarrayLeafNode.AssignResources function returns void. The function only loops back
-            the input argument in case of successful resource allocation, or returns an empty list in case
-            of failure.
-        """
-        arg_list = []
-        json_argument = {}
-        argout = []
-        dish = {}
-        try:
-            dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
-            json_argument[const.STR_KEY_DISH] = dish
-            arg_list.append(json.dumps(json_argument))
-            self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
-            self.logger.info(const.ASSIGN_RESOURCES_INV_CSP_SALN)
-            argout = argin
-        except DevFailed as df:
-            self.logger.error(const.ERR_CSP_CMD)
-            self.logger.debug(df)
-
-        # For this PI CSP Subarray Leaf Node does not return anything. So this function is
-        # looping the receptor ids back.
-        log_msg = "assign_csp_resources::",argout
-        self.logger.debug(log_msg)
-        return argout
-
-    def assign_sdp_resources(self, argin):
-        """
-        This function accepts the receptor ID list as input and assigns SDP resources to SDP Subarray
-        through SDP Subarray Leaf Node.
-
-        :param argin: List of strings
-            Contains the list of strings that has the resources ids. Currently
-            processing block ids are passed to this function.
-
-        :return: List of strings.
-        Example: ['PB1', 'PB2']
-
-            Returns the list of successfully assigned resources. Currently the
-            SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
-            function just loops back the input argument in case of success. In case of
-            failure, empty list is returned.
-        """
-        argout = []
-        try:
-            str_json_arg = json.dumps(argin)
-            self._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
-            self.logger.info(const.ASSIGN_RESOURCES_INV_SDP_SALN)
-            argout = argin
-        except DevFailed as df:
-            self.logger.error(const.ERR_SDP_CMD)
-            self.logger.debug(df)
-
-        # For this PI SDP Subarray Leaf Node does not return anything. So this function is
-        # looping the processing block ids back.
-        log_msg = "assign_sdp_resources::",argout
-        self.logger.debug(log_msg)
-        return argout
 
     def _remove_subarray_dish_lns_health_states(self):
         subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
@@ -659,8 +521,6 @@ class SubarrayNode(SKASubarray):
             :rtype: (ReturnCode, str)
             """
             device = self.target
-
-            device.configure_device.do()
             exception_count = 0
             exception_message = []
             try:
@@ -689,18 +549,19 @@ class SubarrayNode(SKASubarray):
 
                 # TODO: Check how to call EndScan command
                 # device.scan_thread = threading.Timer(device.scan_duration, EndScanCommand.do(self))
-                device.scan_thread = threading.Timer(device.scan_duration, self.call_end_scan_command())
+                # Once Scan Duration is complete call EndScan Command
+                device.scan_thread = threading.Timer(device.scan_duration, device.call_end_scan_command())
                 device.scan_thread.start()
-                return (ReturnCode.STARTED, const.STR_SCAN_SUCCESS)
+                return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                         exception_message, exception_count, const.ERR_SCAN_CMD)
-                return (ReturnCode.FAILED, const.ERR_SCAN_CMD)
+                return (ResultCode.FAILED, const.ERR_SCAN_CMD)
             except Exception as except_occurred:
                 [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                         exception_message, exception_count, const.ERR_SCAN_CMD)
-                return (ReturnCode.FAILED, const.ERR_SCAN_CMD)
+                return (ResultCode.FAILED, const.ERR_SCAN_CMD)
 
             # TODO: For furure reference
             # # Throw Exception
@@ -818,216 +679,549 @@ class SubarrayNode(SKASubarray):
                 device.set_status(const.STR_SCAN_COMPLETE)
                 self.logger.info(const.STR_SCAN_COMPLETE)
                 device._read_activity_message = const.STR_END_SCAN_SUCCESS
-                return (ReturnCode.STARTED, const.STR_END_SCAN_SUCCESS)
+                return (ResultCode.STARTED, const.STR_END_SCAN_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_END_SCAN_CMD_ON_GROUP)
-                return (ReturnCode.FAILED, const.ERR_END_SCAN_CMD_ON_GROUP)
+                return (ResultCode.FAILED, const.ERR_END_SCAN_CMD_ON_GROUP)
             except Exception as except_occurred:
                 [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
                                                     exception_message, exception_count, const.ERR_END_SCAN_CMD)
-                return (ReturnCode.FAILED, const.ERR_END_SCAN_CMD)
+                return (ResultCode.FAILED, const.ERR_END_SCAN_CMD)
 
             # TODO: For Future use
             # # Throw Exception
             # if exception_count > 0:
             #     self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
 
+    # @command(
+    #     dtype_in='str',
+    #     doc_in="String in JSON format consisting of Resources to add to subarray.",
+    #     dtype_out=('str',),
+    #     doc_out="String in JSON format consisting of Resources added to the subarray.",
+    # )
+    # @DebugIt()
+    # def AssignResources(self, argin):
+    #     """
+    #     Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
+    #     as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
+    #     subarray is updated with the list of receptors and SDP resources string is pass to SDPSubarrayLeafNode,
+    #     and returns list of assigned resources as well as passed SDP string as a DevString.
+    #
+    #     Note: Resource allocation for CSP and SDP resources is also implemented but
+    #     currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
+    #
+    #     :param argin:
+    #         DevVarString.
+    #
+    #         Example:
+    #
+    #     {"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001","max_length"
+    #     :100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":
+    #     "-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
+    #     :0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
+    #     "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",
+    #     "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,
+    #     "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
+    #     {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
+    #     [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime"
+    #     ,"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002",
+    #     "workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},
+    #     {"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},
+    #      "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},
+    #     {"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},
+    #      "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}}
+    #
+    #
+    #     :return:
+    #         DevVarString. String of Resources added to the Subarray.
+    #
+    #         Example:
+    #         ["0001","0002"]
+    #         as argout if allocation successful.
+    #     """
+    #     exception_count = 0
+    #     exception_message = []
+    #
+    #     # 1. Argument validation
+    #     try:
+    #         # Allocation success and failure lists
+    #         resource_json = json.loads(argin)
+    #         receptor_list = resource_json["dish"]["receptorIDList"]
+    #         sdp_resources = resource_json.get("sdp")
+    #         self._sb_id = resource_json["sdp"]["id"]
+    #         log_msg = "assign_resource_whole_json", resource_json
+    #         self.logger.debug(log_msg)
+    #
+    #         for leafId in range(0, len(receptor_list)):
+    #             float(receptor_list[leafId])
+    #         # validation of SDP and CSP resources yet to be implemented as of now reources are not present.
+    #
+    #     except json.JSONDecodeError as jerror:
+    #         log_message = const.ERR_INVALID_JSON + str(jerror)
+    #         self.logger.error(log_message)
+    #         self._read_activity_message = log_message
+    #         tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+    #                                      const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+    #         log_msg = "assign_resource_argin",argin
+    #         self.logger.debug(log_msg)
+    #
+    #     except ValueError as value_error:
+    #         str_log = const.ERR_SCAN_CMD +"\n" + str(value_error) + const.ERR_INVALID_DATATYPE
+    #         self.logger.error(str_log)
+    #         self.logger.error(const.ERR_INVALID_DATATYPE)
+    #         self._read_activity_message = const.ERR_INVALID_DATATYPE + str(value_error)
+    #         exception_message.append(self._read_activity_message)
+    #         exception_count += 1
+    #
+    #     with exception_count is 0 and ThreadPoolExecutor(3) as executor:
+    #         # 2.1 Create group of receptors
+    #         self.logger.info(const.STR_DISH_ALLOCATION)
+    #         dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
+    #
+    #         # 2.2. Add resources in CSP subarray
+    #         self.logger.info(const.STR_CSP_ALLOCATION)
+    #         csp_allocation_status = executor.submit(self.assign_csp_resources, receptor_list)
+    #
+    #         # 2.3. Add resources in SDP subarray
+    #         self.logger.info(const.STR_SDP_ALLOCATION)
+    #         sdp_allocation_status = executor.submit(self.assign_sdp_resources, sdp_resources)
+    #
+    #         # 2.4 wait for result
+    #         while (dish_allocation_status.done() is False or
+    #                csp_allocation_status.done() is False or
+    #                sdp_allocation_status.done() is False
+    #               ):
+    #             pass
+    #
+    #         # 2.5. prepare return value
+    #         dish_allocation_result = dish_allocation_status.result()
+    #         log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
+    #         self.logger.debug(log_msg)
+    #
+    #         csp_allocation_result = csp_allocation_status.result()
+    #         log_msg = const.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
+    #         self.logger.debug(log_msg)
+    #
+    #         sdp_allocation_result = sdp_allocation_status.result()
+    #         log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
+    #         self.logger.debug(log_msg)
+    #
+    #         dish_allocation_result.sort()
+    #         receptor_list.sort()
+    #
+    #         if(dish_allocation_result == receptor_list and
+    #             csp_allocation_result == receptor_list and
+    #             sdp_allocation_result == sdp_resources
+    #           ):
+    #             # Currently sending dish allocation and SDP allocation results.
+    #             argout = dish_allocation_result
+    #         else:
+    #             argout = []
+    #     # return dish_allocation_result.
+    #     log_msg = "assign_resource_argout",argout
+    #     self.logger.debug(log_msg)
+    #     return argout
+    #
+    # def is_AssignResources_allowed(self):
+    #     """Checks if AssignResources is allowed in the current state of SubarrayNode."""
+    #     return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+    #                                     DevState.STANDBY]
+    def do_something(self, res_list):
+        print("List:", res_list)
 
-
-
-
-
-
-
-
-
-    @command(
-        dtype_in='str',
-        doc_in="String in JSON format consisting of Resources to add to subarray.",
-        dtype_out=('str',),
-        doc_out="String in JSON format consisting of Resources added to the subarray.",
-    )
-    @DebugIt()
-    def AssignResources(self, argin):
+    def add_receptors_in_group(self, dish_input):
         """
-        Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
-        as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
-        subarray is updated with the list of receptors and SDP resources string is pass to SDPSubarrayLeafNode,
-        and returns list of assigned resources as well as passed SDP string as a DevString.
+        Creates a tango group of the successfully allocated resources in the subarray.
+        Device proxy for each of the resources is created. The healthState and pointintgState attributes
+        from all the devices in the group are subscribed so that the changes in the respective device are
+        received at Subarray Node.
 
-        Note: Resource allocation for CSP and SDP resources is also implemented but
-        currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
+
+        Note: Currently there are only receptors allocated so the group contains only receptor ids.
 
         :param argin:
-            DevVarString.
-
-            Example:
-
-        {"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001","max_length"
-        :100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":
-        "-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
-        :0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
-        "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",
-        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,
-        "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
-        {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
-        [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime"
-        ,"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002",
-        "workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},
-        {"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},
-         "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},
-        {"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},
-         "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}}
-
+            DevVarStringArray. List of receptor IDs to be allocated to subarray.
+            Example: ['0001', '0002']
 
         :return:
-            DevVarString. String of Resources added to the Subarray.
-
-            Example:
-            ["0001","0002"]
-            as argout if allocation successful.
+            DevVarStringArray. List of Resources added to the Subarray.
+            Example: ['0001', '0002']
         """
         exception_count = 0
         exception_message = []
+        allocation_success = []
+        allocation_failure = []
+        # Add each dish into the tango group
+        log_msg = "add_receptors_in_group::", dish_input
+        self.logger.debug(log_msg)
+        for leafId in range(0, len(dish_input)):
+            try:
+                str_leafId = dish_input[leafId]
+                self._dish_leaf_node_group.add(self.DishLeafNodePrefix + str_leafId)
+                devProxy = DeviceProxy(self.DishLeafNodePrefix + str_leafId)
+                self._dish_leaf_node_proxy.append(devProxy)
+                # Update the list allocation_success with the dishes allocated successfully to subarray
+                allocation_success.append(str_leafId)
+                # Subscribe Dish Health State
+                self._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
+                                                          tango.EventType.CHANGE_EVENT,
+                                                          self.health_state_cb,
+                                                          stateless=True)
+                self._dishLnVsHealthEventID[devProxy] = self._event_id
+                self._health_event_id.append(self._event_id)
+                log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID)
+                self.logger.debug(log_msg)
 
-        # 1. Argument validation
+                # Subscribe Dish Pointing State
+                self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
+                                                          tango.EventType.CHANGE_EVENT,
+                                                          self.pointing_state_cb,
+                                                          stateless=True)
+                self._dishLnVsPointingStateEventID[devProxy] = self._event_id
+                self._pointing_state_event_id.append(self._event_id)
+                self.dishPointingStateMap[devProxy] = -1
+                log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID)
+                self.logger.debug(log_msg)
+                self._receptor_id_list.append(int(str_leafId))
+                self._read_activity_message = const.STR_GRP_DEF + str(
+                    self._dish_leaf_node_group.get_device_list(True))
+                self._read_activity_message = const.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
+                self.logger.debug(const.STR_SUBS_ATTRS_LN)
+                self._read_activity_message = const.STR_SUBS_ATTRS_LN
+                # TODO: FOR FUTURE REFERENCE
+                # self.logger.debug(const.STR_HS_EVNT_ID +str(self._health_event_id))
+                # self._read_activity_message = const.STR_HS_EVNT_ID + str(self._health_event_id)
+                # Set state = ON
+                # set obsState to "IDLE"
+                # self._obs_state = ObsState.IDLE
+                self.set_status(const.STR_ASSIGN_RES_SUCCESS)
+                self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_ADDING_LEAFNODE)
+                allocation_failure.append(str_leafId)
+                # Exception Logic to remove Id from subarray group
+                group_dishes = self._dish_leaf_node_group.get_device_list()
+                if group_dishes.contains(self.DishLeafNodePrefix + str_leafId):
+                    self._dish_leaf_node_group.remove(self.DishLeafNodePrefix + str_leafId)
+                # unsubscribe event
+                if self._dishLnVsHealthEventID[devProxy]:
+                    devProxy.unsubscribe_event(self._dishLnVsHealthEventID[devProxy])
+
+                if self._dishLnVsPointingStateEventID[devProxy]:
+                    devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
+            except(DevFailed, Exception) as except_occurred:
+                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_ASSIGN_RES_CMD)
+        # # Throw Exception
+        # if exception_count > 0:
+        #     device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+
+        log_msg = "List of Resources added to the Subarray::", allocation_success
+        self.logger.debug(log_msg)
+        return allocation_success
+
+    def assign_csp_resources(self, argin):
+        """
+        This function accepts the receptor IDs list as input and invokes the assign resources command on
+        the CSP Subarray Leaf Node.
+
+        :param argin: List of strings
+            Contains the list of strings that has the resources ids. Currently this list contains only
+            receptor ids.
+
+        :return: List of strings.
+
+        Example: ['0001', '0002']
+
+            Returns the list of CSP resources successfully assigned to the Subarray. Currently, the
+            CSPSubarrayLeafNode.AssignResources function returns void. The function only loops back
+            the input argument in case of successful resource allocation, or returns an empty list in case
+            of failure.
+        """
+        arg_list = []
+        json_argument = {}
+        argout = []
+        dish = {}
         try:
-            # Allocation success and failure lists
-            resource_json = json.loads(argin)
-            receptor_list = resource_json["dish"]["receptorIDList"]
-            sdp_resources = resource_json.get("sdp")
-            self._sb_id = resource_json["sdp"]["id"]
-            log_msg = "assign_resource_whole_json", resource_json
-            self.logger.debug(log_msg)
+            dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
+            json_argument[const.STR_KEY_DISH] = dish
+            arg_list.append(json.dumps(json_argument))
+            self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
+            self.logger.info(const.ASSIGN_RESOURCES_INV_CSP_SALN)
+            argout = argin
+        except DevFailed as df:
+            self.logger.error(const.ERR_CSP_CMD)
+            self.logger.debug(df)
 
-            for leafId in range(0, len(receptor_list)):
-                float(receptor_list[leafId])
-            # validation of SDP and CSP resources yet to be implemented as of now reources are not present.
+        # For this PI CSP Subarray Leaf Node does not return anything. So this function is
+        # looping the receptor ids back.
+        log_msg = "assign_csp_resources::", argout
+        self.logger.debug(log_msg)
+        return argout
 
-        except json.JSONDecodeError as jerror:
-            log_message = const.ERR_INVALID_JSON + str(jerror)
-            self.logger.error(log_message)
-            self._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-            log_msg = "assign_resource_argin",argin
-            self.logger.debug(log_msg)
+    def assign_sdp_resources(self, argin):
+        """
+        This function accepts the receptor ID list as input and assigns SDP resources to SDP Subarray
+        through SDP Subarray Leaf Node.
 
-        except ValueError as value_error:
-            str_log = const.ERR_SCAN_CMD +"\n" + str(value_error) + const.ERR_INVALID_DATATYPE
-            self.logger.error(str_log)
-            self.logger.error(const.ERR_INVALID_DATATYPE)
-            self._read_activity_message = const.ERR_INVALID_DATATYPE + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+        :param argin: List of strings
+            Contains the list of strings that has the resources ids. Currently
+            processing block ids are passed to this function.
 
-        with exception_count is 0 and ThreadPoolExecutor(3) as executor:
-            # 2.1 Create group of receptors
-            self.logger.info(const.STR_DISH_ALLOCATION)
-            dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
+        :return: List of strings.
+        Example: ['PB1', 'PB2']
 
-            # 2.2. Add resources in CSP subarray
-            self.logger.info(const.STR_CSP_ALLOCATION)
-            csp_allocation_status = executor.submit(self.assign_csp_resources, receptor_list)
+            Returns the list of successfully assigned resources. Currently the
+            SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
+            function just loops back the input argument in case of success. In case of
+            failure, empty list is returned.
+        """
+        argout = []
+        try:
+            str_json_arg = json.dumps(argin)
+            self._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
+            self.logger.info(const.ASSIGN_RESOURCES_INV_SDP_SALN)
+            argout = argin
+        except DevFailed as df:
+            self.logger.error(const.ERR_SDP_CMD)
+            self.logger.debug(df)
 
-            # 2.3. Add resources in SDP subarray
-            self.logger.info(const.STR_SDP_ALLOCATION)
-            sdp_allocation_status = executor.submit(self.assign_sdp_resources, sdp_resources)
+        # For this PI SDP Subarray Leaf Node does not return anything. So this function is
+        # looping the processing block ids back.
+        log_msg = "assign_sdp_resources::", argout
+        self.logger.debug(log_msg)
+        return argout
 
-            # 2.4 wait for result
-            while (dish_allocation_status.done() is False or
-                   csp_allocation_status.done() is False or
-                   sdp_allocation_status.done() is False
+    class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+        """
+        A class for SKASubarray's AssignResources() command.
+        """
+        def do(self, argin):
+            """
+            Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
+            as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
+            subarray is updated with the list of receptors and SDP resources string is pass to SDPSubarrayLeafNode,
+            and returns list of assigned resources as well as passed SDP string as a DevString.
+
+            Note: Resource allocation for CSP and SDP resources is also implemented but
+            currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
+
+            :param argin: The resources to be assigned
+            :type argin: list of str
+            Example:
+
+            {"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001","max_length"
+            :100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":
+            "-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
+            :0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
+            "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",
+            "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,
+            "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
+            {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
+            [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime"
+            ,"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002",
+            "workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},
+            {"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},
+             "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},
+            {"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},
+             "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}}
+
+
+            :return: A tuple containing a return code and string of Resources added to the Subarray.
+                Example of string of Resources :
+                    ["0001","0002"]
+                as argout if allocation successful.
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            print("device object:", device)
+            exception_count = 0
+            exception_message = []
+
+            # 1. Argument validation
+            try:
+                # Allocation success and failure lists
+                resource_json = json.loads(argin)
+                receptor_list = resource_json["dish"]["receptorIDList"]
+                sdp_resources = resource_json.get("sdp")
+                device._sb_id = resource_json["sdp"]["id"]
+                log_msg = "assign_resource_whole_json" + str(resource_json)
+                self.logger.debug(log_msg)
+
+                for leafId in range(0, len(receptor_list)):
+                    float(receptor_list[leafId])
+                # validation of SDP and CSP resources yet to be implemented as of now reources are not present.
+
+            except json.JSONDecodeError as jerror:
+                log_message = const.ERR_INVALID_JSON + str(jerror)
+                self.logger.error(log_message)
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+                                             const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+                log_msg = "assign_resource_argin" + str(argin)
+                self.logger.debug(log_msg)
+
+            except ValueError as value_error:
+                str_log = const.ERR_SCAN_CMD +"\n" + str(value_error) + const.ERR_INVALID_DATATYPE
+                self.logger.error(str_log)
+                self.logger.error(const.ERR_INVALID_DATATYPE)
+                device._read_activity_message = const.ERR_INVALID_DATATYPE + str(value_error)
+                exception_message.append(self._read_activity_message)
+                exception_count += 1
+
+            with exception_count is 0 and ThreadPoolExecutor(3) as executor:
+                # 2.1 Create group of receptors
+                self.logger.info(const.STR_DISH_ALLOCATION)
+                dish_allocation_status = executor.submit(device.add_receptors_in_group, receptor_list)
+
+                # 2.2. Add resources in CSP subarray
+                self.logger.info(const.STR_CSP_ALLOCATION)
+                csp_allocation_status = executor.submit(device.assign_csp_resources, receptor_list)
+
+                # 2.3. Add resources in SDP subarray
+                self.logger.info(const.STR_SDP_ALLOCATION)
+                sdp_allocation_status = executor.submit(device.assign_sdp_resources, sdp_resources)
+
+                print ("Dish allocation result", dish_allocation_status.done())
+                # 2.4 wait for result
+                while (dish_allocation_status.done() is False or
+                       csp_allocation_status.done() is False or
+                       sdp_allocation_status.done() is False
+                      ):
+                    pass
+
+                # 2.5. prepare return value
+                dish_allocation_result = dish_allocation_status.result()
+                log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
+                self.logger.debug(log_msg)
+
+                csp_allocation_result = csp_allocation_status.result()
+                log_msg = const.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
+                self.logger.debug(log_msg)
+
+                sdp_allocation_result = sdp_allocation_status.result()
+                log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
+                self.logger.debug(log_msg)
+
+                dish_allocation_result.sort()
+                receptor_list.sort()
+
+                if(dish_allocation_result == receptor_list and
+                    csp_allocation_result == receptor_list and
+                    sdp_allocation_result == sdp_resources
                   ):
-                pass
-
-            # 2.5. prepare return value
-            dish_allocation_result = dish_allocation_status.result()
-            log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
+                    # Currently sending dish allocation and SDP allocation results.
+                    argout = dish_allocation_result
+                else:
+                    argout = []
+            # return dish_allocation_result.
+            log_msg = "assign_resource_argout", argout
             self.logger.debug(log_msg)
+            message = str(argout)
+            return (ResultCode.STARTED, message)
 
-            csp_allocation_result = csp_allocation_status.result()
-            log_msg = const.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
-            self.logger.debug(log_msg)
 
-            sdp_allocation_result = sdp_allocation_status.result()
-            log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
-            self.logger.debug(log_msg)
+    # @command(
+    #     dtype_out=('str',),
+    #     doc_out="List of resources removed from the subarray.",
+    # )
+    # @DebugIt()
+    # def ReleaseAllResources(self):
+    #     """
+    #     It checks whether all resources are already released. If yes then it throws error while
+    #     executing command. If not it Releases all the resources from the subarray i.e. Releases
+    #     resources from TMC Subarray Node, CSP Subarray and SDP Subarray. If the command
+    #     execution fails, array of receptors(device names) which are failed to be released from the
+    #     subarray, is returned to Central Node. Upon successful execution, all the resources of a given
+    #     subarray get released and empty array is returned. Selective release is not yet supported.
+    #
+    #     :param argin: DevVoid.
+    #
+    #     :return: DevVarStringArray.
+    #     Example: "[]" as argout on successful release all resources.
+    #     """
+    #     try:
+    #         assert self._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
+    #     except AssertionError as assert_err:
+    #         log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
+    #         self.logger.error(log_message)
+    #         self._read_activity_message = log_message
+    #         tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+    #                                      const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
+    #
+    #     self.logger.info(const.STR_DISH_RELEASE)
+    #     self.remove_receptors_in_group()
+    #     self.logger.info(const.STR_CSP_RELEASE)
+    #     self.release_csp_resources()
+    #     self.logger.info(const.STR_SDP_RELEASE)
+    #     self.release_sdp_resources()
+    #
+    #
+    #     self._scan_id = ""
+    #     # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
+    #     # It will be moved to that command.
+    #     self._sb_id = ""
+    #     self._obs_state = ObsState.IDLE
+    #
+    #     argout = self._dish_leaf_node_group.get_device_list(True)
+    #     log_msg = "Release_all_resources:",argout
+    #     self.logger.debug(log_msg)
+    #     return argout
+    #
+    # def is_ReleaseAllResources_allowed(self):
+    #     """Checks if ReleaseAllResources is allowed in the current state of SubarrayNode."""
+    #     return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+    #                                     DevState.STANDBY]
 
-            dish_allocation_result.sort()
-            receptor_list.sort()
 
-            if(dish_allocation_result == receptor_list and
-                csp_allocation_result == receptor_list and
-                sdp_allocation_result == sdp_resources
-              ):
-                # Currently sending dish allocation and SDP allocation results.
-                argout = dish_allocation_result
-            else:
-                argout = []
-        # return dish_allocation_result.
-        log_msg = "assign_resource_argout",argout
-        self.logger.debug(log_msg)
-        return argout
-
-    def is_AssignResources_allowed(self):
-        """Checks if AssignResources is allowed in the current state of SubarrayNode."""
-        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-                                        DevState.STANDBY]
-
-    @command(
-        dtype_out=('str',),
-        doc_out="List of resources removed from the subarray.",
-    )
-    @DebugIt()
-    def ReleaseAllResources(self):
+    class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         """
-        It checks whether all resources are already released. If yes then it throws error while
-        executing command. If not it Releases all the resources from the subarray i.e. Releases
-        resources from TMC Subarray Node, CSP Subarray and SDP Subarray. If the command
-        execution fails, array of receptors(device names) which are failed to be released from the
-        subarray, is returned to Central Node. Upon successful execution, all the resources of a given
-        subarray get released and empty array is returned. Selective release is not yet supported.
-
-        :param argin: DevVoid.
-
-        :return: DevVarStringArray.
-        Example: "[]" as argout on successful release all resources.
+        A class for SKASubarray's ReleaseAllResources() command.
         """
-        try:
-            assert self._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
-        except AssertionError as assert_err:
-            log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
-            self.logger.error(log_message)
-            self._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
+        def do(self):
+            """
+            It checks whether all resources are already released. If yes then it throws error while
+            executing command. If not it Releases all the resources from the subarray i.e. Releases
+            resources from TMC Subarray Node, CSP Subarray and SDP Subarray. If the command
+            execution fails, array of receptors(device names) which are failed to be released from the
+            subarray, is returned to Central Node. Upon successful execution, all the resources of a given
+            subarray get released and empty array is returned. Selective release is not yet supported.
 
-        self.logger.info(const.STR_DISH_RELEASE)
-        self.remove_receptors_in_group()
-        self.logger.info(const.STR_CSP_RELEASE)
-        self.release_csp_resources()
-        self.logger.info(const.STR_SDP_RELEASE)
-        self.release_sdp_resources()
+            :return: A tuple containing a return code and "[]" as a string on successful release all resources.
+            Example: "[]" as string on successful release all resources.
+            :rtype: (ResultCode, str)
+            """
+            # try:
+            #     assert self._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
+            # except AssertionError as assert_err:
+            #     log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
+            #     self.logger.error(log_message)
+            #     self._read_activity_message = log_message
+            #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+            #                                  const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
 
-
-        self._scan_id = ""
-        # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
-        # It will be moved to that command.
-        self._sb_id = ""
-        self._obs_state = ObsState.IDLE
-
-        argout = self._dish_leaf_node_group.get_device_list(True)
-        log_msg = "Release_all_resources:",argout
-        self.logger.debug(log_msg)
-        return argout
-
-    def is_ReleaseAllResources_allowed(self):
-        """Checks if ReleaseAllResources is allowed in the current state of SubarrayNode."""
-        return self.get_state() not in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-                                        DevState.STANDBY]
+            device = self.target
+            self.logger.info(const.STR_DISH_RELEASE)
+            device.remove_receptors_in_group()
+            self.logger.info(const.STR_CSP_RELEASE)
+            device.release_csp_resources()
+            self.logger.info(const.STR_SDP_RELEASE)
+            device.release_sdp_resources()
+            device._scan_id = ""
+            # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
+            # It will be moved to that command.
+            device._sb_id = ""
+            argout = device._dish_leaf_node_group.get_device_list(True)
+            log_msg = "Release_all_resources:", argout
+            self.logger.debug(log_msg)
+            message = argout
+            return (ResultCode.STARTED, message)
 
     def pointing_state_cb(self, evt):
         """
@@ -1081,27 +1275,7 @@ class SubarrayNode(SKASubarray):
                                                                                   exception_count,
                                                                                   const.ERR_AGGR_POINTING_STATE)
 
-    def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
-        log_msg=read_actvity_msg + str(exception)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(exception)
-        excpt_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [excpt_msg_list, exception_count]
 
-    def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
-        log_msg=read_actvity_msg + str(df)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(df)
-        excpt_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [excpt_msg_list, exception_count]
-
-    def throw_exception(self, excpt_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in excpt_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 
     # -----------------
@@ -1179,7 +1353,8 @@ class SubarrayNode(SKASubarray):
             super().do()
 
             device = self.target
-
+            device.utility = Utility()
+            print ("In Init:", device)
             device.set_status(const.STR_SA_INIT)
             device.SkaLevel = 2  # set SKALevel to "2"
             device._obs_mode = ObsMode.IDLE
@@ -1261,10 +1436,10 @@ class SubarrayNode(SKASubarray):
 
             if _state_fault_flag:
                 message = const.ERR_SA_INIT
-                return_code = ReturnCode.FAILED
+                return_code = ResultCode.FAILED
             else:
                 message = const.STR_SA_INIT_SUCCESS
-                return_code = ReturnCode.OK
+                return_code = ResultCode.OK
 
             device._read_activity_message = message
             self.logger.info(message)
@@ -1429,46 +1604,93 @@ class SubarrayNode(SKASubarray):
 
             message = "Configure command invoked"
             self.logger.info(message)
-            return (ReturnCode.STARTED, message)
+            return (ResultCode.STARTED, message)
 
-    @command(
-    )
-    @DebugIt()
-    def EndSB(self):
-        # PROTECTED REGION ID(SubarrayNode.EndSB) ENABLED START #
-        """
-        This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP
-        Subarray Leaf Node, and stops tracking of all the assigned dishes.
+    # @command(
+    # )
+    # @DebugIt()
+    # def EndSB(self):
+    #     # PROTECTED REGION ID(SubarrayNode.EndSB) ENABLED START #
+    #     """
+    #     This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP
+    #     Subarray Leaf Node, and stops tracking of all the assigned dishes.
+    #
+    #     :return: None.
+    #     """
+    #     exception_message = []
+    #     exception_count = 0
+    #     try:
+    #         self.logger.debug("EndSB invoked on SubarrayNode.")
+    #         if self._obs_state == ObsState.READY:
+    #             self._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
+    #             self.logger.info(const.STR_CMD_ENDSB_INV_SDP)
+    #             self._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
+    #             self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
+    #             self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+    #             self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
+    #             self._read_activity_message = const.STR_ENDSB_SUCCESS
+    #             self.logger.info(const.STR_ENDSB_SUCCESS)
+    #             self.set_status(const.STR_ENDSB_SUCCESS)
+    #         else:
+    #             self._read_activity_message = const.ERR_DEVICE_NOT_READY
+    #             self.logger.error(const.ERR_DEVICE_NOT_READY)
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                         exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                         exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+    #     # throw exception:
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+    #     # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
-        :return: None.
+    class EndCommand(SKASubarray.EndCommand):
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            self.logger.debug("EndSB invoked on SubarrayNode.")
-            if self._obs_state == ObsState.READY:
-                self._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
+        A class for SKASubarray's End() command.
+        """
+        def do(self):
+            """
+            This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP
+            Subarray Leaf Node, and stops tracking of all the assigned dishes.
+
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                self.logger.debug("EndSB invoked on SubarrayNode.")
+                # if device._obs_state == ObsState.READY:
+                device._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
                 self.logger.info(const.STR_CMD_ENDSB_INV_SDP)
-                self._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
+                device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
                 self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
-                self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                device._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                 self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
-                self._read_activity_message = const.STR_ENDSB_SUCCESS
+                device._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
-                self.set_status(const.STR_ENDSB_SUCCESS)
-            else:
-                self._read_activity_message = const.ERR_DEVICE_NOT_READY
-                self.logger.error(const.ERR_DEVICE_NOT_READY)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
-        # PROTECTED REGION END #    //  SubarrayNode.EndSB
+                device.set_status(const.STR_ENDSB_SUCCESS)
+                return (ResultCode.STARTED, const.STR_ENDSB_SUCCESS)
+                # else:
+                #     device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                #     self.logger.error(const.ERR_DEVICE_NOT_READY)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
+            # TODO: For Future use
+            # # throw exception:
+            # if exception_count > 0:
+            #     self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+            # # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
     # @command(
     #     dtype_in='str',
@@ -1587,12 +1809,12 @@ class SubarrayNode(SKASubarray):
                 device._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
                 #self._sb_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
                 self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
-                return (ReturnCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
+                return (ResultCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
             except tango.DevFailed as devfailed:
                 exception_message.append(const.ERR_TRACK_CMD + ": " + \
                                str(devfailed.args[0].desc))
                 exception_count += 1
-                return (ReturnCode.FAILED, const.ERR_TRACK_CMD)
+                return (ResultCode.FAILED, const.ERR_TRACK_CMD)
             except Exception as except_occured:
                 str_log = const.ERR_TRACK_CMD + "\n" + str(except_occured)
                 self.logger.error(str_log)
@@ -1601,7 +1823,7 @@ class SubarrayNode(SKASubarray):
                 exception_message.append(const.ERR_TRACK_CMD + ": " + \
                                  str(except_occured.args[0].desc))
                 exception_count += 1
-                return (ReturnCode.FAILED, const.ERR_TRACK_CMD)
+                return (ResultCode.FAILED, const.ERR_TRACK_CMD)
 
             # TODO: For Future use
             # # throw exception
@@ -1618,10 +1840,14 @@ class SubarrayNode(SKASubarray):
         Initialises the command handlers for commands supported by this
         device.
         """
-        super.init_command_objects()
+        super().init_command_objects()
         self.register_command_object(
             "Track",
             self.TrackCommand(self, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "AssignResources",
+            self.AssignResourcesCommand(self, self.state_model, self.logger)
         )
 
     def is_Track_allowed(self):
@@ -1665,29 +1891,67 @@ class SubarrayNode(SKASubarray):
 
 
 
-    @command(
-    )
-    @DebugIt()
-    def On(self):
-        """
-        Changes the admin_mode from offline to online and dev_state from disabled to off.
-        :return: None
-        """
-        # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  SubarrayNode.StartUp
+    # @command(
+    # )
+    # @DebugIt()
+    # def On(self):
+    #     """
+    #     Changes the admin_mode from offline to online and dev_state from disabled to off.
+    #     :return: None
+    #     """
+    #     # PROTECTED REGION ID(SubarrayNode.StartUp) ENABLED START #
+    #     pass
+    #     # PROTECTED REGION END #    //  SubarrayNode.StartUp
 
-    @command(
-    )
-    @DebugIt()
-    def Standby(self):
+    class OnCommand(SKASubarray.OnCommand):
         """
-        Changes the admin_mode from online to offline and dev_state from  off to disabled.
-        :return: None
+        A class for the SKASubarray's On() command.
         """
-        # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  SubarrayNode.Standby
+        def do(self):
+            """
+            Stateless hook for On() command functionality.
+
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            var = self.target
+            print("On command device object:", var)
+            var.do_something("Test")
+            message = "On command completed OK"
+            self.logger.info(message)
+            return (ResultCode.OK, message)
+
+    class OffCommand(SKASubarray.OffCommand):
+        """
+        A class for the SKASubarray's On() command.
+        """
+        def do(self):
+            """
+            Stateless hook for Off() command functionality.
+
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            message = "Off command completed OK"
+            self.logger.info(message)
+            return (ResultCode.OK, message)
+
+
+    # @command(
+    # )
+    # @DebugIt()
+    # def Standby(self):
+    #     """
+    #     Changes the admin_mode from online to offline and dev_state from  off to disabled.
+    #     :return: None
+    #     """
+    #     # PROTECTED REGION ID(SubarrayNode.Standby) ENABLED START #
+    #     pass
+    #     # PROTECTED REGION END #    //  SubarrayNode.Standby
 
 
 # ----------

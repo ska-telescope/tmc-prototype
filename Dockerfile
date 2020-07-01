@@ -9,6 +9,9 @@ USER root
 RUN python3 -m pip install ska-logging==0.3.0
 RUN python3 -m pip install lmcbaseclasses==0.6.0
 
+#install ska-telescope-model
+RUN python3 -m pip install ska-telescope-model==0.1.4
+
 # install all local TMC packages
 RUN python3 -m pip install \
     /app/tmcprototype/centralnode \

@@ -196,13 +196,6 @@ def test_status():
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.Status() == "The device is in OFF state."
 
-
-def test_state():
-    """Test for State"""
-    with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.State() == DevState.OFF
-
-
 def test_health_state():
     """Test for healthState"""
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -213,12 +206,6 @@ def test_activation_time():
     """Test for activationTime"""
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.activationTime == 0.0
-
-
-def test_admin_mode():
-    """Test for adminMode"""
-    with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.MAINTENANCE
 
 
 def test_build_state():
@@ -238,42 +225,6 @@ def test_configuration_progress():
     """Test for configurationProgress"""
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.configurationProgress == 0
-
-
-def test_control_mode():
-    """Test for controlMode"""
-    with fake_tango_system(SubarrayNode) as tango_context:
-        control_mode = tango_context.device.controlMode.REMOTE
-        tango_context.device.controlMode = control_mode
-        assert tango_context.device.controlMode == control_mode
-
-
-def test_obs_mode():
-    """Test for obsMode"""
-    with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.obsMode == ObsMode.IDLE
-
-
-def test_obs_state():
-    """Test for obsState"""
-    with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.obsState == ObsState.EMPTY
-
-
-def test_simulation_mode():
-    """Test for simulationMode"""
-    with fake_tango_system(SubarrayNode) as tango_context:
-        simulation_mode = SimulationMode.FALSE
-        tango_context.device.simulationMode = simulation_mode
-        assert tango_context.device.simulationMode == simulation_mode
-
-
-def test_test_mode():
-    """Test for testMode"""
-    with fake_tango_system(SubarrayNode) as tango_context:
-        test_mode = TestMode.NONE
-        tango_context.device.testMode = test_mode
-        assert tango_context.device.testMode == test_mode
 
 
 def test_version_id():
@@ -320,12 +271,14 @@ def test_receptor_id_list():
 
 
 # Test cases for Commands
+
 def test_on_command_should_change_subarray_device_state_to_on():
     with fake_tango_system(SubarrayNode) as tango_context:
         # act:
         tango_context.device.On()
         # assert:
         assert tango_context.device.state() == DevState.ON
+        assert tango_context.device.obsState == ObsState.EMPTY
 
 
 def test_off_command_should_change_subarray_device_state_to_off():
@@ -335,6 +288,7 @@ def test_off_command_should_change_subarray_device_state_to_off():
         tango_context.device.Off()
         # assert:
         assert tango_context.device.state() == DevState.OFF
+        assert tango_context.device.obsState == ObsState.EMPTY
 
 
 def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources():
@@ -366,19 +320,20 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
 
-    event_subscription_map = {}
+    # event_subscription_map = {}
 
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
+    # csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
 
-        assign_input_dict=json.loads(assign_input_str)
+        tango_context.device.On()
+        assign_input_dict = json.loads(assign_input_str)
         tango_context.device.AssignResources(assign_input_str)
 
         str_json_arg = json.dumps(assign_input_dict.get("sdp"))
@@ -393,8 +348,9 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         json_argument[const.STR_KEY_DISH] = dish
         arg_list.append(json.dumps(json_argument))
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
+        assert tango_context.device.obsState == ObsState.RESOURCING
 
-
+'''
 def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
     # act
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -404,6 +360,7 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_of
 
         # assert:
         assert tango_context.device.State() == DevState.OFF
+        assert tango_context.device.obsState == ObsState.EMPTY
 
 
 def test_assign_resource_should_raise_exception_when_called_with_invalid_input():
@@ -421,17 +378,18 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
 
     event_subscription_map = {}
 
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
+    # csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
 
         with pytest.raises(tango.DevFailed):
+            tango_context.device.On()
             tango_context.device.AssignResources(assign_invalid_key)
 
         # assert:
@@ -439,35 +397,35 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
         assert tango_context.device.obsState == ObsState.EMPTY
 
 
-def test_assign_resource_should_raise_devfailed_exception():
-    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
-
-    dut_properties = {
-        'CspSubarrayFQDN': csp_subarray1_fqdn,
-    }
-
-    csp_subarray1_proxy_mock = Mock()
-
-    proxies_to_mock = {
-        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
-    }
-
-    event_subscription_map = {}
-
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
-
-    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.AssignResources(assign_input_str)
-        # assert
-        assert tango_context.device.State() == DevState.OFF
+# def test_assign_resource_should_raise_devfailed_exception():
+#     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+#
+#     dut_properties = {
+#         'CspSubarrayFQDN': csp_subarray1_fqdn,
+#     }
+#
+#     csp_subarray1_proxy_mock = Mock()
+#
+#     proxies_to_mock = {
+#         csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+#     }
+#
+#     event_subscription_map = {}
+#
+#     csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+#         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+#             update({attr_name: callback}))
+#
+#     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+#                            proxies_to_mock=proxies_to_mock) as tango_context:
+#         attribute = "state"
+#         dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+#         event_subscription_map[attribute](dummy_event)
+#
+#         with pytest.raises(tango.DevFailed):
+#             tango_context.device.AssignResources(assign_input_str)
+#         # assert
+#         assert tango_context.device.State() == DevState.OFF
 
 
 def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devfailed_exception():
@@ -500,17 +458,18 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
     }
     event_subscription_map = {}
 
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
-
+    # csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
+    # Generate dummy devFailed exception raised by Csp Subarray Leaf Node
     csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_with_arg
+
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        tango_context.device.On()
         tango_context.device.AssignResources(assign_input_str)
 
         # assert
@@ -546,23 +505,26 @@ def test_release_resource_command_subarray():
         dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
 
-    event_subscription_map = {}
-
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
+    # event_subscription_map = {}
+    #
+    # csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
 
+        tango_context.device.On()
         tango_context.device.AssignResources(assign_input_str)
         tango_context.device.ReleaseAllResources()
         # assert:
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES)
+        assert tango_context.device.state == DevState.OFF()
+        assert tango_context.device.obsState == ObsState.EMPTY
 
 
 def test_release_resource_should_raise_exception_when_called_before_assign_resource():
@@ -578,18 +540,18 @@ def test_release_resource_should_raise_exception_when_called_before_assign_resou
         csp_subarray1_fqdn: csp_subarray1_proxy_mock,
     }
 
-    event_subscription_map = {}
-
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
+    # event_subscription_map = {}
+    #
+    # csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        tango_context.device.On()
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseAllResources()
 
@@ -631,9 +593,9 @@ def test_configure_command_subarray():
     sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
 
     event_subscription_map = {}
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
+    # csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
     sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
@@ -641,19 +603,21 @@ def test_configure_command_subarray():
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         tango_context.device.On()
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+
         tango_context.device.AssignResources(assign_input_str)
-        receiveAddresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
+        receive_addresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
         attribute = "receiveAddresses"
         dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                               receiveAddresses)
+                                               receive_addresses)
         event_subscription_map[attribute](dummy_event)
         tango_context.device.Configure(configure_str)
         # assert:
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, sdp_conf_str)
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_conf_str)
+        tango_context.device.obsState == ObsState.CONFIGURING
 
 
 def test_configure_command_subarray_with_invalid_key():
@@ -690,16 +654,16 @@ def test_configure_command_subarray_with_invalid_key():
 
     event_subscription_map = {}
 
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
+    # csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        tango_context.device.On()
         tango_context.device.AssignResources(assign_input_str)
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(configure_invalid_key)
@@ -741,20 +705,20 @@ def test_configure_command_subarray_with_invalid_configure_input():
 
     event_subscription_map = {}
 
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
-
-    sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
+    # csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
+    #
+    # sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        tango_context.device.On()
         tango_context.device.AssignResources(assign_input_str)
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(invalid_conf_input)
@@ -764,7 +728,7 @@ def test_configure_command_subarray_with_invalid_configure_input():
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
-def test_configure_command_subarray_should_raise_devfailed_exception():
+def test_configure_command_subarray_should_raise_devfailed_exception_when_obsstate_is_idle():
     with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
@@ -825,17 +789,18 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        tango_context.device.On()
         tango_context.device.AssignResources(assign_input_str)
-        attribute1 = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute1, DevState.OFF)
-        event_subscription_map[attribute1](dummy_event)
+        # attribute1 = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute1, DevState.OFF)
+        # event_subscription_map[attribute1](dummy_event)
 
         csp_subarray1_proxy_mock.obsState = ObsState.READY
         sdp_subarray1_proxy_mock.obsState = ObsState.READY
+
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
                                                    attribute, ObsState.READY)
@@ -859,6 +824,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_SCAN, scan_input)
 
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_START_SCAN, [scan_input])
+        tango_context.device.obsState == ObsState.SCANNING
 
 
 def test_start_scan_should_raise_devfailed_exception():
@@ -914,13 +880,14 @@ def test_start_scan_should_raise_devfailed_exception():
     csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_with_arg
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        tango_context.device.On()
         tango_context.device.AssignResources(assign_input_str)
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
 
         csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
         sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
@@ -993,10 +960,10 @@ def test_start_scan_should_raise_assertion_exception():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        tango_context.device.On()
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
                                                    attribute, ObsState.SCANNING)
@@ -1049,9 +1016,9 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
     event_subscription_map = {}
     dish_pointing_state_map = {}
 
-    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
+    # csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
 
     csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
@@ -1067,9 +1034,10 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        tango_context.device.On()
         tango_context.device.AssignResources(assign_input_str)
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
@@ -2369,7 +2337,7 @@ def command_callback_with_devfailed_exception():
     fake_event.attr_name = tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
     return fake_event
-
+'''
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
