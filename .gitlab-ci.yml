@@ -42,7 +42,7 @@ build CentralNode wheel for publication: # Executed on a tag
 build CentralNode wheel for development: # Executed on a commit
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/centralnode
     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -55,7 +55,7 @@ build CentralNode wheel for development: # Executed on a commit
 build SubarrayNode wheel for publication: # Executed on a tag
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/subarraynode
     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -68,7 +68,7 @@ build SubarrayNode wheel for publication: # Executed on a tag
 build SubarrayNode wheel for development: # Executed on a commit
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/subarraynode
     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -81,7 +81,7 @@ build SubarrayNode wheel for development: # Executed on a commit
 build DishLeafNode wheel for publication: # Executed on a tag
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/dishleafnode
     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -94,7 +94,7 @@ build DishLeafNode wheel for publication: # Executed on a tag
 build DishLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/dishleafnode
     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -107,7 +107,7 @@ build DishLeafNode wheel for development: # Executed on a commit
 build CspMasterLeafNode wheel for publication: # Executed on a tag
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/cspmasterleafnode
     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -120,7 +120,7 @@ build CspMasterLeafNode wheel for publication: # Executed on a tag
 build CspMasterLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/cspmasterleafnode
     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -133,7 +133,7 @@ build CspMasterLeafNode wheel for development: # Executed on a commit
 build CspSubarrayLeafNode wheel for publication: # Executed on a tag
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/cspsubarrayleafnode
     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -147,7 +147,7 @@ build CspSubarrayLeafNode wheel for publication: # Executed on a tag
 build SdpMasterLeafNode wheel for publication: # Executed on a tag
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/sdpmasterleafnode
     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -161,7 +161,7 @@ build SdpMasterLeafNode wheel for publication: # Executed on a tag
 build SdpMasterLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/sdpmasterleafnode
     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -174,7 +174,7 @@ build SdpMasterLeafNode wheel for development: # Executed on a commit
 build CspSubarrayLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/cspsubarrayleafnode
     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -187,7 +187,7 @@ build CspSubarrayLeafNode wheel for development: # Executed on a commit
 build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/sdpsubarrayleafnode
     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -200,7 +200,7 @@ build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
 build SdpSubarrayLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/sdpsubarrayleafnode
     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -214,7 +214,7 @@ build SdpSubarrayLeafNode wheel for development: # Executed on a commit
 build DishMaster wheel for publication: # Executed on a tag
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/dishmaster
     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -227,7 +227,7 @@ build DishMaster wheel for publication: # Executed on a tag
 build DishMaster wheel for development: # Executed on a commit
   stage: build
   tags:
-    - -
+    - auto-k8sv2
   script:
     - cd ./tmcprototype/dishmaster
     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
@@ -256,7 +256,7 @@ unit tests:
   before_script:
   - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
   tags:
-    - -
+    - auto-k8sv2
   script:
     - make unit-test
   artifacts:
@@ -268,7 +268,7 @@ linting:
   stage: linting
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   tags:
-    - -
+    - auto-k8sv2
   script:
     - make lint
   allow_failure: true
@@ -279,7 +279,7 @@ linting:
 publish to nexus:
   stage: publish
   tags:
-    - -
+    - auto-k8sv2
   variables:
     TWINE_USERNAME: $TWINE_USERNAME
     TWINE_PASSWORD: $TWINE_PASSWORD
@@ -304,7 +304,7 @@ pages:
   before_script:
   - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
   tags:
-    - -
+    - auto-k8sv2
   stage: pages
   only:
     - master
@@ -327,7 +327,7 @@ create ci metrics:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   when: always
   tags:
-    - -
+    - auto-k8sv2
   script:
     # Gitlab CI badges creation: START
     - apt-get -y update
@@ -352,7 +352,7 @@ release tmc:
   before_script:
   - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
   tags:
-    - -
+    - auto-k8sv2
   script:
     - make release-tmc-prototype USERNAME=$GITLAB_USER_NAME EMAILID=$GITLAB_USER_EMAIL # Publish tag on the gitlab and tagged image on Nexus
   when: manual
