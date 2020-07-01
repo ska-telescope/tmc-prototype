@@ -19,7 +19,7 @@ import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run,attribute, command, device_property
 from ska.base import SKABaseDevice, SKASubarray
-from ska.base.commands import ActionCommand, Re, ResponseCommand
+from ska.base.commands import ActionCommand, ResponseCommand, ResultCode
 from ska.base.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
@@ -316,12 +316,11 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
     #
     #
     #     # PROTECTED REGION END #    //  CentralNode.init_device
-
-   class InitCommand(SKASubarray.InitCommand):
+    #
+    class InitCommand(SKABaseDevice.InitCommand):
        """
-        A class for the TMC CentralNode's init_device() "command".
-        """
-
+       A class for the TMC CentralNode's init_device() "command".
+       """
        def do(self):
            """
            Stateless hook for device initialisation.
@@ -335,12 +334,11 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
            super().do()
 
            device = self.target
-           # PROTECTED REGION ID(CentralNode.init_device) ENABLED START #
 
            exception_count = 0
            exception_message = []
            try:
-               SKABaseDevice.init_device(self)
+               #SKABaseDevice.init_device(self)
                self.logger.info("Device initialisating...")
                device._subarray1_health_state = HealthState.OK
                device._subarray2_health_state = HealthState.OK
@@ -360,9 +358,14 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                device._read_activity_message = ""
                #device.set_status(const.STR_INIT_SUCCESS)
                self.logger.debug(const.STR_INIT_SUCCESS)
+
            except DevFailed as dev_failed:
                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,
                                                                                         exception_count, const.ERR_INIT_PROP_ATTR_CN)
+               device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
+               message = const.ERR_INIT_PROP_ATTR_CN
+               self.logger.info(message)
+               return (ResultCode.FAILED, message)
 
                #  Get Dish Leaf Node devices List
                # TODO: Getting DishLeafNode devices list from TANGO DB
@@ -395,6 +398,10 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                            exception_message,
                                                                                            exception_count,
                                                                                            const.ERR_IN_CREATE_PROXY)
+                   device._read_activity_message = const.ERR_IN_CREATE_PROXY
+                   message = const.ERR_IN_CREATE_PROXY
+                   self.logger.info(message)
+                   return (ResultCode.FAILED, message)
 
                # Create device proxy for CSP Master Leaf Node
            try:
@@ -407,6 +414,10 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                        exception_message,
                                                                                        exception_count,
                                                                                        const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
+               device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
+               message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
+               self.logger.info(message)
+               return (ResultCode.FAILED, message)
 
                # Create device proxy for SDP Master Leaf Node
            try:
@@ -419,6 +430,10 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                        exception_message,
                                                                                        exception_count,
                                                                                        const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
+               device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
+               message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
+               self.logger.info(message)
+               return (ResultCode.FAILED, message)
 
                # Create device proxy for Subarray Node
            for subarray in range(0, len(device.TMMidSubarrayNodes)):
@@ -438,6 +453,14 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                            exception_message,
                                                                                            exception_count,
                                                                                            const.ERR_SUBSR_SA_HEALTH_STATE)
+                   device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
+                   message = const.ERR_SUBSR_SA_HEALTH_STATE
+                   self.logger.info(message)
+                   return (ResultCode.FAILED, message)
+           device._read_activity_message = "Central Node initialised successfully."
+           message = "Central Node initialised successfully."
+           self.logger.info(message)
+           return (ResultCode.OK, message)
 
            # PROTECTED REGION END #    //  CentralNode.init_device
 
