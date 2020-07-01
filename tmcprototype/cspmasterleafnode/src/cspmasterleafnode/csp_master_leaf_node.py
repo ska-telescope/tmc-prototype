@@ -19,7 +19,7 @@ import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
-from ska.base.commands import ActionCommand, ReturnCode, ResponseCommand
+from ska.base.commands import ActionCommand, ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, TestMode
 # Additional import
 from ska.base import SKASubarray
@@ -314,7 +314,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
-            :rtype: (ReturnCode, str)
+            :rtype: (ResultCode, str)
             """
             super().do()
 
@@ -369,10 +369,10 @@ class CspMasterLeafNode(SKABaseDevice):
 
             if _state_fault_flag:
                 message = const.ERR_CSP_MASTER_LEAF_INIT
-                return_code = ReturnCode.FAILED
+                return_code = ResultCode.FAILED
             else:
                 message = const.STR_CSP_MASTER_LEAF_INIT_SUCCESS
-                return_code = ReturnCode.OK
+                return_code = ResultCode.OK
 
             device._read_activity_message = message
             self.logger.info(message)
@@ -449,14 +449,14 @@ class CspMasterLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
-            :rtype: (ReturnCode, str)
+            :rtype: (ResultCode, str)
             """
 
             device = self.target
 
-            device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, self.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
-            return (ReturnCode.STARTED, const.STR_ON_CMD_ISSUED)
+            return (ResultCode.STARTED, const.STR_ON_CMD_ISSUED)
 
     # @command(
     #     dtype_in=('str',),
@@ -496,14 +496,14 @@ class CspMasterLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
-            :rtype: (ReturnCode, str)
+            :rtype: (ResultCode, str)
             """
 
             device = self.target
 
-            device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, self.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
-            return (ReturnCode.STARTED, const.STR_OFF_CMD_ISSUED)
+            return (ResultCode.STARTED, const.STR_OFF_CMD_ISSUED)
 
     # @command(
     #     dtype_in=('str',),
@@ -529,7 +529,7 @@ class CspMasterLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
 
-    class StandbyCommand(SKASubarray.StandbyCommand):
+    class StandbyCommand(ResponseCommand):
         """
         A class for CSP Master Leaf Node's Standby() command.
         """
@@ -545,14 +545,14 @@ class CspMasterLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
-            :rtype: (ReturnCode, str)
+            :rtype: (ResultCode, str)
             """
 
             device = self.target
 
-            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
-            return (ReturnCode.STARTED, const.STR_STANDBY_CMD_ISSUED)
+            return (ResultCode.STARTED, const.STR_STANDBY_CMD_ISSUED)
 
 
 # ----------
