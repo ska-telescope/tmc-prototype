@@ -47,6 +47,15 @@ with open(path, 'r') as f:
     assign_invalid_key=f.read()
 
 
+def test_on_command_should_change_cspsubarrayleafnode_device_state_to_on():
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        # act:
+        tango_context.device.On()
+        # assert:
+        assert tango_context.device.state() == DevState.ON
+        assert tango_context.device.obsState == ObsState.EMPTY
+
+
 def test_assign_command_with_callback_method():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -61,7 +70,7 @@ def test_assign_command_with_callback_method():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-
+        tango_context.device.On()
         assign_resources_input = []
         assign_resources_input.append(assign_input_str)
         device_proxy = tango_context.device
@@ -569,11 +578,6 @@ def test_configure_should_raise_exception_when_called_invalid_json():
         assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
 
 
-def test_state():
-    # act & assert:
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.State() == DevState.ALARM
-
 
 def test_status():
     # act & assert:
@@ -598,37 +602,6 @@ def test_health_state():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
-
-
-def test_admin_mode():
-    # act & assert:
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
-
-
-def test_control_mode():
-    # act & assert:
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        control_mode = ControlMode.REMOTE
-        tango_context.device.controlMode = control_mode
-        assert tango_context.device.controlMode == control_mode
-
-
-def test_simulation_mode():
-    # act & assert:
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        simulation_mode = SimulationMode.FALSE
-        tango_context.device.simulationMode = simulation_mode
-        assert tango_context.device.simulationMode == simulation_mode
-
-
-def test_test_mode():
-    # act & assert:
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        test_mode = TestMode.NONE
-        tango_context.device.testMode = test_mode
-        assert tango_context.device.testMode == test_mode
-
 
 def test_read_activity_message():
     # act & assert:
