@@ -518,6 +518,105 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
     # --------
     # Commands
     # --------
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        self.register_command_object(
+            "StowAntennas",
+            self.StowAntennas(self, self.state_model, self.logger))
+        self.register_command_object(
+            "StartUpTelescope",
+            self.StartUpTelescope(self, self.state_model, self.logger))
+        self.register_command_object(
+            "StandByTelescope",
+            self.StandByTelescope(self, self.state_model, self.logger))
+        self.register_command_object(
+            "AssignResources",
+            self.AssignResourcesCommand(self, self.state_model, self.logger))
+        self.register_command_object(
+            "ReleaseAllResources",
+            self.ReleaseResourcesCommand(self, self.state_model, self.logger))
+        
+    class StowAntennasCommand(ResponseCommand):
+        """
+        A class for CentralNode's Track command.
+        """
+
+        def check_allowed(self):
+
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if not self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango_raise(
+                    "StowAntennas() is not allowed in current state"
+                )
+            return True
+
+        def do(self, argin):
+            """
+            Stows the specified receptors.
+
+            :param argin: List of Receptors to be stowed.
+
+            :return: None
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+            try:
+                for leafId in range(0, len(argin)):
+                    if type(float(argin[leafId])) == float:
+                        pass
+                log_msg = const.STR_STOW_CMD_ISSUED_CN
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+                for i in range(0, len(argin)):
+                    device_name = device.DishLeafNodePrefix + argin[i]
+                    try:
+                        device_proxy = DeviceProxy(device_name)
+                        device_proxy.command_inout(const.CMD_SET_STOW_MODE)
+                    except DevFailed as dev_failed:
+                        [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                                exception_message,
+                                                                                                exception_count,
+                                                                                                const.ERR_EXE_STOW_CMD)
+                        return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
+
+                    # TODO: throw exception:
+                    # if exception_count > 0:
+                    #     self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+
+            except ValueError as value_error:
+                self.logger.error(const.ERR_STOW_ARGIN)
+                device._read_activity_message = const.ERR_STOW_ARGIN + str(value_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                return (ResultCode.FAILED, const.ERR_STOW_ARGIN)
+            except Exception as except_occured:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occured,
+                                                                                      exception_message, exception_count,
+                                                                                      const.ERR_EXE_STOW_CMD)
+                return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
+
+            # throw exception:
+            # if exception_count > 0:
+            #     self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+            # PROTECTED REGION END #    //  CentralNode.stow_antennas
+            #TODO: check if message should be Started or Ok?
+            return (ResultCode.OK, log_msg)
 
     @command(
         dtype_in=('str',),
@@ -533,135 +632,245 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
 
         :return: None
         """
-        exception_count = 0
-        exception_message = []
-        try:
-            for leafId in range(0, len(argin)):
-                if type(float(argin[leafId])) == float:
-                    pass
-            log_msg=const.STR_STOW_CMD_ISSUED_CN
+
+        handler = self.get_command_object("StowAntennas")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    def is_StowAntennas_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("StowAntennas")
+        return handler.check_allowed()
+#=========================================
+    class StandByTelescopeCommand(ResponseCommand):
+        """
+        A class for CentralNode's StandByTelescope command.
+        """
+        def check_allowed(self):
+
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango_raise(
+                    "StandByTelescope() is not allowed in current state"
+                )
+            return True
+
+        def do(self):
+            """ Set the Elements into STANDBY state (i.e. Low Power State). """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+            log_msg = const.STR_STANDBY_CMD_ISSUED
             self.logger.info(log_msg)
-            self._read_activity_message = log_msg
-            for i in range(0, len(argin)):
-                device_name = self.DishLeafNodePrefix + argin[i]
+            device._read_activity_message = log_msg
+            for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
-                    device_proxy = DeviceProxy(device_name)
-                    device_proxy.command_inout(const.CMD_SET_STOW_MODE)
+                    device._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
+                    log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(device._leaf_device_proxy[name])
+                    self.logger.info(log_msg)
                 except DevFailed as dev_failed:
-                    [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                exception_message, exception_count,  const.ERR_EXE_STOW_CMD)
+                    [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                            exception_message,
+                                                                                            exception_count,
+                                                                                            const.ERR_EXE_STANDBY_CMD)
+                    return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
 
-                # throw exception:
-                if exception_count > 0:
-                    self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+            try:
+                device._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
+                self.logger.info(const.STR_CMD_STANDBY_CSP_DEV)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_EXE_STANDBY_CMD)
+                return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
 
-        except ValueError as value_error:
-            self.logger.error(const.ERR_STOW_ARGIN)
-            self._read_activity_message = const.ERR_STOW_ARGIN + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                exception_message, exception_count, const.ERR_EXE_STOW_CMD)
+            try:
+                device._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
+                self.logger.info(const.STR_CMD_STANDBY_SDP_DEV)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_EXE_STANDBY_CMD)
+                return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
 
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
-        # PROTECTED REGION END #    //  CentralNode.stow_antennas
+            try:
+                for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
+                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STANDBY)
+                    self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_EXE_STANDBY_CMD)
+                return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
+                # TODO: for future - throw exception:
+                # if exception_count > 0:
+                #     self.throw_exception(exception_message, const.STR_STANDBY_EXEC)
+            return (ResultCode.OK,const.STR_CMD_STANDBY_SA_DEV) # return message can be updated accordingly.
+            # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
     @command(
     )
     @DebugIt()
     def StandByTelescope(self):
+        """
+        Puts the telescope in low-power state .
+
+        :param argin: None.
+
+        :return: None
+        """
+        handler = self.get_command_object("StandByTelescope")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    def is_StandByTelescope_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("StandByTelescope")
+        return handler.check_allowed()
         # PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
-        """ Set the Elements into STANDBY state (i.e. Low Power State). """
-        exception_count =0
-        exception_message =[]
-        log_msg=const.STR_STANDBY_CMD_ISSUED
-        self.logger.info(log_msg)
-        self._read_activity_message = log_msg
-        for name in range(0, len(self._dish_leaf_node_devices)):
+
+#=================================================================
+    class StartUpTelescopeCommand(ResponseCommand):
+        """
+        A class for CentralNode's StartupCommand command.
+        """
+        def check_allowed(self):
+
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango_raise(
+                    "StartUpTelescope() is not allowed in current state"
+                )
+            return True
+
+        def do(self, argin):
+            """ Set the Elements into STARTUP state (i.e. On State). """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+            log_msg = const.STR_STARTUP_CMD_ISSUED
+            self.logger.info(log_msg)
+            device._read_activity_message = log_msg
+            for name in range(0, len(device._dish_leaf_node_devices)):
+                try:
+                    device._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
+                    log_msg = const.CMD_SET_OPERATE_MODE + 'invoked on' + str(device._leaf_device_proxy[name])
+                    self.logger.info(log_msg)
+                except DevFailed as dev_failed:
+                    [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                            exception_message,
+                                                                                            exception_count,
+                                                                                            const.ERR_EXE_STARTUP_CMD)
+                    return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+
             try:
-                self._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
-                log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(self._leaf_device_proxy[name])
-                self.logger.info(log_msg)
+                device._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP, [])
+                self.logger.info(const.STR_CMD_STARTUP_CSP_DEV)
+            except Exception as except_occured:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occured,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXE_STARTUP_CMD)
+                return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+
+            try:
+                device._sdp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
+                self.logger.info(const.STR_CMD_STARTUP_SDP_DEV)
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_EXE_STARTUP_CMD)
+                return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
 
-        try:
-            self._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
-            self.logger.info(const.STR_CMD_STANDBY_CSP_DEV)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
-
-        try:
-            self._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
-            self.logger.info(const.STR_CMD_STANDBY_SDP_DEV)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
-
-        try:
-            for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
-                self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STANDBY)
-                self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                        exception_message, exception_count, const.ERR_EXE_STANDBY_CMD)
-            # throw exception:
-            if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_STANDBY_EXEC)
-        # PROTECTED REGION END #    //  CentralNode.standby_telescope
+            try:
+                for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
+                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STARTUP)
+                    self.logger.info(const.STR_CMD_STARTUP_SA_DEV)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_EXE_STARTUP_CMD)
+                return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+                # TODO: for future-  throw exception:
+                # if exception_count > 0:
+                #     self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
+            return (ResultCode.OK, const.STR_CMD_STARTUP_SA_DEV)
 
     @command(
     )
     @DebugIt()
     def StartUpTelescope(self):
         # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
-        """ Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-        model.Set the Elements into ON state from STANDBY state. """
-        exception_count =0
-        exception_message = []
-        log_msg=const.STR_STARTUP_CMD_ISSUED
-        self.logger.info(log_msg)
-        self._read_activity_message = log_msg
-        for name in range(0, len(self._dish_leaf_node_devices)):
-            try:
-                self._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
-                log_msg = const.CMD_SET_OPERATE_MODE + 'invoked on' + str(self._leaf_device_proxy[name])
-                self.logger.info(log_msg)
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
+        """
+        Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
+        model.Set the Elements into ON state from STANDBY state.
 
-        try:
-            self._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP,[])
-            self.logger.info(const.STR_CMD_STARTUP_CSP_DEV)
-        except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                            exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
-        try:
-            self._sdp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
-            self.logger.info(const.STR_CMD_STARTUP_SDP_DEV)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
+        :param argin: None.
 
-        try:
-            for subarrayID in range(1, len(self.TMMidSubarrayNodes)+1):
-                self.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STARTUP)
-                self.logger.info(const.STR_CMD_STARTUP_SA_DEV)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_EXE_STARTUP_CMD)
-            # throw exception:
-            if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
-        # PROTECTED REGION END #    //  CentralNode.startup_telescope
+        :return: None
+        """
+        handler = self.get_command_object("StartUpTelescope")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
+    def is_StartUpTelescope_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("StartUpTelescope")
+        return handler.check_allowed()
+    # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
+#============================================================================
     # @command(
     #     dtype_in='str',
     #     doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
