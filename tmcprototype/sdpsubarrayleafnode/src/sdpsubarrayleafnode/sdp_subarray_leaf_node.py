@@ -193,7 +193,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._read_activity_message = log_msg
 
             # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
-            self._sdp_subarray_proxy = DeviceProxy(self.SdpSubarrayFQDN)
+            device._sdp_subarray_proxy = DeviceProxy(device.SdpSubarrayFQDN)
             return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
 
             # except DevFailed as dev_failed:
@@ -274,49 +274,121 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
-    @command(
-    )
-    @DebugIt()
-    def ReleaseAllResources(self):
+    # @command(
+    # )
+    # @DebugIt()
+    # def ReleaseAllResources(self):
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
+    #     """
+    #     Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+    #     receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+    #     is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
+    #     resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
+    #     on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
+    #     This selective release of the resources when releaseALL is False, will be implemented in the
+    #     later stages of the prototype.
+    #
+    #     :param argin: None.
+    #
+    #     :return: None.
+    #     """
+    #
+    #     exception_message = []
+    #     exception_count = 0
+    #
+    #     try:
+    #         # Call SDP Subarray Command asynchronously
+    #         self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
+    #                                                                       self.cmd_ended_cb)
+    #
+    #         # Update the status of command execution status in activity message
+    #         self._read_activity_message = const.STR_REL_RESOURCES
+    #         self.logger.info(const.STR_REL_RESOURCES)
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                         exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                         exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+    #
+    #     # throw exception:
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+    #
+    #     return ""
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
+
+    class ReleaseAllResources(ResponseCommand):
+
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
         """
         Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
-        receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-        is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
-        resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
-        on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
-        This selective release of the resources when releaseALL is False, will be implemented in the
-        later stages of the prototype.
-
-        :param argin: None.
-
-        :return: None.
+        #     receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+        #     is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
+        #     resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
+        #     on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
+        #     This selective release of the resources when releaseALL is False, will be implemented in the
+        #     later stages of the prototype.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
 
-        exception_message = []
-        exception_count = 0
+            :return: True if this command is allowed to be run in
+            current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+            in current device state
+            """
 
-        try:
-            # Call SDP Subarray Command asynchronously
-            self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                          self.cmd_ended_cb)
+            if not self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
+                                             "ReleaseAllResources() is not allowed in current state",
+                                             "sdpsubarrayleafnode.ReleaseAllResources()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def do(self, argin):
+            """
+            :param argin: None.
+
+            :return: None.
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+
+            try:
+                # Call SDP Subarray Command asynchronously
+                device.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
+                                                                              device.cmd_ended_cb)
 
             # Update the status of command execution status in activity message
-            self._read_activity_message = const.STR_REL_RESOURCES
-            self.logger.info(const.STR_REL_RESOURCES)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+                device._read_activity_message = const.STR_REL_RESOURCES
+                self.logger.info(const.STR_REL_RESOURCES)
+                return(ResultCode.STARTED,const.STR_REL_RESOURCES)
 
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                    exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+                return(ResultCode.FAILED,const.ERR_RELEASE_RESOURCES)
 
-        return ""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                    exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+                return (ResultCode.FAILED, const.ERR_RELEASE_RESOURCES)
+
+            #     # throw exception:
+            #     if exception_count > 0:
+            #         self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+            #
+            #     return ""
+            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
+
 
     @command(
         dtype_in='str',
