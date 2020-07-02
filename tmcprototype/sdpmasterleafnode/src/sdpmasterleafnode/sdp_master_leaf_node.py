@@ -288,11 +288,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         super().init_command_objects()
         self.register_command_object("Disable",self.DisableCommand(self, self.state_model, self.logger))
         self.register_command_object("Standby",self.StandbyCommand(self, self.state_model, self.logger))
-        self.register_command_object("Off",self.OffCommand(self, self.state_model, self.logger))
-        self.register_command_object("On",self.OnCommand(self, self.state_model, self.logger))
+        
 
-
-    class OnCommand(ResponseCommand):
+    class OnCommand(SKASubarray.OnCommand):
         """
                A class for SDP master's On() command.
                """
@@ -310,60 +308,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             self.logger.debug(log_msg)
 
             return (ResultCode.OK, "On command execution started")
-
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-             :return: True if this command is allowed to be run in
-                 current device state
-             :rtype: boolean
-             :raises: DevFailed if this command is not allowed to be run
-                 in current device state
-            Returns
-            -------
-
-            """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE
-            ]:
-                tango.Except.throw_exception("", "",
-                                             "On() is not allowed in current state",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
-    def is_On_allowed(self):
-        """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
-        """
-        handler = self.get_command_object("On")
-        return handler.check_allowed()
-
-    @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def On(self):
-        """
-        Invokes Track command on the Dishes assigned to the Subarray.
-
-        :param argin: DevString
-
-        :return: None
-
-        """
-
-        handler = self.get_command_object("On")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
 
     # @command(
     # )
@@ -384,10 +328,10 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     class OffCommand(SKASubarray.OffCommand):
         """
-               A class for SDP master's On() command.
+               A class for SDP master's Off() command.
                """
         def do(self):
-            """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
+            """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to Off.
 
                    :param argin: DevVoid.
 
@@ -408,59 +352,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             return (ResultCode.OK, "Off command execution started")
 
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
 
-             :return: True if this command is allowed to be run in
-                 current device state
-             :rtype: boolean
-             :raises: DevFailed if this command is not allowed to be run
-                 in current device state
-            Returns
-            -------
-
-            """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE
-            ]:
-                tango.Except.throw_exception("", "",
-                                             "Off() is not allowed in current state",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
-    def is_Off_allowed(self):
-        """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
-        """
-        handler = self.get_command_object("Off")
-        return handler.check_allowed()
-
-    @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def Off(self):
-        """
-        Invokes Track command on the Dishes assigned to the Subarray.
-
-        :param argin: DevString
-
-        :return: None
-
-        """
-
-        handler = self.get_command_object("Off")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
     # @command(
     # )
     # @DebugIt()
