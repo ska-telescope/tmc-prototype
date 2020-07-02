@@ -137,6 +137,7 @@ STR_ACHIEVEDPOINTING_0_0 = "Achieved Pointing :-> [0. 0. 0.]"
 STR_DESIREDPOINTING_0_0 = "Desired Pointing :-> [0. 0. 0.]"
 
 STR_TARGET_NOT_OBSERVED = "Cannot point to the source."
+STR_SCAN_SUCCESS = "Scan command is invoked successfully."
 
 THREAD_TRACK = "DishLeafNode"
 ERR_INVALID_JSON = "Invalid JSON format."
