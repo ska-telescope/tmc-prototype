@@ -19,7 +19,7 @@ from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice, SKASubarray
 from ska.base.control_model import HealthState, ObsState
-from ska.base.commands import ResultCode
+from ska.base.commands import ResultCode,ActionCommand,ResponseCommand
 # Additional imports
 import json
 from . import const
@@ -29,7 +29,7 @@ from . import const
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 # pylint: disable=unused-argument,unused-variable
-class SdpSubarrayLeafNode(SKASubarray):
+class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
     """
@@ -170,39 +170,39 @@ class SdpSubarrayLeafNode(SKASubarray):
     #
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
 
-    class InitCommand(SKASubarray.InitCommand):
+    class InitCommand(SKABaseDevice.InitCommand):
         """ Initializes the attributes and properties of the Central Node. """
         # PROTECTED REGION ID(SdpSubarrayLeafNode.init_device) ENABLED START #
         def do(self):
 
             super().do()
             device = self.target
-            try:
-                # Initialise device state
-                device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
+            # try:
+            # Initialise device state
+            device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
 
-                # Initialise attributes
-                device._receive_addresses = ""
-                device._sdp_subarray_health_state = HealthState.OK
-                device._read_activity_message = ""
-                device._active_processing_block = ""
-                # Initialise Device status
-                device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
-                log_msg = const.STR_SDPSALN_INIT_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-                return (ResultCode.OK,const.STR_SDPSALN_INIT_SUCCESS)
-                # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
-                self._sdp_subarray_proxy = DeviceProxy(self.SdpSubarrayFQDN)
+            # Initialise attributes
+            device._receive_addresses = ""
+            device._sdp_subarray_health_state = HealthState.OK
+            device._read_activity_message = ""
+            device._active_processing_block = ""
+            # Initialise Device status
+            device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
+            log_msg = const.STR_SDPSALN_INIT_SUCCESS
+            self.logger.info(log_msg)
+            device._read_activity_message = log_msg
 
+            # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
+            self._sdp_subarray_proxy = DeviceProxy(self.SdpSubarrayFQDN)
+            return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
 
-            except DevFailed as dev_failed:
-                self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
-                device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
-                self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
-                device._read_activity_message = const.STR_ERR_MSG + str(dev_failed)
-                self.logger.error(const.STR_ERR_MSG, dev_failed)
-                return(ResultCode.FAILED,ERR_INIT_PROP_ATTR_CN)
+            # except DevFailed as dev_failed:
+            #     self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
+            #     device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
+            #     self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
+            #     device._read_activity_message = const.STR_ERR_MSG + str(dev_failed)
+            #     self.logger.error(const.STR_ERR_MSG, dev_failed)
+            #     return(ResultCode.FAILED,const.ERR_INIT_PROP_ATTR_CN)
 
                 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
 
@@ -420,7 +420,7 @@ class SdpSubarrayLeafNode(SKASubarray):
     #     return ""
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
-    class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+    class AssignResourcesCommand(ResponseCommand):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
         """
@@ -428,6 +428,29 @@ class SdpSubarrayLeafNode(SKASubarray):
         This command is provided as a noop placeholder from SDP subarray.
         Eventually this will likely take a JSON string specifying the resource request.
         """
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+            current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+            in current device state
+            """
+
+            if not self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("AssignResources() is not allowed in current state",
+                                             "AssignResources() is not allowed in current state",
+                                             "sdpsubarrayleafnode.AssignResources()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
 
         def do(self, argin):
             """
@@ -901,25 +924,25 @@ class SdpSubarrayLeafNode(SKASubarray):
 
 
 
-    class OnCommand(SKASubarray.OnCommand):
-        """
-        A class for the cspsubarrayleafnode's On() command.
-        """
-
-        def do(self):
-            """
-            Stateless hook for On() command functionality.
-
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
-            :rtype: (ResultCode, str)
-            """
-            device = self.target
-            print("On command device object:", device)
-            message = "On command completed OK"
-            self.logger.info(message)
-            return (ResultCode.OK, message)
+    # class OnCommand(SKASubarray.OnCommand):
+    #     """
+    #     A class for the cspsubarrayleafnode's On() command.
+    #     """
+    #
+    #     def do(self):
+    #         """
+    #         Stateless hook for On() command functionality.
+    #
+    #         :return: A tuple containing a return code and a string
+    #             message indicating status. The message is for
+    #             information purpose only.
+    #         :rtype: (ResultCode, str)
+    #         """
+    #         device = self.target
+    #         print("On command device object:", device)
+    #         message = "On command completed OK"
+    #         self.logger.info(message)
+    #         return (ResultCode.OK, message)
 
 
 # pylint: enable=unused-argument,unused-variable
