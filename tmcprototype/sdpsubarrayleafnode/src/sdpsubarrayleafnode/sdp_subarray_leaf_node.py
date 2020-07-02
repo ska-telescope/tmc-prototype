@@ -175,7 +175,7 @@ class SdpSubarrayLeafNode(SKASubarray):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.init_device) ENABLED START #
         def do(self):
 
-            super.do()
+            super().do()
             device = self.target
             try:
                 # Initialise device state
@@ -205,6 +205,21 @@ class SdpSubarrayLeafNode(SKASubarray):
                 return(ResultCode.FAILED,ERR_INIT_PROP_ATTR_CN)
 
                 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        self.register_command_object(
+            "AssignResources",
+            self.AssignResourcesCommand(self, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "ReleaseAllResources",
+            self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
+        )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -315,19 +330,108 @@ class SdpSubarrayLeafNode(SKASubarray):
         """
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseResources
 
-    @command(
-        dtype_in='str',
-        dtype_out='str',
-    )
-    @DebugIt()
-    def AssignResources(self, argin):
+    # @command(
+    #     dtype_in='str',
+    #     dtype_out='str',
+    # )
+    # @DebugIt()
+    # def AssignResources(self, argin):
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
+    #     """
+    #     Assigns resources to given SDP subarray.
+    #     This command is provided as a noop placeholder from SDP subarray.
+    #     Eventually this will likely take a JSON string specifying the resource request.
+    #
+    #     :param argin: The string in JSON format. The JSON contains following values:
+    #
+    #         SBI ID and maximum length of the SBI:
+    #             Mandatory JSON object consisting of
+    #
+    #             SBI ID :
+    #                 String
+    #
+    #             max_length:
+    #                 Float
+    #
+    #         Scan types:
+    #             Consist of Scan type id name
+    #
+    #             scan_type:
+    #                 DevVarStringArray
+    #
+    #         Processing blocks:
+    #             Mandatory JSON object consisting of
+    #
+    #                 processing_blocks:
+    #                     DevVarStringArray
+    #
+    #         Example:
+    #             {"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",
+    #             "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":[{"count"
+    #             :744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],
+    #             [744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
+    #             "link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B","coordinate_system":"ICRS","ra":
+    #             "12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,
+    #             "freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,
+    #             "start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}]
+    #             ,"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":
+    #             "vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":
+    #             {"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":
+    #             "pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters"
+    #             :{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":
+    #             "pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},"parameters"
+    #             :{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}
+    #
+    #         Note: Enter input without spaces
+    #
+    #     :return: Empty String.
+    #     """
+    #     exception_message = []
+    #     exception_count = 0
+    #
+    #     try:
+    #         # Call SDP Subarray Command asynchronously
+    #         log_msg = "Input JSON for SDP Subarray Leaf Node AssignResource command is: " + argin
+    #         self.logger.debug(log_msg)
+    #         self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
+    #                                                                       argin, self.cmd_ended_cb)
+    #         # Update the status of command execution status in activity message
+    #         self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+    #         self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+    #
+    #     except ValueError as value_error:
+    #         log_msg = const.ERR_INVALID_JSON + str(value_error)
+    #         self.logger.error(log_msg)
+    #         self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
+    #         exception_message.append(self._read_activity_message)
+    #         exception_count += 1
+    #
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                         exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                         exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
+    #
+    #     # throw exception:
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+    #
+    #     return ""
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
+
+    class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+
         # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
         """
         Assigns resources to given SDP subarray.
         This command is provided as a noop placeholder from SDP subarray.
         Eventually this will likely take a JSON string specifying the resource request.
+        """
 
-        :param argin: The string in JSON format. The JSON contains following values:
+        def do(self, argin):
+            """
+            :param argin: The string in JSON format. The JSON contains following values:
 
             SBI ID and maximum length of the SBI:
                 Mandatory JSON object consisting of
@@ -370,98 +474,174 @@ class SdpSubarrayLeafNode(SKASubarray):
             Note: Enter input without spaces
 
         :return: Empty String.
-        """
-        exception_message = []
-        exception_count = 0
 
-        try:
-            # Call SDP Subarray Command asynchronously
-            log_msg = "Input JSON for SDP Subarray Leaf Node AssignResource command is: " + argin
-            self.logger.debug(log_msg)
-            self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
-                                                                          argin, self.cmd_ended_cb)
-            # Update the status of command execution status in activity message
-            self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
 
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON + str(value_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+            try:
+                # Call SDP Subarray Command asynchronously
+                log_msg = "Input JSON for SDP Subarray Leaf Node AssignResource command is: " + argin
+                self.logger.debug(log_msg)
+                device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
+                                                                              argin, device.cmd_ended_cb)
+                # Update the status of command execution status in activity message
+                device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+                self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+                return(ResultCode.STARTED,const.STR_ASSIGN_RESOURCES_SUCCESS)
 
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
+            except ValueError as value_error:
+                log_msg = const.ERR_INVALID_JSON + str(value_error)
+                self.logger.error(log_msg)
+                device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                return(ResultCode.FAILED,const.ERR_INVALID_JSON)
 
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
+                return(ResultCode.FAILED,const.ERR_ASSGN_RESOURCES)
 
-        return ""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
+                return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
 
-    @command(
-        dtype_in='str',
-    )
-    @DebugIt()
-    def Configure(self, argin):
+        #     # throw exception:
+        #     if exception_count > 0:
+        #         self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+        #
+        #     return ""
+        #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
+
+    # @command(
+    #     dtype_in='str',
+    # )
+    # @DebugIt()
+    # def Configure(self, argin):
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+    #     """ When commanded in the IDLE state: configures the Subarray device by providing the SDP PB
+    #     configuration needed to execute the receive workflow
+    #
+    #     :param argin: The string in JSON format. The JSON contains following values:
+    #
+    #     Example:
+    #
+    #     {"sdp":{ "scan_type": "science_A" }}
+    #
+    #     :return: None.
+    #     """
+    #     exception_message = []
+    #     exception_count = 0
+    #     try:
+    #         # TODO : Check if obsState == IDLE
+    #         # TODO : For future reference set toggleReadCbfOutLink to false to skip CbfOutLink validation
+    #         # self._sdp_subarray_proxy.toggleReadCbfOutLink = False
+    #         jsonArgument = json.loads(argin)
+    #         sdp_arg = jsonArgument["sdp"]
+    #         sdpConfiguration = sdp_arg.copy()
+    #         log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
+    #         self.logger.debug(log_msg)
+    #         self._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
+    #                                                       self.cmd_ended_cb)
+    #         self._read_activity_message = const.STR_CONFIGURE_SUCCESS
+    #         self.logger.debug(str(sdpConfiguration))
+    #         self.logger.info(const.STR_CONFIGURE_SUCCESS)
+    #
+    #     except ValueError as value_error:
+    #         log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+    #         self.logger.info(log_msg)
+    #         self._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+    #         exception_message.append(self._read_activity_message)
+    #         exception_count += 1
+    #     except KeyError as key_error:
+    #         log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+    #         self.logger.error(log_msg)
+    #         self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
+    #         exception_message.append(self._read_activity_message)
+    #         exception_count += 1
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                                 exception_message, exception_count, const.ERR_CONFIGURE)
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                                 exception_message, exception_count,const.ERR_CONFIGURE)
+    #     # throw exception:
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_CONFIG_EXEC)
+    #
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
+
+    class ConfigureCommand(SKASubarray.ConfigureCommand):
+
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+
         """ When commanded in the IDLE state: configures the Subarray device by providing the SDP PB
         configuration needed to execute the receive workflow
-
-        :param argin: The string in JSON format. The JSON contains following values:
-
-        Example:
-
-        {"sdp":{ "scan_type": "science_A" }}
-
-        :return: None.
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            # TODO : Check if obsState == IDLE
-            # TODO : For future reference set toggleReadCbfOutLink to false to skip CbfOutLink validation
-            # self._sdp_subarray_proxy.toggleReadCbfOutLink = False
-            jsonArgument = json.loads(argin)
-            sdp_arg = jsonArgument["sdp"]
-            sdpConfiguration = sdp_arg.copy()
-            log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
-            self.logger.debug(log_msg)
-            self._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
-                                                          self.cmd_ended_cb)
-            self._read_activity_message = const.STR_CONFIGURE_SUCCESS
-            self.logger.debug(str(sdpConfiguration))
-            self.logger.info(const.STR_CONFIGURE_SUCCESS)
+        def do(self,argin):
+            """
+            :param argin: The string in JSON format. The JSON contains following values:
 
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-            self.logger.info(log_msg)
-            self._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                    exception_message, exception_count, const.ERR_CONFIGURE)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                    exception_message, exception_count,const.ERR_CONFIGURE)
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_CONFIG_EXEC)
+            Example:
 
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
+            {"sdp":{ "scan_type": "science_A" }}
+
+            :return: None.
+
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                # TODO : Check if obsState == IDLE
+                # TODO : For future reference set toggleReadCbfOutLink to false to skip CbfOutLink validation
+                # self._sdp_subarray_proxy.toggleReadCbfOutLink = False
+                jsonArgument = json.loads(argin)
+                sdp_arg = jsonArgument["sdp"]
+                sdpConfiguration = sdp_arg.copy()
+                log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
+                self.logger.debug(log_msg)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
+                                                              device.cmd_ended_cb)
+                device._read_activity_message = const.STR_CONFIGURE_SUCCESS
+                self.logger.debug(str(sdpConfiguration))
+                self.logger.info(const.STR_CONFIGURE_SUCCESS)
+                return(ResultCode.STARTED,const.STR_CONFIGURE_SUCCESS)
+
+            except ValueError as value_error:
+                log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+                self.logger.info(log_msg)
+                device._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                return(ResultCode.FAILED,const.ERR_INVALID_JSON_CONFIG)
+
+            except KeyError as key_error:
+                log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                self.logger.error(log_msg)
+                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+                return (ResultCode.FAILED, const.ERR_JSON_KEY_NOT_FOUND)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                        exception_message, exception_count, const.ERR_CONFIGURE)
+                return(ResultCode.FAILED,const.ERR_CONFIGURE)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                        exception_message, exception_count,const.ERR_CONFIGURE)
+                return (ResultCode.FAILED, const.ERR_CONFIGURE)
+
+            # throw exception:
+            #     if exception_count > 0:
+            #         self.throw_exception(exception_message, const.STR_CONFIG_EXEC)
+            #
+            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
     # @command(
     #     dtype_in='str',
@@ -671,6 +851,46 @@ class SdpSubarrayLeafNode(SKASubarray):
     #
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 
+    class EndCommand(SKASubarray.EndCommand):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
+        """This command invokes EndSB command on SDP subarray to
+         end the current Scheduling block."""
+
+        def do(self):
+            # TODO: For future use
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device._sdp_subarray_proxy.obsState == ObsState.READY:
+                    # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_ENDSB_SUCCESS
+                    self.logger.info(const.STR_ENDSB_SUCCESS)
+                    return(ResultCode.STARTED,const.STR_ENDSB_SUCCESS)
+
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                    self.logger.error(const.ERR_DEVICE_NOT_READY)
+                    return(ResultCode.FAILED,const.ERR_DEVICE_NOT_READY)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+                return(ResultCode.FAILED,const.ERR_ENDSB_INVOKING_CMD)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
+                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
+
+                # throw exception:
+            #     if exception_count > 0:
+            #         self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+            #
+            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
+
+
     @command(
     )
     @DebugIt()
@@ -678,6 +898,29 @@ class SdpSubarrayLeafNode(SKASubarray):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
         """ Abort command. Not yet implememnted."""
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
+
+
+
+    class OnCommand(SKASubarray.OnCommand):
+        """
+        A class for the cspsubarrayleafnode's On() command.
+        """
+
+        def do(self):
+            """
+            Stateless hook for On() command functionality.
+
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            print("On command device object:", device)
+            message = "On command completed OK"
+            self.logger.info(message)
+            return (ResultCode.OK, message)
+
 
 # pylint: enable=unused-argument,unused-variable
 # ----------
