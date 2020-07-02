@@ -513,7 +513,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             in current device state
             """
 
-            if not self.state_model.dev_state in [
+            if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("AssignResources() is not allowed in current state",
@@ -612,7 +612,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
     @command(
-        dtype_in=('str',),
+        dtype_in=('str'),
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
@@ -629,19 +629,19 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     # PROTECTED REGION END # // SdpSubarrayLeafNode.AssignResources
 
-    # def is_AssignResources_allowed(self):
-    #     """
-    #     Whether this command is allowed to be run in current device
-    #     state
-    #     :return: True if this command is allowed to be run in
-    #     current device state
-    #     :rtype: boolean
-    #     :raises: DevFailed if this command is not allowed to be run
-    #     in current device state
-    #     """
-    #
-    #     handler = self.get_command_object("AssignResources")
-    #     return handler.check_allowed()
+    def is_AssignResources_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+
+        handler = self.get_command_object("AssignResources")
+        return handler.check_allowed()
 
     # @command(
     #     dtype_in='str',
