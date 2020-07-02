@@ -360,7 +360,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                self.logger.debug(const.STR_INIT_SUCCESS)
 
            except DevFailed as dev_failed:
-               [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,
+               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
                                                                                         exception_count, const.ERR_INIT_PROP_ATTR_CN)
                device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
                message = const.ERR_INIT_PROP_ATTR_CN
@@ -526,13 +526,13 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         super().init_command_objects()
         self.register_command_object(
             "StowAntennas",
-            self.StowAntennas(self, self.state_model, self.logger))
+            self.StowAntennasCommand(self, self.state_model, self.logger))
         self.register_command_object(
             "StartUpTelescope",
-            self.StartUpTelescope(self, self.state_model, self.logger))
+            self.StartUpTelescopeCommand(self, self.state_model, self.logger))
         self.register_command_object(
             "StandByTelescope",
-            self.StandByTelescope(self, self.state_model, self.logger))
+            self.StandByTelescopeCommand(self, self.state_model, self.logger))
         self.register_command_object(
             "AssignResources",
             self.AssignResourcesCommand(self, self.state_model, self.logger))
@@ -557,7 +557,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if not self.state_model.dev_state in [
+            if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango_raise(
@@ -624,7 +624,6 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
     def StowAntennas(self, argin):
         # PROTECTED REGION ID(CentralNode.StowAntennas) ENABLED START #
         """
@@ -736,7 +735,6 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
     def StandByTelescope(self):
         """
         Puts the telescope in low-power state .
@@ -768,27 +766,27 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         """
         A class for CentralNode's StartupCommand command.
         """
-        # def check_allowed(self):
-        #
-        #     """
-        #     Whether this command is allowed to be run in current device
-        #     state
-        #
-        #     :return: True if this command is allowed to be run in
-        #         current device state
-        #     :rtype: boolean
-        #     :raises: DevFailed if this command is not allowed to be run
-        #         in current device state
-        #     """
-        #     if self.state_model.dev_state in [
-        #         DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-        #     ]:
-        #         tango_raise(
-        #             "StartUpTelescope() is not allowed in current state"
-        #         )
-        #     return True
+        def check_allowed(self):
 
-        def do(self, argin):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango_raise(
+                    "StartUpTelescope() is not allowed in current state"
+                )
+            return True
+
+        def do(self):
             """ Set the Elements into STARTUP state (i.e. On State). """
             device = self.target
             exception_count = 0
@@ -863,6 +861,23 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         (result_code, message) = handler()
         return [[result_code], [message]]
 
+    def is_StartUpTelescope_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("StartUpTelescope")
+        return handler.check_allowed()
+    # PROTECTED REGION END #    //  CentralNode.startup_telescope
+
+#============================================================================
+
+
     # def is_StartUpTelescope_allowed(self):
     #     """
     #     Whether this command is allowed to be run in current device
@@ -878,6 +893,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
     # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
 #============================================================================
+
     class AssignResourcesCommand(ResponseCommand):
         """
            A class for CentralNode's AssignResources() command.
@@ -894,7 +910,8 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if not self.state_model.dev_state in [
+
+            if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango_raise(
@@ -1106,9 +1123,9 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
     @command(
         dtype_in='str',
         doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-        "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
-        "The individual string should contain dish numbers in string format with "
-        "preceding zeroes upto 3 digits. E.g. 0001, 0002",
+               "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
+               "The individual string should contain dish numbers in string format with "
+               "preceding zeroes upto 3 digits. E.g. 0001, 0002",
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
@@ -1130,13 +1147,14 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         Whether this command is allowed to be run in current device
         state
         :return: True if this command is allowed to be run in
-            current device state
+        current device state
         :rtype: boolean
         :raises: DevFailed if this command is not allowed to be run
-            in current device state
+        in current device state
         """
         handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
+
 
     #     # PROTECTED REGION END #    //  CentralNode.AssignResources
 #=================================================================================
@@ -1159,7 +1177,8 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if not self.state_model.dev_state in [
+
+            if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango_raise(
@@ -1216,6 +1235,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                             "receptorIDList" : []
                         }
             """
+            device = self.target
             exception_count = 0
             exception_message = []
             try:
@@ -1247,8 +1267,8 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                         log_msg = const.STR_LIST_RES_NOT_REL + res_not_released
                         device._read_activity_message = log_msg
                         self.logger.info(log_msg)
-                        release_success = False
-                        message = json.dumps(argout)
+                        #release_success = False
+                        message = device._read_activity_message
                         self.logger.info(message)
                         return (ResultCode.FAILED, message)
                 else:
@@ -1292,7 +1312,11 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             # return json.dumps(argout)
             # PROTECTED REGION END #    //  CentralNode.ReleaseResource
 
-    @command(dtype_in='str', dtype_out='str', )
+    @command(
+        dtype_in='str',
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
     @DebugIt()
     def ReleaseResources(self, argin):
         # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
@@ -1304,23 +1328,23 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         :return: None
         """
         handler = self.get_command_object("ReleaseResources")
-        (result_code, message) = handler()
+
+        (result_code, message) = handler(argin)
         return [[result_code], [message]]
-        # PROTECTED REGION END #    //  CentralNode.ReleaseResource
+        # PROTECTED REGION END # // CentralNode.ReleaseResource
 
     def is_ReleaseResources_allowed(self):
         """
         Whether this command is allowed to be run in current device
         state
         :return: True if this command is allowed to be run in
-            current device state
+        current device state
         :rtype: boolean
         :raises: DevFailed if this command is not allowed to be run
-            in current device state
+        in current device state
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
-
 
 # ----------
 # Run server

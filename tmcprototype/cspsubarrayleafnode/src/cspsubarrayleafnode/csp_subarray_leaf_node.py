@@ -988,7 +988,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if not self.state_model.dev_state in [
+            if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("AssignResources() is not allowed in current state",
@@ -1031,7 +1031,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 #Parse receptorIDList from JSON string.
-                jsonArgument = json.loads(argin)
+                jsonArgument = json.loads(argin[0])
                 device.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
                 #convert receptorIDList from list of string to list of int
                 for i in range(0, len(device.receptorIDList_str)):
@@ -1078,7 +1078,33 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
 
+    @command(
+        dtype_in=('str',),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def AssignResources(self, argin):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.AssignResources) ENABLED START #
+        """ Invokes AssignResources command on cspsubarrayleafnode"""
+        handler = self.get_command_object("AssignResources")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
+    def is_AssignResources_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("AssignResources")
+        return handler.check_allowed()
+
+        # PROTECTED REGION END # // CspSubarrayLeafNode.AssignResources
 
     # @command(
     # )
