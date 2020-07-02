@@ -621,6 +621,8 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
     @command(
         dtype_in=('str',),
         doc_in="List of Receptors to be stowed",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def StowAntennas(self, argin):
@@ -731,6 +733,8 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def StandByTelescope(self):
@@ -776,7 +780,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if not self.state_model.dev_state in [
+            if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango_raise(
@@ -840,7 +844,10 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             return (ResultCode.OK, const.STR_STARTUP_CMD_ISSUED)
 
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
+
     @DebugIt()
     def StartUpTelescope(self):
         # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
@@ -1102,11 +1109,9 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
         "The individual string should contain dish numbers in string format with "
         "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-        dtype_out='str',
-        doc_out="The string in JSON format. The JSON contains following values:\ndish:"
-        " JSON object consisting receptors allocated successfully: DevVarStringArray."
-        " The individual string should contain dish numbers in string format with "
-        "preceding zeroes upto 3 digits. E.g. 0001, 0002", )
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
     @DebugIt()
     def AssignResources(self, argin):
         """
