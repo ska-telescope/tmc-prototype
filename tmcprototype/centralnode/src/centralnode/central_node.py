@@ -1243,7 +1243,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                         log_msg = const.STR_LIST_RES_NOT_REL + res_not_released
                         device._read_activity_message = log_msg
                         self.logger.info(log_msg)
-                        release_success = False
+                        #release_success = False
                         message = device._read_activity_message
                         self.logger.info(message)
                         return (ResultCode.FAILED, message)

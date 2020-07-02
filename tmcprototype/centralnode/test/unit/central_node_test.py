@@ -207,25 +207,25 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
             proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
 
 
-def test_stow_antennas_should_raise_devfailed_exception():
-    # arrange:
-    dish_device_ids = [str(i).zfill(4) for i in range(1,4)]
-    fqdn_prefix = "ska_mid/tm_leaf_node/d"
-    initial_dut_properties = {
-        'DishLeafNodePrefix': fqdn_prefix,
-        'NumDishes': len(dish_device_ids)
-    }
-
-    proxies_to_mock = {fqdn_prefix + device_id: Mock() for device_id in dish_device_ids}
-    # mock command_inout method to throw devfailed exception
-    for proxy_mock in proxies_to_mock.values():
-        proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    # act:
-    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StowAntennas(dish_device_ids)
-    # assert:
-        assert const.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
+# def test_stow_antennas_should_raise_devfailed_exception():
+#     # arrange:
+#     dish_device_ids = [str(i).zfill(4) for i in range(1,4)]
+#     fqdn_prefix = "ska_mid/tm_leaf_node/d"
+#     initial_dut_properties = {
+#         'DishLeafNodePrefix': fqdn_prefix,
+#         'NumDishes': len(dish_device_ids)
+#     }
+#
+#     proxies_to_mock = {fqdn_prefix + device_id: Mock() for device_id in dish_device_ids}
+#     # mock command_inout method to throw devfailed exception
+#     for proxy_mock in proxies_to_mock.values():
+#         proxy_mock.command_inout.side_effect = raise_devfailed_exception
+#     # act:
+#     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
+#         with pytest.raises(tango.DevFailed):
+#             tango_context.device.StowAntennas(dish_device_ids)
+#     # assert:
+#         assert const.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
 
 
 def test_stow_antennas_invalid_value():
