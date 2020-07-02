@@ -216,10 +216,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "AssignResources",
             self.AssignResourcesCommand(self, self.state_model, self.logger)
         )
-        self.register_command_object(
-            "ReleaseAllResources",
-            self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
-        )
+        # self.register_command_object(
+        #     "ReleaseAllResources",
+        #     self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
+        # )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -610,6 +610,38 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         #
         #     return ""
         #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
+
+    @command(
+        dtype_in=('str',),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def AssignResources(self, argin):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
+        """
+        Invoke AssignResource on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("AssignResources")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.AssignResources
+
+    # def is_AssignResources_allowed(self):
+    #     """
+    #     Whether this command is allowed to be run in current device
+    #     state
+    #     :return: True if this command is allowed to be run in
+    #     current device state
+    #     :rtype: boolean
+    #     :raises: DevFailed if this command is not allowed to be run
+    #     in current device state
+    #     """
+    #
+    #     handler = self.get_command_object("AssignResources")
+    #     return handler.check_allowed()
 
     # @command(
     #     dtype_in='str',
