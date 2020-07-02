@@ -81,27 +81,23 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
 
     def AssignResources_ended(self, event):
-        """ Checks whether the command has been successfully invoked on SDP Subarray.
+        """ This is the callback method of AssignResources command of the SDP Subarray.
+        It checks whether the AssignResources command on SDP subarray is successful.
 
           :param argin:
             event: response from SDP Subarray for the invoked assign resource command.
 
           :return: None.
         """
-        exception_count = 0
-        exception_message = []
-        self.logger.debug(str(event.errors))
         try:
             if event.err:
-                self.logger.debug(str(event.errors))
                 log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self._read_activity_message = log
                 self.logger.error(log)
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
-                self.logger.info(log)
-
+                self.logger.debug(log)
         except tango.DevFailed as df:
             self.logger.exception(df)
             tango.Except.re_throw_exception(df,
@@ -323,7 +319,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         dtype_in='str',
         dtype_out='str',
     )
-    @DebugIt()
+    @DebugIt(show_args=True)
     def AssignResources(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
         """
@@ -381,36 +377,27 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         exception_count = 0
         try:
             self.validate_obs_state()
-        except InvalidObsStateError as error:
-            self.logger.exception(error)
-            tango.Except.throw_exception("obstate is not in idle state","SDP subarray node raises exception.",
-                                         "SDP.AssignResources",tango.ErrSeverity.ERR)
 
-
-        try:
             # Call SDP Subarray Command asynchronously
-            log_msg = "Input JSON for SDP Subarray Leaf Node AssignResource command is: " + argin
-            self.logger.debug(log_msg)
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
                                                                           argin, self.AssignResources_ended)
 
             # Update the status of command execution status in activity message
             self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception("obstate is not in idle state",str(error),
+                                         "SDP.AssignResources",tango.ErrSeverity.ERR)
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON + str(value_error)
             self.logger.error(log_msg)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
-            exception_count += 1
-
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-
-        # throw exception:
-        if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         return ""
