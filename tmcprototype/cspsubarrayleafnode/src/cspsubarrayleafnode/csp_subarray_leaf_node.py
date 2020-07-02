@@ -37,7 +37,7 @@ from . import const
 __all__ = ["CspSubarrayLeafNode", "main"]
 
 # pylint: disable=protected-access,unused-argument,unused-variable
-class CspSubarrayLeafNode(SKASubarray):
+class CspSubarrayLeafNode(SKABaseDevice):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
     """
@@ -343,7 +343,7 @@ class CspSubarrayLeafNode(SKASubarray):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
-    class InitCommand(SKASubarray.InitCommand):
+    class InitCommand(SKABaseDevice.InitCommand):
         """
         A class for the CspSubarrayLeafNode's init_device() "command".
         """
@@ -589,8 +589,8 @@ class CspSubarrayLeafNode(SKASubarray):
                 device.fsp_ids_object = argin_json["fsp"]
                 device.update_config_params()
                 device.pointing_params = argin_json["pointing"]
-                device.target_Ra = self.pointing_params["target"]["RA"]
-                device.target_Dec = self.pointing_params["target"]["dec"]
+                device.target_Ra = device.pointing_params["target"]["RA"]
+                device.target_Dec = device.pointing_params["target"]["dec"]
 
                 # Create target object
                 device.target = katpoint.Target('radec , ' + str(self.target_Ra) + ", " + str(self.target_Dec))
@@ -971,11 +971,33 @@ class CspSubarrayLeafNode(SKASubarray):
     #
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
 
-    class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+    class AssignResourcesCommand(ResponseCommand):
         # PROTECTED REGION ID(CspSubarrayLeafNode.GoToIdle) ENABLED START #
         """
         A class for CspSubarrayLeafNode's AssignResources command.
         """
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if not self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("AssignResources() is not allowed in current state",
+                                             "AssignResources() is not allowed in current state",
+                                             "cspsubarrayleafnode.AssignResources()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self,argin):
             """
             It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
@@ -1139,25 +1161,25 @@ class CspSubarrayLeafNode(SKASubarray):
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
 
-    class OnCommand(SKASubarray.OnCommand):
-        """
-        A class for the cspsubarrayleafnode's On() command.
-        """
-
-        def do(self):
-            """
-            Stateless hook for On() command functionality.
-
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
-            :rtype: (ResultCode, str)
-            """
-            device = self.target
-            print("On command device object:", device)
-            message = "On command completed OK"
-            self.logger.info(message)
-            return (ResultCode.OK, message)
+    # class OnCommand(SKASubarray.OnCommand):
+    #     """
+    #     A class for the cspsubarrayleafnode's On() command.
+    #     """
+    #
+    #     def do(self):
+    #         """
+    #         Stateless hook for On() command functionality.
+    #
+    #         :return: A tuple containing a return code and a string
+    #             message indicating status. The message is for
+    #             information purpose only.
+    #         :rtype: (ResultCode, str)
+    #         """
+    #         device = self.target
+    #         print("On command device object:", device)
+    #         message = "On command completed OK"
+    #         self.logger.info(message)
+    #         return (ResultCode.OK, message)
 
 
 # pylint: enable=protected-access,unused-argument,unused-variable
