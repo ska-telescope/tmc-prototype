@@ -176,15 +176,15 @@ def test_health_state():
 
 
 # Need to check the failure
-# def test_activity_message_attribute_captures_the_last_received_command():
-#     # act & assert:
-#     with fake_tango_system(CentralNode)as tango_context:
-#         dut = tango_context.device
-#         dut.StartUpTelescope()
-#         assert_activity_message(dut, STR_STARTUP_CMD_ISSUED)
-#
-#         dut.StandByTelescope()
-#         assert_activity_message(dut, STR_STANDBY_CMD_ISSUED)
+def test_activity_message_attribute_captures_the_last_received_command():
+    # act & assert:
+    with fake_tango_system(CentralNode)as tango_context:
+        dut = tango_context.device
+        dut.StartUpTelescope()
+        assert_activity_message(dut, STR_STARTUP_CMD_ISSUED)
+
+        dut.StandByTelescope()
+        assert_activity_message(dut, STR_STANDBY_CMD_ISSUED)
 
 
 # Test cases for commands
@@ -431,7 +431,6 @@ def test_standby():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        print("-----------before standby")
         tango_context.device.StandByTelescope()
 
         # assert:
@@ -521,7 +520,6 @@ def test_startup():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        print("***** before startup tango_context.device.State() %s" % tango_context.device.State())
         tango_context.device.StartUpTelescope()
 
 
@@ -531,7 +529,6 @@ def test_startup():
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
         assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
-        print("--------------assert_activity_message ", assert_activity_message)
 
 
 def test_startup_should_raise_devfailed_exception():
