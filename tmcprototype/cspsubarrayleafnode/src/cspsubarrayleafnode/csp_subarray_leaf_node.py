@@ -348,7 +348,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # create CspSubarray Proxy
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             except Exception:
-                self.logger.debug(const.ERR_IN_CREATE_PROXY_CSPSA)
+                self.logger.exception(const.ERR_IN_CREATE_PROXY_CSPSA)
 
             # create CspSubarray Proxy
             # self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
@@ -497,7 +497,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-            self.logger.error(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -715,13 +715,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-            self.logger.error(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -734,7 +734,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         # throw exception:
         if exception_count:
-            self.logger.info("Exception in AssignResource: %s", exception_message)
+            self.logger.exception("Exception in AssignResource: %s", exception_message)
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
@@ -804,7 +804,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         if self.CspSubarrayProxy.obsState == ObsState.IDLE:
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
-            self.logger.exception("CSP Subarray is not in IDLE obsState")
+            self.logger.error("CSP Subarray is not in IDLE obsState")
             self._read_activity_message = "Error in device obsState"
             raise InvalidObsStateError("CSP Subarray is not in IDLE obsState")
 
