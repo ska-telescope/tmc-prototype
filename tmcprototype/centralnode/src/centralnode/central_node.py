@@ -766,25 +766,25 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         """
         A class for CentralNode's StartupCommand command.
         """
-        def check_allowed(self):
-
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango_raise(
-                    "StartUpTelescope() is not allowed in current state"
-                )
-            return True
+        # def check_allowed(self):
+        #
+        #     """
+        #     Whether this command is allowed to be run in current device
+        #     state
+        #
+        #     :return: True if this command is allowed to be run in
+        #         current device state
+        #     :rtype: boolean
+        #     :raises: DevFailed if this command is not allowed to be run
+        #         in current device state
+        #     """
+        #     if self.state_model.dev_state in [
+        #         DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+        #     ]:
+        #         tango_raise(
+        #             "StartUpTelescope() is not allowed in current state"
+        #         )
+        #     return True
 
         def do(self):
             """ Set the Elements into STARTUP state (i.e. On State). """
@@ -839,12 +839,14 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                 # TODO: for future-  throw exception:
                 # if exception_count > 0:
                 #     self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
-            return (ResultCode.OK, const.STR_CMD_STARTUP_SA_DEV)
+            return (ResultCode.OK, const.STR_STARTUP_CMD_ISSUED)
 
     @command(
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
+
+    @DebugIt()
     def StartUpTelescope(self):
         # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
         """
@@ -875,6 +877,23 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
 
 #============================================================================
 
+
+    # def is_StartUpTelescope_allowed(self):
+    #     """
+    #     Whether this command is allowed to be run in current device
+    #     state
+    #     :return: True if this command is allowed to be run in
+    #         current device state
+    #     :rtype: boolean
+    #     :raises: DevFailed if this command is not allowed to be run
+    #         in current device state
+    #     """
+    #     handler = self.get_command_object("StartUpTelescope")
+    #     return handler.check_allowed()
+    # PROTECTED REGION END #    //  CentralNode.startup_telescope
+
+#============================================================================
+
     class AssignResourcesCommand(ResponseCommand):
         """
            A class for CentralNode's AssignResources() command.
@@ -891,6 +910,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
+
             if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
@@ -1134,7 +1154,10 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         """
         handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
-#=========================================================================
+
+
+    #     # PROTECTED REGION END #    //  CentralNode.AssignResources
+#=================================================================================
 
     class ReleaseResourcesCommand(ResponseCommand):
         """
@@ -1154,6 +1177,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
+
             if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
@@ -1304,6 +1328,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         :return: None
         """
         handler = self.get_command_object("ReleaseResources")
+
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
         # PROTECTED REGION END # // CentralNode.ReleaseResource
@@ -1320,6 +1345,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
+
 # ----------
 # Run server
 # ----------

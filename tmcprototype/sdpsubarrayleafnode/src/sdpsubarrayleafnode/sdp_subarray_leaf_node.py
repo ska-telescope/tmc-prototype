@@ -19,7 +19,7 @@ from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice, SKASubarray
 from ska.base.control_model import HealthState, ObsState
-from ska.base.commands import ResultCode
+from ska.base.commands import ResultCode,ActionCommand,ResponseCommand
 # Additional imports
 import json
 from . import const
@@ -29,7 +29,7 @@ from . import const
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 # pylint: disable=unused-argument,unused-variable
-class SdpSubarrayLeafNode(SKASubarray):
+class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
     """
@@ -170,39 +170,39 @@ class SdpSubarrayLeafNode(SKASubarray):
     #
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
 
-    class InitCommand(SKASubarray.InitCommand):
+    class InitCommand(SKABaseDevice.InitCommand):
         """ Initializes the attributes and properties of the Central Node. """
         # PROTECTED REGION ID(SdpSubarrayLeafNode.init_device) ENABLED START #
         def do(self):
 
             super().do()
             device = self.target
-            try:
-                # Initialise device state
-                device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
+            # try:
+            # Initialise device state
+            device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
 
-                # Initialise attributes
-                device._receive_addresses = ""
-                device._sdp_subarray_health_state = HealthState.OK
-                device._read_activity_message = ""
-                device._active_processing_block = ""
-                # Initialise Device status
-                device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
-                log_msg = const.STR_SDPSALN_INIT_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-                return (ResultCode.OK,const.STR_SDPSALN_INIT_SUCCESS)
-                # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
-                self._sdp_subarray_proxy = DeviceProxy(self.SdpSubarrayFQDN)
+            # Initialise attributes
+            device._receive_addresses = ""
+            device._sdp_subarray_health_state = HealthState.OK
+            device._read_activity_message = ""
+            device._active_processing_block = ""
+            # Initialise Device status
+            device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
+            log_msg = const.STR_SDPSALN_INIT_SUCCESS
+            self.logger.info(log_msg)
+            device._read_activity_message = log_msg
 
+            # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
+            device._sdp_subarray_proxy = DeviceProxy(device.SdpSubarrayFQDN)
+            return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
 
-            except DevFailed as dev_failed:
-                self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
-                device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
-                self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
-                device._read_activity_message = const.STR_ERR_MSG + str(dev_failed)
-                self.logger.error(const.STR_ERR_MSG, dev_failed)
-                return(ResultCode.FAILED,ERR_INIT_PROP_ATTR_CN)
+            # except DevFailed as dev_failed:
+            #     self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
+            #     device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
+            #     self.logger.error(const.ERR_INIT_PROP_ATTR_CN)
+            #     device._read_activity_message = const.STR_ERR_MSG + str(dev_failed)
+            #     self.logger.error(const.STR_ERR_MSG, dev_failed)
+            #     return(ResultCode.FAILED,const.ERR_INIT_PROP_ATTR_CN)
 
                 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
 
@@ -216,10 +216,10 @@ class SdpSubarrayLeafNode(SKASubarray):
             "AssignResources",
             self.AssignResourcesCommand(self, self.state_model, self.logger)
         )
-        self.register_command_object(
-            "ReleaseAllResources",
-            self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
-        )
+        # self.register_command_object(
+        #     "ReleaseAllResources",
+        #     self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
+        # )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -274,49 +274,121 @@ class SdpSubarrayLeafNode(SKASubarray):
     # --------
     # Commands
     # --------
-    @command(
-    )
-    @DebugIt()
-    def ReleaseAllResources(self):
+    # @command(
+    # )
+    # @DebugIt()
+    # def ReleaseAllResources(self):
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
+    #     """
+    #     Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
+    #     receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+    #     is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
+    #     resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
+    #     on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
+    #     This selective release of the resources when releaseALL is False, will be implemented in the
+    #     later stages of the prototype.
+    #
+    #     :param argin: None.
+    #
+    #     :return: None.
+    #     """
+    #
+    #     exception_message = []
+    #     exception_count = 0
+    #
+    #     try:
+    #         # Call SDP Subarray Command asynchronously
+    #         self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
+    #                                                                       self.cmd_ended_cb)
+    #
+    #         # Update the status of command execution status in activity message
+    #         self._read_activity_message = const.STR_REL_RESOURCES
+    #         self.logger.info(const.STR_REL_RESOURCES)
+    #     except DevFailed as dev_failed:
+    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+    #                                         exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                         exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+    #
+    #     # throw exception:
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+    #
+    #     return ""
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
+
+    class ReleaseAllResources(ResponseCommand):
+
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
         """
         Releases all the resources of given Subarray. It accepts the subarray id, releaseALL flag and
-        receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-        is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
-        resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
-        on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
-        This selective release of the resources when releaseALL is False, will be implemented in the
-        later stages of the prototype.
-
-        :param argin: None.
-
-        :return: None.
+        #     receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+        #     is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
+        #     resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
+        #     on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
+        #     This selective release of the resources when releaseALL is False, will be implemented in the
+        #     later stages of the prototype.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
 
-        exception_message = []
-        exception_count = 0
+            :return: True if this command is allowed to be run in
+            current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+            in current device state
+            """
 
-        try:
-            # Call SDP Subarray Command asynchronously
-            self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                          self.cmd_ended_cb)
+            if not self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
+                                             "ReleaseAllResources() is not allowed in current state",
+                                             "sdpsubarrayleafnode.ReleaseAllResources()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def do(self, argin):
+            """
+            :param argin: None.
+
+            :return: None.
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+
+            try:
+                # Call SDP Subarray Command asynchronously
+                device.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
+                                                                              device.cmd_ended_cb)
 
             # Update the status of command execution status in activity message
-            self._read_activity_message = const.STR_REL_RESOURCES
-            self.logger.info(const.STR_REL_RESOURCES)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                            exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+                device._read_activity_message = const.STR_REL_RESOURCES
+                self.logger.info(const.STR_REL_RESOURCES)
+                return(ResultCode.STARTED,const.STR_REL_RESOURCES)
 
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                    exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+                return(ResultCode.FAILED,const.ERR_RELEASE_RESOURCES)
 
-        return ""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                    exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
+                return (ResultCode.FAILED, const.ERR_RELEASE_RESOURCES)
+
+            #     # throw exception:
+            #     if exception_count > 0:
+            #         self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+            #
+            #     return ""
+            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
+
 
     @command(
         dtype_in='str',
@@ -420,7 +492,7 @@ class SdpSubarrayLeafNode(SKASubarray):
     #     return ""
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
-    class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+    class AssignResourcesCommand(ResponseCommand):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
         """
@@ -428,6 +500,29 @@ class SdpSubarrayLeafNode(SKASubarray):
         This command is provided as a noop placeholder from SDP subarray.
         Eventually this will likely take a JSON string specifying the resource request.
         """
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+            current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+            in current device state
+            """
+
+            if not self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("AssignResources() is not allowed in current state",
+                                             "AssignResources() is not allowed in current state",
+                                             "sdpsubarrayleafnode.AssignResources()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
 
         def do(self, argin):
             """
@@ -515,6 +610,38 @@ class SdpSubarrayLeafNode(SKASubarray):
         #
         #     return ""
         #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
+
+    @command(
+        dtype_in=('str',),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def AssignResources(self, argin):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
+        """
+        Invoke AssignResource on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("AssignResources")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.AssignResources
+
+    # def is_AssignResources_allowed(self):
+    #     """
+    #     Whether this command is allowed to be run in current device
+    #     state
+    #     :return: True if this command is allowed to be run in
+    #     current device state
+    #     :rtype: boolean
+    #     :raises: DevFailed if this command is not allowed to be run
+    #     in current device state
+    #     """
+    #
+    #     handler = self.get_command_object("AssignResources")
+    #     return handler.check_allowed()
 
     # @command(
     #     dtype_in='str',
@@ -901,25 +1028,25 @@ class SdpSubarrayLeafNode(SKASubarray):
 
 
 
-    class OnCommand(SKASubarray.OnCommand):
-        """
-        A class for the cspsubarrayleafnode's On() command.
-        """
-
-        def do(self):
-            """
-            Stateless hook for On() command functionality.
-
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
-            :rtype: (ResultCode, str)
-            """
-            device = self.target
-            print("On command device object:", device)
-            message = "On command completed OK"
-            self.logger.info(message)
-            return (ResultCode.OK, message)
+    # class OnCommand(SKASubarray.OnCommand):
+    #     """
+    #     A class for the cspsubarrayleafnode's On() command.
+    #     """
+    #
+    #     def do(self):
+    #         """
+    #         Stateless hook for On() command functionality.
+    #
+    #         :return: A tuple containing a return code and a string
+    #             message indicating status. The message is for
+    #             information purpose only.
+    #         :rtype: (ResultCode, str)
+    #         """
+    #         device = self.target
+    #         print("On command device object:", device)
+    #         message = "On command completed OK"
+    #         self.logger.info(message)
+    #         return (ResultCode.OK, message)
 
 
 # pylint: enable=unused-argument,unused-variable
