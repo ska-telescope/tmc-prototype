@@ -262,7 +262,6 @@ def test_assign_resources():
                            proxies_to_mock=proxies_to_mock) as tango_context:
 
         device_proxy=tango_context.device
-        print("State of the device : ",tango_context.device.State() )
         device_proxy.AssignResources(assign_input_str)
         # assert:
         jsonArgument = json.loads(assign_input_str)
