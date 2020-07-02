@@ -360,7 +360,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                self.logger.debug(const.STR_INIT_SUCCESS)
 
            except DevFailed as dev_failed:
-               [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed, exception_message,
+               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
                                                                                         exception_count, const.ERR_INIT_PROP_ATTR_CN)
                device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
                message = const.ERR_INIT_PROP_ATTR_CN
@@ -526,13 +526,13 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         super().init_command_objects()
         self.register_command_object(
             "StowAntennas",
-            self.StowAntennas(self, self.state_model, self.logger))
+            self.StowAntennasCommand(self, self.state_model, self.logger))
         self.register_command_object(
             "StartUpTelescope",
-            self.StartUpTelescope(self, self.state_model, self.logger))
+            self.StartUpTelescopeCommand(self, self.state_model, self.logger))
         self.register_command_object(
             "StandByTelescope",
-            self.StandByTelescope(self, self.state_model, self.logger))
+            self.StandByTelescopeCommand(self, self.state_model, self.logger))
         self.register_command_object(
             "AssignResources",
             self.AssignResourcesCommand(self, self.state_model, self.logger))
@@ -557,7 +557,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if not self.state_model.dev_state in [
+            if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango_raise(
@@ -621,8 +621,9 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
     @command(
         dtype_in=('str',),
         doc_in="List of Receptors to be stowed",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
     def StowAntennas(self, argin):
         # PROTECTED REGION ID(CentralNode.StowAntennas) ENABLED START #
         """
@@ -731,8 +732,9 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
     def StandByTelescope(self):
         """
         Puts the telescope in low-power state .
@@ -742,7 +744,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         :return: None
         """
         handler = self.get_command_object("StandByTelescope")
-        (result_code, message) = handler(argin)
+        (result_code, message) = handler()
         return [[result_code], [message]]
 
     def is_StandByTelescope_allowed(self):
@@ -784,7 +786,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                 )
             return True
 
-        def do(self, argin):
+        def do(self):
             """ Set the Elements into STARTUP state (i.e. On State). """
             device = self.target
             exception_count = 0
@@ -840,8 +842,9 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             return (ResultCode.OK, const.STR_CMD_STARTUP_SA_DEV)
 
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
     def StartUpTelescope(self):
         # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
         """
@@ -853,7 +856,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         :return: None
         """
         handler = self.get_command_object("StartUpTelescope")
-        (result_code, message) = handler(argin)
+        (result_code, message) = handler()
         return [[result_code], [message]]
 
     def is_StartUpTelescope_allowed(self):
@@ -871,201 +874,31 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
     # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
 #============================================================================
-    # @command(
-    #     dtype_in='str',
-    #     doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-    #     "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
-    #     "The individual string should contain dish numbers in string format with "
-    #     "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-    #     dtype_out='str',
-    #     doc_out="The string in JSON format. The JSON contains following values:\ndish:"
-    #     " JSON object consisting receptors allocated successfully: DevVarStringArray."
-    #     " The individual string should contain dish numbers in string format with "
-    #     "preceding zeroes upto 3 digits. E.g. 0001, 0002", )
-    # @DebugIt()
-    # def AssignResources(self, argin):
-    #     # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
-    #     """
-    #     Assigns resources to given subarray. It accepts the subarray id,
-    #     receptor id list and SDP block in JSON string format. Upon successful execution, the
-    #     'receptorIDList' attribute of the given subarray is populated with the given
-    #     receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throw
-    #     error message regarding the prior existence of resource.
-    #
-    #     :param argin: The string in JSON format. The JSON contains following values:
-    #
-    #
-    #         subarrayID:
-    #             DevShort. Mandatory.
-    #
-    #         dish:
-    #             Mandatory JSON object consisting of
-    #
-    #             receptorIDList:
-    #                 DevVarStringArray
-    #                 The individual string should contain dish numbers in string format
-    #                 with preceding zeroes upto 3 digits. E.g. 0001, 0002.
-    #
-    #         sdp:
-    #             Mandatory JSON object consisting of
-    #
-    #             id:
-    #                 DevString
-    #                 The SBI id.
-    #             max_length:
-    #                 DevDouble
-    #                 Maximum length of the SBI in seconds.
-    #             scan_types:
-    #                 array of the blocks each consisting following parameters
-    #                 id:
-    #                     DevString
-    #                     The scan id.
-    #                 coordinate_system:
-    #                     DevString
-    #                 ra:
-    #                     DevString
-    #                 Dec:
-    #                     DevString
-    #
-    #             processing_blocks:
-    #                 array of the blocks each consisting following parameters
-    #                 id:
-    #                     DevString
-    #                     The Processing Block id.
-    #                 workflow:
-    #                     type:
-    #                         DevString
-    #                     id:
-    #                         DevString
-    #                     version:
-    #                         DevString
-    #                 parameters:
-    #                     {}
-    #
-    #         Example:
-    #             {"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",
-    #             "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771"
-    #             ,"dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":
-    #             0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,
-    #             "stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
-    #             "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":
-    #             [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1]
-    #             ,[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
-    #             "link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
-    #             "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":
-    #             "pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
-    #             "parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical",
-    #             "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":
-    #             ["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
-    #             "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
-    #             ["calibration"]}]}]}}
-    #
-    #     Note: From Jive, enter above input string without any space.
-    #
-    #     :return: The string in JSON format. The JSON contains following values:
-    #
-    #         dish:
-    #             Mandatory JSON object consisting of
-    #
-    #             receptorIDList_success:
-    #                 DevVarStringArray
-    #                 Contains ids of the receptors which are successfully allocated. Empty on unsuccessful
-    #                 allocation.
-    #
-    #
-    #         Example:
-    #             {
-    #             "dish": {
-    #             "receptorIDList_success": ["0001", "0002"]
-    #             }
-    #             }
-    #         Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
-    #     """
-    #     receptorIDList = []
-    #     exception_message = []
-    #     exception_count = 0
-    #     argout = []
-    #     try:
-    #         # serialize the json
-    #         jsonArgument = json.loads(argin)
-    #         # Create subarray proxy
-    #         subarrayID = int(jsonArgument['subarrayID'])
-    #         subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-    #         # Check for the duplicate receptor allocation
-    #         duplicate_allocation_count = 0
-    #         duplicate_allocation_dish_ids = []
-    #         input_receptor_list = jsonArgument["dish"]["receptorIDList"]
-    #         len_input_receptor_list= len(input_receptor_list)
-    #         for dish in range(0, len_input_receptor_list):
-    #             dish_ID = "dish" + input_receptor_list[dish]
-    #             if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
-    #                 duplicate_allocation_dish_ids.append(dish_ID)
-    #                 duplicate_allocation_count = duplicate_allocation_count + 1
-    #         if duplicate_allocation_count == 0:
-    #             # Remove Subarray Id key from input json argument and send the json with
-    #             # receptor Id list and SDP block to TMC Subarray Node
-    #             input_json_subarray = jsonArgument.copy()
-    #             del input_json_subarray["subarrayID"]
-    #             input_to_sa = json.dumps(input_json_subarray)
-    #             self._resources_allocated = subarrayProxy.command_inout(
-    #                 const.CMD_ASSIGN_RESOURCES, input_to_sa)
-    #             # Update self._subarray_allocation variable to update subarray allocation
-    #             # for the related dishes.
-    #             # Also append the allocated dish to out argument.
-    #             for dish in range(0, len(self._resources_allocated)):
-    #                 dish_ID = "dish" + (self._resources_allocated[dish])
-    #                 self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-    #                 receptorIDList.append(self._resources_allocated[dish])
-    #             self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-    #             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-    #             self.logger.info(receptorIDList)
-    #             argout = {
-    #                 "dish": {
-    #                     "receptorIDList_success": receptorIDList
-    #                 }
-    #             }
-    #         else:
-    #             log_msg=const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
-    #             self._read_activity_message = log_msg
-    #             self.logger.info(log_msg)
-    #             argout = {
-    #                 "dish": {
-    #                     "receptorIDList_success": receptorIDList
-    #                 }
-    #             }
-    #     except ValueError as value_error:
-    #         self.logger.error(const.ERR_INVALID_JSON)
-    #         self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-    #         exception_message.append(self._read_activity_message)
-    #         exception_count += 1
-    #
-    #     except KeyError as key_error:
-    #         self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-    #         self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-    #         exception_message.append(self._read_activity_message)
-    #         exception_count += 1
-    #
-    #     except DevFailed as dev_failed:
-    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-    #                                             exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
-    #
-    #     except Exception as except_occurred:
-    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-    #                                         exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-    #
-    #     self.logger.info(argout)
-    #     #throw exception:
-    #     if exception_count > 0:
-    #         self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-    #         argout = '{"dish": {"receptorIDList_success": []}}'
-    #
-    #     return json.dumps(argout)
-    #     # PROTECTED REGION END #    //  CentralNode.AssignResources
 
-    class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+    class AssignResourcesCommand(ResponseCommand):
         """
            A class for CentralNode's AssignResources() command.
         """
+        def check_allowed(self):
+
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango_raise(
+                    "AssignResources() is not allowed in current state"
+                )
+            return True
+
         def do(self, argin):
             """
                Assigns resources to given subarray. It accepts the subarray id,
@@ -1267,118 +1100,67 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
 
             # PROTECTED REGION END #    //  CentralNode.AssignResources
 
-    # @command(dtype_in='str', dtype_out='str', )
-    # @DebugIt()
-    # def ReleaseResources(self, argin):
-    #     # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
-    #
-    #     """
-    #     Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
-    #     receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-    #     is invoked on the respective SubarrayNode. In this case, the receptorIDList tag is empty as all
-    #     the resources of the Subarray are to be released.
-    #     When releaseALL is False, ReleaseResources will be invoked on the SubarrayNode and the resources provided
-    #     in receptorIDList tag, are to be released from the Subarray. The selective release of the resources when
-    #     releaseALL Flag is False is not yet supported.
-    #
-    #     :param argin: The string in JSON format. The JSON contains following values:
-    #
-    #         subarrayID:
-    #             DevShort. Mandatory.
-    #
-    #         releaseALL:
-    #             Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
-    #
-    #         receptorIDList:
-    #             DevVarStringArray. Empty when releaseALL tag is True.
-    #
-    #         Example:
-    #             {
-    #                 "subarrayID": 1,
-    #                 "releaseALL": true,
-    #                 "receptorIDList": []
-    #             }
-    #
-    #
-    #         Note: From Jive, enter input as:
-    #             {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
-    #
-    #         :return: argout: The string in JSON format. The JSON contains following values:
-    #
-    #             releaseALL:
-    #                 Boolean(True or False). If True, all the resources are successfully released from the
-    #                 Subarray.
-    #
-    #             receptorIDList:
-    #                 DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
-    #                 resources (device names) that are noe released from the subarray.
-    #
-    #             Example:
-    #                 argout =
-    #                 {
-    #                     "ReleaseAll" : True,
-    #                     "receptorIDList" : []
-    #                 }
-    #     """
-    #     exception_count = 0
-    #     exception_message =[]
-    #     try:
-    #         release_success = False
-    #         res_not_released = []
-    #         jsonArgument = json.loads(argin)
-    #         subarrayID = jsonArgument['subarrayID']
-    #         subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-    #         subarray_name = "SA" + str(subarrayID)
-    #         if jsonArgument['releaseALL'] == True:
-    #             res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
-    #             log_msg=const.STR_REL_RESOURCES
-    #             self._read_activity_message = log_msg
-    #             self.logger.info(log_msg)
-    #             if not res_not_released:
-    #                 release_success = True
-    #                 for Dish_ID, Dish_Status in self._subarray_allocation.items():
-    #                     if Dish_Status == subarray_name:
-    #                         self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
-    #             else:
-    #                 log_msg=const.STR_LIST_RES_NOT_REL + res_not_released
-    #                 self._read_activity_message = log_msg
-    #                 self.logger.info(log_msg)
-    #                 release_success = False
-    #         else:
-    #             self._read_activity_message = const.STR_FALSE_TAG
-    #             self.logger.info(const.STR_FALSE_TAG)
-    #     except ValueError as value_error:
-    #         self.logger.error(const.ERR_INVALID_JSON)
-    #         self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-    #         exception_message.append(self._read_activity_message)
-    #         exception_count += 1
-    #     except KeyError as key_error:
-    #         self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-    #         self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-    #         exception_message.append(self._read_activity_message)
-    #         exception_count += 1
-    #     except DevFailed as dev_failed:
-    #         [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-    #                                     exception_message, exception_count,  const.ERR_RELEASE_RESOURCES)
-    #
-    #
-    #     # throw exception:
-    #     if exception_count > 0:
-    #         self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
-    #
-    #     argout = {
-    #         "ReleaseAll" : release_success,
-    #         "receptorIDList" : res_not_released
-    #     }
-    #     return json.dumps(argout)
-    #     # PROTECTED REGION END #    //  CentralNode.ReleaseResource
+    @command(
+        dtype_in='str',
+        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
+               "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
+               "The individual string should contain dish numbers in string format with "
+               "preceding zeroes upto 3 digits. E.g. 0001, 0002",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def AssignResources(self, argin):
+        """
+        AssignResources command invokes the AssignResource command on lower level devices.
 
+        :param argin: None.
 
-    class ReleaseResourcesCommand(SKASubarray.ReleaseResourcesCommand):
+        :return: None
+        """
+        handler = self.get_command_object("AssignResources")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    def is_AssignResources_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("AssignResources")
+        return handler.check_allowed()
+#=========================================================================
+
+    class ReleaseResourcesCommand(ResponseCommand):
         """
         A class for CentralNode's ReleaseResources() command.
         """
         # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
+
+        def check_allowed(self):
+
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango_raise(
+                    "ReleaseResources() is not allowed in current state"
+                )
+            return True
 
         def do(self, argin):
 
@@ -1429,6 +1211,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                             "receptorIDList" : []
                         }
             """
+            device = self.target
             exception_count = 0
             exception_message = []
             try:
@@ -1461,7 +1244,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                         device._read_activity_message = log_msg
                         self.logger.info(log_msg)
                         release_success = False
-                        message = json.dumps(argout)
+                        message = device._read_activity_message
                         self.logger.info(message)
                         return (ResultCode.FAILED, message)
                 else:
@@ -1504,6 +1287,39 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             # }
             # return json.dumps(argout)
             # PROTECTED REGION END #    //  CentralNode.ReleaseResource
+
+    @command(
+        dtype_in='str',
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def ReleaseResources(self, argin):
+        # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
+        """
+        Release all the resources assigned to the given Subarray.
+
+        :param argin: None.
+
+        :return: None
+        """
+        handler = self.get_command_object("ReleaseResources")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+        # PROTECTED REGION END # // CentralNode.ReleaseResource
+
+    def is_ReleaseResources_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("ReleaseResources")
+        return handler.check_allowed()
 # ----------
 # Run server
 # ----------
