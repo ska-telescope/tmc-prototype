@@ -270,13 +270,12 @@ def test_assign_resources_should_raise_devfailed_for_invalid_obstate():
                 **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                             proxies_to_mock=proxies_to_mock) as tango_context:
-
         # act:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_input_str)
 
     # assert:
-        assert "SDP subarray node raises exception." in str(df)
+        assert "SDP subarray is not in idle obstate." in str(df)
 
 
 def test_release_resources_when_sdp_subarray_is_idle():
