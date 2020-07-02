@@ -363,6 +363,7 @@ class SubarrayNode(SKASubarray):
 
         return proxy_created_flag
 
+    @DebugIt(show_args=True)
     def add_receptors_in_group(self, argin):
         """
         Creates a tango group of the successfully allocated resources in the subarray.
@@ -386,8 +387,6 @@ class SubarrayNode(SKASubarray):
         allocation_success = []
         allocation_failure = []
         # Add each dish into the tango group
-        log_msg = "add_receptors_in_group::",argin
-        self.logger.debug(log_msg)
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
@@ -484,7 +483,7 @@ class SubarrayNode(SKASubarray):
             json_argument[const.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
             self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
-            self.logger.info(const.ASSIGN_RESOURCES_INV_CSP_SALN)
+            self.logger.debug(const.ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
@@ -518,7 +517,7 @@ class SubarrayNode(SKASubarray):
         try:
             str_json_arg = json.dumps(argin)
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
-            self.logger.info(const.ASSIGN_RESOURCES_INV_SDP_SALN)
+            self.logger.debug(const.ASSIGN_RESOURCES_INV_SDP_SALN)
             argout = argin
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
@@ -779,7 +778,7 @@ class SubarrayNode(SKASubarray):
         dtype_out=('str',),
         doc_out="String in JSON format consisting of Resources added to the subarray.",
     )
-    @DebugIt()
+    @DebugIt(show_args=True)
     def AssignResources(self, argin):
         """
         Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
@@ -835,50 +834,43 @@ class SubarrayNode(SKASubarray):
             self.logger.exception(error)
             tango.Except.throw_exception("Subarray is not in IDLE obsState",
                             "SubarrayNode raised InvalidObsStateError in AssignResources command",
-                                        "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
+                            "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
 
         # 1. Argument validation
         try:
             # Allocation success and failure lists
-            resource_json = json.loads(argin)
-            receptor_list = resource_json["dish"]["receptorIDList"]
-            sdp_resources = resource_json.get("sdp")
-            self._sb_id = resource_json["sdp"]["id"]
-            log_msg = "assign_resource_whole_json", resource_json
-            self.logger.debug(log_msg)
+            resources = json.loads(argin)
+            receptor_list = resources["dish"]["receptorIDList"]
+            sdp_resources = resources.get("sdp")
+            self._sb_id = resources["sdp"]["id"]
 
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
             # validation of SDP and CSP resources yet to be implemented as of now reources are not present.
-
-        except json.JSONDecodeError as jerror:
-            log_message = const.ERR_INVALID_JSON + str(jerror)
-            self.logger.error(log_message)
-            self._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-            log_msg = "assign_resource_argin",argin
-            self.logger.debug(log_msg)
-
+        except json.JSONDecodeError as json_error:
+            message = const.ERR_INVALID_JSON + str(json_error)
+            self.logger.Exception(message)
+            self._read_activity_message = message
+            tango.Except.throw_exception(const.STR_CMD_FAILED, message,
+                                         const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
         except ValueError as value_error:
-            str_log = const.ERR_SCAN_CMD +"\n" + str(value_error) + const.ERR_INVALID_DATATYPE
-            self.logger.error(str_log)
-            self.logger.error(const.ERR_INVALID_DATATYPE)
-            self._read_activity_message = const.ERR_INVALID_DATATYPE + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+            message = const.ERR_INVALID_DATATYPE + str(value_error)
+            self.logger.exception(message)
+            self._read_activity_message = message
+            tango.Except.throw_exception(const.STR_CMD_FAILED, message,
+                                         const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
-        with exception_count is 0 and ThreadPoolExecutor(3) as executor:
+        with ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
-            self.logger.info(const.STR_DISH_ALLOCATION)
+            self.logger.debug(const.STR_DISH_ALLOCATION)
             dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
 
             # 2.2. Add resources in CSP subarray
-            self.logger.info(const.STR_CSP_ALLOCATION)
+            self.logger.debug(const.STR_CSP_ALLOCATION)
             csp_allocation_status = executor.submit(self.assign_csp_resources, receptor_list)
 
             # 2.3. Add resources in SDP subarray
-            self.logger.info(const.STR_SDP_ALLOCATION)
+            self.logger.debug(const.STR_SDP_ALLOCATION)
             sdp_allocation_status = executor.submit(self.assign_sdp_resources, sdp_resources)
 
             # 2.4 wait for result
@@ -897,7 +889,7 @@ class SubarrayNode(SKASubarray):
                 dish_allocation_result.sort()
                 receptor_list.sort()
                 assert dish_allocation_result == receptor_list
-                self.logger.info("Dish group is created successfully")
+                self.logger.debug("Dish group is created successfully")
             except AssertionError as error:
                 self.logger.exception(error)
                 dish_argout_df = dish_allocation_result[0]
