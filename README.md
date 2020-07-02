@@ -42,6 +42,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Use of Alarm Handler
 * [x] Use of SKA Logger
 * [x] Source tracking
+* [x] Adopted Exception handling guidelines for AssignResources functionality
 
 ### 1.2: Functionality
 
@@ -84,8 +85,8 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * Linux/Ubuntu (18.04 LTS) 
 * Python 3.6
 * [python3-pip](https://packages.ubuntu.com/xenial/python3-pip)
-* [Tango (9.2.5a)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
-* [PyTango (9.2.4)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
+* [Tango (9.3.3-rc2)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
+* [PyTango (9.3.2)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
 * skabase (LMC Base classes for SKA): Refer Section 3.1 for installation guide
 * [Elettra Alarm Handler](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing)
 * [KATPoint](https://pypi.org/project/katpoint/)
@@ -107,6 +108,9 @@ Follow the steps specified at [this link](https://github.com/ska-telescope/lmc-b
 Alarm handler is an optional feature and can be installed if desired. Refer [this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing) document for installation guide.
 
 ### 3.3: Running tmc-prototype on local environment (non-containerised)
+Note: Running TMC prototype locally is deprecated as the setting up all the required devices
+locally is no more feasible because of intensive processing power requirements.
+
 Scripts are provided in tmcprototype folder in order to start and stop all the TANGO Devices.
 
 Navigate to the tmcprototype folder and run:
@@ -188,13 +192,7 @@ Define and configure AlarmHandler TANGO Device server as specified in the given 
 * [Device Properties](https://drive.google.com/open?id=1eOtmi1ANOm1tkgDiJMjB7dvMhY7J2IxH)
 * [Attribute Property](https://drive.google.com/open?id=1r0hrbsmt-8AwCGkeHvsYy9Nd9eUZ46CO)
 
-#### SKALogger
-Define and configure SKALogger TANGO Device server as specified in the given screenshots.
-
-* [Device Properties](https://drive.google.com/open?id=1zNe5jLZMWJmdq2iQVNAYsWJ-IhTe_t8J)
-
-
-# 4: Unit and Integration Testing
+# 4: Testing
 The hierarchy of TANGO devices are as follows:
 Central Node -> SubarrayNode -> DishLeafNode/DishMaster
                              -> CspMasterLeafNode/CspMaster
@@ -204,6 +202,15 @@ Central Node -> SubarrayNode -> DishLeafNode/DishMaster
 
 (The flow from left to right depicts the Client -> Server relationship)
 
+## 4.1 Unit Testing
+As depicted above, the higher level of TMC devices are dependent on lower level devices in normal operation. However for better testability, the unit testing is carried out by mocking the dependent devices. Due to this each of the node can be separately tested without setting up entire hierarchy.
+In order to execute the entire suit of test cases in the repository, a command in makefile is implemented. The command to run the unit tests is:
+    `make unit-test`
+
+## 4.2 Integration Testing
+Note: This section is outdated and the integration testing procedure is slated for further updates. Thus this section will be updated according to new procedure soon.
+
+It is also possible to set up the the entire hierarchy of TMC nodes and other dependent devices. 
 One needs to have DishMaster/CspMaster/CspSubarray/SdpMaster/SdpSubarray running prior to executing the test cases of DishLeafNode/CspMasterLeafNode/CspSubarrayLeafNode/SdpMasterLeafNode/ SdpSubarrayLeafNode.
 Similarly, one needs to have DishLeafNode/CspMasterLeafNode/CspSubarrayLeafNode/SdpMasterLeafNode/SdpSubarrayLeafNode and DishMaster/CspMaster/CspSubarray/SdpMaster /SdpSubarray running prior to executing the test cases of SubarrayNode. And at last, SubarrayNode, DishLeafNode/CspMasterLeafNode/CspSubarrayLeafNode/SdpMasterLeafNode/SdpSubarrayLeafNode and DishMaster/CspMaster/CspSubarray/SdpMaster/SdpSubarray should be running prior to executing the test cases of CentralNode.
 
@@ -214,7 +221,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 **Note:** Refer [csp-lmc-prototype](https://github.com/ska-telescope/csp-lmc-prototype) for CSP TANGO devices.
           Refer [sdp-prototype](https://github.com/ska-telescope/sdp-prototype) for SDP TANGO devices.
 
-### 4.1 Testing DishMaster
+### 4.2.1 Testing DishMaster
 * Navigate to the DishMaster folder:
 
     `cd tmcprototype/dishmaster/src`
@@ -223,7 +230,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=DishMaster test/test_dish_master.py`
 
-### 4.2 Testing DishLeafNode
+### 4.2.2 Testing DishLeafNode
 **Prerequisite:** DishMaster TANGO Device should be up and running.
 
 * Navigate to the DishLeafNode folder:
@@ -234,7 +241,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=DishLeafNode test/test_dish_leaf_node.py`
 
-### 4.3 Testing CspMasterLeafNode
+### 4.2.3 Testing CspMasterLeafNode
 **Prerequisite:** CspMaster TANGO Device should be up and running.
 
 * Navigate to the CspMasterLeafNode folder:
@@ -245,7 +252,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=CspMasterLeafNode test/test_csp_master_leaf_node.py`
 
-### 4.4 Testing CspSubarrayLeafNode
+### 4.2.4 Testing CspSubarrayLeafNode
 **Prerequisite:** CspSubarray TANGO Device should be up and running.
 
 * Navigate to the CspSubarrayLeafNode folder:
@@ -256,7 +263,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=CspSubarrayLeafNode test/test_csp_subarray_leaf_node.py`
 
-### 4.5 Testing SdpMasterLeafNode
+### 4.2.5 Testing SdpMasterLeafNode
 **Prerequisite:** SdpMaster TANGO Device should be up and running.
 
 * Navigate to the SdpMasterLeafNode folder:
@@ -267,7 +274,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=SdpMasterLeafNode test/test_sdp_master_leaf_node.py`
 
-### 4.6 Testing SdpSubarrayLeafNode
+### 4.2.6 Testing SdpSubarrayLeafNode
 **Prerequisite:** SdpSubarray TANGO Device should be up and running.
 
 * Navigate to the SdpSubarrayLeafNode folder:
@@ -278,7 +285,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=SdpSubarrayLeafNode test/test_sdp_subarray_leaf_node.py`
 
-### 4.7 Testing SubarrayNode
+### 4.2.7 Testing SubarrayNode
 **Prerequisite:** All TMC LeafNodes, DishMaster, CSPMaster, CSPSubarray, SDPMaster and SDPSubarray TANGO Devices should be up and running.
 
 * Navigate to the SubarrayNode folder:
@@ -289,7 +296,7 @@ The prototype can be tested once the configuration of TMC TANGO devices is compl
 
     `py.test --cov=SubarrayNode test/test_subarray_node.py`
 
-### 4.8 Testing CentralNode
+### 4.2.8 Testing CentralNode
 **Prerequisite:** All instances of SubarrayNodes, all TMC LeafNodes, DishMaster, CSPMaster, CSPSubarray, SDPMaster and SDPSubarray TANGO Devices should be up and running.
 
 * Navigate to the CentralNode folder:

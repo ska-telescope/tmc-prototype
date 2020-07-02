@@ -156,61 +156,61 @@ class TestCentralNode(object):
         assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
         # PROTECTED REGION END #    //  CentralNode.test_StandByTelescope
 
-    # def test_buildState(self, tango_context):
-    #     """Test for buildState"""
-    #     # PROTECTED REGION ID(CentralNode.test_buildState) ENABLED START #
-    #     assert tango_context.device.buildState == (
-    #         "lmcbaseclasses, 0.5.4, A set of generic base devices for SKA Telescope.")
-    #     # PROTECTED REGION END #    //  CentralNode.test_buildState
+    def test_buildState(self, tango_context):
+        """Test for buildState"""
+        # PROTECTED REGION ID(CentralNode.test_buildState) ENABLED START #
+        assert tango_context.device.buildState == (
+            "lmcbaseclasses, 0.5.4, A set of generic base devices for SKA Telescope.")
+        # PROTECTED REGION END #    //  CentralNode.test_buildState
 
-    # def test_versionId(self, tango_context):
-    #     """Test for versionId"""
-    #     # PROTECTED REGION ID(CentralNode.test_versionId) ENABLED START #
-    #     assert tango_context.device.versionId == "0.5.4"
-    #     # PROTECTED REGION END #    //  CentralNode.test_versionId
+    def test_versionId(self, tango_context):
+        """Test for versionId"""
+        # PROTECTED REGION ID(CentralNode.test_versionId) ENABLED START #
+        assert tango_context.device.versionId == "0.5.4"
+        # PROTECTED REGION END #    //  CentralNode.test_versionId
 
-    # def test_loggingLevel(self, tango_context):
-    #     """Test for loggingLevel"""
-    #     # PROTECTED REGION ID(CentralNode.test_loggingLevel) ENABLED START #
-    #     tango_context.device.loggingLevel = LoggingLevel.INFO
-    #     assert tango_context.device.loggingLevel == LoggingLevel.INFO
-    #     # PROTECTED REGION END #    //  CentralNode.test_loggingLevel
+    def test_loggingLevel(self, tango_context):
+        """Test for loggingLevel"""
+        # PROTECTED REGION ID(CentralNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
+        # PROTECTED REGION END #    //  CentralNode.test_loggingLevel
 
-    # def test_healthState(self, tango_context):
-    #     """Test for healthState"""
-    #     # PROTECTED REGION ID(CentralNode.test_healthState) ENABLED START #
-    #     assert tango_context.device.healthState == HealthState.OK
-    #     # PROTECTED REGION END #    //  CentralNode.test_healthState
+    def test_healthState(self, tango_context):
+        """Test for healthState"""
+        # PROTECTED REGION ID(CentralNode.test_healthState) ENABLED START #
+        assert tango_context.device.healthState == HealthState.OK
+        # PROTECTED REGION END #    //  CentralNode.test_healthState
 
-    # def test_adminMode(self, tango_context):
-    #     """Test for adminMode"""
-    #     # PROTECTED REGION ID(CentralNode.test_adminMode) ENABLED START #
-    #     assert tango_context.device.adminMode == AdminMode.ONLINE
-    #     # PROTECTED REGION END #    //  CentralNode.test_adminMode
+    def test_adminMode(self, tango_context):
+        """Test for adminMode"""
+        # PROTECTED REGION ID(CentralNode.test_adminMode) ENABLED START #
+        assert tango_context.device.adminMode == AdminMode.ONLINE
+        # PROTECTED REGION END #    //  CentralNode.test_adminMode
 
-    # def test_controlMode(self, tango_context):
-    #     """Test for controlMode"""
-    #     # PROTECTED REGION ID(CentralNode.test_controlMode) ENABLED START #
-    #     control_mode = ControlMode.REMOTE
-    #     tango_context.device.controlMode = control_mode
-    #     assert tango_context.device.controlMode == control_mode
-    #     # PROTECTED REGION END #    //  CentralNode.test_controlMode
+    def test_controlMode(self, tango_context):
+        """Test for controlMode"""
+        # PROTECTED REGION ID(CentralNode.test_controlMode) ENABLED START #
+        control_mode = ControlMode.REMOTE
+        tango_context.device.controlMode = control_mode
+        assert tango_context.device.controlMode == control_mode
+        # PROTECTED REGION END #    //  CentralNode.test_controlMode
 
-    # def test_simulationMode(self, tango_context):
-    #     """Test for simulationMode"""
-    #     # PROTECTED REGION ID(CentralNode.test_simulationMode) ENABLED START #
-    #     simulation_mode = SimulationMode.FALSE
-    #     tango_context.device.simulationMode = simulation_mode
-    #     assert tango_context.device.simulationMode == simulation_mode
-    #     # PROTECTED REGION END #    //  CentralNode.test_simulationMode
+    def test_simulationMode(self, tango_context):
+        """Test for simulationMode"""
+        # PROTECTED REGION ID(CentralNode.test_simulationMode) ENABLED START #
+        simulation_mode = SimulationMode.FALSE
+        tango_context.device.simulationMode = simulation_mode
+        assert tango_context.device.simulationMode == simulation_mode
+        # PROTECTED REGION END #    //  CentralNode.test_simulationMode
 
-    # def test_testMode(self, tango_context):
-    #     """Test for testMode"""
-    #     # PROTECTED REGION ID(CentralNode.test_testMode) ENABLED START #
-    #     test_mode = TestMode.NONE
-    #     tango_context.device.testMode = test_mode
-    #     assert tango_context.device.testMode == test_mode
-    #     # PROTECTED REGION END #    //  CentralNode.test_testMode
+    def test_testMode(self, tango_context):
+        """Test for testMode"""
+        # PROTECTED REGION ID(CentralNode.test_testMode) ENABLED START #
+        test_mode = TestMode.NONE
+        tango_context.device.testMode = test_mode
+        assert tango_context.device.testMode == test_mode
+        # PROTECTED REGION END #    //  CentralNode.test_testMode
 
     def test_AssignResources_Failure_Before_Startup(self, tango_context, create_subarray1_proxy):
         test_input =     '{"subarrayID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":' \
@@ -321,68 +321,68 @@ class TestCentralNode(object):
         time.sleep(1)
         assert 'a' in result
 
-    # def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
-    #     test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
-    #     time.sleep(2)
-    #     tango_context.device.ReleaseResources(test_input)
-    #     time.sleep(3)
-    #     assert create_subarray1_proxy.State() == DevState.OFF
+    def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
+        test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        time.sleep(2)
+        tango_context.device.ReleaseResources(test_input)
+        time.sleep(3)
+        assert create_subarray1_proxy.State() == DevState.OFF
 
-    # def test_ReleaseResources_FalseTag(self, tango_context):
-    #     test_input = '{"subarrayID":1,"releaseALL":false,"receptorIDList":[]}'
-    #     tango_context.device.ReleaseResources(test_input)
-    #     time.sleep(1)
-    #     assert tango_context.device.activityMessage == const.STR_FALSE_TAG
+    def test_ReleaseResources_FalseTag(self, tango_context):
+        test_input = '{"subarrayID":1,"releaseALL":false,"receptorIDList":[]}'
+        tango_context.device.ReleaseResources(test_input)
+        time.sleep(1)
+        assert tango_context.device.activityMessage == const.STR_FALSE_TAG
 
-    # def test_ReleaseResources_invalid_json(self, tango_context):
-    #     test_input = '{"invalid_key"}'
-    #     with pytest.raises(tango.DevFailed):
-    #         tango_context.device.ReleaseResources(test_input)
-    #     time.sleep(1)
-    #     assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+    def test_ReleaseResources_invalid_json(self, tango_context):
+        test_input = '{"invalid_key"}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseResources(test_input)
+        time.sleep(1)
+        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
-    # def test_ReleaseResources_key_not_found(self, tango_context):
-    #     test_input = '{"releaseALL":true,"receptorIDList":[]}'
-    #     with pytest.raises(tango.DevFailed):
-    #         tango_context.device.ReleaseResources(test_input)
-    #     time.sleep(1)
-    #     assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+    def test_ReleaseResources_key_not_found(self, tango_context):
+        test_input = '{"releaseALL":true,"receptorIDList":[]}'
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.ReleaseResources(test_input)
+        time.sleep(1)
+        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
-    # def test_telescopeHealthState(self, tango_context):
-    #     """Test for telescopeHealthState"""
-    #     # PROTECTED REGION ID(CentralNode.test_telescopeHealthState) ENABLED START #
-    #     assert tango_context.device.telescopeHealthState == HealthState.OK
-    #     # PROTECTED REGION END #    //  CentralNode.test_telescopeHealthState
+    def test_telescopeHealthState(self, tango_context):
+        """Test for telescopeHealthState"""
+        # PROTECTED REGION ID(CentralNode.test_telescopeHealthState) ENABLED START #
+        assert tango_context.device.telescopeHealthState == HealthState.OK
+        # PROTECTED REGION END #    //  CentralNode.test_telescopeHealthState
 
-    # def test_subarray1HealthState(self, tango_context):
-    #     """Test for subarray1HealthState"""
-    #     # PROTECTED REGION ID(CentralNode.test_subarray1HealthState) ENABLED START #
-    #     assert tango_context.device.subarray1HealthState == HealthState.OK
-    #     # PROTECTED REGION END #    //  CentralNode.test_subarray1HealthState
+    def test_subarray1HealthState(self, tango_context):
+        """Test for subarray1HealthState"""
+        # PROTECTED REGION ID(CentralNode.test_subarray1HealthState) ENABLED START #
+        assert tango_context.device.subarray1HealthState == HealthState.OK
+        # PROTECTED REGION END #    //  CentralNode.test_subarray1HealthState
 
-    # def test_subarray2HealthState(self, tango_context):
-    #     """Test for subarray2HealthState"""
-    #     # PROTECTED REGION ID(CentralNode.test_subarray2HealthState) ENABLED START #
-    #     assert tango_context.device.subarray2HealthState == HealthState.OK
-    #     # PROTECTED REGION END #    //  CentralNode.test_subarray2HealthState
+    def test_subarray2HealthState(self, tango_context):
+        """Test for subarray2HealthState"""
+        # PROTECTED REGION ID(CentralNode.test_subarray2HealthState) ENABLED START #
+        assert tango_context.device.subarray2HealthState == HealthState.OK
+        # PROTECTED REGION END #    //  CentralNode.test_subarray2HealthState
 
-    # def test_subarray3HealthState(self, tango_context):
-    #     """Test for subarray3HealthState"""
-    #     # PROTECTED REGION ID(CentralNode.test_subarray3HealthState) ENABLED START #
-    #     assert tango_context.device.subarray3HealthState == HealthState.OK
-    #     # PROTECTED REGION END #    //  CentralNode.test_subarray3HealthState
+    def test_subarray3HealthState(self, tango_context):
+        """Test for subarray3HealthState"""
+        # PROTECTED REGION ID(CentralNode.test_subarray3HealthState) ENABLED START #
+        assert tango_context.device.subarray3HealthState == HealthState.OK
+        # PROTECTED REGION END #    //  CentralNode.test_subarray3HealthState
 
-    # def test_activityMessage(self, tango_context):
-    #     """Test for activityMessage"""
-    #     # PROTECTED REGION ID(CentralNode.test_activityMessage) ENABLED START #
-    #     tango_context.device.activityMessage = 'test'
-    #     assert tango_context.device.activityMessage == "test"
-    #     # PROTECTED REGION END #    //  CentralNode.test_activityMessage
+    def test_activityMessage(self, tango_context):
+        """Test for activityMessage"""
+        # PROTECTED REGION ID(CentralNode.test_activityMessage) ENABLED START #
+        tango_context.device.activityMessage = 'test'
+        assert tango_context.device.activityMessage == "test"
+        # PROTECTED REGION END #    //  CentralNode.test_activityMessage
 
-    # def test_loggingTargets(self, tango_context):
-    #     """Test for loggingTargets"""
-    #     # PROTECTED REGION ID(CentralNode.test_loggingLevel) ENABLED START #
-    #     tango_context.device.loggingTargets = ['tango::logger']
-    #     assert 'tango::logger' in tango_context.device.loggingTargets
-    #     # PROTECTED REGION END #    //  CentralNode.test_loggingTargets
+    def test_loggingTargets(self, tango_context):
+        """Test for loggingTargets"""
+        # PROTECTED REGION ID(CentralNode.test_loggingLevel) ENABLED START #
+        tango_context.device.loggingTargets = ['tango::logger']
+        assert 'tango::logger' in tango_context.device.loggingTargets
+        # PROTECTED REGION END #    //  CentralNode.test_loggingTargets
