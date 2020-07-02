@@ -257,7 +257,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         if sdp_subarray_obs_state == ObsState.IDLE:
             self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
         else:
-            self.logger.exception("Subarray is not in Idle obstate")
+            self.logger.error("Subarray is not in Idle obstate")
             self._read_activity_message = "Error in device obstate."
             raise InvalidObsStateError("SDP subarray is not in idle obstate.")
     # --------
@@ -400,7 +400,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON + str(value_error)
-            self.logger.error(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
@@ -452,13 +452,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-            self.logger.info(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
             exception_count += 1
