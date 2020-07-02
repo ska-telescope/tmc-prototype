@@ -2,8 +2,13 @@
 import pytest
 import json
 
+# other imports
+from centralnode.input_validator import AssignResourceValidator
+from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
+from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
+
 # Sample 'good' JSON
-sample_json = {
+sample_assign_resources_request = {
   "subarrayID": 1,
   "dish": {
     "receptorIDList": [
@@ -181,11 +186,6 @@ sample_json = {
   }
 }
 
-# other imports
-from centralnode.input_validator import AssignResourceValidator
-from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
-from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
-
 class TestAssignResourceValidator():
     """Class to test the AssignResourceValidator class methods"""
     _test_subarray_list = ["test/subarray/1", "test/subarray/2", "test/subarray/3"]
@@ -198,8 +198,8 @@ class TestAssignResourceValidator():
         input_validator = AssignResourceValidator(self._test_subarray_list, 
           self._test_receptor_id_list,
           "ska_mid/tm_leaf_node/d")
-        output_json = input_validator.validate(json.dumps(sample_json))
-        assert output_json == sample_json
+        output_config = input_validator.loads(json.dumps(sample_assign_resources_request))
+        assert output_config == sample_assign_resources_request
 
     def test_validate_wrong_subarray_id(self):
         """
@@ -208,14 +208,15 @@ class TestAssignResourceValidator():
         """
 
         # Set wrong subarray id.
-        input_json = sample_json
+        input_json = sample_assign_resources_request
         input_json["subarrayID"] = 99
 
-        with pytest.raises(SubarrayNotPresentError) as excinfo:
-            input_validator = AssignResourceValidator(self._test_subarray_list,
+        input_validator = AssignResourceValidator(self._test_subarray_list,
               self._test_receptor_id_list, "ska_mid/tm_leaf_node/d")
-            input_validator.validate(json.dumps(input_json))
-        assert "Invalid subarray ID. Available subarrays are" in str(excinfo.value)
+
+        with pytest.raises(SubarrayNotPresentError) as excinfo:
+            input_validator.loads(json.dumps(input_json))
+        assert "Subarray not present. Available subarrays are" in str(excinfo.value)
 
     def test_validate_incorrect_receptor_id(self):
         """
@@ -223,13 +224,14 @@ class TestAssignResourceValidator():
         value in the input string.
         """
 
-        input_json = sample_json
+        input_json = sample_assign_resources_request
         invalid_receptor_id_list = ["9999"]
         input_json["dish"]["receptorIDList"] = invalid_receptor_id_list
 
-        with pytest.raises(ResourceNotPresentError) as excinfo:
-            input_validator = AssignResourceValidator(self._test_subarray_list,
+        input_validator = AssignResourceValidator(self._test_subarray_list,
               self._test_receptor_id_list, "ska_mid/tm_leaf_node/d")
-            input_validator.validate(json.dumps(input_json))
 
-        assert "Invalid value in receptorIDList. Valid values are: " in str(excinfo.value)
+        with pytest.raises(ResourceNotPresentError) as excinfo:
+            input_validator.loads(json.dumps(input_json))
+
+        assert "Receptor id not present. Valid values are: " in str(excinfo.value)
