@@ -224,6 +224,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "Configure",
             self.ConfigureCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "Scan",
+            self.ScanCommand(self, self.state_model, self.logger)
+        )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -762,6 +766,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             return True
+
         def do(self,argin):
             """
             :param argin: The string in JSON format. The JSON contains following values:
@@ -903,9 +908,29 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #
     # # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
-    class ScanCommand(SKASubarray.ScanCommand):
+    class ScanCommand(ResponseCommand):
         """ Invoke Scan command to SDP subarray.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Scan() is not allowed in current state",
+                                             "Scan() is not allowed in current state",
+                                             "sdpsubarrayleafnode.Scan()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
 
         def do(self,argin):
             """
@@ -953,6 +978,39 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             #         self.throw_exception(exception_message, const.STR_SCAN_EXEC)
             #
             # # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
+
+        @command(
+            dtype_in=('str'),
+            dtype_out="DevVarLongStringArray",
+            doc_out="[ResultCode, information-only string]",
+        )
+        @DebugIt()
+        def Scan(self, argin):
+
+            # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+            """
+            Invoke Configure on SdpSubarrayLeafNode.
+            """
+            handler = self.get_command_object("Scan")
+            (result_code, message) = handler(argin)
+            return [[result_code], [message]]
+
+        # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+
+        def is_Scan_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+            :return: True if this command is allowed to be run in
+            current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+            in current device state
+            """
+
+            handler = self.get_command_object("Scan")
+            return handler.check_allowed()
+
 
 
     # @command(
