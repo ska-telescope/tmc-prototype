@@ -232,6 +232,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "EndScan",
             self.EndScanCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "EndSB",
+            self.EndSBCommand(self, self.state_model, self.logger)
+        )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -1178,11 +1182,32 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 
-    class EndCommand(SKASubarray.EndCommand):
+    class EndSBCommand(ResponseCommand):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
         """This command invokes EndSB command on SDP subarray to
          end the current Scheduling block."""
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("EndSB() is not allowed in current state",
+                                             "EndSB() is not allowed in current state",
+                                             "sdpsubarrayleafnode.EndSB()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
 
         def do(self):
             # TODO: For future use
@@ -1206,6 +1231,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
                 return(ResultCode.FAILED,const.ERR_ENDSB_INVOKING_CMD)
+
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
@@ -1217,6 +1243,36 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             #
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def EndSB(self):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        """
+        Invoke Configure on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("EndSB")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+
+    def is_EndSB_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+
+        handler = self.get_command_object("EndSB")
+        return handler.check_allowed()
 
     @command(
     )
