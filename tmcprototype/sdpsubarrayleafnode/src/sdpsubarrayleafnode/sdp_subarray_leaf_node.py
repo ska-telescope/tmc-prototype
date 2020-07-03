@@ -342,7 +342,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             in current device state
             """
 
-            if not self.state_model.dev_state in [
+            if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
@@ -364,7 +364,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             try:
                 # Call SDP Subarray Command asynchronously
-                device.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
+                device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
                                                                               device.cmd_ended_cb)
 
             # Update the status of command execution status in activity message
@@ -388,6 +388,39 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             #
             #     return ""
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def ReleaseAllResources(self):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
+        """
+        Invoke AssignResource on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("ReleaseAllResources")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.AssignResources
+
+    def is_AssignResources_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+
+        handler = self.get_command_object("ReleaseAllResources")
+        return handler.check_allowed()
+
+
 
 
     @command(
