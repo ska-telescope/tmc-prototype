@@ -669,6 +669,9 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("SetStowMode", self.SetStowModeCommand(*args))
         self.register_command_object("SetStandByLPMode", self.SetStandByLPModeCommand(*args))
         self.register_command_object("SetOperateMode", self.SetOperateModeCommand(*args))
+        self.register_command_object("Scan", self.ScanCommand(*args))
+        self.register_command_object("EndScan", self.EndScanCommand(*args))
+        self.register_command_object("Configure", self.ConfigureCommand(*args))
         self.register_command_object("StartCapture", self.StartCaptureCommand(*args))
         self.register_command_object("StopCapture", self.StopCaptureCommand(*args))
         self.register_command_object("SetStandbyFPMode", self.SetStandbyFPModeCommand(*args))
@@ -852,9 +855,9 @@ class DishLeafNode(SKABaseDevice):
 #4--------------------------------------------------------------------------------------------------------
 #Scan
 
-    class ScanCommand(SKASubarray.ScanCommand):
+    class ScanCommand(ResponseCommand):
         """
-        A class for SubarrayNode's Scan() command.
+        A class for DishLeafNode's Scan() command.
         """
         def do(self, argin):
             """
@@ -890,190 +893,293 @@ class DishLeafNode(SKABaseDevice):
                                               str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                # TODO: Negative test case is failing due to this return statement
-                return (ResultCode.FAILED, log_msg)
-
-            # # Throw Exception
-            # if exception_count > 0:
-            #     device.throw_exception(exception_message, const.STR_SCAN_EXEC)
 
 
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_SCAN_EXEC)
+                return (ResultCode.FAILED, const.ERR_EXE_SCAN_CMD)
 
-#--------------------------------------------------------------------------------------------------------
-    # @command(
-    #     dtype_in='str',
-    #     doc_in="Timestamp",
-    # )
-    # @DebugIt()
-    # def Scan(self, argin):
-    #     # PROTECTED REGION ID(DishLeafNode.Scan) ENABLED START #
-    #     """
-    #     Triggers the DishMaster to start the Scan.
-    #
-    #     :param argin: timestamp
-    #
-    #     :return: None
-    #
-    #     TODO: Scan argument in JSON format
-    #     {"scanDuration": 10.0}
-    #
-    #     """
-    #     exception_count = 0
-    #     exception_message = []
-    #     # TODO: Accept Scan argument in JSON format
-    #     # jsonArgument = json.loads(argin)
-    #     # scan_duration = jsonArgument['scanDuration']
-    #     # print("Scan duration:", scan_duration)
-    #     try:
-    #         if type(float(argin)) == float:
-    #             self.logger.debug(const.STR_IN_SCAN)
-    #             self._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
-    #                                                   argin, self.cmd_ended_cb)
-    #             self.logger.debug(const.STR_OUT_SCAN)
-    #     except ValueError as value_error:
-    #         log_msg = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-    #         self.logger.error(log_msg)
-    #         self._read_activity_message = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE +\
-    #                                       str(value_error)
-    #         exception_message.append(self._read_activity_message)
-    #         exception_count += 1
-    #
-    #     # Throw Exception
-    #     if exception_count > 0:
-    #         self.throw_exception(exception_message, const.STR_SCAN_EXEC)
-    #
-    #     # PROTECTED REGION END #    //  DishLeafNode.Scan
-#5--------------------------------------------------------------------------------------------------------
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            device = self.target
+            #if device._dish_proxy.state() in [DevState.ALARM, DevState.DISABLE]:
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Scan() is not allowed in current state",
+                                             "Scan() is not allowed in current state",
+                                             "DishLeafNode.Scan() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+
     @command(
         dtype_in='str',
         doc_in="Timestamp",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
-    def EndScan(self, argin):
-        # PROTECTED REGION ID(DishLeafNode.EndScan) ENABLED START #
-        """ Triggers the DishMaster to stop the Scan.
+    def Scan(self, argin):
+        """ Triggers the DishMaster to start the Scan. """
+        handler = self.get_command_object("Scan")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
-        :param argin: timestamp
 
-        :return: None
-        TODO: EndScan argument in JSON format
-        {"timestamp": 0}
+    def is_Scan_allowed(self):
         """
-        exception_count = 0
-        exception_message = []
-        # TODO: Accept EndScan argument in JSON format
-        # jsonArgument = json.loads(argin)
-        # timestamp = jsonArgument['timestamp']
-        # print("End Scan timestamp:", timestamp)
-        try:
-            if type(float(argin)) == float:
-                self._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
-                                                      argin, self.cmd_ended_cb)
-        except ValueError as value_error:
-            log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE +\
-                                          str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("Scan")
+        return handler.check_allowed()
 
-        # Throw Exception
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
 
-        # PROTECTED REGION END #    //  DishLeafNode.EndScan
+#5--------------------------------------------------------------------------------------------------------
+#EndScan
+    class EndScanCommand(ResponseCommand):
+        """
+        A class for DishLeafNode's Scan() command.
+        """
+        def do(self, argin):
+            """
+            Triggers the DishMaster to stop the Scan.
 
-#6------------------------------------------------------------------------------------------------------
+            :param argin: timestamp
+
+            :return: None
+            TODO: EndScan argument in JSON format
+            {"timestamp": 0}
+            """
+
+            device = self.target
+            exception_count = 0
+            exception_message = []
+            # TODO: Accept EndScan argument in JSON format
+            # jsonArgument = json.loads(argin)
+            # timestamp = jsonArgument['timestamp']
+            # print("End Scan timestamp:", timestamp)
+            try:
+                if type(float(argin)) == float:
+                    device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
+                                                          argin, device.cmd_ended_cb)
+                    return (ResultCode.STARTED, const.CMD_STOP_CAPTURE)
+            except ValueError as value_error:
+                log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
+                self.logger.error(log_msg)
+                device._read_activity_message = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + \
+                                              str(value_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
+                return (ResultCode.FAILED, const.ERR_EXE_END_SCAN_CMD)
+
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("EndScan() is not allowed in current state",
+                                             "EndScan() is not allowed in current state",
+                                             "DishLeafNode.EndScan() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
 
     @command(
-    dtype_in='str', 
-    doc_in="Pointing parameter of Dish", 
+        dtype_in='str',
+        doc_in="Timestamp",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
-    def Configure(self, argin):
-        # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
+    def EndScan(self, argin):
+        """ Triggers the DishMaster to stop the Scan. """
+        handler = self.get_command_object("EndScan")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+
+    def is_EndScan_allowed(self):
         """
-        Configures the Dish by setting pointing coordinates for a given observation.
-        This function accepts the input json and calculate pointing parameters of Dish- Azimuth
-        and Elevation Angle.Calculated parameters again converted to json and fed to the dish master.
-
-        :param argin:
-        A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
-
-            Example:
-            {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
-            "dish":{"receiverBand":"1"}}
-
-        :return: None
-
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
         """
-        exception_count = 0
-        exception_message = []
-        try:
-            jsonArgument = json.loads(argin)
-            ra_value = (jsonArgument["pointing"]["target"]["RA"])
-            dec_value = (jsonArgument["pointing"]["target"]["dec"])
-            receiver_band = int(jsonArgument["dish"]["receiverBand"])
-            # timestamp_value = Current system time in UTC
-            timestamp_value = str(datetime.datetime.utcnow())
-            # Convert ra and dec to az and el
-            radec_value = 'radec' + ',' + str(ra_value) + ',' +str(dec_value)
-            katpoint_arg = []
-            katpoint_arg.insert(0, radec_value)
-            katpoint_arg.insert(1, timestamp_value)
-            self.convert_radec_to_azel(katpoint_arg)
-            # Convert calulated AZ-El into JSON string
-            arg_list = { "pointing": {
-                "AZ": self.az,
-                "EL": self.el
+        handler = self.get_command_object("EndScan")
+        return handler.check_allowed()
 
-            },
-                "dish":{
-                    "receiverBand": receiver_band
+#6------------------------------------------------------------------------------------------------------
+#Configure
+    class ConfigureCommand(ResponseCommand):
+        """
+        A class for DishLeafNode's Configure() command.
+        """
+        def do(self, argin):
+            """
+            Configures the Dish by setting pointing coordinates for a given observation.
+            This function accepts the input json and calculate pointing parameters of Dish- Azimuth
+            and Elevation Angle.Calculated parameters again converted to json and fed to the dish master.
+
+            :param argin:
+            A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
+
+                Example:
+                {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
+                "dish":{"receiverBand":"1"}}
+
+            :return: None
+
+            """
+
+            device = self.target
+            exception_count = 0
+            exception_message = []
+            try:
+                jsonArgument = json.loads(argin)
+                ra_value = (jsonArgument["pointing"]["target"]["RA"])
+                dec_value = (jsonArgument["pointing"]["target"]["dec"])
+                receiver_band = int(jsonArgument["dish"]["receiverBand"])
+                # timestamp_value = Current system time in UTC
+                timestamp_value = str(datetime.datetime.utcnow())
+                # Convert ra and dec to az and el
+                radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
+                katpoint_arg = []
+                katpoint_arg.insert(0, radec_value)
+                katpoint_arg.insert(1, timestamp_value)
+                device.convert_radec_to_azel(katpoint_arg)
+                # Convert calulated AZ-El into JSON string
+                arg_list = {"pointing": {
+                    "AZ": device.az,
+                    "EL": device.el
+
+                },
+                    "dish": {
+                        "receiverBand": receiver_band
+                    }
+
                 }
+                dish_str_ip = json.dumps(arg_list)
+                # Send configure command to Dish Master
+                device._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
+                                                      device.cmd_ended_cb)
 
-            }
-            dish_str_ip = json.dumps(arg_list)
-            # Send configure command to Dish Master
-            self._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
-                                                  self.cmd_ended_cb)
+            except ValueError as value_error:
+                device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
+                log_msg = const.ERR_INVALID_JSON + str(value_error)
+                self.logger.error(log_msg)
+                exception_message.append(const.ERR_INVALID_JSON + str(value_error))
+                exception_count += 1
 
-        except ValueError as value_error:
-            self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-            log_msg = const.ERR_INVALID_JSON + str(value_error)
-            self.logger.error(log_msg)
-            exception_message.append(const.ERR_INVALID_JSON + str(value_error))
-            exception_count += 1
+            except KeyError as key_error:
+                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                self.logger.error(log_msg)
+                exception_message.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+                exception_count += 1
 
-        except KeyError as key_error:
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
-            exception_message.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
-            exception_count += 1
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_EXE_CONFIGURE_CMD)
 
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message, exception_count,
-                                                                                    const.ERR_EXE_CONFIGURE_CMD)
+            except Exception as except_occurred:
+                log_msg = const.ERR_EXE_CONFIGURE_CMD + str(except_occurred)
+                self.logger.error(log_msg)
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXE_CONFIGURE_CMD)
 
-        except Exception as except_occurred:
-            log_msg = const.ERR_EXE_CONFIGURE_CMD + str(except_occurred)
-            self.logger.error(log_msg)
-            [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_EXE_CONFIGURE_CMD)
 
-        # Throw Exception
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_CONFIGURE_EXEC)
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_CONFIGURE_EXEC)
+                return (ResultCode.FAILED, str(exception_message))
 
-        # PROTECTED REGION END #    //  DishLeafNode.Configure
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE, DevState.INIT
+            ]:
+                tango.Except.throw_exception("Configure() is not allowed in current state",
+                                             "Configure() is not allowed in current state",
+                                             "DishLeafNode.Configure() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+
+    @command(
+        dtype_in='str',
+        doc_in="Pointing parameter of Dish",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def Configure(self, argin):
+        """ Configures the Dish by setting pointing coordinates for a given observation. """
+        handler = self.get_command_object("Configure")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
 
     def is_Configure_allowed(self):
-        # PROTECTED REGION ID(DishLeafNode.is_Configure_allowed) ENABLED START #
-        """ Checks if the Configure command is allowed in the current state of DishLeafNode """
-        return self.get_state() not in [DevState.INIT, DevState.DISABLE, DevState.OFF]
-        # PROTECTED REGION END #    //  DishLeafNode.is_Configure_allowed
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("Configure")
+        return handler.check_allowed()
 
 #7--------------------------------------------------------------------------------------------------------
 #StartCapture
@@ -1105,12 +1211,12 @@ class DishLeafNode(SKABaseDevice):
                                               str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                #TODO: Test case is failing due to following statement
-                return (ResultCode.FAILED, const.ERR_EXE_START_CAPTURE_CMD)
 
-            # # Throw Exception
-            # if exception_count > 0:
-            #     self.throw_exception(exception_message, const.STR_STARTCAPTURE_EXEC)
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_STARTCAPTURE_EXEC)
+                # TODO: Test case is failing due to following statement
+                return (ResultCode.FAILED, const.ERR_EXE_START_CAPTURE_CMD)
 
 
         def check_allowed(self):
@@ -1186,13 +1292,11 @@ class DishLeafNode(SKABaseDevice):
                                               str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                # TODO: Test case is failing due to following statement
-                return (ResultCode.FAILED, const.ERR_EXE_STOP_CAPTURE_CMD)
 
-            # # Throw Exception
-            # if exception_count > 0:
-            #     device.throw_exception(exception_message, const.STR_STOPCAPTURE_EXEC)
-            # # PROTECTED REGION END #    //  DishLeafNode.StopCapture
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_STOPCAPTURE_EXEC)
+                return (ResultCode.FAILED, const.ERR_EXE_STOP_CAPTURE_CMD)
 
 
         def check_allowed(self):
@@ -1325,14 +1429,11 @@ class DishLeafNode(SKABaseDevice):
                                               str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                # TODO: Negative test case is failing due to following statement
-                return (ResultCode.FAILED, const.ERR_EXE_SLEW_CMD)
 
-            # # Throw Exception
-            # if exception_count > 0:
-            #     self.throw_exception(exception_message, const.STR_SLEW_EXEC)
-            #
-            # # PROTECTED REGION END #    //  DishLeafNode.Slew
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_SLEW_EXEC)
+                return (ResultCode.FAILED, const.ERR_EXE_SLEW_CMD)
 
 
         def check_allowed(self):
@@ -1381,7 +1482,6 @@ class DishLeafNode(SKABaseDevice):
 
 #11----------------------------------------------------------------------------------------------------------
 #Track
-
     class TrackCommand(ResponseCommand):
         """
         A class for DishLeafNode's Track command.
@@ -1431,8 +1531,6 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.error(log_msg)
                 exception_message.append(const.ERR_INVALID_JSON + str(value_error))
                 exception_count += 1
-                # TODO: Negative test case is failing due to following statement
-                return (ResultCode.FAILED, log_msg)
 
             except KeyError as key_error:
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
@@ -1440,14 +1538,12 @@ class DishLeafNode(SKABaseDevice):
                 device.logger.error(log_msg)
                 exception_message.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
                 exception_count += 1
-                # TODO: Negative test case is failing due to following statement
-                return (ResultCode.FAILED, log_msg)
 
-            # # Throw Exception
-            # if exception_count > 0:
-            #     self.throw_exception(exception_message, const.STR_TRACK_EXEC)
-            #
-            # # PROTECTED REGION END #    //  DishLeafNode.Track
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_TRACK_EXEC)
+                return (ResultCode.FAILED, str(exception_message))
+
 
 
         def check_allowed(self):
@@ -1492,69 +1588,6 @@ class DishLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Track")
         return handler.check_allowed()
-
-#-------------------------------------------------------------------------------------------------------
-    # @command(
-    # dtype_in='str',
-    # )
-    # @DebugIt()
-    # def Track(self, argin):
-    #     # PROTECTED REGION ID(DishLeafNode.Track) ENABLED START #
-    #     """ Invokes Track command on the DishMaster.
-    #
-    #     :param argin: DevString
-    #
-    #     The elevation limit thread allows Dish to track a source till the observation capacity i.e.
-    #     elevation limit of dish.
-    #
-    #     The tracking time thread allows dish to track a source for the prespecified Track Duration
-    #     (provided elevation limit is not reached).
-    #
-    #     For Track command, Argin to be provided is the Ra and Dec values in the following JSON format:
-    #
-    #     {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
-    #     "dish":{"receiverBand":"1"}}
-    #
-    #     :return: None
-    #
-    #     """
-    #     exception_count = 0
-    #     exception_message = []
-    #     try:
-    #         self.el_limit = False
-    #         jsonArgument = json.loads(argin)
-    #         ra_value = (jsonArgument["pointing"]["target"]["RA"])
-    #         dec_value = (jsonArgument["pointing"]["target"]["dec"])
-    #         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
-    #         self.event_track_time.clear()
-    #         #TODO: For future reference
-    #         # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, const.THREAD_TRACK)
-    #         # self.tracking_time_thread1.start()
-    #         # Pass string argument in track_thread in brackets
-    #         self.track_thread1 = threading.Thread(None, self.track_thread, const.THREAD_TRACK,
-    #                                               args=(radec_value,))
-    #         self.track_thread1.start()
-    #
-    #     except ValueError as value_error:
-    #         self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-    #         log_msg = const.ERR_INVALID_JSON + str(value_error)
-    #         self.logger.error(log_msg)
-    #         exception_message.append(const.ERR_INVALID_JSON + str(value_error))
-    #         exception_count += 1
-    #
-    #     except KeyError as key_error:
-    #         self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-    #         log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-    #         self.logger.error(log_msg)
-    #         exception_message.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
-    #         exception_count += 1
-    #
-    #     # Throw Exception
-    #     if exception_count > 0:
-    #         self.throw_exception(exception_message, const.STR_TRACK_EXEC)
-    #
-    #     # PROTECTED REGION END #    //  DishLeafNode.Track
-
 #12--------------------------------------------------------------------------------------------------------------
 #StopTrack
     class StopTrackCommand(ResponseCommand):
@@ -1583,8 +1616,6 @@ class DishLeafNode(SKABaseDevice):
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_EXE_STOP_TRACK_CMD)
-                # TODO: Negative test case is failing due to following statement
-                return (ResultCode.FAILED, const.ERR_EXE_STOP_TRACK_CMD)
 
             except Exception as except_occurred:
                 log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(except_occurred.message)
@@ -1593,12 +1624,11 @@ class DishLeafNode(SKABaseDevice):
                                                                                       exception_message,
                                                                                       exception_count,
                                                                                       const.ERR_EXE_STOP_TRACK_CMD)
-                # TODO: Negative test case is failing due to following statement
-                return (ResultCode.FAILED, const.ERR_EXE_STOP_TRACK_CMD)
 
-            # # Throw Exception
-            # if exception_count > 0:
-            #     device.throw_exception(exception_message, const.STR_STOPTRACK_EXEC)
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_STOPTRACK_EXEC)
+                return (ResultCode.FAILED, const.ERR_EXE_STOP_TRACK_CMD)
 
 
         def check_allowed(self):
