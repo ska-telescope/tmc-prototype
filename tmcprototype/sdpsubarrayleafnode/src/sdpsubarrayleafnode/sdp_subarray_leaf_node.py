@@ -654,7 +654,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
+                return (ResultCode.FAILED, str(exception_message))
 
         #     return ""
         #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
@@ -836,7 +836,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # throw exception:
                 if exception_count > 0:
                     self.throw_exception(exception_message, const.STR_CONFIG_EXEC)
-                    return (ResultCode.FAILED, const.ERR_CONFIGURE)
+                    return (ResultCode.FAILED, str(exception_message))
             #
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
