@@ -171,30 +171,30 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
                                                                  any_method(with_name='cmd_ended_cb'))
 
 
-# def test_start_scan_should_raise_devfailed_exception():
-#     # arrange:
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-#
-#     sdp_subarray1_proxy_mock = Mock()
-#     sdp_subarray1_proxy_mock.obsState = ObsState.READY
-#
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-#     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) \
-#             as tango_context:
-#         # act:
-#         with pytest.raises(tango.DevFailed):
-#             tango_context.device.Scan(scan_input_str)
-#             tango_context.device.Scan(scan_input_str)
-#
-#         # assert:
-#         assert const.ERR_SCAN in tango_context.device.activityMessage
+def test_start_scan_should_raise_devfailed_exception():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Scan(scan_input_str)
+            tango_context.device.Scan(scan_input_str)
+
+        # assert:
+        assert const.ERR_SCAN in tango_context.device.activityMessage
 
 
 def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block_list():
@@ -245,7 +245,7 @@ def test_assign_resources_should_raise_devfailed_exception():
         with pytest.raises(tango.DevFailed):
             device_proxy.AssignResources(assign_input_str)
 
-        assert:
+        # assert:
         assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
 
 
@@ -274,28 +274,28 @@ def test_release_resources_when_sdp_subarray_is_idle():
         assert_activity_message(device_proxy, const.STR_REL_RESOURCES)
 
 
-# def test_release_resources_should_raise_devfailed_exception():
-#     # arrange:
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-# 
-#     sdp_subarray1_proxy_mock = Mock()
-#     sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-#     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) as tango_context:
-#         device_proxy = tango_context.device
-#         # act:
-#         with pytest.raises(tango.DevFailed):
-#             device_proxy.ReleaseAllResources()
-# 
-#         # assert:
-#         assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
+def test_release_resources_should_raise_devfailed_exception():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        with pytest.raises(tango.DevFailed):
+            device_proxy.ReleaseAllResources()
+
+        # assert:
+        assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
 
 
 def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle():
@@ -326,28 +326,28 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
                                                                      any_method(with_name='cmd_ended_cb'))
 
 
-# def test_configure_should_raise_devfailed_exception():
-#     # arrange:
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-# 
-#     sdp_subarray1_proxy_mock = Mock()
-#     sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-#     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) \
-#             as tango_context:
-#         # act:
-#         with pytest.raises(tango.DevFailed):
-#             tango_context.device.Configure(configure_str)
-# 
-#         # assert:
-#         assert const.ERR_CONFIGURE in tango_context.device.activityMessage
+def test_configure_should_raise_devfailed_exception():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Configure(configure_str)
+
+        # assert:
+        assert const.ERR_CONFIGURE in tango_context.device.activityMessage
 
 
 def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
@@ -374,28 +374,28 @@ def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
                                                                      any_method(with_name='cmd_ended_cb'))
 
 
-# def test_end_scan_should_raise_devfailed_exception():
-#     # arrange:
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-# 
-#     sdp_subarray1_proxy_mock = Mock()
-#     sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-#     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) \
-#             as tango_context:
-#         # act:
-#         with pytest.raises(tango.DevFailed):
-#             tango_context.device.EndScan()
-# 
-#         # assert:
-#         assert const.ERR_ENDSCAN_INVOKING_CMD in tango_context.device.activityMessage
+def test_end_scan_should_raise_devfailed_exception():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndScan()
+
+        # assert:
+        assert const.ERR_ENDSCAN_INVOKING_CMD in tango_context.device.activityMessage
 
 
 def test_end_sb_should_command_sdp_subarray_to_reset_when_it_is_ready():
@@ -422,28 +422,28 @@ def test_end_sb_should_command_sdp_subarray_to_reset_when_it_is_ready():
                                                                      any_method(with_name='cmd_ended_cb'))
 
 
-# def test_end_sb_should_raise_devfailed_exception():
-#     # arrange:
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-# 
-#     sdp_subarray1_proxy_mock = Mock()
-#     sdp_subarray1_proxy_mock.obsState = ObsState.READY
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-#     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) \
-#             as tango_context:
-#         # act:
-#         with pytest.raises(tango.DevFailed):
-#             tango_context.device.EndSB()
-# 
-#         # assert:
-#         assert const.ERR_ENDSB_INVOKING_CMD in tango_context.device.activityMessage
+def test_end_sb_should_raise_devfailed_exception():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.EndSB()
+
+        # assert:
+        assert const.ERR_ENDSB_INVOKING_CMD in tango_context.device.activityMessage
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute

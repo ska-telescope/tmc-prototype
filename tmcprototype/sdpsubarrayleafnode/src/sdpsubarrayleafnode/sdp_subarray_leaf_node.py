@@ -391,16 +391,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                     exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
-                return(ResultCode.FAILED,const.ERR_RELEASE_RESOURCES)
+                # return(ResultCode.FAILED,const.ERR_RELEASE_RESOURCES)
 
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                     exception_message, exception_count, const.ERR_RELEASE_RESOURCES)
-                return (ResultCode.FAILED, const.ERR_RELEASE_RESOURCES)
+                # return (ResultCode.FAILED, const.ERR_RELEASE_RESOURCES)
 
-            #     # throw exception:
-            #     if exception_count > 0:
-            #         self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+                # throw exception:
+                if exception_count > 0:
+                    self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+                    return (ResultCode.FAILED, const.ERR_RELEASE_RESOURCES)
             #
             #     return ""
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
@@ -812,7 +813,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                return(ResultCode.FAILED,const.ERR_INVALID_JSON_CONFIG)
+                # return(ResultCode.FAILED,const.ERR_INVALID_JSON_CONFIG)
 
             except KeyError as key_error:
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
@@ -820,21 +821,22 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                return (ResultCode.FAILED, const.ERR_JSON_KEY_NOT_FOUND)
+                # return (ResultCode.FAILED, const.ERR_JSON_KEY_NOT_FOUND)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                         exception_message, exception_count, const.ERR_CONFIGURE)
-                return(ResultCode.FAILED,const.ERR_CONFIGURE)
+                # return(ResultCode.FAILED,const.ERR_CONFIGURE)
 
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                         exception_message, exception_count,const.ERR_CONFIGURE)
-                return (ResultCode.FAILED, const.ERR_CONFIGURE)
+                # return (ResultCode.FAILED, const.ERR_CONFIGURE)
 
             # throw exception:
-            #     if exception_count > 0:
-            #         self.throw_exception(exception_message, const.STR_CONFIG_EXEC)
+                if exception_count > 0:
+                    self.throw_exception(exception_message, const.STR_CONFIG_EXEC)
+                    return (ResultCode.FAILED, const.ERR_CONFIGURE)
             #
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
@@ -976,15 +978,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                             exception_message, exception_count, const.ERR_SCAN)
-                return(ResultCode.FAILED,const.ERR_SCAN)
+                # return(ResultCode.FAILED,const.ERR_SCAN)
 
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                             exception_message, exception_count, const.ERR_SCAN)
-                return(ResultCode.FAILED,const.ERR_SCAN)
+                # return(ResultCode.FAILED,const.ERR_SCAN)
             # throw exception:
-            #     if exception_count > 0:
-            #         self.throw_exception(exception_message, const.STR_SCAN_EXEC)
+                if exception_count > 0:
+                    self.throw_exception(exception_message, const.STR_SCAN_EXEC)
+                    return (ResultCode.FAILED, const.ERR_SCAN)
             #
             # # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
@@ -1110,14 +1113,22 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_ENDSCAN_INVOKING_CMD)
-                return (ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
+                # return (ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
 
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                                                       exception_message,
                                                                                       exception_count,
                                                                                       const.ERR_ENDSCAN_INVOKING_CMD)
-                return(ResultCode.FAILED,const.ERR_ENDSCAN_INVOKING_CMD)
+                # return(ResultCode.FAILED,const.ERR_ENDSCAN_INVOKING_CMD)
+
+                # throw exception:
+                if exception_count > 0:
+                    self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
+                    return (ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
+
+                #
+                #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndScan
 
     @command(
         dtype_out="DevVarLongStringArray",
@@ -1128,13 +1139,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
         """
-        Invoke Configure on SdpSubarrayLeafNode.
+        Invoke EndScan on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("EndScan")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.EndScan
 
     def is_EndScan_allowed(self):
         """
@@ -1231,16 +1242,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-                return(ResultCode.FAILED,const.ERR_ENDSB_INVOKING_CMD)
+                # return(ResultCode.FAILED,const.ERR_ENDSB_INVOKING_CMD)
 
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
+                # return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
 
                 # throw exception:
-            #     if exception_count > 0:
-            #         self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+                if exception_count > 0:
+                    self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+                    return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
             #
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 
