@@ -979,39 +979,37 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             #
             # # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
-        @command(
-            dtype_in=('str'),
-            dtype_out="DevVarLongStringArray",
-            doc_out="[ResultCode, information-only string]",
-        )
-        @DebugIt()
-        def Scan(self, argin):
+    @command(
+        dtype_in=('str'),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Scan(self, argin):
 
-            # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
-            """
-            Invoke Configure on SdpSubarrayLeafNode.
-            """
-            handler = self.get_command_object("Scan")
-            (result_code, message) = handler(argin)
-            return [[result_code], [message]]
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        """
+        Invoke Configure on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Scan")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
-        # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
 
-        def is_Scan_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-            :return: True if this command is allowed to be run in
-            current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-            in current device state
-            """
+    def is_Scan_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
 
-            handler = self.get_command_object("Scan")
-            return handler.check_allowed()
-
-
+        handler = self.get_command_object("Scan")
+        return handler.check_allowed()
 
     # @command(
     # )

@@ -331,6 +331,52 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
 #         # Assert
 #         assert const.ERR_CONFIGURE_INVOKING_CMD in tango_context.device.activityMessage
 
+
+def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.StartScan(scan_input_str)
+
+        # assert:
+        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, '0',
+                                                             any_method(with_name='cmd_ended_cb'))
+
+def test_start_scan_should_not_command_csp_subarray_to_start_its_scan_when_it_is_idle():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.StartScan(scan_input_str)
+
+        # assert:
+        assert_activity_message(tango_context.device, const.ERR_DEVICE_NOT_READY)
+
 def command_callback(command_name):
     fake_event = MagicMock()
     fake_event.err = False
@@ -355,28 +401,6 @@ def raise_devfailed_exception(cmd_name):
                                  " ", tango.ErrSeverity.ERR)
 
 '''
-def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready():
-    # arrange:
-    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
-    dut_properties = {
-        'CspSubarrayFQDN': csp_subarray1_fqdn
-    }
-
-    csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.READY
-
-    proxies_to_mock = {
-        csp_subarray1_fqdn: csp_subarray1_proxy_mock
-    }
-
-    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        tango_context.device.StartScan(scan_input_str)
-
-        # assert:
-        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, '0',
-                                                             any_method(with_name='cmd_ended_cb'))
 
 
 def test_start_scan_should_raise_devfailed_exception():
@@ -403,27 +427,7 @@ def test_start_scan_should_raise_devfailed_exception():
         assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
 
 
-def test_start_scan_should_not_command_csp_subarray_to_start_its_scan_when_it_is_idle():
-    # arrange:
-    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
-    dut_properties = {
-        'CspSubarrayFQDN': csp_subarray1_fqdn
-    }
 
-    csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
-
-    proxies_to_mock = {
-        csp_subarray1_fqdn: csp_subarray1_proxy_mock
-    }
-
-    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        tango_context.device.StartScan(scan_input_str)
-
-        # assert:
-        assert_activity_message(tango_context.device, const.ERR_DEVICE_NOT_READY)
 
 def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
     # arrange:
