@@ -742,6 +742,26 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """ When commanded in the IDLE state: configures the Subarray device by providing the SDP PB
         configuration needed to execute the receive workflow
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Configure() is not allowed in current state",
+                                             "Configure() is not allowed in current state",
+                                             "sdpsubarrayleafnode.Configure()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
         def do(self,argin):
             """
             :param argin: The string in JSON format. The JSON contains following values:
