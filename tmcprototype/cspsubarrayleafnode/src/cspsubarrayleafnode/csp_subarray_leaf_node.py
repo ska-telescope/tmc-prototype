@@ -433,6 +433,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
             "ReleaseAllResources",
             self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "Configure",
+            self.ConfigureCommand(self, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "StartScan",
+            self.StartScanCommand(self, self.state_model, self.logger)
+        )
 
     # ------------------
     # Attributes methods
@@ -552,11 +560,31 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
 
 
-    class ConfigureCommand(SKASubarray.ConfigureCommand):
+    class ConfigureCommand(ResponseCommand):
         # PROTECTED REGION ID(CspSubarrayLeafNode.Configure) ENABLED START #
         """
         A class for CspSubarrayLeafNode's Configure() command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Configure() is not allowed in current state",
+                                             "Configure() is not allowed in current state",
+                                             "cspsubarrayleafnode.Configure()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
         def do(self,argin):
             """
             This command configures the scan. It accepts configuration capabilities in JSON string format and
@@ -593,7 +621,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device.target_Dec = device.pointing_params["target"]["dec"]
 
                 # Create target object
-                device.target = katpoint.Target('radec , ' + str(self.target_Ra) + ", " + str(self.target_Dec))
+                device.target = katpoint.Target('radec , ' + str(device.target_Ra) + ", " + str(device.target_Dec))
 
                 cspConfiguration = argin_json.copy()
                 # Keep configuration specific to CSP and delete pointing configuration
@@ -631,6 +659,33 @@ class CspSubarrayLeafNode(SKABaseDevice):
             #     device.throw_exception(exception_message, const.STR_CONFIG_SCAN_EXEC)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.Configure
 
+    @command(
+        dtype_in=('str'),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Configure(self, argin):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Configure) ENABLED START #
+        """ Invokes Configure command on cspsubarrayleafnode"""
+        handler = self.get_command_object("Configure")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    def is_Configure_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("Configure")
+        return handler.check_allowed()
+
+        # PROTECTED REGION END # // CspSubarrayLeafNode.AssignResources
     # @command(
     #     dtype_in=('str',),
     # )
@@ -676,11 +731,31 @@ class CspSubarrayLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
-    class StartScanCommand(SKASubarray.ScanCommand):
+    class StartScanCommand(ResponseCommand):
         # PROTECTED REGION ID(CspSubarrayLeafNode.StartScan) ENABLED START #
         """
         A class for CspSubarrayLeafNode's StartScan() command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("StartScan() is not allowed in current state",
+                                             "StartScan() is not allowed in current state",
+                                             "cspsubarrayleafnode.StartScan()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
 
         def do(self, argin):
             """
@@ -700,34 +775,59 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
             #Check if CspSubarray is in READY state
-                # if self.CspSubarrayProxy.obsState == ObsState.READY:
+                if device.CspSubarrayProxy.obsState == ObsState.READY:
                     #Invoke StartScan command on CspSubarray
-                device.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", device.cmd_ended_cb)
-                device._read_activity_message = const.STR_STARTSCAN_SUCCESS
-                self.logger.info(const.STR_STARTSCAN_SUCCESS)
-                return (ResultCode.STARTED,const.STR_STARTSCAN_SUCCESS)
-                # else:
-                #     self._read_activity_message = const.ERR_DEVICE_NOT_READY
-                #     log_msg = const.STR_OBS_STATE + str(self.CspSubarrayProxy.obsState)
-                #     self.logger.error(const.ERR_DEVICE_NOT_READY)
-                #     self.logger.error(log_msg)
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_STARTSCAN_SUCCESS
+                    self.logger.info(const.STR_STARTSCAN_SUCCESS)
+                    return (ResultCode.STARTED,const.STR_STARTSCAN_SUCCESS)
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    self.logger.error(const.ERR_DEVICE_NOT_READY)
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED,const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
                 return (ResultCode.FAILED,const.ERR_STARTSCAN_RESOURCES)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
-            return (ResultCode.FAILED, const.ERR_STARTSCAN_RESOURCES)
+                return (ResultCode.FAILED, const.ERR_STARTSCAN_RESOURCES)
 
             # TODO: For furure reference
             # throw exception:
             # if exception_count > 0:
             #     self.throw_exception(exception_message, const.STR_START_SCAN_EXEC)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
+    @command(
+        dtype_in=('str'),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def StartScan(self, argin):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.StartScan) ENABLED START #
+        """ Invokes StartScan command on cspsubarrayleafnode"""
+        handler = self.get_command_object("StartScan")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
+    def is_StartScan_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("StartScan")
+        return handler.check_allowed()
     #
     # @command(
     # )

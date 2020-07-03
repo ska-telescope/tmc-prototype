@@ -220,6 +220,22 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "ReleaseAllResources",
             self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "Configure",
+            self.ConfigureCommand(self, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "Scan",
+            self.ScanCommand(self, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "EndScan",
+            self.EndScanCommand(self, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "EndSB",
+            self.EndSBCommand(self, self.state_model, self.logger)
+        )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -731,13 +747,34 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
-    class ConfigureCommand(SKASubarray.ConfigureCommand):
+    class ConfigureCommand(ResponseCommand):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
 
         """ When commanded in the IDLE state: configures the Subarray device by providing the SDP PB
         configuration needed to execute the receive workflow
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Configure() is not allowed in current state",
+                                             "Configure() is not allowed in current state",
+                                             "sdpsubarrayleafnode.Configure()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self,argin):
             """
             :param argin: The string in JSON format. The JSON contains following values:
@@ -800,6 +837,39 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             #
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
+    @command(
+        dtype_in=('str'),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Configure(self, argin):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        """
+        Invoke Configure on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Configure")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+
+    def is_Configure_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+
+        handler = self.get_command_object("Configure")
+        return handler.check_allowed()
+
+
     # @command(
     #     dtype_in='str',
     # )
@@ -846,9 +916,29 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #
     # # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
-    class ScanCommand(SKASubarray.ScanCommand):
+    class ScanCommand(ResponseCommand):
         """ Invoke Scan command to SDP subarray.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Scan() is not allowed in current state",
+                                             "Scan() is not allowed in current state",
+                                             "sdpsubarrayleafnode.Scan()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
 
         def do(self,argin):
             """
@@ -897,6 +987,37 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             #
             # # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Scan
 
+    @command(
+        dtype_in=('str'),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Scan(self, argin):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        """
+        Invoke Configure on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Scan")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+
+    def is_Scan_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+
+        handler = self.get_command_object("Scan")
+        return handler.check_allowed()
 
     # @command(
     # )
@@ -935,13 +1056,35 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndScan
 
-    class EndScanCommand(SKASubarray.EndScanCommand):
+    class EndScanCommand(ResponseCommand):
 
-    # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
         """
         It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in
         SCANNING state.
         """
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("EndScan() is not allowed in current state",
+                                             "EndScan() is not allowed in current state",
+                                             "sdpsubarrayleafnode.EndScan()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self):
             """:param argin: None.
 
@@ -955,6 +1098,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
                     return(ResultCode.STARTED,const.STR_ENDSCAN_SUCCESS)
+
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
                     self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
@@ -974,6 +1118,36 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                                       const.ERR_ENDSCAN_INVOKING_CMD)
                 return(ResultCode.FAILED,const.ERR_ENDSCAN_INVOKING_CMD)
 
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def EndScan(self):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        """
+        Invoke Configure on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("EndScan")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+
+    def is_EndScan_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+
+        handler = self.get_command_object("EndScan")
+        return handler.check_allowed()
 
     # @command(
     # )
@@ -1008,11 +1182,32 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 
-    class EndCommand(SKASubarray.EndCommand):
+    class EndSBCommand(ResponseCommand):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
         """This command invokes EndSB command on SDP subarray to
          end the current Scheduling block."""
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("EndSB() is not allowed in current state",
+                                             "EndSB() is not allowed in current state",
+                                             "sdpsubarrayleafnode.EndSB()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
 
         def do(self):
             # TODO: For future use
@@ -1036,6 +1231,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
                 return(ResultCode.FAILED,const.ERR_ENDSB_INVOKING_CMD)
+
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
@@ -1047,6 +1243,36 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             #
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
 
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def EndSB(self):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        """
+        Invoke Configure on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("EndSB")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+
+    def is_EndSB_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+
+        handler = self.get_command_object("EndSB")
+        return handler.check_allowed()
 
     @command(
     )

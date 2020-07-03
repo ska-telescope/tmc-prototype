@@ -537,7 +537,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             "AssignResources",
             self.AssignResourcesCommand(self, self.state_model, self.logger))
         self.register_command_object(
-            "ReleaseAllResources",
+            "ReleaseResources",
             self.ReleaseResourcesCommand(self, self.state_model, self.logger))
         
     class StowAntennasCommand(ResponseCommand):
@@ -593,7 +593,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                                 exception_message,
                                                                                                 exception_count,
                                                                                                 const.ERR_EXE_STOW_CMD)
-                        return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
+                        # return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
 
                     # TODO: throw exception:
                     # if exception_count > 0:
@@ -604,16 +604,17 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                 device._read_activity_message = const.ERR_STOW_ARGIN + str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                return (ResultCode.FAILED, const.ERR_STOW_ARGIN)
+                # return (ResultCode.FAILED, const.ERR_STOW_ARGIN)
             except Exception as except_occured:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occured,
                                                                                       exception_message, exception_count,
                                                                                       const.ERR_EXE_STOW_CMD)
-                return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
 
             # throw exception:
-            # if exception_count > 0:
-            #     self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+                return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
             # PROTECTED REGION END #    //  CentralNode.stow_antennas
             #TODO: check if message should be Started or Ok?
             return (ResultCode.OK, log_msg)
@@ -693,7 +694,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                             exception_message,
                                                                                             exception_count,
                                                                                             const.ERR_EXE_STANDBY_CMD)
-                    return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
+                    # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
 
             try:
                 device._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
@@ -703,7 +704,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_EXE_STANDBY_CMD)
-                return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
 
             try:
                 device._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
@@ -713,7 +714,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_EXE_STANDBY_CMD)
-                return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
 
             try:
                 for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
@@ -724,10 +725,11 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_EXE_STANDBY_CMD)
-                return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
                 # TODO: for future - throw exception:
-                # if exception_count > 0:
-                #     self.throw_exception(exception_message, const.STR_STANDBY_EXEC)
+                if exception_count > 0:
+                    self.throw_exception(exception_message, const.STR_STANDBY_EXEC)
+                    return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
             return (ResultCode.OK,const.STR_CMD_STANDBY_SA_DEV) # return message can be updated accordingly.
             # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
@@ -804,7 +806,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                             exception_message,
                                                                                             exception_count,
                                                                                             const.ERR_EXE_STARTUP_CMD)
-                    return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+                    # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
 
             try:
                 device._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP, [])
@@ -814,7 +816,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                       exception_message,
                                                                                       exception_count,
                                                                                       const.ERR_EXE_STARTUP_CMD)
-                return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
 
             try:
                 device._sdp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
@@ -824,7 +826,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_EXE_STARTUP_CMD)
-                return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
 
             try:
                 for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
@@ -835,10 +837,11 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_EXE_STARTUP_CMD)
-                return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
                 # TODO: for future-  throw exception:
-                # if exception_count > 0:
-                #     self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
+                if exception_count > 0:
+                    self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
+                    return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
             return (ResultCode.OK, const.STR_STARTUP_CMD_ISSUED)
 
     @command(
@@ -1063,7 +1066,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                     }
                     message = json.dumps(argout)
                     self.logger.info(message)
-                    return (ResultCode.STARTED, message)
+                    return (ResultCode.OK, message)
                 else:
                     log_msg = const.STR_DISH_DUPLICATE + str(duplicate_allocation_dish_ids)
                     device._read_activity_message = log_msg
@@ -1083,7 +1086,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                 exception_count += 1
                 message = const.ERR_INVALID_JSON
                 self.logger.info(message)
-                return (ResultCode.FAILED, message)
+                # return (ResultCode.FAILED, message)
 
             except KeyError as key_error:
                 self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
@@ -1092,7 +1095,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                 exception_count += 1
                 message = const.ERR_JSON_KEY_NOT_FOUND
                 self.logger.info(message)
-                return (ResultCode.FAILED, message)
+                # return (ResultCode.FAILED, message)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1101,7 +1104,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                         const.ERR_ASSGN_RESOURCES)
                 message = const.ERR_ASSGN_RESOURCES
                 self.logger.info(message)
-                return (ResultCode.FAILED, message)
+                # return (ResultCode.FAILED, message)
 
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
@@ -1110,13 +1113,15 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                                                                                       const.ERR_ASSGN_RESOURCES)
                 message = const.ERR_ASSGN_RESOURCES
                 self.logger.info(message)
-                return (ResultCode.FAILED, message)
+                # return (ResultCode.FAILED, message)
 
 
             # TODO: throw exception:
-            #if exception_count > 0:
-             #   self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-             #   argout = '{"dish": {"receptorIDList_success": []}}'
+            if exception_count > 0:
+               self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+               argout = '{"dish": {"receptorIDList_success": []}}'
+               return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
+
 
             # PROTECTED REGION END #    //  CentralNode.AssignResources
 
@@ -1268,42 +1273,42 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                         device._read_activity_message = log_msg
                         self.logger.info(log_msg)
                         #release_success = False
-                        message = device._read_activity_message
-                        self.logger.info(message)
-                        return (ResultCode.FAILED, message)
+                        # message = device._read_activity_message
+                        # self.logger.info(message)
+                        # return (ResultCode.FAILED, device._read_activity_message )
                 else:
                     device._read_activity_message = const.STR_FALSE_TAG
                     self.logger.info(const.STR_FALSE_TAG)
-                    message = const.STR_FALSE_TAG
-                    self.logger.info(message)
-                    return (ResultCode.FAILED, message)
+                    # message = const.STR_FALSE_TAG
+                    # self.logger.info(message)
+                    # return (ResultCode.FAILED, device._read_activity_message)
             except ValueError as value_error:
                 self.logger.error(const.ERR_INVALID_JSON)
                 device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                message = const.ERR_INVALID_JSON
-                self.logger.info(message)
-                return (ResultCode.FAILED, message)
+                # message = const.ERR_INVALID_JSON
+                # self.logger.info(message)
+                # return (ResultCode.FAILED, device._read_activity_message)
             except KeyError as key_error:
                 self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                message = const.ERR_JSON_KEY_NOT_FOUND
-                self.logger.info(message)
-                return (ResultCode.FAILED, message)
+                # message = const.ERR_JSON_KEY_NOT_FOUND
+                # self.logger.info(message)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message, exception_count,
                                                                                         const.ERR_RELEASE_RESOURCES)
                 message = const.ERR_RELEASE_RESOURCES
                 self.logger.info(message)
-                return (ResultCode.FAILED, message)
+                # return (ResultCode.FAILED, message)
 
             # TODO:for future reference - throw exception:
-            # if exception_count > 0:
-            #     device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+                return (ResultCode.FAILED, device._read_activity_message)
 
             # argout = {
             #     "ReleaseAll": release_success,
@@ -1313,7 +1318,9 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             # PROTECTED REGION END #    //  CentralNode.ReleaseResource
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
+        doc_in= "The string in JSON format. The JSON contains following values:\nsubarrayID: "
+               "releaseALL boolean as true and receptorIDList.",
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
