@@ -216,10 +216,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "AssignResources",
             self.AssignResourcesCommand(self, self.state_model, self.logger)
         )
-        # self.register_command_object(
-        #     "ReleaseAllResources",
-        #     self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
-        # )
+        self.register_command_object(
+            "ReleaseAllResources",
+            self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
+        )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -318,7 +318,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #     return ""
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseAllResources
 
-    class ReleaseAllResources(ResponseCommand):
+    class ReleaseAllResourcesCommand(ResponseCommand):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
         """
@@ -352,7 +352,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             return True
 
-        def do(self, argin):
+        def do(self):
             """
             :param argin: None.
 
@@ -406,7 +406,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     # PROTECTED REGION END # // SdpSubarrayLeafNode.AssignResources
 
-    def is_AssignResources_allowed(self):
+    def is_ReleaseAllResources_allowed(self):
         """
         Whether this command is allowed to be run in current device
         state
@@ -420,19 +420,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseAllResources")
         return handler.check_allowed()
 
-
-
-
-    @command(
-        dtype_in='str',
-    )
-    @DebugIt()
-    def ReleaseResources(self, argin):
+    # @command(
+    #     dtype_in='str',
+    # )
+    # @DebugIt()
+    # def ReleaseResources(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseResources) ENABLED START #
-        """
-        This command results into selective release of the resources from
-        SDP Subarray. This command is yet to be implemented.
-        """
+        # """
+        # This command results into selective release of the resources from
+        # SDP Subarray. This command is yet to be implemented.
+        # """
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.ReleaseResources
 
     # @command(
