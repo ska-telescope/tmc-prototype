@@ -273,8 +273,8 @@ class SubarrayNode(SKASubarray):
                 ObsState.READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 if self.isScanCompleted:
-                    print("Calling Scan-EndScan command succeeded() method")
-                    self.scan_obj.succeeded()
+                    print("Calling EndScan command succeeded() method")
+                    self.endscan_obj.succeeded()
                 else:
                     # self._obs_state = ObsState.READY
                     # TODO:# Call ConfigureCommand's succeeded() method?
@@ -282,10 +282,18 @@ class SubarrayNode(SKASubarray):
                     self.configure_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
                 ObsState.IDLE:
-            # Assign Resource command suceess
-            # self._obs_state = ObsState.IDLE
-            print("Calling AssignResource command succeeded() method")
-            self.assign_obj.succeeded()
+            if self.is_end_command:
+                # End command suceess
+                # self._obs_state = ObsState.IDLE
+                print("Calling End command succeeded() method")
+                # As a part of end command send Stop track command on dish leaf node
+                self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                self.end_obj.succeeded()
+            else:
+                # Assign Resource command suceess
+                # self._obs_state = ObsState.IDLE
+                print("Calling AssignResource command succeeded() method")
+                self.assign_obj.succeeded()
             # if len(self.dishPointingStateMap.values()) != 0:
             #     if pointing_state_count_track == len(self.dishPointingStateMap.values()):
             #         if self.only_dishconfig_flag == True:
@@ -575,15 +583,15 @@ class SubarrayNode(SKASubarray):
                 device._read_activity_message = const.STR_CSP_END_SCAN_INIT
                 device._scan_id = ""
 
-                if device._csp_sa_obs_state == ObsState.IDLE and device._sdp_sa_obs_state ==\
-                        ObsState.IDLE:
-                    if len(device.dishPointingStateMap.values()) != 0:
-                        device.calculate_observation_state()
+                # if device._csp_sa_obs_state == ObsState.IDLE and device._sdp_sa_obs_state ==\
+                #         ObsState.IDLE:
+                #     if len(device.dishPointingStateMap.values()) != 0:
+                #         device.calculate_observation_state()
 
                 device.set_status(const.STR_SCAN_COMPLETE)
                 self.logger.info(const.STR_SCAN_COMPLETE)
                 device._read_activity_message = const.STR_END_SCAN_SUCCESS
-                return (ResultCode.STARTED, const.STR_END_SCAN_SUCCESS)
+                return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1098,6 +1106,7 @@ class SubarrayNode(SKASubarray):
             device._obs_mode = ObsMode.IDLE
             device.isScanRunning = False
             device.isScanCompleted = False
+            device.is_end_command = False
             device._scan_id = ""
             device._sb_id = ""
             device.scan_duration = 0
@@ -1287,8 +1296,9 @@ class SubarrayNode(SKASubarray):
             "build_up_dsh_cmd_data", scan_configuration, self.only_dishconfig_flag)
 
         try:
+            print ("self._dish_leaf_node_group", self._dish_leaf_node_group)
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
-            self.logger.debug("Configure command is invoked on the Dish Leaf Nodes Group")
+            self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
             self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
         except DevFailed as df:
@@ -1349,6 +1359,14 @@ class SubarrayNode(SKASubarray):
             self.logger.info(message)
             return (ResultCode.STARTED, message)
 
+    def call_stop_track_command(self):
+        print("Before Stop track")
+        print("device._dish_leaf_node_group:", self._dish_leaf_node_group)
+        # TODO: Why we are calling stop track as group command
+        self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+        print("After stop track")
+        self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
+
     class EndCommand(SKASubarray.EndCommand):
         """
         A class for SKASubarray's End() command.
@@ -1367,18 +1385,19 @@ class SubarrayNode(SKASubarray):
             exception_message = []
             exception_count = 0
             try:
-                self.logger.debug("EndSB invoked on SubarrayNode.")
+                self.logger.info("End command invoked on SubarrayNode.")
                 # if device._obs_state == ObsState.READY:
                 device._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
                 self.logger.info(const.STR_CMD_ENDSB_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
                 self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
-                device._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-                self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
+                # TODO: Uncomment this after resolving issues
+                # device.call_stop_track_command()
                 device._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
                 device.set_status(const.STR_ENDSB_SUCCESS)
-                return (ResultCode.STARTED, const.STR_ENDSB_SUCCESS)
+                device.is_end_command = True
+                return (ResultCode.OK, const.STR_ENDSB_SUCCESS)
                 # else:
                 #     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                 #     self.logger.error(const.ERR_DEVICE_NOT_READY)
