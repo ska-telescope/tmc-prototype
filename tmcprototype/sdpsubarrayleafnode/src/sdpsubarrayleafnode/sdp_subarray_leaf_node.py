@@ -638,22 +638,23 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                return(ResultCode.FAILED,const.ERR_INVALID_JSON)
+                # return(ResultCode.FAILED,const.ERR_INVALID_JSON)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-                return(ResultCode.FAILED,const.ERR_ASSGN_RESOURCES)
+                # return(ResultCode.FAILED,const.ERR_ASSGN_RESOURCES)
 
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                 exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
+                # return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
+
+            # throw exception:
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
                 return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
 
-        #     # throw exception:
-        #     if exception_count > 0:
-        #         self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-        #
         #     return ""
         #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 

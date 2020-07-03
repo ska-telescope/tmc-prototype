@@ -224,29 +224,29 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-# def test_assign_resources_should_raise_devfailed_exception():
-#     # arrange:
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-#
-#     sdp_subarray1_proxy_mock = Mock()
-#     sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-#     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) \
-#             as tango_context:
-#         device_proxy = tango_context.device
-#         # act:
-#         with pytest.raises(tango.DevFailed):
-#             device_proxy.AssignResources(assign_input_str)
+def test_assign_resources_should_raise_devfailed_exception():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
 
-        # assert:
-        # assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        with pytest.raises(tango.DevFailed):
+            device_proxy.AssignResources(assign_input_str)
+
+        assert:
+        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
 
 
 def test_release_resources_when_sdp_subarray_is_idle():
