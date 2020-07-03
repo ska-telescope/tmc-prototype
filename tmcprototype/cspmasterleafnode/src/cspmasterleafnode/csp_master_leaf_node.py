@@ -408,32 +408,35 @@ class CspMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    # @command(
-    #     dtype_in=('str',),
-    #     doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-    #            "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch ON.",
-    # )
-    # @DebugIt()
-    # def On(self, argin):
-    #     # PROTECTED REGION ID(CspMasterLeafNode.On) ENABLED START #
-    #     """ Triggers On the CSP Element.
-    #
-    #     :param argin: DevStringArray.
-    #
-    #     If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-    #     each array element specifies the FQDN of the CSP SubElement to switch ON.
-    #
-    #     :return: None
-    #     """
-    #     self._csp_proxy.command_inout_asynch(const.CMD_ON, argin, self.cmd_ended_cb)
-    #     self.logger.debug(const.STR_ON_CMD_ISSUED)
-    #
-    #     # PROTECTED REGION END #    //  CspMasterLeafNode.On
+    @command(
+        dtype_in=('str',),
+        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
+               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch ON.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def On(self, argin):
+        # PROTECTED REGION ID(CspMasterLeafNode.On) ENABLED START #
+        """ Triggers On the CSP Element.
+
+        :param argin: DevStringArray.
+
+        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
+        each array element specifies the FQDN of the CSP SubElement to switch ON.
+
+        :return: None
+        """
+        handler = self.get_command_object("On")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+        # PROTECTED REGION END #    //  CspMasterLeafNode.On
 
     # def call_on_command(self):
     #     self.OnCommand.do()
 
-    class OnCommand(SKASubarray.OnCommand):
+    class OnCommand(ResponseCommand):
         """
         A class for CSP Master Leaf Node's On() command.
         """
@@ -453,34 +456,36 @@ class CspMasterLeafNode(SKABaseDevice):
             """
 
             device = self.target
-
+            print("device object is :", device)
             device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
-            return (ResultCode.STARTED, const.STR_ON_CMD_ISSUED)
+            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
-    # @command(
-    #     dtype_in=('str',),
-    #     doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-    #            "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch OFF.",
-    # )
-    # @DebugIt()
-    # def Off(self, argin):
-    #     # PROTECTED REGION ID(CspMasterLeafNode.Off) ENABLED START #
-    #     """ Triggers Off the CSP Element.
-    #
-    #     :param argin: DevStringArray.
-    #
-    #     If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-    #     each array element specifies the FQDN of the CSP SubElement to switch OFF.
-    #
-    #     :return: None
-    #     """
-    #     self._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, self.cmd_ended_cb)
-    #     self.logger.debug(const.STR_OFF_CMD_ISSUED)
-    #
-    #     # PROTECTED REGION END #    //  CspMasterLeafNode.Off
+    @command(
+        dtype_in=('str',),
+        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
+               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch OFF.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Off(self, argin):
+        # PROTECTED REGION ID(CspMasterLeafNode.Off) ENABLED START #
+        """ Triggers Off the CSP Element.
 
-    class OffCommand(SKASubarray.OffCommand):
+        :param argin: DevStringArray.
+
+        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
+        each array element specifies the FQDN of the CSP SubElement to switch OFF.
+
+        :return: None
+        """
+        handler = self.get_command_object("Off")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+        # PROTECTED REGION END #    //  CspMasterLeafNode.Off
+
+    class OffCommand(ResponseCommand):
         """
         A class for CSP Master Leaf Node's Off() command.
         """
@@ -505,29 +510,31 @@ class CspMasterLeafNode(SKABaseDevice):
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             return (ResultCode.STARTED, const.STR_OFF_CMD_ISSUED)
 
-    # @command(
-    #     dtype_in=('str',),
-    #     doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-    #            "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
-    #            "STANDBY mode.",
-    # )
-    # @DebugIt()
-    # def Standby(self, argin):
-    #     # PROTECTED REGION ID(CspMasterLeafNode.Standby) ENABLED START #
-    #     """ Sets Standby Mode on the CSP Element.
-    #
-    #     :param argin: DevStringArray.
-    #
-    #     If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-    #     each array element specifies the FQDN of the CSP SubElement to put in
-    #     STANDBY mode.
-    #
-    #     :return: None
-    #     """
-    #     self._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.cmd_ended_cb)
-    #     self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
-    #
-    #     # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
+    @command(
+        dtype_in=('str',),
+        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
+               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
+               "STANDBY mode.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Standby(self, argin):
+        # PROTECTED REGION ID(CspMasterLeafNode.Standby) ENABLED START #
+        """ Sets Standby Mode on the CSP Element.
+
+        :param argin: DevStringArray.
+
+        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
+        each array element specifies the FQDN of the CSP SubElement to put in
+        STANDBY mode.
+
+        :return: None
+        """
+        handler = self.get_command_object("Standby")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+        # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
 
     class StandbyCommand(ResponseCommand):
         """
@@ -563,6 +570,14 @@ class CspMasterLeafNode(SKABaseDevice):
         self.register_command_object(
             "Standby",
             self.StandbyCommand(self, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "On",
+            self.OnCommand(self, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "Off",
+            self.OffCommand(self, self.state_model, self.logger)
         )
 
 

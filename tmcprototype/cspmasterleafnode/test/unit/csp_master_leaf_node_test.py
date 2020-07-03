@@ -43,7 +43,7 @@ def raise_devfailed_exception(evt_name, evt_type, callback, stateless=True):
     tango.Except.throw_exception("CspMasterLeafNode_cspCbfHealthCallback_with_exceptionfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
-'''
+
 def test_event_to_raise_devfailed_exception():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
@@ -691,12 +691,6 @@ def test_write_activity_message():
         assert tango_context.device.activityMessage == 'test'
 
 
-def test_state():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        assert tango_context.device.State() == DevState.ALARM
-
-
 def test_status():
     # act & assert:
     with fake_tango_system(CspMasterLeafNode) as tango_context:
@@ -717,42 +711,12 @@ def test_logging_targets():
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
-def test_test_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        test_mode = TestMode.NONE
-        tango_context.device.testMode = test_mode
-        assert tango_context.device.testMode == test_mode
-
-
-def test_simulation_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        simulation_mode = SimulationMode.FALSE
-        tango_context.device.simulationMode = simulation_mode
-        assert tango_context.device.simulationMode == simulation_mode
-
-
-def test_control_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        control_mode = ControlMode.REMOTE
-        tango_context.device.controlMode = control_mode
-        assert tango_context.device.controlMode == control_mode
-
-
-def test_admin_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
-
-
 def test_health_state():
     # act & assert:
     with fake_tango_system(CspMasterLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
-'''
+
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
