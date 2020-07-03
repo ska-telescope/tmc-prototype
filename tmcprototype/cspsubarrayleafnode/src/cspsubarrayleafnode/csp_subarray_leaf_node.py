@@ -853,8 +853,29 @@ class CspSubarrayLeafNode(SKABaseDevice):
     #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.ReleaseResources
 
 
-    class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
+    class ReleaseAllResourcesCommand(ResponseCommand):
         # PROTECTED REGION ID(CspSubarrayLeafNode.ReleaseResources) ENABLED START #
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
+                                             "ReleaseAllResources() is not allowed in current state",
+                                             "cspsubarrayleafnode.ReleaseAllResources()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self):
             """
             It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
@@ -878,12 +899,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 return (ResultCode.STARTED,const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
                 return (ResultCode.FAILED,const.ERR_RELEASE_ALL_RESOURCES)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                             exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
                 return (ResultCode.FAILED, const.ERR_RELEASE_ALL_RESOURCES)
 
@@ -892,9 +913,32 @@ class CspSubarrayLeafNode(SKABaseDevice):
             #     self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.ReleaseResources
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def ReleaseAllResources(self):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.ReleaseAllResources) ENABLED START #
+        """ Invokes ReleaseAllResources command on cspsubarrayleafnode"""
+        handler = self.get_command_object("ReleaseAllResources")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
 
+    def is_ReleaseAllResources_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("ReleaseAllResources")
+        return handler.check_allowed()
 
-
+        # PROTECTED REGION END # // CspSubarrayLeafNode.AssignResources
     #
     # @command(
     #     dtype_in=('str',),

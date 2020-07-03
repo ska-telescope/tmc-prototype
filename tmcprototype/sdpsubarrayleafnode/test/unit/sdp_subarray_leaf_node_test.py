@@ -223,7 +223,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
                                                                   any_method(with_name='cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
-"""
+
 # def test_assign_resources_should_raise_devfailed_exception():
 #     # arrange:
 #     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -249,31 +249,31 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         # assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
 
 
-# def test_release_resources_when_sdp_subarray_is_idle():
-#     # arrange:
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-# 
-#     sdp_subarray1_proxy_mock = Mock()
-#     sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-# 
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) as tango_context:
-#         device_proxy = tango_context.device
-#         # act:
-#         device_proxy.ReleaseAllResources()
-# 
-#         # assert:
-#         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RELEASE_RESOURCES,
-#                                                                  any_method(with_name='cmd_ended_cb'))
-#         assert_activity_message(device_proxy, const.STR_REL_RESOURCES)
-# 
-# 
+def test_release_resources_when_sdp_subarray_is_idle():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.ReleaseAllResources()
+
+        # assert:
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RELEASE_RESOURCES,
+                                                                 any_method(with_name='cmd_ended_cb'))
+        assert_activity_message(device_proxy, const.STR_REL_RESOURCES)
+
+
 # def test_release_resources_should_raise_devfailed_exception():
 #     # arrange:
 #     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -445,7 +445,6 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
 #         # assert:
 #         assert const.ERR_ENDSB_INVOKING_CMD in tango_context.device.activityMessage
 
-"""
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute
 
