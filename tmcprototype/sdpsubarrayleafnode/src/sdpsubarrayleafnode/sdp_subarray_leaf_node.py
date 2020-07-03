@@ -413,15 +413,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def ReleaseAllResources(self):
 
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.ReleaseAllResources) ENABLED START #
         """
-        Invoke AssignResource on SdpSubarrayLeafNode.
+        Invoke ReleaseAllResources on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("ReleaseAllResources")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.AssignResources
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.ReleaseAllResources
 
     def is_ReleaseAllResources_allowed(self):
         """
@@ -999,15 +999,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def Scan(self, argin):
 
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Scan) ENABLED START #
         """
-        Invoke Configure on SdpSubarrayLeafNode.
+        Invoke Scan on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("Scan")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Scan
 
     def is_Scan_allowed(self):
         """
@@ -1137,7 +1137,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def EndScan(self):
 
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.EndScan) ENABLED START #
         """
         Invoke EndScan on SdpSubarrayLeafNode.
         """
@@ -1263,15 +1263,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def EndSB(self):
 
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
         """
-        Invoke Configure on SdpSubarrayLeafNode.
+        Invoke EndSB on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("EndSB")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.EndSB
 
     def is_EndSB_allowed(self):
         """
