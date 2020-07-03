@@ -296,36 +296,36 @@ def test_release_resources_when_sdp_subarray_is_idle():
 # 
 #         # assert:
 #         assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
-# 
-# 
-# def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle():
-#     # arrange:
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-# 
-#     sdp_subarray1_proxy_mock = Mock()
-#     sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-# 
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) \
-#             as tango_context:
-#         # act:
-#         tango_context.device.Configure(configure_str)
-# 
-#         # assert:
-#         json_argument = json.loads(configure_str)
-#         sdp_arg = json_argument["sdp"]
-#         sdp_configuration = sdp_arg.copy()
-#         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
-#                                                                         json.dumps(sdp_configuration),
-#                                                                      any_method(with_name='cmd_ended_cb'))
-# 
-# 
+
+
+def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Configure(configure_str)
+
+        # assert:
+        json_argument = json.loads(configure_str)
+        sdp_arg = json_argument["sdp"]
+        sdp_configuration = sdp_arg.copy()
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
+                                                                        json.dumps(sdp_configuration),
+                                                                     any_method(with_name='cmd_ended_cb'))
+
+
 # def test_configure_should_raise_devfailed_exception():
 #     # arrange:
 #     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'

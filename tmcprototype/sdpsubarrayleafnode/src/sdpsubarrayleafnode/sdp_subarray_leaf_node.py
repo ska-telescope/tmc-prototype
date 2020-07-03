@@ -220,6 +220,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "ReleaseAllResources",
             self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "Configure",
+            self.ConfigureCommand(self, self.state_model, self.logger)
+        )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -731,7 +735,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #
     #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
 
-    class ConfigureCommand(SKASubarray.ConfigureCommand):
+    class ConfigureCommand(ResponseCommand):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
 
@@ -799,6 +803,39 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             #         self.throw_exception(exception_message, const.STR_CONFIG_EXEC)
             #
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Configure
+
+    @command(
+        dtype_in=('str'),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Configure(self, argin):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Configure) ENABLED START #
+        """
+        Invoke Configure on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Configure")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Configure
+
+    def is_Configure_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+
+        handler = self.get_command_object("Configure")
+        return handler.check_allowed()
+
 
     # @command(
     #     dtype_in='str',
