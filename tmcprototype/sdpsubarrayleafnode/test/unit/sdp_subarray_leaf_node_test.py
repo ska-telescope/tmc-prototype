@@ -348,32 +348,32 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
 # 
 #         # assert:
 #         assert const.ERR_CONFIGURE in tango_context.device.activityMessage
-# 
-# 
-# def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
-#     # arrange:
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-# 
-#     sdp_subarray1_proxy_mock = Mock()
-#     sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-# 
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) \
-#             as tango_context:
-#         # act:
-#         tango_context.device.EndScan()
-# 
-#         # assert:
-#         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
-#                                                                      any_method(with_name='cmd_ended_cb'))
-# 
-# 
+
+
+def test_end_scan_should_command_sdp_subarray_to_end_scan_when_it_is_scanning():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.EndScan()
+
+        # assert:
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
+                                                                     any_method(with_name='cmd_ended_cb'))
+
+
 # def test_end_scan_should_raise_devfailed_exception():
 #     # arrange:
 #     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
