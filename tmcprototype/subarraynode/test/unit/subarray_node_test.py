@@ -701,7 +701,7 @@ def test_configure_command_subarray_with_invalid_key():
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(configure_invalid_key)
         # assert:
-        assert tango_context.device.obsState == ObsState.IDLE
+        assert tango_context.device.obsState == ObsState.CONFIGURING
 
 
 def test_configure_command_subarray_with_invalid_configure_input():

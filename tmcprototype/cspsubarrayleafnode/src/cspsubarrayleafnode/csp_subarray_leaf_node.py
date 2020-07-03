@@ -273,7 +273,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             if(self.CspSubarrayProxy.obsState == ObsState.CONFIGURING
                     or self.CspSubarrayProxy.obsState == ObsState.READY
                     or self.CspSubarrayProxy.obsState == ObsState.SCANNING):
-                self.logger.info("Calculating delays.")
+                self.logger.debug("Calculating delays.")
                 time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
                 time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
 
