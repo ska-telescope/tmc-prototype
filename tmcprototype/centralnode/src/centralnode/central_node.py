@@ -146,9 +146,7 @@ class CentralNode(SKABaseDevice):
 
     def throw_exception(self, excpt_msg_list, read_actvity_msg):
         err_msg = ''
-        self.logger.info("Raising exception with message(s):")
         for item in excpt_msg_list:
-            self.logger.info(item)
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
         self.logger.error(const.STR_CMD_FAILED)
@@ -723,6 +721,11 @@ class CentralNode(SKABaseDevice):
                 str(resource_error.resources_reallocation))
             self._read_activity_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
             exception_message.append(const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation))
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+        except ValueError as ve:
+            self.logger.exception("Exception in AssignResources command: %s", str(ve))
+            self._read_activity_message = "Invalid value in input: " + str(ve)
+            exception_message.append("Invalid value in input: " + str(ve))
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,

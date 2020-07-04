@@ -72,7 +72,7 @@ class AssignResourceValidator():
             if receptor_id not in self._receptor_list:
                 self.logger.debug("Receptor %s. is not present.", receptor_id)
                 return False
-        
+
         return True
 
     def loads(self, input_string):
@@ -113,6 +113,12 @@ class AssignResourceValidator():
         self.logger.debug("SubarrayID validation successful.")
 
         ## Validate receptorIDList
+        try:
+            receptor_list = assign_request["dish"]["receptorIDList"]
+            assert len(receptor_list) > 0
+        except AssertionError as ae:
+            raise ValueError("Empty receptorIDList") from ae
+
         if(not self._receptor_exists(assign_request["dish"]["receptorIDList"])):
             exception_message = "Receptor id not present. Valid values are: " + str(self._receptor_list)
             raise ResourceNotPresentError(exception_message)

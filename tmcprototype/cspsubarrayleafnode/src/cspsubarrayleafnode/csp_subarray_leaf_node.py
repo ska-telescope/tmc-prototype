@@ -8,7 +8,7 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 import datetime
 import importlib.resources
@@ -718,23 +718,18 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             exception_message.append(self._read_activity_message)
-            exception_count += 1
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
         except KeyError as key_error:
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             exception_message.append(self._read_activity_message)
-            exception_count += 1
-
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                 exception_message,
                 exception_count,
                 const.ERR_ASSGN_RESOURCES)
-
-        # throw exception:
-        if exception_count:
-            self.logger.exception("Exception in AssignResource: %s", exception_message)
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources

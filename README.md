@@ -85,7 +85,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * Linux/Ubuntu (18.04 LTS) 
 * Python 3.6
 * [python3-pip](https://packages.ubuntu.com/xenial/python3-pip)
-* [Tango (9.3.3-rc2)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
+* [Tango (9.3.4-rc2)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
 * [PyTango (9.3.2)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
 * skabase (LMC Base classes for SKA): Refer Section 3.1 for installation guide
 * [Elettra Alarm Handler](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing)

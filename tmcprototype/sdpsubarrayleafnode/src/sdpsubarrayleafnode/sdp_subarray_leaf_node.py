@@ -61,7 +61,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         exception_count = 0
         exception_message = []
-        self.logger.debug(str(event.errors))
+
         try:
             if event.err:
                 log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
@@ -89,23 +89,22 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
           :return: None.
         """
-        try:
-            if event.err:
-                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self._read_activity_message = log
-                self.logger.error(log)
-            else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self._read_activity_message = log
-                self.logger.debug(log)
-        except tango.DevFailed as df:
-            self.logger.exception(df)
-            tango.Except.re_throw_exception(df,
-                                              "Exception occured in Assign resource of SDP subarray",
-                                              "SDP.AssignResources",
-                                              tango.ErrSeverity.ERR)
+        if event.err:
+            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            self._read_activity_message = log
+            self.logger.error(log)
+            tango.Except.throw_exception(
+                "SDP Subarray returned error while assigning resources",
+                str(event.errors),
+                event.cmd_name,
+                tango.ErrSeverity.ERR
+            )
+        else:
+            log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+            self._read_activity_message = log
+            self.logger.debug(log)
 
-    # Throw exceptions
+    # Throw exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(df)
         self.logger.error(log_msg)

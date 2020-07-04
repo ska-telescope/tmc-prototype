@@ -132,7 +132,7 @@ def test_assign_command_assignresources_ended_with_callback_method():
         assert const.STR_COMMAND in tango_context.device.activityMessage
 
 
-def test_assign_command_assignresources_ended_with_command_callback_with_event_error():
+def test_assign_command_assignresources_ended_raises_exception_for_error_event():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
@@ -148,10 +148,12 @@ def test_assign_command_assignresources_ended_with_command_callback_with_event_e
         # act:
         tango_context.device.AssignResources(assign_input_str)
         dummy_event = command_callback_with_event_error(const.CMD_ASSIGN_RESOURCES)
-        event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
+        
+        with pytest.raises(tango.DevFailed) as df:
+            event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
-
+        assert "Event error in Command Callback" in str(df)
+        # assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
 def command_callback(command_name):
     fake_event = MagicMock()

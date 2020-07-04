@@ -107,35 +107,6 @@ def test_assign_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
-
-@pytest.mark.xfail
-def test_assign_command_with_callback_method_with_command_error():
-    # arrange:
-    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
-    dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
-    csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
-    proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
-    event_subscription_map = {}
-
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_resources_input = []
-        assign_resources_input.append(assign_input_str)
-        device_proxy = tango_context.device
-        # act:
-
-        with pytest.raises(Exception):
-            device_proxy.AssignResources(assign_resources_input)
-            dummy_event = command_callback_with_command_exception()
-            event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
-        # assert:
-        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
-
-
 def test_assign_command_with_callback_method_with_devfailed_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -315,7 +286,7 @@ def test_assign_resources_should_raise_devfailed_exception():
         assign_resources_input.append(assign_input_str)
         device_proxy=tango_context.device
         ##act
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             device_proxy.AssignResources(assign_resources_input)
         #assert
         assert const.ERR_ASSGN_RESOURCES in str(df)

@@ -8,7 +8,6 @@ class ResourceReassignmentError(Exception):
     def __init__(self, message, resources=None):
         super(ResourceReassignmentError, self).__init__(message)
         self.value = message
-        self.resources_reallocation = []
         self.resources_reallocation = resources
 
 class InvalidJSONError(ValidationError):

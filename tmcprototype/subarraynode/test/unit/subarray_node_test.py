@@ -582,7 +582,7 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
 
         # assert
         assert tango_context.device.State() == DevState.OFF
-        assert "Assign resources failed on CspSubarrayLeafNode" in str(df.value)
+        assert "This is error message for devfailed" in str(df)
 
 def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devfailed_exception():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
@@ -633,7 +633,7 @@ def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devf
 
         # assert
         assert tango_context.device.State() == DevState.OFF
-        assert "Assign resources failed on SdpSubarrayLeafNode" in str(df.value)
+        assert "This is error message for devfailed" in str(df)
 
 
 def test_release_resource_command_subarray():
