@@ -252,7 +252,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         self.register_command_object("Standby",self.StandbyCommand(self, self.state_model, self.logger))
         
 
-    class OnCommand(SKASubarray.OnCommand):
+    class OnCommand(SKABaseDevice.OnCommand):
         """
                A class for SDP master's On() command.
                """
@@ -272,7 +272,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             return (ResultCode.OK, "On command execution started")
 
 
-    class OffCommand(SKASubarray.OffCommand):
+    class OffCommand(SKABaseDevice.OffCommand):
         """
                A class for SDP master's Off() command.
                """

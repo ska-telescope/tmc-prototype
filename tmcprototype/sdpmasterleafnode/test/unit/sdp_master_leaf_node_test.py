@@ -50,6 +50,7 @@ def test_off_should_command_sdp_master_leaf_node_to_stop():
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
+        tango_context.device.On()
         tango_context.device.Off()
         # assert:
         assert tango_context.device.activityMessage in const.STR_OFF_CMD_SUCCESS
