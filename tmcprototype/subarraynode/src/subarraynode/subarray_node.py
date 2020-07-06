@@ -33,6 +33,7 @@ from . import const
 from .const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsMode, ObsState, SimulationMode
 from ska.base import SKASubarray
+from subarraynode.exceptions import InvalidObsStateError
 from ska_telmodel.csp import interface
 
 __all__ = ["SubarrayNode", "main"]
@@ -362,6 +363,7 @@ class SubarrayNode(SKASubarray):
 
         return proxy_created_flag
 
+    @DebugIt(show_args=True)
     def add_receptors_in_group(self, argin):
         """
         Creates a tango group of the successfully allocated resources in the subarray.
@@ -385,8 +387,6 @@ class SubarrayNode(SKASubarray):
         allocation_success = []
         allocation_failure = []
         # Add each dish into the tango group
-        log_msg = "add_receptors_in_group::",argin
-        self.logger.debug(log_msg)
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
@@ -430,6 +430,8 @@ class SubarrayNode(SKASubarray):
                 self.set_status(const.STR_ASSIGN_RES_SUCCESS)
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
+                # allocation_success.append(dev_failed)
+                self.logger.exception("Receptor %s allocation failed.", str_leafId)
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                     exception_message, exception_count, const.ERR_ADDING_LEAFNODE)
                 allocation_failure.append(str_leafId)
@@ -443,12 +445,16 @@ class SubarrayNode(SKASubarray):
 
                 if self._dishLnVsPointingStateEventID[devProxy]:
                     devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
-            except(DevFailed, Exception) as except_occurred:
-                [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ASSIGN_RES_CMD)
+            except (TypeError) as except_occurred:
+                # allocation_success.append(except_occurred)
+                self.logger.exception(except_occurred)
+                allocation_failure.append(str_leafId)
+                exception_count += 1
+
         # Throw Exception
         if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+            exception_msg = "Failed to allocate receptors [", allocation_failure, "]"
+            self.throw_exception(exception_msg, const.STR_ASSIGN_RES_EXEC)
 
         log_msg = "List of Resources added to the Subarray::",allocation_success
         self.logger.debug(log_msg)
@@ -463,14 +469,13 @@ class SubarrayNode(SKASubarray):
             Contains the list of strings that has the resources ids. Currently this list contains only
             receptor ids.
 
+            Example: ['0001', '0002']
+
         :return: List of strings.
-
-        Example: ['0001', '0002']
-
             Returns the list of CSP resources successfully assigned to the Subarray. Currently, the
             CSPSubarrayLeafNode.AssignResources function returns void. The function only loops back
-            the input argument in case of successful resource allocation, or returns an empty list in case
-            of failure.
+            the input argument in case of successful resource allocation, or returns exception 
+            object in case of failure.
         """
         arg_list = []
         json_argument = {}
@@ -481,11 +486,18 @@ class SubarrayNode(SKASubarray):
             json_argument[const.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
             self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
-            self.logger.info(const.ASSIGN_RESOURCES_INV_CSP_SALN)
+            self.logger.debug(const.ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:
-            self.logger.error(const.ERR_CSP_CMD)
-            self.logger.debug(df)
+            # Log exception here as The callstack from this thread wont get 
+            # propagated to main thread.
+            self.logger.exception("CSP Subarray failed to allocate resources.")
+            tango.Except.re_throw_exception(df,
+                "CSP Subarray failed to allocate resources.",
+                "******Some problem",
+                "SubarrayNode.assign_csp_resources",
+                tango.ErrSeverity.ERR
+            )
 
         # For this PI CSP Subarray Leaf Node does not return anything. So this function is
         # looping the receptor ids back.
@@ -501,24 +513,28 @@ class SubarrayNode(SKASubarray):
         :param argin: List of strings
             Contains the list of strings that has the resources ids. Currently
             processing block ids are passed to this function.
+            Example: ['PB1', 'PB2']
 
         :return: List of strings.
-        Example: ['PB1', 'PB2']
-
             Returns the list of successfully assigned resources. Currently the
             SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
-            function just loops back the input argument in case of success. In case of
-            failure, empty list is returned.
+            function just loops back the input argument in case of success or returns exception 
+            object in case of failure.
         """
         argout = []
         try:
             str_json_arg = json.dumps(argin)
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
-            self.logger.info(const.ASSIGN_RESOURCES_INV_SDP_SALN)
+            self.logger.debug(const.ASSIGN_RESOURCES_INV_SDP_SALN)
             argout = argin
         except DevFailed as df:
-            self.logger.error(const.ERR_SDP_CMD)
-            self.logger.debug(df)
+            self.logger.exception("SDP Subarray failed to allocate resources.")
+            tango.Except.re_throw_exception(df,
+                "SDP Subarray failed to allocate resources.",
+                str(df),
+                "SubarrayNode.assign_sdp_resources",
+                tango.ErrSeverity.ERR
+            )
 
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
@@ -774,7 +790,7 @@ class SubarrayNode(SKASubarray):
         dtype_out=('str',),
         doc_out="String in JSON format consisting of Resources added to the subarray.",
     )
-    @DebugIt()
+    @DebugIt(show_args=True)
     def AssignResources(self, argin):
         """
         Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
@@ -790,21 +806,24 @@ class SubarrayNode(SKASubarray):
 
             Example:
 
-        {"dish":{"receptorIDList":["0001"]},"sdp":{"id":"sbi-mvp01-20200325-00001","max_length"
-        :100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771","dec":
-        "-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max"
-        :0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
-        "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B",
-        "coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,
-        "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
-        {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
-        [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime"
-        ,"id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002",
-        "workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},
-        {"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},
-         "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},
-        {"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},
-         "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}}
+            {"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":
+            "sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",
+            "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,
+            "link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
+            "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
+            "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",
+            "channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,
+            "freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,
+            "start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
+            [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":
+            {"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},
+            {"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime",
+            "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":
+            {"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[
+            {"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":
+            "pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},
+            "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
+            ["calibration"]}]}]}}
 
 
         :return:
@@ -813,52 +832,57 @@ class SubarrayNode(SKASubarray):
             Example:
             ["0001","0002"]
             as argout if allocation successful.
+
+
+        :throws: DevFailed.
         """
-        exception_count = 0
-        exception_message = []
+        # exception_count = 0
+        # exception_message = []
+        argout = []
+        # Validate if Subarray is in IDLE obsState
+        try:
+            self.validate_obs_state()
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception("Subarray is not in IDLE obsState",
+                            "SubarrayNode raised InvalidObsStateError in AssignResources command",
+                            "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
 
         # 1. Argument validation
         try:
             # Allocation success and failure lists
-            resource_json = json.loads(argin)
-            receptor_list = resource_json["dish"]["receptorIDList"]
-            sdp_resources = resource_json.get("sdp")
-            self._sb_id = resource_json["sdp"]["id"]
-            log_msg = "assign_resource_whole_json", resource_json
-            self.logger.debug(log_msg)
+            resources = json.loads(argin)
+            receptor_list = resources["dish"]["receptorIDList"]
+            sdp_resources = resources.get("sdp")
+            self._sb_id = resources["sdp"]["id"]
 
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
             # validation of SDP and CSP resources yet to be implemented as of now reources are not present.
-
-        except json.JSONDecodeError as jerror:
-            log_message = const.ERR_INVALID_JSON + str(jerror)
-            self.logger.error(log_message)
-            self._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-            log_msg = "assign_resource_argin",argin
-            self.logger.debug(log_msg)
-
+        except json.JSONDecodeError as json_error:
+            self.logger.exception(const.ERR_INVALID_JSON)
+            message = const.ERR_INVALID_JSON + json_error
+            self._read_activity_message = message
+            tango.Except.throw_exception(const.STR_CMD_FAILED, message,
+                                         const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
         except ValueError as value_error:
-            str_log = const.ERR_SCAN_CMD +"\n" + str(value_error) + const.ERR_INVALID_DATATYPE
-            self.logger.error(str_log)
-            self.logger.error(const.ERR_INVALID_DATATYPE)
-            self._read_activity_message = const.ERR_INVALID_DATATYPE + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+            self.logger.exception(const.ERR_INVALID_DATATYPE)
+            message = const.ERR_INVALID_DATATYPE + value_error
+            self._read_activity_message = message
+            tango.Except.throw_exception(const.STR_CMD_FAILED, message,
+                                         const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
-        with exception_count is 0 and ThreadPoolExecutor(3) as executor:
+        with ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
-            self.logger.info(const.STR_DISH_ALLOCATION)
+            self.logger.debug(const.STR_DISH_ALLOCATION)
             dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
 
             # 2.2. Add resources in CSP subarray
-            self.logger.info(const.STR_CSP_ALLOCATION)
+            self.logger.debug(const.STR_CSP_ALLOCATION)
             csp_allocation_status = executor.submit(self.assign_csp_resources, receptor_list)
 
             # 2.3. Add resources in SDP subarray
-            self.logger.info(const.STR_SDP_ALLOCATION)
+            self.logger.debug(const.STR_SDP_ALLOCATION)
             sdp_allocation_status = executor.submit(self.assign_sdp_resources, sdp_resources)
 
             # 2.4 wait for result
@@ -868,30 +892,88 @@ class SubarrayNode(SKASubarray):
                   ):
                 pass
 
-            # 2.5. prepare return value
-            dish_allocation_result = dish_allocation_status.result()
-            log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
-            self.logger.debug(log_msg)
+            # 2.5. check results
+            try:
+                dish_allocation_result = dish_allocation_status.result()
+                log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
+                self.logger.debug(log_msg)
+                dish_allocation_result.sort()
+                self.logger.debug("Dish group is created successfully")
+            except DevFailed as df:
+                self.logger.exception("Dish allocation failed.")
+                tango.Except.re_throw_exception(
+                    df,
+                    "Dish allocation failed."
+                    "SubarrayNode.AssignResources",
+                    tango.ErrSeverity.ERR
+                )
 
-            csp_allocation_result = csp_allocation_status.result()
-            log_msg = const.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
-            self.logger.debug(log_msg)
+            try:
+                csp_allocation_result = csp_allocation_status.result()
+                log_msg = const.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
+                self.logger.debug(log_msg)
 
-            sdp_allocation_result = sdp_allocation_status.result()
-            log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
-            self.logger.debug(log_msg)
+                csp_allocation_result.sort()
+                # assert csp_allocation_result == receptor_list
+                self.logger.info("Assign Resources on CSPSubarray successful")
+            except DevFailed as df:
+                #The exception is already logged so not logged again.
+                tango.Except.re_throw_exception(
+                    df,
+                    "CSP allocation failed."
+                    "SubarrayNode.AssignResources",
+                    tango.ErrSeverity.ERR
+                )
+            # except AssertionError as error:
+            #     self.logger.exception("Failed to assign CSP resources: actual %s != %s expected", 
+            #         csp_allocation_result, receptor_list)
+            #     tango.Except.throw_exception(
+            #         "Assign resources failed on CspSubarrayLeafNode", 
+            #         str(csp_allocation_result),
+            #         "subarraynode.AssignResources()",
+            #         tango.ErrSeverity.ERR)
 
-            dish_allocation_result.sort()
-            receptor_list.sort()
+            try:
+                sdp_allocation_result = sdp_allocation_status.result()
+                log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
+                self.logger.debug(log_msg)
+                self.logger.info("Assign Resources on SDPSubarray successful")
+            except DevFailed as df:
+                #The exception is already logged so not logged again.
+                tango.Except.re_throw_exception(
+                    df,
+                    "SDP allocation failed."
+                    "SubarrayNode.AssignResources",
+                    tango.ErrSeverity.ERR
+                )
 
-            if(dish_allocation_result == receptor_list and
-                csp_allocation_result == receptor_list and
-                sdp_allocation_result == sdp_resources
-              ):
-                # Currently sending dish allocation and SDP allocation results.
-                argout = dish_allocation_result
-            else:
-                argout = []
+            # sdp_allocation_result = sdp_allocation_status.result()
+            # log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
+            # self.logger.debug(log_msg)
+
+            # try:
+            #     assert sdp_allocation_result == sdp_resources
+            #     self.logger.info("Assign Resources on SDPSubarray successful")
+            # except AssertionError as error:
+            #     self.logger.exception("Failed to assign SDP resources: actual %s != %s expected", 
+            #         sdp_allocation_result, sdp_resources)
+            #     tango.Except.throw_exception(
+            #         "Assign resources failed on CspSubarrayLeafNode", 
+            #         str(sdp_allocation_result),
+            #         "subarraynode.AssignResources()",
+            #         tango.ErrSeverity.ERR)
+            # TODO: For future use
+            # if(dish_allocation_result == receptor_list and
+            #     csp_allocation_result == receptor_list and
+            #     sdp_allocation_result == sdp_resources
+            #   ):
+            #     # Currently sending dish allocation and SDP allocation results.
+            #     argout = dish_allocation_result
+            # else:
+            #     argout = []
+
+        argout = dish_allocation_result
+
         # return dish_allocation_result.
         log_msg = "assign_resource_argout",argout
         self.logger.debug(log_msg)
@@ -1027,6 +1109,16 @@ class SubarrayNode(SKASubarray):
         for item in excpt_msg_list:
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+
+    def validate_obs_state(self):
+        if self._obs_state == ObsState.IDLE:
+            self.logger.info("Subarray is in required obsstate, hence resources will be assigned.")
+        else:
+            self.logger.error("Subarray is not in IDLE obsState")
+            self._read_activity_message = "Error in device obsState."
+            raise InvalidObsStateError("Subarray is not in IDLE obsState, \
+                please check the subarray obsState")
+
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 
     # -----------------
@@ -1287,7 +1379,7 @@ class SubarrayNode(SKASubarray):
             "build_up_csp_cmd_data", scan_configuration, attr_name_map, self._receive_addresses_map)
         self._configure_leaf_node(self._csp_subarray_ln_proxy, "Configure", cmd_data)
 
-    def _configure_dsh(self, scan_configuration, argin):
+    def _configure_dsh(self, scan_configuration):
         config_keys = scan_configuration.keys()
         if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
             self.only_dishconfig_flag = True
@@ -1352,7 +1444,7 @@ class SubarrayNode(SKASubarray):
         self.scan_duration = int(tmc_configure["scanDuration"])
         self._configure_csp(scan_configuration)
         self._configure_sdp(scan_configuration)
-        self._configure_dsh(scan_configuration, argin)
+        self._configure_dsh(scan_configuration)
         ## PROTECTED REGION END #    //  SubarrayNode.Configure
 
     def is_Configure_allowed(self):

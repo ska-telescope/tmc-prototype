@@ -89,12 +89,12 @@ def test_end_sb_command_with_callback_method_with_event_error():
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
 
-def test_assign_command_with_callback_method_with_command_error():
+def test_assign_command_with_callback_method_with_devfailed_error():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
     sdp_subarray1_proxy_mock = Mock()
-    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
     proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
     event_subscription_map = {}
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
@@ -102,15 +102,58 @@ def test_assign_command_with_callback_method_with_command_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-
         # act:
-        with pytest.raises(Exception):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_input_str)
-            dummy_event = command_callback_with_command_exception()
+            dummy_event = command_callback_with_devfailed_exception()
             event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
         # assert:
-        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
+        assert "SdpSubarrayLeafNode_Commandfailed in callback" in str(df.value)
 
+
+def test_assign_command_assignresources_ended_with_callback_method():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.AssignResources(assign_input_str)
+        dummy_event = command_callback(const.CMD_ASSIGN_RESOURCES)
+        event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
+        # assert:
+        assert const.STR_COMMAND in tango_context.device.activityMessage
+
+
+def test_assign_command_assignresources_ended_raises_exception_for_error_event():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.AssignResources(assign_input_str)
+        dummy_event = command_callback_with_event_error(const.CMD_ASSIGN_RESOURCES)
+        
+        with pytest.raises(tango.DevFailed) as df:
+            event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
+        # assert:
+        assert "Event error in Command Callback" in str(df)
+        # assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
 def command_callback(command_name):
     fake_event = MagicMock()
@@ -131,10 +174,13 @@ def command_callback_with_command_exception():
     return Exception("Exception in Command callback")
 
 
+def command_callback_with_devfailed_exception():
+    tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
+
 def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
-
 
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready():
     # arrange:
@@ -206,37 +252,32 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
         device_proxy = tango_context.device
         # act:
         device_proxy.AssignResources(assign_input_str)
-
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,
-                                                                        assign_input_str,
-                                                                  any_method(with_name='cmd_ended_cb'))
+                                                            assign_input_str,
+                                                            any_method(with_name='AssignResources_ended'))
         assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def test_assign_resources_should_raise_devfailed_exception():
+def test_assign_resources_should_raise_devfailed_for_invalid_obstate():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-    dut_properties = {
-        'SdpSubarrayFQDN': sdp_subarray1_fqdn
-    }
-
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
     sdp_subarray1_proxy_mock = Mock()
-    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-    proxies_to_mock = {
-        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-    }
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) \
-            as tango_context:
-        device_proxy = tango_context.device
+                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        with pytest.raises(tango.DevFailed):
-            device_proxy.AssignResources(assign_input_str)
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.AssignResources(assign_input_str)
 
-        # assert:
-        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
+    # assert:
+        assert "SDP subarray is not in idle obstate." in str(df)
 
 
 def test_release_resources_when_sdp_subarray_is_idle():

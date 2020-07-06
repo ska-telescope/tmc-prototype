@@ -19,9 +19,11 @@ from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
+
 # Additional imports
 import json
 from . import const
+from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
@@ -59,6 +61,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         exception_count = 0
         exception_message = []
+
         try:
             if event.err:
                 log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
@@ -76,7 +79,32 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_CMD_CALLBK)
 
-    # Throw exceptions
+
+    def AssignResources_ended(self, event):
+        """ This is the callback method of AssignResources command of the SDP Subarray.
+        It checks whether the AssignResources command on SDP subarray is successful.
+
+          :param argin:
+            event: response from SDP Subarray for the invoked assign resource command.
+
+          :return: None.
+        """
+        if event.err:
+            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            self._read_activity_message = log
+            self.logger.error(log)
+            tango.Except.throw_exception(
+                "SDP Subarray returned error while assigning resources",
+                str(event.errors),
+                event.cmd_name,
+                tango.ErrSeverity.ERR
+            )
+        else:
+            log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+            self._read_activity_message = log
+            self.logger.debug(log)
+
+    # Throw exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(df)
         self.logger.error(log_msg)
@@ -218,7 +246,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return self._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
 
-
+    def validate_obs_state(self):
+        sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
+        # Check if SDP Subarray obsState is READY
+        if sdp_subarray_obs_state == ObsState.IDLE:
+            self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
+        else:
+            self.logger.error("Subarray is not in Idle obstate")
+            self._read_activity_message = "Error in device obstate."
+            raise InvalidObsStateError("SDP subarray is not in idle obstate.")
     # --------
     # Commands
     # --------
@@ -282,7 +318,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         dtype_in='str',
         dtype_out='str',
     )
-    @DebugIt()
+    @DebugIt(show_args=True)
     def AssignResources(self, argin):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.AssignResources) ENABLED START #
         """
@@ -333,36 +369,34 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             Note: Enter input without spaces
 
         :return: Empty String.
+
+        :throws: DevFailed.
         """
         exception_message = []
         exception_count = 0
-
         try:
+            self.validate_obs_state()
+
             # Call SDP Subarray Command asynchronously
-            log_msg = "Input JSON for SDP Subarray Leaf Node AssignResource command is: " + argin
-            self.logger.debug(log_msg)
             self.response = self._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
-                                                                          argin, self.cmd_ended_cb)
+                                                                          argin, self.AssignResources_ended)
+
             # Update the status of command execution status in activity message
             self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception("obstate is not in idle state",str(error),
+                                         "SDP.AssignResources",tango.ErrSeverity.ERR)
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON + str(value_error)
-            self.logger.error(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             exception_message.append(self._read_activity_message)
-            exception_count += 1
-
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
-
-        # throw exception:
-        if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
         return ""
@@ -404,13 +438,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-            self.logger.info(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
             exception_message.append(self._read_activity_message)
             exception_count += 1
         except KeyError as key_error:
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
             exception_message.append(self._read_activity_message)
             exception_count += 1

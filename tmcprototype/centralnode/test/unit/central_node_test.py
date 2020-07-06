@@ -16,7 +16,7 @@ from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from centralnode import CentralNode,const
+from centralnode import CentralNode, const
 from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
     STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
@@ -33,17 +33,17 @@ with open(path, 'r') as f:
     release_input_str= f.read()
 
 invalid_json_Assign_Release_file='invalid_json_Assign_Release_Resources.json'
-path= join(dirname(__file__), 'data' ,invalid_json_Assign_Release_file)
+path= join(dirname(__file__), 'data', invalid_json_Assign_Release_file)
 with open(path, 'r') as f:
     assign_release_invalid_str= f.read()
 
 assign_invalid_key_file='invalid_key_AssignResources.json'
-path= join(dirname(__file__), 'data' , assign_invalid_key_file)
+path= join(dirname(__file__), 'data', assign_invalid_key_file)
 with open(path, 'r') as f:
     assign_invalid_key=f.read()
 
 release_invalid_key_file='invalid_key_ReleaseResources.json'
-path= join(dirname(__file__), 'data' , release_invalid_key_file)
+path= join(dirname(__file__), 'data', release_invalid_key_file)
 with open(path, 'r') as f:
     release_invalid_key=f.read()
 
@@ -244,7 +244,8 @@ def test_stow_antennas_invalid_value():
 def test_assign_resources():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
-        'TMMidSubarrayNodes': subarray1_fqdn
+        'TMMidSubarrayNodes': subarray1_fqdn,
+        'NumDishes' : 4
     }
     # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
     # is called it returns list of resources allocated where length of list need to be evaluated but Mock
@@ -258,7 +259,6 @@ def test_assign_resources():
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-
         device_proxy=tango_context.device
         device_proxy.AssignResources(assign_input_str)
         # assert:
@@ -291,21 +291,20 @@ def test_assign_resources_should_raise_devfailed_exception():
 
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_input_str)
 
         # assert:
-        assert const.ERR_ASSGN_RESOURCES in tango_context.device.activityMessage
-
+        assert "Error occurred while assigning resources to the Subarray" in str(df)
 
 def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_release_invalid_str)
 
         # assert:
-        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert "Exception in validating input" in str(df.value)
 
 
 def test_assign_resources_invalid_key():

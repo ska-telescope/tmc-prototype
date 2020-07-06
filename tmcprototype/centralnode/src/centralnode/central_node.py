@@ -13,6 +13,7 @@ of state and mode attributes defined by the SKA Control Model.
 """
 from __future__ import print_function
 from __future__ import absolute_import
+import json
 
 # Tango imports
 import tango
@@ -23,8 +24,10 @@ from ska.base.control_model import AdminMode, HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from . import const
+from centralnode.input_validator import AssignResourceValidator
+from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
+from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 
-import json
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
@@ -512,6 +515,39 @@ class CentralNode(SKABaseDevice):
                 self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
         # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
+    @DebugIt()
+    def _check_receptor_reassignment(self, input_receptors_list):
+        """
+            Checks if any of the receptors are already allocated to other subarray when
+            AssignResources command is called.
+
+            :param:
+
+            :return: None
+
+            :throws:
+                ResourceReassignmentError: Thrown when an already assigned resource is received
+                in Assignresources command.
+
+        """
+        
+        self.logger.info("Checking for duplicate allocation of dishes.")
+        duplicate_allocation_count = 0
+        duplicate_allocation_dish_ids = []
+
+        for receptor in input_receptors_list:
+            dish_ID = "dish" + receptor
+            self.logger.info("Checking allocation status of dish %s.", dish_ID)
+            if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
+                self.logger.info("Dish %s is already allocated.", dish_ID)
+                duplicate_allocation_dish_ids.append(dish_ID)
+                duplicate_allocation_count = duplicate_allocation_count + 1
+        self.logger.info("No of dishes already allocated: %d", duplicate_allocation_count)
+        self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
+
+        if duplicate_allocation_count > 0:
+            raise ResourceReassignmentError("Resources already assigned.", duplicate_allocation_dish_ids)
+
 
     @command(
         dtype_in='str',
@@ -524,7 +560,7 @@ class CentralNode(SKABaseDevice):
         " JSON object consisting receptors allocated successfully: DevVarStringArray."
         " The individual string should contain dish numbers in string format with "
         "preceding zeroes upto 3 digits. E.g. 0001, 0002", )
-    @DebugIt()
+    @DebugIt(show_args=True)
     def AssignResources(self, argin):
         # PROTECTED REGION ID(CentralNode.AssignResources) ENABLED START #
         """
@@ -585,21 +621,23 @@ class CentralNode(SKABaseDevice):
                         {}
 
             Example:
-                {"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",
-                "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771"
-                ,"dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":
-                0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,
-                "stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
-                "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":
-                [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1]
-                ,[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
-                "link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
-                "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":
-                "pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
-                "parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical",
-                "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":
-                ["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
-                "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
+                {"subarrayID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":
+                "sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",
+                "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,
+                "link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
+                "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
+                "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",
+                "channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,
+                "freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,
+                "start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],
+                [2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":
+                {"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},
+                {"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime",
+                "version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":
+                {"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":[
+                {"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":
+                "pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},
+                "parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
                 ["calibration"]}]}]}}
 
         Note: From Jive, enter above input string without any space.
@@ -621,85 +659,78 @@ class CentralNode(SKABaseDevice):
                 "receptorIDList_success": ["0001", "0002"]
                 }
                 }
-            Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
+        
+        :throws: DevFailed.
         """
         receptorIDList = []
         exception_message = []
         exception_count = 0
         argout = []
+
+        ## Validate the input JSON string.
         try:
-            # serialize the json
-            jsonArgument = json.loads(argin)
+            self.logger.info("Validating input string.")
+            input_validator = AssignResourceValidator(self.TMMidSubarrayNodes, self._dish_leaf_node_devices, 
+                self.DishLeafNodePrefix, self.logger)
+            json_argument = input_validator.loads(argin)
+        
             # Create subarray proxy
-            subarrayID = int(jsonArgument['subarrayID'])
+            subarrayID = int(json_argument['subarrayID'])
             subarrayProxy = self.subarray_FQDN_dict[subarrayID]
-            # Check for the duplicate receptor allocation
-            duplicate_allocation_count = 0
-            duplicate_allocation_dish_ids = []
-            input_receptor_list = jsonArgument["dish"]["receptorIDList"]
-            len_input_receptor_list= len(input_receptor_list)
-            for dish in range(0, len_input_receptor_list):
-                dish_ID = "dish" + input_receptor_list[dish]
-                if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
-                    duplicate_allocation_dish_ids.append(dish_ID)
-                    duplicate_allocation_count = duplicate_allocation_count + 1
-            if duplicate_allocation_count == 0:
-                # Remove Subarray Id key from input json argument and send the json with
-                # receptor Id list and SDP block to TMC Subarray Node
-                input_json_subarray = jsonArgument.copy()
-                del input_json_subarray["subarrayID"]
-                input_to_sa = json.dumps(input_json_subarray)
-                self._resources_allocated = subarrayProxy.command_inout(
-                    const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                # Update self._subarray_allocation variable to update subarray allocation
-                # for the related dishes.
-                # Also append the allocated dish to out argument.
-                for dish in range(0, len(self._resources_allocated)):
-                    dish_ID = "dish" + (self._resources_allocated[dish])
-                    self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                    receptorIDList.append(self._resources_allocated[dish])
-                self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-                self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-                self.logger.info(receptorIDList)
-                argout = {
-                    "dish": {
-                        "receptorIDList_success": receptorIDList
-                    }
-                }
-            else:
-                log_msg=const.STR_DISH_DUPLICATE+ str(duplicate_allocation_dish_ids)
-                self._read_activity_message = log_msg
-                self.logger.info(log_msg)
-                argout = {
-                    "dish": {
-                        "receptorIDList_success": receptorIDList
-                    }
-                }
-        except ValueError as value_error:
-            self.logger.error(const.ERR_INVALID_JSON)
-            self._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
 
-        except KeyError as key_error:
-            self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+            ## check for duplicate allocation
+            self.logger.info("Checking for resource reallocation.")
+            self._check_receptor_reassignment(json_argument["dish"]["receptorIDList"])
 
+            ## Allocate resources to subarray
+            # Remove Subarray Id key from input json argument and send the json with
+            # receptor Id list and SDP block to TMC Subarray Node
+            self.logger.info("Allocating resource to subarray %d", subarrayID)
+            input_json_subarray = json_argument.copy()
+            del input_json_subarray["subarrayID"]
+            input_to_sa = json.dumps(input_json_subarray)
+            self._resources_allocated = subarrayProxy.command_inout(
+                const.CMD_ASSIGN_RESOURCES, input_to_sa)
+
+            # Update self._subarray_allocation variable to update subarray allocation
+            # for the related dishes.
+            # Also append the allocated dish to out argument.
+            for dish in range(0, len(self._resources_allocated)):
+                dish_ID = "dish" + (self._resources_allocated[dish])
+                self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+                receptorIDList.append(self._resources_allocated[dish])
+
+            #Allocation successful
+            self._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+
+            # Prepare output argument
+            argout = {
+                "dish": {
+                    "receptorIDList_success": receptorIDList
+                }
+            }
+            self.logger.debug(argout)
+        except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
+            self.logger.exception("Exception in AssignResource(): %s", str(error))
+            self._read_activity_message = "Exception in validating input: " + str(error)
+            exception_message.append("Exception in validating input: " + str(error))
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+        except ResourceReassignmentError as resource_error:
+            self.logger.exception("List of the dishes that are already allocated: %s", \
+                str(resource_error.resources_reallocation))
+            self._read_activity_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
+            exception_message.append(const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation))
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+        except ValueError as ve:
+            self.logger.exception("Exception in AssignResources command: %s", str(ve))
+            self._read_activity_message = "Invalid value in input: " + str(ve)
+            exception_message.append("Invalid value in input: " + str(ve))
+            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count,const.ERR_ASSGN_RESOURCES)
-
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_ASSGN_RESOURCES)
-
-        self.logger.info(argout)
-        #throw exception:
-        if exception_count > 0:
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-            argout = '{"dish": {"receptorIDList_success": []}}'
 
         return json.dumps(argout)
         # PROTECTED REGION END #    //  CentralNode.AssignResources
