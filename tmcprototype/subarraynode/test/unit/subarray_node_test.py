@@ -582,7 +582,7 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
 
         # assert
         assert tango_context.device.State() == DevState.OFF
-        assert "This is error message for devfailed" in str(df)
+        assert "This is error message for devfailed" in str(df.value)
 
 def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devfailed_exception():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
@@ -633,7 +633,7 @@ def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devf
 
         # assert
         assert tango_context.device.State() == DevState.OFF
-        assert "This is error message for devfailed" in str(df)
+        assert "This is error message for devfailed" in str(df.value)
 
 
 def test_release_resource_command_subarray():
@@ -2487,12 +2487,12 @@ def create_dummy_event_sdp_receiceAddresses(proxy_mock, device_fqdn, attribute, 
 
 def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("SubarrayNode_Commandfailed", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
+                                 cmd_name, tango.ErrSeverity.ERR)
 
 
 def raise_devfailed_with_arg(cmd_name, input_arg):
     tango.Except.throw_exception("SubarrayNode_Commandfailed", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
+                                 cmd_name, tango.ErrSeverity.ERR)
 
 
 def raise_devfailed_for_event_subscription(evt_name,evt_type,callaback, stateless=True):
