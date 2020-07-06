@@ -465,7 +465,7 @@ def any_method(with_name=None):
 #     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
 #         assert tango_context.device.State() == DevState.ALARM
 
-"""
+
 def test_status():
     # act & assert:
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
@@ -479,16 +479,16 @@ def test_logging_level():
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
-def test_health_state():
-    # act & assert:
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.healthState == HealthState.OK
+# def test_health_state():
+#     # act & assert:
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         assert tango_context.device.healthState == HealthState.OK
 
 
-def test_admin_mode():
-    # act & assert:
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
+# def test_admin_mode():
+#     # act & assert:
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
 def test_control_mode():
@@ -499,12 +499,12 @@ def test_control_mode():
         assert tango_context.device.controlMode == control_mode
 
 
-def test_simulation_mode():
-    # act & assert:
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        simulation_mode = SimulationMode.FALSE
-        tango_context.device.simulationMode = simulation_mode
-        assert tango_context.device.simulationMode == simulation_mode
+# def test_simulation_mode():
+#     # act & assert:
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         simulation_mode = SimulationMode.FALSE
+#         tango_context.device.simulationMode = simulation_mode
+#         assert tango_context.device.simulationMode == simulation_mode
 
 
 def test_test_mode():
@@ -598,7 +598,7 @@ def test_endscan_invalid_state():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         tango_context.device.EndScan()
         assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
-"""
+
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
