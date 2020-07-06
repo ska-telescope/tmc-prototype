@@ -110,6 +110,7 @@ ERR_TIME_LIM = "Tracking duration is complete."
 ERR_EXE_TRACK = "Exception occured in the execution of Track command."
 
 # commands success string
+STR_SET_STOW_MODE_SUCCESS = "Command :-> SetStowMode invoked successfully."
 STR_SETSTANDBYLP_SUCCESS = "Command :-> SetStandbyLPMode invoked successfully."
 STR_SETOPERATE_SUCCESS = "Command :-> SetOperateMode invoked successfully."
 STR_CONFIGURE_SUCCESS = "Command :-> Configure invoked successfully."
@@ -119,6 +120,8 @@ STR_STARTCAPTURE_SUCCESS = "Command :-> StartCapture invoked successfully."
 STR_STOPCAPTURE_SUCCESS = "Command :-> StopCapture invoked successfully."
 STR_STANDBYFP_SUCCESS = "Command :-> SetStandbyFPMode invoked successfully."
 STR_SLEW_SUCCESS = "Command :-> Slew invoked successfully."
+STR_TRACK_SUCCESS = "Command :-> Track invoked successfully."
+STR_STOP_TRACK_SUCCESS = "Command :-> StopTrack invoked successfully."
 
 STR_CMD_FAILED = "DishLeafNode_Commandfailed"
 STR_SLEW_EXEC = "Slew command execution"
@@ -137,7 +140,6 @@ STR_ACHIEVEDPOINTING_0_0 = "Achieved Pointing :-> [0. 0. 0.]"
 STR_DESIREDPOINTING_0_0 = "Desired Pointing :-> [0. 0. 0.]"
 
 STR_TARGET_NOT_OBSERVED = "Cannot point to the source."
-STR_SCAN_SUCCESS = "Scan command is invoked successfully."
 
 THREAD_TRACK = "DishLeafNode"
 ERR_INVALID_JSON = "Invalid JSON format."

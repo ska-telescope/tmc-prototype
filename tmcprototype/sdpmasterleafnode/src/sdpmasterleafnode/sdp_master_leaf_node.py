@@ -151,14 +151,10 @@ class SdpMasterLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device.set_state(DevState.ON)
-                # device._sdp_admin_mode = AdminMode.ONLINE # Setting adminMode to "ONLINE"
                 device._version_info = "1.0"
                 device._processing_block_list = "test"
                 device._read_activity_message = 'OK'
                 device.set_status(const.STR_INIT_SUCCESS)
-                # device._health_state = HealthState.OK
-                # device._admin_mode = AdminMode.ONLINE
-                # device._test_mode = TestMode.NONE
                 _state_fault_flag = False
                 # flag use to check whether state set to fault if exception occur
 
@@ -186,7 +182,7 @@ class SdpMasterLeafNode(SKABaseDevice):
                 ApiUtil.instance().get_asynch_cb_sub_model())
 
             if _state_fault_flag:
-                message = const.SdpSubarray_Commandfailed
+                message = const.STR_CMD_FAILED
                 result_code = ResultCode.FAILED
             else:
                 message = const.STR_INIT_SUCCESS
@@ -197,40 +193,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             return (result_code, message)
 
 
-    # def init_device(self):
-    #     '''Initializes the attributes and properties of CSPMasterLeafNode'''
-    #     SKABaseDevice.init_device(self)
-    #     # PROTECTED REGION ID(SdpMasterLeafNode.init_device) ENABLED START #
-    #     try:
-    #         self.set_state(DevState.ON)
-    #         self._sdp_admin_mode = AdminMode.ONLINE # Setting adminMode to "ONLINE"
-    #         self._version_info = "1.0"
-    #         self._processing_block_list = "test"
-    #         self._read_activity_message = 'OK'
-    #         self.set_status(const.STR_INIT_SUCCESS)
-    #         self._health_state = HealthState.OK
-    #         self._admin_mode = AdminMode.ONLINE
-    #         self._test_mode = TestMode.NONE
-    #         exception_message = []
-    #         exception_count = 0
-    #
-    #     except DevFailed as dev_failed:
-    #         self._handle_devfailed_exception(dev_failed, exception_message, exception_count, const.ERR_INIT_PROP_ATTR)
-    #
-    #     try:
-    #         self._read_activity_message = const.STR_SDPMASTER_FQDN + str(self.SdpMasterFQDN)
-    #         # Creating proxy to the SDPMaster
-    #         self._sdp_proxy = DeviceProxy(str(self.SdpMasterFQDN))
-    #     except DevFailed as dev_failed:
-    #         self.set_state(DevState.FAULT)
-    #         self._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-    #                                          const.ERR_IN_CREATE_PROXY_SDP_MASTER)
-    #
-    #     ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-    #     self._read_activity_message = const.STR_SETTING_CB_MODEL + str(
-    #         ApiUtil.instance().get_asynch_cb_sub_model())
-    #
-    #     # PROTECTED REGION END #    //  SdpMasterLeafNode.init_device
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.always_executed_hook) ENABLED START #
@@ -309,29 +271,13 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             return (ResultCode.OK, "On command execution started")
 
-    # @command(
-    # )
-    # @DebugIt()
-    # def On(self):
-    #     # PROTECTED REGION ID(SdpMasterLeafNode.On) ENABLED START #
-    #     """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
-    #
-    #     :param argin: DevVoid.
-    #
-    #     :return: None.
-    #
-    #     """
-    #     self._sdp_proxy.command_inout_asynch(const.CMD_ON, self.cmd_ended_cb)
-    #     log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-    #     self.logger.debug(log_msg)
-    #     # PROTECTED REGION END #    //  SdpMasterLeafNode.On
 
     class OffCommand(SKASubarray.OffCommand):
         """
                A class for SDP master's Off() command.
                """
         def do(self):
-            """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to Off.
+            """ Sets the OperatingState to Off.
 
                    :param argin: DevVoid.
 
@@ -353,32 +299,9 @@ class SdpMasterLeafNode(SKABaseDevice):
             return (ResultCode.OK, "Off command execution started")
 
 
-    # @command(
-    # )
-    # @DebugIt()
-    # def Off(self):
-    #     # PROTECTED REGION ID(SdpMasterLeafNode.Off) ENABLED START #
-    #     """ Sets the OperatingState to OFF.
-    #
-    #      :param argin: DevVoid.
-    #
-    #      :return: None.
-    #
-    #      """
-    #     # self._sdp_proxy.command_inout_asynch(const.CMD_OFF, self.cmd_ended_cb)
-    #     self.logger.debug(const.STR_OFF_CMD_SUCCESS)
-    #     self._read_activity_message = const.STR_OFF_CMD_SUCCESS
-    #     exception_message = []
-    #     exception_count= 0
-    #
-    #     # This code is written only to improve code coverage
-    #     if self._test_mode == TestMode.TEST:
-    #         self._handle_devfailed_exception(DevFailed, exception_message, exception_count, const.ERR_OFF_CMD_FAIL)
-    #     # PROTECTED REGION END #    //  SdpMasterLeafNode.Off
-
     class DisableCommand(ResponseCommand):
         """
-               A class for SDP master's On() command.
+               A class for SDP master's Disable() command.
                """
         def do(self):
             """ Sets the OperatingState to Disable.
@@ -436,7 +359,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     )
     def Disable(self):
         """
-        Invokes Track command on the Dishes assigned to the Subarray.
+        Sets the OperatingState to Disable.
 
         :param argin: DevString
 
@@ -448,25 +371,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    # @command(
-    # )
-    # @DebugIt()
-    # def Disable(self):
-    #     # PROTECTED REGION ID(SdpMasterLeafNode.Disable) ENABLED START #
-    #     """ Sets the OperatingState to Disable.
-    #
-    #      :param argin: DevVoid.
-    #
-    #      :return: None.
-    #
-    #      """
-    #     self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
-    #     self._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
-    #     # PROTECTED REGION END #    //  SdpMasterLeafNode.Disableon
 
     class StandbyCommand(ResponseCommand):
         """
-               A class for SDP master's On() command.
+               A class for SDP master's Standby() command.
                """
         def do(self):
             """ Informs the SDP to stop any executing Processing. To get into the STANDBY state all running
@@ -528,7 +436,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     )
     def Standby(self):
         """
-        Invokes Track command on the Dishes assigned to the Subarray.
+        Invokes Standby command .
 
         :param argin: DevString
 
@@ -540,24 +448,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    # @command(
-    # )
-    # @DebugIt()
-    # def Standby(self):
-    #     # PROTECTED REGION ID(SdpMasterLeafNode.Standby) ENABLED START #
-    #     """ Informs the SDP to stop any executing Processing. To get into the STANDBY state all running
-    #     PBs will be aborted. In normal operation we expect diable should be triggered without first going
-    #     into STANDBY.
-    #
-    #     :param argin: DevVoid.
-    #
-    #     :return: None.
-    #
-    #     """
-    #     self._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.cmd_ended_cb)
-    #     log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-    #     self.logger.debug(log_msg)
-    #     # PROTECTED REGION END #    //  SdpMasterLeafNode.Standby
 
 # ----------
 # Run server
