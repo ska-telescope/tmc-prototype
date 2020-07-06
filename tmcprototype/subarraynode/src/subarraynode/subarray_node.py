@@ -1348,7 +1348,6 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-        self._obs_state = ObsState.CONFIGURING
         tmc_configure = scan_configuration["tmc"]
         self.scan_duration = int(tmc_configure["scanDuration"])
         self._configure_csp(scan_configuration)
