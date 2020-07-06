@@ -22,10 +22,9 @@ import numpy as np
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
 
-from ska.base.commands import ActionCommand, ResultCode, ResponseCommand
+from ska.base.commands import ResultCode, ResponseCommand
 from tango.server import run,attribute, command, device_property
 from ska.base import SKABaseDevice
-from ska.base import SKASubarray
 from ska.base.control_model import HealthState, ObsState
 
 # Additional import

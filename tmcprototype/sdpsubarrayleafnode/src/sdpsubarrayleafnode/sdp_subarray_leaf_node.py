@@ -17,9 +17,9 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 import tango
 from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
-from ska.base import SKABaseDevice, SKASubarray
+from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
-from ska.base.commands import ResultCode,ActionCommand,ResponseCommand
+from ska.base.commands import ResultCode,ResponseCommand
 # Additional imports
 import json
 from . import const

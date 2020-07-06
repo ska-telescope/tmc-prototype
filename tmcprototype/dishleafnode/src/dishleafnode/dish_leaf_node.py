@@ -19,11 +19,11 @@ import importlib.resources
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
-from ska.base.commands import ActionCommand, ResultCode, ResponseCommand
-from ska.base import SKABaseDevice, SKASubarray
-from ska.base.control_model import AdminMode, HealthState, SimulationMode
+from ska.base.commands import ResultCode, ResponseCommand
+from ska.base import SKABaseDevice
+from ska.base.control_model import HealthState, SimulationMode
 
 # Additional import
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
@@ -38,6 +38,7 @@ import time
 
 __all__ = ["DishLeafNode", "main"]
 
+# pylint: disable=protected-access, arguments-differ, signature-differs
 class DishLeafNode(SKABaseDevice):
 #class DishLeafNode(SKABaseDevice):
     """
@@ -1571,6 +1572,8 @@ class DishLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("StopTrack")
         return handler.check_allowed()
+
+# pylint: enable=protected-access, arguments-differ, signature-differs
 
 # ----------
 # Run server
