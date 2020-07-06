@@ -558,7 +558,7 @@ def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
-'''
+
 def test_status():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
@@ -614,7 +614,7 @@ def test_logging_targets():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
-'''
+
 
 
 def any_method(with_name=None):
