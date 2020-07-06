@@ -694,7 +694,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Configure")
         return handler.check_allowed()
 
-        # PROTECTED REGION END # // CspSubarrayLeafNode.AssignResources
+        # PROTECTED REGION END # // CspSubarrayLeafNode.Configure
 
 # -------------------------------------------------------------------------------------------------------
 
@@ -841,6 +841,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("StartScan")
         return handler.check_allowed()
 
+    # PROTECTED REGION END # // CspSubarrayLeafNode.StartScan
+
  # -------------------------------------------------------------------------------------------------------
 
     # @command(
@@ -975,8 +977,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
+    # PROTECTED REGION END # // CspSubarrayLeafNode.EndScan
 
-# -------------------------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------------------------
 
     #
     # @command(
@@ -1100,8 +1103,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("ReleaseAllResources")
         return handler.check_allowed()
+    # PROTECTED REGION END # // CspSubarrayLeafNode.ReleaseAllResources
 
- # -------------------------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------------------------
         # PROTECTED REGION END # // CspSubarrayLeafNode.AssignResources
     #
     # @command(
@@ -1380,7 +1384,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             return True
         def do(self):
-            # PROTECTED REGION ID(CspSubarrayLeafNode.GoToIdle) ENABLED START #
             """
             This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
             :return: A tuple containing a return code and a string
@@ -1418,6 +1421,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_GOTOIDLE_EXEC)
                 return (ResultCode.FAILED,const.ERR_GOTOIDLE_INVOKING_CMD)
+    # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
 
     @command(
         dtype_out="DevVarLongStringArray",
@@ -1443,7 +1447,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("GoToIdle")
         return handler.check_allowed()
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
+     # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
 # -------------------------------------------------------------------------------------------------------
 
     # class OnCommand(SKASubarray.OnCommand):
