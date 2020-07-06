@@ -493,7 +493,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     # --------
     # Commands
-    # --------
+# -------------------------------------------------------------------------------------------------------
 
     # @command(
     #     dtype_in='str',
@@ -695,6 +695,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
         # PROTECTED REGION END # // CspSubarrayLeafNode.AssignResources
+
+# -------------------------------------------------------------------------------------------------------
+
     # @command(
     #     dtype_in=('str',),
     # )
@@ -837,7 +840,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("StartScan")
         return handler.check_allowed()
-    #
+
+ # -------------------------------------------------------------------------------------------------------
+
     # @command(
     # )
     # @DebugIt()
@@ -971,6 +976,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
 
+# -------------------------------------------------------------------------------------------------------
+
     #
     # @command(
     # )
@@ -1094,6 +1101,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseAllResources")
         return handler.check_allowed()
 
+ # -------------------------------------------------------------------------------------------------------
         # PROTECTED REGION END # // CspSubarrayLeafNode.AssignResources
     #
     # @command(
@@ -1307,6 +1315,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         # PROTECTED REGION END # // CspSubarrayLeafNode.AssignResources
 
+ # -------------------------------------------------------------------------------------------------------
+
     # @command(
     # )
     # @DebugIt()
@@ -1434,6 +1444,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("GoToIdle")
         return handler.check_allowed()
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
+# -------------------------------------------------------------------------------------------------------
 
     # class OnCommand(SKASubarray.OnCommand):
     #     """

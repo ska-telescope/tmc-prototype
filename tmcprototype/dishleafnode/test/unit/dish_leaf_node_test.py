@@ -41,7 +41,7 @@ path= join(dirname(__file__), 'data' , invalid_key_config_track_file)
 with open(path, 'r') as f:
     config_track_invalid_str=f.read()
 
-@pytest.mark.xfail
+
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -826,7 +826,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_with_error_event():
         # assert:
         assert const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_configure_should_raise_exception_when_called_with_invalid_json():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -836,7 +836,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_json():
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -848,7 +848,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_configure_should_raise_generic_exception():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -859,7 +859,7 @@ def test_configure_should_raise_generic_exception():
         # assert:
         assert const.ERR_EXE_CONFIGURE_CMD in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_scan_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -870,7 +870,7 @@ def test_scan_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_EXE_SCAN_CMD in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_end_scan_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -881,7 +881,6 @@ def test_end_scan_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
 
-@pytest.mark.xfail
 def test_start_capture_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -892,7 +891,7 @@ def test_start_capture_should_raise_exception_when_called_with_invalid_arguments
         # assert:
         assert const.ERR_EXE_START_CAPTURE_CMD in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_stop_capture_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -903,7 +902,7 @@ def test_stop_capture_should_raise_exception_when_called_with_invalid_arguments(
         # assert:
         assert const.ERR_EXE_STOP_CAPTURE_CMD in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_slew_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -914,7 +913,7 @@ def test_slew_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_EXE_SLEW_CMD in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -925,7 +924,7 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_track_should_raise_exception_when_called_with_invalid_json():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -1009,7 +1008,7 @@ def raise_devfailed_exception(cmd_name, callback):
     tango.Except.throw_exception("DishLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
-@pytest.mark.xfail
+
 def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1030,7 +1029,6 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
         # assert
         assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
 
-@pytest.mark.xfail
 def test_scan_command_with_callback_method():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1060,7 +1058,7 @@ def test_scan_command_with_callback_method():
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_scan_command_with_callback_method_with_event_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1090,7 +1088,7 @@ def test_scan_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
-@pytest.mark.xfail
+
 def test_scan_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
