@@ -427,7 +427,7 @@ class SubarrayNode(SKASubarray):
         self._pointing_state_event_id = []
         self._dish_leaf_node_proxy = []
         self._receptor_id_list = []
-        self.set_status(const.STR_RECEPTORS_REMOVE_SUCCESS)
+        # self.set_status(const.STR_RECEPTORS_REMOVE_SUCCESS)
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 
     def release_csp_resources(self):
@@ -533,20 +533,21 @@ class SubarrayNode(SKASubarray):
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                         exception_message, exception_count, const.ERR_SCAN_CMD)
-                return (ResultCode.FAILED, const.ERR_SCAN_CMD)
+
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                         exception_message, exception_count, const.ERR_SCAN_CMD)
-                return (ResultCode.FAILED, const.ERR_SCAN_CMD)
+
 
             # TODO: For furure reference
-            # # Throw Exception
-            # if exception_count > 0:
-            #     self.throw_exception(exception_message, const.STR_SCAN_EXEC)
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_SCAN_EXEC)
+                return (ResultCode.FAILED, const.ERR_SCAN_CMD)
 
     class EndScanCommand(SKASubarray.EndScanCommand):
         """
-        A class for SubarrayNode's Scan() command.
+        A class for SubarrayNode's EndScan() command.
         """
 
         def do(self):
@@ -596,16 +597,17 @@ class SubarrayNode(SKASubarray):
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_END_SCAN_CMD_ON_GROUP)
-                return (ResultCode.FAILED, const.ERR_END_SCAN_CMD_ON_GROUP)
+                
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                     exception_message, exception_count, const.ERR_END_SCAN_CMD)
-                return (ResultCode.FAILED, const.ERR_END_SCAN_CMD)
+                
 
             # TODO: For Future use
             # # Throw Exception
-            # if exception_count > 0:
-            #     self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+                return (ResultCode.FAILED, const.ERR_END_SCAN_CMD)
 
 
     def add_receptors_in_group(self, dish_input):
@@ -673,7 +675,7 @@ class SubarrayNode(SKASubarray):
                 # Set state = ON
                 # set obsState to "IDLE"
                 # self._obs_state = ObsState.IDLE
-                self.set_status(const.STR_ASSIGN_RES_SUCCESS)
+                # self.set_status(const.STR_ASSIGN_RES_SUCCESS)
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
@@ -790,7 +792,7 @@ class SubarrayNode(SKASubarray):
 
     class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         """
-        A class for SKASubarray's AssignResources() command.
+        A class for SubarrayNode's AssignResources() command.
         """
         def do(self, argin):
             """
@@ -1369,7 +1371,7 @@ class SubarrayNode(SKASubarray):
 
     class EndCommand(SKASubarray.EndCommand):
         """
-        A class for SKASubarray's End() command.
+        A class for SubarrayNode's End() command.
         """
         def do(self):
             """
@@ -1392,7 +1394,7 @@ class SubarrayNode(SKASubarray):
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
                 self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
                 # TODO: Uncomment this after resolving issues
-                # device.call_stop_track_command()
+                device.call_stop_track_command()
                 device._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
                 device.set_status(const.STR_ENDSB_SUCCESS)
@@ -1404,16 +1406,16 @@ class SubarrayNode(SKASubarray):
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                 exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
             except Exception as except_occurred:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                 exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
+
             # TODO: For Future use
-            # # throw exception:
-            # if exception_count > 0:
-            #     self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
-            # # PROTECTED REGION END #    //  SubarrayNode.EndSB
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
+            # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
     class TrackCommand(ResponseCommand):
         """
@@ -1499,7 +1501,7 @@ class SubarrayNode(SKASubarray):
 
     class OnCommand(SKASubarray.OnCommand):
         """
-        A class for the SKASubarray's On() command.
+        A class for the SubarrayNode's On() command.
         """
         def do(self):
             """
@@ -1518,7 +1520,7 @@ class SubarrayNode(SKASubarray):
 
     class OffCommand(SKASubarray.OffCommand):
         """
-        A class for the SKASubarray's On() command.
+        A class for the SubarrayNodes's Off() command.
         """
         def do(self):
             """

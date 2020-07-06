@@ -1,12 +1,5 @@
 {
     "servers": {
-        "DataBaseds": {
-            "2": {
-                "DataBase": {
-                    "sys/database/2": {}
-                }
-            }
-        },
         "MidCspCapabilityMonitor": {
             "monitor": {
                 "CspCapabilityMonitor": {
@@ -35,7 +28,7 @@
                                 "2"
                             ]
                         }
-                    },
+		    },
                     "mid_csp/capability_monitor/vlbi_beams": {
                         "properties": {
                             "CapabilityDevices": [
@@ -50,7 +43,7 @@
                         }
                     }
                 },
-                "CspSearchBeamsMonitor": {
+		"CspSearchBeamsMonitor": {
                     "mid_csp/capability_monitor/search_beams": {
                         "properties": {
                             "CapabilityDevices": [
@@ -64,7 +57,7 @@
                             ]
                         }
                     }
-                }
+		}
             }
         },
         "MidCspMaster": {
@@ -79,11 +72,6 @@
                                 "abs_change": [
                                     "-1",
                                     "1"
-                                ]
-                            },
-                            "fspMembership": {
-                                "__root_att": [
-                                    "mid_csp_cbf/sub_elt/master/reportFSPSubarrayMembership"
                                 ]
                             },
                             "healthState": {
@@ -232,11 +220,6 @@
                                     "mid_csp_cbf/sub_elt/master/reportVCCSubarrayMembership"
                                 ]
                             },
-                            "vlbiBeamAddresses": {
-                                "__root_att": [
-                                    "mid_csp/capability_monitor/vlbi_beams/CapabilityAddresses"
-                                ]
-                            },
                             "vlbiBeamMembership": {
                                 "__root_att": [
                                     "mid_csp/capability_monitor/vlbi_beams/capabilityMembership"
@@ -260,13 +243,9 @@
                             ],
                             "MaxCapabilities": [
                                 "VCC:4",
-                                "FSP:27",
                                 "SearchBeams:1500",
                                 "TimingBeams:16",
                                 "VlbiBeams:20"
-                            ],
-                            "SkaLevel": [
-                                "1"
                             ],
                             "SearchBeamsMonitor": [
                                 "mid_csp/capability_monitor/search_beams"
@@ -274,49 +253,49 @@
                             "TimingBeamsMonitor": [
                                 "mid_csp/capability_monitor/timing_beams"
                             ],
-                            "VCCsMonitor": [
-                                "mid_csp/capability_monitor/vcc"
-                            ],
                             "VlbiBeamsMonitor": [
                                 "mid_csp/capability_monitor/vlbi_beams"
                             ],
+                            "SkaLevel": [
+                                "1"
+                            ],
                             "polled_attr": [
+				"healthstate",
+				"1000",
+                                "adminmode",
+                                "1000",
+				"state",
+				"1000",
                                 "csppssadminmode",
                                 "1000",
                                 "csppstadminmode",
                                 "1000",
                                 "cspcbfadminmode",
                                 "1000",
-                                "standbycmdalarm",
-                                "1000",
-                                "offcmdalarm",
-                                "1000",
-                                "adminmode",
-                                "1000",
                                 "oncommandprogress",
-                                "3000",
+                                "1500",
                                 "offcommandprogress",
-                                "3000",
+                                "1500",
                                 "offcmddurationexpected",
-                                "3000",
+                                "1500",
                                 "standbycommandprogress",
-                                "3000",
+                                "1500",
                                 "oncmddurationexpected",
-                                "3000",
+                                "1500",
                                 "standbycmddurationexpected",
-                                "3000",
+                                "1500",
                                 "oncmddurationmeasured",
-                                "3000",
+                                "1500",
                                 "offcmddurationmeasured",
-                                "3000",
+                                "1500",
                                 "standbycmddurationmeasured",
-                                "3000",
+                                "1500",
                                 "offcmdtimeoutexpired",
-                                "3000",
+                                "1500",
                                 "oncmdtimeoutexpired",
-                                "2000",
+                                "1500",
                                 "csppssstate",
-                                "2000",
+                                "1000",
                                 "standbycmdtimeoutexpired",
                                 "1000",
                                 "csppststate",
@@ -336,8 +315,6 @@
                                 "standbycmdfailure",
                                 "2000",
                                 "cspcbfstate",
-                                "3000",
-                                "healthstate",
                                 "1000"
                             ]
                         }
@@ -350,6 +327,27 @@
                 "MidCspSubarrayBase": {
                     "mid_csp/elt/subarray_01": {
                         "attribute_properties": {
+			    "adminMode": {
+                                "__value": [
+                                    "0"
+                                ],
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+			    "obsState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
                             "assignedFspHealthState": {
                                 "__root_att": [
                                     "mid_csp_cbf/sub_elt/subarray_01/fspHealthState"
@@ -373,11 +371,6 @@
                             "assignedVccState": {
                                 "__root_att": [
                                     "mid_csp_cbf/sub_elt/subarray_01/vccState"
-                                ]
-                            },
-                            "cbfOutputLink": {
-                                "__root_att": [
-                                    "mid_csp_cbf/sub_elt/subarray_01/outputLinksDistribution"
                                 ]
                             }
                         },
@@ -407,14 +400,20 @@
                                 "mid_csp/elt/pst-01"
                             ],
                             "SubarrayProcModeVlbi": [
-                                "mid_csp/elt/cvlbi-01"
+                                "mid_csp/elt/vlbi-01"
                             ],
                             "polled_attr": [
-                                "alarmraisedflag",
+				"state",
+                                "1000",
+				"healthstate",
+                                "1000",
+				"obsstate",
+                                "100",
+                                "obsmode",
+                                "1000",
+                                "failureraisedflag",
                                 "1000",
                                 "timeoutexpiredflag",
-                                "1000",
-                                "state",
                                 "1000",
                                 "scancmdprogress",
                                 "1500",
@@ -424,10 +423,8 @@
                                 "1500",
                                 "endscancmdprogress",
                                 "1500",
-                                "endsbcmdprogress",
-                                "1500",
-                                "healthstate",
-                                "1000"
+                                "gotoidlecmdprogress",
+                                "1500"
                             ]
                         }
                     }
@@ -497,6 +494,27 @@
                 "MidCspSubarrayBase": {
                     "mid_csp/elt/subarray_02": {
                         "attribute_properties": {
+			    "adminMode": {
+                                "__value": [
+                                    "0"
+                                ],
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+			    "obsState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
                             "assignedFspHealthState": {
                                 "__root_att": [
                                     "mid_csp_cbf/sub_elt/subarray_02/fspHealthState"
@@ -521,13 +539,8 @@
                                 "__root_att": [
                                     "mid_csp_cbf/sub_elt/subarray_02/vccState"
                                 ]
-                            },
-                            "cbfOutputLink": {
-                                "__root_att": [
-                                    "mid_csp_cbf/sub_elt/subarray_02/outputLinksDistribution"
-                                ]
                             }
-                        },
+			},
                         "properties": {
                             "CbfSubarray": [
                                 "mid_csp_cbf/sub_elt/subarray_02"
@@ -554,15 +567,21 @@
                                 "mid_csp/elt/pst-02"
                             ],
                             "SubarrayProcModeVlbi": [
-                                "mid_csp/elt/cvlbi-02"
+                                "mid_csp/elt/vlbi-02"
                             ],
                             "polled_attr": [
-                                "alarmraisedflag",
+				"state",
                                 "1000",
-                                "state",
+				"healthstate",
+                                "1000",
+				"obsstate",
+                                "100",
+                                "obsmode",
+                                "1000",
+                                "failureraisedflag",
                                 "1000",
                                 "timeoutexpiredflag",
-                                "1500",
+                                "1000",
                                 "scancmdprogress",
                                 "1500",
                                 "removeresourcescmdprogress",
@@ -571,10 +590,8 @@
                                 "1500",
                                 "endscancmdprogress",
                                 "1500",
-                                "endsbcmdprogress",
-                                "1500",
-                                "healthstate",
-                                "1000"
+                                "gotoidlecmdprogress",
+                                "1500"
                             ]
                         }
                     }
@@ -638,12 +655,33 @@
                             ]
                         }
                     }
-                }
+		}
             },
             "subarray3": {
                 "MidCspSubarrayBase": {
                     "mid_csp/elt/subarray_03": {
                         "attribute_properties": {
+			    "adminMode": {
+                                "__value": [
+                                    "0"
+                                ],
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+			    "obsState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
                             "assignedFspHealthState": {
                                 "__root_att": [
                                     "mid_csp_cbf/sub_elt/subarray_03/fspHealthState"
@@ -667,11 +705,6 @@
                             "assignedVccState": {
                                 "__root_att": [
                                     "mid_csp_cbf/sub_elt/subarray_03/vccState"
-                                ]
-                            },
-                            "cbfOutputLink": {
-                                "__root_att": [
-                                    "mid_csp_cbf/sub_elt/subarray_03/outputLinksDistribution"
                                 ]
                             }
                         },
@@ -701,15 +734,21 @@
                                 "mid_csp/elt/pst-03"
                             ],
                             "SubarrayProcModeVlbi": [
-                                "mid_csp/elt/cvlbi-03"
+                                "mid_csp/elt/vlbi-03"
                             ],
                             "polled_attr": [
-                                "alarmraisedflag",
+				"state",
                                 "1000",
-                                "state",
+				"healthstate",
+                                "1000",
+				"obsstate",
+                                "100",
+                                "obsmode",
+                                "1000",
+                                "failureraisedflag",
                                 "1000",
                                 "timeoutexpiredflag",
-                                "1500",
+                                "1000",
                                 "scancmdprogress",
                                 "1500",
                                 "removeresourcescmdprogress",
@@ -718,10 +757,8 @@
                                 "1500",
                                 "endscancmdprogress",
                                 "1500",
-                                "endsbcmdprogress",
-                                "1500",
-                                "healthstate",
-                                "1000"
+                                "gotoidlecmdprogress",
+                                "1500"
                             ]
                         }
                     }
@@ -788,151 +825,10 @@
                 }
             }
         },
-        "PssMasterSimulator": {
-            "midpss": {
-                "PssMasterSimulator": {
-                    "mid_csp_pss/sub_elt/master": {
-                        "attribute_properties": {
-                            "adminMode": {
-                                "__value": [
-                                    "0"
-                                ],
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "healthState": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "offCommandProgress": {
-                                "abs_change": [
-                                    "-5",
-                                    "5"
-                                ]
-                            },
-                            "offDurationExpected": {
-                                "__value": [
-                                    "12"
-                                ]
-                            },
-                            "onCommandProgress": {
-                                "abs_change": [
-                                    "-5",
-                                    "5"
-                                ]
-                            },
-                            "onDurationExpected": {
-                                "__value": [
-                                    "10"
-                                ]
-                            },
-                            "standbyCommandProgress": {
-                                "abs_change": [
-                                    "-5",
-                                    "5"
-                                ]
-                            },
-                            "standbyDurationExpected": {
-                                "__value": [
-                                    "5"
-                                ]
-                            }
-                        },
-                        "properties": {
-                            "polled_attr": [
-                                "state",
-                                "1000",
-                                "healthstate",
-                                "1000",
-                                "adminmode",
-                                "1000",
-                                "onCommandProgress",
-                                "1000",
-                                "offCommandProgress",
-                                "1000",
-                                "standbyCommandProgress",
-                                "1000"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "PstMasterSimulator": {
-            "pst": {
-                "PstMasterSimulator": {
-                    "mid_csp_pst/sub_elt/master": {
-                        "attribute_properties": {
-                            "adminMode": {
-                                "__value": [
-                                    "0"
-                                ],
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "healthState": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ]
-                            },
-                            "offCommandProgress": {
-                                "abs_change": [
-                                    "-5",
-                                    "5"
-                                ]
-                            },
-                            "offDurationExpected": {
-                                "__value": [
-                                    "12"
-                                ]
-                            },
-                            "onCommandProgress": {
-                                "abs_change": [
-                                    "-5",
-                                    "5"
-                                ]
-                            },
-                            "onDurationExpected": {
-                                "__value": [
-                                    "10"
-                                ]
-                            },
-                            "standbyCommandProgress": {
-                                "abs_change": [
-                                    "-5",
-                                    "5"
-                                ]
-                            },
-                            "standbyDurationExpected": {
-                                "__value": [
-                                    "5"
-                                ]
-                            }
-                        },
-                        "properties": {
-                            "polled_attr": [
-                                "state",
-                                "1000",
-                                "healthstate",
-                                "1000",
-                                "adminmode",
-                                "1000",
-                                "onCommandProgress",
-                                "1000",
-                                "offCommandProgress",
-                                "1000",
-                                "standbyCommandProgress",
-                                "1000"
-                            ]
-                        }
-                    }
+        "DataBaseds": {
+            "2": {
+                "DataBase": {
+                    "sys/database/2": {}
                 }
             }
         },
@@ -940,13 +836,6 @@
             "1": {
                 "TangoAccessControl": {
                     "sys/access_control/1": {}
-                }
-            }
-        },
-        "TangoRestServer": {
-            "rest": {
-                "TangoRestServer": {
-                    "sys/rest/0": {}
                 }
             }
         },
