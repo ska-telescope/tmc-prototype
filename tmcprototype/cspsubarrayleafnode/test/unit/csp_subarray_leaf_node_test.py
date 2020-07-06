@@ -161,6 +161,9 @@ def raise_devfailed_exception():
     tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
+def raise_devfailed_with_arg(cmd_name, input_arg1, input_arg2):
+    tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", "This is error message for devfailed",
+                                 cmd_name, tango.ErrSeverity.ERR)
 
 def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready():
     # arrange:
@@ -265,7 +268,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
             (const.CMD_ADD_RECEPTORS, receptorIDList, any_method(with_name='AddReceptors_ended'))
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 def test_assign_resources_should_raise_devfailed_exception():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -279,7 +282,7 @@ def test_assign_resources_should_raise_devfailed_exception():
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
     }
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         assign_resources_input = []
@@ -289,8 +292,7 @@ def test_assign_resources_should_raise_devfailed_exception():
         with pytest.raises(tango.DevFailed) as df:
             device_proxy.AssignResources(assign_resources_input)
         #assert
-        assert const.ERR_ASSGN_RESOURCES in str(df)
-
+        assert const.ERR_ASSGN_RESOURCES in str(df.value)
 
 def test_release_resource_should_command_csp_subarray_to_release_all_resources():
     # arrange:
