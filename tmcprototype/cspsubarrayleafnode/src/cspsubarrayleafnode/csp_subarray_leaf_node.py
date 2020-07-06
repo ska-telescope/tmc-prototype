@@ -353,7 +353,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
             except Exception:
                 log_msg = const.ERR_IN_CREATE_PROXY_CSPSA + str(Exception)
-                self.logger.debug(log_msg)
+                self.logger.error(log_msg)
 
             # create CspSubarray Proxy
             # self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
@@ -388,8 +388,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         except DevFailed as dev_failed:
             self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR_CSPSALN, 0,
                                                                 const.STR_ERR_MSG)
-            self.logger.debug(const.ERR_INIT_PROP_ATTR_CSPSALN)
-            self.logger.debug(const.STR_ERR_MSG,dev_failed)
+            self.logger.error(const.ERR_INIT_PROP_ATTR_CSPSALN)
+            self.logger.error(const.STR_ERR_MSG,dev_failed)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -496,7 +496,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             if "pointing" in cspConfiguration:
                 del cspConfiguration["pointing"]
             log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
-            self.logger.debug(log_msg)
+            self.logger.info(log_msg)
             self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
                                                        self.cmd_ended_cb)
             self._read_activity_message = const.STR_CONFIGURE_SUCCESS
