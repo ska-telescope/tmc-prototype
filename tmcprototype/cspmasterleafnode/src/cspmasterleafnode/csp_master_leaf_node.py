@@ -458,7 +458,7 @@ class CspMasterLeafNode(SKABaseDevice):
             argin = []
             device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
-            return (ResultCode.STARTED, const.STR_OFF_CMD_ISSUED)
+            return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
     @command(
         dtype_in=('str',),
