@@ -1067,15 +1067,16 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                     input_to_sa = json.dumps(input_json_subarray)
                     device._resources_allocated = subarrayProxy.command_inout(
                         const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                    log_msg = "resources_allocated: ", device._resources_allocated
+                    new_resources_allocated = device._resources_allocated[1]
+                    log_msg = "resources_allocated: ", device._resources_allocated[1], type(device._resources_allocated[1])
                     self.logger.info(log_msg)
                     # Update self._subarray_allocation variable to update subarray allocation
                     # for the related dishes.
                     # Also append the allocated dish to out argument.
-                    for dish in range(0, len(device._resources_allocated)):
-                        dish_ID = "dish" + (device._resources_allocated[dish])
+                    for dish in range(0, len(new_resources_allocated)):
+                        dish_ID = "dish" + (new_resources_allocated[dish])
                         device._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                        receptorIDList.append(device._resources_allocated[dish])
+                        receptorIDList.append(new_resources_allocated[dish])
                     device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                     self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
                     self.logger.info(receptorIDList)
@@ -1276,20 +1277,20 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                     log_msg = const.STR_REL_RESOURCES
                     device._read_activity_message = log_msg
                     self.logger.info(log_msg)
-                    if not res_not_released:
+                    if not res_not_released[1]:
                         release_success = True
                         for Dish_ID, Dish_Status in device._subarray_allocation.items():
                             if Dish_Status == subarray_name:
                                 device._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                         argout = {
                             "ReleaseAll": release_success,
-                            "receptorIDList": res_not_released
+                            "receptorIDList": res_not_released[1]
                         }
                         message = json.dumps(argout)
                         self.logger.info(message)
                         return (ResultCode.OK,message)
                     else:
-                        log_msg = const.STR_LIST_RES_NOT_REL + res_not_released
+                        log_msg = const.STR_LIST_RES_NOT_REL + res_not_released[1]
                         device._read_activity_message = log_msg
                         self.logger.info(log_msg)
                         #release_success = False

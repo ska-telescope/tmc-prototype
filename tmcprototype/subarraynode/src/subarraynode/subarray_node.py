@@ -191,7 +191,7 @@ class SubarrayNode(SKASubarray):
         try:
             device_name = event.device.dev_name()
             log_msg = 'Health State Attribute change event is : ' + str(event)
-            self.logger.info(log_msg)
+            #self.logger.info(log_msg)
             if not event.err:
                 event_health_state = event.attr_value.value
                 self.subarray_ln_health_state_map[device_name] = event_health_state
@@ -199,12 +199,12 @@ class SubarrayNode(SKASubarray):
                 log_message = SubarrayHealthState.generate_health_state_log_msg(
                     event_health_state, device_name, event)
                 self._read_activity_message = log_message
-                self.logger.debug(log_message)
+                #self.logger.debug(log_message)
                 self._health_state = SubarrayHealthState.calculate_health_state(
                     self.subarray_ln_health_state_map.values())
             else:
                 log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-                self.logger.debug(log_message)
+                #self.logger.debug(log_message)
                 self._read_activity_message = log_message
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
@@ -258,6 +258,7 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated observation state of Subarray.
         """
+        self.logger.info("\n\n In Calculate observation state ------------------ JAYANT")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
@@ -916,7 +917,7 @@ class SubarrayNode(SKASubarray):
             log_msg = "assign_resource_argout", argout
             self.logger.debug(log_msg)
             message = str(argout)
-            return (ResultCode.STARTED, message)
+            return (ResultCode.OK, message)
 
             # return (ResultCode.OK, "AssignResource succesful")
 
@@ -970,8 +971,8 @@ class SubarrayNode(SKASubarray):
             argout = device._dish_leaf_node_group.get_device_list(True)
             log_msg = "Release_all_resources:", argout
             self.logger.debug(log_msg)
-            message = argout
-            return (ResultCode.STARTED, "Release_all_resources succeeful")
+            message = str(argout)
+            return (ResultCode.OK, message)
             # return (ResultCode.OK, "Release_all_resources succeeful")
 
     def pointing_state_cb(self, evt):

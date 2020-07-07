@@ -1209,7 +1209,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             return True
 
-        def do(self,argin):
+
+        def do(self, argin):
             """
             It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
             with receptorIDList (list of integers) as an input argument.
