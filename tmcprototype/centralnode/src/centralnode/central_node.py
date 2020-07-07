@@ -37,11 +37,6 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
     """
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
 
-    # def command_class_object(self):
-    #     on_obj = SKABaseDevice.OnCommand(self, self.state_model, self.logger)
-    # #
-    #     self.startup_obj = self.StartUpTelescopeCommand((self, self.state_model, self.logger))
-
     def health_state_cb(self, evt):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
@@ -729,13 +724,14 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
 
             try:
                 for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
-                    device.subarray_FQDN_dict[subarrayID].command_inout("Off")
-                    self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
+                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_OFF)
+                    self.logger.info(const.STR_CMD_OFF_SA_DEV)
+
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
-                                                                                        const.ERR_EXE_STANDBY_CMD)
+                                                                                        const.ERR_EXE_OFF_CMD)
                 # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
                 # TODO: for future - throw exception:
                 if exception_count > 0:
@@ -809,7 +805,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             device = self.target
             exception_count = 0
             exception_message = []
-            log_msg = const.STR_STARTUP_CMD_ISSUED
+            log_msg = const.STR_ON_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
             on_obj = SKABaseDevice.OnCommand(self, self.state_model, self.logger)
@@ -820,7 +816,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             # print("State for CN is : ", device.centralNode_obj.state)
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
-                    device._leaf_device_proxy[name].command_inout(const.CMD_STARTUP)
+                    device._leaf_device_proxy[name].command_inout(const.CMD_ON)
                     device._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
                     log_msg = const.CMD_SET_OPERATE_MODE + 'invoked on' + str(device._leaf_device_proxy[name])
                     self.logger.info(log_msg)
@@ -828,44 +824,45 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                     [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                             exception_message,
                                                                                             exception_count,
-                                                                                            const.ERR_EXE_STARTUP_CMD)
-                    # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+                                                                                            const.ERR_EXE_ON_CMD)
+                    # return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
 
             try:
-                device._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
-                self.logger.info(const.STR_CMD_STARTUP_CSP_DEV)
+                device._csp_master_leaf_proxy.command_inout(const.CMD_ON)
+                self.logger.info(const.STR_CMD_ON_CSP_DEV)
+
             except Exception as except_occured:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occured,
                                                                                       exception_message,
                                                                                       exception_count,
-                                                                                      const.ERR_EXE_STARTUP_CMD)
-                # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+                                                                                      const.ERR_EXE_ON_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
 
             try:
-                device._sdp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
-                self.logger.info(const.STR_CMD_STARTUP_SDP_DEV)
+                device._sdp_master_leaf_proxy.command_inout(const.CMD_ON)
+                self.logger.info(const.STR_CMD_ON_SDP_DEV)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
-                                                                                        const.ERR_EXE_STARTUP_CMD)
-                # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+                                                                                        const.ERR_EXE_ON_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
 
             try:
                 for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
-                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STARTUP)
-                    self.logger.info(const.STR_CMD_STARTUP_SA_DEV)
+                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_ON)
+                    self.logger.info(const.STR_CMD_ON_SA_DEV)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
-                                                                                        const.ERR_EXE_STARTUP_CMD)
-                # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
+                                                                                        const.ERR_EXE_ON_CMD)
+                # return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
                 # TODO: for future-  throw exception:
                 if exception_count > 0:
-                    device.throw_exception(exception_message, const.STR_STARTUP_EXEC)
-                    return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
-            return (ResultCode.OK, const.STR_STARTUP_CMD_ISSUED)
+                    self.throw_exception(exception_message, const.STR_ON_EXEC)
+                    return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
+            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
     @command(
         dtype_out="DevVarLongStringArray",

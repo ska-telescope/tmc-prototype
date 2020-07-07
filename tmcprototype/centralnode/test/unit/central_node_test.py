@@ -347,7 +347,7 @@ def test_release_resources():
 
         # assert:
         jsonArgument = json.loads(release_input_str)
-        if jsonArgument['releaseALL'] == True:
+        if jsonArgument['releaseALL'] == true:
             subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
 
