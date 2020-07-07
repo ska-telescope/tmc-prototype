@@ -592,7 +592,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             return True
-        def do(self):
+        def do(self,argin):
             """
             This command configures the scan. It accepts configuration capabilities in JSON string format and
             invokes Configure command on CspSubarray with configuration capabilities in JSON string as an
@@ -768,7 +768,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             return True
 
-        def do(self):
+        def do(self, argin):
             """
             This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
             state.
@@ -1209,7 +1209,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             return True
 
-        def do(self):
+        def do(self,argin):
             """
             It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
             with receptorIDList (list of integers) as an input argument.
@@ -1318,7 +1318,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         # PROTECTED REGION END # // CspSubarrayLeafNode.AssignResources
 
- # -------------------------------------------------------------------------------------------------------
+ # ------------------------------------------------------------------------------------------------------
 
     # @command(
     # )
