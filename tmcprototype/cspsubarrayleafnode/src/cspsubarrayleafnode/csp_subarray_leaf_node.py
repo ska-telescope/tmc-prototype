@@ -1040,7 +1040,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             return True
 
-        def do(self):
+        def do(self, argin=None):
             """
             It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
             CspSubarray.
