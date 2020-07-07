@@ -1513,7 +1513,10 @@ class SubarrayNode(SKASubarray):
             :rtype: (ResultCode, str)
             """
             device = self.target
-            print("On command device object:", device)
+            # device._csp_subarray_ln_proxy.command_inout(const.CMD_ON)
+            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_ON)
+            device._csp_subarray_ln_proxy.On()
+            device._sdp_subarray_ln_proxy.On()
             message = "On command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)
@@ -1531,6 +1534,11 @@ class SubarrayNode(SKASubarray):
                 information purpose only.
             :rtype: (ResultCode, str)
             """
+            device = self.target
+            # device._csp_subarray_ln_proxy.command_inout(const.CMD_OFF)
+            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_OFF)
+            device._csp_subarray_ln_proxy.Off()
+            device._sdp_subarray_ln_proxy.Off()
             message = "Off command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)
