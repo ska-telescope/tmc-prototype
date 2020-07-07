@@ -46,7 +46,7 @@ path= join(dirname(__file__), 'data' , assign_invalid_key_file)
 with open(path, 'r') as f:
     assign_invalid_key=f.read()
 
-#
+
 # def test_on_command_should_change_cspsubarrayleafnode_device_state_to_on():
 #     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
 #         # act:
@@ -77,8 +77,8 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         assign_resources_input = []
         assign_resources_input.append(assign_input_str)
         device_proxy=tango_context.device
-        # device_proxy.on()
-        ##act
+        device_proxy.On()
+        #act
         device_proxy.AssignResources(assign_resources_input)
         #assert
         receptorIDList = []
@@ -111,6 +111,7 @@ def test_assign_resources_should_raise_devfailed_exception():
         assign_resources_input = []
         assign_resources_input.append(assign_input_str)
         device_proxy=tango_context.device
+        device_proxy.On()
         ##act
         with pytest.raises(tango.DevFailed):
             device_proxy.AssignResources(assign_resources_input)
@@ -136,6 +137,7 @@ def test_assign_command_with_callback_method():
         assign_resources_input = []
         assign_resources_input.append(assign_input_str)
         device_proxy = tango_context.device
+        device_proxy.On()
         # act
         device_proxy.AssignResources(assign_resources_input)
         dummy_event = command_callback(const.CMD_ADD_RECEPTORS)
@@ -162,6 +164,7 @@ def test_assign_command_with_callback_method_with_event_error():
         assign_resources_input = []
         assign_resources_input.append(assign_input_str)
         device_proxy = tango_context.device
+        device_proxy.On()
         # act
         device_proxy.AssignResources(assign_resources_input)
         dummy_event = command_callback_with_event_error(const.CMD_ADD_RECEPTORS)
@@ -188,6 +191,7 @@ def test_assign_command_with_callback_method_with_command_error():
         assign_resources_input = []
         assign_resources_input.append(assign_input_str)
         device_proxy = tango_context.device
+        device_proxy.On()
         # act:
 
         with pytest.raises(Exception):
@@ -203,6 +207,7 @@ def test_assign_resource_should_raise_exception_when_called_invalid_json():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         # tango_context.device.On()
         with pytest.raises(tango.DevFailed):
+            tango_context.device.On()
             tango_context.device.AssignResources(assign_config_invalid_str)
         # assert:
         assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
@@ -213,6 +218,7 @@ def test_assign_resource_should_raise_exception_when_key_not_found():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assignresources_input = []
         assignresources_input.append(assign_invalid_key)
+        tango_context.device.On()
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assignresources_input)
         # assert:
@@ -239,7 +245,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources()
         device_proxy = tango_context.device
         assign_resources_input = []
         assign_resources_input.append(assign_input_str)
-        # device_proxy.On()
+        device_proxy.On()
         # act:
         device_proxy.AssignResources(assign_resources_input)
         device_proxy.ReleaseAllResources()
@@ -292,6 +298,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         csp_config = configure_str
         assign_resources_input = []
         assign_resources_input.append(assign_input_str)
+        device_proxy.On()
 
         # act
         device_proxy.AssignResources(assign_resources_input)

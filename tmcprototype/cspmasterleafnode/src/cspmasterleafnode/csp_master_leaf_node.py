@@ -408,40 +408,13 @@ class CspMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    @command(
-        dtype_in=('str',),
-        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch ON.",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    @DebugIt()
-    def On(self, argin):
-        # PROTECTED REGION ID(CspMasterLeafNode.On) ENABLED START #
-        """ Triggers On the CSP Element.
 
-        :param argin: DevStringArray.
-
-        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-        each array element specifies the FQDN of the CSP SubElement to switch ON.
-
-        :return: None
-        """
-        handler = self.get_command_object("On")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
-
-        # PROTECTED REGION END #    //  CspMasterLeafNode.On
-
-    # def call_on_command(self):
-    #     self.OnCommand.do()
-
-    class OnCommand(ResponseCommand):
+    class OnCommand(SKABaseDevice.OnCommand):
         """
         A class for CSP Master Leaf Node's On() command.
         """
 
-        def do(self, argin):
+        def do(self):
             """
             Triggers On the CSP Element.
 
@@ -456,41 +429,18 @@ class CspMasterLeafNode(SKABaseDevice):
             """
 
             device = self.target
-            print("device object is :", device)
+            argin =[]
             device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
-    @command(
-        dtype_in=('str',),
-        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch OFF.",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    @DebugIt()
-    def Off(self, argin):
-        # PROTECTED REGION ID(CspMasterLeafNode.Off) ENABLED START #
-        """ Triggers Off the CSP Element.
 
-        :param argin: DevStringArray.
-
-        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-        each array element specifies the FQDN of the CSP SubElement to switch OFF.
-
-        :return: None
-        """
-        handler = self.get_command_object("Off")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
-        # PROTECTED REGION END #    //  CspMasterLeafNode.Off
-
-    class OffCommand(ResponseCommand):
+    class OffCommand(SKABaseDevice.OffCommand):
         """
         A class for CSP Master Leaf Node's Off() command.
         """
 
-        def do(self, argin):
+        def do(self):
             """
             Triggers Off the CSP Element.
 
@@ -505,7 +455,7 @@ class CspMasterLeafNode(SKABaseDevice):
             """
 
             device = self.target
-
+            argin = []
             device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             return (ResultCode.STARTED, const.STR_OFF_CMD_ISSUED)
@@ -556,10 +506,10 @@ class CspMasterLeafNode(SKABaseDevice):
             """
 
             device = self.target
-
             device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
             return (ResultCode.STARTED, const.STR_STANDBY_CMD_ISSUED)
+
 
     def init_command_objects(self):
         """
@@ -570,14 +520,6 @@ class CspMasterLeafNode(SKABaseDevice):
         self.register_command_object(
             "Standby",
             self.StandbyCommand(self, self.state_model, self.logger)
-        )
-        self.register_command_object(
-            "On",
-            self.OnCommand(self, self.state_model, self.logger)
-        )
-        self.register_command_object(
-            "Off",
-            self.OffCommand(self, self.state_model, self.logger)
         )
 
 
