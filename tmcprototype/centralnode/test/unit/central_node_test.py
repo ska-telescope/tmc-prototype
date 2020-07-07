@@ -17,7 +17,7 @@ from tango.test_context import DeviceTestContext
 
 # Additional import
 from centralnode import CentralNode,const
-from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
+from centralnode.const import CMD_SET_STOW_MODE, STR_ON_CMD_ISSUED, \
     STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
@@ -181,7 +181,7 @@ def test_activity_message_attribute_captures_the_last_received_command():
     with fake_tango_system(CentralNode)as tango_context:
         dut = tango_context.device
         dut.StartUpTelescope()
-        assert_activity_message(dut, STR_STARTUP_CMD_ISSUED)
+        assert_activity_message(dut, STR_ON_CMD_ISSUED)
 
         dut.StandByTelescope()
         assert_activity_message(dut, STR_STANDBY_CMD_ISSUED)
@@ -526,10 +526,10 @@ def test_startup():
 
         # assert:
         dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_SET_OPERATE_MODE)
-        csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP, [])
-        sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
-        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
-        assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
+        csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+        sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+        assert_activity_message(tango_context.device, const.STR_ON_CMD_ISSUED)
 
 
 def test_startup_should_raise_devfailed_exception():
@@ -574,7 +574,7 @@ def test_startup_should_raise_devfailed_exception():
             tango_context.device.StartUpTelescope()
 
         # assert:
-        assert const.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
+        assert const.ERR_EXE_ON_CMD in tango_context.device.activityMessage
 
 
 # Test cases for Telescope Health State

@@ -724,8 +724,8 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
 
             try:
                 for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
-                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_OFF)
-                    self.logger.info(const.STR_CMD_OFF_SA_DEV)
+                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STANDBY)
+                    self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
