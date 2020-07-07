@@ -26,6 +26,7 @@ from ska.base.control_model import AdminMode, HealthState
 from . import const
 
 import json
+import ast
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
@@ -1266,31 +1267,31 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             exception_message = []
             try:
                 release_success = False
-                res_not_released = []
                 jsonArgument = json.loads(argin)
                 subarrayID = jsonArgument['subarrayID']
                 subarrayProxy = device.subarray_FQDN_dict[subarrayID]
                 subarray_name = "SA" + str(subarrayID)
                 if jsonArgument['releaseALL'] == True:
                     #the const string for "CMD_RELEASE_RESOURCES" is "ReleaseAllResources"
-                    res_not_released = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
+                    return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
+                    res_not_released = ast.literal_eval(return_val[1][0])
+                    print("\n\n res_not_released:", res_not_released, type(res_not_released))
                     log_msg = const.STR_REL_RESOURCES
                     device._read_activity_message = log_msg
-                    self.logger.info(log_msg)
-                    if not res_not_released[1]:
+                    if not res_not_released:
                         release_success = True
                         for Dish_ID, Dish_Status in device._subarray_allocation.items():
                             if Dish_Status == subarray_name:
                                 device._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                         argout = {
                             "ReleaseAll": release_success,
-                            "receptorIDList": res_not_released[1]
+                            "receptorIDList": res_not_released
                         }
                         message = json.dumps(argout)
                         self.logger.info(message)
                         return (ResultCode.OK,message)
                     else:
-                        log_msg = const.STR_LIST_RES_NOT_REL + res_not_released[1]
+                        log_msg = const.STR_LIST_RES_NOT_REL + str(res_not_released)
                         device._read_activity_message = log_msg
                         self.logger.info(log_msg)
                         #release_success = False
