@@ -267,8 +267,9 @@ class SubarrayNode(SKASubarray):
                 pointing_state_count_slew = pointing_state_count_slew + 1
         if self._csp_sa_obs_state == ObsState.EMPTY and self._sdp_sa_obs_state ==\
                 ObsState.EMPTY:
-            print("Calling ReleaseAllResource command succeeded() method")
-            self.release_obj.succeeded()
+                if self.is_release_resources:
+                    print("Calling ReleaseAllResource command succeeded() method")
+                    self.release_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
@@ -965,6 +966,7 @@ class SubarrayNode(SKASubarray):
             # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
             # It will be moved to that command.
             device._sb_id = ""
+            device.is_release_resources = True
             argout = device._dish_leaf_node_group.get_device_list(True)
             log_msg = "Release_all_resources:", argout
             self.logger.debug(log_msg)
@@ -1109,6 +1111,7 @@ class SubarrayNode(SKASubarray):
             device.isScanRunning = False
             device.isScanCompleted = False
             device.is_end_command = False
+            device.is_release_resources = False
             device._scan_id = ""
             device._sb_id = ""
             device.scan_duration = 0
