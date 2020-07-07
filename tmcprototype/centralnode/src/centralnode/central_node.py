@@ -731,7 +731,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
-                                                                                        const.ERR_EXE_OFF_CMD)
+                                                                                        const.ERR_EXE_STANDBY_CMD)
                 # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
                 # TODO: for future - throw exception:
                 if exception_count > 0:
