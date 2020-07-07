@@ -368,10 +368,6 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                device._read_activity_message = ""
                #device.set_status(const.STR_INIT_SUCCESS)
                self.logger.debug(const.STR_INIT_SUCCESS)
-               on_obj = SKABaseDevice.OnCommand(self, self.state_model, self.logger)
-               # self.logger()
-               on_obj.do()
-               # self.logger("Device state updated")
 
            except DevFailed as dev_failed:
                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
@@ -611,7 +607,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
 
                     # TODO: throw exception:
                     # if exception_count > 0:
-                    #     self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+                    #     device.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
 
             except ValueError as value_error:
                 self.logger.error(const.ERR_STOW_ARGIN)
@@ -627,7 +623,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+                device.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
                 return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
             # PROTECTED REGION END #    //  CentralNode.stow_antennas
             #TODO: check if message should be Started or Ok?
@@ -733,7 +729,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
 
             try:
                 for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
-                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_STANDBY)
+                    device.subarray_FQDN_dict[subarrayID].command_inout("Off")
                     self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -743,7 +739,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                 # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
                 # TODO: for future - throw exception:
                 if exception_count > 0:
-                    self.throw_exception(exception_message, const.STR_STANDBY_EXEC)
+                    device.throw_exception(exception_message, const.STR_STANDBY_EXEC)
                     return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
             off_obj.do()
             return (ResultCode.OK,const.STR_CMD_STANDBY_SA_DEV) # return message can be updated accordingly.
@@ -816,10 +812,15 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             log_msg = const.STR_STARTUP_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
+            on_obj = SKABaseDevice.OnCommand(self, self.state_model, self.logger)
+            # self.logger()
+            on_obj.do()
+            # self.logger("Device state updated")
             # device.centralNode_obj.OnCommand.do()
             # print("State for CN is : ", device.centralNode_obj.state)
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
+                    device._leaf_device_proxy[name].command_inout(const.CMD_STARTUP)
                     device._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
                     log_msg = const.CMD_SET_OPERATE_MODE + 'invoked on' + str(device._leaf_device_proxy[name])
                     self.logger.info(log_msg)
@@ -831,7 +832,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                     # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
 
             try:
-                device._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP, [])
+                device._csp_master_leaf_proxy.command_inout(const.CMD_STARTUP)
                 self.logger.info(const.STR_CMD_STARTUP_CSP_DEV)
             except Exception as except_occured:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occured,
@@ -862,7 +863,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                 # return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
                 # TODO: for future-  throw exception:
                 if exception_count > 0:
-                    self.throw_exception(exception_message, const.STR_STARTUP_EXEC)
+                    device.throw_exception(exception_message, const.STR_STARTUP_EXEC)
                     return (ResultCode.FAILED, const.ERR_EXE_STARTUP_CMD)
             return (ResultCode.OK, const.STR_STARTUP_CMD_ISSUED)
 
@@ -939,9 +940,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
-                tango_raise(
-                    "AssignResources() is not allowed in current state"
-                )
+                raise Exception("Assign Resources cannot be performed in current state")
             return True
 
         def do(self, argin):
@@ -1071,6 +1070,8 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                     input_to_sa = json.dumps(input_json_subarray)
                     device._resources_allocated = subarrayProxy.command_inout(
                         const.CMD_ASSIGN_RESOURCES, input_to_sa)
+                    log_msg = "resources_allocated: ", device._resources_allocated
+                    self.logger.info(log_msg)
                     # Update self._subarray_allocation variable to update subarray allocation
                     # for the related dishes.
                     # Also append the allocated dish to out argument.
@@ -1140,7 +1141,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
 
             # TODO: throw exception:
             if exception_count > 0:
-               self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+               device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
                argout = '{"dish": {"receptorIDList_success": []}}'
                return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
 

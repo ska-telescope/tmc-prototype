@@ -508,7 +508,7 @@ class CspMasterLeafNode(SKABaseDevice):
             device = self.target
             device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
-            return (ResultCode.STARTED, const.STR_STANDBY_CMD_ISSUED)
+            return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
         def check_allowed(self):
             """
