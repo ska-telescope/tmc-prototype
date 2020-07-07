@@ -909,7 +909,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             return True
-        def do(self):
+        def do(self, argin=None):
             """
             It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in SCANNING
             state.
@@ -1382,7 +1382,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             return True
-        def do(self):
+        def do(self, argin=None):
             """
             This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
             :return: A tuple containing a return code and a string
