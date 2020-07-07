@@ -12,7 +12,7 @@ copyright = """"""
 
 release=0.2.2
 tag=0.2.2
-tag_description=Updated to PyTango 9.3.2.
-release_notes=This release Contains: <br /><ul> <li>updates the containers and the Python dependencies to use PyTango 9.3.2 (and cppTango 9.3.4rc4)</li><li>The pipenv virtual environment was dropped earlier, so paths like /venv/ are removed, as is the Pipfile.</li></ul>
-gitlab_username=apurvapatkar
-private_token=gG3Vvjvv4hrcpAv-N-Np
+tag_description=Exception handling guidelines implemented for AssignResource.
+release_notes=This release Contains: <br/><ul><li>Exception handling guidelines implemented for AssignResources functionality.</li><li>Exception Logging</li><li>Raising custom exceptions</li><li>Catch exceptions</li><li>Handlie Exceptions</li></ul>
+gitlab_username=adityadangeska
+private_token=T-QnRqsjQgqga_BRsz_i
