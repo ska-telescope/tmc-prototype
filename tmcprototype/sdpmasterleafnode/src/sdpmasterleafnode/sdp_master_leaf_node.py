@@ -409,9 +409,9 @@ class SdpMasterLeafNode(SKABaseDevice):
             """
 
             if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.ON
+                DevState.FAULT, DevState.UNKNOWN
             ]:
-                tango.Except.throw_exception("", "",
+                tango.Except.throw_exception("Error in standby on SDP","Check allowed throw exception ",
                                              "Standby() is not allowed in current state",
                                              tango.ErrSeverity.ERR)
 

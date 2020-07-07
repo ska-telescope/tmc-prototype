@@ -510,6 +510,43 @@ class CspMasterLeafNode(SKABaseDevice):
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
             return (ResultCode.STARTED, const.STR_STANDBY_CMD_ISSUED)
 
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+             :return: True if this command is allowed to be run in
+                 current device state
+             :rtype: boolean
+             :raises: DevFailed if this command is not allowed to be run
+                 in current device state
+            Returns
+            -------
+
+            """
+
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN
+            ]:
+                tango.Except.throw_exception("Error in standby on CSP","Check allowed throw exception ",
+                                             "Standby() is not allowed in current state",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+    def is_Standby_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("Standby")
+        return handler.check_allowed()
+
 
     def init_command_objects(self):
         """
