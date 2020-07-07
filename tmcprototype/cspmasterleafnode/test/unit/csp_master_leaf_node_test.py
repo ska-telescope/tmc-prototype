@@ -63,7 +63,6 @@ def test_event_to_raise_devfailed_exception():
         # assert:
         assert tango_context.device.State() == DevState.FAULT
 
-@pytest.mark.xfail
 def test_off_should_command_csp_master_leaf_node_to_stop():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
