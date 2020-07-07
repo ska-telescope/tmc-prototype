@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.1"
+version = "0.2.2"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -10,8 +10,8 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.2.1
-tag=0.2.1
+release=0.2.2
+tag=0.2.2
 tag_description=Updated to PyTango 9.3.2.
 release_notes=This release Contains: <br /><ul> <li>updates the containers and the Python dependencies to use PyTango 9.3.2 (and cppTango 9.3.4rc4)</li><li>The pipenv virtual environment was dropped earlier, so paths like /venv/ are removed, as is the Pipfile.</li></ul>
 gitlab_username=apurvapatkar
