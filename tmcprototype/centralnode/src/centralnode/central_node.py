@@ -37,6 +37,11 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
     """
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
 
+    # def command_class_object(self):
+    #     on_obj = SKABaseDevice.OnCommand(self, self.state_model, self.logger)
+    # #
+    #     self.startup_obj = self.StartUpTelescopeCommand((self, self.state_model, self.logger))
+
     def health_state_cb(self, evt):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
@@ -340,11 +345,16 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
            try:
                #SKABaseDevice.init_device(self)
                self.logger.info("Device initialisating...")
+               # device.command_class_object()
+               # device.centralNode_obj = CentralNode(self)
                device._subarray1_health_state = HealthState.OK
                device._subarray2_health_state = HealthState.OK
                device._subarray3_health_state = HealthState.OK
                device._sdp_master_leaf_health = HealthState.OK
                device._csp_master_leaf_health = HealthState.OK
+               # self.centralNode_obj = CentralNode(self)
+               # device.command_class_object()
+
                #self.set_state(DevState.ON)
                # Initialise Attributes
                device._health_state = HealthState.OK
@@ -358,6 +368,10 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                device._read_activity_message = ""
                #device.set_status(const.STR_INIT_SUCCESS)
                self.logger.debug(const.STR_INIT_SUCCESS)
+               on_obj = SKABaseDevice.OnCommand(self, self.state_model, self.logger)
+               # self.logger()
+               on_obj.do()
+               # self.logger("Device state updated")
 
            except DevFailed as dev_failed:
                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
@@ -684,6 +698,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             log_msg = const.STR_STANDBY_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
+            off_obj = SKABaseDevice.OffCommand(self, self.state_model, self.logger)
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
                     device._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
@@ -730,6 +745,7 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
                 if exception_count > 0:
                     self.throw_exception(exception_message, const.STR_STANDBY_EXEC)
                     return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
+            off_obj.do()
             return (ResultCode.OK,const.STR_CMD_STANDBY_SA_DEV) # return message can be updated accordingly.
             # PROTECTED REGION END #    //  CentralNode.standby_telescope
 
@@ -764,6 +780,10 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
         # PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
 
 #=================================================================
+
+    # def call_on_command(self):
+    #     self.startup_obj.on()
+
     class StartUpTelescopeCommand(ResponseCommand):
         """
         A class for CentralNode's StartupCommand command.
@@ -796,6 +816,8 @@ class CentralNode(SKABaseDevice): # Keeping the current inheritance as it is. Co
             log_msg = const.STR_STARTUP_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
+            # device.centralNode_obj.OnCommand.do()
+            # print("State for CN is : ", device.centralNode_obj.state)
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
                     device._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
