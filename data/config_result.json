@@ -601,10 +601,10 @@
                                 "ska_mid/tm_leaf_node/d"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "NumDishes": [
                                 "4"
@@ -664,10 +664,10 @@
                                 "mid_csp/elt/master"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "polled_attr": [
                                 "activitymessage", 
@@ -718,10 +718,10 @@
                                 "mid_csp/elt/subarray_01"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "3"
@@ -775,10 +775,10 @@
                                 "mid_csp/elt/subarray_02"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "3"
@@ -832,10 +832,10 @@
                                 "mid_csp/elt/subarray_03"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "3"
@@ -899,10 +899,10 @@
                                 "mid_d0001/elt/master"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "3"
@@ -951,10 +951,10 @@
                                 "mid_d0002/elt/master"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "3"
@@ -1003,10 +1003,10 @@
                                 "mid_d0003/elt/master"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "3"
@@ -1055,10 +1055,10 @@
                                 "mid_d0004/elt/master"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "3"
@@ -1147,10 +1147,10 @@
                         }, 
                         "properties": {
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "1"
@@ -1248,10 +1248,10 @@
                         }, 
                         "properties": {
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "1"
@@ -1349,10 +1349,10 @@
                         }, 
                         "properties": {
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "1"
@@ -1450,10 +1450,10 @@
                         }, 
                         "properties": {
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SkaLevel": [
                                 "1"
@@ -2558,6 +2558,10 @@
                                 "1000", 
                                 "cspcbfadminmode", 
                                 "1000", 
+                                "standbycmdalarm", 
+                                "1000", 
+                                "offcmdalarm", 
+                                "1000", 
                                 "adminmode", 
                                 "1000", 
                                 "oncommandprogress", 
@@ -2710,6 +2714,8 @@
                                 "mid_csp/elt/cvlbi-01"
                             ], 
                             "polled_attr": [
+                                "alarmraisedflag", 
+                                "1000", 
                                 "timeoutexpiredflag", 
                                 "1000", 
                                 "state", 
@@ -2722,20 +2728,10 @@
                                 "1500", 
                                 "endscancmdprogress", 
                                 "1500", 
+                                "endsbcmdprogress", 
+                                "1500", 
                                 "healthstate", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
-                                "1000", 
-                                "gotoidlecmdprogress", 
-                                "1500", 
-                                "failureraisedflag", 
-                                "1000", 
-                                "addreceptorscmdprogress", 
-                                "1500", 
-                                "removereceptorscmdprogress", 
-                                "1500"
+                                "1000"
                             ]
                         }
                     }
@@ -2922,6 +2918,8 @@
                                 "mid_csp/elt/cvlbi-02"
                             ], 
                             "polled_attr": [
+                                "alarmraisedflag", 
+                                "1000", 
                                 "state", 
                                 "1000", 
                                 "timeoutexpiredflag", 
@@ -2934,20 +2932,10 @@
                                 "1500", 
                                 "endscancmdprogress", 
                                 "1500", 
+                                "endsbcmdprogress", 
+                                "1500", 
                                 "healthstate", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
-                                "1000", 
-                                "gotoidlecmdprogress", 
-                                "1500", 
-                                "failureraisedflag", 
-                                "1000", 
-                                "addreceptorscmdprogress", 
-                                "1500", 
-                                "removereceptorscmdprogress", 
-                                "1500"
+                                "1000"
                             ]
                         }
                     }
@@ -3134,6 +3122,8 @@
                                 "mid_csp/elt/cvlbi-03"
                             ], 
                             "polled_attr": [
+                                "alarmraisedflag", 
+                                "1000", 
                                 "state", 
                                 "1000", 
                                 "timeoutexpiredflag", 
@@ -3146,20 +3136,10 @@
                                 "1500", 
                                 "endscancmdprogress", 
                                 "1500", 
+                                "endsbcmdprogress", 
+                                "1500", 
                                 "healthstate", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
-                                "1000", 
-                                "gotoidlecmdprogress", 
-                                "1500", 
-                                "failureraisedflag", 
-                                "1000", 
-                                "addreceptorscmdprogress", 
-                                "1500", 
-                                "removereceptorscmdprogress", 
-                                "1500"
+                                "1000"
                             ]
                         }
                     }
@@ -3633,10 +3613,10 @@
                         }, 
                         "properties": {
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SdpMasterFQDN": [
                                 "mid_sdp/elt/master"
@@ -3681,10 +3661,10 @@
                         }, 
                         "properties": {
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
@@ -3732,10 +3712,10 @@
                         }, 
                         "properties": {
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_2"
@@ -3783,10 +3763,10 @@
                         }, 
                         "properties": {
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_3"
@@ -3864,10 +3844,10 @@
                                 "ska_mid/tm_leaf_node/d"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
@@ -3952,10 +3932,10 @@
                                 "ska_mid/tm_leaf_node/d"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_2"
@@ -4040,10 +4020,10 @@
                                 "ska_mid/tm_leaf_node/d"
                             ], 
                             "LoggingLevelDefault": [
-                                "4"
+                                "5"
                             ], 
                             "LoggingTargetsDefault": [
-                                "console::cout"
+                                "tango::logger"
                             ], 
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_3"
@@ -4151,10 +4131,6 @@
                                 "adminmode", 
                                 "1000", 
                                 "subarraymembership", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
                                 "1000"
                             ]
                         }
@@ -4297,10 +4273,6 @@
                                 "adminmode", 
                                 "1000", 
                                 "subarraymembership", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
                                 "1000"
                             ]
                         }
@@ -4443,10 +4415,6 @@
                                 "adminmode", 
                                 "1000", 
                                 "subarraymembership", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
                                 "1000"
                             ]
                         }
@@ -4586,10 +4554,6 @@
                                 "adminmode", 
                                 "1000", 
                                 "subarraymembership", 
-                                "1000", 
-                                "obsstate", 
-                                "1000", 
-                                "obsmode", 
                                 "1000"
                             ]
                         }
