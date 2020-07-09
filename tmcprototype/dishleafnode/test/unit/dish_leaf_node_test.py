@@ -301,6 +301,104 @@ def test_set_stow_mode_should_command_dish_to_transit_to_stow_mode():
                                                                  any_method(with_name='cmd_ended_cb'))
 
 
+def test_abort_should_command_dish_to_abort():
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.Abort()
+
+        # assert:
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
+                                                                 any_method(with_name='cmd_ended_cb'))
+
+
+def test_abort_should_command_dish_to_abort_when_it_is_ready():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.Abort()
+
+        # assert:
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
+                                                                 any_method(with_name='cmd_ended_cb'))
+
+
+def test_abort_should_command_dish_to_abort_when_it_is_scanning():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.SCANNING
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.Abort()
+
+        # assert:
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
+                                                                 any_method(with_name='cmd_ended_cb'))
+
+
+def test_abort_should_command_dish_to_abort_when_it_is_configuring():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.CONFIGURING
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.Abort()
+
+        # assert:
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
+                                                                 any_method(with_name='cmd_ended_cb'))
+
+
+def test_abort_should_command_dish_to_abort_when_it_is_idle():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.IDLE
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.Abort()
+
+        # assert:
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
+                                                                 any_method(with_name='cmd_ended_cb'))
+
+
 def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
     fake_event = Mock()
     fake_event.err = False

@@ -21,6 +21,7 @@ CMD_STOP_CAPTURE = "StopCapture"
 CMD_START_CAPTURE = "StartCapture"
 CMD_TRACK = "Track"
 CMD_STOP_TRACK = "StopTrack"
+CMD_ABORT = "Abort"
 
 #string constants
 STR_DISH_STANDBYLP_MODE = "Dish is in STANDBY-LP mode."
@@ -108,6 +109,7 @@ ERR_RADEC_TO_AZEL_VAL_ERR = "Value Error in Ra-Dec to Az-El conversion"
 ERR_ELE_LIM = "Minimum elevation limit has been reached."
 ERR_TIME_LIM = "Tracking duration is complete."
 ERR_EXE_TRACK = "Exception occured in the execution of Track command."
+ERR_EXE_ABORT_CMD = "Exception occurred in Abort command"
 
 # commands success string
 STR_SET_STOW_MODE_SUCCESS = "Command :-> SetStowMode invoked successfully."
@@ -122,6 +124,7 @@ STR_STANDBYFP_SUCCESS = "Command :-> SetStandbyFPMode invoked successfully."
 STR_SLEW_SUCCESS = "Command :-> Slew invoked successfully."
 STR_TRACK_SUCCESS = "Command :-> Track invoked successfully."
 STR_STOP_TRACK_SUCCESS = "Command :-> StopTrack invoked successfully."
+STR_ABORT_SUCCESS = "Command :-> Abort invoked successfully."
 
 STR_CMD_FAILED = "DishLeafNode_Commandfailed"
 STR_SLEW_EXEC = "Slew command execution"
@@ -133,6 +136,7 @@ STR_CONFIGURE_EXEC = "Configure command execution"
 STR_ENDSCAN_EXEC = "EndScan command execution"
 STR_SCAN_EXEC = "Scan command execution"
 STR_CMD_CALLBK = "DishLeafNode Command Callback"
+STR_ABORT_EXEC = "Abort command execution"
 
 STR_CAPTURE_EVENT = "StopCapture command is invoked on DishMaster"
 STR_ACHIEVEDPOINTING_1_0 = "Achieved Pointing :-> [0. 1. 0.]"
