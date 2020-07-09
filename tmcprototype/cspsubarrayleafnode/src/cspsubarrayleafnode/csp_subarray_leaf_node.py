@@ -1534,7 +1534,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    def Abort(self):
+    def is_Abort_allowed(self):
         """
         Whether this command is allowed to be run in current device
         state
