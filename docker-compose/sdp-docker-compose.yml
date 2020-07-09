@@ -37,7 +37,7 @@ services:
       - TOGGLE_CONFIG_DB=0
       - TOGGLE_CBF_OUTPUT_LINK=0
       - TOGGLE_AUTO_REGISTER=0
-      - TOGGLE_RECEIVE_ADDRESSES=1
+      - TOGGLE_RECEIVE_ADDRESSES_HACK=0
     stdin_open: true
     entrypoint: ["python", "SDPSubarray"]
     command: ["1", "-v4"]
