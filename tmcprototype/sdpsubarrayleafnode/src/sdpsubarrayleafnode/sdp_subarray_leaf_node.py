@@ -390,7 +390,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
-                return(ResultCode.STARTED,const.STR_REL_RESOURCES)
+                return(ResultCode.OK,const.STR_REL_RESOURCES)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -635,7 +635,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                 self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-                return(ResultCode.STARTED,const.STR_ASSIGN_RESOURCES_SUCCESS)
+                return(ResultCode.OK,const.STR_ASSIGN_RESOURCES_SUCCESS)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
@@ -809,7 +809,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.debug(str(sdpConfiguration))
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
-                return(ResultCode.STARTED,const.STR_CONFIGURE_SUCCESS)
+                return(ResultCode.OK,const.STR_CONFIGURE_SUCCESS)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
@@ -972,7 +972,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_SCAN_SUCCESS
                     self.logger.info(const.STR_SCAN_SUCCESS)
-                    return(ResultCode.STARTED,const.STR_SCAN_SUCCESS)
+                    return(ResultCode.OK,const.STR_SCAN_SUCCESS)
 
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
@@ -1105,7 +1105,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
-                    return(ResultCode.STARTED,const.STR_ENDSCAN_SUCCESS)
+                    return(ResultCode.OK,const.STR_ENDSCAN_SUCCESS)
 
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
@@ -1236,7 +1236,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSB_SUCCESS
                     self.logger.info(const.STR_ENDSB_SUCCESS)
-                    return(ResultCode.STARTED,const.STR_ENDSB_SUCCESS)
+                    return(ResultCode.OK,const.STR_ENDSB_SUCCESS)
 
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
@@ -1328,8 +1328,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            It invokes Abort command on CspSubarray. This command is allowed when CspSubarray is in SCANNING,READY<
-            CONFIGURING state.
+            It invokes Abort command on sdpSubarray. This command is allowed when sdpSubarray is in SCANNING,READY,
+            CONFIGURING,IDLE state.
             state.
             :return: A tuple containing a return code and a string
                         message indicating status. The message is for
@@ -1341,11 +1341,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device._sdp_subarray_proxy.obsState == ObsState.READY or device._sdp_subarray_proxy.obsState ==\
-                        ObsState.SCANNING or device._sdp_subarray_proxy.obsState == ObsState.CONFIGURING:
+                        ObsState.SCANNING or device._sdp_subarray_proxy.obsState == ObsState.CONFIGURING or \
+                        device._sdp_subarray_proxy.obsState == ObsState.IDLE:
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
-                    return(ResultCode.STARTED,const.STR_ABORT_SUCCESS)
+                    return(ResultCode.OK,const.STR_ABORT_SUCCESS)
 
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_STATE
