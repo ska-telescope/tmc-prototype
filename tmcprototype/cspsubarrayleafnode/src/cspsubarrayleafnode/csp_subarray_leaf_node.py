@@ -643,7 +643,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                            device.cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
-                return (ResultCode.STARTED, const.STR_CONFIGURE_SUCCESS)
+                return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
@@ -794,7 +794,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", device.cmd_ended_cb)
                     device._read_activity_message = const.STR_STARTSCAN_SUCCESS
                     self.logger.info(const.STR_STARTSCAN_SUCCESS)
-                    return (ResultCode.STARTED,const.STR_STARTSCAN_SUCCESS)
+                    return (ResultCode.OK,const.STR_STARTSCAN_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
@@ -930,7 +930,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
-                    return (ResultCode.STARTED,const.STR_ENDSCAN_SUCCESS)
+                    return (ResultCode.OK,const.STR_ENDSCAN_SUCCESS)
 
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
@@ -1063,7 +1063,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, device.cmd_ended_cb)
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
-                return (ResultCode.STARTED,const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+                return (ResultCode.OK,const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1257,7 +1257,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                                device.cmd_ended_cb)
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
-                return (ResultCode.STARTED,const.STR_ADD_RECEPTORS_SUCCESS)
+                return (ResultCode.OK,const.STR_ADD_RECEPTORS_SUCCESS)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
@@ -1402,7 +1402,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_GOTOIDLE_SUCCESS
                     self.logger.info(const.STR_GOTOIDLE_SUCCESS)
-                    return (ResultCode.STARTED,const.STR_GOTOIDLE_SUCCESS)
+                    return (ResultCode.OK,const.STR_GOTOIDLE_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
@@ -1493,11 +1493,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 if device.CspSubarrayProxy.obsState == ObsState.READY or \
                         device.CspSubarrayProxy.obsState == ObsState.CONFIGURING or\
-                        device.CspSubarrayProxy.obsState == ObsState.SCANNING:
+                        device.CspSubarrayProxy.obsState == ObsState.SCANNING or \
+                        device.CspSubarrayProxy.obsState == ObsState.IDLE:
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
-                    return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
+                    return (ResultCode.OK, const.STR_ABORT_SUCCESS)
 
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_STATES
