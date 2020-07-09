@@ -236,6 +236,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "EndSB",
             self.EndSBCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "Abort",
+            self.AbortCommand(self, self.state_model, self.logger)
+        )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -1265,7 +1269,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.EndSB) ENABLED START #
         """
-        Invoke EndSB on SdpSubarrayLeafNode.
+        A class for CspSubarrayLeafNode's EndScan() command.
         """
         handler = self.get_command_object("EndSB")
         (result_code, message) = handler()
@@ -1287,17 +1291,116 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndSB")
         return handler.check_allowed()
 
+    # @command(
+    # )
+    # @DebugIt()
+    # def Abort(self):
+    #     # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
+    #     """ Abort command. Not yet implememnted."""
+    #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
+
+    class AbortCommand(ResponseCommand):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
+        """
+        A class for sdpSubarrayLeafNode's Abort() command.
+        """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Abort() is not allowed in current state",
+                                             "Abort() is not allowed in current state",
+                                             "sdpsubarrayleafnode.Abort()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def do(self):
+            """
+            It invokes Abort command on CspSubarray. This command is allowed when CspSubarray is in SCANNING,READY<
+            CONFIGURING state.
+            state.
+            :return: A tuple containing a return code and a string
+                        message indicating status. The message is for
+                        information purpose only.
+            :rtype: (ReturnCode, str)
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device._sdp_subarray_proxy.obsState == ObsState.READY or device._sdp_subarray_proxy.obsState ==\
+                        ObsState.SCANNING or device._sdp_subarray_proxy.obsState == ObsState.CONFIGURING:
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_ABORT_SUCCESS
+                    self.logger.info(const.STR_ABORT_SUCCESS)
+                    return(ResultCode.STARTED,const.STR_ABORT_SUCCESS)
+
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_IN_STATE
+                    self.logger.error(const.ERR_DEVICE_NOT_IN_STATE)
+                    return(ResultCode.FAILED,const.ERR_DEVICE_NOT_IN_STATE)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
+
+                # throw exception:
+                if exception_count > 0:
+                    self.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
+                    return (ResultCode.FAILED, const.ERR_ABORT_INVOKING_CMD)
+            #
+            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
+
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Abort(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
-        """ Abort command. Not yet implememnted."""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
+        """
+        Invoke Abort on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Abort")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.EndSB
+
+    def is_Abort_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("Abort")
+        return handler.check_allowed()
 
 
+#     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
-    # class OnCommand(SKASubarray.OnCommand):
+
+# class OnCommand(SKASubarray.OnCommand):
     #     """
     #     A class for the cspsubarrayleafnode's On() command.
     #     """
