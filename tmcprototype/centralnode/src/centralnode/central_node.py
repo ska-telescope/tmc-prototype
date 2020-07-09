@@ -42,11 +42,6 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
     """
 
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
-
-    def command_class_object(self):
-        self.on_obj = self.OnCommand(self, self.state_model, self.logger)
-        # self.assign_obj = self.AssignResourcesCommand(self, self.state_model, self.l
-
     def health_state_cb(self, evt):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
@@ -253,9 +248,6 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                device._subarray3_health_state = HealthState.OK
                device._sdp_master_leaf_health = HealthState.OK
                device._csp_master_leaf_health = HealthState.OK
-               # self.centralNode_obj = CentralNode(self)
-               device.command_class_object()
-
                #self.set_state(DevState.ON)
                # Initialise Attributes
                device._health_state = HealthState.OK
@@ -565,7 +557,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
         return handler.check_allowed()
 
     # =========================================
-    class StandByTelescopeCommand(ResponseCommand):
+    class StandByTelescopeCommand(SKABaseDevice.OffCommand):
         """
         A class for CentralNode's StandByTelescope command.
         """
@@ -682,38 +674,9 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
         # PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
 
 
-#=================================================================
-
-    # def call_on_command(self):
-    #     self.startup_obj.on()
 # =================================================================
 
-    class OnCommand(SKABaseDevice.OnCommand):
-        """
-        A class for the TMC CentralNode's On "command".
-        """
-
-        def do(self):
-            """
-            Changes the device state of Central Node.
-
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
-            :rtype: (ReturnCode, str)
-            """
-            super().do()
-
-            device = self.target
-            message = "On command completed OK"
-            self.logger.info(message)
-            return (ResultCode.OK, message)
-
-    def call_on_command(self):
-        self.on_obj.do()
-
-
-    class StartUpTelescopeCommand(ResponseCommand):
+    class StartUpTelescopeCommand(SKABaseDevice.OnCommand):
         """
         A class for CentralNode's StartupCommand command.
         """
@@ -747,14 +710,6 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
 
-            device.call_on_command()
-            # on_obj = SKABaseDevice.OnCommand(self, self.state_model, self.logger)
-            # # self.logger()
-            # on_obj.do()
-
-            # self.logger("Device state updated")
-            # device.centralNode_obj.OnCommand.do()
-            # print("State for CN is : ", device.centralNode_obj.state)
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
                     device._leaf_device_proxy[name].command_inout(const.CMD_ON)
@@ -803,6 +758,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                 if exception_count > 0:
                     self.throw_exception(exception_message, const.STR_ON_EXEC)
                     return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
+
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
     @command(
@@ -838,24 +794,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
         return handler.check_allowed()
 
     # PROTECTED REGION END #    //  CentralNode.startup_telescope
-
-    # ============================================================================
-
-    # def is_StartUpTelescope_allowed(self):
-    #     """
-    #     Whether this command is allowed to be run in current device
-    #     state
-    #     :return: True if this command is allowed to be run in
-    #         current device state
-    #     :rtype: boolean
-    #     :raises: DevFailed if this command is not allowed to be run
-    #         in current device state
-    #     """
-    #     handler = self.get_command_object("StartUpTelescope")
-    #     return handler.check_allowed()
-    # PROTECTED REGION END #    //  CentralNode.startup_telescope
-
-    # ============================================================================
+  # ============================================================================
 
     class AssignResourcesCommand(ResponseCommand):
         """
