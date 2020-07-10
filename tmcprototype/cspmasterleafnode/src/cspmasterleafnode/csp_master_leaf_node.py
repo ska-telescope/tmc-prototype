@@ -262,6 +262,8 @@ class CspMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
             """
             super().do()
+            exception_count = 0
+            exception_message = []
 
             device = self.target
             device.SkaLevel = const.INT_SKA_LEVEL
@@ -270,7 +272,7 @@ class CspMasterLeafNode(SKABaseDevice):
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
             device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
-            _state_fault_flag = False
+            # _state_fault_flag = False
             try:
                 device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
                 # Creating proxy to the CSPMaster
@@ -279,9 +281,13 @@ class CspMasterLeafNode(SKABaseDevice):
                 device._csp_proxy = DeviceProxy(str(device.CspMasterFQDN))
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
+                self.logger.debug(log_msg)
                 #device.set_state(DevState.FAULT)
-                _state_fault_flag = True
-                device._handle_devfailed_exception(dev_failed, [], 0, const.ERR_IN_CREATE_PROXY)
+                # _state_fault_flag = True
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_IN_CREATE_PROXY)
+                device._read_activity_message = log_msg
 
             # Subscribing to CSPMaster Attributes
             try:
@@ -297,29 +303,28 @@ class CspMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
-                device._handle_devfailed_exception(dev_failed, [], 0, const.ERR_CSP_MASTER_LEAF_INIT)
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_CSP_MASTER_LEAF_INIT)
                 #device.set_state(DevState.FAULT)
-                _state_fault_flag = True
+                # _state_fault_flag = True
                 device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
+                device._read_activity_message = log_msg
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
             self.logger.debug(log_msg)
-            device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
-                ApiUtil.instance().get_asynch_cb_sub_model())
+            # device._read_activity_message = log_msg
             device.set_status(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
-            self.logger.info(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
+            device._read_activity_message = const.STR_CSP_MASTER_LEAF_INIT_SUCCESS
+            self.logger.info(device._read_activity_message)
 
-            if _state_fault_flag:
-                message = const.ERR_CSP_MASTER_LEAF_INIT
-                return_code = ResultCode.FAILED
-            else:
-                message = const.STR_CSP_MASTER_LEAF_INIT_SUCCESS
-                return_code = ResultCode.OK
+            if exception_count > 0:
+                self.logger.info(device._read_activity_message)
+                device.throw_exception(exception_message, device._read_activity_message)
+               return (ResultCode.FAILED,device._read_activity_message )
 
-            device._read_activity_message = message
-            self.logger.info(message)
-            return (return_code, message)
+            return (return_code, device._read_activity_message)
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspMasterLeafNode.always_executed_hook) ENABLED START #
