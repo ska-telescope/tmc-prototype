@@ -452,6 +452,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             "Abort",
             self.AbortCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "Restart",
+            self.RestartCommand(self, self.state_model, self.logger)
+        )
     # ------------------
     # Attributes methods
     # ------------------
@@ -643,7 +647,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                            device.cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
-                return (ResultCode.STARTED, const.STR_CONFIGURE_SUCCESS)
+                return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
@@ -794,7 +798,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", device.cmd_ended_cb)
                     device._read_activity_message = const.STR_STARTSCAN_SUCCESS
                     self.logger.info(const.STR_STARTSCAN_SUCCESS)
-                    return (ResultCode.STARTED,const.STR_STARTSCAN_SUCCESS)
+                    return (ResultCode.OK,const.STR_STARTSCAN_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
@@ -930,7 +934,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
-                    return (ResultCode.STARTED,const.STR_ENDSCAN_SUCCESS)
+                    return (ResultCode.OK,const.STR_ENDSCAN_SUCCESS)
 
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
@@ -1063,7 +1067,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, device.cmd_ended_cb)
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
-                return (ResultCode.STARTED,const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+                return (ResultCode.OK,const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1257,7 +1261,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                                device.cmd_ended_cb)
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
-                return (ResultCode.STARTED,const.STR_ADD_RECEPTORS_SUCCESS)
+                return (ResultCode.OK,const.STR_ADD_RECEPTORS_SUCCESS)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
@@ -1402,7 +1406,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_GOTOIDLE_SUCCESS
                     self.logger.info(const.STR_GOTOIDLE_SUCCESS)
-                    return (ResultCode.STARTED,const.STR_GOTOIDLE_SUCCESS)
+                    return (ResultCode.OK,const.STR_GOTOIDLE_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
@@ -1493,11 +1497,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 if device.CspSubarrayProxy.obsState == ObsState.READY or \
                         device.CspSubarrayProxy.obsState == ObsState.CONFIGURING or\
-                        device.CspSubarrayProxy.obsState == ObsState.SCANNING:
+                        device.CspSubarrayProxy.obsState == ObsState.SCANNING or \
+                        device.CspSubarrayProxy.obsState == ObsState.IDLE:
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
-                    return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
+                    return (ResultCode.OK, const.STR_ABORT_SUCCESS)
 
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_STATES
@@ -1549,6 +1554,103 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             # PROTECTED REGION END #    //  CspSubarrayLeafNode.Abort
 #---------------------------------------------------------------------------------------------------------
+
+    class RestartCommand(ResponseCommand):
+
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Restart) ENABLED START #
+        """ """
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Restart() is not allowed in current state",
+                                             "Restart() is not allowed in current state",
+                                             "cspsubarrayleafnode.Restart()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def do(self):
+            """
+            This command invokes Restart command on CSP Subarray .
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device.CspSubarrayProxy.obsState == ObsState.FAULT or \
+                        device.CspSubarrayProxy.obsState == ObsState.ABORTED  :
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_RESTART, device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_RESTART_SUCCESS
+                    self.logger.info(const.STR_RESTART_SUCCESS)
+                    return (ResultCode.OK, const.STR_RESTART_SUCCESS)
+
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_FAULT_ABORT
+                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    self.logger.error(const.ERR_DEVICE_NOT_FAULT_ABORT)
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_FAULT_ABORT)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                          exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_RESTART_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_RESTART_INVOKING_CMD)
+            # throw exception:
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_ABORT_EXEC)
+                return (ResultCode.FAILED, const.ERR_RESTART_INVOKING_CMD)
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Restart(self):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Restart) ENABLED START #
+        """ Invokes Restart command on cspsubarrayleafnode"""
+        handler = self.get_command_object("Restart")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_Restart_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.Restart
+
+#-------------------------------------------------------------------------------------------------------------
 
     # class OnCommand(SKASubarray.OnCommand):
     #     """

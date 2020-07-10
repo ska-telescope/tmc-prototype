@@ -519,6 +519,29 @@ def test_abort_should_command_sdp_subarray_to_abort_when_it_is_configuring():
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
                                                                      any_method(with_name='cmd_ended_cb'))
 
+def test_abort_should_command_sdp_subarray_to_abort_when_it_is_idle():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Abort()
+
+        # assert:
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
+                                                                     any_method(with_name='cmd_ended_cb'))
+
 def test_abort_should_raise_devfailed_exception():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -541,6 +564,76 @@ def test_abort_should_raise_devfailed_exception():
 
         # assert:
         assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
+
+def test_restart_should_command_sdp_subarray_to_restart_when_it_is_aborted():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
+                                                                     any_method(with_name='cmd_ended_cb'))
+
+def test_restart_should_command_sdp_subarray_to_restart_when_it_is_fault():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.FAULT
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
+                                                                     any_method(with_name='cmd_ended_cb'))
+
+def test_restart_should_raise_devfailed_exception():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Restart()
+
+        # assert:
+        assert const.ERR_RESTART_INVOKING_CMD in tango_context.device.activityMessage
+
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute
