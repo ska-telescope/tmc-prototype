@@ -420,6 +420,67 @@ def test_abort_should_raise_dev_failed():
         assert const.ERR_EXE_ABORT_CMD in tango_context.device.activityMessage
 
 
+def test_restart_should_command_dish_to_restart_when_it_is_aborted():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.ABORTED
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
+                                                                 any_method(with_name='cmd_ended_cb'))
+
+
+def test_restart_should_command_dish_to_restart_when_it_is_in_fault():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.FAULT
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
+                                                                 any_method(with_name='cmd_ended_cb'))
+
+
+def test_restart_should_raise_dev_failed():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act
+        with pytest.raises(tango.DevFailed):
+            tango_context.device.Restart()
+
+        # assert
+        assert const.ERR_EXE_RESTART_CMD in tango_context.device.activityMessage
+
+
 def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
     fake_event = Mock()
     fake_event.err = False

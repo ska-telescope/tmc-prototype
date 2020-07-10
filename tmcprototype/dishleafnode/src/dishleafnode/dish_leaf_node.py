@@ -620,8 +620,7 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("Slew", self.SlewCommand(*args))
         self.register_command_object("Track", self.TrackCommand(*args))
         self.register_command_object("StopTrack", self.StopTrackCommand(*args))
-        self.register_command_object("Abort",self.AbortCommand(*args))
-
+        self.register_command_object("Abort", self.AbortCommand(*args))
 
     # --------
     # Commands
@@ -1591,7 +1590,6 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                device.event_track_time.set()
                 device._dish_proxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
                 return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 
@@ -1641,7 +1639,7 @@ class DishLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def Abort(self):
-        """ Invokes StopTrack command on the DishMaster."""
+        """ Invokes Abort command on the DishMaster."""
         handler = self.get_command_object("Abort")
         (result_code, message) = handler()
         return [[result_code], [message]]
@@ -1657,6 +1655,91 @@ class DishLeafNode(SKABaseDevice):
             in current device state
         """
         handler = self.get_command_object("Abort")
+        return handler.check_allowed()
+
+    class RestartCommand(ResponseCommand):
+        """
+        A class for DishLeafNode's Restart command.
+        """
+
+        def do(self):
+            """
+                Invokes Restart command on the DishMaster.
+
+                :param argin: DevVoid
+
+                :return: None
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+            try:
+                device._dish_proxy.command_inout_asynch(const.CMD_RESTART, device.cmd_ended_cb)
+                return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                          exception_message,
+                                                                                          exception_count,
+                                                                                          const.
+                                                                                          ERR_EXE_RESTART_CMD)
+
+            except Exception as except_occurred:
+                log_msg = const.ERR_EXE_RESTART_CMD + str(except_occurred.message)
+                self.logger.info(log_msg)
+                [exception_count, exception_message] = device._handle_generic_exception(except_occurred,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.
+                                                                                        ERR_EXE_RESTART_CMD)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_RESTART_EXEC)
+                return (ResultCode.FAILED, const.ERR_EXE_RESTART_CMD)
+
+        def check_allowed(self):
+
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Restart() is not allowed in current state",
+                                             "Failed to invoke Restart command on DishMaster.",
+                                             "DishLeafNode.Restart() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def Restart(self):
+        """ Invokes Restart command on the DishMaster."""
+        handler = self.get_command_object("Restart")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_Restart_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
 
