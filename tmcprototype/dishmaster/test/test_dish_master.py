@@ -433,33 +433,6 @@ class TestDishMaster(object):
         assert (tango_context.device.pointingState == 0)
         #tango_context.device.SetStandbyLPMode()
 
-    def test_Abort_for_Slew(self, tango_context):
-        """Test for Abort command"""
-        tango_context.device.SetStandbyLPMode()
-        tango_context.device.SetOperateMode()
-        tango_context.device.Track("0")
-        tango_context.device.pointingState = 1
-        tango_context.device.Abort()
-        assert (tango_context.device.pointingState == 1)
-
-    def test_Abort_for_Track(self, tango_context):
-        """Test for Abort command"""
-        tango_context.device.SetStandbyLPMode()
-        tango_context.device.SetOperateMode()
-        tango_context.device.Track("0")
-        tango_context.device.pointingState = 2
-        tango_context.device.Abort()
-        assert (tango_context.device.pointingState == 0)
-
-    def test_Abort_for_Scan(self, tango_context):
-        """Test for Abort command"""
-        tango_context.device.SetStandbyLPMode()
-        tango_context.device.SetOperateMode()
-        tango_context.device.Track("0")
-        tango_context.device.pointingState = 3
-        tango_context.device.Abort()
-        assert (tango_context.device.pointingState == 0)
-
     def test_loggingLevel(self, tango_context):
         """Test for loggingLevel"""
         # PROTECTED REGION ID(DishMaster.test_loggingLevel) ENABLED START #
