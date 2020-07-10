@@ -38,7 +38,6 @@ import time
 
 __all__ = ["DishLeafNode", "main"]
 
-# pylint: disable=protected-access, arguments-differ, signature-differs
 class DishLeafNode(SKABaseDevice):
 #class DishLeafNode(SKABaseDevice):
     """
@@ -594,27 +593,6 @@ class DishLeafNode(SKABaseDevice):
         self._read_activity_message = value
         # PROTECTED REGION END #    //  DishLeafNode.activityMessage_write
 
-
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        args = (self, self.state_model, self.logger)
-        self.register_command_object("SetStowMode", self.SetStowModeCommand(*args))
-        self.register_command_object("SetStandByLPMode", self.SetStandByLPModeCommand(*args))
-        self.register_command_object("SetOperateMode", self.SetOperateModeCommand(*args))
-        self.register_command_object("Scan", self.ScanCommand(*args))
-        self.register_command_object("EndScan", self.EndScanCommand(*args))
-        self.register_command_object("Configure", self.ConfigureCommand(*args))
-        self.register_command_object("StartCapture", self.StartCaptureCommand(*args))
-        self.register_command_object("StopCapture", self.StopCaptureCommand(*args))
-        self.register_command_object("SetStandbyFPMode", self.SetStandbyFPModeCommand(*args))
-        self.register_command_object("Slew", self.SlewCommand(*args))
-        self.register_command_object("Track", self.TrackCommand(*args))
-        self.register_command_object("StopTrack", self.StopTrackCommand(*args))
-
     # --------
     # Commands
     # --------
@@ -623,12 +601,6 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's SetStowMode command.
         """
-        def do(self):
-            """ Triggers the DishMaster to transit into Stow Mode. """
-            device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, device.cmd_ended_cb)
-            return (ResultCode.STARTED, const.STR_SET_STOW_MODE_SUCCESS)
-
         def check_allowed(self):
             """
             Whether this command is allowed to be run in current device
@@ -649,15 +621,11 @@ class DishLeafNode(SKABaseDevice):
 
             return True
 
-    @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def SetStowMode(self):
-        """ Triggers the DishMaster to transit into Stow Mode. """
-        handler = self.get_command_object("SetStowMode")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        def do(self):
+            """ Triggers the DishMaster to transit into Stow Mode. """
+            device = self.target
+            device._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, device.cmd_ended_cb)
+            return (ResultCode.STARTED, const.STR_SET_STOW_MODE_SUCCESS)
 
     def is_SetStowMode_allowed(self):
         """
@@ -672,18 +640,21 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("SetStowMode")
         return handler.check_allowed()
 
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def SetStowMode(self):
+        """ Triggers the DishMaster to transit into Stow Mode. """
+        handler = self.get_command_object("SetStowMode")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
     class SetStandByLPModeCommand(ResponseCommand):
         """
         A class for DishLeafNode's SetStandByLPMode command.
         """
-        def do(self):
-            """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State). """
-            device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, device.cmd_ended_cb)
-            return (ResultCode.STARTED, const.STR_SETSTANDBYLP_SUCCESS)
-
         def check_allowed(self):
-
             """
             Whether this command is allowed to be run in current device
             state
@@ -703,15 +674,11 @@ class DishLeafNode(SKABaseDevice):
 
             return True
 
-    @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def SetStandByLPMode(self):
-        """ Triggers the DishMaster into STANDBY-LP mode (i.e. Low Power State). """
-        handler = self.get_command_object("SetStandByLPMode")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        def do(self):
+            """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State). """
+            device = self.target
+            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, device.cmd_ended_cb)
+            return (ResultCode.OK, const.STR_SETSTANDBYLP_SUCCESS)
 
     def is_SetStandByLPMode_allowed(self):
         """
@@ -726,17 +693,20 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("SetStandByLPMode")
         return handler.check_allowed()
 
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def SetStandByLPMode(self):
+        """ Triggers the DishMaster into STANDBY-LP mode (i.e. Low Power State). """
+        handler = self.get_command_object("SetStandByLPMode")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
 
     class SetOperateModeCommand(ResponseCommand):
         """
         A class for DishLeafNode's SetOperateMode command.
         """
-        def do(self):
-            """ Triggers the DishMaster to transit into Operate mode. """
-            device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, device.cmd_ended_cb)
-            return (ResultCode.STARTED, const.STR_SETOPERATE_SUCCESS)
-
         def check_allowed(self):
 
             """
@@ -758,15 +728,11 @@ class DishLeafNode(SKABaseDevice):
 
             return True
 
-    @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def SetOperateMode(self):
-        """ Triggers the DishMaster to transit into Operate mode. """
-        handler = self.get_command_object("SetOperateMode")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        def do(self):
+            """ Triggers the DishMaster to transit into Operate mode. """
+            device = self.target
+            device._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, device.cmd_ended_cb)
+            return (ResultCode.OK, const.STR_SETOPERATE_SUCCESS)
 
     def is_SetOperateMode_allowed(self):
         """
@@ -781,11 +747,39 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("SetOperateMode")
         return handler.check_allowed()
 
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def SetOperateMode(self):
+        """ Triggers the DishMaster to transit into Operate mode. """
+        handler = self.get_command_object("SetOperateMode")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
 
     class ScanCommand(ResponseCommand):
         """
         A class for DishLeafNode's Scan() command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Scan() is not allowed in current state",
+                                             "Failed to invoke Scan command on DishLeafNode.",
+                                             "DishLeafNode.Scan() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self, argin):
             """
             Triggers the DishMaster to start the Scan.
@@ -812,7 +806,7 @@ class DishLeafNode(SKABaseDevice):
                     device._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
                                                           argin, device.cmd_ended_cb)
                     self.logger.debug(const.STR_OUT_SCAN)
-                    return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
+                    return (ResultCode.OK, const.STR_SCAN_SUCCESS)
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
@@ -827,40 +821,6 @@ class DishLeafNode(SKABaseDevice):
                 device.throw_exception(exception_message, const.STR_SCAN_EXEC)
                 return (ResultCode.FAILED, const.ERR_EXE_SCAN_CMD)
 
-
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("Scan() is not allowed in current state",
-                                             "Failed to invoke Scan command on DishMaster.",
-                                             "DishLeafNode.Scan() ",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
-
-    @command(
-        dtype_in='str',
-        doc_in="Timestamp",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def Scan(self, argin):
-        """ Triggers the DishMaster to start the Scan. """
-        handler = self.get_command_object("Scan")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
-
-
     def is_Scan_allowed(self):
         """
         Whether this command is allowed to be run in current device
@@ -874,11 +834,41 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("Scan")
         return handler.check_allowed()
 
+    @command(
+        dtype_in='str',
+        doc_in="Timestamp",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def Scan(self, argin):
+        """ Triggers the DishMaster to start the Scan. """
+        handler = self.get_command_object("Scan")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
     class EndScanCommand(ResponseCommand):
         """
         A class for DishLeafNode's EndScan() command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("EndScan() is not allowed in current state",
+                                             "Failed to invoke StopCapture command on DishLeafNode.",
+                                             "DishLeafNode.EndScan() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self, argin):
             """
             Triggers the DishMaster to stop the Scan.
@@ -901,7 +891,7 @@ class DishLeafNode(SKABaseDevice):
                 if type(float(argin)) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
                                                           argin, device.cmd_ended_cb)
-                    return (ResultCode.STARTED, const.STR_ENDSCAN_SUCCESS)
+                    return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
@@ -914,40 +904,6 @@ class DishLeafNode(SKABaseDevice):
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
                 return (ResultCode.FAILED, const.ERR_EXE_END_SCAN_CMD)
-
-
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("EndScan() is not allowed in current state",
-                                             "Failed to invoke StopCapture command on DishMaster.",
-                                             "DishLeafNode.EndScan() ",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
-
-    @command(
-        dtype_in='str',
-        doc_in="Timestamp",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def EndScan(self, argin):
-        """ Triggers the DishMaster to stop the Scan. """
-        handler = self.get_command_object("EndScan")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
-
 
     def is_EndScan_allowed(self):
         """
@@ -962,11 +918,42 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
 
+    @command(
+        dtype_in='str',
+        doc_in="Timestamp",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def EndScan(self, argin):
+        """ Triggers the DishMaster to stop the Scan. """
+        handler = self.get_command_object("EndScan")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
     class ConfigureCommand(ResponseCommand):
         """
         A class for DishLeafNode's Configure() command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE, DevState.INIT]:
+                tango.Except.throw_exception("Configure() is not allowed in current state",
+                                             "Failed to invoke Configure command on DishLeafNode.",
+                                             "DishLeafNode.Configure() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self, argin):
             """
             Configures the Dish by setting pointing coordinates for a given observation.
@@ -1015,7 +1002,7 @@ class DishLeafNode(SKABaseDevice):
                 # Send configure command to Dish Master
                 device._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
                                                       device.cmd_ended_cb)
-                return (ResultCode.STARTED, const.STR_CONFIGURE_SUCCESS)
+                return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except ValueError as value_error:
                 device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
@@ -1046,26 +1033,18 @@ class DishLeafNode(SKABaseDevice):
                 self.throw_exception(exception_message, const.STR_CONFIGURE_EXEC)
                 return (ResultCode.FAILED, str(exception_message))
 
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE, DevState.INIT]:
-                tango.Except.throw_exception("Configure() is not allowed in current state",
-                                             "Failed to invoke Configure command on DishMaster.",
-                                             "DishLeafNode.Configure() ",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
+    def is_Configure_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("Configure")
+        return handler.check_allowed()
 
     @command(
         dtype_in='str',
@@ -1080,24 +1059,29 @@ class DishLeafNode(SKABaseDevice):
         return [[result_code], [message]]
 
 
-    def is_Configure_allowed(self):
-        """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
-        """
-        handler = self.get_command_object("Configure")
-        return handler.check_allowed()
-
-
     class StartCaptureCommand(ResponseCommand):
         """
         A class for DishLeafNode's StartCapture command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
+                tango.Except.throw_exception("StartCapture() is not allowed in current state",
+                                             "Failed to invoke StartCapture command on DishLeafNode.",
+                                             "DishLeafNode.StartCapture() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self, argin):
             """ Triggers the DishMaster to Start capture on the set configured band.
 
@@ -1113,7 +1097,7 @@ class DishLeafNode(SKABaseDevice):
                 if type(float(argin)) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
                                                           argin, device.cmd_ended_cb)
-                    return (ResultCode.STARTED, const.STR_STARTCAPTURE_SUCCESS)
+                    return (ResultCode.OK, const.STR_STARTCAPTURE_SUCCESS)
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
@@ -1128,37 +1112,6 @@ class DishLeafNode(SKABaseDevice):
                 # TODO: Test case is failing due to following statement
                 return (ResultCode.FAILED, const.ERR_EXE_START_CAPTURE_CMD)
 
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
-                tango.Except.throw_exception("StartCapture() is not allowed in current state",
-                                             "Failed to invoke StartCapture command on DishMaster.",
-                                             "DishLeafNode.StartCapture() ",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
-    @command(
-        dtype_in='str',
-        doc_in="The timestamp indicates the time, in UTC, at which command execution should start.",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def StartCapture(self, argin):
-        """ Triggers the DishMaster to Start capture on the set configured band. """
-        handler = self.get_command_object("StartCapture")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
-
     def is_StartCapture_allowed(self):
         """
         Whether this command is allowed to be run in current device
@@ -1172,11 +1125,41 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("StartCapture")
         return handler.check_allowed()
 
+    @command(
+        dtype_in='str',
+        doc_in="The timestamp indicates the time, in UTC, at which command execution should start.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def StartCapture(self, argin):
+        """ Triggers the DishMaster to Start capture on the set configured band. """
+        handler = self.get_command_object("StartCapture")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
     class StopCaptureCommand(ResponseCommand):
         """
         A class for DishLeafNode's StopCapture command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("StopCapture() is not allowed in current state",
+                                             "Failed to invoke StopCapture command on DishLeafNode.",
+                                             "DishLeafNode.StopCapture() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self, argin):
             """
             Triggers the DishMaster to Stop capture on the set configured band.
@@ -1191,7 +1174,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 if type(float(argin)) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE, argin, device.cmd_ended_cb)
-                    return (ResultCode.STARTED, const.STR_STOPCAPTURE_SUCCESS)
+                    return (ResultCode.OK, const.STR_STOPCAPTURE_SUCCESS)
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
@@ -1204,38 +1187,6 @@ class DishLeafNode(SKABaseDevice):
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_STOPCAPTURE_EXEC)
                 return (ResultCode.FAILED, const.ERR_EXE_STOP_CAPTURE_CMD)
-
-
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("StopCapture() is not allowed in current state",
-                                             "Failed to invoke StopCapture command on DishMaster.",
-                                             "DishLeafNode.StopCapture() ",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
-    @command(
-        dtype_in='str',
-        doc_in="The timestamp indicates the time, in UTC, at which command execution should start.",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def StopCapture(self, argin):
-        """ Triggers the DishMaster to Stop capture on the set configured band. """
-        handler = self.get_command_object("StopCapture")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
 
     def is_StopCapture_allowed(self):
         """
@@ -1250,19 +1201,23 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("StopCapture")
         return handler.check_allowed()
 
+    @command(
+        dtype_in='str',
+        doc_in="The timestamp indicates the time, in UTC, at which command execution should start.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def StopCapture(self, argin):
+        """ Triggers the DishMaster to Stop capture on the set configured band. """
+        handler = self.get_command_object("StopCapture")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
     class SetStandbyFPModeCommand(ResponseCommand):
         """
         A class for DishLeafNode's SetStandByFPMode command.
         """
-        def do(self):
-            """ Triggers the DishMaster to transition into the STANDBY-FP (Standby-Full power) mode. """
-            device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, device.cmd_ended_cb)
-            return (ResultCode.STARTED, const.STR_STANDBYFP_SUCCESS)
-
         def check_allowed(self):
-
             """
             Whether this command is allowed to be run in current device
             state
@@ -1282,15 +1237,11 @@ class DishLeafNode(SKABaseDevice):
 
             return True
 
-    @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def SetStandbyFPMode(self):
-        """ Triggers the DishMaster to transition into the STANDBY-FP (Standby-Full power) mode. """
-        handler = self.get_command_object("SetStandbyFPMode")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        def do(self):
+            """ Triggers the DishMaster to transition into the STANDBY-FP (Standby-Full power) mode. """
+            device = self.target
+            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, device.cmd_ended_cb)
+            return (ResultCode.OK, const.STR_STANDBYFP_SUCCESS)
 
     def is_SetStandbyFPMode_allowed(self):
         """
@@ -1305,11 +1256,39 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("SetStandbyFPMode")
         return handler.check_allowed()
 
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def SetStandbyFPMode(self):
+        """ Triggers the DishMaster to transition into the STANDBY-FP (Standby-Full power) mode. """
+        handler = self.get_command_object("SetStandbyFPMode")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
 
     class SlewCommand(ResponseCommand):
         """
         A class for DishLeafNode's SlewCommand command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Slew() is not allowed in current state",
+                                             "Failed to invoke Slew command on DishLeafNode.",
+                                             "DishLeafNode.Slew() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self, argin):
             """
             Triggers the DishMaster to slew the dish towards the set pointing coordinates.
@@ -1324,7 +1303,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 if type(float(argin)) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW, argin, device.cmd_ended_cb)
-                    return (ResultCode.STARTED, const.STR_SLEW_SUCCESS)
+                    return (ResultCode.OK, const.STR_SLEW_SUCCESS)
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
@@ -1337,38 +1316,6 @@ class DishLeafNode(SKABaseDevice):
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_SLEW_EXEC)
                 return (ResultCode.FAILED, const.ERR_EXE_SLEW_CMD)
-
-
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("Slew() is not allowed in current state",
-                                             "Failed to invoke Slew command on DishMaster.",
-                                             "DishLeafNode.Slew() ",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
-    @command(
-        dtype_in='str',
-        doc_in="Timestamp at which command should be executed.",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def Slew(self, argin):
-        """ Triggers the DishMaster to slew the dish towards the set pointing coordinates. """
-        handler = self.get_command_object("Slew")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
 
     def is_Slew_allowed(self):
         """
@@ -1383,11 +1330,40 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("Slew")
         return handler.check_allowed()
 
+    @command(
+        dtype_in='str',
+        doc_in="Timestamp at which command should be executed.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def Slew(self, argin):
+        """ Triggers the DishMaster to slew the dish towards the set pointing coordinates. """
+        handler = self.get_command_object("Slew")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
     class TrackCommand(ResponseCommand):
         """
         A class for DishLeafNode's Track command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Track() is not allowed in current state",
+                                             "Failed to invoke Track command on DishLeafNode.",
+                                             "DishLeafNode.Track() ",
+                                             tango.ErrSeverity.ERR)
+            return True
+
         def do(self, argin):
             """ Invokes Track command on the DishMaster.
 
@@ -1424,8 +1400,7 @@ class DishLeafNode(SKABaseDevice):
                 device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK,
                                                       args=(radec_value,))
                 device.track_thread1.start()
-                return (ResultCode.STARTED, const.STR_TRACK_SUCCESS)
-
+                return (ResultCode.OK, const.STR_TRACK_SUCCESS)
 
             except ValueError as value_error:
                 device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
@@ -1446,35 +1421,6 @@ class DishLeafNode(SKABaseDevice):
                 self.throw_exception(exception_message, const.STR_TRACK_EXEC)
                 return (ResultCode.FAILED, str(exception_message))
 
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("Track() is not allowed in current state",
-                                             "Failed to invoke Track command on DishMaster.",
-                                             "DishLeafNode.Track() ",
-                                             tango.ErrSeverity.ERR)
-            return True
-
-    @command(
-        dtype_in='str',
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def Track(self, argin):
-        """ Invokes Track command on the DishMaster. """
-        handler = self.get_command_object("Track")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
-
     def is_Track_allowed(self):
         """
         Whether this command is allowed to be run in current device
@@ -1488,11 +1434,40 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("Track")
         return handler.check_allowed()
 
+    @command(
+        dtype_in='str',
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def Track(self, argin):
+        """ Invokes Track command on the DishMaster. """
+        handler = self.get_command_object("Track")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
     class StopTrackCommand(ResponseCommand):
         """
         A class for DishLeafNode's StopTrack command.
         """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("StopTrack() is not allowed in current state",
+                                             "Failed to invoke StopTrack command on DishLeafNode.",
+                                             "DishLeafNode.StopTrack() ",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
         def do(self):
             """
                 Invokes StopTrack command on the DishMaster.
@@ -1508,7 +1483,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device.event_track_time.set()
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, device.cmd_ended_cb)
-                return (ResultCode.STARTED, const.STR_STOP_TRACK_SUCCESS)
+                return (ResultCode.OK, const.STR_STOP_TRACK_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1529,37 +1504,6 @@ class DishLeafNode(SKABaseDevice):
                 device.throw_exception(exception_message, const.STR_STOPTRACK_EXEC)
                 return (ResultCode.FAILED, const.ERR_EXE_STOP_TRACK_CMD)
 
-
-        def check_allowed(self):
-
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("StopTrack() is not allowed in current state",
-                                             "Failed to invoke StopTrack command on DishMaster.",
-                                             "DishLeafNode.StopTrack() ",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
-    @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def StopTrack(self):
-        """ Invokes StopTrack command on the DishMaster."""
-        handler = self.get_command_object("StopTrack")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
-
     def is_StopTrack_allowed(self):
         """
         Whether this command is allowed to be run in current device
@@ -1573,7 +1517,35 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("StopTrack")
         return handler.check_allowed()
 
-# pylint: enable=protected-access, arguments-differ, signature-differs
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def StopTrack(self):
+        """ Invokes StopTrack command on the DishMaster."""
+        handler = self.get_command_object("StopTrack")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("SetStowMode", self.SetStowModeCommand(*args))
+        self.register_command_object("SetStandByLPMode", self.SetStandByLPModeCommand(*args))
+        self.register_command_object("SetOperateMode", self.SetOperateModeCommand(*args))
+        self.register_command_object("Scan", self.ScanCommand(*args))
+        self.register_command_object("EndScan", self.EndScanCommand(*args))
+        self.register_command_object("Configure", self.ConfigureCommand(*args))
+        self.register_command_object("StartCapture", self.StartCaptureCommand(*args))
+        self.register_command_object("StopCapture", self.StopCaptureCommand(*args))
+        self.register_command_object("SetStandbyFPMode", self.SetStandbyFPModeCommand(*args))
+        self.register_command_object("Slew", self.SlewCommand(*args))
+        self.register_command_object("Track", self.TrackCommand(*args))
+        self.register_command_object("StopTrack", self.StopTrackCommand(*args))
 
 # ----------
 # Run server

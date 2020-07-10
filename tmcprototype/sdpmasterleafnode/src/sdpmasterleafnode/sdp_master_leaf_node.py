@@ -18,11 +18,11 @@ from __future__ import absolute_import
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
 import tango
-from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
-from ska.base import SKABaseDevice , SKASubarray
-from ska.base.commands import ActionCommand, ResultCode, ResponseCommand
-from ska.base.control_model import AdminMode, HealthState, TestMode
+from ska.base import SKABaseDevice
+from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.control_model import TestMode
 
 # Additional import
 from . import const
@@ -143,14 +143,13 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
-                      A class for SDP master's InitCommand() command.
-                      """
+        A class for SDP master's InitCommand() command.
+        """
         def do(self):
             super().do()
-
             device = self.target
             try:
-                device.set_state(DevState.ON)
+                #device.set_state(DevState.ON)
                 device._version_info = "1.0"
                 device._processing_block_list = "test"
                 device._read_activity_message = 'OK'
@@ -173,7 +172,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 _state_fault_flag = True
-                device.set_state(DevState.FAULT)
+                #device.set_state(DevState.FAULT)
                 device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                  const.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
@@ -242,81 +241,53 @@ class SdpMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        self.register_command_object("Disable",self.DisableCommand(self, self.state_model, self.logger))
-        self.register_command_object("Standby",self.StandbyCommand(self, self.state_model, self.logger))
-        
-
     class OnCommand(SKABaseDevice.OnCommand):
         """
-               A class for SDP master's On() command.
-               """
+        A class for SDP master's On() command.
+        """
         def do(self):
             """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
 
-                   :param argin: DevVoid.
+            :param argin: DevVoid.
 
-                   :return: None.
+            :return: None.
 
-                   """
+            """
             device=self.target
             device._sdp_proxy.command_inout_asynch(const.CMD_ON, device.cmd_ended_cb)
             log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
-
-            return (ResultCode.OK, "On command execution started")
-
+            return (ResultCode.OK, log_msg)
 
     class OffCommand(SKABaseDevice.OffCommand):
         """
-               A class for SDP master's Off() command.
-               """
+        A class for SDP master's Off() command.
+        """
         def do(self):
-            """ Sets the OperatingState to Off.
+            """
+            Sets the OperatingState to Off.
 
-                   :param argin: DevVoid.
+            :param argin: DevVoid.
 
-                   :return: None.
+            :return: None.
 
-                   """
+            """
             device=self.target
             device._sdp_proxy.command_inout_asynch(const.CMD_OFF, device.cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_SUCCESS)
             device._read_activity_message = const.STR_OFF_CMD_SUCCESS
             exception_message = []
             exception_count = 0
-
             # This code is written only to improve code coverage
             if device._test_mode == TestMode.TEST:
                 device._handle_devfailed_exception(DevFailed, exception_message, exception_count,
                                                  const.ERR_OFF_CMD_FAIL)
-
-            return (ResultCode.OK, "Off command execution started")
-
+            return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
 
     class DisableCommand(ResponseCommand):
         """
-               A class for SDP master's Disable() command.
-               """
-        def do(self):
-            """ Sets the OperatingState to Disable.
-
-                    :param argin: DevVoid.
-
-                    :return: None.
-
-                    """
-            device = self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_Disable, device.cmd_ended_cb)
-            self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
-            device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
-            return (ResultCode.OK, "Disable command execution Invoked.")
-
+        A class for SDP master's Disable() command.
+        """
         def check_allowed(self):
             """
             Whether this command is allowed to be run in current device
@@ -331,24 +302,38 @@ class SdpMasterLeafNode(SKABaseDevice):
             -------
 
             """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.ON
-            ]:
-                tango.Except.throw_exception("", "",
-                                             "Disable() is not allowed in current state",
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.ON]:
+                tango.Except.throw_exception("Disable() is not allowed in current state",
+                                             "Failed to invoke Disable command on SdpMasterLeafNode.",
+                                             "SdpMasterLeafNode.Disable() ",
                                              tango.ErrSeverity.ERR)
-
             return True
+
+        def do(self):
+            """
+            Sets the OperatingState to Disable.
+
+            :param argin: DevVoid.
+
+            :return: None.
+
+            """
+            device = self.target
+            device._sdp_proxy.command_inout_asynch(const.CMD_Disable, device.cmd_ended_cb)
+            self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
+            device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
+            return (ResultCode.OK, const.STR_DISABLE_CMS_SUCCESS)
 
     def is_Disable_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
         handler = self.get_command_object("Disable")
         return handler.check_allowed()
@@ -366,69 +351,65 @@ class SdpMasterLeafNode(SKABaseDevice):
         :return: None
 
         """
-
         handler = self.get_command_object("Disable")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-
     class StandbyCommand(ResponseCommand):
         """
-               A class for SDP master's Standby() command.
-               """
+        A class for SDP Master's Standby() command.
+        """
+        def is_Standby_allowed(self):
+            """
+            Whether this command is allowed to be run in current device state.
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
+            """
+            handler = self.get_command_object("Standby")
+            return handler.check_allowed()
+
         def do(self):
             """ Informs the SDP to stop any executing Processing. To get into the STANDBY state all running
-        PBs will be aborted. In normal operation we expect diable should be triggered without first going
-        into STANDBY.
+            PBs will be aborted. In normal operation we expect diable should be triggered without first going
+            into STANDBY.
 
-        :param argin: DevVoid.
+            :param argin: DevVoid.
 
-        :return: None.
+            :return: None.
 
-        """
+            """
             device= self.target
             device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, device.cmd_ended_cb)
             log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
-            return (ResultCode.STARTED, "Disable command execution Started.")
-
+            return (ResultCode.OK, log_msg)
 
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Whether this command is allowed to be run in current device state.
 
-             :return: True if this command is allowed to be run in
-                 current device state
-             :rtype: boolean
-             :raises: DevFailed if this command is not allowed to be run
-                 in current device state
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
             Returns
             -------
 
             """
 
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN
-            ]:
-                tango.Except.throw_exception("Error in standby on SDP","Check allowed throw exception ",
-                                             "Standby() is not allowed in current state",
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN]:
+                tango.Except.throw_exception("Standby() is not allowed in current state",
+                                             "Failed to invoke Standby command on SdpMasterLeafNode.",
+                                             "SdpMasterLeafNode.Standby() ",
                                              tango.ErrSeverity.ERR)
-
             return True
-
-    def is_Standby_allowed(self):
-        """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
-        """
-        handler = self.get_command_object("Standby")
-        return handler.check_allowed()
 
     @command(
         dtype_out="DevVarLongStringArray",
@@ -443,11 +424,19 @@ class SdpMasterLeafNode(SKABaseDevice):
         :return: None
 
         """
-
         handler = self.get_command_object("Standby")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("Disable",self.DisableCommand(*args))
+        self.register_command_object("Standby",self.StandbyCommand(*args))
 
 # ----------
 # Run server
