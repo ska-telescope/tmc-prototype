@@ -433,13 +433,15 @@ def test_standby():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
+        tango_context.device.StartUpTelescope()
+        assert_activity_message(tango_context.device, const.STR_ON_CMD_ISSUED)
         tango_context.device.StandByTelescope()
 
         # assert:
         dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_SET_STANDBY_MODE)
         csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY, [])
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
-        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
+        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
 
 

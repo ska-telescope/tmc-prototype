@@ -19,9 +19,9 @@ import json
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, attribute, command, device_property
-from ska.base import SKABaseDevice, SKASubarray
-from ska.base.commands import ActionCommand, ResponseCommand, ResultCode
-from ska.base.control_model import AdminMode, HealthState
+from ska.base import SKABaseDevice
+from ska.base.commands import ResponseCommand, ResultCode
+from ska.base.control_model import HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from . import const
@@ -32,14 +32,12 @@ from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 import json
 import ast
 
-
-
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
 
 
-class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. Command class i heritance will be as per base class.
+class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
     """
@@ -120,11 +118,11 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                ) + const.STR_UNKNOWN
             else:
                 # TODO: For future reference
-                # self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
+                self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
                 self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
         except KeyError as key_error:
             # TODO: For future reference
-            # self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+            self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
             self.logger.critical(log_msg)
         except Exception as except_occured:
@@ -224,151 +222,143 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
     # General methods
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
-       """
-       A class for the TMC CentralNode's init_device() "command".
-       """
-       def do(self):
-           """
-           Stateless hook for device initialisation.
-           Initializes the attributes and properties of the Central Node.
+        """
+        A class for the TMC CentralNode's init_device() "command".
+        """
+        def do(self):
+            """
+            Stateless hook for device initialisation.
+            Initializes the attributes and properties of the Central Node.
 
-           :return: A tuple containing a return code and a string
+            :return: A tuple containing a return code and a string
                message indicating status. The message is for
                information purpose only.
-           :rtype: (ReturnCode, str)
-           """
-           super().do()
+            :rtype: (ReturnCode, str)
+            """
+            super().do()
 
-           device = self.target
+            device = self.target
 
-           exception_count = 0
-           exception_message = []
-           try:
-               #SKABaseDevice.init_device(self)
-               self.logger.info("Device initialisating...")
-               device._subarray1_health_state = HealthState.OK
-               device._subarray2_health_state = HealthState.OK
-               device._subarray3_health_state = HealthState.OK
-               device._sdp_master_leaf_health = HealthState.OK
-               device._csp_master_leaf_health = HealthState.OK
-               #self.set_state(DevState.ON)
-               # Initialise Attributes
-               device._health_state = HealthState.OK
-               #device._admin_mode = AdminMode.ONLINE
-               device._telescope_health_state = HealthState.OK
-               device.subarray_health_state_map = {}
-               device._dish_leaf_node_devices = []
-               device._leaf_device_proxy = []
-               device.subarray_FQDN_dict = {}
-               device._subarray_allocation = {}
-               device._read_activity_message = ""
-               #device.set_status(const.STR_INIT_SUCCESS)
-               self.logger.debug(const.STR_INIT_SUCCESS)
+            exception_count = 0
+            exception_message = []
+            try:
+                #SKABaseDevice.init_device(self)
+                self.logger.info("Device initialisating...")
+                device._subarray1_health_state = HealthState.OK
+                device._subarray2_health_state = HealthState.OK
+                device._subarray3_health_state = HealthState.OK
+                device._sdp_master_leaf_health = HealthState.OK
+                device._csp_master_leaf_health = HealthState.OK
+                #self.set_state(DevState.ON)
+                # Initialise Attributes
+                device._health_state = HealthState.OK
+                #device._admin_mode = AdminMode.ONLINE
+                device._telescope_health_state = HealthState.OK
+                device.subarray_health_state_map = {}
+                device._dish_leaf_node_devices = []
+                device._leaf_device_proxy = []
+                device.subarray_FQDN_dict = {}
+                device._subarray_allocation = {}
+                device._read_activity_message = ""
+                #device.set_status(const.STR_INIT_SUCCESS)
+                self.logger.debug(const.STR_INIT_SUCCESS)
 
-           except DevFailed as dev_failed:
-               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
                                                                                         exception_count, const.ERR_INIT_PROP_ATTR_CN)
-               device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
-               message = const.ERR_INIT_PROP_ATTR_CN
-               self.logger.info(message)
-               return (ResultCode.FAILED, message)
+                device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
+                return (ResultCode.FAILED, device._read_activity_message)
 
-               #  Get Dish Leaf Node devices List
-               # TODO: Getting DishLeafNode devices list from TANGO DB
-               # self.tango_db = PyTango.Database()
-               # try:
-               #     self.dev_dbdatum = self.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
-               #     self._dish_leaf_node_devices.extend(self.dev_bdatum.value_string)
-               #     print self._dish_leaf_node_devices
-               #
-               # except Exception as except_occured:
-               #     print const.ERR_IN_READ_DISH_LN_DEVS, except_occured
-               #     self._read_activity_message = const.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
-               #     self.dev_logging(const.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
+                #  Get Dish Leaf Node devices List
+                # TODO: Getting DishLeafNode devices list from TANGO DB
+                # device.tango_db = PyTango.Database()
+                # try:
+                #     device.dev_dbdatum = device.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
+                #     device._dish_leaf_node_devices.extend(device.dev_bdatum.value_string)
+                #     print device._dish_leaf_node_devices
+                #
+                # except Exception as except_occured:
+                #     print const.ERR_IN_READ_DISH_LN_DEVS, except_occured
+                #     device._read_activity_message = const.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
+                #     self.dev_logging(const.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
 
-           # NumDishes is a device property,  keeping it to device.NumDishes ..check while testing.
-           for dish in range(1, (device.NumDishes + 1)):
-               # Update self._dish_leaf_node_devices variable
-               device._dish_leaf_node_devices.append(device.DishLeafNodePrefix + "000" + str(dish))
+            # Creating proxies for lower level devices
+            for dish in range(1, (device.NumDishes + 1)):
+                # Update device._dish_leaf_node_devices variable
+                device._dish_leaf_node_devices.append(device.DishLeafNodePrefix + "000" + str(dish))
 
-               # Initialize self.subarray_allocation variable to indicate availability of the dishes
-               dish_ID = "dish000" + str(dish)
-               device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
+                # Initialize device.subarray_allocation variable (map of Dish Id and allocation status)
+                # to indicate availability of the dishes
+                dish_ID = "dish000" + str(dish)
+                device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
 
-               # Create proxies of Dish Leaf Node devices
-           for name in range(0, len(device._dish_leaf_node_devices)):
-               try:
-                   device._leaf_device_proxy.append(DeviceProxy(device._dish_leaf_node_devices[name]))
-               except (DevFailed, KeyError) as except_occurred:
-                   [exception_message, exception_count] = device._handle_devfailed_exception(except_occurred,
+                # Create proxies of Dish Leaf Node devices
+            for name in range(0, len(device._dish_leaf_node_devices)):
+                try:
+                    device._leaf_device_proxy.append(DeviceProxy(device._dish_leaf_node_devices[name]))
+                except (DevFailed, KeyError) as except_occurred:
+                    [exception_message, exception_count] = device._handle_devfailed_exception(except_occurred,
                                                                                            exception_message,
                                                                                            exception_count,
                                                                                            const.ERR_IN_CREATE_PROXY)
-                   device._read_activity_message = const.ERR_IN_CREATE_PROXY
-                   message = const.ERR_IN_CREATE_PROXY
-                   self.logger.info(message)
-                   return (ResultCode.FAILED, message)
+                    device._read_activity_message = const.ERR_IN_CREATE_PROXY
 
-               # Create device proxy for CSP Master Leaf Node
-           try:
-               device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
-               device._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
+                # Create device proxy for CSP Master Leaf Node
+            try:
+                device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
+                device._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
                                                            EventType.CHANGE_EVENT,
                                                            device.health_state_cb, stateless=True)
-           except DevFailed as dev_failed:
-               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                        exception_message,
                                                                                        exception_count,
                                                                                        const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
-               device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
-               message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
-               self.logger.info(message)
-               return (ResultCode.FAILED, message)
+                device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
 
                # Create device proxy for SDP Master Leaf Node
-           try:
-               device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
-               device._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
+            try:
+                device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
+                device._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
                                                            EventType.CHANGE_EVENT,
                                                            device.health_state_cb, stateless=True)
-           except DevFailed as dev_failed:
-               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                        exception_message,
                                                                                        exception_count,
                                                                                        const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
-               device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
-               message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
-               self.logger.info(message)
-               return (ResultCode.FAILED, message)
+                device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
 
                # Create device proxy for Subarray Node
-           for subarray in range(0, len(device.TMMidSubarrayNodes)):
-               try:
-                   subarray_proxy = DeviceProxy(device.TMMidSubarrayNodes[subarray])
-                   device.subarray_health_state_map[subarray_proxy] = -1
-                   subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
+            for subarray in range(0, len(device.TMMidSubarrayNodes)):
+                try:
+                    subarray_proxy = DeviceProxy(device.TMMidSubarrayNodes[subarray])
+                    device.subarray_health_state_map[subarray_proxy] = -1
+                    subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
                                                   EventType.CHANGE_EVENT,
                                                   device.health_state_cb, stateless=True)
 
-                   # populate subarrayID-subarray proxy map
-                   tokens = device.TMMidSubarrayNodes[subarray].split('/')
-                   subarrayID = int(tokens[2])
-                   device.subarray_FQDN_dict[subarrayID] = subarray_proxy
-               except DevFailed as dev_failed:
-                   [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                    # populate subarrayID-subarray proxy map
+                    tokens = device.TMMidSubarrayNodes[subarray].split('/')
+                    subarrayID = int(tokens[2])
+                    device.subarray_FQDN_dict[subarrayID] = subarray_proxy
+                except DevFailed as dev_failed:
+                    [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                            exception_message,
                                                                                            exception_count,
                                                                                            const.ERR_SUBSR_SA_HEALTH_STATE)
-                   device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
-                   message = const.ERR_SUBSR_SA_HEALTH_STATE
-                   self.logger.info(message)
-                   return (ResultCode.FAILED, message)
-           device._read_activity_message = "Central Node initialised successfully."
-           message = "Central Node initialised successfully."
-           self.logger.info(message)
-           return (ResultCode.OK, message)
+                    device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
 
-           # PROTECTED REGION END #    //  CentralNode.init_device
+                if exception_count >0:
+                    self.logger.info(device._read_activity_message)
+                    device.throw_exception(exception_message, device._read_activity_message)
+                    return (ResultCode.FAILED, device._read_activity_message)
+
+            device._read_activity_message = "Central Node initialised successfully."
+            self.logger.info(device._read_activity_message)
+            return (ResultCode.OK, device._read_activity_message)
+
+ # PROTECTED REGION END #    //  CentralNode.init_device
 
 
     def always_executed_hook(self):
@@ -424,27 +414,6 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
     # --------
     # Commands
     # --------
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        self.register_command_object(
-            "StowAntennas",
-            self.StowAntennasCommand(self, self.state_model, self.logger))
-        self.register_command_object(
-            "StartUpTelescope",
-            self.StartUpTelescopeCommand(self, self.state_model, self.logger))
-        self.register_command_object(
-            "StandByTelescope",
-            self.StandByTelescopeCommand(self, self.state_model, self.logger))
-        self.register_command_object(
-            "AssignResources",
-            self.AssignResourcesCommand(self, self.state_model, self.logger))
-        self.register_command_object(
-            "ReleaseResources",
-            self.ReleaseResourcesCommand(self, self.state_model, self.logger))
 
     class StowAntennasCommand(ResponseCommand):
         """
@@ -463,12 +432,11 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango_raise(
-                    "StowAntennas() is not allowed in current state"
-                )
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Command StowAntennas is not allowed in current state.",
+                                             "Failed to invoke StowAntennas command on CentralNode.",
+                                             "CentralNode.StowAntennas()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self, argin):
@@ -499,11 +467,12 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                                   exception_message,
                                                                                                   exception_count,
                                                                                                   const.ERR_EXE_STOW_CMD)
+                        device._read_activity_message = const.ERR_EXE_STOW_CMD
                         # return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
 
-                    # TODO: throw exception:
-                    # if exception_count > 0:
-                    #     device.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+                    if exception_count > 0:
+                        device.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+                        return (ResultCode.FAILED, device._read_activity_message)
 
             except ValueError as value_error:
                 self.logger.error(const.ERR_STOW_ARGIN)
@@ -516,15 +485,29 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_EXE_STOW_CMD)
+                device._read_activity_message = const.ERR_EXE_STOW_CMD
                 # return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
 
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
-                return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
+                return (ResultCode.FAILED, device._read_activity_message)
             # PROTECTED REGION END #    //  CentralNode.stow_antennas
             # TODO: check if message should be Started or Ok?
-            return (ResultCode.OK, log_msg)
+            return (ResultCode.OK, device._read_activity_message)
+
+    def is_StowAntennas_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("StowAntennas")
+        return handler.check_allowed()
 
     @command(
         dtype_in=('str',),
@@ -546,20 +529,6 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-    def is_StowAntennas_allowed(self):
-        """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
-        """
-        handler = self.get_command_object("StowAntennas")
-        return handler.check_allowed()
-
-    # =========================================
     class StandByTelescopeCommand(SKABaseDevice.OffCommand):
         """
         A class for CentralNode's StandByTelescope command.
@@ -577,12 +546,11 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango_raise(
-                    "StandByTelescope() is not allowed in current state"
-                )
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Command StandByTelescope is not allowed in current state.",
+                                             "Failed to invoke StandByTelescope command on CentralNode.",
+                                             "CentralNode.StandByTelescope()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self):
@@ -593,7 +561,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
             log_msg = const.STR_STANDBY_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
-            # off_obj = SKABaseDevice.OffCommand(self, self.state_model, self.logger)
+
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
                     device._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
@@ -604,7 +572,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                               exception_message,
                                                                                               exception_count,
                                                                                               const.ERR_EXE_STANDBY_CMD)
-                    # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
+                    device._read_activity_message = const.ERR_EXE_STANDBY_CMD
 
             try:
                 device._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
@@ -614,7 +582,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                           exception_message,
                                                                                           exception_count,
                                                                                           const.ERR_EXE_STANDBY_CMD)
-                # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
+                device._read_activity_message = const.ERR_EXE_STANDBY_CMD
 
             try:
                 device._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
@@ -624,7 +592,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                           exception_message,
                                                                                           exception_count,
                                                                                           const.ERR_EXE_STANDBY_CMD)
-                # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
+                device._read_activity_message = const.ERR_EXE_STANDBY_CMD
 
             try:
                 for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
@@ -636,15 +604,27 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                           exception_message,
                                                                                           exception_count,
                                                                                           const.ERR_EXE_STANDBY_CMD)
-                # return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
-                # TODO: for future - throw exception:
+                device._read_activity_message = const.ERR_EXE_STANDBY_CMD
+
                 if exception_count > 0:
                     device.throw_exception(exception_message, const.STR_STANDBY_EXEC)
-                    return (ResultCode.FAILED, const.ERR_EXE_STANDBY_CMD)
-            # off_obj.do()
+                    return (ResultCode.FAILED, device._read_activity_message)
 
-            return (ResultCode.OK,const.STR_CMD_STANDBY_SA_DEV) # return message can be updated accordingly.
+            return (ResultCode.OK,device._read_activity_message)
             # PROTECTED REGION END #    //  CentralNode.standby_telescope
+
+    def is_StandByTelescope_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("StandByTelescope")
+        return handler.check_allowed()
 
     @command(
         dtype_out="DevVarLongStringArray",
@@ -662,22 +642,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    def is_StandByTelescope_allowed(self):
-        """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
-        """
-        handler = self.get_command_object("StandByTelescope")
-        return handler.check_allowed()
-        # PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
-
-
-# =================================================================
+# PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
 
     class StartUpTelescopeCommand(SKABaseDevice.OnCommand):
         """
@@ -696,12 +661,11 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango_raise(
-                    "StartUpTelescope() is not allowed in current state"
-                )
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Command StartUpTelescope is not allowed in current state.",
+                                             "Failed to invoke StartUpTelescope command on CentralNode.",
+                                             "CentralNode.StartUpTelescope()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self):
@@ -724,7 +688,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                           exception_count,
                                                                                           const.ERR_EXE_ON_CMD)
 
-                    # return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
+                    device._read_activity_message =  const.ERR_EXE_ON_CMD
 
             try:
                 device._csp_master_leaf_proxy.command_inout(const.CMD_ON)
@@ -735,7 +699,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                           exception_count,
                                                                                           const.ERR_EXE_ON_CMD)
 
-                # return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
+                device._read_activity_message =  const.ERR_EXE_ON_CMD
 
             try:
                 device._sdp_master_leaf_proxy.command_inout(const.CMD_ON)
@@ -745,7 +709,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                           exception_count,
                                                                                           const.ERR_EXE_ON_CMD)
 
-                # return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
+                device._read_activity_message = const.ERR_EXE_ON_CMD
 
             try:
                 for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
@@ -756,32 +720,13 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                                                                                           exception_count,
                                                                                           const.ERR_EXE_ON_CMD)
 
-                # return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
+                device._read_activity_message =  const.ERR_EXE_ON_CMD
                 # TODO: for future-  throw exception:
-                if exception_count > 0:
-                    self.throw_exception(exception_message, const.STR_ON_EXEC)
-                    return (ResultCode.FAILED, const.ERR_EXE_ON_CMD)
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_ON_EXEC)
+                return (ResultCode.FAILED, device._read_activity_message)
 
-            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
-
-    @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    @DebugIt()
-    def StartUpTelescope(self):
-        # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
-        """
-        Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-        model.Set the Elements into ON state from STANDBY state.
-
-        :param argin: None.
-
-        :return: None
-        """
-        handler = self.get_command_object("StartUpTelescope")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+            return (ResultCode.OK, device._read_activity_message)
 
     def is_StartUpTelescope_allowed(self):
         """
@@ -796,8 +741,26 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
         handler = self.get_command_object("StartUpTelescope")
         return handler.check_allowed()
 
-    # PROTECTED REGION END #    //  CentralNode.startup_telescope
-  # ============================================================================
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def StartUpTelescope(self):
+        # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
+        """
+        Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
+        model.Set the Elements into ON state.
+
+        :param argin: None.
+
+        :return: None
+        """
+        handler = self.get_command_object("StartUpTelescope")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+ # PROTECTED REGION END #    //  CentralNode.startup_telescope
 
     class AssignResourcesCommand(ResponseCommand):
         """
@@ -817,10 +780,11 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                 in current device state
             """
 
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                raise Exception("Assign Resources cannot be performed in current state")
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Command AssignResources is not allowed in current state.",
+                                             "Failed to invoke AssignResources command on CentralNode.",
+                                             "CentralNode.AssignResources()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self, argin):
@@ -936,7 +900,6 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                 # Create subarray proxy
                 subarrayID = int(json_argument['subarrayID'])
                 subarrayProxy = device.subarray_FQDN_dict[subarrayID]
-
                 ## check for duplicate allocation
                 self.logger.info("Checking for resource reallocation.")
                 device._check_receptor_reassignment(json_argument["dish"]["receptorIDList"])
@@ -954,10 +917,10 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
-                for dish in range(0, len(device.new_resources_allocated)):
-                    dish_ID = "dish" + (device.new_resources_allocated[dish])
+                for dish in range(0, len(new_resources_allocated)):
+                    dish_ID = "dish" + (new_resources_allocated[dish])
                     device._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                    receptorIDList.append(device.new_resources_allocated[dish])
+                    receptorIDList.append(new_resources_allocated[dish])
 
                 # Allocation successful
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
@@ -987,7 +950,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                 exception_message.append("Invalid value in input: " + str(ve))
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_ASSGN_RESOURCES)
@@ -998,6 +961,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
             return (ResultCode.OK, message)
 
             # PROTECTED REGION END #    //  CentralNode.AssignResources
+
     @DebugIt()
     def _check_receptor_reassignment(self, input_receptors_list):
         """
@@ -1031,6 +995,19 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
         if duplicate_allocation_count > 0:
             raise ResourceReassignmentError("Resources already assigned.", duplicate_allocation_dish_ids)
 
+    def is_AssignResources_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("AssignResources")
+        return handler.check_allowed()
+
     @command(
         dtype_in='str',
         doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
@@ -1052,21 +1029,7 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-    def is_AssignResources_allowed(self):
-        """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
-        """
-        handler = self.get_command_object("AssignResources")
-        return handler.check_allowed()
-
-    #     # PROTECTED REGION END #    //  CentralNode.AssignResources
-    # =================================================================================
+     #     # PROTECTED REGION END #    //  CentralNode.AssignResources
 
     class ReleaseResourcesCommand(ResponseCommand):
         """
@@ -1088,12 +1051,11 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                 in current device state
             """
 
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango_raise(
-                    "ReleaseResources() is not allowed in current state"
-                )
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
+                tango.Except.throw_exception("Command ReleaseResources is not allowed in current state.",
+                                             "Failed to invoke ReleaseResources command on CentralNode.",
+                                             "CentralNode.ReleaseResources()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self, argin):
@@ -1179,9 +1141,9 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                         device._read_activity_message = log_msg
                         self.logger.info(log_msg)
                         # release_success = False
-                        # message = device._read_activity_message
-                        # self.logger.info(message)
-                        # return (ResultCode.FAILED, device._read_activity_message )
+                        message = device._read_activity_message
+                        self.logger.info(message)
+                        return (ResultCode.FAILED, device._read_activity_message )
                 else:
                     device._read_activity_message = const.STR_FALSE_TAG
                     self.logger.info(const.STR_FALSE_TAG)
@@ -1193,36 +1155,36 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
                 device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                # message = const.ERR_INVALID_JSON
-                # self.logger.info(message)
-                # return (ResultCode.FAILED, device._read_activity_message)
+
             except KeyError as key_error:
                 self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                # message = const.ERR_JSON_KEY_NOT_FOUND
-                # self.logger.info(message)
+
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                           exception_message,
                                                                                           exception_count,
                                                                                           const.ERR_RELEASE_RESOURCES)
-                message = const.ERR_RELEASE_RESOURCES
-                self.logger.info(message)
-                # return (ResultCode.FAILED, message)
+                device._read_activity_message = const.ERR_RELEASE_RESOURCES
 
-            # TODO:for future reference - throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
                 return (ResultCode.FAILED, device._read_activity_message)
 
-            # argout = {
-            #     "ReleaseAll": release_success,
-            #     "receptorIDList": res_not_released
-            # }
-            # return json.dumps(argout)
-            # PROTECTED REGION END #    //  CentralNode.ReleaseResource
+    def is_ReleaseResources_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("ReleaseResources")
+        return handler.check_allowed()
 
     @command(
         dtype_in="str",
@@ -1245,21 +1207,20 @@ class CentralNode(SKABaseDevice):  # Keeping the current inheritance as it is. C
 
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
-        # PROTECTED REGION END # // CentralNode.ReleaseResource
+# PROTECTED REGION END # // CentralNode.ReleaseResource
 
-    def is_ReleaseResources_allowed(self):
+    def init_command_objects(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+        Initialises the command handlers for commands supported by this
+        device.
         """
-        handler = self.get_command_object("ReleaseResources")
-        return handler.check_allowed()
-
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("StowAntennas", self.StowAntennasCommand(*args))
+        self.register_command_object("StartUpTelescope", self.StartUpTelescopeCommand(*args))
+        self.register_command_object("StandByTelescope", self.StandByTelescopeCommand(*args))
+        self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
+        self.register_command_object("ReleaseResources", self.ReleaseResourcesCommand(*args))
 
 # ----------
 # Run server

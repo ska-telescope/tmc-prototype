@@ -544,7 +544,7 @@ class SubarrayNode(SKASubarray):
             # TODO: For furure reference
             # Throw Exception
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_SCAN_EXEC)
+                device.throw_exception(exception_message, const.STR_SCAN_EXEC)
                 return (ResultCode.FAILED, const.ERR_SCAN_CMD)
 
     class EndScanCommand(SKASubarray.EndScanCommand):
@@ -608,7 +608,7 @@ class SubarrayNode(SKASubarray):
             # TODO: For Future use
             # # Throw Exception
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+                device.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
                 return (ResultCode.FAILED, const.ERR_END_SCAN_CMD)
 
     @DebugIt(show_args=True)
@@ -861,13 +861,14 @@ class SubarrayNode(SKASubarray):
             device = self.target
             argout = []
             # Validate if Subarray is in IDLE obsState
-            try:
-                device.validate_obs_state()
-            except InvalidObsStateError as error:
-                self.logger.exception(error)
-                tango.Except.throw_exception("Subarray is not in IDLE obsState",
-                                "SubarrayNode raised InvalidObsStateError in AssignResources command",
-                                "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
+            # TODO: Need to get idea if this is required?
+            # try:
+            #     device.validate_obs_state()
+            # except InvalidObsStateError as error:
+            #     self.logger.exception(error)
+            #     tango.Except.throw_exception("Subarray is not in IDLE obsState",
+            #                     "SubarrayNode raised InvalidObsStateError in AssignResources command",
+            #                     "subarraynode.AssignResources()", tango.ErrSeverity.ERR)
 
             # 1. Argument validation
             try:
@@ -1106,12 +1107,12 @@ class SubarrayNode(SKASubarray):
                                                                                   const.ERR_AGGR_POINTING_STATE)
 
     def validate_obs_state(self):
-        if self._obs_state == ObsState.IDLE:
+        if self._obs_state == ObsState.EMPTY:
             self.logger.info("Subarray is in required obsstate, hence resources will be assigned.")
         else:
-            self.logger.error("Subarray is not in IDLE obsState")
+            self.logger.error("Subarray is not in EMPTY obsState")
             self._read_activity_message = "Error in device obsState."
-            raise InvalidObsStateError("Subarray is not in IDLE obsState, \
+            raise InvalidObsStateError("Subarray is not in EMPTY obsState, \
                 please check the subarray obsState")
 
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
