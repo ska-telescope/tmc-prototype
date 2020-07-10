@@ -410,18 +410,6 @@ class CentralNode(SKABaseDevice):
     # --------
     # Commands
     # --------
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        args = (self, self.state_model, self.logger)
-        self.register_command_object("StowAntennas",self.StowAntennasCommand(*args))
-        self.register_command_object("StartUpTelescope",self.StartUpTelescopeCommand(*args))
-        self.register_command_object("StandByTelescope",self.StandByTelescopeCommand(*args))
-        self.register_command_object("AssignResources",self.AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseResources",self.ReleaseResourcesCommand(*args))
 
     class StowAntennasCommand(ResponseCommand):
         """
@@ -440,12 +428,11 @@ class CentralNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango_raise(
-                    "StowAntennas() is not allowed in current state"
-                )
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Command StowAntennas is not allowed in current state.",
+                                             "Failed to invoke StowAntennas command on CentralNode.",
+                                             "CentralNode.StowAntennas()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self, argin):
@@ -538,7 +525,6 @@ class CentralNode(SKABaseDevice):
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-    # =========================================
     class StandByTelescopeCommand(SKABaseDevice.OffCommand):
         """
         A class for CentralNode's StandByTelescope command.
@@ -556,12 +542,11 @@ class CentralNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango_raise(
-                    "StandByTelescope() is not allowed in current state"
-                )
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Command StandByTelescope is not allowed in current state.",
+                                             "Failed to invoke StandByTelescope command on CentralNode.",
+                                             "CentralNode.StandByTelescope()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self):
@@ -655,9 +640,6 @@ class CentralNode(SKABaseDevice):
 
 # PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
 
-
-# =================================================================
-
     class StartUpTelescopeCommand(SKABaseDevice.OnCommand):
         """
         A class for CentralNode's StartupCommand command.
@@ -675,12 +657,11 @@ class CentralNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango_raise(
-                    "StartUpTelescope() is not allowed in current state"
-                )
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Command StartUpTelescope is not allowed in current state.",
+                                             "Failed to invoke StartUpTelescope command on CentralNode.",
+                                             "CentralNode.StartUpTelescope()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self):
@@ -776,7 +757,6 @@ class CentralNode(SKABaseDevice):
         return [[result_code], [message]]
 
  # PROTECTED REGION END #    //  CentralNode.startup_telescope
-  # ============================================================================
 
     class AssignResourcesCommand(ResponseCommand):
         """
@@ -796,10 +776,11 @@ class CentralNode(SKABaseDevice):
                 in current device state
             """
 
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                raise Exception("Assign Resources cannot be performed in current state")
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Command AssignResources is not allowed in current state.",
+                                             "Failed to invoke AssignResources command on CentralNode.",
+                                             "CentralNode.AssignResources()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self, argin):
@@ -1033,7 +1014,6 @@ class CentralNode(SKABaseDevice):
         return [[result_code], [message]]
 
      #     # PROTECTED REGION END #    //  CentralNode.AssignResources
-    # =================================================================================
 
     class ReleaseResourcesCommand(ResponseCommand):
         """
@@ -1055,12 +1035,11 @@ class CentralNode(SKABaseDevice):
                 in current device state
             """
 
-            if self.state_model.dev_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango_raise(
-                    "ReleaseResources() is not allowed in current state"
-                )
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
+                tango.Except.throw_exception("Command ReleaseResources is not allowed in current state.",
+                                             "Failed to invoke ReleaseResources command on CentralNode.",
+                                             "CentralNode.ReleaseResources()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def do(self, argin):
@@ -1213,6 +1192,19 @@ class CentralNode(SKABaseDevice):
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 # PROTECTED REGION END # // CentralNode.ReleaseResource
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("StowAntennas", self.StowAntennasCommand(*args))
+        self.register_command_object("StartUpTelescope", self.StartUpTelescopeCommand(*args))
+        self.register_command_object("StandByTelescope", self.StandByTelescopeCommand(*args))
+        self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
+        self.register_command_object("ReleaseResources", self.ReleaseResourcesCommand(*args))
 
 # ----------
 # Run server
