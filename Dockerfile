@@ -10,7 +10,8 @@ USER root
 # RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/lmcbaseclasses/0.5.4+d12da018/lmcbaseclasses-0.5.4+d12da018.tar.gz
 # RUN python3 -m pip install https://nexus.engageska-portugal.pt/repository/pypi/packages/cdm-shared-library/2.0.0+dev.da90e1f0/cdm-shared-library-2.0.0+dev.da90e1f0.tar.gz
 RUN python3 -m pip install ska-logging==0.3.0
-RUN python3 -m pip install lmcbaseclasses==0.5.4
+RUN python3 -m pip install lmcbaseclasses==0.6.1
+# install cdm-shared-library
 RUN python3 -m pip install cdm-shared-library==2.0.0
 #install ska-telescope-model
 RUN python3 -m pip install ska-telescope-model==0.1.4

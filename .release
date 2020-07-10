@@ -16,3 +16,4 @@ tag_description=Exception handling guidelines implemented for AssignResource.
 release_notes=This release Contains: <br/><ul><li>Exception handling guidelines implemented for AssignResources functionality.</li><li>Exception Logging</li><li>Raising custom exceptions</li><li>Catch exceptions</li><li>Handlie Exceptions</li></ul>
 gitlab_username=adityadangeska
 private_token=T-QnRqsjQgqga_BRsz_i
+

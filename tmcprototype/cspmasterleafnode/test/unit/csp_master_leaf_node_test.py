@@ -32,14 +32,14 @@ def test_on_should_command_csp_master_leaf_node_to_start():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         on_input = []
         # act:
-        tango_context.device.On(on_input)
+        tango_context.device.On()
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
                                                                     any_method(with_name='cmd_ended_cb'))
 
 
-def raise_devfailed_exception(evt_name, evt_type, callaback, stateless=True):
+def raise_devfailed_exception(evt_name, evt_type, callback, stateless=True):
     tango.Except.throw_exception("CspMasterLeafNode_cspCbfHealthCallback_with_exceptionfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
@@ -63,7 +63,6 @@ def test_event_to_raise_devfailed_exception():
         # assert:
         assert tango_context.device.State() == DevState.FAULT
 
-
 def test_off_should_command_csp_master_leaf_node_to_stop():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
@@ -76,9 +75,10 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
 
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        off_input = []
         # act:
-        tango_context.device.Off(off_input)
+        off_input = []
+        tango_context.device.On()
+        tango_context.device.Off()
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_input,
@@ -691,12 +691,6 @@ def test_write_activity_message():
         assert tango_context.device.activityMessage == 'test'
 
 
-def test_state():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        assert tango_context.device.State() == DevState.ALARM
-
-
 def test_status():
     # act & assert:
     with fake_tango_system(CspMasterLeafNode) as tango_context:
@@ -715,36 +709,6 @@ def test_logging_targets():
     with fake_tango_system(CspMasterLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
-
-
-def test_test_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        test_mode = TestMode.NONE
-        tango_context.device.testMode = test_mode
-        assert tango_context.device.testMode == test_mode
-
-
-def test_simulation_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        simulation_mode = SimulationMode.FALSE
-        tango_context.device.simulationMode = simulation_mode
-        assert tango_context.device.simulationMode == simulation_mode
-
-
-def test_control_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        control_mode = ControlMode.REMOTE
-        tango_context.device.controlMode = control_mode
-        assert tango_context.device.controlMode == control_mode
-
-
-def test_admin_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
 def test_health_state():

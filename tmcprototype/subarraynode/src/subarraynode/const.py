@@ -29,6 +29,8 @@ CMD_CONFIGURE = "Configure"
 CMD_END_SCAN = "EndScan"
 CMD_TRACK = "Track"
 CMD_STOP_TRACK = "StopTrack"
+CMD_ON = "On"
+CMD_OFF = "Off"
 STR_CMD_STOP_TRACK_INV_DLN = "Command StopTrack is invoked on Dish Leaf Nodes Group"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 ASSIGN_RESOURCES_INV_CSP_SALN = "Assign Resources is invoked on CSP Subarray Leaf Node"
@@ -180,6 +182,8 @@ ERR_SUBSR_CSPSDPSA_DEVICE_STATE = "Error in subscribing CSP/SDP Subarray Device 
 ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarray attribute"
 ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
 ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA = "Error in subscribing receive addresses of SDP Subarray"
+ERR_SA_INIT = "Subarray node initialization failed."
+
 
 # JSON keys
 STR_KEY_DISH = "dish"

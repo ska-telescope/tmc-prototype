@@ -601,11 +601,19 @@
                                 "ska_mid/tm_leaf_node/d"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "NumDishes": [
                                 "4"
                             ],
@@ -664,11 +672,19 @@
                                 "mid_csp/elt/master"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "polled_attr": [
                                 "activitymessage",
                                 "1000",
@@ -718,11 +734,19 @@
                                 "mid_csp/elt/subarray_01"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "3"
                             ],
@@ -775,11 +799,19 @@
                                 "mid_csp/elt/subarray_02"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "3"
                             ],
@@ -832,11 +864,19 @@
                                 "mid_csp/elt/subarray_03"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "3"
                             ],
@@ -899,11 +939,19 @@
                                 "mid_d0001/elt/master"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "3"
                             ],
@@ -951,11 +999,19 @@
                                 "mid_d0002/elt/master"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "3"
                             ],
@@ -1003,11 +1059,19 @@
                                 "mid_d0003/elt/master"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "3"
                             ],
@@ -1055,11 +1119,19 @@
                                 "mid_d0004/elt/master"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "3"
                             ],
@@ -1147,11 +1219,19 @@
                         },
                         "properties": {
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "1"
                             ],
@@ -1248,11 +1328,19 @@
                         },
                         "properties": {
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "1"
                             ],
@@ -1349,11 +1437,19 @@
                         },
                         "properties": {
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "1"
                             ],
@@ -1450,11 +1546,19 @@
                         },
                         "properties": {
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SkaLevel": [
                                 "1"
                             ],
@@ -2552,6 +2656,7 @@
                                 "mid_csp/capability_monitor/vlbi_beams"
                             ],
                             "polled_attr": [
+<<<<<<< HEAD
                                 "csppssadminmode",
                                 "1000",
                                 "csppstadminmode",
@@ -2605,6 +2710,65 @@
                                 "cspcbfstate",
                                 "3000",
                                 "healthstate",
+=======
+                                "csppssadminmode", 
+                                "1000", 
+                                "csppstadminmode", 
+                                "1000", 
+                                "cspcbfadminmode", 
+                                "1000", 
+                                "standbycmdalarm", 
+                                "1000", 
+                                "offcmdalarm", 
+                                "1000", 
+                                "adminmode", 
+                                "1000", 
+                                "oncommandprogress", 
+                                "3000", 
+                                "offcommandprogress", 
+                                "3000", 
+                                "offcmddurationexpected", 
+                                "3000", 
+                                "standbycommandprogress", 
+                                "3000", 
+                                "oncmddurationexpected", 
+                                "3000", 
+                                "standbycmddurationexpected", 
+                                "3000", 
+                                "oncmddurationmeasured", 
+                                "3000", 
+                                "offcmddurationmeasured", 
+                                "3000", 
+                                "standbycmddurationmeasured", 
+                                "3000", 
+                                "offcmdtimeoutexpired", 
+                                "3000", 
+                                "oncmdtimeoutexpired", 
+                                "2000", 
+                                "csppssstate", 
+                                "2000", 
+                                "standbycmdtimeoutexpired", 
+                                "1000", 
+                                "csppststate", 
+                                "1000", 
+                                "cspcbfhealthstate", 
+                                "1000", 
+                                "csppsshealthstate", 
+                                "1000", 
+                                "csppsthealthstate", 
+                                "1000", 
+                                "cspcbfadminmode", 
+                                "1000", 
+                                "oncmdfailure", 
+                                "2000", 
+                                "offcmdfailure", 
+                                "2000", 
+                                "standbycmdfailure", 
+                                "2000", 
+                                "cspcbfstate", 
+                                "3000", 
+                                "healthstate", 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                                 "1000"
                             ]
                         }
@@ -2710,6 +2874,7 @@
                                 "mid_csp/elt/cvlbi-01"
                             ],
                             "polled_attr": [
+<<<<<<< HEAD
                                 "timeoutexpiredflag",
                                 "1000",
                                 "state",
@@ -2736,6 +2901,26 @@
                                 "1500",
                                 "removereceptorscmdprogress",
                                 "1500"
+=======
+                                "alarmraisedflag", 
+                                "1000", 
+                                "timeoutexpiredflag", 
+                                "1000", 
+                                "state", 
+                                "1000", 
+                                "scancmdprogress", 
+                                "1500", 
+                                "removeresourcescmdprogress", 
+                                "1500", 
+                                "addresourcescmdprogress", 
+                                "1500", 
+                                "endscancmdprogress", 
+                                "1500", 
+                                "endsbcmdprogress", 
+                                "1500", 
+                                "healthstate", 
+                                "1000"
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             ]
                         }
                     }
@@ -2922,6 +3107,7 @@
                                 "mid_csp/elt/cvlbi-02"
                             ],
                             "polled_attr": [
+<<<<<<< HEAD
                                 "state",
                                 "1000",
                                 "timeoutexpiredflag",
@@ -2948,6 +3134,26 @@
                                 "1500",
                                 "removereceptorscmdprogress",
                                 "1500"
+=======
+                                "alarmraisedflag", 
+                                "1000", 
+                                "state", 
+                                "1000", 
+                                "timeoutexpiredflag", 
+                                "1500", 
+                                "scancmdprogress", 
+                                "1500", 
+                                "removeresourcescmdprogress", 
+                                "1500", 
+                                "addresourcescmdprogress", 
+                                "1500", 
+                                "endscancmdprogress", 
+                                "1500", 
+                                "endsbcmdprogress", 
+                                "1500", 
+                                "healthstate", 
+                                "1000"
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             ]
                         }
                     }
@@ -3134,6 +3340,7 @@
                                 "mid_csp/elt/cvlbi-03"
                             ],
                             "polled_attr": [
+<<<<<<< HEAD
                                 "state",
                                 "1000",
                                 "timeoutexpiredflag",
@@ -3160,6 +3367,26 @@
                                 "1500",
                                 "removereceptorscmdprogress",
                                 "1500"
+=======
+                                "alarmraisedflag", 
+                                "1000", 
+                                "state", 
+                                "1000", 
+                                "timeoutexpiredflag", 
+                                "1500", 
+                                "scancmdprogress", 
+                                "1500", 
+                                "removeresourcescmdprogress", 
+                                "1500", 
+                                "addresourcescmdprogress", 
+                                "1500", 
+                                "endscancmdprogress", 
+                                "1500", 
+                                "endsbcmdprogress", 
+                                "1500", 
+                                "healthstate", 
+                                "1000"
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             ]
                         }
                     }
@@ -3633,11 +3860,19 @@
                         },
                         "properties": {
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SdpMasterFQDN": [
                                 "mid_sdp/elt/master"
                             ],
@@ -3681,11 +3916,19 @@
                         },
                         "properties": {
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
@@ -3732,11 +3975,19 @@
                         },
                         "properties": {
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_2"
                             ],
@@ -3783,11 +4034,19 @@
                         },
                         "properties": {
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_3"
                             ],
@@ -3864,11 +4123,19 @@
                                 "ska_mid/tm_leaf_node/d"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_1"
                             ],
@@ -3952,11 +4219,19 @@
                                 "ska_mid/tm_leaf_node/d"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_2"
                             ],
@@ -4040,11 +4315,19 @@
                                 "ska_mid/tm_leaf_node/d"
                             ],
                             "LoggingLevelDefault": [
+<<<<<<< HEAD
                                 "4"
                             ],
                             "LoggingTargetsDefault": [
                                 "console::cout"
                             ],
+=======
+                                "5"
+                            ], 
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ], 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                             "SdpSubarrayFQDN": [
                                 "mid_sdp/elt/subarray_3"
                             ],
@@ -4144,6 +4427,7 @@
                                 "1"
                             ],
                             "polled_attr": [
+<<<<<<< HEAD
                                 "state",
                                 "1000",
                                 "healthstate",
@@ -4155,6 +4439,15 @@
                                 "obsstate",
                                 "1000",
                                 "obsmode",
+=======
+                                "state", 
+                                "1000", 
+                                "healthstate", 
+                                "1000", 
+                                "adminmode", 
+                                "1000", 
+                                "subarraymembership", 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                                 "1000"
                             ]
                         }
@@ -4290,6 +4583,7 @@
                                 "2"
                             ],
                             "polled_attr": [
+<<<<<<< HEAD
                                 "state",
                                 "1000",
                                 "healthstate",
@@ -4301,6 +4595,15 @@
                                 "obsstate",
                                 "1000",
                                 "obsmode",
+=======
+                                "state", 
+                                "1000", 
+                                "healthstate", 
+                                "1000", 
+                                "adminmode", 
+                                "1000", 
+                                "subarraymembership", 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                                 "1000"
                             ]
                         }
@@ -4436,6 +4739,7 @@
                                 "3"
                             ],
                             "polled_attr": [
+<<<<<<< HEAD
                                 "state",
                                 "1000",
                                 "healthstate",
@@ -4447,6 +4751,15 @@
                                 "obsstate",
                                 "1000",
                                 "obsmode",
+=======
+                                "state", 
+                                "1000", 
+                                "healthstate", 
+                                "1000", 
+                                "adminmode", 
+                                "1000", 
+                                "subarraymembership", 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                                 "1000"
                             ]
                         }
@@ -4579,6 +4892,7 @@
                                 "4"
                             ],
                             "polled_attr": [
+<<<<<<< HEAD
                                 "state",
                                 "1000",
                                 "healthstate",
@@ -4590,6 +4904,15 @@
                                 "obsstate",
                                 "1000",
                                 "obsmode",
+=======
+                                "state", 
+                                "1000", 
+                                "healthstate", 
+                                "1000", 
+                                "adminmode", 
+                                "1000", 
+                                "subarraymembership", 
+>>>>>>> 7e35cddffffebf000b240b818b6195090545a6d8
                                 "1000"
                             ]
                         }
