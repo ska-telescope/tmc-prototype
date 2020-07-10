@@ -18,8 +18,8 @@ from __future__ import absolute_import
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, attribute, command, device_property
-from ska.base import SKABaseDevice, SKASubarray
-from ska.base.commands import ActionCommand, ResponseCommand, ResultCode
+from ska.base import SKABaseDevice
+from ska.base.commands import ResponseCommand, ResultCode
 from ska.base.control_model import HealthState
 # Additional import
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
@@ -218,145 +218,143 @@ class CentralNode(SKABaseDevice):
     # General methods
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
-       """
-       A class for the TMC CentralNode's init_device() "command".
-       """
-       def do(self):
-           """
-           Stateless hook for device initialisation.
-           Initializes the attributes and properties of the Central Node.
+        """
+        A class for the TMC CentralNode's init_device() "command".
+        """
+        def do(self):
+            """
+            Stateless hook for device initialisation.
+            Initializes the attributes and properties of the Central Node.
 
-           :return: A tuple containing a return code and a string
+            :return: A tuple containing a return code and a string
                message indicating status. The message is for
                information purpose only.
-           :rtype: (ReturnCode, str)
-           """
-           super().do()
+            :rtype: (ReturnCode, str)
+            """
+            super().do()
 
-           device = self.target
+            device = self.target
 
-           exception_count = 0
-           exception_message = []
-           try:
-               #SKABaseDevice.init_device(self)
-               self.logger.info("Device initialisating...")
-               device._subarray1_health_state = HealthState.OK
-               device._subarray2_health_state = HealthState.OK
-               device._subarray3_health_state = HealthState.OK
-               device._sdp_master_leaf_health = HealthState.OK
-               device._csp_master_leaf_health = HealthState.OK
-               #self.set_state(DevState.ON)
-               # Initialise Attributes
-               device._health_state = HealthState.OK
-               #device._admin_mode = AdminMode.ONLINE
-               device._telescope_health_state = HealthState.OK
-               device.subarray_health_state_map = {}
-               device._dish_leaf_node_devices = []
-               device._leaf_device_proxy = []
-               device.subarray_FQDN_dict = {}
-               device._subarray_allocation = {}
-               device._read_activity_message = ""
-               #device.set_status(const.STR_INIT_SUCCESS)
-               self.logger.debug(const.STR_INIT_SUCCESS)
+            exception_count = 0
+            exception_message = []
+            try:
+                #SKABaseDevice.init_device(self)
+                self.logger.info("Device initialisating...")
+                device._subarray1_health_state = HealthState.OK
+                device._subarray2_health_state = HealthState.OK
+                device._subarray3_health_state = HealthState.OK
+                device._sdp_master_leaf_health = HealthState.OK
+                device._csp_master_leaf_health = HealthState.OK
+                #self.set_state(DevState.ON)
+                # Initialise Attributes
+                device._health_state = HealthState.OK
+                #device._admin_mode = AdminMode.ONLINE
+                device._telescope_health_state = HealthState.OK
+                device.subarray_health_state_map = {}
+                device._dish_leaf_node_devices = []
+                device._leaf_device_proxy = []
+                device.subarray_FQDN_dict = {}
+                device._subarray_allocation = {}
+                device._read_activity_message = ""
+                #device.set_status(const.STR_INIT_SUCCESS)
+                self.logger.debug(const.STR_INIT_SUCCESS)
 
-           except DevFailed as dev_failed:
-               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
                                                                                         exception_count, const.ERR_INIT_PROP_ATTR_CN)
-               device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
-               message = const.ERR_INIT_PROP_ATTR_CN
-               self.logger.info(message)
-               return (ResultCode.FAILED, message)
+                device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
+                return (ResultCode.FAILED, device._read_activity_message)
 
-               #  Get Dish Leaf Node devices List
-               # TODO: Getting DishLeafNode devices list from TANGO DB
-               # device.tango_db = PyTango.Database()
-               # try:
-               #     device.dev_dbdatum = device.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
-               #     device._dish_leaf_node_devices.extend(device.dev_bdatum.value_string)
-               #     print device._dish_leaf_node_devices
-               #
-               # except Exception as except_occured:
-               #     print const.ERR_IN_READ_DISH_LN_DEVS, except_occured
-               #     device._read_activity_message = const.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
-               #     self.dev_logging(const.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
+                #  Get Dish Leaf Node devices List
+                # TODO: Getting DishLeafNode devices list from TANGO DB
+                # device.tango_db = PyTango.Database()
+                # try:
+                #     device.dev_dbdatum = device.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
+                #     device._dish_leaf_node_devices.extend(device.dev_bdatum.value_string)
+                #     print device._dish_leaf_node_devices
+                #
+                # except Exception as except_occured:
+                #     print const.ERR_IN_READ_DISH_LN_DEVS, except_occured
+                #     device._read_activity_message = const.ERR_IN_READ_DISH_LN_DEVS + str(except_occured)
+                #     self.dev_logging(const.ERR_IN_READ_DISH_LN_DEVS, int(tango.LogLevel.LOG_ERROR))
 
-           # Creating proxies for lower level devices
-           for dish in range(1, (device.NumDishes + 1)):
-               # Update device._dish_leaf_node_devices variable
-               device._dish_leaf_node_devices.append(device.DishLeafNodePrefix + "000" + str(dish))
+            # Creating proxies for lower level devices
+            for dish in range(1, (device.NumDishes + 1)):
+                # Update device._dish_leaf_node_devices variable
+                device._dish_leaf_node_devices.append(device.DishLeafNodePrefix + "000" + str(dish))
 
-               # Initialize device.subarray_allocation variable (map of Dish Id and allocation status)
-               # to indicate availability of the dishes
-               dish_ID = "dish000" + str(dish)
-               device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
+                # Initialize device.subarray_allocation variable (map of Dish Id and allocation status)
+                # to indicate availability of the dishes
+                dish_ID = "dish000" + str(dish)
+                device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
 
-               # Create proxies of Dish Leaf Node devices
-           for name in range(0, len(device._dish_leaf_node_devices)):
-               try:
-                   device._leaf_device_proxy.append(DeviceProxy(device._dish_leaf_node_devices[name]))
-               except (DevFailed, KeyError) as except_occurred:
-                   [exception_message, exception_count] = device._handle_devfailed_exception(except_occurred,
+                # Create proxies of Dish Leaf Node devices
+            for name in range(0, len(device._dish_leaf_node_devices)):
+                try:
+                    device._leaf_device_proxy.append(DeviceProxy(device._dish_leaf_node_devices[name]))
+                except (DevFailed, KeyError) as except_occurred:
+                    [exception_message, exception_count] = device._handle_devfailed_exception(except_occurred,
                                                                                            exception_message,
                                                                                            exception_count,
                                                                                            const.ERR_IN_CREATE_PROXY)
-                   device._read_activity_message = const.ERR_IN_CREATE_PROXY
+                    device._read_activity_message = const.ERR_IN_CREATE_PROXY
 
-               # Create device proxy for CSP Master Leaf Node
-           try:
-               device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
-               device._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
+                # Create device proxy for CSP Master Leaf Node
+            try:
+                device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
+                device._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
                                                            EventType.CHANGE_EVENT,
                                                            device.health_state_cb, stateless=True)
-           except DevFailed as dev_failed:
-               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                        exception_message,
                                                                                        exception_count,
                                                                                        const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
-               device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
+                device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
 
                # Create device proxy for SDP Master Leaf Node
-           try:
-               device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
-               device._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
+            try:
+                device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
+                device._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
                                                            EventType.CHANGE_EVENT,
                                                            device.health_state_cb, stateless=True)
-           except DevFailed as dev_failed:
-               [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                        exception_message,
                                                                                        exception_count,
                                                                                        const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
-               device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
+                device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
 
                # Create device proxy for Subarray Node
-           for subarray in range(0, len(device.TMMidSubarrayNodes)):
-               try:
-                   subarray_proxy = DeviceProxy(device.TMMidSubarrayNodes[subarray])
-                   device.subarray_health_state_map[subarray_proxy] = -1
-                   subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
+            for subarray in range(0, len(device.TMMidSubarrayNodes)):
+                try:
+                    subarray_proxy = DeviceProxy(device.TMMidSubarrayNodes[subarray])
+                    device.subarray_health_state_map[subarray_proxy] = -1
+                    subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
                                                   EventType.CHANGE_EVENT,
                                                   device.health_state_cb, stateless=True)
 
-                   # populate subarrayID-subarray proxy map
-                   tokens = device.TMMidSubarrayNodes[subarray].split('/')
-                   subarrayID = int(tokens[2])
-                   device.subarray_FQDN_dict[subarrayID] = subarray_proxy
-               except DevFailed as dev_failed:
-                   [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                    # populate subarrayID-subarray proxy map
+                    tokens = device.TMMidSubarrayNodes[subarray].split('/')
+                    subarrayID = int(tokens[2])
+                    device.subarray_FQDN_dict[subarrayID] = subarray_proxy
+                except DevFailed as dev_failed:
+                    [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                            exception_message,
                                                                                            exception_count,
                                                                                            const.ERR_SUBSR_SA_HEALTH_STATE)
-                   device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
+                    device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
 
-               if exception_count >0:
-                   self.logger.info(device._read_activity_message)
-                   device.throw_exception(exception_message, device._read_activity_message)
-                   return (ResultCode.FAILED, device._read_activity_message)
+                if exception_count >0:
+                    self.logger.info(device._read_activity_message)
+                    device.throw_exception(exception_message, device._read_activity_message)
+                    return (ResultCode.FAILED, device._read_activity_message)
 
-           device._read_activity_message = "Central Node initialised successfully."
-           self.logger.info(device._read_activity_message)
-           return (ResultCode.OK, device._read_activity_message)
+            device._read_activity_message = "Central Node initialised successfully."
+            self.logger.info(device._read_activity_message)
+            return (ResultCode.OK, device._read_activity_message)
 
-           # PROTECTED REGION END #    //  CentralNode.init_device
+ # PROTECTED REGION END #    //  CentralNode.init_device
 
 
     def always_executed_hook(self):
@@ -418,21 +416,12 @@ class CentralNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
-        self.register_command_object(
-            "StowAntennas",
-            self.StowAntennasCommand(self, self.state_model, self.logger))
-        self.register_command_object(
-            "StartUpTelescope",
-            self.StartUpTelescopeCommand(self, self.state_model, self.logger))
-        self.register_command_object(
-            "StandByTelescope",
-            self.StandByTelescopeCommand(self, self.state_model, self.logger))
-        self.register_command_object(
-            "AssignResources",
-            self.AssignResourcesCommand(self, self.state_model, self.logger))
-        self.register_command_object(
-            "ReleaseResources",
-            self.ReleaseResourcesCommand(self, self.state_model, self.logger))
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("StowAntennas",self.StowAntennasCommand(*args))
+        self.register_command_object("StartUpTelescope",self.StartUpTelescopeCommand(*args))
+        self.register_command_object("StandByTelescope",self.StandByTelescopeCommand(*args))
+        self.register_command_object("AssignResources",self.AssignResourcesCommand(*args))
+        self.register_command_object("ReleaseResources",self.ReleaseResourcesCommand(*args))
 
     class StowAntennasCommand(ResponseCommand):
         """
@@ -1004,9 +993,9 @@ class CentralNode(SKABaseDevice):
 
             if exception_count > 0:
 
-               device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-               argout = '{"dish": {"receptorIDList_success": []}}'
-               return (ResultCode.FAILED, argout) #check for failure scenario
+                device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+                argout = '{"dish": {"receptorIDList_success": []}}'
+                return (ResultCode.FAILED, argout) #check for failure scenario
 
     def is_AssignResources_allowed(self):
         """
