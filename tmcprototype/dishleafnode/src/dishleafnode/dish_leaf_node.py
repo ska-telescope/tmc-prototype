@@ -621,6 +621,7 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("Track", self.TrackCommand(*args))
         self.register_command_object("StopTrack", self.StopTrackCommand(*args))
         self.register_command_object("Abort", self.AbortCommand(*args))
+        self.register_command_object("Restart", self.RestartCommand(*args))
 
     # --------
     # Commands
