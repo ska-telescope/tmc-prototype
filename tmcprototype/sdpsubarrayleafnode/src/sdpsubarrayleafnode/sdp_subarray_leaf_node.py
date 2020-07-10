@@ -240,6 +240,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "Abort",
             self.AbortCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "Restart",
+            self.RestartCommand(self, self.state_model, self.logger)
+        )
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -1366,7 +1370,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     self.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
                     return (ResultCode.FAILED, const.ERR_ABORT_INVOKING_CMD)
             #
-            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.EndSB
+            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
     @command(
         dtype_out="DevVarLongStringArray",
@@ -1382,7 +1386,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.EndSB
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Abort
 
     def is_Abort_allowed(self):
         """
@@ -1400,6 +1404,105 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
 #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
+
+    class RestartCommand(ResponseCommand):
+
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Restart) ENABLED START #
+        """
+        A class for sdpSubarrayLeafNode's Restart() command.
+        """
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Restart() is not allowed in current state",
+                                             "Restart() is not allowed in current state",
+                                             "sdpsubarrayleafnode.Restart()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def do(self):
+            """
+            It invokes Restart command on sdpSubarray. This command is allowed when sdpSubarray is in Aborted,Fault state.
+            state.
+            :return: A tuple containing a return code and a string
+                        message indicating status. The message is for
+                        information purpose only.
+            :rtype: (ReturnCode, str)
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device._sdp_subarray_proxy.obsState == ObsState.FAULT or device._sdp_subarray_proxy.obsState \
+                        == ObsState.ABORTED:
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART, device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_RESTART_SUCCESS
+                    self.logger.info(const.STR_RESTART_SUCCESS)
+                    return(ResultCode.OK,const.STR_RESTART_SUCCESS)
+
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_IN_FAULT_ABORTED
+                    self.logger.error(const.ERR_DEVICE_NOT_IN_FAULT_ABORTED)
+                    return(ResultCode.FAILED,const.ERR_DEVICE_NOT_IN_FAULT_ABORTED)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count, const.ERR_RESTART_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, const.ERR_RESTART_INVOKING_CMD)
+
+                # throw exception:
+                if exception_count > 0:
+                    self.throw_exception(exception_message, const.ERR_RESTART_INVOKING_CMD)
+                    return (ResultCode.FAILED, const.ERR_RESTART_INVOKING_CMD)
+            #
+            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Restart
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Restart(self):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.Restart) ENABLED START #
+        """
+        Invoke Abort on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Restart")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    # PROTECTED REGION END # // SdpSubarrayLeafNode.Restart
+
+    def is_Restart_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+
+#     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Restart
 
 # class OnCommand(SKASubarray.OnCommand):
     #     """
