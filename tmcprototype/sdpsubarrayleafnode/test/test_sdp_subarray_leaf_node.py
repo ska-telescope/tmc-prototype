@@ -196,7 +196,7 @@ class TestSdpSubarrayLeafNode(object):
         """Test for versionId"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_versionId) ENABLED START #
         # self.device.versionId
-        assert tango_context.device.versionId == "0.6.1"
+        assert tango_context.device.versionId == "0.6.3"
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_versionId
 
     def test_loggingLevel(self, tango_context):
@@ -272,5 +272,5 @@ class TestSdpSubarrayLeafNode(object):
         """Test for buildState"""
         # PROTECTED REGION ID(SdpSubarrayLeafNode.test_buildState) ENABLED START #
         assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.6.1, A set of generic base devices for SKA Telescope.")
+            "lmcbaseclasses, 0.6.3, A set of generic base devices for SKA Telescope.")
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.test_buildState
