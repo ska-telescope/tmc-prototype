@@ -842,15 +842,15 @@ class SubarrayNode(SKASubarray):
 
     class InitCommand(SKASubarray.InitCommand):
         """
-        A class for the TMC SubarrayNode's init_device() "command".
+        A class for the TMC SubarrayNode's init_device() command.
         """
         def do(self):
             """
-            Stateless hook for device initialisation.
+            Initializes the attributes and properties of the Subarray Node.
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
             """
             super().do()
@@ -882,7 +882,6 @@ class SubarrayNode(SKASubarray):
             device._scan_type = ''
             _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
             device.scan_thread = None
-
 
             # Create proxy for CSP Subarray Leaf Node
             device._csp_subarray_ln_proxy = None
@@ -1029,9 +1028,9 @@ class SubarrayNode(SKASubarray):
             CSP block in json string is as per earlier implementation and not aligned to SP-872
             Note: While invoking this command from JIVE, provide above JSON string without any space.
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
             """
             device = self.target
@@ -1075,9 +1074,9 @@ class SubarrayNode(SKASubarray):
             This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP
             Subarray Leaf Node, and stops tracking of all the assigned dishes.
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
             :rtype: (ResultCode, str)
             """
             device = self.target
@@ -1146,7 +1145,10 @@ class SubarrayNode(SKASubarray):
             Argin to be provided is the Ra and Dec values where first value is tag that is radec, second value is Ra
             in Hr:Min:Sec, and third value is Dec in Deg:Min:Sec.
 
-            :return: None
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
 
             """
             device = self.target
@@ -1216,18 +1218,7 @@ class SubarrayNode(SKASubarray):
     def Track(self, argin):
         """
         Invokes Track command on the Dishes assigned to the Subarray.
-
-        :param argin: DevString
-
-        Example:
-        radec|21:08:47.92|-88:57:22.9 as argin
-        Argin to be provided is the Ra and Dec values where first value is tag that is radec, second value is Ra
-        in Hr:Min:Sec, and third value is Dec in Deg:Min:Sec.
-
-        :return: None
-
         """
-
         handler = self.get_command_object("Track")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
@@ -1262,9 +1253,9 @@ class SubarrayNode(SKASubarray):
             """
             Stateless hook for Off() command functionality.
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
             :rtype: (ResultCode, str)
             """
             device = self.target
@@ -1296,9 +1287,9 @@ class SubarrayNode(SKASubarray):
 
             Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
-            :return: A tuple containing a return code and a string
-                        message indicating status. The message is for
-                        information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
             """
             device = self.target
@@ -1365,9 +1356,9 @@ class SubarrayNode(SKASubarray):
             also be invoked by an external client while a scan is in progress, Which stops the scan
             immediately irrespective of the provided scan duration.
 
-            :return: A tuple containing a return code and a string
-                        message indicating status. The message is for
-                        information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
             """
             device = self.target
@@ -1464,10 +1455,11 @@ class SubarrayNode(SKASubarray):
                 Example of string of Resources :
                     ["0001","0002"]
                 as argout if allocation successful.
+
             :rtype: (ResultCode, str)
 
-
             :throws: DevFailed.
+
             """
 
             # exception_count = 0
@@ -1638,7 +1630,9 @@ class SubarrayNode(SKASubarray):
 
             :return: A tuple containing a return code and "[]" as a string on successful release all resources.
             Example: "[]" as string on successful release all resources.
+
             :rtype: (ResultCode, str)
+
             """
             # try:
             #     assert self._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED

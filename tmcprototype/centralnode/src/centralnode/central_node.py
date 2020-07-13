@@ -222,16 +222,15 @@ class CentralNode(SKABaseDevice):
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the TMC CentralNode's init_device() "command".
+        A class for the TMC CentralNode's init_device() command.
         """
         def do(self):
             """
-            Stateless hook for device initialisation.
             Initializes the attributes and properties of the Central Node.
 
-            :return: A tuple containing a return code and a string
-               message indicating status. The message is for
-               information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
             """
             super().do()
@@ -357,8 +356,6 @@ class CentralNode(SKABaseDevice):
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
 
- # PROTECTED REGION END #    //  CentralNode.init_device
-
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CentralNode.always_executed_hook) ENABLED START #
@@ -416,7 +413,7 @@ class CentralNode(SKABaseDevice):
 
     class StowAntennasCommand(ResponseCommand):
         """
-        A class for CentralNode's Track command.
+        A class for CentralNode's Track() command.
         """
 
         def check_allowed(self):
@@ -497,13 +494,14 @@ class CentralNode(SKABaseDevice):
 
     def is_StowAntennas_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state.
+
         """
         handler = self.get_command_object("StowAntennas")
         return handler.check_allowed()
@@ -515,22 +513,16 @@ class CentralNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def StowAntennas(self, argin):
-        # PROTECTED REGION ID(CentralNode.StowAntennas) ENABLED START #
         """
-        Stows the specified receptors.
-
-        :param argin: List of Receptors to be stowed.
-
-        :return: None
+        This command stows the specified receptors.
         """
-
         handler = self.get_command_object("StowAntennas")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
     class StandByTelescopeCommand(SKABaseDevice.OffCommand):
         """
-        A class for CentralNode's StandByTelescope command.
+        A class for CentralNode's StandByTelescope() command.
         """
 
         def check_allowed(self):
@@ -553,7 +545,15 @@ class CentralNode(SKABaseDevice):
             return True
 
         def do(self):
-            """ Set the Elements into STANDBY state (i.e. Low Power State). """
+            """
+            Sets the CentralNode into OFF state.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
             device = self.target
             exception_count = 0
             exception_message = []
@@ -609,18 +609,18 @@ class CentralNode(SKABaseDevice):
                     device.throw_exception(exception_message, const.STR_STANDBY_EXEC)
                     return (ResultCode.FAILED, device._read_activity_message)
 
-            return (ResultCode.OK,device._read_activity_message)
-            # PROTECTED REGION END #    //  CentralNode.standby_telescope
+            return (ResultCode.OK, device._read_activity_message)
 
     def is_StandByTelescope_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state.
+        
         """
         handler = self.get_command_object("StandByTelescope")
         return handler.check_allowed()
@@ -631,23 +631,18 @@ class CentralNode(SKABaseDevice):
     )
     def StandByTelescope(self):
         """
-        Puts the telescope in low-power state .
-
-        :param argin: None.
-
-        :return: None
+            This command invokes SetStandbyLPMode() command on DishLeafNode, StandBy() command on
+            CspMasterLeafNode and SdpMasterLeafNode and Off() command on SubarrayNode and sets
+            CentralNode into OFF state.
         """
         handler = self.get_command_object("StandByTelescope")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-# PROTECTED REGION ID(CentralNode.StandByTelescope) ENABLED START #
-
     class StartUpTelescopeCommand(SKABaseDevice.OnCommand):
         """
-        A class for CentralNode's StartupCommand command.
+        A class for CentralNode's StartupCommand() command.
         """
-
         def check_allowed(self):
 
             """
@@ -668,7 +663,18 @@ class CentralNode(SKABaseDevice):
             return True
 
         def do(self):
-            """ Set the Elements into STARTUP state (i.e. On State). """
+            """
+            Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
+            model. Set the CentralNode into ON state.
+
+            :param argin: None.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
             device = self.target
             exception_count = 0
             exception_message = []
@@ -729,13 +735,14 @@ class CentralNode(SKABaseDevice):
 
     def is_StartUpTelescope_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state.
+
         """
         handler = self.get_command_object("StartUpTelescope")
         return handler.check_allowed()
@@ -746,28 +753,20 @@ class CentralNode(SKABaseDevice):
     )
     @DebugIt()
     def StartUpTelescope(self):
-        # PROTECTED REGION ID(CentralNode.StartUpTelescope) ENABLED START #
         """
-        Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-        model.Set the Elements into ON state.
-
-        :param argin: None.
-
-        :return: None
+            This command invokes SetOperateMode() command on DishLeadNode, On() command on CspMasterLeafNode,
+            SdpMasterLeafNode and SubarrayNode and sets the Central Node into ON state.
         """
         handler = self.get_command_object("StartUpTelescope")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
- # PROTECTED REGION END #    //  CentralNode.startup_telescope
-
     class AssignResourcesCommand(ResponseCommand):
         """
-           A class for CentralNode's AssignResources() command.
+        A class for CentralNode's AssignResources() command.
         """
 
         def check_allowed(self):
-
             """
             Whether this command is allowed to be run in current device
             state
@@ -788,101 +787,106 @@ class CentralNode(SKABaseDevice):
 
         def do(self, argin):
             """
-               Assigns resources to given subarray. It accepts the subarray id,
-               receptor id list and SDP block in JSON string format. Upon successful execution, the
-               'receptorIDList' attribute of the given subarray is populated with the given
-               receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throw
-               error message regarding the prior existence of resource.
+            Assigns resources to given subarray. It accepts the subarray id,
+            receptor id list and SDP block in JSON string format. Upon successful execution, the
+            'receptorIDList' attribute of the given subarray is populated with the given
+            receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throw
+            error message regarding the prior existence of resource.
 
-               :param argin: The string in JSON format. The JSON contains following values:
+            :param argin: The string in JSON format. The JSON contains following values:
 
 
-                   subarrayID:
-                       DevShort. Mandatory.
+               subarrayID:
+                   DevShort. Mandatory.
 
-                   dish:
-                       Mandatory JSON object consisting of
+               dish:
+                   Mandatory JSON object consisting of
 
-                       receptorIDList:
-                           DevVarStringArray
-                           The individual string should contain dish numbers in string format
-                           with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+                   receptorIDList:
+                       DevVarStringArray
+                       The individual string should contain dish numbers in string format
+                       with preceding zeroes upto 3 digits. E.g. 0001, 0002.
 
-                   sdp:
-                       Mandatory JSON object consisting of
+               sdp:
+                   Mandatory JSON object consisting of
 
+                   id:
+                       DevString
+                       The SBI id.
+                   max_length:
+                       DevDouble
+                       Maximum length of the SBI in seconds.
+                   scan_types:
+                       array of the blocks each consisting following parameters
                        id:
                            DevString
-                           The SBI id.
-                       max_length:
-                           DevDouble
-                           Maximum length of the SBI in seconds.
-                       scan_types:
-                           array of the blocks each consisting following parameters
+                           The scan id.
+                       coordinate_system:
+                           DevString
+                       ra:
+                           DevString
+                       Dec:
+                           DevString
+
+                   processing_blocks:
+                       array of the blocks each consisting following parameters
+                       id:
+                           DevString
+                           The Processing Block id.
+                       workflow:
+                           type:
+                               DevString
                            id:
                                DevString
-                               The scan id.
-                           coordinate_system:
+                           version:
                                DevString
-                           ra:
-                               DevString
-                           Dec:
-                               DevString
+                       parameters:
+                           {}
 
-                       processing_blocks:
-                           array of the blocks each consisting following parameters
-                           id:
-                               DevString
-                               The Processing Block id.
-                           workflow:
-                               type:
-                                   DevString
-                               id:
-                                   DevString
-                               version:
-                                   DevString
-                           parameters:
-                               {}
+            Example:
+                {"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",
+                "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771"
+                ,"dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":
+                0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,
+                "stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
+                "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",
+                "channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":
+                [[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,
+                "freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"id":
+                "pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":
+                "0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime",
+                "id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003",
+                "workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":
+                [{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004"
+                ,"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},"parameters":{},"dependencies":
+                [{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}}
 
-                   Example:
-                       {"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]},"sdp":{"id":"sbi-mvp01-20200325-00001",
-                       "max_length":100.0,"scan_types":[{"id":"science_A","coordinate_system":"ICRS","ra":"02:42:40.771"
-                       ,"dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":
-                       0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,
-                       "stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
-                       "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":
-                       [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1]
-                       ,[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
-                       "link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
-                       "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":
-                       "pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
-                       "parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical",
-                       "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":
-                       ["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
-                       "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
-                       ["calibration"]}]}]}}
+            Note: From Jive, enter above input string without any space.
 
-               Note: From Jive, enter above input string without any space.
+            :return: A tuple containing a return code and a string in JSON format on successful assignment
+             of given resources. The JSON string contains following values:
 
-               :return: The string in JSON format. The JSON contains following values:
+                dish:
+                    Mandatory JSON object consisting of
 
-                   dish:
-                       Mandatory JSON object consisting of
-
-                       receptorIDList_success:
-                           DevVarStringArray
-                           Contains ids of the receptors which are successfully allocated. Empty on unsuccessful
-                           allocation.
+                    receptorIDList_success:
+                        DevVarStringArray
+                        Contains ids of the receptors which are successfully allocated. Empty on unsuccessful
+                        allocation.
 
 
-                   Example:
-                       {
-                       "dish": {
-                       "receptorIDList_success": ["0001", "0002"]
-                       }
-                       }
-                   Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
-                   """
+                Example:
+                    {
+                    "dish": {
+                    "receptorIDList_success": ["0001", "0002"]
+                    }
+                    }
+
+            :rtype: (ResultCode, str)
+
+            Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
+
+            """
             receptorIDList = []
             exception_message = []
             exception_count = 0
@@ -912,14 +916,16 @@ class CentralNode(SKABaseDevice):
                 input_to_sa = json.dumps(input_json_subarray)
                 device._resources_allocated = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                new_resources_allocated = device._resources_allocated[1]
+                res_assigned = ast.literal_eval(device._resources_allocated[1][0])
+                self.logger.info("\n\n res_assigned:" + str(res_assigned))
+
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
-                for dish in range(0, len(new_resources_allocated)):
-                    dish_ID = "dish" + (new_resources_allocated[dish])
+                for dish in range(0, len(res_assigned)):
+                    dish_ID = "dish" + (res_assigned[dish])
                     device._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                    receptorIDList.append(new_resources_allocated[dish])
+                    receptorIDList.append(res_assigned[dish])
 
                 # Allocation successful
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
@@ -964,16 +970,16 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def _check_receptor_reassignment(self, input_receptors_list):
         """
-            Checks if any of the receptors are already allocated to other subarray when
-            AssignResources command is called.
+        Checks if any of the receptors are already allocated to other subarray when
+        AssignResources command is called.
 
-            :param:
+        :param:
 
-            :return: None
+        :return: None
 
-            :throws:
-                ResourceReassignmentError: Thrown when an already assigned resource is received
-                in Assignresources command.
+        :throws:
+            ResourceReassignmentError: Thrown when an already assigned resource is received
+            in Assignresources command.
 
         """
         
@@ -996,13 +1002,14 @@ class CentralNode(SKABaseDevice):
 
     def is_AssignResources_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
         handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
@@ -1020,25 +1027,16 @@ class CentralNode(SKABaseDevice):
     def AssignResources(self, argin):
         """
         AssignResources command invokes the AssignResource command on lower level devices.
-
-        :param argin: None.
-        :return: None
         """
         handler = self.get_command_object("AssignResources")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-     #     # PROTECTED REGION END #    //  CentralNode.AssignResources
-
     class ReleaseResourcesCommand(ResponseCommand):
         """
         A class for CentralNode's ReleaseResources() command.
         """
-
-        # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
-
         def check_allowed(self):
-
             """
             Whether this command is allowed to be run in current device
             state
@@ -1058,7 +1056,6 @@ class CentralNode(SKABaseDevice):
             return True
 
         def do(self, argin):
-
             """
             Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
             receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
@@ -1089,7 +1086,8 @@ class CentralNode(SKABaseDevice):
                 Note: From Jive, enter input as:
                     {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
 
-                :return: argout: The string in JSON format. The JSON contains following values:
+                :return: A tuple containing a return code and a string in josn format on successful release
+                 of all the resources. The JSON string contains following values:
 
                     releaseALL:
                         Boolean(True or False). If True, all the resources are successfully released from the
@@ -1105,6 +1103,9 @@ class CentralNode(SKABaseDevice):
                             "ReleaseAll" : True,
                             "receptorIDList" : []
                         }
+
+                 :rtype: (ResultCode, str)
+
             """
             device = self.target
             exception_count = 0
@@ -1119,6 +1120,7 @@ class CentralNode(SKABaseDevice):
                     # Invoke "ReleaseAllResources" on SubarrayNode
                     return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     res_not_released = ast.literal_eval(return_val[1][0])
+                    self.logger.info("\n\n res_not_released:"+ str(res_not_released))
                     log_msg = const.STR_REL_RESOURCES
                     device._read_activity_message = log_msg
                     if not res_not_released:
@@ -1172,13 +1174,14 @@ class CentralNode(SKABaseDevice):
 
     def is_ReleaseResources_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
@@ -1192,24 +1195,17 @@ class CentralNode(SKABaseDevice):
     )
     @DebugIt()
     def ReleaseResources(self, argin):
-        # PROTECTED REGION ID(CentralNode.ReleaseResources) ENABLED START #
         """
         Release all the resources assigned to the given Subarray.
-
-        :param argin: None.
-
-        :return: None
         """
         handler = self.get_command_object("ReleaseResources")
 
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
-# PROTECTED REGION END # // CentralNode.ReleaseResource
 
     def init_command_objects(self):
         """
-        Initialises the command handlers for commands supported by this
-        device.
+        Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)

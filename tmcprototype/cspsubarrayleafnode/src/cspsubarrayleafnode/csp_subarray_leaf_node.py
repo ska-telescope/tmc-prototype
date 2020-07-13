@@ -370,12 +370,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the CspSubarrayLeafNode's init_device() "command".
+        A class for the CspSubarrayLeafNode's init_device() command.
         """
-        # PROTECTED REGION ID(CspSubarrayLeafNode.init_device) ENABLED START #
         def do(self):
             """
-            Stateless hook for device initialisation.
+            Initializes the attributes and properties of the CspSubarrayLeafNode.
 
             :return: A tuple containing a return code and a string
                 message indicating status. The message is for
@@ -518,9 +517,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             "ska_mid/tm_leaf_node/csp_subarray01/delayModel","pointing":{"target":{"system":"ICRS",
             "name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
 
             """
@@ -628,9 +627,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             :param argin: JSON string consists of scan id (int).
 
             Example: in jive:{"id":1}
-            :return: A tuple containing a return code and a string
-                        message indicating status. The message is for
-                        information purpose only.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
             :rtype: (ReturnCode, str)
             """
             device=self.target
@@ -672,7 +671,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def StartScan(self, argin):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.StartScan) ENABLED START #
         """ Invokes StartScan command on cspsubarrayleafnode"""
         handler = self.get_command_object("StartScan")
         (result_code, message) = handler(argin)
@@ -717,9 +715,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in SCANNING
             state.
-            :return: A tuple containing a return code and a string
-                        message indicating status. The message is for
-                        information purpose only.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
             """
             device=self.target
@@ -806,9 +805,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
             CspSubarray.
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
             :rtype: (ResultCode, str)
             """
@@ -864,7 +862,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     class AssignResourcesCommand(ResponseCommand):
         """
-        A class for CspSubarrayLeafNode's AssignResources command.
+        A class for CspSubarrayLeafNode's AssignResources() command.
         """
         def check_allowed(self):
             """
@@ -908,9 +906,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     }
 
             Note: Enter input without spaces as:{"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]}}
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
             :rtype: (ResultCode, str)
             """
             device = self.target
@@ -992,9 +991,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return [[result_code], [message]]
 
     class GoToIdleCommand(ResponseCommand):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.GoToIdle) ENABLED START #
         """
-        A class for CspSubarrayLeafNode's GoToIdle command.
+        A class for CspSubarrayLeafNode's GoToIdle() command.
         """
         def check_allowed(self):
             """
@@ -1019,9 +1017,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def do(self):
             """
             This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
             :rtype: (ResultCode, str)
             """
             device=self.target

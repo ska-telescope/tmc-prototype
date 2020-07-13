@@ -167,10 +167,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # General methods
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
-        """ Initializes the attributes and properties of the Central Node. """
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.init_device) ENABLED START #
+        """
+        A class for the TMC SdpSubarrayLeafNode's init_device() command.
+        """
         def do(self):
+            """
+            Initializes the attributes and properties of the SdpSubarrayLeafNode.
 
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+            """
             super().do()
             device = self.target
             # try:
@@ -265,7 +273,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # --------
     class ReleaseAllResourcesCommand(ResponseCommand):
         """
-        A class for SdpSubarayLeafNode's ReleaseAllResources command.
+        A class for SdpSubarayLeafNode's ReleaseAllResources() command.
         """
         def check_allowed(self):
             """
@@ -299,7 +307,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             :param argin: None.
 
-            :return: None.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
             """
             device = self.target
             exception_message = []
@@ -357,7 +368,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     class AssignResourcesCommand(ResponseCommand):
         """
-        A class for SdpSubarayLeafNode's AssignResources command.
+        A class for SdpSubarayLeafNode's AssignResources() command.
         """
         def check_allowed(self):
             """
@@ -427,7 +438,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             Note: Enter input without spaces
 
-            :return: Empty String.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
             :throws: DevFailed.
         """
             device = self.target
@@ -497,7 +512,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     class ConfigureCommand(ResponseCommand):
         """
-        A class for SdpSubarrayLeafNode's Configure command.
+        A class for SdpSubarrayLeafNode's Configure() command.
         """
         def check_allowed(self):
             """
@@ -528,7 +543,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             {"sdp":{ "scan_type": "science_A" }}
 
-            :return: None.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
 
             """
 
@@ -607,7 +625,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     class ScanCommand(ResponseCommand):
         """
-        A class for SdpSubarrayLeafNode's Scan command.
+        A class for SdpSubarrayLeafNode's Scan() command.
         """
         def check_allowed(self):
             """
@@ -637,7 +655,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             Note: Enter input as without spaces:{“id”:1}
 
-            :return: None.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
             """
 
             device = self.target
@@ -703,7 +724,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     class EndScanCommand(ResponseCommand):
         """
-        A class for SdpSubarrayLeafNode's EndScan command.
+        A class for SdpSubarrayLeafNode's EndScan() command.
         """
         def check_allowed(self):
             """
@@ -730,7 +751,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             :param argin: None.
 
-            :return: None.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
 
             """
             device = self.target
@@ -795,7 +819,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     class EndSBCommand(ResponseCommand):
         """
-        A class for SdpSubarrayLeafNode's EndSB command.
+        A class for SdpSubarrayLeafNode's EndSB() command.
         """
         def check_allowed(self):
             """
@@ -817,7 +841,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             return True
 
         def do(self):
-            """ This command invokes EndSB command on SDP subarray to end the current Scheduling block. """
+            """
+            This command invokes EndSB command on SDP subarray to end the current Scheduling block.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
             # TODO: For future use
             device = self.target
             exception_message = []
