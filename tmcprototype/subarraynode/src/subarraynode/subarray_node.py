@@ -160,6 +160,7 @@ class SubarrayNode(SKASubarray):
         self.scan_obj = self.ScanCommand(self, self.state_model, self.logger)
         self.endscan_obj = self.EndScanCommand(self, self.state_model, self.logger)
         self.end_obj = self.EndCommand(self, self.state_model, self.logger)
+        self.abort_obj = self.AbortCommand(self, self.state_model, self.logger)
 
 
     def receive_addresses_cb(self, event):
@@ -271,6 +272,12 @@ class SubarrayNode(SKASubarray):
                 if self.is_release_resources:
                     print("Calling ReleaseAllResource command succeeded() method")
                     self.release_obj.succeeded()
+        elif self._csp_sa_obs_state == ObsState.ABORTED and self._sdp_sa_obs_state == \
+                ObsState.ABORTED:
+            if self.is_abort_command:
+                print("Calling ABORT command succeeded() method")
+                self._dish_leaf_node_group.command_inout(const.CMD_ABORT)
+                self.abort_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
@@ -1420,6 +1427,55 @@ class SubarrayNode(SKASubarray):
                 device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
                 return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
             # PROTECTED REGION END #    //  SubarrayNode.EndSB
+
+# =======================================================================================================
+    class AbortCommand(SKASubarray.AbortCommand):
+        """
+        A class for SubarrayNode's Abort() command.
+        """
+        def do(self):
+            """
+            This command on Subarray Node invokes Abort command on CSP Subarray Leaf Node and SDP
+            Subarray Leaf Node, and stops tracking of all the assigned dishes.
+
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
+                self.logger.info(const.STR_CMD_ABORT_INV_SDP)
+                device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
+                self.logger.info(const.STR_CMD_ABORT_INV_CSP)
+                device.call_Abort_command_on_dish()
+                device._read_activity_message = const.STR_ENDSB_SUCCESS
+                self.logger.info(const.STR_ABORT_SUCCESS)
+                device.set_status(const.STR_ABORT_SUCCESS)
+                device.is_abort_command = True
+                return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
+
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
+                return (ResultCode.FAILED, const.ERR_ABORT_INVOKING_CMD)
+            # PROTECTED REGION END #    //  SubarrayNode.Abort
+
+    def call_Abort_command_on_dish(self):
+        self._dish_leaf_node_group.command_inout(const.CMD_ABORT)
+        self.logger.info(const.STR_CMD_ABORT_INV_DLN)
+
+# ========================================================================================================
 
     class TrackCommand(ResponseCommand):
         """

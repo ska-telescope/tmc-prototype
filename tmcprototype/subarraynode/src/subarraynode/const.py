@@ -32,6 +32,7 @@ CMD_STOP_TRACK = "StopTrack"
 CMD_ON = "On"
 CMD_OFF = "Off"
 STR_CMD_STOP_TRACK_INV_DLN = "Command StopTrack is invoked on Dish Leaf Nodes Group"
+STR_CMD_ABORT_INV_DLN = "Command Abort is invoked on Dish Leaf Nodes Group"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 ASSIGN_RESOURCES_INV_CSP_SALN = "Assign Resources is invoked on CSP Subarray Leaf Node"
 ASSIGN_RESOURCES_INV_SDP_SALN = "Assign Resources is invoked on SDP Subarray Leaf Node"
@@ -39,9 +40,12 @@ CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 RELEASE_ALL_RESOURCES_CSP_SALN = "ReleaseAllResources command is invoked on CSP Subarray Leaf Node"
 RELEASE_ALL_RESOURCES_SDP_SALN = "ReleaseAllResources command is invoked on SDP Subarray Leaf Node"
 CMD_ENDSB = "EndSB"
+CMD_ABORT = "Abort"
 STR_CMD_ENDSB_INV_SDP = "Command EndSB is invoked on SDP Subarray Leaf Node."
+STR_CMD_ABORT_INV_SDP = "Command Abort is invoked on SDP Subarray Leaf Node."
 CMD_GOTOIDLE = "GoToIdle"
 STR_CMD_GOTOIDLE_INV_CSP = "Command GoToIdle is invoked on CSP Subarray Leaf Node."
+STR_CMD_ABORT_INV_CSP = "Command Abort is invoked on CSP Subarray Leaf Node."
 
 
 #GROUPS
@@ -137,6 +141,7 @@ STR_DELAY_MODEL_SUB_POINT = "delayModelSubscriptionPoint"
 STR_VIS_DESTIN_ADDR_SUB_POINT = "visDestinationAddressSubscriptionPoint"
 STR_CSP_CBFOUTLINK = "cspCbfOutlinkAddress"
 STR_ENDSB_SUCCESS = "EndSB command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node."
+STR_ABORT_SUCCESS = "Abort command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node and Dish Leaf Node."
 STR_ENDSB_EXEC = "EndSB command execution."
 
 
@@ -175,6 +180,7 @@ ERR_SUBSR_CSPSDPSA_HEALTH_STATE = "Error in subscribing CSP/SDP Subarray healthS
                                   "LeafNodes. \n"
 ERR_DEVICE_NOT_READY = "Subarray Node is not in Ready observation state."
 ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on Subarray Node."
+ERR_ABORT_INVOKING_CMD = "Error while invoking ABORT command on Subarray Node."
 ERR_CSPSDP_SUBARRAY_OBS_STATE = "Key Error occurred while setting CSP/SDP Subarray obsState"
 ERR_SUBSR_CSPSDPSA_OBS_STATE = "Error in subscribing CSP/SDP Subarray obsState on respective " \
                                   "LeafNodes. \n"
