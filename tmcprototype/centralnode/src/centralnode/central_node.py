@@ -914,9 +914,9 @@ class CentralNode(SKABaseDevice):
                 input_json_subarray = json_argument.copy()
                 del input_json_subarray["subarrayID"]
                 input_to_sa = json.dumps(input_json_subarray)
-                device._resources_allocated = subarrayProxy.command_inout(
+                resources_allocated = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                res_assigned = ast.literal_eval(device._resources_allocated[1][0])
+                res_assigned = ast.literal_eval(resources_allocated[1][0])
                 self.logger.info("\n\n res_assigned:" + str(res_assigned))
 
                 # Update self._subarray_allocation variable to update subarray allocation
