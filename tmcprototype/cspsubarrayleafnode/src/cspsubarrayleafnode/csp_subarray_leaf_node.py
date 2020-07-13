@@ -395,6 +395,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._delay_model = " "
             device._versioninfo = " "
             device.receptorIDList = []
+            device.receptorIDList_str = []
             device.fsp_ids_object =[]
             device.fsids_list = []
             device.target_Ra = ""
@@ -948,21 +949,21 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
                 exception_message.append(device._read_activity_message)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return (ResultCode.FAILED, const.STR_ASSIGN_RES_EXEC)
+                return (ResultCode.FAILED, const.ERR_INVALID_JSON_ASSIGN_RES)
             except KeyError as key_error:
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.exception(log_msg)
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 exception_message.append(device._read_activity_message)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return (ResultCode.FAILED, const.STR_ASSIGN_RES_EXEC)
+                return (ResultCode.FAILED, const.ERR_JSON_KEY_NOT_FOUND)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_ASSGN_RESOURCES)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return (ResultCode.FAILED, const.STR_ASSIGN_RES_EXEC)
+                return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
 
 
     def is_AssignResources_allowed(self):
