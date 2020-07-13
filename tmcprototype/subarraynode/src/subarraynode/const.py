@@ -44,9 +44,10 @@ GRP_DISH_LEAF_NODE = "DishLeafNode_Group"
 
 #strings
 STR_CMD_ENDSB_INV_SDP = "Command EndSB is invoked on SDP Subarray Leaf Node."
-STR_CMD_RESTART_INV_SDP = "Command Restart is invoked on SDP Subarray Leaf Node."
 STR_CMD_GOTOIDLE_INV_CSP = "Command GoToIdle is invoked on CSP Subarray Leaf Node."
+STR_CMD_RESTART_INV_SDP = "Command Restart is invoked on SDP Subarray Leaf Node."
 STR_CMD_RESTART_INV_CSP = "Command Restart is invoked on CSP Subarray Leaf Node."
+STR_CMD_RESTART_INV_DISH_GROUP = "Command Restart is invoked on group of Dishes."
 STR_CMD_ABORT_INV_SDP = "Command Abort is invoked on SDP Subarray Leaf Node."
 STR_CMD_ABORT_INV_CSP = "Command Abort is invoked on CSP Subarray Leaf Node."
 STR_ASSIGN_RESOURCES_INV_CSP_SALN = "Assign Resources is invoked on CSP Subarray Leaf Node"
