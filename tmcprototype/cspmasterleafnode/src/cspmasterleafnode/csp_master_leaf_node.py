@@ -259,6 +259,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
+
             :rtype: (ResultCode, str)
             """
             super().do()
@@ -359,7 +360,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
     class OnCommand(SKABaseDevice.OnCommand):
         """
-        A class for CSP Master Leaf Node's On() command.
+        A class for CspMasterLeafNode's On() command.
         """
         def do(self):
             """
@@ -383,7 +384,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
     class OffCommand(SKABaseDevice.OffCommand):
         """
-        A class for CSP Master Leaf Node's Off() command.
+        A class for CspMasterLeafNode's Off() command.
         """
         def do(self):
             """
@@ -396,6 +397,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
+
             :rtype: (ResultCode, str)
             """
             device = self.target
@@ -406,7 +408,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
     class StandbyCommand(ResponseCommand):
         """
-        A class for CSP Master Leaf Node's Standby() command.
+        A class for CspMasterLeafNode's Standby() command.
         """
         def check_allowed(self):
             """
@@ -441,6 +443,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
+
             :rtype: (ResultCode, str)
             """
             device = self.target

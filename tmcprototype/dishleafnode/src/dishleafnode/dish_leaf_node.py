@@ -599,7 +599,7 @@ class DishLeafNode(SKABaseDevice):
 
     class SetStowModeCommand(ResponseCommand):
         """
-        A class for DishLeafNode's SetStowMode command.
+        A class for DishLeafNode's SetStowMode() command.
         """
         def check_allowed(self):
             """
@@ -622,7 +622,15 @@ class DishLeafNode(SKABaseDevice):
             return True
 
         def do(self):
-            """ Triggers the DishMaster to transit into Stow Mode. """
+            """
+            Triggers the DishMaster to transit into Stow Mode.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
             device = self.target
             device._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, device.cmd_ended_cb)
             return (ResultCode.STARTED, const.STR_SET_STOW_MODE_SUCCESS)
@@ -652,7 +660,7 @@ class DishLeafNode(SKABaseDevice):
 
     class SetStandByLPModeCommand(ResponseCommand):
         """
-        A class for DishLeafNode's SetStandByLPMode command.
+        A class for DishLeafNode's SetStandByLPMode() command.
         """
         def check_allowed(self):
             """
@@ -675,7 +683,15 @@ class DishLeafNode(SKABaseDevice):
             return True
 
         def do(self):
-            """ Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State). """
+            """
+            Triggers the DishMaster to transit into STANDBY-LP mode (i.e. Low Power State).
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
             device = self.target
             device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, device.cmd_ended_cb)
             return (ResultCode.OK, const.STR_SETSTANDBYLP_SUCCESS)
@@ -705,7 +721,7 @@ class DishLeafNode(SKABaseDevice):
 
     class SetOperateModeCommand(ResponseCommand):
         """
-        A class for DishLeafNode's SetOperateMode command.
+        A class for DishLeafNode's SetOperateMode() command.
         """
         def check_allowed(self):
 
@@ -729,7 +745,15 @@ class DishLeafNode(SKABaseDevice):
             return True
 
         def do(self):
-            """ Triggers the DishMaster to transit into Operate mode. """
+            """
+            Triggers the DishMaster to transit into Operate mode.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
             device = self.target
             device._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, device.cmd_ended_cb)
             return (ResultCode.OK, const.STR_SETOPERATE_SUCCESS)
@@ -786,7 +810,10 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: timestamp
 
-            :return: None
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
 
             TODO: Scan argument in JSON format
             {"scanDuration": 10.0}
@@ -875,7 +902,11 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: timestamp
 
-            :return: None
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
             TODO: EndScan argument in JSON format
             {"timestamp": 0}
             """
@@ -967,7 +998,10 @@ class DishLeafNode(SKABaseDevice):
                 {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
                 "dish":{"receiverBand":"1"}}
 
-            :return: None
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
 
             """
 
@@ -1058,10 +1092,9 @@ class DishLeafNode(SKABaseDevice):
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-
     class StartCaptureCommand(ResponseCommand):
         """
-        A class for DishLeafNode's StartCapture command.
+        A class for DishLeafNode's StartCapture() command.
         """
         def check_allowed(self):
             """
@@ -1083,11 +1116,15 @@ class DishLeafNode(SKABaseDevice):
             return True
 
         def do(self, argin):
-            """ Triggers the DishMaster to Start capture on the set configured band.
+            """
+            Triggers the DishMaster to Start capture on the set configured band.
 
-                :param argin: timestamp
+            :param argin: timestamp
 
-                :return: None
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
 
             """
             device = self.target
@@ -1139,7 +1176,7 @@ class DishLeafNode(SKABaseDevice):
 
     class StopCaptureCommand(ResponseCommand):
         """
-        A class for DishLeafNode's StopCapture command.
+        A class for DishLeafNode's StopCapture() command.
         """
         def check_allowed(self):
             """
@@ -1166,7 +1203,11 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: timestamp
 
-            :return: None
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
             """
             device = self.target
             exception_count = 0
@@ -1215,7 +1256,7 @@ class DishLeafNode(SKABaseDevice):
 
     class SetStandbyFPModeCommand(ResponseCommand):
         """
-        A class for DishLeafNode's SetStandByFPMode command.
+        A class for DishLeafNode's SetStandByFPMode() command.
         """
         def check_allowed(self):
             """
@@ -1238,7 +1279,15 @@ class DishLeafNode(SKABaseDevice):
             return True
 
         def do(self):
-            """ Triggers the DishMaster to transition into the STANDBY-FP (Standby-Full power) mode. """
+            """
+            Triggers the DishMaster to transition into the STANDBY-FP (Standby-Full power) mode.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
             device = self.target
             device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, device.cmd_ended_cb)
             return (ResultCode.OK, const.STR_STANDBYFP_SUCCESS)
@@ -1268,7 +1317,7 @@ class DishLeafNode(SKABaseDevice):
 
     class SlewCommand(ResponseCommand):
         """
-        A class for DishLeafNode's SlewCommand command.
+        A class for DishLeafNode's SlewCommand() command.
         """
         def check_allowed(self):
             """
@@ -1295,7 +1344,11 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: timestamp
 
-            :return: None
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
             """
             device = self.target
             exception_count = 0
@@ -1344,7 +1397,7 @@ class DishLeafNode(SKABaseDevice):
 
     class TrackCommand(ResponseCommand):
         """
-        A class for DishLeafNode's Track command.
+        A class for DishLeafNode's Track() command.
         """
         def check_allowed(self):
             """
@@ -1380,7 +1433,10 @@ class DishLeafNode(SKABaseDevice):
             {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
             "dish":{"receiverBand":"1"}}
 
-            :return: None
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
 
             """
             device = self.target
@@ -1447,7 +1503,7 @@ class DishLeafNode(SKABaseDevice):
 
     class StopTrackCommand(ResponseCommand):
         """
-        A class for DishLeafNode's StopTrack command.
+        A class for DishLeafNode's StopTrack() command.
         """
         def check_allowed(self):
             """
@@ -1470,11 +1526,14 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self):
             """
-                Invokes StopTrack command on the DishMaster.
+            Invokes StopTrack command on the DishMaster.
 
-                :param argin: DevVoid
+            :param argin: DevVoid
 
-                :return: None
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
 
             """
             device = self.target
