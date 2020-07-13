@@ -39,9 +39,12 @@ CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 RELEASE_ALL_RESOURCES_CSP_SALN = "ReleaseAllResources command is invoked on CSP Subarray Leaf Node"
 RELEASE_ALL_RESOURCES_SDP_SALN = "ReleaseAllResources command is invoked on SDP Subarray Leaf Node"
 CMD_ENDSB = "EndSB"
+CMD_RESTART = "Restart"
 STR_CMD_ENDSB_INV_SDP = "Command EndSB is invoked on SDP Subarray Leaf Node."
+STR_CMD_RESTART_INV_SDP = "Command Restart is invoked on SDP Subarray Leaf Node."
 CMD_GOTOIDLE = "GoToIdle"
 STR_CMD_GOTOIDLE_INV_CSP = "Command GoToIdle is invoked on CSP Subarray Leaf Node."
+STR_CMD_RESTART_INV_CSP = "Command Restart is invoked on CSP Subarray Leaf Node."
 
 
 #GROUPS
@@ -138,6 +141,8 @@ STR_VIS_DESTIN_ADDR_SUB_POINT = "visDestinationAddressSubscriptionPoint"
 STR_CSP_CBFOUTLINK = "cspCbfOutlinkAddress"
 STR_ENDSB_SUCCESS = "EndSB command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node."
 STR_ENDSB_EXEC = "EndSB command execution."
+STR_RESTART_EXEC = "Restart command execution."
+STR_RESTART_SUCCESS = "Restart command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node."
 
 
 #Error messages
@@ -175,6 +180,7 @@ ERR_SUBSR_CSPSDPSA_HEALTH_STATE = "Error in subscribing CSP/SDP Subarray healthS
                                   "LeafNodes. \n"
 ERR_DEVICE_NOT_READY = "Subarray Node is not in Ready observation state."
 ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on Subarray Node."
+ERR_RESTART_INVOKING_CMD = "Error while invoking Restart command on Subarray Node."
 ERR_CSPSDP_SUBARRAY_OBS_STATE = "Key Error occurred while setting CSP/SDP Subarray obsState"
 ERR_SUBSR_CSPSDPSA_OBS_STATE = "Error in subscribing CSP/SDP Subarray obsState on respective " \
                                   "LeafNodes. \n"

@@ -160,7 +160,7 @@ class SubarrayNode(SKASubarray):
         self.scan_obj = self.ScanCommand(self, self.state_model, self.logger)
         self.endscan_obj = self.EndScanCommand(self, self.state_model, self.logger)
         self.end_obj = self.EndCommand(self, self.state_model, self.logger)
-
+        self.restart_obj = self.RestartCommand(self, self.state_model, self.logger)
 
     def receive_addresses_cb(self, event):
         """
@@ -271,6 +271,9 @@ class SubarrayNode(SKASubarray):
                 if self.is_release_resources:
                     print("Calling ReleaseAllResource command succeeded() method")
                     self.release_obj.succeeded()
+                elif self.is_restart:
+                    print("Calling Restart command succeeded() method")
+                    self.restart_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
@@ -1112,6 +1115,7 @@ class SubarrayNode(SKASubarray):
             device.isScanRunning = False
             device.isScanCompleted = False
             device.is_end_command = False
+            device.is_restart_command = False
             device.is_release_resources = False
             device._scan_id = ""
             device._sb_id = ""
@@ -1565,6 +1569,10 @@ class SubarrayNode(SKASubarray):
             "ReleaseAllResources",
             self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
         )
+        self.register_command_object(
+            "Restart",
+            self.RestartCommand(self, self.state_model, self.logger)
+        )
 
     def is_Track_allowed(self):
         """
@@ -1604,6 +1612,102 @@ class SubarrayNode(SKASubarray):
         handler = self.get_command_object("Track")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
+
+    class RestartCommand(ResponseCommand):
+
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Restart) ENABLED START #
+        """ """
+
+        def check_allowed(self):
+            """
+            Whether this command is allowed to be run in current device
+            state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Restart() is not allowed in current state",
+                                             "Restart() is not allowed in current state",
+                                             "subarray.Restart()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def do(self):
+            """
+            This command invokes Restart command on CSP Subarray .
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                self.logger.info("Restart command invoked on SubarrayNode.")
+                device._sdp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
+                self.logger.info(const.STR_CMD_RESTART_INV_SDP)
+                device._csp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
+                self.logger.info(const.STR_CMD_RESTART_INV_CSP)
+                device._read_activity_message = const.STR_RESTART_SUCCESS
+                self.logger.info(const.STR_RESTART_SUCCESS)
+                device.set_status(const.STR_RESTART_SUCCESS)
+                device.is_restart_command = True
+                return (ResultCode.OK, const.STR_RESTART_SUCCESS)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                          exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_RESTART_INVOKING_CMD)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_RESTART_INVOKING_CMD)
+
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_RESTART_EXEC)
+                return (ResultCode.FAILED, const.ERR_RESTART_INVOKING_CMD)
+            # PROTECTED REGION END #    //  SubarrayNode.Restart
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Restart(self):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Restart) ENABLED START #
+        """ Invokes Restart command on cspsubarrayleafnode"""
+        handler = self.get_command_object("Restart")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_Restart_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.Restart
+
+#-------------------------------------------------------------------------------------------------------------
+
 # ----------
 # Run server
 # ----------
