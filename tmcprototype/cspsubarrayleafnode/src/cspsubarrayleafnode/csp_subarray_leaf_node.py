@@ -370,11 +370,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the CspSubarrayLeafNode's init_device() "command".
+        A class for the CspSubarrayLeafNode's init_device() command.
         """
         def do(self):
             """
-            Stateless hook for device initialisation.
+            Initializes the attributes and properties of the CspSubarrayLeafNode.
 
             :return: A tuple containing a return code and a string
                 message indicating status. The message is for

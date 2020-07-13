@@ -222,16 +222,15 @@ class CentralNode(SKABaseDevice):
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the TMC CentralNode's init_device() "command".
+        A class for the TMC CentralNode's init_device() command.
         """
         def do(self):
             """
-            Stateless hook for device initialisation.
             Initializes the attributes and properties of the Central Node.
 
-            :return: A tuple containing a return code and a string
-               message indicating status. The message is for
-               information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
             """
             super().do()
@@ -495,13 +494,14 @@ class CentralNode(SKABaseDevice):
 
     def is_StowAntennas_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state.
+
         """
         handler = self.get_command_object("StowAntennas")
         return handler.check_allowed()
@@ -546,7 +546,7 @@ class CentralNode(SKABaseDevice):
 
         def do(self):
             """
-            Set the Elements into STANDBY state (i.e. Low Power State).
+            Sets the CentralNode into OFF state.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
@@ -613,13 +613,14 @@ class CentralNode(SKABaseDevice):
 
     def is_StandByTelescope_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state.
+        
         """
         handler = self.get_command_object("StandByTelescope")
         return handler.check_allowed()
@@ -629,7 +630,11 @@ class CentralNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def StandByTelescope(self):
-        """ Set the Elements into STANDBY state (i.e. Low Power State). """
+        """
+            This command invokes SetStandbyLPMode() command on DishLeafNode, StandBy() command on
+            CspMasterLeafNode and SdpMasterLeafNode and Off() command on SubarrayNode and sets
+            CentralNode into OFF state.
+        """
         handler = self.get_command_object("StandByTelescope")
         (result_code, message) = handler()
         return [[result_code], [message]]
@@ -660,7 +665,7 @@ class CentralNode(SKABaseDevice):
         def do(self):
             """
             Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-            model.Set the Elements into ON state.
+            model. Set the CentralNode into ON state.
 
             :param argin: None.
 
@@ -730,13 +735,14 @@ class CentralNode(SKABaseDevice):
 
     def is_StartUpTelescope_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state.
+
         """
         handler = self.get_command_object("StartUpTelescope")
         return handler.check_allowed()
@@ -748,7 +754,8 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def StartUpTelescope(self):
         """
-        This command sets the Elements into STARTUP state (i.e. On State).
+            This command invokes SetOperateMode() command on DishLeadNode, On() command on CspMasterLeafNode,
+            SdpMasterLeafNode and SubarrayNode and sets the Central Node into ON state.
         """
         handler = self.get_command_object("StartUpTelescope")
         (result_code, message) = handler()
@@ -842,22 +849,22 @@ class CentralNode(SKABaseDevice):
                 ,"dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":
                 0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,
                 "stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
-                "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598","channels":
-                [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1]
-                ,[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
-                "link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"id":"pb-mvp01-20200325-00001",
-                "workflow":{"type":"realtime","id":"vis_receive","version":"0.1.0"},"parameters":{}},{"id":
-                "pb-mvp01-20200325-00002","workflow":{"type":"realtime","id":"test_realtime","version":"0.1.0"},
-                "parameters":{}},{"id":"pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical",
-                "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":
-                ["visibilities"]}]},{"id":"pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb",
-                "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":
-                ["calibration"]}]}]}}
+                "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",
+                "channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":
+                [[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,
+                "freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"id":
+                "pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":"vis_receive","version":
+                "0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":{"type":"realtime",
+                "id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00003",
+                "workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters":{},"dependencies":
+                [{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":"pb-mvp01-20200325-00004"
+                ,"workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},"parameters":{},"dependencies":
+                [{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}}
 
             Note: From Jive, enter above input string without any space.
 
             :return: A tuple containing a return code and a string in JSON format on successful assignment
-            of given resources. The JSON string contains following values:
+             of given resources. The JSON string contains following values:
 
                 dish:
                     Mandatory JSON object consisting of
@@ -995,13 +1002,14 @@ class CentralNode(SKABaseDevice):
 
     def is_AssignResources_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
         handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
@@ -1079,7 +1087,7 @@ class CentralNode(SKABaseDevice):
                     {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
 
                 :return: A tuple containing a return code and a string in josn format on successful release
-                of all the resources. The JSON string contains following values:
+                 of all the resources. The JSON string contains following values:
 
                     releaseALL:
                         Boolean(True or False). If True, all the resources are successfully released from the
@@ -1167,13 +1175,14 @@ class CentralNode(SKABaseDevice):
 
     def is_ReleaseResources_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
+        Whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()

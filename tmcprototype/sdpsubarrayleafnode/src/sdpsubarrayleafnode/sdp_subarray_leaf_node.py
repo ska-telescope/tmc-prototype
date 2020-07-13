@@ -168,15 +168,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the TMC SdpSubarrayLeafNode's init_device() "command".
+        A class for the TMC SdpSubarrayLeafNode's init_device() command.
         """
         def do(self):
             """
-            Stateless hook for device initialisation.
+            Initializes the attributes and properties of the SdpSubarrayLeafNode.
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
             :rtype: (ResultCode, str)
             """
             super().do()

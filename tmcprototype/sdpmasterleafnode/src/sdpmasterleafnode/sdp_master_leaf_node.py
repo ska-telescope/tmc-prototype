@@ -146,6 +146,16 @@ class SdpMasterLeafNode(SKABaseDevice):
         A class for SDP master's InitCommand() command.
         """
         def do(self):
+            """
+            Initializes the attributes and properties of the SdpMasterLeafNode.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ReturnCode, str)
+
+            """
+
             super().do()
             device = self.target
             try:
