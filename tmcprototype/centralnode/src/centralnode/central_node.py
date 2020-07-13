@@ -1116,11 +1116,9 @@ class CentralNode(SKABaseDevice):
                 subarrayProxy = device.subarray_FQDN_dict[subarrayID]
                 subarray_name = "SA" + str(subarrayID)
                 if jsonArgument['releaseALL'] == True:
-                    #the const string for "CMD_RELEASE_RESOURCES" is "ReleaseAllResources"
+                    # Invoke "ReleaseAllResources" on SubarrayNode
                     return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     res_not_released = ast.literal_eval(return_val[1][0])
-                    print("\n\n res_not_released:", res_not_released, type(res_not_released))
-
                     log_msg = const.STR_REL_RESOURCES
                     device._read_activity_message = log_msg
                     if not res_not_released:

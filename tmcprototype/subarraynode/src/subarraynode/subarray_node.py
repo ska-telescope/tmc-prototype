@@ -259,7 +259,7 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated observation state of Subarray.
         """
-        self.logger.info("\n\n In Calculate observation state ------------------ JAYANT")
+        self.logger.info("\n\n In Calculate observation state method")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         for value in list(self.dishPointingStateMap.values()):
@@ -270,33 +270,31 @@ class SubarrayNode(SKASubarray):
         if self._csp_sa_obs_state == ObsState.EMPTY and self._sdp_sa_obs_state ==\
                 ObsState.EMPTY:
             if self.is_release_resources:
-                print("Calling ReleaseAllResource command succeeded() method")
+                self.logger.info("Calling ReleaseAllResource command succeeded() method")
                 self.release_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 if self.isScanCompleted:
-                    print("Calling EndScan command succeeded() method")
+                    self.logger.info("Calling EndScan command succeeded() method")
                     self.endscan_obj.succeeded()
                 else:
-                    # self._obs_state = ObsState.READY
-                    # TODO:# Call ConfigureCommand's succeeded() method?
-                    print("Calling Configure command succeeded() method")
+                    # Configure command suceess
+                    self.logger.info("Calling Configure command succeeded() method")
                     self.configure_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
                 ObsState.IDLE:
             if self.is_end_command:
                 # End command suceess
-                # self._obs_state = ObsState.IDLE
-                print("Calling End command succeeded() method")
+                self.logger.info("Calling End command succeeded() method")
                 # As a part of end command send Stop track command on dish leaf node
                 self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                 self.end_obj.succeeded()
             else:
                 # Assign Resource command suceess
-                # self._obs_state = ObsState.IDLE
-                print("Calling AssignResource command succeeded() method")
+                self.logger.info("Calling AssignResource command succeeded() method")
                 self.assign_obj.succeeded()
+            # TODO: For future use
             # if len(self.dishPointingStateMap.values()) != 0:
             #     if pointing_state_count_track == len(self.dishPointingStateMap.values()):
             #         if self.only_dishconfig_flag == True:
@@ -707,7 +705,6 @@ class SubarrayNode(SKASubarray):
             "build_up_dsh_cmd_data", scan_configuration, self.only_dishconfig_flag)
 
         try:
-            print("self._dish_leaf_node_group", self._dish_leaf_node_group)
             self._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
             self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
             self._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
@@ -859,7 +856,6 @@ class SubarrayNode(SKASubarray):
             super().do()
 
             device = self.target
-            print ("In Init:", device)
             device.set_status(const.STR_SA_INIT)
             device.SkaLevel = 2  # set SKALevel to "2"
             device._obs_mode = ObsMode.IDLE
@@ -880,10 +876,8 @@ class SubarrayNode(SKASubarray):
             device._dishLnVsPointingStateEventID = {}
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
-            device._csp_sa_obs_state = ObsState.IDLE
-            device._sdp_sa_obs_state = ObsState.IDLE
-            device._csp_sa_device_state = DevState.DISABLE
-            device._sdp_sa_device_state = DevState.OFF
+            device._csp_sa_obs_state = None
+            device._sdp_sa_obs_state = None
             device.only_dishconfig_flag = False
             device._scan_type = ''
             _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
@@ -1068,11 +1062,8 @@ class SubarrayNode(SKASubarray):
             return (ResultCode.STARTED, message)
 
     def call_stop_track_command(self):
-        print("Before Stop track")
-        print("device._dish_leaf_node_group:", self._dish_leaf_node_group)
-        # TODO: Why we are calling stop track as group command
+        # TODO: Getting exception while running test cases using device mocking
         self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-        print("After stop track")
         self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
 
     class EndCommand(SKASubarray.EndCommand):
@@ -1127,26 +1118,6 @@ class SubarrayNode(SKASubarray):
         """
         A class for SubarrayNode's Track command.
         """
-        # def check_allowed(self):
-        #     """
-        #     Whether this command is allowed to be run in current device
-        #     state
-        #
-        #     :return: True if this command is allowed to be run in
-        #         current device state
-        #     :rtype: boolean
-        #     :raises: DevFailed if this command is not allowed to be run
-        #         in current device state
-        #     """
-        #     if not self.state_model.dev_state in [
-        #         DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-        #     ]:
-        #         tango_raise(
-        #             "Track() is not allowed in current state"
-        #         )
-        #
-        #     return True
-
         def check_allowed(self):
             """
             Whether this command is allowed to be run in current device
@@ -1202,7 +1173,6 @@ class SubarrayNode(SKASubarray):
                 exception_message.append(const.ERR_TRACK_CMD + ": " + \
                                str(devfailed.args[0].desc))
                 exception_count += 1
-                return (ResultCode.FAILED, const.ERR_TRACK_CMD)
             except Exception as except_occured:
                 str_log = const.ERR_TRACK_CMD + "\n" + str(except_occured)
                 self.logger.error(str_log)
@@ -1211,16 +1181,16 @@ class SubarrayNode(SKASubarray):
                 exception_message.append(const.ERR_TRACK_CMD + ": " + \
                                  str(except_occured.args[0].desc))
                 exception_count += 1
-                return (ResultCode.FAILED, const.ERR_TRACK_CMD)
 
-            # TODO: For Future use
-            # # throw exception
-            # if exception_count > 0:
-            #     err_msg = ' '
-            #     for item in exception_message:
-            #         err_msg += item + "\n"
-            #     tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-            #                                  const.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
+
+            # throw exception
+            if exception_count > 0:
+                err_msg = ' '
+                for item in exception_message:
+                    err_msg += item + "\n"
+                tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                             const.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
+                return (ResultCode.FAILED, const.ERR_TRACK_CMD)
             # PROTECTED REGION END #    //  SubarrayNode.Track
 
     def is_Track_allowed(self):
@@ -1642,7 +1612,7 @@ class SubarrayNode(SKASubarray):
             log_msg = "assign_resource_argout", argout
             self.logger.debug(log_msg)
             message = str(argout)
-            return (ResultCode.OK, message)
+            return (ResultCode.STARTED, message)
 
         # def succeeded(self):
         #     """
@@ -1695,7 +1665,7 @@ class SubarrayNode(SKASubarray):
             log_msg = "Release_all_resources:", argout
             self.logger.debug(log_msg)
             message = str(argout)
-            return (ResultCode.OK, message)
+            return (ResultCode.STARTED, message)
             # return (ResultCode.OK, "Release_all_resources succeeful")
 
     def init_command_objects(self):

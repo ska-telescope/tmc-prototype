@@ -131,6 +131,7 @@ test: build up ## test the application
 unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
 unit-test: build
 	$(INIT_CACHE)
+	status=$$?; \
 	mkdir -p unit_test_reports
 	chmod 777 unit_test_reports
 	docker run -i --rm \
@@ -143,6 +144,7 @@ unit-test: build
 	./run_unit_test.sh"
 	docker cp $(REPORT):/report ./unit_test_reports
 	docker rm -f -v $(REPORT)
+	exit $$status
 
 #Make lint job is perfomred. After lint, the coverage reports from unit-test job are copied into build folder and unit_test_reports folder is removed. All the coverage reports using run test as well as unit-test are saved into build folder.
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
