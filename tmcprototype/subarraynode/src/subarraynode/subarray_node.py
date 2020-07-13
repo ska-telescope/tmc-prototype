@@ -32,7 +32,7 @@ from tango.server import run,attribute, command, device_property
 from . import const
 from .const import PointingState
 from ska.base.commands import ResultCode, ResponseCommand
-from ska.base.control_model import HealthState, ObsMode, ObsState, SimulationMode
+from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from subarraynode.exceptions import InvalidObsStateError
 from ska_telmodel.csp import interface
@@ -191,8 +191,8 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         try:
             device_name = event.device.dev_name()
-            log_msg = 'Health State Attribute change event is : ' + str(event)
-            #self.logger.info(log_msg)
+            # log_msg = 'Health State Attribute change event is : ' + str(event)
+            # self.logger.info(log_msg)
             if not event.err:
                 event_health_state = event.attr_value.value
                 self.subarray_ln_health_state_map[device_name] = event_health_state
@@ -200,12 +200,12 @@ class SubarrayNode(SKASubarray):
                 log_message = SubarrayHealthState.generate_health_state_log_msg(
                     event_health_state, device_name, event)
                 self._read_activity_message = log_message
-                #self.logger.debug(log_message)
+                # self.logger.debug(log_message)
                 self._health_state = SubarrayHealthState.calculate_health_state(
                     self.subarray_ln_health_state_map.values())
             else:
                 log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-                #self.logger.debug(log_message)
+                # self.logger.debug(log_message)
                 self._read_activity_message = log_message
         except Exception as except_occured:
             [exception_message, exception_count] = self._handle_generic_exception(except_occured,
@@ -269,9 +269,9 @@ class SubarrayNode(SKASubarray):
                 pointing_state_count_slew = pointing_state_count_slew + 1
         if self._csp_sa_obs_state == ObsState.EMPTY and self._sdp_sa_obs_state ==\
                 ObsState.EMPTY:
-                if self.is_release_resources:
-                    print("Calling ReleaseAllResource command succeeded() method")
-                    self.release_obj.succeeded()
+            if self.is_release_resources:
+                print("Calling ReleaseAllResource command succeeded() method")
+                self.release_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
@@ -422,14 +422,15 @@ class SubarrayNode(SKASubarray):
         self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
         self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
 
-        self._dishLnVsHealthEventID = {}
-        self._health_event_id = []
-        self._dishLnVsPointingStateEventID = {}
+        # clearing dictonaries and lists
+        self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
+        self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
+        self._health_event_id.clear()
         self._remove_subarray_dish_lns_health_states()
-        self.dishPointingStateMap = {}
-        self._pointing_state_event_id = []
-        self._dish_leaf_node_proxy = []
-        self._receptor_id_list = []
+        self.dishPointingStateMap.clear()
+        self._pointing_state_event_id.clear()
+        self._dish_leaf_node_proxy.clear()
+        self._receptor_id_list.clear()
         # self.set_status(const.STR_RECEPTORS_REMOVE_SUCCESS)
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 
@@ -887,6 +888,7 @@ class SubarrayNode(SKASubarray):
             device._scan_type = ''
             _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
             device.scan_thread = None
+
 
             # Create proxy for CSP Subarray Leaf Node
             device._csp_subarray_ln_proxy = None
