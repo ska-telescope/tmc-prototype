@@ -920,7 +920,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             except InvalidObsStateError as error:
                 self.logger.exception(error)
-                tango.Except.throw_exception("ObsState is not in idle state", "CSP subarray leaf node raised "
+                tango.Except.throw_exception("ObsState is not in EMPTY state", "CSP subarray leaf node raised "
                                                                               "exception",
                                              "CSP.AddReceptors", tango.ErrSeverity.ERR)
 
@@ -1077,13 +1077,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return [[result_code], [message]]
 
     def validate_obs_state(self):
-        # TODO: Need to change this to EMPTY
-        if self.CspSubarrayProxy.obsState == ObsState.IDLE:
+        if self.CspSubarrayProxy.obsState == ObsState.EMPTY:
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
-            self.logger.error("CSP Subarray is not in IDLE obsState")
+            self.logger.error("CSP Subarray is not in EMPTY obsState")
             self._read_activity_message = "Error in device obsState"
-            raise InvalidObsStateError("CSP Subarray is not in IDLE obsState")
+            raise InvalidObsStateError("CSP Subarray is not in EMPTY obsState")
 
 
     def init_command_objects(self):

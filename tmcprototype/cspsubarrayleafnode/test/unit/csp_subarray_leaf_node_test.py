@@ -76,7 +76,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
     }
 
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
@@ -110,7 +110,7 @@ def test_assign_resources_should_raise_devfailed_exception():
     }
 
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
@@ -135,7 +135,7 @@ def test_assign_command_with_callback_method():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
     event_subscription_map = {}
 
@@ -162,7 +162,7 @@ def test_assign_command_with_callback_method_with_event_error():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
     event_subscription_map = {}
 
@@ -188,7 +188,7 @@ def test_assign_command_with_callback_method_with_devfailed_error():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {'CspSubarrayFQDN': csp_subarray1_fqdn}
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     proxies_to_mock = {csp_subarray1_fqdn: csp_subarray1_proxy_mock}
     event_subscription_map = {}
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
@@ -239,7 +239,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources()
     }
 
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
@@ -293,7 +293,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
     }
 
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
@@ -326,7 +326,7 @@ def test_configure_to_raise_devfailed_exception():
     }
 
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock

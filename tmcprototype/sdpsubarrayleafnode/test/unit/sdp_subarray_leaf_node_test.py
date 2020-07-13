@@ -104,7 +104,7 @@ def test_assign_command_with_callback_method_with_devfailed_error():
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
     sdp_subarray1_proxy_mock = Mock()
-    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
     event_subscription_map = {}
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
@@ -127,7 +127,7 @@ def test_assign_command_assignresources_ended_with_callback_method():
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
     sdp_subarray1_proxy_mock = Mock()
-    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
     event_subscription_map = {}
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
@@ -148,7 +148,7 @@ def test_assign_command_assignresources_ended_raises_exception_for_error_event()
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
     sdp_subarray1_proxy_mock = Mock()
-    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
     event_subscription_map = {}
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
@@ -254,7 +254,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
     }
 
     sdp_subarray1_proxy_mock = Mock()
-    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     proxies_to_mock = {
         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
     }
@@ -293,7 +293,7 @@ def test_assign_resources_should_raise_devfailed_for_invalid_obstate():
             tango_context.device.AssignResources(assign_input_str)
 
     # assert:
-        assert "SDP subarray is not in idle obstate." in str(df)
+        assert "SDP subarray is not in EMPTY obstate." in str(df)
 
 
 def test_release_resources_when_sdp_subarray_is_idle():

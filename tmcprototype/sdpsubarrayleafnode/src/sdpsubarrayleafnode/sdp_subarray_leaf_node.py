@@ -254,13 +254,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def validate_obs_state(self):
         sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
-        # TODO : Check if SDP Subarray obsState is EMPTY
-        if sdp_subarray_obs_state == ObsState.IDLE:
+        if sdp_subarray_obs_state == ObsState.EMPTY:
             self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
         else:
-            self.logger.error("Subarray is not in Idle obstate")
+            self.logger.error("Subarray is not in EMPTY obstate")
             self._read_activity_message = "Error in device obstate."
-            raise InvalidObsStateError("SDP subarray is not in idle obstate.")
+            raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
     # --------
     # Commands
     # --------
@@ -447,7 +446,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 return ResultCode.OK, const.STR_ASSIGN_RESOURCES_SUCCESS
             except InvalidObsStateError as error:
                 self.logger.exception(error)
-                tango.Except.throw_exception("obstate is not in idle state", str(error),
+                tango.Except.throw_exception("obstate is not in EMPTY state", str(error),
                                              "SDP.AssignResources", tango.ErrSeverity.ERR)
                 return(ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
             except ValueError as value_error:
