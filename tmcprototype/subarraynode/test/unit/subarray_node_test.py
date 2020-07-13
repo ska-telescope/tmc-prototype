@@ -584,19 +584,15 @@ def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devf
     sdp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_with_arg
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        attribute = "state"
-        dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-        attribute = "state"
-        dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute, DevState.OFF)
-        event_subscription_map[attribute](dummy_event)
-
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(csp_subarray1_proxy_mock, csp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        # attribute = "state"
+        # dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute, DevState.OFF)
+        # event_subscription_map[attribute](dummy_event)
+        tango_context.device.On()
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_input_str)
-
-        # assert
-        tango_context.device.On()
-        tango_context.device.AssignResources(assign_input_str)
 
         # assert
         assert tango_context.device.State() == DevState.ON

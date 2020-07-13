@@ -1446,7 +1446,7 @@ class SubarrayNode(SKASubarray):
             device.scan_duration = int(tmc_configure["scanDuration"])
             device._configure_csp(scan_configuration)
             device._configure_sdp(scan_configuration)
-            device._configure_dsh(scan_configuration, argin)
+            device._configure_dsh(scan_configuration)
 
             message = "Configure command invoked"
             self.logger.info(message)
