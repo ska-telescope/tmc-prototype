@@ -909,14 +909,16 @@ class CentralNode(SKABaseDevice):
                 input_to_sa = json.dumps(input_json_subarray)
                 device._resources_allocated = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                new_resources_allocated = device._resources_allocated[1]
+                res_assigned = ast.literal_eval(device._resources_allocated[1][0])
+                self.logger.info("\n\n res_assigned:" + str(res_assigned))
+
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
-                for dish in range(0, len(new_resources_allocated)):
-                    dish_ID = "dish" + (new_resources_allocated[dish])
+                for dish in range(0, len(res_assigned)):
+                    dish_ID = "dish" + (res_assigned[dish])
                     device._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                    receptorIDList.append(new_resources_allocated[dish])
+                    receptorIDList.append(res_assigned[dish])
 
                 # Allocation successful
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
@@ -1110,7 +1112,7 @@ class CentralNode(SKABaseDevice):
                     #the const string for "CMD_RELEASE_RESOURCES" is "ReleaseAllResources"
                     return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     res_not_released = ast.literal_eval(return_val[1][0])
-                    print("\n\n res_not_released:", res_not_released, type(res_not_released))
+                    self.logger.info("\n\n res_not_released:"+ str(res_not_released))
 
                     log_msg = const.STR_REL_RESOURCES
                     device._read_activity_message = log_msg
