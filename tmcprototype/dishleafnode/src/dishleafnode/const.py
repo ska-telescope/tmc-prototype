@@ -112,6 +112,8 @@ ERR_TIME_LIM = "Tracking duration is complete."
 ERR_EXE_TRACK = "Exception occured in the execution of Track command."
 ERR_EXE_ABORT_CMD = "Exception occurred in Abort command"
 ERR_EXE_RESTART_CMD = "Exception occurred in Restart command"
+ERR_DISH_NOT_IN_STATES = "Dish is not READY, SCANNING, CONFIGURING or IDLE."
+ERR_DISH_NOT_FAULT_ABORT = "Dish is not in FAULT or ABORTED"
 
 # commands success string
 STR_SET_STOW_MODE_SUCCESS = "Command :-> SetStowMode invoked successfully."

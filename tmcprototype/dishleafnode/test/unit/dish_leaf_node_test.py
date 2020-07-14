@@ -20,26 +20,25 @@ from dishleafnode import DishLeafNode, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import ObsState, LoggingLevel
 
-
-config_input_file= 'command_Config.json'
-path= join(dirname(__file__), 'data', config_input_file)
+config_input_file = 'command_Config.json'
+path = join(dirname(__file__), 'data', config_input_file)
 with open(path, 'r') as f:
-    config_input_str=f.read()
+    config_input_str = f.read()
 
-invalid_arg_file= 'invalid_json_argument_Configure.json'
-path= join(dirname(__file__), 'data', invalid_arg_file)
+invalid_arg_file = 'invalid_json_argument_Configure.json'
+path = join(dirname(__file__), 'data', invalid_arg_file)
 with open(path, 'r') as f:
-    configure_invalid_arg=f.read()
+    configure_invalid_arg = f.read()
 
-invalid_arg_file2= 'invalid_json_argument_Track.json'
-path= join(dirname(__file__), 'data', invalid_arg_file2)
+invalid_arg_file2 = 'invalid_json_argument_Track.json'
+path = join(dirname(__file__), 'data', invalid_arg_file2)
 with open(path, 'r') as f:
-    track_invalid_arg=f.read()
+    track_invalid_arg = f.read()
 
-invalid_key_config_track_file='invalid_key_Configure_Track.json'
-path= join(dirname(__file__), 'data' , invalid_key_config_track_file)
+invalid_key_config_track_file = 'invalid_key_Configure_Track.json'
+path = join(dirname(__file__), 'data', invalid_key_config_track_file)
 with open(path, 'r') as f:
-    config_track_invalid_str=f.read()
+    config_track_invalid_str = f.read()
 
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
@@ -61,7 +60,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
         # assert:
         if type(float(scan_input)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, scan_input,
-                                                                    any_method(with_name='cmd_ended_cb'))
+                                                                     any_method(with_name='cmd_ended_cb'))
 
 
 # TODO: actual AZ and EL values need to be generated.
@@ -100,8 +99,8 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
         dish_str_ip = json.dumps(arg_list)
 
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
-                                                                str(dish_str_ip),
-                                                                any_method(with_name='cmd_ended_cb'))
+                                                                 str(dish_str_ip),
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
@@ -122,7 +121,7 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
         # assert:
         if type(float(scan_input)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, scan_input,
-                                                          any_method(with_name='cmd_ended_cb'))
+                                                                     any_method(with_name='cmd_ended_cb'))
 
 
 def test_standby_lp_mode_should_command_dish_to_standby():
@@ -141,7 +140,7 @@ def test_standby_lp_mode_should_command_dish_to_standby():
 
         # assert:
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYLP_MODE,
-                                                                any_method(with_name='cmd_ended_cb'))
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 def test_set_operate_mode_should_command_dish_to_start():
@@ -160,7 +159,7 @@ def test_set_operate_mode_should_command_dish_to_start():
 
         # assert:
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE,
-                                                                any_method(with_name='cmd_ended_cb'))
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 @pytest.mark.xfail
@@ -183,7 +182,7 @@ def test_track_should_command_dish_to_start_tracking():
         dec_value = (jsonArgument["pointing"]["target"]["dec"])
         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0",
-                                                                any_method(with_name='cmd_ended_cb'))
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 def test_stop_track_should_command_dish_to_stop_tracking():
@@ -202,7 +201,7 @@ def test_stop_track_should_command_dish_to_stop_tracking():
 
         # assert:
         dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_TRACK,
-                                                        any_method(with_name='cmd_ended_cb'))
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinates():
@@ -222,7 +221,7 @@ def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinat
         # assert:
         if type(float(slew_arg)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW, slew_arg,
-                                                                    any_method(with_name='cmd_ended_cb'))
+                                                                     any_method(with_name='cmd_ended_cb'))
 
 
 def test_start_capture_should_command_dish_to_start_capture_on_the_set_configured_band():
@@ -242,7 +241,7 @@ def test_start_capture_should_command_dish_to_start_capture_on_the_set_configure
         # assert:
         if type(float(capture_arg)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE, capture_arg,
-                                                                    any_method(with_name='cmd_ended_cb'))
+                                                                     any_method(with_name='cmd_ended_cb'))
 
 
 def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_band():
@@ -262,7 +261,7 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
         # assert:
         if type(float(capture_arg)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, capture_arg,
-                                                           any_method(with_name='cmd_ended_cb'))
+                                                                     any_method(with_name='cmd_ended_cb'))
 
 
 def test_set_standby_fp_mode_should_command_dish_to_transition_to_standby_fp_mode():
@@ -1079,6 +1078,7 @@ def test_end_scan_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
 
+
 def test_start_capture_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -1115,7 +1115,6 @@ def test_slew_should_raise_exception_when_called_with_invalid_arguments():
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(track_invalid_arg)
 
@@ -1227,6 +1226,7 @@ def test_stop_track_should_raise_dev_failed():
         # assert
         assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
 
+
 def test_scan_command_with_callback_method():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1316,6 +1316,116 @@ def test_scan_command_with_callback_method_with_command_error():
 
         # assert:
         assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
+
+
+# Negative scenarios for Abort and Restart commands
+def test_abort_should_fail_when_dish_is_resourcing():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.RESOURCING
+
+    proxies_to_mock = {
+        dish_master1_fqdn: dish1_proxy_mock
+    }
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Abort()
+
+        # assert:
+        assert const.ERR_DISH_NOT_IN_STATES in tango_context.device.activityMessage
+
+
+def test_restart_should_fail_when_dish_is_idle():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.IDLE
+
+    proxies_to_mock = {
+        dish_master1_fqdn: dish1_proxy_mock
+    }
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Restart()
+
+        # assert:
+        assert const.ERR_DISH_NOT_FAULT_ABORT in tango_context.device.activityMessage
+
+
+def test_restart_should_fail_when_dish_is_scanning():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.SCANNING
+
+    proxies_to_mock = {
+        dish_master1_fqdn: dish1_proxy_mock
+    }
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Restart()
+
+        # assert:
+        assert const.ERR_DISH_NOT_FAULT_ABORT in tango_context.device.activityMessage
+
+
+def test_restart_should_fail_when_dish_is_configuring():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.CONFIGURING
+
+    proxies_to_mock = {
+        dish_master1_fqdn: dish1_proxy_mock
+    }
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Restart()
+
+        # assert:
+        assert const.ERR_DISH_NOT_FAULT_ABORT in tango_context.device.activityMessage
+
+
+def test_restart_should_fail_when_dish_is_ready():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+    dish1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        dish_master1_fqdn: dish1_proxy_mock
+    }
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Restart()
+
+        # assert:
+        assert const.ERR_DISH_NOT_FAULT_ABORT in tango_context.device.activityMessage
 
 
 def command_callback(command_name):
