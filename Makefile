@@ -131,7 +131,6 @@ test: build up ## test the application
 unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
 unit-test: build
 	$(INIT_CACHE)
-	status=$$?; \
 	mkdir -p unit_test_reports
 	chmod 777 unit_test_reports
 	docker run -i --rm \
@@ -142,6 +141,7 @@ unit-test: build
 	bash -c "cd /app/tmcprototype && \
 	sudo chown -R tango:tango /report && \
 	./run_unit_test.sh"
+	status=$$?; \
 	docker cp $(REPORT):/report ./unit_test_reports
 	docker rm -f -v $(REPORT)
 	exit $$status
