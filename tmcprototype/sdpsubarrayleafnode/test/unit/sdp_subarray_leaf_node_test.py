@@ -565,6 +565,28 @@ def test_abort_should_raise_devfailed_exception():
         # assert:
         assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
 
+def test_abort_should_failed_when_device_is_not_in_expected_obsstate():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Abort()
+
+        # assert:
+        assert_activity_message(tango_context.device, const.ERR_DEVICE_NOT_IN_STATE)
+
 def test_restart_should_command_sdp_subarray_to_restart_when_it_is_aborted():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -634,6 +656,27 @@ def test_restart_should_raise_devfailed_exception():
         # assert:
         assert const.ERR_RESTART_INVOKING_CMD in tango_context.device.activityMessage
 
+def test_restart_should_failed_when_device_is_not_in_expected_obsstate():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        assert_activity_message(tango_context.device, const.ERR_DEVICE_NOT_IN_FAULT_ABORTED)
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute
