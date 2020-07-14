@@ -276,7 +276,6 @@ class SubarrayNode(SKASubarray):
                 ObsState.ABORTED:
             if self.is_abort_command:
                 print("Calling ABORT command succeeded() method")
-                self._dish_leaf_node_group.command_inout(const.CMD_ABORT)
                 self.abort_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
@@ -1451,8 +1450,8 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_CMD_ABORT_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
                 self.logger.info(const.STR_CMD_ABORT_INV_CSP)
-                device.call_Abort_command_on_dish()
-                device._read_activity_message = const.STR_ENDSB_SUCCESS
+                device._dish_leaf_node_group.command_inout(const.CMD_ABORT)
+                device._read_activity_message = const.STR_ABORT_SUCCESS
                 self.logger.info(const.STR_ABORT_SUCCESS)
                 device.set_status(const.STR_ABORT_SUCCESS)
                 device.is_abort_command = True
@@ -1470,10 +1469,6 @@ class SubarrayNode(SKASubarray):
                 device.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
                 return (ResultCode.FAILED, const.ERR_ABORT_INVOKING_CMD)
             # PROTECTED REGION END #    //  SubarrayNode.Abort
-
-    def call_Abort_command_on_dish(self):
-        self._dish_leaf_node_group.command_inout(const.CMD_ABORT)
-        self.logger.info(const.STR_CMD_ABORT_INV_DLN)
 
 # ========================================================================================================
 
