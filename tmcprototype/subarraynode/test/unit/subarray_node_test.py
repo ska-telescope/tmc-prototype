@@ -3104,6 +3104,87 @@ def test_abort_should_command_subarray_to_abort_when_it_is_scanning():
         # dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
         assert tango_context.device.obsState == ObsState.ABORTED
 
+def test_abort_should_raise_devfailed_exception():
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+        'DishLeafNodePrefix': dish_ln_prefix
+    }
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_ln_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + '0001': dish_ln_proxy_mock
+    }
+
+    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
+    sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+    dish_pointing_state_attribute = "dishPointingState"
+
+    event_subscription_map = {}
+    dish_pointing_state_map = {}
+
+    sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    sdp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    dish_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
+            update({attr_name: callback}))
+
+    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_abort_command
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        tango_context.device.On()
+
+        tango_context.device.AssignResources(assign_input_str)
+        attribute = 'ObsState'
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.IDLE)
+        event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+
+        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.IDLE)
+        event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+
+        # while tango_context.device.obsState != ObsState.RESOURCING:
+        #     pass
+        assert tango_context.device.obsState == ObsState.IDLE
+
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.Abort()
+            # assert:
+            # assert tango_context.device.obsState == ObsState.FAULT
+        assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
+
+
 # ===========================================================================================================
 def any_method(with_name=None):
     class AnyMethod():
@@ -3175,6 +3256,12 @@ def raise_devfailed_with_arg(cmd_name, input_arg):
 def raise_devfailed_for_event_subscription(evt_name,evt_type,callaback, stateless=True):
     tango.Except.throw_exception("SubarrayNode_CommandCallbackfailed", "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
+
+def raise_devfailed_abort_command(cmd_name, input_arg):
+    if cmd_name == 'Abort':
+        tango.Except.throw_exception("SubarrayNode_Commandfailed",
+                                     "Abort() is not allowed in current state",
+                                     cmd_name, tango.ErrSeverity.ERR)
 
 
 def command_callback_with_command_exception():
