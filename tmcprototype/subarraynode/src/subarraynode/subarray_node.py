@@ -273,9 +273,11 @@ class SubarrayNode(SKASubarray):
                 if self.is_release_resources:
                     print("Calling ReleaseAllResource command succeeded() method")
                     self.release_obj.succeeded()
-                elif self.is_restart:
+                elif self.is_restart_command:
                     print("Calling Restart command succeeded() method")
                     self.restart_obj.succeeded()
+                    # self.is_restart_command = False
+                    self.InitCommand()
         elif self._csp_sa_obs_state == ObsState.ABORTED and self._sdp_sa_obs_state == \
                 ObsState.ABORTED:
             if self.is_abort_command:
@@ -1623,7 +1625,7 @@ class SubarrayNode(SKASubarray):
             self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
         )
 
-        
+
     def is_Track_allowed(self):
         """
         Whether this command is allowed to be run in current device
@@ -1684,13 +1686,13 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_CMD_RESTART_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
                 self.logger.info(const.STR_CMD_RESTART_INV_CSP)
-                self._dish_leaf_node_group.command_inout(const.CMD_RESTART)
-                self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
+                # device._dish_leaf_node_group.command_inout(const.CMD_RESTART)
+                # self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
                 device._read_activity_message = const.STR_RESTART_SUCCESS
                 self.logger.info(const.STR_RESTART_SUCCESS)
                 device.set_status(const.STR_RESTART_SUCCESS)
                 device.is_restart_command = True
-                return (ResultCode.OK, const.STR_RESTART_SUCCESS)
+                return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
