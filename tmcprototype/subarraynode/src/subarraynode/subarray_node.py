@@ -1124,6 +1124,7 @@ class SubarrayNode(SKASubarray):
             device.is_end_command = False
             device.is_restart_command = False
             device.is_release_resources = False
+            device.is_abort_command = False
             device._scan_id = ""
             device._sb_id = ""
             device.scan_duration = 0
@@ -1455,7 +1456,7 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_CMD_ABORT_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
                 self.logger.info(const.STR_CMD_ABORT_INV_CSP)
-                device._dish_leaf_node_group.command_inout(const.CMD_ABORT)
+                # device._dish_leaf_node_group.command_inout(const.CMD_ABORT)
                 device._read_activity_message = const.STR_ABORT_SUCCESS
                 self.logger.info(const.STR_ABORT_SUCCESS)
                 device.set_status(const.STR_ABORT_SUCCESS)
