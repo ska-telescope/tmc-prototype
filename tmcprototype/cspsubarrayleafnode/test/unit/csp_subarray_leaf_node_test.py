@@ -658,6 +658,123 @@ def test_abort_should_raise_devfailed_exception():
         #assert
         assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
 
+def test_abort_should_failed_when_device_is_not_in_required_obsstate():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Abort()
+
+        # assert:
+        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_IN_STATES)
+
+
+def test_restart_should_failed_when_device_obsstate_is_idle():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Restart()
+
+        # assert:
+        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_FAULT_ABORT)
+
+def test_restart_should_failed_when_device_obsstate_is_scanning():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Restart()
+
+        # assert:
+        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_FAULT_ABORT)
+
+def test_restart_should_failed_when_device_obsstate_is_configuring():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Restart()
+
+        # assert:
+        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_FAULT_ABORT)
+
+def test_restart_should_failed_when_device_obsstate_is_ready():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Restart()
+
+        # assert:
+        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_FAULT_ABORT)
+
+
 def test_restart_should_command_csp_subarray_to_restart_when_it_is_in_fault():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
