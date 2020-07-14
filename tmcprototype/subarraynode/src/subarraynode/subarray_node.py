@@ -1626,11 +1626,8 @@ class SubarrayNode(SKASubarray):
             "ReleaseAllResources",
             self.ReleaseAllResourcesCommand(self, self.state_model, self.logger)
         )
-        self.register_command_object(
-            "Restart",
-            self.RestartCommand(self, self.state_model, self.logger)
-        )
 
+        
     def is_Track_allowed(self):
         """
         Whether this command is allowed to be run in current device
@@ -1670,32 +1667,10 @@ class SubarrayNode(SKASubarray):
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-    class RestartCommand(ResponseCommand):
+    class RestartCommand(SKASubarray.RestartCommand):
 
         # PROTECTED REGION ID(CspSubarrayLeafNode.Restart) ENABLED START #
         """ """
-
-        def check_allowed(self):
-            """
-            Whether this command is allowed to be run in current device
-            state
-
-            :return: True if this command is allowed to be run in
-                current device state
-            :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
-            """
-            if self.state_model.dev_state in [
-                DevState.UNKNOWN, DevState.DISABLE,
-            ]:
-                tango.Except.throw_exception("Restart() is not allowed in current state",
-                                             "Restart() is not allowed in current state",
-                                             "subarray.Restart()",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
         def do(self):
             """
             This command invokes Restart command on CSP Subarray .
@@ -1737,33 +1712,6 @@ class SubarrayNode(SKASubarray):
                 device.throw_exception(exception_message, const.STR_RESTART_EXEC)
                 return (ResultCode.FAILED, const.ERR_RESTART_INVOKING_CMD)
             # PROTECTED REGION END #    //  SubarrayNode.Restart
-
-    @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    @DebugIt()
-    def Restart(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.Restart) ENABLED START #
-        """ Invokes Restart command on cspsubarrayleafnode"""
-        handler = self.get_command_object("Restart")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
-
-    def is_Restart_allowed(self):
-        """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
-        """
-        handler = self.get_command_object("Restart")
-        return handler.check_allowed()
-
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.Restart
 
 #-------------------------------------------------------------------------------------------------------------
 
