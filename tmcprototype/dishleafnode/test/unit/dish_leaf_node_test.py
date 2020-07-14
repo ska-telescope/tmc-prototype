@@ -1337,7 +1337,7 @@ def test_abort_should_fail_when_dish_is_resourcing():
         device_proxy.Abort()
 
         # assert:
-        assert const.ERR_DISH_NOT_IN_STATES in tango_context.device.activityMessage
+        assert_activity_message(device_proxy, const.ERR_DISH_NOT_IN_STATES)
 
 
 def test_restart_should_fail_when_dish_is_idle():
@@ -1359,7 +1359,7 @@ def test_restart_should_fail_when_dish_is_idle():
         device_proxy.Restart()
 
         # assert:
-        assert const.ERR_DISH_NOT_FAULT_ABORT in tango_context.device.activityMessage
+        assert_activity_message(device_proxy,const.ERR_DISH_NOT_FAULT_ABORT)
 
 
 def test_restart_should_fail_when_dish_is_scanning():
@@ -1381,7 +1381,7 @@ def test_restart_should_fail_when_dish_is_scanning():
         device_proxy.Restart()
 
         # assert:
-        assert const.ERR_DISH_NOT_FAULT_ABORT in tango_context.device.activityMessage
+        assert_activity_message(device_proxy,const.ERR_DISH_NOT_FAULT_ABORT)
 
 
 def test_restart_should_fail_when_dish_is_configuring():
@@ -1403,7 +1403,7 @@ def test_restart_should_fail_when_dish_is_configuring():
         device_proxy.Restart()
 
         # assert:
-        assert const.ERR_DISH_NOT_FAULT_ABORT in tango_context.device.activityMessage
+        assert_activity_message(device_proxy,const.ERR_DISH_NOT_FAULT_ABORT)
 
 
 def test_restart_should_fail_when_dish_is_ready():
@@ -1425,7 +1425,7 @@ def test_restart_should_fail_when_dish_is_ready():
         device_proxy.Restart()
 
         # assert:
-        assert const.ERR_DISH_NOT_FAULT_ABORT in tango_context.device.activityMessage
+        assert_activity_message(device_proxy,const.ERR_DISH_NOT_FAULT_ABORT)
 
 
 def command_callback(command_name):
@@ -1446,6 +1446,10 @@ def command_callback_with_event_error(command_name):
 
 def command_callback_with_command_exception(command_name):
     return Exception("Exception in callback")
+
+
+def assert_activity_message(device_proxy, expected_message):
+    assert device_proxy.activityMessage == expected_message  # reads tango attribute
 
 
 def any_method(with_name=None):
