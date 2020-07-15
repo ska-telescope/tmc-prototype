@@ -75,6 +75,7 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
 
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+        tango_context.device.On()
         # act:
 
         tango_context.device.Off()
@@ -115,7 +116,7 @@ def test_standby_should_command_to_standby_with_callback_method():
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
     csp_master_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -138,7 +139,7 @@ def test_standby_should_command_with_callback_method_with_event_error():
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
     csp_master_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -161,7 +162,7 @@ def test_standby_should_command_with_callback_method_with_command_error():
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
     csp_master_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
