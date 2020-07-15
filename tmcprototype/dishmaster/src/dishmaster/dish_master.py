@@ -329,11 +329,6 @@ class DishMaster(SKAMaster):
         doc="Achieved pointing coordinates of the dish",
     )
 
-    AzElOffset = attribute(
-        dtype=('double',),
-        max_dim_x=2,
-    )
-
     toggleFault = attribute(
         dtype='bool',
         access=AttrWriteType.READ_WRITE,
@@ -410,7 +405,6 @@ class DishMaster(SKAMaster):
             # Initialise Scan command variables
             self._scan_execution_time = 0
             self._scan_delta_t = 0
-            self._azeloffset = [0, 0]
             self._azimuthoverwrap = False
             self._toggle_fault = False
             self._achieved_target_lock = False
@@ -579,12 +573,6 @@ class DishMaster(SKAMaster):
         """ Internal construct of TANGO. Returns the achieved pointing coordinates of Dish. """
         return self._achieved_pointing
         # PROTECTED REGION END #    //  DishMaster.achievedPointing_read
-
-    def read_AzElOffset(self):
-        # PROTECTED REGION ID(DishMaster.AzElOffset_read) ENABLED START #
-        """Internal construct of TANGO. Returns Azimuth and Elevation pointing limits of Dish. """
-        return self._azeloffset
-        # PROTECTED REGION END #    //  DishMaster.AzElOffset_read
 
     def read_toggleFault(self):
         # PROTECTED REGION ID(DishMaster.toggleFault_read) ENABLED START #
@@ -1256,8 +1244,8 @@ class DishMaster(SKAMaster):
     @command(
     )
     @DebugIt()
-    def StopTrack(self):
-        # PROTECTED REGION ID(DishMaster.StopTrack) ENABLED START #
+    def TrackStop(self):
+        # PROTECTED REGION ID(DishMaster.TrackStop) ENABLED START #
         """
         This command is created only for making pointingState = 0 in Track command.
         """
@@ -1287,7 +1275,7 @@ class DishMaster(SKAMaster):
 
 
 
-        # PROTECTED REGION END #    //  DishMaster.StopTrack
+        # PROTECTED REGION END #    //  DishMaster.TrackStop
 # pylint: enable=unused-argument
 
 # ----------
