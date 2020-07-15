@@ -1317,7 +1317,7 @@ def test_scan_command_with_callback_method_with_command_error():
         # assert:
         assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
 
-
+'''
 # Negative scenarios for Abort and Restart commands
 def test_abort_should_fail_when_dish_is_resourcing():
     # arrange:
@@ -1330,22 +1330,21 @@ def test_abort_should_fail_when_dish_is_resourcing():
         dish_master1_fqdn: dish1_proxy_mock
     }
 
-    with fake_tango_system(DishLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Abort()
-        # assert:
-        assert const.ERR_DISH_NOT_IN_STATES in tango_context.device.activityMessage
-    # with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-    #                        proxies_to_mock=proxies_to_mock) as tango_context:
-    #     device_proxy = tango_context.device
-    #     # act:
-    #     device_proxy.Abort()
-    #
+    # with fake_tango_system(DishLeafNode) as tango_context:
+    #     with pytest.raises(tango.DevFailed):
+    #         tango_context.device.Abort()
     #     # assert:
-    #     assert_activity_message(device_proxy, const.ERR_DISH_NOT_IN_STATES)
+    #     assert const.ERR_DISH_NOT_IN_STATES in tango_context.device.activityMessage
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Abort()
+
+        # assert:
+        assert_activity_message(device_proxy, const.ERR_DISH_NOT_IN_STATES)
 
 
-'''
 def test_restart_should_fail_when_dish_is_idle():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
