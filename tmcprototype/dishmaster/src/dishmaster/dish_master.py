@@ -44,6 +44,18 @@ class PointingState(enum.IntEnum):
     TRACK = 2
     SCAN = 3
 # pylint: disable=unused-argument
+
+class PowerState(enum.IntEnum):
+    """
+    Power state of the dish
+    """
+    OFF = 0
+    UPS = 1
+    LOW = 2
+    FULL = 3
+# pylint: disable=unused-argument
+
+
 class DishMaster(SKAMaster):
 # class DishMaster(SKAMaster):
     """
@@ -56,6 +68,7 @@ class DishMaster(SKAMaster):
         """ Points the dish towards the desired pointing coordinates. """
         if((self._achieved_pointing[1] != self._desired_pointing[1]) |
            (self._achieved_pointing[2] != self._desired_pointing[2])):
+           self._achieved_target_lock = False
             try:
                 self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
                 self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
@@ -74,6 +87,7 @@ class DishMaster(SKAMaster):
         else:
             self.set_status(const.STR_DISH_POINT_ALREADY)
             self.logger.info(const.STR_DISH_POINT_ALREADY)
+            self._achieved_target_lock = True
 
     def azimuth(self):
         """ Calculates the azimuth angle difference. """
@@ -326,6 +340,37 @@ class DishMaster(SKAMaster):
         access=AttrWriteType.READ_WRITE,
     )
 
+    achievedTargetLock = attribute(
+        dtype='DevBool',
+        access=AttrWriteType.READ,
+        doc=("Indicates whether the Dish is on target or "
+             "not based on the pointing error and time "
+             "period parameters defined in "
+             "configureTargetLock.")
+    )
+
+    pointingBufferSize = attribute(
+        dtype='DevInt',
+        access=AttrWriteType.READ,
+        doc=("Number of desiredPointing write values "
+             "that the buffer has space for."
+             "Defaulting to 100")
+    )
+
+    powerState = attribute(
+        dtype='DevEnum',
+        access=AttrWriteType.READ,
+        enum_labels=["OFF", "UPS", "LOW", "FULL"],
+        doc="Power state of the dish",
+    )
+
+    synchronised = attribute(
+        dtype='DevBool',
+        access=AttrWriteType.READ,
+        doc=(" Indicates  whether  the  configured  band  is synchronised or not."
+             " Defaulting to False"),
+    )
+
     # ---------------
     # General methods
     # ---------------
@@ -369,6 +414,9 @@ class DishMaster(SKAMaster):
             self._azeloffset = [0, 0]
             self._azimuthoverwrap = False
             self._toggle_fault = False
+            self._achieved_target_lock = False
+            self._pointing_buffer_size = 100
+            self._power_state =PowerState.FULL
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.debug(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
@@ -550,6 +598,24 @@ class DishMaster(SKAMaster):
         """ Internal construct of TANGO"""
         self._toggle_fault = value
         # PROTECTED REGION END #    //  DishMaster.toggleFault_write
+
+    def read_achievedTargetLock(self):
+        # PROTECTED REGION ID(DishMaster.achievedTargetLock_read) ENABLED START #
+        """Internal construct of TANGO.Returns the achievedTargetLock  ."""
+        return self._achieved_target_lock
+        # PROTECTED REGION END #    //  DishMaster.achievedTargetLock_read
+
+    def read_pointingBufferSize(self):
+        # PROTECTED REGION ID(DishMaster.pointingBufferSize_read) ENABLED START #
+        """Internal construct of TANGO.Returns the pointingBufferSize  ."""
+        return self._pointing_buffer_size
+        # PROTECTED REGION END #    //  DishMaster.pointingBufferSize_read
+
+    def read_powerState(self):
+        # PROTECTED REGION ID(DishMaster.powerState_read) ENABLED START #
+        """Internal construct of TANGO.Returns the powerState  ."""
+        return self._power_state
+        # PROTECTED REGION END #    //  DishMaster.powerState_read
 
     # --------
     # Commands
