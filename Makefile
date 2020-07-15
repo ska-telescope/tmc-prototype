@@ -74,15 +74,15 @@ endif
 # When running in network=host mode, point devices at a port on the host
 # machine rather than at the container.
 #
-# ifeq ($(NETWORK_MODE),host)
-# TANGO_HOST := $(shell hostname):10000
-# MYSQL_HOST := $(shell hostname):3306
-# else
+ifeq ($(NETWORK_MODE),host)
+TANGO_HOST := $(shell hostname):10000
+MYSQL_HOST := $(shell hostname):3306
+else
 # distinguish the bridge network from others by adding the project name
 NETWORK_MODE := $(NETWORK_MODE)-$(PROJECT)
 TANGO_HOST := $(CONTAINER_NAME_PREFIX)databaseds:10000
 MYSQL_HOST := $(CONTAINER_NAME_PREFIX)tangodb:3306
-# endif
+endif
 
 
 DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(TANGO_HOST) \
