@@ -143,7 +143,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for SDP master's InitCommand() command.
+        A class for the SDP master's init_device() method"
         """
         def do(self):
             """
@@ -158,8 +158,9 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             super().do()
             device = self.target
+            exception_message = []
+            exception_count = 0
             try:
-                #device.set_state(DevState.ON)
                 device._version_info = "1.0"
                 device._processing_block_list = "test"
                 device._read_activity_message = 'OK'
@@ -167,22 +168,18 @@ class SdpMasterLeafNode(SKABaseDevice):
                 _state_fault_flag = False
                 # flag use to check whether state set to fault if exception occur
 
-                exception_message = []
-                exception_count = 0
-
             except DevFailed as dev_failed:
                 _state_fault_flag = True
                 device._handle_devfailed_exception(dev_failed, exception_message,
                                                    exception_count, const.ERR_INIT_PROP_ATTR)
 
             try:
-                device._read_activity_message = const.STR_SDPMASTER_FQDN + str(device.SdpMasterFQDN)
+                device._read_activity_message = const.STR_SDPMASTER_FQDN + device.SdpMasterFQDN
                 # Creating proxy to the SDPMaster
-                device._sdp_proxy = DeviceProxy(str(device.SdpMasterFQDN))
+                device._sdp_proxy = DeviceProxy(device.SdpMasterFQDN)
 
             except DevFailed as dev_failed:
                 _state_fault_flag = True
-                #device.set_state(DevState.FAULT)
                 device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                  const.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
@@ -258,7 +255,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         def do(self):
             """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
 
-            :param argin: DevVoid.
+            :param argin: None.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
@@ -280,7 +277,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             """
             Sets the OperatingState to Off.
 
-            :param argin: DevVoid.
+            :param argin: None.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
@@ -306,17 +303,14 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Check Whether this command is allowed to be run in current device
+            state.
 
              :return: True if this command is allowed to be run in
-                 current device state
+                 current device state.
              :rtype: boolean
              :raises: DevFailed if this command is not allowed to be run
-                 in current device state
-            Returns
-            -------
-
+                 in current device state.
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.ON]:
                 tango.Except.throw_exception("Disable() is not allowed in current state",
@@ -329,7 +323,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             """
             Sets the OperatingState to Disable.
 
-            :param argin: DevVoid.
+            :param argin: None.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
@@ -345,13 +339,13 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def is_Disable_allowed(self):
         """
-        Whether this command is allowed to be run in current device state.
+        Checks Whether this command is allowed to be run in current device state.
 
-        :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("Disable")
@@ -365,7 +359,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         Sets the OperatingState to Disable.
 
-        :param argin: DevString
+        :param argin: None
 
         :return: None
 
@@ -380,14 +374,13 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         def is_Standby_allowed(self):
             """
-            Whether this command is allowed to be run in current device state.
+        Checks Whether this command is allowed to be run in current device state.
 
-            :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state.
 
-            :rtype: boolean
+        :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state
-
+        :raises: DevFailed if this command is not allowed to be run in current device state.
             """
             handler = self.get_command_object("Standby")
             return handler.check_allowed()
@@ -397,7 +390,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             PBs will be aborted. In normal operation we expect diable should be triggered without first going
             into STANDBY.
 
-            :param argin: DevVoid.
+            :param argin: None.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
@@ -413,16 +406,14 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device state.
+            Check Whether this command is allowed to be run in current device
+            state.
 
-            :return: True if this command is allowed to be run in current device state
-
-            :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state
-
-            Returns
-            -------
+             :return: True if this command is allowed to be run in
+                 current device state.
+             :rtype: boolean
+             :raises: DevFailed if this command is not allowed to be run
+                 in current device state.
 
             """
 
@@ -441,7 +432,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         Invokes Standby command .
 
-        :param argin: DevString
+        :param argin: None
 
         :return: None
 
