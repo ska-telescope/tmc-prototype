@@ -264,6 +264,17 @@ unit tests:
       - ./unit_test_reports
   retry: 2
 
+tango tests:
+  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+  stage: test
+  before_script:
+  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
+  tags:
+    - docker-executor
+  script:
+    - make test
+  retry: 2
+
 linting:
   stage: linting
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
