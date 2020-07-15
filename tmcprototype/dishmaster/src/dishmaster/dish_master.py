@@ -301,7 +301,6 @@ class DishMaster(SKAMaster):
     )
 
     configuredBand = attribute(
-        dtype='DevEnum',
         enum_labels=["BAND1", "BAND2", "BAND3", "BAND4", "BAND5a", "BAND5b", "NONE", ],
         doc="Configured band of the dish",
     )
@@ -328,11 +327,6 @@ class DishMaster(SKAMaster):
         dtype=('double',),
         max_dim_x=7,
         doc="Achieved pointing coordinates of the dish",
-    )
-
-    AzElOffset = attribute(
-        dtype=('double',),
-        max_dim_x=2,
     )
 
     toggleFault = attribute(
@@ -411,7 +405,6 @@ class DishMaster(SKAMaster):
             # Initialise Scan command variables
             self._scan_execution_time = 0
             self._scan_delta_t = 0
-            self._azeloffset = [0, 0]
             self._azimuthoverwrap = False
             self._toggle_fault = False
             self._achieved_target_lock = False
@@ -580,12 +573,6 @@ class DishMaster(SKAMaster):
         """ Internal construct of TANGO. Returns the achieved pointing coordinates of Dish. """
         return self._achieved_pointing
         # PROTECTED REGION END #    //  DishMaster.achievedPointing_read
-
-    def read_AzElOffset(self):
-        # PROTECTED REGION ID(DishMaster.AzElOffset_read) ENABLED START #
-        """Internal construct of TANGO. Returns Azimuth and Elevation pointing limits of Dish. """
-        return self._azeloffset
-        # PROTECTED REGION END #    //  DishMaster.AzElOffset_read
 
     def read_toggleFault(self):
         # PROTECTED REGION ID(DishMaster.toggleFault_read) ENABLED START #
@@ -1101,41 +1088,124 @@ class DishMaster(SKAMaster):
         doc_in="Pointing parameter of Dish.",
     )
     @DebugIt()
-    def Configure(self, argin):
-        # PROTECTED REGION ID(DishMaster.ConfigureScan) ENABLED START #
+    def ConfigureBand1(self, argin):
+        # PROTECTED REGION ID(DishMaster.ConfigureBand1) ENABLED START #
+        """
+        :param argin: DevString. JSON string consists of Azimuth(decimal degrees),
+                                 Elevation(decimal degrees)
+        """
+        self.ConfigureBand(1, argin)
+
+        # PROTECTED REGION END #    //  DishMaster.ConfigureBand1
+
+    @command(
+        dtype_in='str',
+        doc_in="Pointing parameter of Dish.",
+    )
+    @DebugIt()
+    def ConfigureBand2(self, argin):
+        # PROTECTED REGION ID(DishMaster.ConfigureBand2) ENABLED START #
+        """
+        :param argin: DevString. JSON string consists of Azimuth(decimal degrees),
+                                 Elevation(decimal degrees)
+        """
+        self.ConfigureBand(1, argin)
+
+    # PROTECTED REGION END #    //  DishMaster.ConfigureBand2
+
+    @command(
+        dtype_in='str',
+        doc_in="Pointing parameter of Dish.",
+    )
+    @DebugIt()
+    def ConfigureBand3(self, argin):
+        # PROTECTED REGION ID(DishMaster.ConfigureBand3) ENABLED START #
+        """
+        :param argin: DevString. JSON string consists of Azimuth(decimal degrees),
+                                 Elevation(decimal degrees)
+        """
+        self.ConfigureBand(1, argin)
+
+    # PROTECTED REGION END #    //  DishMaster.ConfigureBand3
+
+    @command(
+        dtype_in='str',
+        doc_in="Pointing parameter of Dish.",
+    )
+    @DebugIt()
+    def ConfigureBand4(self, argin):
+        # PROTECTED REGION ID(DishMaster.ConfigureBand4) ENABLED START #
+        """
+        :param argin: DevString. JSON string consists of Azimuth(decimal degrees),
+                                 Elevation(decimal degrees)
+        """
+        self.ConfigureBand(1, argin)
+
+        # PROTECTED REGION END #    //  DishMaster.ConfigureBand4
+
+    @command(
+        dtype_in='str',
+        doc_in="Pointing parameter of Dish.",
+    )
+    @DebugIt()
+    def ConfigureBand5a(self, argin):
+        # PROTECTED REGION ID(DishMaster.ConfigureBand5a) ENABLED START #
+        """
+        :param argin: DevString. JSON string consists of Azimuth(decimal degrees),
+                                 Elevation(decimal degrees)
+        """
+        self.ConfigureBand(1, argin)
+
+        # PROTECTED REGION END #    //  DishMaster.ConfigureBand5a
+
+    @command(
+        dtype_in='str',
+        doc_in="Pointing parameter of Dish.",
+    )
+    @DebugIt()
+    def ConfigureBand5b(self, argin):
+        # PROTECTED REGION ID(DishMaster.ConfigureBand5b) ENABLED START #
+        """
+        :param argin: DevString. JSON string consists of Azimuth(decimal degrees),
+                                 Elevation(decimal degrees)
+        """
+        self.ConfigureBand(1, argin)
+
+        # PROTECTED REGION END #    //  DishMaster.ConfigureBand5b
+
+    def ConfigureBand(self, receiver_band, pointing):
+        # PROTECTED REGION ID #
         """
         Configures the pointing parameters of the dish.
 
-        :param argin: DevString. JSON string consists of Azimuth(decimal degrees), Elevation(decimal degrees)
-                and receiverBand.
+        :param receiver_band: int. Band to be configured
+
+        :param pointing: str. JSON string consists of Azimuth(decimal degrees),
+                              Elevation(decimal degrees)
 
             Example:
 
                 {
                     "pointing":
-                    {"AZ": 1.0,"EL": 1.0},
+                    {"AZ": 1.0,"EL": 1.0}
 
-                    "dish":
-                    {"receiverBand":"1"}
-
-                    }
+                }
 
         :return: None.
 
-        Input from jive: {"pointing":{"AZ":1.0,"EL":1.0},"dish":{"receiverBand":"1"}} without any space.
+        Input from jive: {"pointing":{"AZ":1.0,"EL":1.0}} without any space.
         """
         excpt_msg = []
         excpt_count = 0
         try:
             log_msg = "Configure Json for DishMaster is" + str(argin)
             self.logger.debug(log_msg)
-            jsonArgument_DM_Config = json.loads(argin)
+            jsonArgument_DM_Config = json.loads(pointing)
             AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
             EL = jsonArgument_DM_Config[const.STR_POINTING]["EL"]
             self._desired_pointing[1] = AZ
             self._desired_pointing[2] = EL
-            receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
-            self._configured_band = int(receiverBand)
+            self._configured_band = receiver_band
             self.logger.debug(const.STR_CONFIG_SUCCESS)
 
         except ValueError as value_error:
@@ -1169,13 +1239,13 @@ class DishMaster(SKAMaster):
             tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
                                          const.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
 
-        # PROTECTED REGION END #    //  DishMaster.ConfigureScan
+        # PROTECTED REGION END #
 
     @command(
     )
     @DebugIt()
-    def StopTrack(self):
-        # PROTECTED REGION ID(DishMaster.StopTrack) ENABLED START #
+    def TrackStop(self):
+        # PROTECTED REGION ID(DishMaster.TrackStop) ENABLED START #
         """
         This command is created only for making pointingState = 0 in Track command.
         """
@@ -1205,7 +1275,7 @@ class DishMaster(SKAMaster):
 
 
 
-        # PROTECTED REGION END #    //  DishMaster.StopTrack
+        # PROTECTED REGION END #    //  DishMaster.TrackStop
 # pylint: enable=unused-argument
 
 # ----------
