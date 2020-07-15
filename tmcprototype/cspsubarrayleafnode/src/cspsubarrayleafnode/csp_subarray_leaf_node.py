@@ -19,6 +19,7 @@ import katpoint
 import numpy as np
 import json
 
+# PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
@@ -28,7 +29,6 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 
 # Additional import
-# PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 from . import const
 from .exceptions import InvalidObsStateError
 
@@ -48,8 +48,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # _delay_in_advance variable (in seconds) is added to current timestamp and is used to calculate advance
     # delay coefficients.
     _delay_in_advance = 60
-
-    # _stop_delay_model_event = # type: Event
 
     @DebugIt()
     def AddReceptors_ended(self, event):
@@ -125,11 +123,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ----------
     # Attributes
     # ----------
-    # state = attribute(
-    #     dtype='DevEnum',
-    #     enum_labels=["INIT", "ON", "ALARM", "FAULT", "UNKNOWN", "DISABLE", ],
-    # )
-
     delayModel = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
@@ -370,7 +363,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the CspSubarrayLeafNode's init_device() command.
+        A class for the CspSubarrayLeafNode's init_device() method"
         """
         def do(self):
             """
@@ -386,8 +379,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 # create CspSubarray Proxy
                 device.CspSubarrayProxy = DeviceProxy(device.CspSubarrayFQDN)
-            except Exception:
-                log_msg = const.ERR_IN_CREATE_PROXY_CSPSA + str(Exception)
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_IN_CREATE_PROXY_CSPSA + str(dev_failed)
                 self.logger.debug(log_msg)
                 return (ResultCode.FAILED, log_msg)
             device._read_activity_message = " "
@@ -402,7 +395,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             ## Start thread to update delay model ##
             # Create event
             device._stop_delay_model_event = threading.Event()
-            #
+
             # create lock
             device.delay_model_lock = threading.Lock()
 
@@ -437,13 +430,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ------------------
     # Attributes methods
     # ------------------
-
-    # def read_state(self):
-    #     # PROTECTED REGION ID(CspSubarrayLeafNode.state_read) ENABLED START #
-    #     '''Internal construct of TANGO. Returns the state of device.'''
-    #     return self._state
-    #     # PROTECTED REGION END #    //  CspSubarrayLeafNode.state_read
-
     def read_delayModel(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_read) ENABLED START #
         '''Internal construct of TANGO. Returns the delay model.'''
@@ -501,7 +487,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         def do(self,argin):
             """
-            This command configures the scan. It accepts configuration capabilities in JSON string format and
+            This command configures the scan. It accepts configuration information in JSON string format and
             invokes Configure command on CspSubarray with configuration capabilities in JSON string as an
             input argument.
 
@@ -516,6 +502,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             [[0,"192.168.1.1"]],"outputPort":[[0,9744,1]]}],"delayModelSubscriptionPoint":
             "ska_mid/tm_leaf_node/csp_subarray01/delayModel","pointing":{"target":{"system":"ICRS",
             "name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
+
+            Note: Enter the json string without spaces as a input.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -626,7 +614,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :param argin: JSON string consists of scan id (int).
 
-            Example: in jive:{"id":1}
+            Example:
+            {"id":1}
+
+            Note: Enter the json string without spaces as a input.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -898,14 +889,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
                         The individual string should contain dish numbers in string format
                         with preceding zeroes upto 3 digits. E.g. 0001, 0002.
             Example:
-                    {
-                    "subarrayID": 1,
-                    "dish": {
-                    "receptorIDList": ["0001", "0002"]
-                    }
-                    }
+            {
+              "dish": {
+                "receptorIDList": [
+                  "0001",
+                  "0002"
+                ]
+              }
+            }
 
-            Note: Enter input without spaces as:{"subarrayID":1,"dish":{"receptorIDList":["0001","0002"]}}
+            Note: Enter the json string without spaces as a input.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
@@ -929,8 +922,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 jsonArgument = json.loads(argin[0])
                 device.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
                 # convert receptorIDList from list of string to list of int
-                for i in range(0, len(device.receptorIDList_str)):
-                    device.receptorIDList.append(int(device.receptorIDList_str[i]))
+                for receptor in device.receptorIDList_str:
+                    device.receptorIDList.append(int(receptor))
                 self.logger.info("receptorIDList: %s", str(device.receptorIDList))
                 device.update_config_params()
                 # Invoke AddReceptors command on CspSubarray
