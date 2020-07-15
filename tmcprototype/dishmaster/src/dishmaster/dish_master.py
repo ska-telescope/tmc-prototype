@@ -409,7 +409,8 @@ class DishMaster(SKAMaster):
             self._toggle_fault = False
             self._achieved_target_lock = False
             self._pointing_buffer_size = 100
-            self._power_state =PowerState.FULL
+            self._power_state = PowerState.FULL
+            self._synchronised = False
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.debug(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
@@ -603,6 +604,12 @@ class DishMaster(SKAMaster):
         """Internal construct of TANGO.Returns the powerState  ."""
         return self._power_state
         # PROTECTED REGION END #    //  DishMaster.powerState_read
+
+    def read_synchronised(self):
+        # PROTECTED REGION ID(DishMaster.synchronised_read) ENABLED START #
+        """Internal construct of TANGO.Returns the synchronised  ."""
+        return self._synchronised
+        # PROTECTED REGION END #    //  DishMaster.synchronised_read
 
     # --------
     # Commands
