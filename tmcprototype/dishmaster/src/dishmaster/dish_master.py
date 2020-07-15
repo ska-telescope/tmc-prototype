@@ -300,7 +300,7 @@ class DishMaster(SKAMaster):
         doc="Data Capturing of the dish",
     )
 
-    ConfiguredBand = attribute(
+    configuredBand = attribute(
         dtype='DevEnum',
         enum_labels=["BAND1", "BAND2", "BAND3", "BAND4", "BAND5a", "BAND5b", "NONE", ],
         doc="Configured band of the dish",
@@ -527,11 +527,11 @@ class DishMaster(SKAMaster):
         return self._capturing
         # PROTECTED REGION END #    //  DishMaster.capturing_read
 
-    def read_ConfiguredBand(self):
-        # PROTECTED REGION ID(DishMaster.ConfiguredBand_read) ENABLED START #
+    def read_configuredBand(self):
+        # PROTECTED REGION ID(DishMaster.configuredBand_read) ENABLED START #
         """ Internal construct of TANGO. Returns the band configured for the Dish. """
         return self._configured_band
-        # PROTECTED REGION END #    //  DishMaster.ConfiguredBand_read
+        # PROTECTED REGION END #    //  DishMaster.configuredBand_read
 
     def read_WindSpeed(self):
         # PROTECTED REGION ID(DishMaster.WindSpeed_read) ENABLED START #
