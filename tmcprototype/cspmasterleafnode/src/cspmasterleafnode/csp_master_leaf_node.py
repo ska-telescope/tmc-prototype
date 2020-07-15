@@ -366,19 +366,13 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             Triggers On the CSP Element.
 
-            :param argin: DevStringArray.
-
-            If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
-            , each array element specifies the FQDN of the CSP SubElement to switch ON.
-
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
             :rtype: (ResultCode, str)
             """
 
             device = self.target
-            argin =[]
-            device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, device.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_ON, device.cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
@@ -390,19 +384,13 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             Triggers Off the CSP Element.
 
-            :param argin: DevStringArray.
-
-            If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
-            , each array element specifies the FQDN of the CSP SubElement to switch OFF.
-
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
 
             :rtype: (ResultCode, str)
             """
             device = self.target
-            argin = []
-            device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_OFF, device.cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
@@ -412,8 +400,7 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
              :return: True if this command is allowed to be run in
                  current device state
@@ -432,14 +419,9 @@ class CspMasterLeafNode(SKABaseDevice):
 
             return True
 
-        def do(self, argin):
+        def do(self):
             """
             Sets Standby Mode on the CSP Element.
-
-            :param argin: DevStringArray.
-
-            If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
-            , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -447,7 +429,7 @@ class CspMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
             """
             device = self.target
-            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, device.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, device.cmd_ended_cb)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
             return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
@@ -473,20 +455,14 @@ class CspMasterLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
-    def Standby(self, argin):
+    def Standby(self):
         # PROTECTED REGION ID(CspMasterLeafNode.Standby) ENABLED START #
         """ Sets Standby Mode on the CSP Element.
-
-        :param argin: DevStringArray.
-
-        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-        each array element specifies the FQDN of the CSP SubElement to put in
-        STANDBY mode.
 
         :return: None
         """
         handler = self.get_command_object("Standby")
-        (result_code, message) = handler(argin)
+        (result_code, message) = handler()
         return [[result_code], [message]]
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
 
