@@ -17,7 +17,7 @@ from tango.test_context import DeviceTestContext
 
 # Additional import
 
-from centralnode import CentralNode,const
+from centralnode import CentralNode, const
 from centralnode.const import CMD_SET_STOW_MODE, STR_ON_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
@@ -28,7 +28,7 @@ with open(path, 'r') as f:
     assign_input_str = f.read()
 
 release_input_file='command_ReleaseResources.json'
-path= join(dirname(__file__), 'data' ,release_input_file)
+path= join(dirname(__file__), 'data' , release_input_file)
 with open(path, 'r') as f:
     release_input_str= f.read()
 
@@ -113,18 +113,6 @@ def test_activity_message():
         assert tango_context.device.activityMessage == ''
 
 
-# def test_state():
-#     # act & assert:
-#     with fake_tango_system(CentralNode) as tango_context:
-#         assert tango_context.device.State() == DevState.ON
-
-
-# def test_status():
-#     # act & assert:
-#     with fake_tango_system(CentralNode) as tango_context:
-#         assert tango_context.device.Status() == const.STR_INIT_SUCCESS
-
-
 def test_logging_level():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
@@ -163,12 +151,6 @@ def test_control_mode():
         assert tango_context.device.controlMode == control_mode
 
 
-# def test_admin_mode():
-#     # act & assert:
-#     with fake_tango_system(CentralNode) as tango_context:
-#         assert tango_context.device.adminMode == AdminMode.ONLINE
-
-
 def test_health_state():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
@@ -190,7 +172,7 @@ def test_activity_message_attribute_captures_the_last_received_command():
 # Test cases for commands
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
-    dish_device_ids = [str(i).zfill(4) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
         'DishLeafNodePrefix': fqdn_prefix,
@@ -210,7 +192,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
 
 def test_stow_antennas_should_raise_devfailed_exception():
     # arrange:
-    dish_device_ids = [str(i).zfill(4) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
         'DishLeafNodePrefix': fqdn_prefix,
@@ -241,7 +223,6 @@ def test_stow_antennas_invalid_value():
         # assert:
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
 
-@pytest.mark.xfail # Subarray node as a mocked device does not return the required argout
 def test_assign_resources():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
@@ -405,7 +386,7 @@ def test_standby():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {
@@ -450,7 +431,7 @@ def test_standby_should_raise_devfailed_exception():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {
@@ -495,7 +476,7 @@ def test_startup():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {
@@ -540,7 +521,7 @@ def test_startup_should_raise_devfailed_exception():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {

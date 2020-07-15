@@ -914,18 +914,18 @@ class CentralNode(SKABaseDevice):
                 input_json_subarray = json_argument.copy()
                 del input_json_subarray["subarrayID"]
                 input_to_sa = json.dumps(input_json_subarray)
-                resources_allocated = subarrayProxy.command_inout(
+                resources_allocated_return = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                res_assigned = ast.literal_eval(resources_allocated[1][0])
-                self.logger.info("\n\n res_assigned:" + str(res_assigned))
+                resources_allocated = resources_allocated_return[1]
+                self.logger.info("\n\n resources_assigned:" + str(resources_allocated))
 
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
-                for dish in range(0, len(res_assigned)):
-                    dish_ID = "dish" + (res_assigned[dish])
+                for dish in range(0, len(resources_allocated)):
+                    dish_ID = "dish" + (resources_allocated[dish])
                     device._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                    receptorIDList.append(res_assigned[dish])
+                    receptorIDList.append(resources_allocated[dish])
 
                 # Allocation successful
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
