@@ -2253,6 +2253,7 @@ def test_subarray_device_state_is_off_when_csp_and_sdp_subarray1_is_off_after_re
         assert tango_context.device.State() == DevState.OFF
 
 def test_subarray_device_state_is_with_error():
+    assert 0, "This should fail in the pipeline"
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
 
