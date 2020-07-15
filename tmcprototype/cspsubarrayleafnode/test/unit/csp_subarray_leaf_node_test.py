@@ -658,7 +658,7 @@ def test_abort_should_raise_devfailed_exception():
         #assert
         assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
 
-def test_abort_should_failed_when_device_is_not_in_required_obsstate():
+def test_abort_should_failed_when_device_is_in_resourcing():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     dut_properties = {
@@ -667,6 +667,29 @@ def test_abort_should_failed_when_device_is_not_in_required_obsstate():
 
     csp_subarray1_proxy_mock = Mock()
     csp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
+
+    proxies_to_mock = {
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        # act:
+        device_proxy.Abort()
+
+        # assert:
+        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_IN_STATES)
+
+def test_abort_should_failed_when_device_is_in_empty():
+    # arrange:
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    dut_properties = {
+        'CspSubarrayFQDN': csp_subarray1_fqdn
+    }
+
+    csp_subarray1_proxy_mock = Mock()
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
