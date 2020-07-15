@@ -435,12 +435,13 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             device = self.target
             device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, device.cmd_ended_cb)
-            self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
-            return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
+            log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            self.logger.debug(log_msg)
+            return (ResultCode.OK, log_msg)
 
     def is_Standby_allowed(self):
         """
-        Whether this command is allowed to be run in current device
+        Checks whether this command is allowed to be run in current device
         state
         :return: True if this command is allowed to be run in
             current device state
@@ -463,12 +464,6 @@ class CspMasterLeafNode(SKABaseDevice):
     def Standby(self):
         # PROTECTED REGION ID(CspMasterLeafNode.Standby) ENABLED START #
         """ Sets Standby Mode on the CSP Element.
-
-        :param argin: DevStringArray.
-
-        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-        each array element specifies the FQDN of the CSP SubElement to put in
-        STANDBY mode.
 
         :return: None
         """

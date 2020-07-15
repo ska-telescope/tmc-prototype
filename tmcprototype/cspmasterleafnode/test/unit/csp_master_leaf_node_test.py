@@ -85,27 +85,6 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
                                                                       any_method(with_name='cmd_ended_cb'))
 
 
-def test_standby_should_command_csp_master_leaf_node_to_standby():
-    # arrange:
-    csp_master_fqdn = 'mid_csp/elt/master'
-
-    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
-
-    csp_master_proxy_mock = Mock()
-
-    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-
-    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-
-        # act:
-        tango_context.device.Standby()
-
-        # assert:
-        csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY,
-                                                                      any_method(with_name='cmd_ended_cb'))
-
-
 def test_standby_should_command_to_standby_with_callback_method():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
