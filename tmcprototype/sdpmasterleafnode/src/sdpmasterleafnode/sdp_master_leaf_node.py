@@ -159,7 +159,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             super().do()
             device = self.target
             try:
-                #device.set_state(DevState.ON)
                 device._version_info = "1.0"
                 device._processing_block_list = "test"
                 device._read_activity_message = 'OK'
