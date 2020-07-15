@@ -469,8 +469,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether the command is allowed to be run in the current state
 
             :return: True if this command is allowed to be run in
                 current device state
@@ -507,8 +506,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
-
             :rtype: (ReturnCode, str)
+            :raises: DevFailed if the command execution is not successful
+            ValueError if input argument json string contains invalid value
+            Exception if command execution throws any type of exception
 
             """
             device = self.target
@@ -561,8 +562,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def is_Configure_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
+        Checks whether the command is allowed to be run in the current state
+
         :return: True if this command is allowed to be run in
         current device state
         :rtype: boolean
@@ -590,8 +591,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether the command is allowed to be run in the current state
 
             :return: True if this command is allowed to be run in
                 current device state
@@ -622,6 +622,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
             :rtype: (ReturnCode, str)
+            :raises: DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
             """
             device=self.target
             exception_message = []
@@ -669,8 +671,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def is_StartScan_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
+        Checks whether the command is allowed to be run in the current state
+
         :return: True if this command is allowed to be run in
         current device state
         :rtype: boolean
@@ -686,8 +688,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether the command is allowed to be run in the current state
 
             :return: True if this command is allowed to be run in
                 current device state
@@ -709,8 +710,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
-
             :rtype: (ReturnCode, str)
+            :raises: DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
             """
             device=self.target
             exception_message = []
@@ -746,8 +748,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def is_EndScan_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
+        Checks whether the command is allowed to be run in the current state
+
         :return: True if this command is allowed to be run in
         current device state
         :rtype: boolean
@@ -774,8 +776,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether the command is allowed to be run in the current state
 
             :return: True if this command is allowed to be run in
                 current device state
@@ -798,8 +799,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
-
             :rtype: (ResultCode, str)
+            :raises: DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
             """
             device=self.target
             exception_message = []
@@ -829,8 +831,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def is_ReleaseAllResources_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
+        Checks whether the command is allowed to be run in the current state
+
         :return: True if this command is allowed to be run in
         current device state
         :rtype: boolean
@@ -857,8 +859,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether the command is allowed to be run in the current state
 
             :return: True if this command is allowed to be run in
                 current device state
@@ -902,8 +903,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
-
             :rtype: (ResultCode, str)
+            :raises: ValueError if input argument json string contains invalid value
+            KeyError if input argument json string contains invalid key
+            DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
+
             """
             device = self.target
             exception_message = []
@@ -960,8 +965,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def is_AssignResources_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
+        Checks whether the command is allowed to be run in the current state
+
         :return: True if this command is allowed to be run in
         current device state
         :rtype: boolean
@@ -989,8 +994,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether the command is allowed to be run in the current state
 
             :return: True if this command is allowed to be run in
                 current device state
@@ -1013,8 +1017,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
-
             :rtype: (ResultCode, str)
+            :raises: DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
             """
             device=self.target
             exception_message = []
@@ -1047,8 +1052,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def is_GoToIdle_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
+        Checks whether the command is allowed to be run in the current state
+
         :return: True if this command is allowed to be run in
         current device state
         :rtype: boolean
