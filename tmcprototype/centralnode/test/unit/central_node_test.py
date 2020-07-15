@@ -416,6 +416,7 @@ def test_standby():
         # act:
         tango_context.device.StartUpTelescope()
         assert_activity_message(tango_context.device, const.STR_ON_CMD_ISSUED)
+        assert tango_context.device.state() == DevState.ON
         tango_context.device.StandByTelescope()
 
         # assert:
@@ -424,6 +425,7 @@ def test_standby():
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
+        assert tango_context.device.state() == DevState.OFF
 
 
 def test_standby_should_raise_devfailed_exception():
@@ -514,6 +516,7 @@ def test_startup():
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
         assert_activity_message(tango_context.device, const.STR_ON_CMD_ISSUED)
+        assert tango_context.device.state() == DevState.ON
 
 
 def test_startup_should_raise_devfailed_exception():
