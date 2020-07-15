@@ -68,7 +68,7 @@ class DishMaster(SKAMaster):
         """ Points the dish towards the desired pointing coordinates. """
         if((self._achieved_pointing[1] != self._desired_pointing[1]) |
            (self._achieved_pointing[2] != self._desired_pointing[2])):
-           self._achieved_target_lock = False
+            self._achieved_target_lock = False
             try:
                 self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
                 self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
@@ -335,7 +335,7 @@ class DishMaster(SKAMaster):
     )
 
     achievedTargetLock = attribute(
-        dtype='DevBool',
+        dtype='bool',
         access=AttrWriteType.READ,
         doc=("Indicates whether the Dish is on target or "
              "not based on the pointing error and time "
@@ -344,7 +344,7 @@ class DishMaster(SKAMaster):
     )
 
     pointingBufferSize = attribute(
-        dtype='DevInt',
+        dtype='int',
         access=AttrWriteType.READ,
         doc=("Number of desiredPointing write values "
              "that the buffer has space for."
@@ -359,7 +359,7 @@ class DishMaster(SKAMaster):
     )
 
     synchronised = attribute(
-        dtype='DevBool',
+        dtype='bool',
         access=AttrWriteType.READ,
         doc=(" Indicates  whether  the  configured  band  is synchronised or not."
              " Defaulting to False"),
@@ -1198,7 +1198,7 @@ class DishMaster(SKAMaster):
         excpt_msg = []
         excpt_count = 0
         try:
-            log_msg = "Configure Json for DishMaster is" + str(argin)
+            log_msg = "Configure Json for DishMaster is" + str(pointing)
             self.logger.debug(log_msg)
             jsonArgument_DM_Config = json.loads(pointing)
             AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
