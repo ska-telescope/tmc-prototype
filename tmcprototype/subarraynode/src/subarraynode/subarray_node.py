@@ -296,6 +296,8 @@ class SubarrayNode(SKASubarray):
         """
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
+        log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
+        self.logger.info(log_msg)
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
@@ -304,9 +306,10 @@ class SubarrayNode(SKASubarray):
         if self._csp_sa_obs_state == ObsState.SCANNING and self._sdp_sa_obs_state ==\
                 ObsState.SCANNING:
             self._obs_state = ObsState.SCANNING
-            # self.isScanning = True
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
+            self.logger.debug(f"pointing state counts ={pointing_state_count_track}")
+            self.logger.debug(f"nr of dished being checked ={len(self.dishPointingStateMap.values())}")
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 self._obs_state = ObsState.READY
         elif self._csp_sa_obs_state == ObsState.CONFIGURING or \
@@ -328,6 +331,10 @@ class SubarrayNode(SKASubarray):
                     self._obs_state = ObsState.CONFIGURING
                 else:
                     self._obs_state = ObsState.IDLE
+        log_message = f"Setting obState of Subarraynode to {self._obs_state}"\
+                      f"CSP obsState = {self._csp_sa_obs_state}"\
+                      f"SDP obsState = {self._sdp_sa_obs_state}"
+        self.logger.info(log_message)
 
     def create_csp_ln_proxy(self):
         """
@@ -406,13 +413,13 @@ class SubarrayNode(SKASubarray):
                 self.logger.debug(log_msg)
 
                 # Subscribe Dish Pointing State
+                self.dishPointingStateMap[devProxy] = -1
                 self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
                                                           tango.EventType.CHANGE_EVENT,
                                                           self.pointing_state_cb,
                                                           stateless=True)
                 self._dishLnVsPointingStateEventID[devProxy] = self._event_id
                 self._pointing_state_event_id.append(self._event_id)
-                self.dishPointingStateMap[devProxy] = -1
                 log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID)
                 self.logger.debug(log_msg)
                 self._receptor_id_list.append(int(str_leafId))
