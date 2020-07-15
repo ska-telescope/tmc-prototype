@@ -8,7 +8,6 @@ import pytest
 from mock import Mock, MagicMock
 
 # Tango imports
-from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
@@ -205,12 +204,6 @@ def test_processing_block_list():
         assert tango_context.device.ProcessingBlockList
 
 
-# def test_state():
-#     # act & assert:
-#     with fake_tango_system(SdpMasterLeafNode) as tango_context:
-#         assert tango_context.device.State() == DevState.ALARM
-
-
 def test_status():
     # act & assert:
     with fake_tango_system(SdpMasterLeafNode) as tango_context:
@@ -253,12 +246,6 @@ def test_control_mode():
         control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
-
-
-# def test_admin_mode():
-#     # act & assert:
-#     with fake_tango_system(SdpMasterLeafNode) as tango_context:
-#         assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
 def test_health_state():

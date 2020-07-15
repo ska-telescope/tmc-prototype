@@ -143,7 +143,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for SDP master's InitCommand() command.
+        A class for the SDP master's init_device() method"
         """
         def do(self):
             """
@@ -182,7 +182,6 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 _state_fault_flag = True
-                #device.set_state(DevState.FAULT)
                 device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                  const.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
@@ -306,17 +305,14 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Check Whether this command is allowed to be run in current device
+            state.
 
              :return: True if this command is allowed to be run in
                  current device state
              :rtype: boolean
              :raises: DevFailed if this command is not allowed to be run
                  in current device state
-            Returns
-            -------
-
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.ON]:
                 tango.Except.throw_exception("Disable() is not allowed in current state",
@@ -413,16 +409,14 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device state.
+            Check Whether this command is allowed to be run in current device
+            state.
 
-            :return: True if this command is allowed to be run in current device state
-
-            :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state
-
-            Returns
-            -------
+             :return: True if this command is allowed to be run in
+                 current device state
+             :rtype: boolean
+             :raises: DevFailed if this command is not allowed to be run
+                 in current device state
 
             """
 
