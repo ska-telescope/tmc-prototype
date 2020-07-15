@@ -1765,6 +1765,7 @@ def test_restart_should_raise_devfailed_exception():
     csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+        tango_context.device.On()
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
                                                    attribute, ObsState.ABORTED)
@@ -1773,8 +1774,8 @@ def test_restart_should_raise_devfailed_exception():
         dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                    attribute, ObsState.ABORTED)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-        # while tango_context.device.obsState != ObsState.READY:
-        #     pass
+        while tango_context.device.obsState != ObsState.READY:
+            pass
         with pytest.raises(tango.DevFailed):
             tango_context.device.Restart()
         # assert:
