@@ -177,7 +177,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the TMC SdpSubarrayLeafNode's init_device() command.
+        A class for the TMC SdpSubarrayLeafNode's init_device() method.
         """
         def do(self):
             """
