@@ -1,3 +1,5 @@
+# PROTECTED REGION ID(CspMasterLeafNode.import) ENABLED START #
+
 # Standard Python imports
 import contextlib
 import importlib
@@ -9,14 +11,14 @@ from mock import Mock, MagicMock
 # Tango imports
 import pytest
 import tango
-from tango import DevState, DevFailed
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from cspmasterleafnode import CspMasterLeafNode, const
-from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
+from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 
+# PROTECTED REGION END #    //  CspMasterLeafNode imports
 
 def test_on_should_command_csp_master_leaf_node_to_start():
     # arrange:
@@ -36,31 +38,6 @@ def test_on_should_command_csp_master_leaf_node_to_start():
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
                                                                       any_method(with_name='cmd_ended_cb'))
-
-
-def raise_dev_failed_exception_for_device_in_fault(evt_name, evt_type, callback, stateless=True):
-    tango.Except.throw_exception("CspMasterLeafNode_cspCbfHealthCallback_with_exceptionfailed",
-                                 "This is error message for devfailed", " ", tango.ErrSeverity.ERR)
-
-
-def test_event_to_raise_dev_failed_exception_for_device_in_fault():
-    # arrange:
-    csp_master_fqdn = 'mid_csp/elt/master'
-    csp_cbf_health_state_attribute = 'cspCbfHealthState'
-    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
-
-    csp_master_proxy_mock = Mock()
-    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-
-    csp_master_proxy_mock.subscribe_event.side_effect = raise_dev_failed_exception_for_device_in_fault
-    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        health_state_value = HealthState.OK
-        create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                            csp_cbf_health_state_attribute)
-        # assert:
-        assert tango_context.device.State() == DevState.FAULT
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
