@@ -273,16 +273,16 @@ class SubarrayNode(SKASubarray):
             if self.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
                 self.release_obj.succeeded()
-                self.is_release_resources = False
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
-            self.logger.debug(f"pointing state counts ={pointing_state_count_track}")
-            self.logger.debug(f"nr of dished being checked ={len(self.dishPointingStateMap.values())}")
+            log_msg = "Pointing state in track counts = "+ pointing_state_count_track
+            self.logger.debug(log_msg)
+            log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
+            self.logger.debug(log_msg)
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
                 if self.is_scan_completed:
                     self.logger.info("Calling EndScan command succeeded() method")
                     self.endscan_obj.succeeded()
-                    self.is_scan_completed = False
                 else:
                     # Configure command success
                     self.logger.info("Calling Configure command succeeded() method")
@@ -295,7 +295,6 @@ class SubarrayNode(SKASubarray):
                 # As a part of end command send Stop track command on dish leaf node
                 self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                 self.end_obj.succeeded()
-                self.is_end_command = False
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
@@ -1075,6 +1074,7 @@ class SubarrayNode(SKASubarray):
                     DevFailed if the command execution is not successful
             """
             device = self.target
+            device.is_end_command = False
             exception_message = []
             exception_count = 0
             try:
@@ -1295,6 +1295,7 @@ class SubarrayNode(SKASubarray):
                     DevFailed if the command execution is not successful
             """
             device = self.target
+            device.is_scan_completed = False
             exception_count = 0
             exception_message = []
             try:
@@ -1623,6 +1624,7 @@ class SubarrayNode(SKASubarray):
                     DevFailed if the command execution is not successful
             """
             device = self.target
+            device.is_release_resources = False
             try:
                 assert device._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
             except AssertionError as assert_err:

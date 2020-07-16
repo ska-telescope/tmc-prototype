@@ -148,7 +148,7 @@ unit-test: build
 
 #Make lint job is perfomred. After lint, the coverage reports from unit-test job are copied into build folder and unit_test_reports folder is removed. All the coverage reports using run test as well as unit-test are saved into build folder.
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-lint: build up ##lint the application (static code analysis)
+lint: build # up ##lint the application (static code analysis)
 	$(INIT_CACHE)
 	$(call make,lint); \
 	status=$$?; \
@@ -156,7 +156,7 @@ lint: build up ##lint the application (static code analysis)
 	cp ./unit_test_reports/report/code-coverage.xml ./build/reports
 	cp ./unit_test_reports/report/unit-tests.xml ./build/reports
 	cp -r ./unit_test_reports/report/unit_test ./build
-	$(MAKE) down; \
+	# $(MAKE) down; \
 	exit $$status
 
 pull:  ## download the application image
