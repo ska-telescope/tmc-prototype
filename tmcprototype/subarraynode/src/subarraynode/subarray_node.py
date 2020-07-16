@@ -848,6 +848,8 @@ class SubarrayNode(SKASubarray):
             The message is for information purpose only.
 
             :rtype: (ReturnCode, str)
+
+            :raises: DevFailed if the error while subscribing the tango attribute
             """
             super().do()
 
@@ -1009,6 +1011,7 @@ class SubarrayNode(SKASubarray):
             Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
 
             :param argin: DevString.
+
             JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
             Configuration and SDP Configuration parameters.
             JSON string example is:
@@ -1023,6 +1026,8 @@ class SubarrayNode(SKASubarray):
              The message is for information purpose only.
 
             :rtype: (ReturnCode, str)
+
+            :raises: JSONDecodeError if input argument json string contains invalid value
             """
             device = self.target
             self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
@@ -1065,6 +1070,9 @@ class SubarrayNode(SKASubarray):
             The message is for information purpose only.
 
             :rtype: (ResultCode, str)
+
+            :raises: Exception if command execution throws any generic type of exception
+                    DevFailed if the command execution is not successful
             """
             device = self.target
             exception_message = []
@@ -1091,7 +1099,6 @@ class SubarrayNode(SKASubarray):
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
-                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
             # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
     class TrackCommand(ResponseCommand):
@@ -1105,7 +1112,9 @@ class SubarrayNode(SKASubarray):
 
             :return: True if this command is allowed to be run in
                 current device state
+
             :rtype: boolean
+
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
             """
@@ -1165,7 +1174,6 @@ class SubarrayNode(SKASubarray):
                     err_msg += item + "\n"
                 tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
                                              const.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
-                return (ResultCode.FAILED, const.ERR_TRACK_CMD)
             # PROTECTED REGION END #    //  SubarrayNode.Track
 
     def is_Track_allowed(self):
@@ -1207,14 +1215,25 @@ class SubarrayNode(SKASubarray):
             :return: A tuple containing a return code and a string
                 message indicating status. The message is for
                 information purpose only.
+
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if the command execution is not successful
             """
             device = self.target
-            device._csp_subarray_ln_proxy.On()
-            device._sdp_subarray_ln_proxy.On()
-            message = "On command completed OK"
-            self.logger.info(message)
-            return (ResultCode.OK, message)
+            exception_message = []
+            exception_count = 0
+            try:
+                device._csp_subarray_ln_proxy.On()
+                device._sdp_subarray_ln_proxy.On()
+                message = "On command completed OK"
+                self.logger.info(message)
+                return (ResultCode.OK, message)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                          exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_INVOKING_ON_CMD)
 
     class OffCommand(SKASubarray.OffCommand):
         """
@@ -1228,13 +1247,24 @@ class SubarrayNode(SKASubarray):
             The message is for information purpose only.
 
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if the command execution is not successful
             """
             device = self.target
-            device._csp_subarray_ln_proxy.Off()
-            device._sdp_subarray_ln_proxy.Off()
-            message = "Off command completed OK"
-            self.logger.info(message)
-            return (ResultCode.OK, message)
+            exception_message = []
+            exception_count = 0
+            try:
+                device._csp_subarray_ln_proxy.Off()
+                device._sdp_subarray_ln_proxy.Off()
+                message = "Off command completed OK"
+                self.logger.info(message)
+                return (ResultCode.OK, message)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                  exception_message,
+                                                                                  exception_count,
+                                                                                  const.ERR_INVOKING_OFF_CMD)
 
     class ScanCommand(SKASubarray.ScanCommand):
         """
@@ -1260,6 +1290,9 @@ class SubarrayNode(SKASubarray):
             The message is for information purpose only.
 
             :rtype: (ReturnCode, str)
+
+            :raises: Exception if command execution throws any type of exception
+                    DevFailed if the command execution is not successful
             """
             device = self.target
             exception_count = 0
@@ -1305,7 +1338,6 @@ class SubarrayNode(SKASubarray):
             # Throw Exception
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_SCAN_EXEC)
-                return (ResultCode.FAILED, const.ERR_SCAN_CMD)
 
     class EndScanCommand(SKASubarray.EndScanCommand):
         """
@@ -1322,6 +1354,9 @@ class SubarrayNode(SKASubarray):
             The message is for information purpose only.
 
             :rtype: (ReturnCode, str)
+
+            :raises: Exception if command execution throws any type of exception
+                    DevFailed if the command execution is not successful
             """
             device = self.target
             exception_count = 0
@@ -1368,7 +1403,6 @@ class SubarrayNode(SKASubarray):
             # Throw Exception
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
-                return (ResultCode.FAILED, const.ERR_END_SCAN_CMD)
 
     class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         """
@@ -1385,8 +1419,7 @@ class SubarrayNode(SKASubarray):
             Note: Resource allocation for CSP and SDP resources is also implemented but
             currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
 
-            :param argin:
-            DevVarString.
+            :param argin: DevString.
 
             Example:
 
@@ -1417,7 +1450,9 @@ class SubarrayNode(SKASubarray):
 
             :rtype: (ResultCode, str)
 
-            :throws: DevFailed.
+            :raises: ValueError if input argument json string contains invalid value
+                    Exception if command execution throws any type of exception
+                    DevFailed if the command execution is not successful
 
             """
 
@@ -1584,17 +1619,19 @@ class SubarrayNode(SKASubarray):
 
             :rtype: (ResultCode, str)
 
+            :raises: Exception if command execution throws any type of exception
+                    DevFailed if the command execution is not successful
             """
-            # try:
-            #     assert self._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
-            # except AssertionError as assert_err:
-            #     log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
-            #     self.logger.error(log_message)
-            #     self._read_activity_message = log_message
-            #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-            #                                  const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
-
             device = self.target
+            try:
+                assert device._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
+            except AssertionError as assert_err:
+                log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
+                self.logger.error(log_message)
+                device._read_activity_message = log_message
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+                                             const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
+
             self.logger.info(const.STR_DISH_RELEASE)
             device.remove_receptors_in_group()
             self.logger.info(const.STR_CSP_RELEASE)
