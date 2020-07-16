@@ -414,6 +414,12 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             Sets Standby Mode on the CSP Element.
 
+            :param argin: DevStringArray.
+
+            If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
+            , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
+
+
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
 
@@ -448,10 +454,10 @@ class CspMasterLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
-    def Standby(self):
+    def Standby(self, argin):
         """ Sets Standby Mode on the CSP Element. """
         handler = self.get_command_object("Standby")
-        (result_code, message) = handler()
+        (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
     def init_command_objects(self):
