@@ -281,9 +281,9 @@ class CspMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
                 self.logger.debug(log_msg)
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_IN_CREATE_PROXY)
+                [exception_message, exception_count] =\
+                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                       const.ERR_IN_CREATE_PROXY)
                 device._read_activity_message = log_msg
 
             # Subscribing to CSPMaster Attributes
@@ -298,9 +298,9 @@ class CspMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_CSP_MASTER_LEAF_INIT)
+                [exception_message, exception_count] = \
+                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                       const.ERR_CSP_MASTER_LEAF_INIT)
 
                 device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
                 device._read_activity_message = log_msg
@@ -313,9 +313,8 @@ class CspMasterLeafNode(SKABaseDevice):
             self.logger.info(device._read_activity_message)
 
             if exception_count > 0:
-                self.logger.info(device._read_activity_message)
                 device.throw_exception(exception_message, device._read_activity_message)
-                return (ResultCode.FAILED, device._read_activity_message)
+
 
             return (ResultCode.OK, device._read_activity_message)
 
@@ -411,7 +410,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             return True
 
-        def do(self):
+        def do(self, argin):
             """
             Sets Standby Mode on the CSP Element.
 
@@ -422,7 +421,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, device.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
             return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
