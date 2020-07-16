@@ -16,3 +16,4 @@ tag_description=Fixed issue related to inconsistancy in dish pointing state.
 release_notes=This release Contains: <br/><ul><li>Fixed an issue that lead to inconsistancy in dish pointing.</li></ul>
 gitlab_username=adityadangeska
 private_token=T-QnRqsjQgqga_BRsz_i
+

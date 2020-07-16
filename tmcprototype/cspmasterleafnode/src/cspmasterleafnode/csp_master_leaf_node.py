@@ -17,15 +17,18 @@ from __future__ import absolute_import
 # Tango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run,command, device_property, attribute
+from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
-from ska.base.control_model import HealthState, AdminMode, SimulationMode, TestMode
+from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.control_model import HealthState, SimulationMode, TestMode
 # Additional import
 # PROTECTED REGION ID(CspMasterLeafNode.additionnal_import) ENABLED START #
 from . import const
+
 # PROTECTED REGION END #    //  CspMasterLeafNode.additionnal_import
 
 __all__ = ["CspMasterLeafNode", "main"]
+
 
 class CspMasterLeafNode(SKABaseDevice):
     """
@@ -75,7 +78,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message, exception_count,
+                                                                                  exception_message,
+                                                                                  exception_count,
                                                                                   const.ERR_CSP_CBF_HEALTH_CB)
 
     def csp_pss_health_state_cb(self, evt):
@@ -112,7 +116,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 self._read_activity_message = log_msg
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message, exception_count,
+                                                                                  exception_message,
+                                                                                  exception_count,
                                                                                   const.ERR_CSP_PSS_HEALTH_CB)
 
     def csp_pst_health_state_cb(self, evt):
@@ -148,7 +153,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 self._read_activity_message = log_msg
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message, exception_count,
+                                                                                  exception_message,
+                                                                                  exception_count,
                                                                                   const.ERR_CSP_PST_HEALTH_CB)
 
     def cmd_ended_cb(self, event):
@@ -187,7 +193,8 @@ class CspMasterLeafNode(SKABaseDevice):
 
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message, exception_count,
+                                                                                  exception_message,
+                                                                                  exception_count,
                                                                                   const.ERR_EXCEPT_CMD_CB)
         # Throw Exception
         if exception_count > 0:
@@ -237,63 +244,91 @@ class CspMasterLeafNode(SKABaseDevice):
     )
 
     cspHealthState = attribute(name="cspHealthState", label="cspHealthState", forwarded=True)
+
     # ---------------
     # General methods
     # ---------------
 
-    def init_device(self):
+    class InitCommand(SKABaseDevice.InitCommand):
         """
-        Initializes the attributes and properties of CSPMasterLeafNode and subscribes change event
-        on attributes of CSPMaster.
+        A class for the TMC CSP Master Leaf Node's init_device() "command".
+        """
 
-        :return: None
-        """
-        SKABaseDevice.init_device(self)
-        # PROTECTED REGION ID(CspMasterLeafNode.init_device) ENABLED START #
-        self.SkaLevel = const.INT_SKA_LEVEL
-        self._admin_mode = AdminMode.ONLINE  # Setting adminMode to "ONLINE"
-        self._health_state = HealthState.OK # Setting healthState to "OK"
-        self._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
-        self._test_mode = TestMode.NONE
-        self._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
-        try:
-            self._read_activity_message = const.STR_CSPMASTER_FQDN + str(self.CspMasterFQDN)
-            # Creating proxy to the CSPMaster
-            log_msg = "CSP Master name: " + str(self.CspMasterFQDN)
+        def do(self):
+            """
+            Initializes the attributes and properties of the CspMasterLeafNode.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+            """
+            super().do()
+            exception_count = 0
+            exception_message = []
+
+            device = self.target
+            device.SkaLevel = const.INT_SKA_LEVEL
+            # device._admin_mode = AdminMode.ONLINE  # Setting adminMode to "ONLINE"
+            device._health_state = HealthState.OK  # Setting healthState to "OK"
+            device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
+            device._test_mode = TestMode.NONE
+            device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
+            # _state_fault_flag = False
+            try:
+                device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
+                # Creating proxy to the CSPMaster
+                log_msg = "CSP Master name: " + str(device.CspMasterFQDN)
+                self.logger.debug(log_msg)
+                device._csp_proxy = DeviceProxy(str(device.CspMasterFQDN))
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
+                self.logger.debug(log_msg)
+                # device.set_state(DevState.FAULT)
+                # _state_fault_flag = True
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                          exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_IN_CREATE_PROXY)
+                device._read_activity_message = log_msg
+
+            # Subscribing to CSPMaster Attributes
+            try:
+                device._csp_proxy.subscribe_event(const.EVT_CBF_HEALTH, EventType.CHANGE_EVENT,
+                                                  device.csp_cbf_health_state_cb, stateless=True)
+                device._csp_proxy.subscribe_event(const.EVT_PSS_HEALTH, EventType.CHANGE_EVENT,
+                                                  device.csp_pss_health_state_cb, stateless=True)
+                device._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
+                                                  device.csp_pst_health_state_cb, stateless=True)
+
+                # device.set_state(DevState.ON)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
+                self.logger.debug(log_msg)
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                          exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_CSP_MASTER_LEAF_INIT)
+                # device.set_state(DevState.FAULT)
+                # _state_fault_flag = True
+                device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
+                device._read_activity_message = log_msg
+
+            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
             self.logger.debug(log_msg)
-            self._csp_proxy = DeviceProxy(str(self.CspMasterFQDN))
-        except DevFailed as dev_failed:
-            log_msg = const.ERR_IN_CREATE_PROXY + str(self.CspMasterFQDN)
-            self.set_state(DevState.FAULT)
-            self._handle_devfailed_exception(dev_failed, [], 0,const.ERR_IN_CREATE_PROXY)
+            # device._read_activity_message = log_msg
+            device.set_status(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
+            device._read_activity_message = const.STR_CSP_MASTER_LEAF_INIT_SUCCESS
+            self.logger.info(device._read_activity_message)
 
+            if exception_count > 0:
+                self.logger.info(device._read_activity_message)
+                device.throw_exception(exception_message, device._read_activity_message)
+                return (ResultCode.FAILED, device._read_activity_message)
 
-        # Subscribing to CSPMaster Attributes
-        try:
-            self._csp_proxy.subscribe_event(const.EVT_CBF_HEALTH, EventType.CHANGE_EVENT,
-                                            self.csp_cbf_health_state_cb, stateless=True)
-            self._csp_proxy.subscribe_event(const.EVT_PSS_HEALTH, EventType.CHANGE_EVENT,
-                                            self.csp_pss_health_state_cb, stateless=True)
-            self._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
-                                            self.csp_pst_health_state_cb, stateless=True)
-
-            self.set_state(DevState.ON)
-
-        except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
-            self._handle_devfailed_exception(dev_failed, [], 0, const.ERR_CSP_MASTER_LEAF_INIT)
-            self.set_state(DevState.FAULT)
-            self.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
-
-        ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-        log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
-        self.logger.debug(log_msg)
-        self._read_activity_message = const.STR_SETTING_CB_MODEL + str(
-            ApiUtil.instance().get_asynch_cb_sub_model())
-        self.set_status(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
-        self.logger.info(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
-
-        # PROTECTED REGION END #    //  CspMasterLeafNode.init_device
+            return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspMasterLeafNode.always_executed_hook) ENABLED START #
@@ -321,78 +356,130 @@ class CspMasterLeafNode(SKABaseDevice):
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_write
 
-
     # --------
     # Commands
     # --------
 
-    @command(
-        dtype_in=('str',),
-        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch ON.",
-    )
-    @DebugIt()
-    def On(self, argin):
-        # PROTECTED REGION ID(CspMasterLeafNode.On) ENABLED START #
-        """ Triggers On the CSP Element.
-
-        :param argin: DevStringArray.
-
-        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-        each array element specifies the FQDN of the CSP SubElement to switch ON.
-
-        :return: None
+    class OnCommand(SKABaseDevice.OnCommand):
         """
-        self._csp_proxy.command_inout_asynch(const.CMD_ON, argin, self.cmd_ended_cb)
-        self.logger.debug(const.STR_ON_CMD_ISSUED)
-
-        # PROTECTED REGION END #    //  CspMasterLeafNode.On
-
-    @command(
-        dtype_in=('str',),
-        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to switch OFF.",
-    )
-    @DebugIt()
-    def Off(self, argin):
-        # PROTECTED REGION ID(CspMasterLeafNode.Off) ENABLED START #
-        """ Triggers Off the CSP Element.
-
-        :param argin: DevStringArray.
-
-        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-        each array element specifies the FQDN of the CSP SubElement to switch OFF.
-
-        :return: None
+        A class for CspMasterLeafNode's On() command.
         """
-        self._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, self.cmd_ended_cb)
-        self.logger.debug(const.STR_OFF_CMD_ISSUED)
 
-        # PROTECTED REGION END #    //  CspMasterLeafNode.Off
+        def do(self):
+            """
+            Triggers On the CSP Element.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+            :rtype: (ResultCode, str)
+            """
+
+            device = self.target
+            device._csp_proxy.command_inout_asynch(const.CMD_ON, device.cmd_ended_cb)
+            self.logger.debug(const.STR_ON_CMD_ISSUED)
+            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+
+    class OffCommand(SKABaseDevice.OffCommand):
+        """
+        A class for CspMasterLeafNode's Off() command.
+        """
+
+        def do(self):
+            """
+            Triggers Off the CSP Element.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            device._csp_proxy.command_inout_asynch(const.CMD_OFF, device.cmd_ended_cb)
+            self.logger.debug(const.STR_OFF_CMD_ISSUED)
+            return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
+
+    class StandbyCommand(ResponseCommand):
+        """
+        A class for CspMasterLeafNode's Standby() command.
+        """
+
+        def check_allowed(self):
+            """
+            Checks whether this command is allowed to be run in current device state
+
+             :return: True if this command is allowed to be run in
+                 current device state
+             :rtype: boolean
+             :raises: DevFailed if this command is not allowed to be run
+                 in current device state
+            Returns
+            -------
+
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN]:
+                tango.Except.throw_exception("Command Standby is not allowed in current state.",
+                                             "Failed to invoke Standby command on CspMasterLeafNode.",
+                                             "CspMasterLeafNode.Standby()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def do(self):
+            """
+            Sets Standby Mode on the CSP Element.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, device.cmd_ended_cb)
+            log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            self.logger.debug(log_msg)
+            return (ResultCode.OK, log_msg)
+
+    def is_Standby_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+            current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+            in current device state
+        """
+        handler = self.get_command_object("Standby")
+        return handler.check_allowed()
 
     @command(
         dtype_in=('str',),
         doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
                "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
                "STANDBY mode.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
-    def Standby(self, argin):
+    def Standby(self):
         # PROTECTED REGION ID(CspMasterLeafNode.Standby) ENABLED START #
         """ Sets Standby Mode on the CSP Element.
 
-        :param argin: DevStringArray.
-
-        If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1,
-        each array element specifies the FQDN of the CSP SubElement to put in
-        STANDBY mode.
-
         :return: None
         """
-        self._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.cmd_ended_cb)
-        self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
-
+        handler = self.get_command_object("Standby")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
         # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        self.register_command_object("Standby", self.StandbyCommand(self, self.state_model, self.logger))
+
 
 # ----------
 # Run server
@@ -413,6 +500,6 @@ def main(args=None, **kwargs):
     return run((CspMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
 
+
 if __name__ == '__main__':
     main()
-

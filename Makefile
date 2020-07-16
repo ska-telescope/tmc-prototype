@@ -141,8 +141,10 @@ unit-test: build
 	bash -c "cd /app/tmcprototype && \
 	sudo chown -R tango:tango /report && \
 	./run_unit_test.sh"
+	status=$$?; \
 	docker cp $(REPORT):/report ./unit_test_reports
 	docker rm -f -v $(REPORT)
+	exit $$status
 
 #Make lint job is perfomred. After lint, the coverage reports from unit-test job are copied into build folder and unit_test_reports folder is removed. All the coverage reports using run test as well as unit-test are saved into build folder.
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)

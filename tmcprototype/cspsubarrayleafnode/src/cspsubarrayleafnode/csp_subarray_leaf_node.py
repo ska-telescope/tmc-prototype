@@ -19,14 +19,16 @@ import katpoint
 import numpy as np
 import json
 
+# PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
 from tango.server import run, attribute, command, device_property
+from ska.base.commands import ResultCode, ResponseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
+
 # Additional import
-# PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
 from . import const
 from .exceptions import InvalidObsStateError
 
@@ -47,19 +49,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # delay coefficients.
     _delay_in_advance = 60
 
-    # _stop_delay_model_event = # type: Event
-
-    def commandCallback(self, event):
-        """
-        Checks whether the command has been successfully invoked on CspSubarray.
-
-        :param event: response from CspSubarray for the invoked command
-
-        :return: None
-
-        """
-        exception_count = 0
-        exception_message = []
+    @DebugIt()
+    def AddReceptors_ended(self, event):
+        self.logger.info("Executing callback AddReceptors_ended")
         try:
             if event.err:
                 self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
@@ -70,10 +62,49 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 self._read_activity_message = log
                 self.logger.info(log)
+
+        except tango.DevFailed as df:
+            self.logger.exception(df)
+            tango.Except.re_throw_exception(df, "CSP subarray gave an error response",
+                                            "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
+                                            "AddReceptors", tango.ErrSeverity.ERR)
+
+    def cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully invoked on CspSubarray.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
+        """
+        exception_count = 0
+        exception_message = []
+        # Update logs and activity message attribute with received event
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
         except Exception as except_occurred:
             [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
+                                                                                  exception_message, exception_count,
                                                                                   const.ERR_EXCEPT_CMD_CB)
 
         # Throw Exception
@@ -92,11 +123,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ----------
     # Attributes
     # ----------
-    state = attribute(
-        dtype='DevEnum',
-        enum_labels=["INIT", "ON", "ALARM", "FAULT", "UNKNOWN", "DISABLE", ],
-    )
-
     delayModel = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
@@ -335,56 +361,55 @@ class CspSubarrayLeafNode(SKABaseDevice):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
-    def init_device(self):
+    class InitCommand(SKABaseDevice.InitCommand):
         """
-        Initializes the attributes and properties of the CspSubarrayLeafNode.
+        A class for the CspSubarrayLeafNode's init_device() method"
         """
-        SKABaseDevice.init_device(self)
-        # PROTECTED REGION ID(CspSubarrayLeafNode.init_device) ENABLED START #
+        def do(self):
+            """
+            Initializes the attributes and properties of the CspSubarrayLeafNode.
 
-        try:
-            self._state = 0
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ReturnCode, str)
+            """
+            super().do()
+            device=self.target
             try:
                 # create CspSubarray Proxy
-                self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
-            except Exception:
-                self.logger.exception(const.ERR_IN_CREATE_PROXY_CSPSA)
-
-            # create CspSubarray Proxy
-            # self.CspSubarrayProxy = DeviceProxy(self.CspSubarrayFQDN)
-            self._read_activity_message = " "
-            self._delay_model = " "
-            self._versioninfo = " "
-            self.receptorIDList = []
-            self.fsp_ids_object = []
-            self.fsids_list = []
-            self.target_Ra = ""
-            self.target_Dec = ""
-
+                device.CspSubarrayProxy = DeviceProxy(device.CspSubarrayFQDN)
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_IN_CREATE_PROXY_CSPSA + str(dev_failed)
+                self.logger.debug(log_msg)
+                return (ResultCode.FAILED, log_msg)
+            device._read_activity_message = " "
+            device._delay_model = " "
+            device._versioninfo = " "
+            device.receptorIDList = []
+            device.receptorIDList_str = []
+            device.fsp_ids_object =[]
+            device.fsids_list = []
+            device.target_Ra = ""
+            device.target_Dec = ""
             ## Start thread to update delay model ##
             # Create event
-            self._stop_delay_model_event = threading.Event()
-            #
+            device._stop_delay_model_event = threading.Event()
+
             # create lock
-            self.delay_model_lock = threading.Lock()
+            device.delay_model_lock = threading.Lock()
 
             # create thread
             self.logger.debug("Starting thread to calculate delay model.")
-            self.delay_model_calculator_thread = threading.Thread(
-                target=self.delay_model_calculator,
-                args=[self._DELAY_UPDATE_INTERVAL],
+            device.delay_model_calculator_thread = threading.Thread(
+                target=device.delay_model_calculator,
+                args=[device._DELAY_UPDATE_INTERVAL],
                 daemon=False)
-            self.delay_model_calculator_thread.start()
-            self.set_state(DevState.ON)
-            self.set_status(const.STR_CSPSALN_INIT_SUCCESS)
-            self._csp_subarray_health_state = HealthState.OK
+            device.delay_model_calculator_thread.start()
+            device.set_status(const.STR_CSPSALN_INIT_SUCCESS)
+            device._csp_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
-
-        except DevFailed as dev_failed:
-            self._handle_devfailed_exception(dev_failed, const.ERR_INIT_PROP_ATTR_CSPSALN, 0,
-                                             const.STR_ERR_MSG)
-            self.logger.debug(const.ERR_INIT_PROP_ATTR_CSPSALN)
-            self.logger.debug(const.STR_ERR_MSG, dev_failed)
+            return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
@@ -405,13 +430,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ------------------
     # Attributes methods
     # ------------------
-
-    def read_state(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.state_read) ENABLED START #
-        '''Internal construct of TANGO. Returns the state of device.'''
-        return self._state
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.state_read
-
     def read_delayModel(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_read) ENABLED START #
         '''Internal construct of TANGO. Returns the delay model.'''
@@ -445,364 +463,639 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
+    class ConfigureCommand(ResponseCommand):
+        """
+        A class for CspSubarrayLeafNode's Configure() command.
+        """
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Configure() is not allowed in current state",
+                                             "Failed to invoke Configure command on cspsubarrayleafnode.",
+                                             "cspsubarrayleafnode.Configure()",
+                                             tango.ErrSeverity.ERR)
+            return True
+
+        def do(self,argin):
+            """
+            This command configures the scan. It accepts configuration information in JSON string format and
+            invokes Configure command on CspSubarray with configuration capabilities in JSON string as an
+            input argument.
+
+            :param argin:DevString. The string in JSON format. The JSON contains following values:
+
+            Example:
+            {"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",
+            "frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],
+            "fspChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":
+            [[0,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,
+            "channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,"outputLinkMap":[[0,4],[200,5]],"outputHost":
+            [[0,"192.168.1.1"]],"outputPort":[[0,9744,1]]}],"delayModelSubscriptionPoint":
+            "ska_mid/tm_leaf_node/csp_subarray01/delayModel","pointing":{"target":{"system":"ICRS",
+            "name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
+
+            Note: Enter the json string without spaces as a input.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+            :rtype: (ReturnCode, str)
+            :raises: DevFailed if the command execution is not successful
+            ValueError if input argument json string contains invalid value
+            Exception if command execution throws any type of exception
+
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                argin_json = json.loads(argin)
+                # Used to extract FSP IDs
+                device.fsp_ids_object = argin_json["fsp"]
+                device.update_config_params()
+                device.pointing_params = argin_json["pointing"]
+                device.target_Ra = device.pointing_params["target"]["RA"]
+                device.target_Dec = device.pointing_params["target"]["dec"]
+
+                # Create target object
+                device.target = katpoint.Target('radec , ' + str(device.target_Ra) + ", " + str(device.target_Dec))
+
+                cspConfiguration = argin_json.copy()
+                # Keep configuration specific to CSP and delete pointing configuration
+                if "pointing" in cspConfiguration:
+                    del cspConfiguration["pointing"]
+                log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
+                self.logger.debug(log_msg)
+                device.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
+                                                           device.cmd_ended_cb)
+                device._read_activity_message = const.STR_CONFIGURE_SUCCESS
+                self.logger.info(const.STR_CONFIGURE_SUCCESS)
+                return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
+
+            except ValueError as value_error:
+                log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+                self.logger.error(log_msg)
+                device._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+                exception_message.append(device._read_activity_message)
+                exception_count += 1
+
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                    exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception( except_occurred,
+                                        exception_message, exception_count, const.ERR_CONFIGURE_INVOKING_CMD)
+
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.ERR_CONFIGURE_INVOKING_CMD)
+                return (ResultCode.FAILED, str(exception_message))
+
+    def is_Configure_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("Configure")
+        return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in=('str'),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Configure(self, argin):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.Configure) ENABLED START #
+        """ Invokes Configure command on CspSubarrayLeafNode """
+        handler = self.get_command_object("Configure")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    class StartScanCommand(ResponseCommand):
         """
-        This command configures the scan. It accepts configuration capabilities in JSON string format and
-        invokes Configure command on CspSubarray with configuration capabilities in JSON string as an
-        input argument.
-
-        :param argin: The string in JSON format. The JSON contains following values:
-
-        Example:
-        {"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",
-        "frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],
-        "fspChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":
-        [[0,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,
-        "channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,"outputLinkMap":[[0,4],[200,5]],"outputHost":
-        [[0,"192.168.1.1"]],"outputPort":[[0,9744,1]]}],"delayModelSubscriptionPoint":
-        "ska_mid/tm_leaf_node/csp_subarray01/delayModel","pointing":{"target":{"system":"ICRS",
-        "name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
-
-        :return: None.
+        A class for CspSubarrayLeafNode's StartScan() command.
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            argin_json = json.loads(argin)
-            # Used to extract FSP IDs
-            self.fsp_ids_object = argin_json["fsp"]
-            self.update_config_params()
-            self.pointing_params = argin_json["pointing"]
-            self.target_Ra = self.pointing_params["target"]["RA"]
-            self.target_Dec = self.pointing_params["target"]["dec"]
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
 
-            # Create target object
-            self.target = katpoint.Target('radec , ' + str(self.target_Ra) + ", " + str(self.target_Dec))
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("StartScan() is not allowed in current state",
+                                             "Failed to invoke StartScan command on cspsubarrayleafnode.",
+                                             "cspsubarrayleafnode.StartScan()",
+                                             tango.ErrSeverity.ERR)
 
-            cspConfiguration = argin_json.copy()
-            # Keep configuration specific to CSP and delete pointing configuration
-            if "pointing" in cspConfiguration:
-                del cspConfiguration["pointing"]
-            self.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
-                                                       self.commandCallback)
-            self._read_activity_message = const.STR_CONFIGURE_SUCCESS
-            self.logger.info(const.STR_CONFIGURE_SUCCESS)
-            self.logger.debug(argin)
+            return True
 
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-            self.logger.exception(log_msg)
-            self._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-            exception_message.append(self._read_activity_message)
-            exception_count += 1
+        def do(self, argin):
+            """
+            This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
+            state.
 
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self.\
-                _handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                            const.ERR_CONFIGURE_INVOKING_CMD)
+            :param argin: JSON string consists of scan id (int).
 
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.
-                                                                                  ERR_CONFIGURE_INVOKING_CMD)
+            Example:
+            {"id":1}
 
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.ERR_INVALID_JSON_CONFIG)
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.Configure
+            Note: Enter the json string without spaces as a input.
 
-    @command(
-        dtype_in=('str',),
-    )
-    @DebugIt()
-    def StartScan(self, argin):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.StartScan) ENABLED START #
-        """
-        This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
-        state.
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+            :rtype: (ReturnCode, str)
+            :raises: DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
+            """
+            device=self.target
+            exception_message = []
+            exception_count = 0
+            try:
+            #Check if CspSubarray is in READY state
+                if device.CspSubarrayProxy.obsState == ObsState.READY:
+                    #Invoke StartScan command on CspSubarray
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_STARTSCAN_SUCCESS
+                    self.logger.info(const.STR_STARTSCAN_SUCCESS)
+                    return (ResultCode.OK, const.STR_STARTSCAN_SUCCESS)
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    self.logger.error(const.ERR_DEVICE_NOT_READY)
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
-        :param argin: JSON string consists of scan id (int).
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
 
-        Example: in jive:{"id":1}
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, const.ERR_STARTSCAN_RESOURCES)
 
-        :return: None.
-        """
-        exception_message = []
-        exception_count = 0
-        try:
-            # Check if CspSubarray is in READY state
-            if self.CspSubarrayProxy.obsState == ObsState.READY:
-                # Invoke StartScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", self.commandCallback)
-                self._read_activity_message = const.STR_STARTSCAN_SUCCESS
-                self.logger.info(const.STR_STARTSCAN_SUCCESS)
-            else:
-                self._read_activity_message = const.ERR_DEVICE_NOT_READY
-                self.logger.error(const.ERR_DEVICE_NOT_READY)
-
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.
-                                                                                    ERR_STARTSCAN_RESOURCES)
-
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.
-                                                                                  ERR_STARTSCAN_RESOURCES)
-
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_START_SCAN_EXEC)
-
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_START_SCAN_EXEC)
+                return (ResultCode.FAILED,const.ERR_STARTSCAN_RESOURCES)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
     @command(
+        dtype_in=('str'),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def StartScan(self, argin):
+        """ Invokes StartScan command on cspsubarrayleafnode"""
+        handler = self.get_command_object("StartScan")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    def is_StartScan_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("StartScan")
+        return handler.check_allowed()
+
+    class EndScanCommand(ResponseCommand):
+        """
+        A class for CspSubarrayLeafNode's EndScan() command.
+        """
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
+
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("EndScan() is not allowed in current state",
+                                             "Failed to invoke EndScan command on cspsubarrayleafnode.",
+                                             "cspsubarrayleafnode.EndScan()",
+                                             tango.ErrSeverity.ERR)
+            return True
+
+        def do(self):
+            """
+            It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in SCANNING
+            state.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+            :rtype: (ReturnCode, str)
+            :raises: DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
+            """
+            device=self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                # Invoke EndScan command on CspSubarray
+                if device.CspSubarrayProxy.obsState == ObsState.SCANNING:
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_ENDSCAN_SUCCESS
+                    self.logger.info(const.STR_ENDSCAN_SUCCESS)
+                    return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
+
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
+                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_IN_SCAN)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, const.ERR_ENDSCAN_INVOKING_CMD)
+
+
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
+                return (ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
+
+    def is_EndScan_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("EndScan")
+        return handler.check_allowed()
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def EndScan(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.EndScan) ENABLED START #
+        """ Invokes EndScan command on CspSubarrayLeafNode"""
+        handler = self.get_command_object("EndScan")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    class ReleaseAllResourcesCommand(ResponseCommand):
         """
-        It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in SCANNING
-        state.
-
-        :return: None.
+        A class for CspSubarrayLeafNode's ReleaseAllResources() command.
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            if self.CspSubarrayProxy.obsState == ObsState.SCANNING:
-                # Invoke EndScan command on CspSubarray
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, self.commandCallback)
-                self._read_activity_message = const.STR_ENDSCAN_SUCCESS
-                self.logger.info(const.STR_ENDSCAN_SUCCESS)
-            else:
-                self._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
-                self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
 
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.
-                                                                                    ERR_ENDSCAN_INVOKING_CMD)
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
+                tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
+                                             "Failed to invoke ReleaseAllResources command on "
+                                             "cspsubarrayleafnode.",
+                                             "cspsubarrayleafnode.ReleaseAllResources()",
+                                             tango.ErrSeverity.ERR)
+            return True
 
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.
-                                                                                  ERR_ENDSCAN_INVOKING_CMD)
+        def do(self):
+            """
+            It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
+            CspSubarray.
 
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+            :rtype: (ResultCode, str)
+            :raises: DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
+            """
+            device=self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                #Invoke RemoveAllReceptors command on CspSubarray
+                device.receptorIDList = []
+                device.fsids_list = []
+                device.update_config_params()
+                device.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, device.cmd_ended_cb)
+                device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
+                self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+                return (ResultCode.OK, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.EndScan
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
+
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+                return (ResultCode.FAILED, const.ERR_RELEASE_ALL_RESOURCES)
+
+    def is_ReleaseAllResources_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("ReleaseAllResources")
+        return handler.check_allowed()
 
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def ReleaseAllResources(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.ReleaseResources) ENABLED START #
+        """ Invokes ReleaseAllResources command on CspSubarrayLeafNode"""
+        handler = self.get_command_object("ReleaseAllResources")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    class AssignResourcesCommand(ResponseCommand):
         """
-        It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
-        CspSubarray.
-
-        :return: None.
+        A class for CspSubarrayLeafNode's AssignResources() command.
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            # Invoke RemoveAllReceptors command on CspSubarray
-            self.receptorIDList = []
-            self.fsids_list = []
-            self.update_config_params()
-            self.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, self.commandCallback)
-            self._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
-            self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
 
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.
-                                                                                    ERR_RELEASE_ALL_RESOURCES)
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("AssignResources() is not allowed in current state",
+                                             "Failed to invoke AssignResources command on "
+                                             "cspsubarrayleafnode.",
+                                             "cspsubarrayleafnode.AssignResources()",
+                                             tango.ErrSeverity.ERR)
+            return True
 
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.
-                                                                                  ERR_RELEASE_ALL_RESOURCES)
+        def do(self, argin):
+            """
+            It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
+            with receptorIDList (list of integers) as an input argument.
 
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+            :param argin: The string in JSON format. The JSON contains following values:
 
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.ReleaseResources
+                dish:
+                    Mandatory JSON object consisting of
+
+                    receptorIDList:
+                        DevVarString
+                        The individual string should contain dish numbers in string format
+                        with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+            Example:
+            {
+              "dish": {
+                "receptorIDList": [
+                  "0001",
+                  "0002"
+                ]
+              }
+            }
+
+            Note: Enter the json string without spaces as a input.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+            :rtype: (ResultCode, str)
+            :raises: ValueError if input argument json string contains invalid value
+            KeyError if input argument json string contains invalid key
+            DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
+
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                device.validate_obs_state()
+
+            except InvalidObsStateError as error:
+                self.logger.exception(error)
+                tango.Except.throw_exception("ObsState is not in EMPTY state", "CSP subarray leaf node raised "
+                                                                              "exception",
+                                             "CSP.AddReceptors", tango.ErrSeverity.ERR)
+
+            try:
+                # Parse receptorIDList from JSON string.
+                jsonArgument = json.loads(argin[0])
+                device.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
+                # convert receptorIDList from list of string to list of int
+                for receptor in device.receptorIDList_str:
+                    device.receptorIDList.append(int(receptor))
+                self.logger.info("receptorIDList: %s", str(device.receptorIDList))
+                device.update_config_params()
+                # Invoke AddReceptors command on CspSubarray
+                self.logger.info("Invoking AddReceptors on CSP subarray")
+                device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, device.receptorIDList,
+                                                           device.AddReceptors_ended)
+                self.logger.info("After invoking AddReceptors on CSP subarray")
+                device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
+                self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
+                return (ResultCode.OK, const.STR_ADD_RECEPTORS_SUCCESS)
+
+            except ValueError as value_error:
+                log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
+                self.logger.exception(log_msg)
+                device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
+                exception_message.append(device._read_activity_message)
+                device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+                return (ResultCode.FAILED, const.ERR_INVALID_JSON_ASSIGN_RES)
+            except KeyError as key_error:
+                log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                self.logger.exception(log_msg)
+                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                exception_message.append(device._read_activity_message)
+                device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+                return (ResultCode.FAILED, const.ERR_JSON_KEY_NOT_FOUND)
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_ASSGN_RESOURCES)
+                device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+                return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
+
+
+    def is_AssignResources_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("AssignResources")
+        return handler.check_allowed()
 
     @command(
         dtype_in=('str',),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def AssignResources(self, argin):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.AssignResources) ENABLED START #
+        """ Invokes AssignResources command on CspSubarrayLeafNode. """
+        handler = self.get_command_object("AssignResources")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    class GoToIdleCommand(ResponseCommand):
         """
-        It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
-        with receptorIDList (list of integers) as an input argument.
-
-        :param argin: The string in JSON format. The JSON contains following values:
-
-            dish:
-                Mandatory JSON object consisting of
-
-                receptorIDList:
-                    DevVarString
-                    The individual string should contain dish numbers in string format
-                    with preceding zeroes upto 3 digits. E.g. 0001, 0002.
-        Example:
-                {
-                "dish": {
-                "receptorIDList": ["0001", "0002"]
-                }
-                }
-
-         Note: Enter input without spaces as: {"dish":{"receptorIDList":["0001","0002"]}}
-        
-        :return: None.
-
-        :throws: DevFailed.
+        A class for CspSubarrayLeafNode's GoToIdle() command.
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            self.validate_obs_state()
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
 
-        except InvalidObsStateError as error:
-            self.logger.exception(error)
-            tango.Except.throw_exception("ObsState is not in idle state","CSP subarray leaf node raised "
-                                        "exception",
-                                        "CSP.AddReceptors", tango.ErrSeverity.ERR)
+            :return: True if this command is allowed to be run in
+                current device state
+            :rtype: boolean
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("GoToIdle() is not allowed in current state",
+                                             "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
+                                             "cspsubarrayleafnode.GoToIdle()",
+                                             tango.ErrSeverity.ERR)
+            return True
 
-        try:
-            # Parse receptorIDList from JSON string.
-            jsonArgument = json.loads(argin[0])
-            self.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
-            # convert receptorIDList from list of string to list of int
-            for i in range(0, len(self.receptorIDList_str)):
-                self.receptorIDList.append(int(self.receptorIDList_str[i]))
-            self.logger.info("receptorIDList: %s", str(self.receptorIDList))
-            self.update_config_params()
-            # Invoke AddReceptors command on CspSubarray
-            self.logger.info("Invoking AddReceptors on CSP subarray")
-            self.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, self.receptorIDList,
-                                                       self.AddReceptors_ended)
-            self.logger.info("After invoking AddReceptors on CSP subarray")
-            self._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
-            self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
+        def do(self):
+            """
+            This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
 
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-            self.logger.exception(log_msg)
-            self._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-            exception_message.append(self._read_activity_message)
-            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-        except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.exception(log_msg)
-            self._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            exception_message.append(self._read_activity_message)
-            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                exception_message,
-                exception_count,
-                const.ERR_ASSGN_RESOURCES)
-            self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+            :rtype: (ResultCode, str)
+            :raises: DevFailed if the command execution is not successful
+            Exception if command execution throws any type of exception
+            """
+            device=self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device.CspSubarrayProxy.obsState == ObsState.READY:
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_GOTOIDLE_SUCCESS
+                    self.logger.info(const.STR_GOTOIDLE_SUCCESS)
+                    return (ResultCode.OK, const.STR_GOTOIDLE_SUCCESS)
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    self.logger.error(const.ERR_DEVICE_NOT_READY)
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.AssignResources
+            except DevFailed as dev_failed:
+                [ exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, const.ERR_GOTOIDLE_INVOKING_CMD)
+
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_GOTOIDLE_EXEC)
+                return (ResultCode.FAILED, const.ERR_GOTOIDLE_INVOKING_CMD)
+
+    def is_GoToIdle_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("GoToIdle")
+        return handler.check_allowed()
 
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def GoToIdle(self):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.GoToIdle) ENABLED START #
-        """
-        This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
-
-        :return: None.
-
-        """
-        exception_message = []
-        exception_count = 0
-        try:
-            if self.CspSubarrayProxy.obsState == ObsState.READY:
-                self.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, self.commandCallback)
-                self._read_activity_message = const.STR_GOTOIDLE_SUCCESS
-                self.logger.info(const.STR_GOTOIDLE_SUCCESS)
-            else:
-                self._read_activity_message = const.ERR_DEVICE_NOT_READY
-                self.logger.error(const.ERR_DEVICE_NOT_READY)
-        except DevFailed as dev_failed:
-            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.
-                                                                                    ERR_GOTOIDLE_INVOKING_CMD)
-
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.
-                                                                                  ERR_GOTOIDLE_INVOKING_CMD)
-
-        # throw exception:
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_GOTOIDLE_EXEC)
-
-        # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
-
-    @DebugIt()
-    def AddReceptors_ended(self, event):
-        self.logger.info("Executing callback AddReceptors_ended")
-        try:
-            if event.err:
-                self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
-                log = const.ERR_INVOKING_CMD + event.cmd_name
-                self.logger.error(log)
-            else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self._read_activity_message = log
-                self.logger.info(log)
-
-        except tango.DevFailed as df:
-            self.logger.exception(df)
-            tango.Except.re_throw_exception(df, "CSP subarray gave an error response",
-                                            "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
-                                            "AddReceptors", tango.ErrSeverity.ERR)
+        """ Invokes GoToIdle command on CspSubarrayLeafNode. """
+        handler = self.get_command_object("GoToIdle")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
 
     def validate_obs_state(self):
-        if self.CspSubarrayProxy.obsState == ObsState.IDLE:
+        if self.CspSubarrayProxy.obsState == ObsState.EMPTY:
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
-            self.logger.error("CSP Subarray is not in IDLE obsState")
+            self.logger.error("CSP Subarray is not in EMPTY obsState")
             self._read_activity_message = "Error in device obsState"
-            raise InvalidObsStateError("CSP Subarray is not in IDLE obsState")
+            raise InvalidObsStateError("CSP Subarray is not in EMPTY obsState")
 
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
+        self.register_command_object("ReleaseAllResources", self.ReleaseAllResourcesCommand(*args))
+        self.register_command_object("Configure", self.ConfigureCommand(*args))
+        self.register_command_object("StartScan", self.StartScanCommand(*args))
+        self.register_command_object("EndScan", self.EndScanCommand(*args))
+        self.register_command_object("GoToIdle", self.GoToIdleCommand(*args))
 
 # pylint: enable=protected-access,unused-argument,unused-variable
 
