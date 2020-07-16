@@ -957,7 +957,7 @@ class CentralNode(SKABaseDevice):
                 resources_allocated_return = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
                 resources_allocated = resources_allocated_return[1]
-                self.logger.info("\n\n resources_assigned:" + str(resources_allocated))
+                self.logger.info("\n\n resources_assigned:", str(resources_allocated))
 
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
@@ -1131,7 +1131,7 @@ class CentralNode(SKABaseDevice):
                     # Invoke "ReleaseAllResources" on SubarrayNode
                     return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     res_not_released = ast.literal_eval(return_val[1][0])
-                    self.logger.info("\n\n res_not_released:"+ str(res_not_released))
+                    self.logger.info("\n\n res_not_released:", str(res_not_released))
                     log_msg = const.STR_REL_RESOURCES
                     device._read_activity_message = log_msg
                     if not res_not_released:
