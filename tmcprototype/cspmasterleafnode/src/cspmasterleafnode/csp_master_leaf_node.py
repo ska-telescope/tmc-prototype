@@ -376,6 +376,12 @@ class CspMasterLeafNode(SKABaseDevice):
         def do(self):
             """
             Invokes Off command on the CSP Element.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
             """
             device = self.target
             device._csp_proxy.command_inout_asynch(const.CMD_OFF, device.cmd_ended_cb)
@@ -413,7 +419,7 @@ class CspMasterLeafNode(SKABaseDevice):
              The message is for information purpose only.
 
             :rtype: (ResultCode, str)
-            
+
             """
             device = self.target
             device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, device.cmd_ended_cb)
