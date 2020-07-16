@@ -1055,8 +1055,9 @@ class DishLeafNode(SKABaseDevice):
                 }
                 dish_str_ip = json.dumps(arg_list)
                 # Send configure command to Dish Master
-                device._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
-                                                      device.cmd_ended_cb)
+                cmd = "ConfigureBand{}".format(receiver_band)
+                self._dish_proxy.command_inout_asynch(cmd, str(dish_str_ip),
+                                                      self.cmd_ended_cb)
                 return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except ValueError as value_error:
@@ -1087,7 +1088,7 @@ class DishLeafNode(SKABaseDevice):
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_CONFIGURE_EXEC)
 
-    def is_Configure_allowed(self):
+    def is_ConfigureBand_allowed(self):
         """
         Checks whether this command is allowed to be run in the current device state.
 
@@ -1107,7 +1108,7 @@ class DishLeafNode(SKABaseDevice):
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
-    def Configure(self, argin):
+    def ConfigureBand(self, argin):
         """ Configures the Dish by setting pointing coordinates for a given observation. """
         handler = self.get_command_object("Configure")
         (result_code, message) = handler(argin)
