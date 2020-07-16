@@ -51,6 +51,29 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     @DebugIt()
     def AddReceptors_ended(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully invoked on CspSubarray.
+
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+
+        """
+
         self.logger.info("Executing callback AddReceptors_ended")
         try:
             if event.err:
@@ -77,6 +100,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         :param event: a CmdDoneEvent object. This class is used to pass data
             to the callback method in asynchronous callback model for command
             execution.
+
         :type: CmdDoneEvent object
             It has the following members:
                 - device     : (DeviceProxy) The DeviceProxy object on which the
@@ -88,7 +112,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                failed. False otherwise
                 - errors     : (sequence<DevError>) The error stack
                 - ext
+
         :return: none
+
+        :raises:Exception if command execution throws any type of exception
+
         """
         exception_count = 0
         exception_message = []
@@ -158,6 +186,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         the current timestamp.
 
         :param argin: time_t0
+
         :return: Dictionary containing fifth order polynomial coefficients per antenna per fsp.
         """
 
@@ -288,6 +317,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             The argument contains delay model update interval in seconds.
 
         :return: None.
+
         """
         delay_update_interval = argin
 
@@ -372,7 +402,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             :return: A tuple containing a return code and a string
                 message indicating status. The message is for
                 information purpose only.
+
             :rtype: (ReturnCode, str)
+
             """
             super().do()
             device=self.target
@@ -473,9 +505,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: True if this command is allowed to be run in
                 current device state
+
             :rtype: boolean
+
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
+
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Configure() is not allowed in current state",
@@ -506,10 +541,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
+
             :raises: DevFailed if the command execution is not successful
-            ValueError if input argument json string contains invalid value
-            Exception if command execution throws any type of exception
+                     ValueError if input argument json string contains invalid value
+                     Exception if command execution throws any type of exception
 
             """
             device = self.target
@@ -558,7 +595,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.ERR_CONFIGURE_INVOKING_CMD)
-                return (ResultCode.FAILED, str(exception_message))
 
     def is_Configure_allowed(self):
         """
@@ -566,9 +602,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         :return: True if this command is allowed to be run in
         current device state
+
         :rtype: boolean
+
         :raises: DevFailed if this command is not allowed to be run
         in current device state
+
         """
         handler = self.get_command_object("Configure")
         return handler.check_allowed()
@@ -595,9 +634,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: True if this command is allowed to be run in
                 current device state
+
             :rtype: boolean
+
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
+
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("StartScan() is not allowed in current state",
@@ -621,9 +663,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
+
             :raises: DevFailed if the command execution is not successful
-            Exception if command execution throws any type of exception
+                     Exception if command execution throws any type of exception
+
             """
             device=self.target
             exception_message = []
@@ -654,7 +699,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_START_SCAN_EXEC)
-                return (ResultCode.FAILED,const.ERR_STARTSCAN_RESOURCES)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.StartScan
 
     @command(
@@ -675,9 +719,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         :return: True if this command is allowed to be run in
         current device state
+
         :rtype: boolean
+
         :raises: DevFailed if this command is not allowed to be run
         in current device state
+
         """
         handler = self.get_command_object("StartScan")
         return handler.check_allowed()
@@ -691,10 +738,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             Checks whether the command is allowed to be run in the current state
 
             :return: True if this command is allowed to be run in
-                current device state
+            current device state
+
             :rtype: boolean
+
             :raises: DevFailed if this command is not allowed to be run
-                in current device state
+            in current device state
+
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("EndScan() is not allowed in current state",
@@ -705,14 +755,17 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in SCANNING
+            It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in obsState SCANNING
             state.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
+
             :rtype: (ReturnCode, str)
+
             :raises: DevFailed if the command execution is not successful
-            Exception if command execution throws any type of exception
+                     Exception if command execution throws any type of exception
+
             """
             device=self.target
             exception_message = []
@@ -744,7 +797,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
-                return (ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
 
     def is_EndScan_allowed(self):
         """
@@ -752,9 +804,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         :return: True if this command is allowed to be run in
         current device state
+
         :rtype: boolean
+
         :raises: DevFailed if this command is not allowed to be run
         in current device state
+
         """
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
@@ -780,9 +835,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: True if this command is allowed to be run in
                 current device state
+
             :rtype: boolean
+
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
+
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
                 tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
@@ -799,9 +857,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
+
             :rtype: (ResultCode, str)
+
             :raises: DevFailed if the command execution is not successful
-            Exception if command execution throws any type of exception
+                     Exception if command execution throws any type of exception
+
             """
             device=self.target
             exception_message = []
@@ -827,7 +888,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
-                return (ResultCode.FAILED, const.ERR_RELEASE_ALL_RESOURCES)
 
     def is_ReleaseAllResources_allowed(self):
         """
@@ -835,9 +895,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         :return: True if this command is allowed to be run in
         current device state
+
         :rtype: boolean
+
         :raises: DevFailed if this command is not allowed to be run
         in current device state
+
         """
         handler = self.get_command_object("ReleaseAllResources")
         return handler.check_allowed()
@@ -863,9 +926,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: True if this command is allowed to be run in
                 current device state
+
             :rtype: boolean
+
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
+
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("AssignResources() is not allowed in current state",
@@ -903,11 +969,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
+
             :rtype: (ResultCode, str)
+
             :raises: ValueError if input argument json string contains invalid value
-            KeyError if input argument json string contains invalid key
-            DevFailed if the command execution is not successful
-            Exception if command execution throws any type of exception
+                     KeyError if input argument json string contains invalid key
+                     DevFailed if the command execution is not successful
+                     Exception if command execution throws any type of exception
 
             """
             device = self.target
@@ -960,7 +1028,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                                                         exception_count,
                                                                                         const.ERR_ASSGN_RESOURCES)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
 
 
     def is_AssignResources_allowed(self):
@@ -969,9 +1036,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         :return: True if this command is allowed to be run in
         current device state
+
         :rtype: boolean
+
         :raises: DevFailed if this command is not allowed to be run
         in current device state
+
         """
         handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
@@ -998,9 +1068,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: True if this command is allowed to be run in
                 current device state
+
             :rtype: boolean
+
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
+
             """
             if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
@@ -1017,9 +1090,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
+
             :rtype: (ResultCode, str)
+
             :raises: DevFailed if the command execution is not successful
-            Exception if command execution throws any type of exception
+                     Exception if command execution throws any type of exception
+
             """
             device=self.target
             exception_message = []
@@ -1047,8 +1123,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_GOTOIDLE_EXEC)
-                return (ResultCode.FAILED, const.ERR_GOTOIDLE_INVOKING_CMD)
+                device.throw_exception(exception_message, const.ERR_GOTOIDLE_INVOKING_CMD)
 
     def is_GoToIdle_allowed(self):
         """
@@ -1056,9 +1131,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         :return: True if this command is allowed to be run in
         current device state
+
         :rtype: boolean
+
         :raises: DevFailed if this command is not allowed to be run
         in current device state
+
         """
         handler = self.get_command_object("GoToIdle")
         return handler.check_allowed()
@@ -1108,9 +1186,12 @@ def main(args=None, **kwargs):
     # PROTECTED REGION ID(CspSubarrayLeafNode.main) ENABLED START #
     """
     Runs the CspSubarrayLeafNode.
+
     :param args: Arguments internal to TANGO
     :param kwargs: Arguments internal to TANGO
+
     :return: CspSubarrayLeafNode TANGO object.
+
     """
     return run((CspSubarrayLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.main

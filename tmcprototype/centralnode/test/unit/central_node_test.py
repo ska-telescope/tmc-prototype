@@ -255,7 +255,7 @@ def test_assign_resources():
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def test_assign_resources_should_raise_devfailed_exception():
+def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws__devfailed_exception():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn
@@ -353,22 +353,24 @@ def test_release_resources_should_raise_devfailed_exception():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(release_input_str)
 
         # assert:
         assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
+        assert "Error occurred while releasing resources from the Subarray" in str(df.value)
 
 
 def test_release_resources_invalid_json_value():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(assign_release_invalid_str)
 
         # assert:
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert "Invalid JSON format" in str(df.value)
 
 
 def test_release_resources_invalid_key():
@@ -379,6 +381,7 @@ def test_release_resources_invalid_key():
             tango_context.device.ReleaseResources(release_invalid_key)
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        assert "JSON key not found" in str(df.value)
 
 
 def test_standby():
