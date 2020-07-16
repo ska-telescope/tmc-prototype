@@ -1533,9 +1533,9 @@ class DishLeafNode(SKABaseDevice):
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-    class StopTrackCommand(ResponseCommand):
+    class TrackStopCommand(ResponseCommand):
         """
-        A class for DishLeafNode's StopTrack() command.
+        A class for DishLeafNode's TrackStop() command.
         """
         def check_allowed(self):
             """
@@ -1549,16 +1549,16 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("StopTrack() is not allowed in current state",
-                                             "Failed to invoke StopTrack command on DishLeafNode.",
-                                             "DishLeafNode.StopTrack() ",
+                tango.Except.throw_exception("TrackStop() is not allowed in current state",
+                                             "Failed to invoke TrackStop command on DishLeafNode.",
+                                             "DishLeafNode.TrackStop() ",
                                              tango.ErrSeverity.ERR)
 
             return True
 
         def do(self):
             """
-            Invokes StopTrack command on the DishMaster.
+            Invokes TrackStop command on the DishMaster.
 
             :param argin: None.
 
@@ -1575,28 +1575,28 @@ class DishLeafNode(SKABaseDevice):
             exception_message = []
             try:
                 device.event_track_time.set()
-                device._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, device.cmd_ended_cb)
-                return (ResultCode.OK, const.STR_STOP_TRACK_SUCCESS)
+                device._dish_proxy.command_inout_asynch(const.CMD_TRACK_STOP, device.cmd_ended_cb)
+                return (ResultCode.OK, const.STR_TRACK_STOP_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
-                                                                                        const.ERR_EXE_STOP_TRACK_CMD)
+                                                                                        const.ERR_EXE_TRACK_STOP_CMD)
 
             except Exception as except_occurred:
-                log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(except_occurred.message)
+                log_msg = const.ERR_EXE_TRACK_STOP_CMD + str(except_occurred.message)
                 self.logger.info(log_msg)
                 [exception_count, exception_message] = device._handle_generic_exception(except_occurred,
                                                                                       exception_message,
                                                                                       exception_count,
-                                                                                      const.ERR_EXE_STOP_TRACK_CMD)
+                                                                                      const.ERR_EXE_TRACK_STOP_CMD)
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_STOPTRACK_EXEC)
+                device.throw_exception(exception_message, const.STR_TRACKSTOP_EXEC)
 
-    def is_StopTrack_allowed(self):
+    def is_TrackStop_allowed(self):
         """
         Checks whether this command is allowed to be run in the current device state.
 
@@ -1607,16 +1607,16 @@ class DishLeafNode(SKABaseDevice):
         :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
-        handler = self.get_command_object("StopTrack")
+        handler = self.get_command_object("TrackStop")
         return handler.check_allowed()
 
     @command(
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
-    def StopTrack(self):
-        """ Invokes StopTrack command on the DishMaster."""
-        handler = self.get_command_object("StopTrack")
+    def TrackStop(self):
+        """ Invokes TrackStop command on the DishMaster."""
+        handler = self.get_command_object("TrackStop")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
@@ -1637,7 +1637,7 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("SetStandbyFPMode", self.SetStandbyFPModeCommand(*args))
         self.register_command_object("Slew", self.SlewCommand(*args))
         self.register_command_object("Track", self.TrackCommand(*args))
-        self.register_command_object("StopTrack", self.StopTrackCommand(*args))
+        self.register_command_object("TrackStop", self.TrackStopCommand(*args))
 
 # ----------
 # Run server

@@ -293,7 +293,7 @@ class SubarrayNode(SKASubarray):
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
                 # As a part of end command send Stop track command on dish leaf node
-                # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                # self._dish_leaf_node_group.command_inout(const.CMD_TRACK_STOP)
                 self.end_obj.succeeded()
             else:
                 # Assign Resource command success
@@ -307,7 +307,7 @@ class SubarrayNode(SKASubarray):
             #
             #                 self._obs_state = ObsState.READY
             #         else:
-            #             self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+            #             self._dish_leaf_node_group.command_inout(const.CMD_TRACK_STOP)
             #             self._obs_state = ObsState.IDLE
             #     else:
             #         # Assign Resource command success
@@ -1051,10 +1051,10 @@ class SubarrayNode(SKASubarray):
             self.logger.info(message)
             return (ResultCode.STARTED, message)
 
-    def call_stop_track_command(self):
+    def call_track_stop_command(self):
         # TODO: Getting exception while running test cases using device mocking
-        self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-        self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
+        self._dish_leaf_node_group.command_inout(const.CMD_TRACK_STOP)
+        self.logger.info(const.STR_CMD_TRACK_STOP_INV_DLN)
 
     class EndCommand(SKASubarray.EndCommand):
         """
@@ -1084,7 +1084,7 @@ class SubarrayNode(SKASubarray):
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
                 self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
                 # TODO: Uncomment this after resolving issues
-                device.call_stop_track_command()
+                device.call_track_stop_command()
                 device._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
                 device.set_status(const.STR_ENDSB_SUCCESS)
