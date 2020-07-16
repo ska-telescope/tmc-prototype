@@ -1,3 +1,7 @@
+"""
+CSP Master Leaf node monitors the CSP Master and issues control actions during an observation.
+"""
+
 # -*- coding: utf-8 -*-
 #
 # This file is part of the CspMasterLeafNode project
@@ -7,25 +11,23 @@
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-""" CspMasterLeafNode - Leaf Node to monitor and control CSP Master.
-
-"""
+# PROTECTED REGION ID(CspMasterLeafNode.import) ENABLED START #
 
 from __future__ import print_function
 from __future__ import absolute_import
 
-# Tango imports
+# PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+
 # Additional import
-# PROTECTED REGION ID(CspMasterLeafNode.additionnal_import) ENABLED START #
 from . import const
 
-# PROTECTED REGION END #    //  CspMasterLeafNode.additionnal_import
+# PROTECTED REGION END #    //  CspMasterLeafNode imports
 
 __all__ = ["CspMasterLeafNode", "main"]
 
@@ -77,10 +79,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_CSP_CBF_HEALTH_CB)
+            self._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                           const.ERR_CSP_CBF_HEALTH_CB)
 
     def csp_pss_health_state_cb(self, evt):
         """
@@ -115,10 +115,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 self.logger.error(log_msg)
                 self._read_activity_message = log_msg
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_CSP_PSS_HEALTH_CB)
+            self._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                           const.ERR_CSP_PSS_HEALTH_CB)
 
     def csp_pst_health_state_cb(self, evt):
         """
@@ -152,10 +150,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 self.logger.error(log_msg)
                 self._read_activity_message = log_msg
         except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_CSP_PST_HEALTH_CB)
+            self._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                           const.ERR_CSP_PST_HEALTH_CB)
 
     def cmd_ended_cb(self, event):
         """
@@ -253,6 +249,7 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         A class for the TMC CSP Master Leaf Node's init_device() "command".
         """
+
         def do(self):
             """
             Initializes the attributes and properties of the CspMasterLeafNode.
@@ -272,6 +269,7 @@ class CspMasterLeafNode(SKABaseDevice):
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
             device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
+            _state_fault_flag = False
             try:
                 device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
                 # Creating proxy to the CSPMaster
@@ -279,9 +277,10 @@ class CspMasterLeafNode(SKABaseDevice):
                 self.logger.debug(log_msg)
                 device._csp_proxy = DeviceProxy(str(device.CspMasterFQDN))
             except DevFailed as dev_failed:
+                _state_fault_flag = True
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
                 self.logger.debug(log_msg)
-                [exception_message, exception_count] =\
+                [exception_message, exception_count] = \
                     device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                        const.ERR_IN_CREATE_PROXY)
                 device._read_activity_message = log_msg
@@ -294,8 +293,10 @@ class CspMasterLeafNode(SKABaseDevice):
                                                   device.csp_pss_health_state_cb, stateless=True)
                 device._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
                                                   device.csp_pst_health_state_cb, stateless=True)
+                return (ResultCode.OK, device._read_activity_message)
 
             except DevFailed as dev_failed:
+                _state_fault_flag = False
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
                 [exception_message, exception_count] = \
@@ -307,16 +308,17 @@ class CspMasterLeafNode(SKABaseDevice):
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
-            self.logger.debug(log_msg)
-            device.set_status(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
-            device._read_activity_message = const.STR_CSP_MASTER_LEAF_INIT_SUCCESS
-            self.logger.info(device._read_activity_message)
 
-            if exception_count > 0:
-                device.throw_exception(exception_message, device._read_activity_message)
+            if _state_fault_flag:
+                message = const.STR_CMD_FAILED
+                result_code = ResultCode.FAILED
+            else:
+                message = const.STR_INIT_SUCCESS
+                result_code = ResultCode.OK
 
-
-            return (ResultCode.OK, device._read_activity_message)
+            device._read_activity_message = message
+            self.logger.info(message)
+            return (result_code, message)
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspMasterLeafNode.always_executed_hook) ENABLED START #
@@ -348,11 +350,11 @@ class CspMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-
     class OnCommand(SKABaseDevice.OnCommand):
         """
         A class for CspMasterLeafNode's On() command.
         """
+
         def do(self):
             """
             Invokes On command on the CSP Element.
@@ -372,6 +374,7 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         A class for CspMasterLeafNode's Off() command.
         """
+
         def do(self):
             """
             Invokes Off command on the CSP Element.
@@ -391,6 +394,7 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         A class for CspMasterLeafNode's Standby() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state.
@@ -466,6 +470,7 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         self.register_command_object("Standby", self.StandbyCommand(self, self.state_model, self.logger))
+
 
 # ----------
 # Run server

@@ -57,8 +57,8 @@ def test_event_to_raise_dev_failed_exception_for_device_in_fault():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         health_state_value = HealthState.OK
-        dummy_event1 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                           csp_cbf_health_state_attribute)
+        create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
+                                            csp_cbf_health_state_attribute)
         # assert:
         assert tango_context.device.State() == DevState.FAULT
 
