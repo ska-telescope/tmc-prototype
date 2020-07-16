@@ -377,7 +377,7 @@ def test_release_resources_invalid_key():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(release_invalid_key)
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
@@ -474,6 +474,7 @@ def test_standby_should_raise_devfailed_exception():
 
     # assert:
         assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
+        assert tango_context.device.state() == DevState.FAULT
 
 
 def test_startup():
@@ -565,6 +566,7 @@ def test_startup_should_raise_devfailed_exception():
 
         # assert:
         assert const.ERR_EXE_ON_CMD in tango_context.device.activityMessage
+        assert tango_context.device.state() == DevState.FAULT
 
 
 # Test cases for Telescope Health State
