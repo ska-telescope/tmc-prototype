@@ -272,7 +272,7 @@ tango tests:
     - docker-executor
   script:
     - make test
-  retry: 0
+  retry: 2
 
 linting:
   stage: linting
