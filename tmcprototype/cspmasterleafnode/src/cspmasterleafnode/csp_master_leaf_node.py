@@ -299,9 +299,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 _state_fault_flag = False
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
-                [exception_message, exception_count] = \
-                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                                       const.ERR_CSP_MASTER_LEAF_INIT)
+                device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                   const.ERR_CSP_MASTER_LEAF_INIT)
 
                 device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
                 device._read_activity_message = log_msg
@@ -355,9 +354,14 @@ class CspMasterLeafNode(SKABaseDevice):
         A class for CspMasterLeafNode's On() command.
         """
 
-        def do(self):
+        def do(self,argin):
             """
             Invokes On command on the CSP Element.
+
+            :param argin: DevStringArray.
+
+            If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
+            , each array element specifies the FQDN of the CSP SubElement to switch ON.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -366,7 +370,8 @@ class CspMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._csp_proxy.command_inout_asynch(const.CMD_ON, device.cmd_ended_cb)
+            argin = []
+            device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
@@ -375,9 +380,15 @@ class CspMasterLeafNode(SKABaseDevice):
         A class for CspMasterLeafNode's Off() command.
         """
 
-        def do(self):
+        def do(self,argin):
             """
             Invokes Off command on the CSP Element.
+
+            :param argin: DevStringArray.
+
+            If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
+            , each array element specifies the FQDN of the CSP SubElement to switch OFF.
+
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -386,7 +397,8 @@ class CspMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._csp_proxy.command_inout_asynch(const.CMD_OFF, device.cmd_ended_cb)
+            argin = []
+            device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 

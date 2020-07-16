@@ -50,7 +50,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     _delay_in_advance = 60
 
     @DebugIt()
-    def AddReceptors_ended(self, event):
+    def add_receptors_ended(self, event):
         """
         Callback function immediately executed when the asynchronous invoked
         command returns. Checks whether the command has been successfully invoked on CspSubarray.
@@ -74,7 +74,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         """
 
-        self.logger.info("Executing callback AddReceptors_ended")
+        self.logger.info("Executing callback add_receptors_ended")
         try:
             if event.err:
                 self._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
@@ -651,9 +651,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in READY
-            state.
-
+            This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in ObsState READY.
             :param argin: JSON string consists of scan id (int).
 
             Example:
@@ -756,7 +754,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def do(self):
             """
             It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in obsState SCANNING
-            state.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -993,7 +990,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # Invoke AddReceptors command on CspSubarray
                 self.logger.info("Invoking AddReceptors on CSP subarray")
                 device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, device.receptorIDList,
-                                                           device.AddReceptors_ended)
+                                                           device.add_receptors_ended)
                 self.logger.info("After invoking AddReceptors on CSP subarray")
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
@@ -1005,14 +1002,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
                 exception_message.append(device._read_activity_message)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return (ResultCode.FAILED, const.ERR_INVALID_JSON_ASSIGN_RES)
             except KeyError as key_error:
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.exception(log_msg)
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 exception_message.append(device._read_activity_message)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return (ResultCode.FAILED, const.ERR_JSON_KEY_NOT_FOUND)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,

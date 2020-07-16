@@ -33,10 +33,11 @@ def test_on_should_command_csp_master_leaf_node_to_start():
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        tango_context.device.On()
+        on_input = []
+        tango_context.device.On(on_input)
 
         # assert:
-        csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
+        csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
                                                                       any_method(with_name='cmd_ended_cb'))
 
 
@@ -52,13 +53,14 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
 
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        tango_context.device.On()
+        off_input = []
+
         # act:
 
-        tango_context.device.Off()
+        tango_context.device.Off(off_input)
 
         # assert:
-        csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
+        csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_input,
                                                                       any_method(with_name='cmd_ended_cb'))
 
 

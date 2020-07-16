@@ -177,7 +177,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the TMC SdpSubarrayLeafNode's init_device() command.
+        A class for the TMC SdpSubarrayLeafNode's init_device() method.
         """
         def do(self):
             """
@@ -472,25 +472,23 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 self.logger.exception(error)
                 tango.Except.throw_exception("obstate is not in EMPTY state", str(error),
                                              "SDP.AssignResources", tango.ErrSeverity.ERR)
-                return(ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
+
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
                 self.logger.exception(log_msg)
                 device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
                 exception_message.append(device._read_activity_message)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return ResultCode.FAILED, const.ERR_ASSGN_RESOURCES
+
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_ASSGN_RESOURCES)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return ResultCode.FAILED, const.ERR_ASSGN_RESOURCES
-            # TODO: Why this return is added?
-            # return ""
 
-        #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
+
+             # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
     @command(
         dtype_in=('str'),
@@ -568,9 +566,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             exception_count = 0
             try:
-                # TODO : Check if obsState == IDLE
-                # TODO : For future reference set toggleReadCbfOutLink to false to skip CbfOutLink validation
-                # self._sdp_subarray_proxy.toggleReadCbfOutLink = False
                 jsonArgument = json.loads(argin)
                 sdp_arg = jsonArgument["sdp"]
                 sdpConfiguration = sdp_arg.copy()
@@ -806,7 +801,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
-                return (ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
+
 
     def is_EndScan_allowed(self):
         """
@@ -873,13 +868,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                      Exception if command execution throws any type of exception.
 
             """
-            # TODO: For future use
             device = self.target
             exception_message = []
             exception_count = 0
             try:
                 if device._sdp_subarray_proxy.obsState == ObsState.READY:
-                    # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
+                    # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset,
+                    #  Add this in const.py
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSB_SUCCESS
                     self.logger.info(const.STR_ENDSB_SUCCESS)
@@ -901,7 +896,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
-                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
+
 
     def is_EndSB_allowed(self):
         """
