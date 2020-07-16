@@ -472,21 +472,21 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 self.logger.exception(error)
                 tango.Except.throw_exception("obstate is not in EMPTY state", str(error),
                                              "SDP.AssignResources", tango.ErrSeverity.ERR)
-                return(ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
+
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
                 self.logger.exception(log_msg)
                 device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
                 exception_message.append(device._read_activity_message)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return ResultCode.FAILED, const.ERR_ASSGN_RESOURCES
+
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_ASSGN_RESOURCES)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-                return ResultCode.FAILED, const.ERR_ASSGN_RESOURCES
+
 
              # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
@@ -801,7 +801,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
-                return (ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
+
 
     def is_EndScan_allowed(self):
         """
@@ -896,7 +896,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
-                return (ResultCode.FAILED, const.ERR_ENDSB_INVOKING_CMD)
+
 
     def is_EndSB_allowed(self):
         """
