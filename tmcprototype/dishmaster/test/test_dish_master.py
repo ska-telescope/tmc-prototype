@@ -376,12 +376,12 @@ class TestDishMaster(object):
         """
         Test case to check DishMaster is successfully configured to band 1
         """
-        input = '{"pointing":{"AZ":5.0,"EL":10.0}}'
+        input = '{"pointing":{"AZ":5.0,"EL":10.0},"dish":{"receiverBand":1}}'
         jsonArg = json.loads(input)
         Azimuth = jsonArg["pointing"]["AZ"]
         Elevation = jsonArg["pointing"]["EL"]
-        # choose any of the ConfiguredBand commands. using band 1 in this test
-        receiver_Band = 1
+        receiver_Band = jsonArg["dish"]["receiverBand"]
+        # choose any of the configureBand command. using band1 for this test
         tango_context.device.ConfigureBand1(input)
         assert tango_context.device.desiredPointing[1] == Azimuth and \
                tango_context.device.desiredPointing[2] == Elevation and \
@@ -402,7 +402,7 @@ class TestDishMaster(object):
         """
         Negative test to check if key is found.
         """
-        test_input = '{"pointing":{"AZ":1.0}}'
+        test_input = '{"pointing":{"AZ":1.0,"EL": 1.0}}'
         result = 'a'
         with pytest.raises(tango.DevFailed):
             result = tango_context.device.ConfigureBand1(test_input)
