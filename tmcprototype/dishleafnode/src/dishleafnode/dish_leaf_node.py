@@ -535,7 +535,8 @@ class DishLeafNode(SKABaseDevice):
                 device.event_track_time = threading.Event()
             except DevFailed as dev_failed:
                 _state_fault_flag = True
-                device._handle_devfailed_exception(dev_failed,exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                            exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
             device._health_state = HealthState.OK                                    #Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE                           #Enabling the simulation mode
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
@@ -555,12 +556,16 @@ class DishLeafNode(SKABaseDevice):
                 device.set_status(const.STR_DISH_INIT_SUCCESS)
                 self.logger.info(const.STR_DISH_INIT_SUCCESS)
             except DevFailed as dev_failed:
-                device._handle_devfailed_exception(dev_failed,exception_message, exception_count,
-                                                 const.ERR_SUBS_DISH_ATTR)
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                exception_message, exception_count,const.ERR_SUBS_DISH_ATTR)
                 device.set_status(const.ERR_DISH_INIT)
                 _state_fault_flag = True
                 self.logger.error(const.ERR_DISH_INIT)
 
+            if exception_count > 0:
+                self.logger.info(device._read_activity_message)
+                device.throw_exception(exception_message, device._read_activity_message)
+                
             if _state_fault_flag:
                 message = const.ERR_DISH_INIT
                 return_code = ResultCode.FAILED
