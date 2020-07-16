@@ -187,19 +187,6 @@ def test_assign_command_with_callback_method_with_devfailed_error():
         # assert:
         assert "CspSubarrayLeafNode_Commandfailed in callback" in str(df.value)
 
-
-@pytest.mark.skip(Reason='Fix test case if applicable')
-def test_assign_resource_should_raise_exception_when_called_invalid_json():
-    # act
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        # tango_context.device.On()
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.On()
-            tango_context.device.AssignResources(assign_config_invalid_str)
-        # assert:
-        assert const.ERR_INVALID_JSON_ASSIGN_RES in tango_context.device.activityMessage
-
-
 def command_callback_with_devfailed_exception():
     tango.Except.throw_exception("This is error message for devfailed",
                                  "CspSubarrayLeafNode_Commandfailed in callback", " ", tango.ErrSeverity.ERR)
@@ -259,10 +246,10 @@ def test_release_resource_should_raise_devfail_exception():
             as tango_context:
         device_proxy = tango_context.device
         #act
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             device_proxy.ReleaseAllResources()
         # assert:
-        assert const.ERR_RELEASE_ALL_RESOURCES in tango_context.device.activityMessage
+        assert "Error while invoking ReleaseAllResources command on CSP Subarray" in str(df.value)
 
 
 def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle():
@@ -318,7 +305,6 @@ def test_configure_to_raise_devfailed_exception():
         assign_resources_input = []
         assign_resources_input.append(assign_input_str)
         device_proxy=tango_context.device
-        # csp_config = configure_str
         #act
         with pytest.raises(tango.DevFailed) as df:
             device_proxy.Configure(configure_str)
@@ -399,11 +385,11 @@ def test_start_scan_should_raise_devfailed_exception():
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.StartScan(scan_input_str)
 
         # assert:
-        assert const.ERR_STARTSCAN_RESOURCES in tango_context.device.activityMessage
+        assert "Error while invoking StartScan command on CSP Subarray" in str(df.value)
 
 
 def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
@@ -467,11 +453,10 @@ def test_end_scan_should_raise_devfailed_exception():
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.EndScan()
 
-        assert const.ERR_ENDSCAN_INVOKING_CMD in tango_context.device.activityMessage
-
+        assert "Error while invoking EndScan command on CSP Subarray" in str(df.value)
 
 def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
     # arrange:
@@ -533,10 +518,11 @@ def test_goto_idle_should_raise_devfailed_exception():
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.GoToIdle()
 
-        assert const.ERR_GOTOIDLE_INVOKING_CMD in tango_context.device.activityMessage
+        #assert
+        assert "Error while invoking GoToIdle command on CSP Subarray" in str(df.value)
 
 def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_state():
     # arrange:
