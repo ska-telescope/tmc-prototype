@@ -334,14 +334,6 @@ class TestDishMaster(object):
         assert tango_context.device.configuredBand == 1
         # PROTECTED REGION END #    //  DishMaster.test_ConfiguredBand
 
-    def test_WindSpeed(self, tango_context):
-        """Test for WindSpeed"""
-        # PROTECTED REGION ID(DishMaster.test_WindSpeed) ENABLED START #
-        speed = 0
-        tango_context.device.WindSpeed = speed
-        assert tango_context.device.WindSpeed == speed
-        # PROTECTED REGION END #    //  DishMaster.test_WindSpeed
-
     def test_maxCapabilities(self, tango_context):
         """Test for maxCapabilities"""
         # PROTECTED REGION ID(DishMaster.test_maxCapabilities) ENABLED START #
