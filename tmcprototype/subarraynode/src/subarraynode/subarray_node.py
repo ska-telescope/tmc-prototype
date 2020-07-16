@@ -322,7 +322,7 @@ class SubarrayNode(SKASubarray):
                         else:
                             self._obs_state = ObsState.READY
                     else:
-                        self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                        self._dish_leaf_node_group.command_inout(const.CMD_TRACK_STOP)
                         self._obs_state = ObsState.IDLE
                 elif pointing_state_count_slew != 0:
                     self._obs_state = ObsState.CONFIGURING
@@ -474,7 +474,7 @@ class SubarrayNode(SKASubarray):
         :return: List of strings.
             Returns the list of CSP resources successfully assigned to the Subarray. Currently, the
             CSPSubarrayLeafNode.AssignResources function returns void. The function only loops back
-            the input argument in case of successful resource allocation, or returns exception 
+            the input argument in case of successful resource allocation, or returns exception
             object in case of failure.
         """
         arg_list = []
@@ -489,7 +489,7 @@ class SubarrayNode(SKASubarray):
             self.logger.debug(const.ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:
-            # Log exception here as The callstack from this thread wont get 
+            # Log exception here as The callstack from this thread wont get
             # propagated to main thread.
             self.logger.exception("CSP Subarray failed to allocate resources.")
             tango.Except.re_throw_exception(df,
@@ -518,7 +518,7 @@ class SubarrayNode(SKASubarray):
         :return: List of strings.
             Returns the list of successfully assigned resources. Currently the
             SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
-            function just loops back the input argument in case of success or returns exception 
+            function just loops back the input argument in case of success or returns exception
             object in case of failure.
         """
         argout = []
@@ -580,7 +580,7 @@ class SubarrayNode(SKASubarray):
         """
         if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
             return
-        
+
         try:
             self._dish_leaf_node_group.remove_all()
             log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
@@ -925,10 +925,10 @@ class SubarrayNode(SKASubarray):
                     tango.ErrSeverity.ERR
                 )
             # except AssertionError as error:
-            #     self.logger.exception("Failed to assign CSP resources: actual %s != %s expected", 
+            #     self.logger.exception("Failed to assign CSP resources: actual %s != %s expected",
             #         csp_allocation_result, receptor_list)
             #     tango.Except.throw_exception(
-            #         "Assign resources failed on CspSubarrayLeafNode", 
+            #         "Assign resources failed on CspSubarrayLeafNode",
             #         str(csp_allocation_result),
             #         "subarraynode.AssignResources()",
             #         tango.ErrSeverity.ERR)
@@ -955,10 +955,10 @@ class SubarrayNode(SKASubarray):
             #     assert sdp_allocation_result == sdp_resources
             #     self.logger.info("Assign Resources on SDPSubarray successful")
             # except AssertionError as error:
-            #     self.logger.exception("Failed to assign SDP resources: actual %s != %s expected", 
+            #     self.logger.exception("Failed to assign SDP resources: actual %s != %s expected",
             #         sdp_allocation_result, sdp_resources)
             #     tango.Except.throw_exception(
-            #         "Assign resources failed on CspSubarrayLeafNode", 
+            #         "Assign resources failed on CspSubarrayLeafNode",
             #         str(sdp_allocation_result),
             #         "subarraynode.AssignResources()",
             #         tango.ErrSeverity.ERR)
@@ -1474,8 +1474,8 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_CMD_ENDSB_INV_SDP)
                 self._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
                 self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
-                self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-                self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
+                self._dish_leaf_node_group.command_inout(const.CMD_TRACK_STOP)
+                self.logger.info(const.STR_CMD_TRACK_STOP_INV_DLN)
                 self._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
                 self.set_status(const.STR_ENDSB_SUCCESS)

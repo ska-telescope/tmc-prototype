@@ -1343,7 +1343,7 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
         # assert:
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ENDSB)
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_GOTOIDLE)
-        dish_ln_proxy_mock.command_inout.asser_called_with(const.CMD_STOP_TRACK)
+        dish_ln_proxy_mock.command_inout.asser_called_with(const.CMD_TRACK_STOP)
 
 
 def test_endsb_command_subarray_when_in_invalid_state():

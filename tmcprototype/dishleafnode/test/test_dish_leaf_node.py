@@ -96,7 +96,7 @@ class TestDishLeafNode(object):
         tango_context.device.Track(input_string)
         time.sleep(2)
         assert const.ERR_ELE_LIM in tango_context.device.activityMessage
-        create_dish_proxy.StopTrack()
+        create_dish_proxy.TrackStop()
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
     def test_Configure(self, tango_context):
@@ -266,13 +266,13 @@ class TestDishLeafNode(object):
         tango_context.device.Track(input_string)
         time.sleep(60)
         assert (create_dish_proxy.pointingState == 1 or create_dish_proxy.pointingState == 2)
-        create_dish_proxy.StopTrack()
+        create_dish_proxy.TrackStop()
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
-    def test_StopTrack(self, tango_context, create_dish_proxy):
+    def test_TrackStop(self, tango_context, create_dish_proxy):
         """Test for Track"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
-        tango_context.device.StopTrack()
+        tango_context.device.TrackStop()
         time.sleep(10)
         assert (create_dish_proxy.pointingState == 0)
         # PROTECTED REGION END #    //  DishLeafNode.Track

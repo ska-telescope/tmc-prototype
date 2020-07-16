@@ -465,7 +465,7 @@ class TestSubarrayNode(object):
                                        '"tmc":{"scanDuration":10.0}}')
         time.sleep(65)
         assert tango_context.device.obsState == ObsState.READY
-        create_dish_proxy.StopTrack()
+        create_dish_proxy.TrackStop()
         # PROTECTED REGION END #    //  SubarrayNode.test_Configure
 
     def test_Scan(self, tango_context):
@@ -664,7 +664,7 @@ class TestSubarrayNode(object):
         track_argin = "radec|21:08:47.92|-88:57:22.9"
         tango_context.device.Track(track_argin)
         assert const.STR_TRACK_IP_ARG in tango_context.device.activityMessage
-        create_dishln_proxy.StopTrack()
+        create_dishln_proxy.TrackStop()
         # PROTECTED REGION END #    //  SubarrayNode.test_Track
 
     def test_loggingLevel(self, tango_context):

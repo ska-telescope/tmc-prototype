@@ -707,8 +707,8 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  DishLeafNode.EndScan
 
     @command(
-    dtype_in='str', 
-    doc_in="Pointing parameter of Dish", 
+    dtype_in='str',
+    doc_in="Pointing parameter of Dish",
     )
     @DebugIt()
     def Configure(self, argin):
@@ -912,7 +912,7 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  DishLeafNode.Slew
 
     @command(
-    dtype_in='str', 
+    dtype_in='str',
     )
     @DebugIt()
     def Track(self, argin):
@@ -975,10 +975,10 @@ class DishLeafNode(SKABaseDevice):
     @command(
     )
     @DebugIt()
-    def StopTrack(self):
-        # PROTECTED REGION ID(DishLeafNode.StopTrack) ENABLED START #
+    def TrackStop(self):
+        # PROTECTED REGION ID(DishLeafNode.TrackStop) ENABLED START #
         """
-         Invokes StopTrack command on the DishMaster.
+         Invokes TrackStop command on the DishMaster.
 
         :param argin: DevVoid
 
@@ -989,24 +989,24 @@ class DishLeafNode(SKABaseDevice):
         exception_message = []
         try:
             self.event_track_time.set()
-            self._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.cmd_ended_cb)
+            self._dish_proxy.command_inout_asynch(const.CMD_TRACK_STOP, self.cmd_ended_cb)
 
         except DevFailed as dev_failed:
             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                                                     exception_message, exception_count,
-                                                                                    const.ERR_EXE_STOP_TRACK_CMD)
+                                                                                    const.ERR_EXE_TRACK_STOP_CMD)
 
         except Exception as except_occurred:
-            log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(except_occurred.message)
+            log_msg = const.ERR_EXE_TRACK_STOP_CMD + str(except_occurred.message)
             self.logger.info(log_msg)
             [exception_count,exception_message] = self._handle_generic_exception(except_occurred,
-                                            exception_message, exception_count, const.ERR_EXE_STOP_TRACK_CMD)
+                                            exception_message, exception_count, const.ERR_EXE_TRACK_STOP_CMD)
 
         # Throw Exception
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_STOPTRACK_EXEC)
 
-        # PROTECTED REGION END #    //  DishLeafNode.StopTrack
+        # PROTECTED REGION END #    //  DishLeafNode.TrackStop
 
 # ----------
 # Run server
