@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.2"
+version = "0.2.3"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -10,10 +10,10 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.2.2
-tag=0.2.2
-tag_description=Exception handling guidelines implemented for AssignResource.
-release_notes=This release Contains: <br/><ul><li>Exception handling guidelines implemented for AssignResources functionality.</li><li>Exception Logging</li><li>Raising custom exceptions</li><li>Catch exceptions</li><li>Handlie Exceptions</li></ul>
+release=0.2.3
+tag=0.2.3
+tag_description=Fixed issue related to inconsistancy in dish pointing state.
+release_notes=This release Contains: <br/><ul><li>Fixed an issue that lead to inconsistancy in dish pointing.</li></ul>
 gitlab_username=adityadangeska
 private_token=T-QnRqsjQgqga_BRsz_i
 

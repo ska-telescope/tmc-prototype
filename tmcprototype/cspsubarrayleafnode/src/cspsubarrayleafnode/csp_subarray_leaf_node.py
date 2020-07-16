@@ -982,15 +982,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             exception_count = 0
             try:
-                device.validate_obs_state()
-
-            except InvalidObsStateError as error:
-                self.logger.exception(error)
-                tango.Except.throw_exception("ObsState is not in EMPTY state", "CSP subarray leaf node raised "
-                                                                              "exception",
-                                             "CSP.AddReceptors", tango.ErrSeverity.ERR)
-
-            try:
                 # Parse receptorIDList from JSON string.
                 jsonArgument = json.loads(argin[0])
                 device.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
@@ -1055,6 +1046,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def AssignResources(self, argin):
         """ Invokes AssignResources command on CspSubarrayLeafNode. """
         handler = self.get_command_object("AssignResources")
+        try:
+            self.validate_obs_state()
+
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception("ObsState is not in EMPTY state", "CSP subarray leaf node raised "
+                                                                           "exception",
+                                         "CSP.AddReceptors", tango.ErrSeverity.ERR)
+
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 

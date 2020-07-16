@@ -14,6 +14,7 @@ of state and mode attributes defined by the SKA Control Model.
 from __future__ import print_function
 from __future__ import absolute_import
 
+# PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
@@ -22,7 +23,6 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResponseCommand, ResultCode
 from ska.base.control_model import HealthState
 # Additional import
-# PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from . import const
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
@@ -42,6 +42,38 @@ class CentralNode(SKABaseDevice):
     """
 
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
+    @DebugIt()
+    def _check_receptor_reassignment(self, input_receptors_list):
+        """
+        Checks if any of the receptors are already allocated to other subarray when AssignResources command is called.
+
+        :param: argin: The input receptor list
+
+        :return: None
+
+        :throws:
+            ResourceReassignmentError: Thrown when an already assigned resource is received
+            in Assignresources command.
+
+        """
+
+        self.logger.info("Checking for duplicate allocation of dishes.")
+        duplicate_allocation_count = 0
+        duplicate_allocation_dish_ids = []
+
+        for receptor in input_receptors_list:
+            dish_ID = "dish" + receptor
+            self.logger.info("Checking allocation status of dish %s.", dish_ID)
+            if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
+                self.logger.info("Dish %s is already allocated.", dish_ID)
+                duplicate_allocation_dish_ids.append(dish_ID)
+                duplicate_allocation_count = duplicate_allocation_count + 1
+        self.logger.info("No of dishes already allocated: %d", duplicate_allocation_count)
+        self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
+
+        if duplicate_allocation_count > 0:
+            raise ResourceReassignmentError("Resources already assigned.", duplicate_allocation_dish_ids)
+
     def health_state_cb(self, evt):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
@@ -50,6 +82,9 @@ class CentralNode(SKABaseDevice):
         :param evt: A TANGO_CHANGE event on Subarray healthState.
 
         :return: None
+
+        :raises: KeyError if error occurs while setting Subarray healthState
+                Exception if error occurs in aggregating the health state of the telescope
         """
         exception_count = 0
         exception_message = []
@@ -129,8 +164,6 @@ class CentralNode(SKABaseDevice):
                                                                                   exception_message, exception_count,
                                                                                   const.ERR_AGGR_HEALTH_STATE)
 
-    # PROTECTED REGION END #    //  CentralNode.class_variable
-
     def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
         str_log = read_actvity_msg + str(df)
         self.logger.error(str_log)
@@ -153,6 +186,8 @@ class CentralNode(SKABaseDevice):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
         self.logger.error(const.STR_CMD_FAILED)
+
+    # PROTECTED REGION END #    //  CentralNode.class_variable
 
     # -----------------
     # Device Properties
@@ -222,7 +257,7 @@ class CentralNode(SKABaseDevice):
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the TMC CentralNode's init_device() command.
+        A class for the TMC CentralNode's init_device() method.
         """
         def do(self):
             """
@@ -232,6 +267,11 @@ class CentralNode(SKABaseDevice):
              The message is for information purpose only.
 
             :rtype: (ReturnCode, str)
+
+            :raises: DevFailed if error occurs while initializing the CentralNode device or if error occurs while
+                    creating device proxy for any of the devices like SubarrayNode, DishLeafNode, CSPMasterLeafNode
+                    or SDPMasterLeafNode.
+
             """
             super().do()
 
@@ -240,17 +280,14 @@ class CentralNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                #SKABaseDevice.init_device(self)
                 self.logger.info("Device initialisating...")
                 device._subarray1_health_state = HealthState.OK
                 device._subarray2_health_state = HealthState.OK
                 device._subarray3_health_state = HealthState.OK
                 device._sdp_master_leaf_health = HealthState.OK
                 device._csp_master_leaf_health = HealthState.OK
-                #self.set_state(DevState.ON)
                 # Initialise Attributes
                 device._health_state = HealthState.OK
-                #device._admin_mode = AdminMode.ONLINE
                 device._telescope_health_state = HealthState.OK
                 device.subarray_health_state_map = {}
                 device._dish_leaf_node_devices = []
@@ -258,14 +295,12 @@ class CentralNode(SKABaseDevice):
                 device.subarray_FQDN_dict = {}
                 device._subarray_allocation = {}
                 device._read_activity_message = ""
-                #device.set_status(const.STR_INIT_SUCCESS)
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
                                                                                         exception_count, const.ERR_INIT_PROP_ATTR_CN)
                 device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
-                return (ResultCode.FAILED, device._read_activity_message)
 
                 #  Get Dish Leaf Node devices List
                 # TODO: Getting DishLeafNode devices list from TANGO DB
@@ -290,7 +325,7 @@ class CentralNode(SKABaseDevice):
                 dish_ID = "dish000" + str(dish)
                 device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
 
-                # Create proxies of Dish Leaf Node devices
+            # Create proxies of Dish Leaf Node devices
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
                     device._leaf_device_proxy.append(DeviceProxy(device._dish_leaf_node_devices[name]))
@@ -301,7 +336,7 @@ class CentralNode(SKABaseDevice):
                                                                                            const.ERR_IN_CREATE_PROXY)
                     device._read_activity_message = const.ERR_IN_CREATE_PROXY
 
-                # Create device proxy for CSP Master Leaf Node
+            # Create device proxy for CSP Master Leaf Node
             try:
                 device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
                 device._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
@@ -314,7 +349,7 @@ class CentralNode(SKABaseDevice):
                                                                                        const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
                 device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
 
-               # Create device proxy for SDP Master Leaf Node
+            # Create device proxy for SDP Master Leaf Node
             try:
                 device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
                 device._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
@@ -327,7 +362,7 @@ class CentralNode(SKABaseDevice):
                                                                                        const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
                 device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
 
-               # Create device proxy for Subarray Node
+            # Create device proxy for Subarray Node
             for subarray in range(0, len(device.TMMidSubarrayNodes)):
                 try:
                     subarray_proxy = DeviceProxy(device.TMMidSubarrayNodes[subarray])
@@ -347,10 +382,9 @@ class CentralNode(SKABaseDevice):
                                                                                            const.ERR_SUBSR_SA_HEALTH_STATE)
                     device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
 
-                if exception_count >0:
-                    self.logger.info(device._read_activity_message)
-                    device.throw_exception(exception_message, device._read_activity_message)
-                    return (ResultCode.FAILED, device._read_activity_message)
+            if exception_count >0:
+                self.logger.info(device._read_activity_message)
+                device.throw_exception(exception_message, device._read_activity_message)
 
             device._read_activity_message = "Central Node initialised successfully."
             self.logger.info(device._read_activity_message)
@@ -413,20 +447,20 @@ class CentralNode(SKABaseDevice):
 
     class StowAntennasCommand(ResponseCommand):
         """
-        A class for CentralNode's Track() command.
+        A class for CentralNode's StowAntennas() command.
         """
 
         def check_allowed(self):
 
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
+
             :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command StowAntennas is not allowed in current state.",
@@ -437,11 +471,16 @@ class CentralNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            Stows the specified receptors.
+            Invokes the command SetStowMode on the specified receptors.
 
             :param argin: List of Receptors to be stowed.
 
             :return: None
+
+            :raises: DevFailed if error occurs while invoking command of DishLeafNode
+                    ValueError if error occurs if input argument json string contains invalid value
+                    Exception if command execution throws any type of exception
+
             """
             device = self.target
             exception_count = 0
@@ -464,37 +503,29 @@ class CentralNode(SKABaseDevice):
                                                                                                   exception_count,
                                                                                                   const.ERR_EXE_STOW_CMD)
                         device._read_activity_message = const.ERR_EXE_STOW_CMD
-                        # return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
-
-                    if exception_count > 0:
-                        device.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
-                        return (ResultCode.FAILED, device._read_activity_message)
 
             except ValueError as value_error:
                 self.logger.error(const.ERR_STOW_ARGIN)
                 device._read_activity_message = const.ERR_STOW_ARGIN + str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
-                # return (ResultCode.FAILED, const.ERR_STOW_ARGIN)
+
             except Exception as except_occured:
                 [exception_message, exception_count] = device._handle_generic_exception(except_occured,
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_EXE_STOW_CMD)
                 device._read_activity_message = const.ERR_EXE_STOW_CMD
-                # return (ResultCode.FAILED, const.ERR_EXE_STOW_CMD)
 
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
-                return (ResultCode.FAILED, device._read_activity_message)
-            # PROTECTED REGION END #    //  CentralNode.stow_antennas
-            # TODO: check if message should be Started or Ok?
+
             return (ResultCode.OK, device._read_activity_message)
 
     def is_StowAntennas_allowed(self):
         """
-        Whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device state.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -528,14 +559,13 @@ class CentralNode(SKABaseDevice):
         def check_allowed(self):
 
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
+
             :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command StandByTelescope is not allowed in current state.",
@@ -546,12 +576,15 @@ class CentralNode(SKABaseDevice):
 
         def do(self):
             """
-            Sets the CentralNode into OFF state.
+            Sets the CentralNode into OFF state. Invokes the respective command on lower level nodes adn devices.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
 
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode,
+                    DishLeafNode, CSPMasterLeafNode or SDpMasterLeafNode
 
             """
             device = self.target
@@ -605,15 +638,14 @@ class CentralNode(SKABaseDevice):
                                                                                           const.ERR_EXE_STANDBY_CMD)
                 device._read_activity_message = const.ERR_EXE_STANDBY_CMD
 
-                if exception_count > 0:
-                    device.throw_exception(exception_message, const.STR_STANDBY_EXEC)
-                    return (ResultCode.FAILED, device._read_activity_message)
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_STANDBY_EXEC)
 
             return (ResultCode.OK, device._read_activity_message)
 
     def is_StandByTelescope_allowed(self):
         """
-        Whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device state.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -631,9 +663,9 @@ class CentralNode(SKABaseDevice):
     )
     def StandByTelescope(self):
         """
-            This command invokes SetStandbyLPMode() command on DishLeafNode, StandBy() command on
-            CspMasterLeafNode and SdpMasterLeafNode and Off() command on SubarrayNode and sets
-            CentralNode into OFF state.
+        This command invokes SetStandbyLPMode() command on DishLeafNode, StandBy() command on CspMasterLeafNode and
+        SdpMasterLeafNode and Off() command on SubarrayNode and sets CentralNode into OFF state.
+
         """
         handler = self.get_command_object("StandByTelescope")
         (result_code, message) = handler()
@@ -646,14 +678,14 @@ class CentralNode(SKABaseDevice):
         def check_allowed(self):
 
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
+
             :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command StartUpTelescope is not allowed in current state.",
@@ -673,6 +705,9 @@ class CentralNode(SKABaseDevice):
             The message is for information purpose only.
 
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode,
+                    DishLeafNode, CSPMasterLeafNode or SDpMasterLeafNode
 
             """
             device = self.target
@@ -726,16 +761,15 @@ class CentralNode(SKABaseDevice):
                                                                                           const.ERR_EXE_ON_CMD)
 
                 device._read_activity_message =  const.ERR_EXE_ON_CMD
-                # TODO: for future-  throw exception:
+
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_ON_EXEC)
-                return (ResultCode.FAILED, device._read_activity_message)
 
             return (ResultCode.OK, device._read_activity_message)
 
     def is_StartUpTelescope_allowed(self):
         """
-        Whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device state.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -754,8 +788,8 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def StartUpTelescope(self):
         """
-            This command invokes SetOperateMode() command on DishLeadNode, On() command on CspMasterLeafNode,
-            SdpMasterLeafNode and SubarrayNode and sets the Central Node into ON state.
+        This command invokes SetOperateMode() command on DishLeadNode, On() command on CspMasterLeafNode,
+        SdpMasterLeafNode and SubarrayNode and sets the Central Node into ON state.
         """
         handler = self.get_command_object("StartUpTelescope")
         (result_code, message) = handler()
@@ -768,14 +802,15 @@ class CentralNode(SKABaseDevice):
 
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
+
             :rtype: boolean
+
             :raises: DevFailed if this command is not allowed to be run
                 in current device state
+
             """
 
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
@@ -787,14 +822,12 @@ class CentralNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            Assigns resources to given subarray. It accepts the subarray id,
-            receptor id list and SDP block in JSON string format. Upon successful execution, the
-            'receptorIDList' attribute of the given subarray is populated with the given
-            receptors.Also checking for duplicate allocation of resources is done. If already allocated it will throw
-            error message regarding the prior existence of resource.
+            Assigns resources to given subarray. It accepts the subarray id, receptor id list and SDP block in JSON
+            string format. Upon successful execution, the 'receptorIDList' attribute of the given subarray is populated
+            with the given receptors.Also checking for duplicate allocation of resources is done. If already allocated
+            it will throw error message regarding the prior existence of resource.
 
             :param argin: The string in JSON format. The JSON contains following values:
-
 
                subarrayID:
                    DevShort. Mandatory.
@@ -884,6 +917,13 @@ class CentralNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
+            :raises: Custom exceptions as InvalidJSONError or ResourceNotPresentError or SubarrayNotPresentError if input
+                    argument json string is not valid.
+                    Custom exception as ResourceReassignmentError when an already assigned resource is received in
+                    input argument.
+                    ValueError if input argument json string contains invalid value
+                    DevFailed if the command execution or invocation on subarray node is not successful
+
             Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
 
             """
@@ -917,7 +957,7 @@ class CentralNode(SKABaseDevice):
                 resources_allocated_return = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
                 resources_allocated = resources_allocated_return[1]
-                self.logger.info("\n\n resources_assigned:" + str(resources_allocated))
+                self.logger.info("\n\n resources_assigned:", str(resources_allocated))
 
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
@@ -967,42 +1007,9 @@ class CentralNode(SKABaseDevice):
 
             # PROTECTED REGION END #    //  CentralNode.AssignResources
 
-    @DebugIt()
-    def _check_receptor_reassignment(self, input_receptors_list):
-        """
-        Checks if any of the receptors are already allocated to other subarray when
-        AssignResources command is called.
-
-        :param:
-
-        :return: None
-
-        :throws:
-            ResourceReassignmentError: Thrown when an already assigned resource is received
-            in Assignresources command.
-
-        """
-        
-        self.logger.info("Checking for duplicate allocation of dishes.")
-        duplicate_allocation_count = 0
-        duplicate_allocation_dish_ids = []
-
-        for receptor in input_receptors_list:
-            dish_ID = "dish" + receptor
-            self.logger.info("Checking allocation status of dish %s.", dish_ID)
-            if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
-                self.logger.info("Dish %s is already allocated.", dish_ID)
-                duplicate_allocation_dish_ids.append(dish_ID)
-                duplicate_allocation_count = duplicate_allocation_count + 1
-        self.logger.info("No of dishes already allocated: %d", duplicate_allocation_count)
-        self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
-
-        if duplicate_allocation_count > 0:
-            raise ResourceReassignmentError("Resources already assigned.", duplicate_allocation_dish_ids)
-
     def is_AssignResources_allowed(self):
         """
-        Whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device state.
 
         :return: True if this command is allowed to be run in current device state
 
@@ -1026,7 +1033,7 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def AssignResources(self, argin):
         """
-        AssignResources command invokes the AssignResource command on lower level devices.
+        AssignResources command invokes the AssignResources command on lower level devices.
         """
         handler = self.get_command_object("AssignResources")
         (result_code, message) = handler(argin)
@@ -1038,14 +1045,14 @@ class CentralNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
+
             :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
             """
 
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
@@ -1086,25 +1093,29 @@ class CentralNode(SKABaseDevice):
                 Note: From Jive, enter input as:
                     {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
 
-                :return: A tuple containing a return code and a string in josn format on successful release
-                 of all the resources. The JSON string contains following values:
+            :return: A tuple containing a return code and a string in josn format on successful release
+             of all the resources. The JSON string contains following values:
 
-                    releaseALL:
-                        Boolean(True or False). If True, all the resources are successfully released from the
-                        Subarray.
+                releaseALL:
+                    Boolean(True or False). If True, all the resources are successfully released from the
+                    Subarray.
 
-                    receptorIDList:
-                        DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
-                        resources (device names) that are noe released from the subarray.
+                receptorIDList:
+                    DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
+                    resources (device names) that are noe released from the subarray.
 
-                    Example:
-                        argout =
-                        {
-                            "ReleaseAll" : True,
-                            "receptorIDList" : []
-                        }
+                Example:
+                    argout =
+                    {
+                        "ReleaseAll" : True,
+                        "receptorIDList" : []
+                    }
 
-                 :rtype: (ResultCode, str)
+             :rtype: (ResultCode, str)
+
+             :raises: ValueError if input argument json string contains invalid value
+                    KeyError if input argument json string contains invalid key
+                    DevFailed if the command execution or command invocation on SubarrayNode is not successful
 
             """
             device = self.target
@@ -1120,7 +1131,7 @@ class CentralNode(SKABaseDevice):
                     # Invoke "ReleaseAllResources" on SubarrayNode
                     return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     res_not_released = ast.literal_eval(return_val[1][0])
-                    self.logger.info("\n\n res_not_released:"+ str(res_not_released))
+                    self.logger.info("\n\n res_not_released:", str(res_not_released))
                     log_msg = const.STR_REL_RESOURCES
                     device._read_activity_message = log_msg
                     if not res_not_released:
@@ -1140,15 +1151,10 @@ class CentralNode(SKABaseDevice):
                         device._read_activity_message = log_msg
                         self.logger.info(log_msg)
                         # release_success = False
-                        message = device._read_activity_message
-                        self.logger.info(message)
-                        return (ResultCode.FAILED, device._read_activity_message )
                 else:
                     device._read_activity_message = const.STR_FALSE_TAG
                     self.logger.info(const.STR_FALSE_TAG)
-                    # message = const.STR_FALSE_TAG
-                    # self.logger.info(message)
-                    # return (ResultCode.FAILED, device._read_activity_message)
+
             except ValueError as value_error:
                 self.logger.error(const.ERR_INVALID_JSON)
                 device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
@@ -1170,11 +1176,10 @@ class CentralNode(SKABaseDevice):
 
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
-                return (ResultCode.FAILED, device._read_activity_message)
 
     def is_ReleaseResources_allowed(self):
         """
-        Whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device state.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -1224,7 +1229,9 @@ def main(args=None, **kwargs):
     """
     Runs the CentralNode.
     :param args: Arguments internal to TANGO
+
     :param kwargs: Arguments internal to TANGO
+
     :return: CentralNode TANGO object.
     """
     return run((CentralNode,), args=args, **kwargs)

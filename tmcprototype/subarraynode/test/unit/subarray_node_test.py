@@ -262,6 +262,7 @@ def test_status():
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.Status() == "The device is in OFF state."
 
+
 def test_health_state():
     """Test for healthState"""
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -337,8 +338,6 @@ def test_receptor_id_list():
 
 
 # Test cases for Commands
-
-#+++++++++++++++++++On command Test Case+++++++++++++++++++++++
 def test_on_command_should_change_subarray_device_state_to_on():
     with fake_tango_system(SubarrayNode) as tango_context:
         # act:
@@ -348,7 +347,6 @@ def test_on_command_should_change_subarray_device_state_to_on():
         assert tango_context.device.obsState == ObsState.EMPTY
 
 
-#+++++++++++++++++++OFF command Test Case+++++++++++++++++++++++
 def test_off_command_should_change_subarray_device_state_to_off():
     with fake_tango_system(SubarrayNode) as tango_context:
         # act:
@@ -359,7 +357,6 @@ def test_off_command_should_change_subarray_device_state_to_off():
         assert tango_context.device.obsState == ObsState.EMPTY
 
 
-#+++++++++++++++++++Assign Resources command Test Case+++++++++++++++++++++++
 def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -405,12 +402,10 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         json_argument[const.STR_KEY_DISH] = dish
         arg_list.append(json.dumps(json_argument))
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
-        # Need to uncomment this
         assert tango_context.device.obsState == ObsState.RESOURCING
-        # assert tango_context.device.obsState == ObsState.IDLE
 
 
-def test_assign_resource_is_completed():
+def test_assign_resource_is_completed_when_csp_and_sdp_is_idle():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
@@ -454,9 +449,8 @@ def test_assign_resource_is_completed():
                            proxies_to_mock=proxies_to_mock) as tango_context:
 
         tango_context.device.On()
-        assign_input_dict = json.loads(assign_input_str)
         tango_context.device.AssignResources(assign_input_str)
-        # Mock the behaviour of Csp and SDP subarray
+        # Mock the behaviour of Csp and SDP subarray's ObsState
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
                                                    attribute, ObsState.IDLE)
@@ -472,12 +466,13 @@ def test_assign_resource_is_completed():
 def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
     # act
     with fake_tango_system(SubarrayNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_input_str)
 
         # assert:
         assert tango_context.device.State() == DevState.OFF
         assert tango_context.device.obsState == ObsState.EMPTY
+        assert "Error executing command AssignResourcesCommand" in str(df.value)
 
 
 def test_assign_resource_should_raise_exception_when_called_with_invalid_input():
@@ -494,13 +489,14 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
     }
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.On()
             tango_context.device.AssignResources(assign_invalid_key)
 
         # assert:
         assert tango_context.device.State() == DevState.ON
         assert tango_context.device.obsState == ObsState.FAULT
+        assert "Invalid JSON format" in str(df.value)
 
 
 def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devfailed_exception():
@@ -542,6 +538,7 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
 
         # assert
         assert tango_context.device.State() == DevState.ON
+        assert tango_context.device.obsState == ObsState.FAULT
         assert "This is error message for devfailed" in str(df.value)
 
 
@@ -588,10 +585,10 @@ def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devf
 
         # assert
         assert tango_context.device.State() == DevState.ON
+        assert tango_context.device.obsState == ObsState.FAULT
         assert "This is error message for devfailed" in str(df.value)
 
 
-#+++++++++++++++++++ReleaseResources command Test Case+++++++++++++++++++++++
 def test_release_resource_command_subarray():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -648,10 +645,6 @@ def test_release_resource_command_subarray():
         while tango_context.device.obsState != ObsState.IDLE:
             pass
         tango_context.device.ReleaseAllResources()
-        # while tango_context.device.obsState != ObsState.RESOURCING:
-        #     pass
-
-        # assert tango_context.device.obsState == ObsState.RESOURCING
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
                                                    attribute, ObsState.EMPTY)
@@ -685,14 +678,15 @@ def test_release_resource_should_raise_exception_when_called_before_assign_resou
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         tango_context.device.On()
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseAllResources()
 
         # assert:
         assert tango_context.device.State() == DevState.ON
+        assert tango_context.device.obsState == ObsState.EMPTY
+        assert "Error executing command ReleaseAllResourcesCommand" in str(df.value)
 
 
-#+++++++++++++++++++Configure  command Test Case+++++++++++++++++++++++
 def test_configure_command_obsstate_changes_from_configuring_to_ready():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -761,10 +755,9 @@ def test_configure_command_obsstate_changes_from_configuring_to_ready():
             pass
         assert tango_context.device.obsState == ObsState.IDLE
 
-        receive_addresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
         attribute = "receiveAddresses"
         dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                               receive_addresses)
+                                               receive_addresses_map)
         event_subscription_map[attribute](dummy_event)
         tango_context.device.Configure(configure_str)
         # assert:
@@ -852,7 +845,6 @@ def test_configure_command_subarray_with_invalid_configure_input():
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
-#+++++++++++++++++++Scan command Test Case+++++++++++++++++++++++
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     # Setting up the required configuration in order to test scan command
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
@@ -926,7 +918,6 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
                                                    attribute, ObsState.IDLE)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         # Check the ObsState changes to IDLE
-        #
         while tango_context.device.obsState != ObsState.IDLE:
             pass
         assert tango_context.device.obsState == ObsState.IDLE
@@ -1048,10 +1039,9 @@ def test_start_scan_should_raise_devfailed_exception():
                                                    attribute, ObsState.IDLE)
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         # Check the ObsState changes to IDLE
-        #
-        # while tango_context.device.obsState != ObsState.IDLE:
-        #     pass
-        # assert tango_context.device.obsState == ObsState.IDLE
+        while tango_context.device.obsState != ObsState.IDLE:
+            pass
+        assert tango_context.device.obsState == ObsState.IDLE
 
         # Mock and update the receive address value received from ska-telescope model library.
         attribute = "receiveAddresses"
@@ -1078,9 +1068,9 @@ def test_start_scan_should_raise_devfailed_exception():
                                                     PointingState.TRACK)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # Check the ObsState changes to READY
-        # while tango_context.device.obsState != ObsState.READY:
-        #     pass
-        # assert tango_context.device.obsState == ObsState.READY
+        while tango_context.device.obsState != ObsState.READY:
+            pass
+        assert tango_context.device.obsState == ObsState.READY
 
         # Now subarrayNode obsState is READY we can send Scan() command which will change the
         # obsState to Scanning
@@ -1092,7 +1082,6 @@ def test_start_scan_should_raise_devfailed_exception():
         assert "Failed to invoke StartScan command on subarraynode." in str(df.value)
 
 
-#+++++++++++++++++++EndScan command Test Case+++++++++++++++++++++++
 def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -1167,10 +1156,9 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
             pass
         assert tango_context.device.obsState == ObsState.IDLE
 
-        receive_addresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
         attribute = "receiveAddresses"
         dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                               receive_addresses)
+                                               receive_addresses_map)
         event_subscription_map[attribute](dummy_event)
 
         tango_context.device.Configure(configure_str)
@@ -1217,7 +1205,7 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
         assert tango_context.device.obsState == ObsState.READY
 
 
-def test_end_scan_should_raise_devfailed_exception():
+def test_end_scan_should_raise_devfailed_exception_when_csp_subbarray_ln_throws_devfailed_exception():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
@@ -1335,11 +1323,9 @@ def test_end_scan_should_raise_devfailed_exception():
 
         # assert:
         assert tango_context.device.obsState == ObsState.FAULT
-        # assert "Failed to invoke EndScan command on subarraynode." in str(df.value)
 
 
-#+++++++++++++++++++End command Test Case+++++++++++++++++++++++
-@pytest.mark.xfail(reason="Enable test case once tango issue gets resolved")
+@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -1394,7 +1380,6 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
             update({attr_name: callback}))
-
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         tango_context.device.On()
@@ -1413,10 +1398,9 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
             pass
         assert tango_context.device.obsState == ObsState.IDLE
 
-        receive_addresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
         attribute = "receiveAddresses"
         dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                               receive_addresses)
+                                               receive_addresses_map)
         event_subscription_map[attribute](dummy_event)
 
         tango_context.device.Configure(configure_str)
@@ -1447,8 +1431,6 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
         assert tango_context.device.obsState == ObsState.READY
 
         tango_context.device.End()
-        # while tango_context.device.obsState != ObsState.IDLE:
-        #     pass
         # assert:
         sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ENDSB)
         csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_GOTOIDLE)
@@ -1456,8 +1438,7 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready():
         assert tango_context.device.obsState == ObsState.IDLE
 
 
-# @pytest.mark.skip("Fix test cases")
-def test_end_sb_should_raise_devfailed_exception():
+def test_end_sb_should_raise_devfailed_exception_when_csp_subarray_throws_devfailed_exception():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
@@ -1531,10 +1512,9 @@ def test_end_sb_should_raise_devfailed_exception():
             pass
         assert tango_context.device.obsState == ObsState.IDLE
 
-        receive_addresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
         attribute = "receiveAddresses"
         dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                               receive_addresses)
+                                               receive_addresses_map)
         event_subscription_map[attribute](dummy_event)
 
         tango_context.device.Configure(configure_str)
@@ -1553,16 +1533,6 @@ def test_end_sb_should_raise_devfailed_exception():
         while tango_context.device.obsState != ObsState.READY:
             pass
         assert tango_context.device.obsState == ObsState.READY
-
-        # tango_context.device.Scan(scan_input_str)
-        # while tango_context.device.obsState != ObsState.SCANNING:
-        #     pass
-        # assert tango_context.device.obsState == ObsState.SCANNING
-        #
-        # tango_context.device.EndScan()
-        # while tango_context.device.obsState != ObsState.READY:
-        #     pass
-        # assert tango_context.device.obsState == ObsState.READY
 
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.End()
@@ -1708,7 +1678,6 @@ def test_obs_state_should_raise_exception():
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-
         attribute = 'ObsState'
         dummy_event_csp = command_callback_with_command_exception()
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
@@ -1748,7 +1717,6 @@ def test_pointing_state_is_slew():
 
     dish_pointing_state_attribute = "dishPointingState"
     dish_pointing_state_map = {}
-    pointing_state_count_slew = 1
 
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
@@ -1764,7 +1732,6 @@ def test_pointing_state_is_slew():
                                                     PointingState.SLEW)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
-        pointing_state_count_slew = len(dish_pointing_state_map.values())
         assert tango_context.device.obsState == ObsState.RESOURCING
 
 
@@ -1800,7 +1767,6 @@ def test_pointing_state_is_scan():
     dish_pointing_state_attribute = "dishPointingState"
     dish_pointing_state_map = {}
     event_subscription_map = {}
-    pointing_state_count_scan = 1
 
     csp_subarray1_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
@@ -1821,7 +1787,6 @@ def test_pointing_state_is_scan():
                                                     PointingState.SCAN)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
-        pointing_state_count_scan= len(dish_pointing_state_map.values())
         assert tango_context.device.obsState == ObsState.RESOURCING
 
 
@@ -1861,7 +1826,6 @@ def test_pointing_state_is_ready():
 
     dish_pointing_state_attribute = "dishPointingState"
     dish_pointing_state_map = {}
-    pointing_state_count_ready = 1 
 
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
@@ -1878,7 +1842,6 @@ def test_pointing_state_is_ready():
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
         assert tango_context.device.obsState == ObsState.RESOURCING
-        pointing_state_count_ready = len(dish_pointing_state_map.values())
 
 
 def test_pointing_state_with_error_event():
