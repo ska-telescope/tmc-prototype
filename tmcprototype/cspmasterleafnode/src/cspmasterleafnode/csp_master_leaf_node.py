@@ -268,12 +268,10 @@ class CspMasterLeafNode(SKABaseDevice):
 
             device = self.target
             device.SkaLevel = const.INT_SKA_LEVEL
-            #device._admin_mode = AdminMode.ONLINE  # Setting adminMode to "ONLINE"
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
             device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
-            # _state_fault_flag = False
             try:
                 device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
                 # Creating proxy to the CSPMaster
@@ -283,8 +281,6 @@ class CspMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
                 self.logger.debug(log_msg)
-                #device.set_state(DevState.FAULT)
-                # _state_fault_flag = True
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
                                                                                           exception_count,
                                                                                           const.ERR_IN_CREATE_PROXY)
@@ -299,23 +295,19 @@ class CspMasterLeafNode(SKABaseDevice):
                 device._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
                                                   device.csp_pst_health_state_cb, stateless=True)
 
-                #device.set_state(DevState.ON)
-
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
                                                                                           exception_count,
                                                                                           const.ERR_CSP_MASTER_LEAF_INIT)
-                #device.set_state(DevState.FAULT)
-                # _state_fault_flag = True
+
                 device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
                 device._read_activity_message = log_msg
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
             self.logger.debug(log_msg)
-            # device._read_activity_message = log_msg
             device.set_status(const.STR_CSP_MASTER_LEAF_INIT_SUCCESS)
             device._read_activity_message = const.STR_CSP_MASTER_LEAF_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
@@ -323,7 +315,7 @@ class CspMasterLeafNode(SKABaseDevice):
             if exception_count > 0:
                 self.logger.info(device._read_activity_message)
                 device.throw_exception(exception_message, device._read_activity_message)
-                return (ResultCode.FAILED,device._read_activity_message )
+                return (ResultCode.FAILED, device._read_activity_message)
 
             return (ResultCode.OK, device._read_activity_message)
 
@@ -364,13 +356,14 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         def do(self):
             """
-            Triggers On the CSP Element.
+            Invokes On command on the CSP Element.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
-            :rtype: (ResultCode, str)
-            """
 
+            :rtype: (ResultCode, str)
+
+            """
             device = self.target
             device._csp_proxy.command_inout_asynch(const.CMD_ON, device.cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
@@ -382,12 +375,7 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         def do(self):
             """
-            Triggers Off the CSP Element.
-
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            Invokes Off command on the CSP Element.
             """
             device = self.target
             device._csp_proxy.command_inout_asynch(const.CMD_OFF, device.cmd_ended_cb)
@@ -400,15 +388,13 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether this command is allowed to be run in current device state
+            Checks whether this command is allowed to be run in current device state.
 
-             :return: True if this command is allowed to be run in
-                 current device state
-             :rtype: boolean
-             :raises: DevFailed if this command is not allowed to be run
-                 in current device state
-            Returns
-            -------
+            :return: True if this command is allowed to be run in current device state.
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN]:
@@ -427,6 +413,7 @@ class CspMasterLeafNode(SKABaseDevice):
              The message is for information purpose only.
 
             :rtype: (ResultCode, str)
+            
             """
             device = self.target
             device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, device.cmd_ended_cb)
@@ -435,13 +422,14 @@ class CspMasterLeafNode(SKABaseDevice):
 
     def is_Standby_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
         handler = self.get_command_object("Standby")
         return handler.check_allowed()
@@ -456,20 +444,14 @@ class CspMasterLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def Standby(self):
-        # PROTECTED REGION ID(CspMasterLeafNode.Standby) ENABLED START #
-        """ Sets Standby Mode on the CSP Element.
-
-        :return: None
-        """
+        """ Sets Standby Mode on the CSP Element. """
         handler = self.get_command_object("Standby")
         (result_code, message) = handler()
         return [[result_code], [message]]
-        # PROTECTED REGION END #    //  CspMasterLeafNode.Standby
 
     def init_command_objects(self):
         """
-        Initialises the command handlers for commands supported by this
-        device.
+        Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
         self.register_command_object("Standby", self.StandbyCommand(self, self.state_model, self.logger))

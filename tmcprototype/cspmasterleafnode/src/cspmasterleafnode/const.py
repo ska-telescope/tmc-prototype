@@ -56,7 +56,9 @@ ERR_IN_CREATE_PROXY_CSP_MASTER = "Error in creating proxy to the CSP Master "
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_MSG = "Error message is: "
-ERR_ON_CMD = "Error in invoking command: ON"
+ERR_ON_CMD = "Error in invoking ON command."
+ERR_OFF_CMD = "Error in invoking OFF command."
+ERR_STANDBY_CMD = "Error in invoking STANDBY command."
 
 #INTEGERS
 INT_SKA_LEVEL = 3
