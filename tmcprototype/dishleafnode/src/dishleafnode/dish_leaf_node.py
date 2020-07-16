@@ -706,6 +706,11 @@ class DishLeafNode(SKABaseDevice):
 
         # PROTECTED REGION END #    //  DishLeafNode.EndScan
 
+    @command(
+        dtype_in='str', 
+        doc_in="Pointing parameter of Dish", 
+    )
+    @DebugIt()
     def ConfigureBand(self, argin):
         # PROTECTED REGION ID(DishLeafNode.ConfigureBand) ENABLED START #
 
