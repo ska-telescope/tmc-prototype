@@ -47,17 +47,6 @@ class PointingState(enum.IntEnum):
 
 BAND_LABELS = ["1", "2", "3", "4", "5a", "5b"]
 
-class PowerState(enum.IntEnum):
-    """
-    Power state of the dish
-    """
-    OFF = 0
-    UPS = 1
-    LOW = 2
-    FULL = 3
-# pylint: disable=unused-argument
-
-
 class DishMaster(SKAMaster):
 # class DishMaster(SKAMaster):
     """
@@ -347,13 +336,6 @@ class DishMaster(SKAMaster):
              "Defaulting to 100")
     )
 
-    powerState = attribute(
-        dtype='DevEnum',
-        access=AttrWriteType.READ,
-        enum_labels=["OFF", "UPS", "LOW", "FULL"],
-        doc="Power state of the dish",
-    )
-
     synchronised = attribute(
         dtype='bool',
         access=AttrWriteType.READ,
@@ -404,7 +386,6 @@ class DishMaster(SKAMaster):
             self._toggle_fault = False
             self._achieved_target_lock = False
             self._pointing_buffer_size = 100
-            self._power_state = PowerState.FULL
             self._synchronised = False
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.debug(const.STR_DISH_INIT_SUCCESS)
@@ -578,12 +559,6 @@ class DishMaster(SKAMaster):
         """Internal construct of TANGO.Returns the pointingBufferSize  ."""
         return self._pointing_buffer_size
         # PROTECTED REGION END #    //  DishMaster.pointingBufferSize_read
-
-    def read_powerState(self):
-        # PROTECTED REGION ID(DishMaster.powerState_read) ENABLED START #
-        """Internal construct of TANGO.Returns the powerState  ."""
-        return self._power_state
-        # PROTECTED REGION END #    //  DishMaster.powerState_read
 
     def read_synchronised(self):
         # PROTECTED REGION ID(DishMaster.synchronised_read) ENABLED START #
@@ -1153,7 +1128,7 @@ class DishMaster(SKAMaster):
                     "dish":
                     {"receiverBand":"1"}
 
-                    }
+                }
 
         :return: None.
 
