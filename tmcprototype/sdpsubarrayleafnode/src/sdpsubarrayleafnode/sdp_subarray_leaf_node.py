@@ -487,10 +487,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                                         const.ERR_ASSGN_RESOURCES)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
                 return ResultCode.FAILED, const.ERR_ASSGN_RESOURCES
-            # TODO: Why this return is added?
-            # return ""
 
-        #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
+             # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
     @command(
         dtype_in=('str'),
@@ -568,9 +566,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             exception_count = 0
             try:
-                # TODO : Check if obsState == IDLE
-                # TODO : For future reference set toggleReadCbfOutLink to false to skip CbfOutLink validation
-                # self._sdp_subarray_proxy.toggleReadCbfOutLink = False
                 jsonArgument = json.loads(argin)
                 sdp_arg = jsonArgument["sdp"]
                 sdpConfiguration = sdp_arg.copy()
@@ -873,13 +868,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                      Exception if command execution throws any type of exception.
 
             """
-            # TODO: For future use
             device = self.target
             exception_message = []
             exception_count = 0
             try:
                 if device._sdp_subarray_proxy.obsState == ObsState.READY:
-                    # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset, Add this in const.py
+                    # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset,
+                    #  Add this in const.py
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSB_SUCCESS
                     self.logger.info(const.STR_ENDSB_SUCCESS)
