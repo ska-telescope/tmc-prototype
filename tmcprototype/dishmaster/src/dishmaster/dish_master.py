@@ -305,13 +305,6 @@ class DishMaster(SKAMaster):
         doc="Configured band of the dish",
     )
 
-    WindSpeed = attribute(
-        dtype='double',
-        access=AttrWriteType.READ_WRITE,
-        unit="km/h",
-        doc="Wind speed of the dish",
-    )
-
     azimuthOverWrap = attribute(
         dtype='bool',
     )
@@ -396,7 +389,6 @@ class DishMaster(SKAMaster):
             self._elevation_difference = 0
             self._azimuth_difference = 0
             self._configured_band = 1
-            self._wind_speed = 5
             self.set_state(DevState.STANDBY)            # Set STATE to STANDBY
             # Initialise Point command variables
             self._current_time = 0
@@ -526,24 +518,6 @@ class DishMaster(SKAMaster):
         """ Internal construct of TANGO. Returns the band configured for the Dish. """
         return self._configured_band
         # PROTECTED REGION END #    //  DishMaster.configuredBand_read
-
-    def read_WindSpeed(self):
-        # PROTECTED REGION ID(DishMaster.WindSpeed_read) ENABLED START #
-        """ Internal construct of TANGO. Returns the Wind speed. """
-        return self._wind_speed
-        # PROTECTED REGION END #    //  DishMaster.WindSpeed_read
-
-    def write_WindSpeed(self, value):
-        # PROTECTED REGION ID(DishMaster.WindSpeed_write) ENABLED START #
-        """
-        Internal construct of TANGO. Sets the wind speed.
-
-        :param value: WindSpeed
-
-        :return: None
-        """
-        self._wind_speed = value
-        # PROTECTED REGION END #    //  DishMaster.WindSpeed_write
 
     def read_azimuthOverWrap(self):
         # PROTECTED REGION ID(DishMaster.azimuthOverWrap_read) ENABLED START #

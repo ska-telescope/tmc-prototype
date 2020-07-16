@@ -1088,15 +1088,6 @@
                                     "1"
                                 ]
                             },
-                            "WindSpeed": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ],
-                                "archive_period": [
-                                    "3000"
-                                ]
-                            },
                             "achievedPointing": {
                                 "abs_change": [
                                     "-1",
@@ -1171,8 +1162,6 @@
                                 "healthstate",
                                 "1000",
                                 "pointingstate",
-                                "1000",
-                                "windspeed",
                                 "1000"
                             ]
                         }
@@ -1189,15 +1178,6 @@
                                     "1"
                                 ]
                             },
-                            "WindSpeed": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ],
-                                "archive_period": [
-                                    "3000"
-                                ]
-                            },
                             "achievedPointing": {
                                 "abs_change": [
                                     "-1",
@@ -1272,8 +1252,6 @@
                                 "healthstate",
                                 "1000",
                                 "pointingstate",
-                                "1000",
-                                "windspeed",
                                 "1000"
                             ]
                         }
@@ -1290,15 +1268,6 @@
                                     "1"
                                 ]
                             },
-                            "WindSpeed": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ],
-                                "archive_period": [
-                                    "3000"
-                                ]
-                            },
                             "achievedPointing": {
                                 "abs_change": [
                                     "-1",
@@ -1373,8 +1342,6 @@
                                 "healthstate",
                                 "1000",
                                 "pointingstate",
-                                "1000",
-                                "windspeed",
                                 "1000"
                             ]
                         }
@@ -1391,15 +1358,6 @@
                                     "1"
                                 ]
                             },
-                            "WindSpeed": {
-                                "abs_change": [
-                                    "-1",
-                                    "1"
-                                ],
-                                "archive_period": [
-                                    "3000"
-                                ]
-                            },
                             "achievedPointing": {
                                 "abs_change": [
                                     "-1",
@@ -1474,8 +1432,6 @@
                                 "healthstate",
                                 "1000",
                                 "pointingstate",
-                                "1000",
-                                "windspeed",
                                 "1000"
                             ]
                         }
@@ -4677,167 +4633,6 @@
                 }
             }
         },
-        "alarmhandler-srv": {
-            "01": {
-                "AlarmHandler": {
-                    "ska_mid/tm_alarmhandler/tmalarmhandler": {
-                        "attribute_properties": {
-                            "alertdish1windspeed": {
-                                "enabled": [
-                                    "1"
-                                ],
-                                "formula": [
-                                    "(mid_d0001/elt/master/WindSpeed > 10)"
-                                ],
-                                "group": [
-                                    "gr_all"
-                                ],
-                                "message": [
-                                    "Dish1 Wind speed exceeded"
-                                ],
-                                "off_command": [
-                                    ""
-                                ],
-                                "off_delay": [
-                                    "0"
-                                ],
-                                "on_command": [
-                                    "mid_d0001/elt/master/SetStowMode"
-                                ],
-                                "on_delay": [
-                                    "0"
-                                ],
-                                "priority": [
-                                    "fault"
-                                ],
-                                "shlvd_time": [
-                                    "2"
-                                ],
-                                "tag": [
-                                    "alertdish1windspeed"
-                                ]
-                            },
-                            "alertdish2windspeed": {
-                                "enabled": [
-                                    "1"
-                                ],
-                                "formula": [
-                                    "(mid_d0002/elt/master/WindSpeed > 10)"
-                                ],
-                                "group": [
-                                    "gr_all"
-                                ],
-                                "message": [
-                                    "Dish2 Wind speed exceeded"
-                                ],
-                                "off_command": [
-                                    ""
-                                ],
-                                "off_delay": [
-                                    "0"
-                                ],
-                                "on_command": [
-                                    "mid_d0002/elt/master/SetStowMode"
-                                ],
-                                "on_delay": [
-                                    "0"
-                                ],
-                                "priority": [
-                                    "fault"
-                                ],
-                                "shlvd_time": [
-                                    "2"
-                                ],
-                                "tag": [
-                                    "alertdish2windspeed"
-                                ]
-                            },
-                            "alertdish3windspeed": {
-                                "enabled": [
-                                    "1"
-                                ],
-                                "formula": [
-                                    "(mid_d0003/elt/master/WindSpeed > 10)"
-                                ],
-                                "group": [
-                                    "gr_all"
-                                ],
-                                "message": [
-                                    "Dish3 Wind speed exceeded"
-                                ],
-                                "off_command": [
-                                    ""
-                                ],
-                                "off_delay": [
-                                    "0"
-                                ],
-                                "on_command": [
-                                    "mid_d0003/elt/master/SetStowMode"
-                                ],
-                                "on_delay": [
-                                    "0"
-                                ],
-                                "priority": [
-                                    "fault"
-                                ],
-                                "shlvd_time": [
-                                    "2"
-                                ],
-                                "tag": [
-                                    "alertdish3windspeed"
-                                ]
-                            },
-                            "alertdish4windspeed": {
-                                "enabled": [
-                                    "1"
-                                ],
-                                "formula": [
-                                    "(mid_d0004/elt/master/WindSpeed > 10)"
-                                ],
-                                "group": [
-                                    "gr_all"
-                                ],
-                                "message": [
-                                    "Dish4 Wind speed exceeded"
-                                ],
-                                "off_command": [
-                                    ""
-                                ],
-                                "off_delay": [
-                                    "0"
-                                ],
-                                "on_command": [
-                                    "mid_d0004/elt/master/SetStowMode"
-                                ],
-                                "on_delay": [
-                                    "0"
-                                ],
-                                "priority": [
-                                    "fault"
-                                ],
-                                "shlvd_time": [
-                                    "2"
-                                ],
-                                "tag": [
-                                    "alertdish4windspeed"
-                                ]
-                            }
-                        },
-                        "properties": {
-                            "AlarmList": [
-                                "alertdish1windspeed",
-                                "alertdish2windspeed",
-                                "alertdish3windspeed",
-                                "alertdish4windspeed"
-                            ],
-                            "SkaLevel": [
-                                "1"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
         "hdbppcm-srv": {
             "01": {
                 "HdbConfigurationManager": {
@@ -4868,16 +4663,12 @@
                     "archiving/hdbpp/eventsubscriber01": {
                         "properties": {
                             "AttributeList": [
-                                "tango://tmcprototype-1234-databaseds:10000/mid_d0001/elt/master/windspeed;strategy=ALWAYS;ttl=0",
                                 "tango://tmcprototype-1234-databaseds:10000/mid_d0001/elt/master/achievedpointing;strategy=ALWAYS;ttl=0",
                                 "tango://tmcprototype-1234-databaseds:10000/mid_d0001/elt/master/desiredpointing;strategy=ALWAYS;ttl=0",
-                                "tango://tmcprototype-1234-databaseds:10000/mid_d0002/elt/master/windspeed;strategy=ALWAYS;ttl=0",
                                 "tango://tmcprototype-1234-databaseds:10000/mid_d0002/elt/master/achievedpointing;strategy=ALWAYS;ttl=0",
                                 "tango://tmcprototype-1234-databaseds:10000/mid_d0002/elt/master/desiredpointing;strategy=ALWAYS;ttl=0",
-                                "tango://tmcprototype-1234-databaseds:10000/mid_d0003/elt/master/windspeed;strategy=ALWAYS;ttl=0",
                                 "tango://tmcprototype-1234-databaseds:10000/mid_d0003/elt/master/achievedpointing;strategy=ALWAYS;ttl=0",
                                 "tango://tmcprototype-1234-databaseds:10000/mid_d0003/elt/master/desiredpointing;strategy=ALWAYS;ttl=0",
-                                "tango://tmcprototype-1234-databaseds:10000/mid_d0004/elt/master/windspeed;strategy=ALWAYS;ttl=0",
                                 "tango://tmcprototype-1234-databaseds:10000/mid_d0004/elt/master/achievedpointing;strategy=ALWAYS;ttl=0",
                                 "tango://tmcprototype-1234-databaseds:10000/mid_d0004/elt/master/desiredpointing;strategy=ALWAYS;ttl=0"
                             ],
