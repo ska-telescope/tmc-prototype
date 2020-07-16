@@ -519,7 +519,10 @@ class DishMaster(SKAMaster):
     def read_configuredBand(self):
         # PROTECTED REGION ID(DishMaster.configuredBand_read) ENABLED START #
         """ Internal construct of TANGO. Returns the band configured for the Dish. """
-        return BAND_LABELS.index(self._configured_band)
+        if self._configured_band not in BAND_LABELS:
+            return 6
+        else:
+            return BAND_LABELS.index(self._configured_band) + 1
         # PROTECTED REGION END #    //  DishMaster.configuredBand_read
 
     def read_azimuthOverWrap(self):
