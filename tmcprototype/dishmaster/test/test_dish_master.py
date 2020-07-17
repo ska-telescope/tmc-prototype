@@ -372,7 +372,7 @@ class TestDishMaster(object):
         assert all(result)
         # PROTECTED REGION END #    //  DishMaster.test_achievedPointing
 
-    def test_ConfigureBand(self, tango_context):
+    def test_configure_band(self, tango_context):
         """
         Test case to check DishMaster is successfully configured.
         """
@@ -387,7 +387,7 @@ class TestDishMaster(object):
                tango_context.device.desiredPointing[2] == Elevation and \
                tango_context.device.configuredBand == receiver_Band
 
-    def test_ConfigureBand_invalid_json(self, tango_context):
+    def test_configure_band_invalid_json(self, tango_context):
         """
         Negative test case to check invalid JSON argument.
         """
@@ -398,7 +398,7 @@ class TestDishMaster(object):
         time.sleep(1)
         assert 'a' in result
 
-    def test_ConfigureBand_key_not_found(self, tango_context):
+    def test_configure_band_key_not_found(self, tango_context):
         """
         Negative test to check if key is found.
         """
