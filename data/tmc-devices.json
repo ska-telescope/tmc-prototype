@@ -908,7 +908,7 @@
                 "DishMaster": {
                     "mid_d0001/elt/master": {
                         "attribute_properties": {
-                            "ConfiguredBand": {
+                            "configuredBand": {
                                 "abs_change": [
                                     "-1",
                                     "1"
@@ -987,7 +987,7 @@
                 "DishMaster": {
                     "mid_d0002/elt/master": {
                         "attribute_properties": {
-                            "ConfiguredBand": {
+                            "configuredBand": {
                                 "abs_change": [
                                     "-1",
                                     "1"
@@ -1066,7 +1066,7 @@
                 "DishMaster": {
                     "mid_d0003/elt/master": {
                         "attribute_properties": {
-                            "ConfiguredBand": {
+                            "configuredBand": {
                                 "abs_change": [
                                     "-1",
                                     "1"
@@ -1145,7 +1145,7 @@
                 "DishMaster": {
                     "mid_d0004/elt/master": {
                         "attribute_properties": {
-                            "ConfiguredBand": {
+                            "configuredBand": {
                                 "abs_change": [
                                     "-1",
                                     "1"
