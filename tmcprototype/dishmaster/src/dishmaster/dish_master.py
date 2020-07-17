@@ -45,7 +45,17 @@ class PointingState(enum.IntEnum):
     SCAN = 3
 # pylint: disable=unused-argument
 
-BAND_LABELS = ["1", "2", "3", "4", "5a", "5b"]
+class ConfiguredBand(enum.Enum):
+    """
+    Configured band of the receiver
+    """
+    B1 = "1"
+    B2 = "2"
+    B3 = "3"
+    B4 = "4"
+    B5a = "5a"
+    B5b = "5b"
+# pylint: disable=unused-argument
 
 class DishMaster(SKAMaster):
 # class DishMaster(SKAMaster):
@@ -57,10 +67,10 @@ class DishMaster(SKAMaster):
     # Function to set achieved pointing attribute to the desired pointing attribute
     def point(self):
         """ Points the dish towards the desired pointing coordinates. """
-        if((self._achieved_pointing[1] != self._desired_pointing[1]) |
+        if((self._achieved_pointing[1] != self._desired_pointing[1]) or
            (self._achieved_pointing[2] != self._desired_pointing[2])):
-            self._achieved_target_lock = False
             try:
+                self._achieved_target_lock = False
                 self._azimuth_difference = self._desired_pointing[1] - self._achieved_pointing[1]
                 self._elevation_difference = self._desired_pointing[2] - self._achieved_pointing[2]
                 self.change_azimuth_thread = threading.Thread(None, self.azimuth, 'DishMaster')
@@ -293,7 +303,7 @@ class DishMaster(SKAMaster):
 
     configuredBand = attribute(
         dtype='DevEnum',
-        enum_labels=["BAND1", "BAND2", "BAND3", "BAND4", "BAND5a", "BAND5b", "NONE", ],
+        enum_labels=["B1", "B2", "B3", "B4", "B5a", "B5b", "NONE", ],
         doc="Configured band of the dish",
     )
 
@@ -373,7 +383,7 @@ class DishMaster(SKAMaster):
             self._achieved_pointing = [0, 0, 0]
             self._elevation_difference = 0
             self._azimuth_difference = 0
-            self._configured_band = "1"
+            self._configured_band = int(ConfiguredBand.B1.value)
             self.set_state(DevState.STANDBY)            # Set STATE to STANDBY
             # Initialise Point command variables
             self._current_time = 0
@@ -500,10 +510,7 @@ class DishMaster(SKAMaster):
     def read_configuredBand(self):
         # PROTECTED REGION ID(DishMaster.configuredBand_read) ENABLED START #
         """ Internal construct of TANGO. Returns the band configured for the Dish. """
-        if self._configured_band not in BAND_LABELS:
-            return 6
-        else:
-            return BAND_LABELS.index(self._configured_band) + 1
+        return self._configured_band
         # PROTECTED REGION END #    //  DishMaster.configuredBand_read
 
     def read_azimuthOverWrap(self):
@@ -1145,7 +1152,8 @@ class DishMaster(SKAMaster):
             self._desired_pointing[1] = AZ
             self._desired_pointing[2] = EL
             receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
-            self._configured_band = receiverBand
+            # ConfiguredBand("5b").value returns '5b' so index to first index
+            self._configured_band = int(ConfiguredBand(receiverBand).value[0])
             self.logger.debug(const.STR_CONFIG_SUCCESS)
 
         except ValueError as value_error:
