@@ -53,6 +53,8 @@ class CspMasterLeafNode(SKABaseDevice):
         :param evt: A TANGO_CHANGE event on cspCbfHealthState attribute.
 
         :return: None
+
+        :raises: Exception if error occurs in subscribing CspCbfHealth attribute
         """
         exception_message = []
         exception_count = 0
@@ -89,6 +91,8 @@ class CspMasterLeafNode(SKABaseDevice):
         :param evt: A TANGO_CHANGE event on cspPssHealthState attribute.
 
         :return: None
+
+        :raises: Exception if error occurs in subscribing CspPssHealth attribute
         """
         exception_message = []
         exception_count = 0
@@ -125,6 +129,8 @@ class CspMasterLeafNode(SKABaseDevice):
         :param evt: A TANGO_CHANGE event on cspPstHealthState attribute.
 
         :return: None
+
+        :raises: Exception if error occurs in subscribing CspPstHealth attribute
         """
         exception_message = []
         exception_count = 0
@@ -173,6 +179,8 @@ class CspMasterLeafNode(SKABaseDevice):
                 - errors     : (sequence<DevError>) The error stack
                 - ext
         :return: none
+
+        :raises: Exception if error occurs command callback.
         """
         exception_count = 0
         exception_message = []
@@ -247,7 +255,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the TMC CSP Master Leaf Node's init_device() "command".
+        A class for the TMC CSP Master Leaf Node's init_device() method.
         """
 
         def do(self):
@@ -258,6 +266,9 @@ class CspMasterLeafNode(SKABaseDevice):
              The message is for information purpose only.
 
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs while creating the device proxy for CSP Master or
+                    subscribing the evennts.
             """
             super().do()
             exception_count = 0
@@ -269,7 +280,6 @@ class CspMasterLeafNode(SKABaseDevice):
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
             device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
-            _state_fault_flag = False
             try:
                 device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
                 # Creating proxy to the CSPMaster
@@ -277,7 +287,6 @@ class CspMasterLeafNode(SKABaseDevice):
                 self.logger.debug(log_msg)
                 device._csp_proxy = DeviceProxy(str(device.CspMasterFQDN))
             except DevFailed as dev_failed:
-                _state_fault_flag = True
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
                 self.logger.debug(log_msg)
                 [exception_message, exception_count] = \
@@ -293,10 +302,8 @@ class CspMasterLeafNode(SKABaseDevice):
                                                   device.csp_pss_health_state_cb, stateless=True)
                 device._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
                                                   device.csp_pst_health_state_cb, stateless=True)
-                return (ResultCode.OK, device._read_activity_message)
 
             except DevFailed as dev_failed:
-                _state_fault_flag = False
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
                 device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
@@ -307,17 +314,11 @@ class CspMasterLeafNode(SKABaseDevice):
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+            self.logger.debug(log_msg)
 
-            if _state_fault_flag:
-                message = const.STR_CMD_FAILED
-                result_code = ResultCode.FAILED
-            else:
-                message = const.STR_INIT_SUCCESS
-                result_code = ResultCode.OK
-
-            device._read_activity_message = message
-            self.logger.info(message)
-            return (result_code, message)
+            device._read_activity_message = const.STR_INIT_SUCCESS
+            self.logger.info(device._read_activity_message)
+            return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspMasterLeafNode.always_executed_hook) ENABLED START #
@@ -428,7 +429,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            Sets Standby Mode on the CSP Element.
+            It invokes the STANDBY command on CSP Master.
 
             :param argin: DevStringArray.
 
