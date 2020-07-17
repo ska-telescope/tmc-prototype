@@ -707,12 +707,12 @@ class DishLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  DishLeafNode.EndScan
 
     @command(
-        dtype_in='str', 
-        doc_in="Pointing parameter of Dish", 
+        dtype_in='str',
+        doc_in="Pointing parameter of Dish",
     )
     @DebugIt()
-    def ConfigureBand(self, argin):
-        # PROTECTED REGION ID(DishLeafNode.ConfigureBand) ENABLED START #
+    def Configure(self, argin):
+        # PROTECTED REGION ID(DishLeafNode.Configure) ENABLED START #
 
         """
         Configures the Dish by setting pointing coordinates for a given observation.
@@ -790,13 +790,13 @@ class DishLeafNode(SKABaseDevice):
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_CONFIGURE_EXEC)
 
-        # PROTECTED REGION END #    //  DishLeafNode.ConfigureBand
+        # PROTECTED REGION END #    //  DishLeafNode.Configure
 
-    def is_ConfigureBand_allowed(self):
-        # PROTECTED REGION ID(DishLeafNode.is_ConfigureBand_allowed) ENABLED START #
-        """ Checks if the ConfigureBand command is allowed in the current state of DishLeafNode """
+    def is_Configure_allowed(self):
+        # PROTECTED REGION ID(DishLeafNode.is_Configure_allowed) ENABLED START #
+        """ Checks if the Configure command is allowed in the current state of DishLeafNode """
         return self.get_state() not in [DevState.INIT, DevState.DISABLE, DevState.OFF]
-        # PROTECTED REGION END #    //  DishLeafNode.is_ConfigureBand_allowed
+        # PROTECTED REGION END #    //  DishLeafNode.is_Configure_allowed
 
     @command(
         dtype_in='str',

@@ -99,44 +99,44 @@ class TestDishLeafNode(object):
         create_dish_proxy.TrackStop()
         # PROTECTED REGION END #    //  DishLeafNode.Track
 
-    def test_ConfigureBand(self, tango_context):
-        """Test for ConfigureBand"""
-        # PROTECTED REGION ID(DishLeafNode.test_ConfigureBand) ENABLED START #
+    def test_Configure(self, tango_context):
+        """Test for Configure"""
+        # PROTECTED REGION ID(DishLeafNode.test_Configure) ENABLED START #
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
-        tango_context.device.ConfigureBand(input_string)
+        tango_context.device.Configure(input_string)
         time.sleep(25)
         assert tango_context.device.activityMessage == (const.STR_CONFIGURE_SUCCESS) or \
                (const.STR_DISH_POINT_STATE_READY)
-        # PROTECTED REGION END #    //  DishLeafNode.test_ConfigureBand
+        # PROTECTED REGION END #    //  DishLeafNode.test_Configure
 
-    def test_ConfigureBand_invalid_JSON(self, tango_context):
-        """Test for ConfigureBand_invalid_JSON  (Negative test case)"""
+    def test_Configure_invalid_JSON(self, tango_context):
+        """Test for Configure_invalid_JSON  (Negative test case)"""
         # PROTECTED REGION ID(DishLeafNode.test_Track) ENABLED START #
         input_string = '{"Invalid Key"}'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ConfigureBand(input_string)
+            tango_context.device.Configure(input_string)
         time.sleep(5)
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
-    def test_ConfigureBand_invalid_arguments(self, tango_context):
-        """Test for ConfigureBand_invalid_arguments  (Negative test case)"""
+    def test_Configure_invalid_arguments(self, tango_context):
+        """Test for Configure_invalid_arguments  (Negative test case)"""
         input_string = []
         input_string.append('{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","":"21:08:47.92","":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"}}')
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ConfigureBand(input_string[0])
+            tango_context.device.Configure(input_string[0])
             time.sleep(1)
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-    def test_ConfigureBand_generic_exception(self, tango_context):
+    def test_Configure_generic_exception(self, tango_context):
         """
         Test case to check generic exception (Negative test case)
         :param tango_context:
         :return:
         """
-        ConfigureBand_input = '[123]'
+        Configure_input = '[123]'
         with pytest.raises(tango.DevFailed):
-            tango_context.device.ConfigureBand(ConfigureBand_input)
+            tango_context.device.Configure(Configure_input)
         time.sleep(1)
         assert const.ERR_EXE_CONFIGURE_CMD in tango_context.device.activityMessage
 
