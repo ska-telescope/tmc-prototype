@@ -34,7 +34,7 @@ def test_on_should_command_csp_master_leaf_node_to_start():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
         on_input = []
-        tango_context.device.On(on_input)
+        tango_context.device.On()
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
@@ -57,7 +57,7 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
 
         # act:
 
-        tango_context.device.Off(off_input)
+        tango_context.device.Off()
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_input,
