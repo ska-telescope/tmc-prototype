@@ -33,7 +33,7 @@ import katpoint
 import re
 import datetime
 import time
-# PROTECTED REGION END #    //  DishLeafNode.additionnal_import
+# PROTECTED REGION END #    //  DishLeafNode.additional_import
 
 __all__ = ["DishLeafNode", "main"]
 
@@ -1055,9 +1055,8 @@ class DishLeafNode(SKABaseDevice):
                 }
                 dish_str_ip = json.dumps(arg_list)
                 # Send configure command to Dish Master
-                cmd = "ConfigureBand{}".format(receiver_band)
-                self._dish_proxy.command_inout_asynch(cmd, str(dish_str_ip),
-                                                      self.cmd_ended_cb)
+                self._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE + receiver_band,
+                                                      str(dish_str_ip), self.cmd_ended_cb)
                 return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except ValueError as value_error:

@@ -237,6 +237,73 @@ class DishMaster(SKAMaster):
         # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
         self._pointing_state = PointingState.TRACK
         self.logger.debug("Dish pointing state is set to TRACK")
+
+    def configure_band(self, argin):
+        """
+        Configures the pointing parameters of the dish.
+
+        :param argin: String. JSON string consists of Azimuth(decimal degrees), Elevation(decimal degrees)
+                and receiverBand.
+
+            Example:
+
+                {
+                    "pointing":
+                    {"AZ": 1.0,"EL": 1.0},
+
+                    "dish":
+                    {"receiverBand":"1"}
+
+                }
+
+        :return: None.
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            log_msg = "Configure Json for DishMaster is" + str(argin)
+            self.logger.debug(log_msg)
+            jsonArgument_DM_Config = json.loads(argin)
+            AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
+            EL = jsonArgument_DM_Config[const.STR_POINTING]["EL"]
+            self._desired_pointing[1] = AZ
+            self._desired_pointing[2] = EL
+            receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
+            band_index_map = {"5a": 4, "5b": 5}
+            receiverBand = band_index_map.get(receiverBand, int(receiverBand) - 1)
+            self._configured_band = ConfiguredBand(receiverBand)
+            self.logger.debug(const.STR_CONFIG_SUCCESS)
+
+        except ValueError as value_error:
+            log_msg = const.ERR_INVALID_JSON + str(value_error)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_INVALID_JSON + str(value_error))
+            excpt_count += 1
+
+        except KeyError as key_error:
+            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            excpt_count += 1
+
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_CONFIG_DM + str(dev_failed)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_CONFIG_DM + str(dev_failed))
+
+        except Exception as except_occurred:
+            log_msg = const.ERR_CONFIG_DM + str(except_occurred)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -1103,76 +1170,6 @@ class DishMaster(SKAMaster):
         self.configure_band(argin)
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand5b
-
-    def configure_band(self, argin):
-        # PROTECTED REGION ID(DishMaster.configure_band) ENABLED START #
-        """
-        Configures the pointing parameters of the dish.
-
-        :param argin: String. JSON string consists of Azimuth(decimal degrees), Elevation(decimal degrees)
-                and receiverBand.
-
-            Example:
-
-                {
-                    "pointing":
-                    {"AZ": 1.0,"EL": 1.0},
-
-                    "dish":
-                    {"receiverBand":"1"}
-
-                }
-
-        :return: None.
-        """
-        excpt_msg = []
-        excpt_count = 0
-        try:
-            log_msg = "Configure Json for DishMaster is" + str(argin)
-            self.logger.debug(log_msg)
-            jsonArgument_DM_Config = json.loads(argin)
-            AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
-            EL = jsonArgument_DM_Config[const.STR_POINTING]["EL"]
-            self._desired_pointing[1] = AZ
-            self._desired_pointing[2] = EL
-            receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
-            band_index_map = {"5a": 4, "5b": 5}
-            receiverBand = band_index_map.get(receiverBand, int(receiverBand) - 1)
-            self._configured_band = ConfiguredBand(receiverBand)
-            self.logger.debug(const.STR_CONFIG_SUCCESS)
-
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON + str(value_error)
-            self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_INVALID_JSON + str(value_error))
-            excpt_count += 1
-
-        except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
-            excpt_count += 1
-
-        except DevFailed as dev_failed:
-            log_msg = const.ERR_CONFIG_DM + str(dev_failed)
-            self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(dev_failed))
-
-        except Exception as except_occurred:
-            log_msg = const.ERR_CONFIG_DM + str(except_occurred)
-            self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
-            excpt_count += 1
-
-        # throw exception:
-        if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-                                         const.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
-
-        # PROTECTED REGION END #    //  DishMaster.configure_band
 
     @command(
     )
