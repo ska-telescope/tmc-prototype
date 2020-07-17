@@ -1088,7 +1088,7 @@ class DishLeafNode(SKABaseDevice):
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_CONFIGURE_EXEC)
 
-    def is_ConfigureBand_allowed(self):
+    def is_Configure_allowed(self):
         """
         Checks whether this command is allowed to be run in the current device state.
 
@@ -1108,7 +1108,7 @@ class DishLeafNode(SKABaseDevice):
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
-    def ConfigureBand(self, argin):
+    def Configure(self, argin):
         """ Configures the Dish by setting pointing coordinates for a given observation. """
         handler = self.get_command_object("Configure")
         (result_code, message) = handler(argin)
