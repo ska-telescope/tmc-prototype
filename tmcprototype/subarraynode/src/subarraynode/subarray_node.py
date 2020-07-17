@@ -1107,16 +1107,13 @@ class SubarrayNode(SKASubarray):
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state.
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+            :raises: DevFailed if this command is not allowed to be run in current device state
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command TrackCommand is not allowed in current state.",

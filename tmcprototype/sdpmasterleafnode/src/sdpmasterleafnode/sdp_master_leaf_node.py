@@ -167,11 +167,8 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device._processing_block_list = "test"
                 device._read_activity_message = 'OK'
                 device.set_status(const.STR_INIT_SUCCESS)
-                _state_fault_flag = False
-                # flag use to check whether state set to fault if exception occur
 
             except DevFailed as dev_failed:
-                _state_fault_flag = True
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                     exception_message,exception_count, const.ERR_INIT_PROP_ATTR)
 
@@ -181,7 +178,6 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device._sdp_proxy = DeviceProxy(device.SdpMasterFQDN)
 
             except DevFailed as dev_failed:
-                _state_fault_flag = True
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                     exception_message, exception_count,const.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
