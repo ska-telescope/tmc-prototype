@@ -26,7 +26,6 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
 
 # Additional import
-# PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 import threading
 from . import const
 import math
@@ -39,7 +38,6 @@ import time
 __all__ = ["DishLeafNode", "main"]
 
 class DishLeafNode(SKABaseDevice):
-#class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.
     """
@@ -52,6 +50,8 @@ class DishLeafNode(SKABaseDevice):
         :param evt: A TANGO_CHANGE event on dishMode attribute.
 
         :return: None
+
+        :raises: Exception if error occurs in Dish Mode call back event.
 
         """
         try:
@@ -109,6 +109,7 @@ class DishLeafNode(SKABaseDevice):
 
         :return: None
 
+        :raises: Exception if error occurs in Dish Capturing Callback event.
         """
         try:
             log_msg = "Capturing attribute Event is: " + str(evt)
@@ -142,6 +143,8 @@ class DishLeafNode(SKABaseDevice):
         :param evt: A TANGO_CHANGE event on achievedPointing attribute.
 
         :return: None
+
+        :raises: Exception if error occurs in dish pointing call back method.
 
         """
         try:
@@ -212,6 +215,8 @@ class DishLeafNode(SKABaseDevice):
                 - ext
         :return: none
 
+        :raises: Exception if error occurs in command callback method.
+
         """
         exception_count = 0
         exception_message = []
@@ -260,6 +265,8 @@ class DishLeafNode(SKABaseDevice):
         Deg:Min:Sec.
 
         :return: None.
+
+        :raises: Exception if error occurs in Ra-Dec to Az-El conversion
 
         """
         try:
@@ -346,6 +353,7 @@ class DishLeafNode(SKABaseDevice):
 
         :return: None.
 
+        :raises: Exception if error occurs in RaDec to AzEl conversion.
         """
 
         try:
@@ -500,10 +508,12 @@ class DishLeafNode(SKABaseDevice):
             """
             Initializes the attributes and properties of the DishLeafNode.
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
+            :return: A tuple containing a return code and a string message indicating status. The message is for
                 information purpose only.
+
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs in creating proxy for DishMaster or in subscribing the event on DishMaster
             """
             # TODO: The code is implemented such way that even in case of exception,
             #  the execution will continue. It is possible that due to this,
@@ -522,7 +532,6 @@ class DishLeafNode(SKABaseDevice):
             device.horizon_el = 0
             device.ele_min_lim = 17.5
             device.el_limit = False
-            _state_fault_flag = False  # flag use to check whether state set to fault if exception occurs.
             exception_message = []
             exception_count = 0
             try:
@@ -534,7 +543,6 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy = DeviceProxy(str(device.DishMasterFQDN))   #Creating proxy to the DishMaster
                 device.event_track_time = threading.Event()
             except DevFailed as dev_failed:
-                _state_fault_flag = True
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
             device._health_state = HealthState.OK                                    #Setting healthState to "OK"
@@ -559,23 +567,15 @@ class DishLeafNode(SKABaseDevice):
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                 exception_message, exception_count,const.ERR_SUBS_DISH_ATTR)
                 device.set_status(const.ERR_DISH_INIT)
-                _state_fault_flag = True
                 self.logger.error(const.ERR_DISH_INIT)
 
             if exception_count > 0:
                 self.logger.info(device._read_activity_message)
                 device.throw_exception(exception_message, device._read_activity_message)
-                
-            if _state_fault_flag:
-                message = const.ERR_DISH_INIT
-                return_code = ResultCode.FAILED
-            else:
-                message = const.STR_DISH_INIT_SUCCESS
-                return_code = ResultCode.OK
 
-            device._read_activity_message = message
-            self.logger.info(message)
-            return (return_code, message)
+            device._read_activity_message = const.STR_DISH_INIT_SUCCESS
+            self.logger.info(device._read_activity_message)
+            return (ResultCode.OK, device._read_activity_message)
 
 
     def always_executed_hook(self):
