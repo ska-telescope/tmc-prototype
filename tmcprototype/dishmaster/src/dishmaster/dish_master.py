@@ -45,16 +45,17 @@ class PointingState(enum.IntEnum):
     SCAN = 3
 # pylint: disable=unused-argument
 
-class ConfiguredBand(enum.Enum):
+class ConfiguredBand(enum.IntEnum):
     """
     Configured band of the receiver
     """
-    B1 = "1"
-    B2 = "2"
-    B3 = "3"
-    B4 = "4"
-    B5a = "5a"
-    B5b = "5b"
+    B1 = 0
+    B2 = 1
+    B3 = 2
+    B4 = 3
+    B5a = 4
+    B5b = 5
+    NONE = 6
 # pylint: disable=unused-argument
 
 class DishMaster(SKAMaster):
@@ -302,8 +303,7 @@ class DishMaster(SKAMaster):
     )
 
     configuredBand = attribute(
-        dtype='DevEnum',
-        enum_labels=["B1", "B2", "B3", "B4", "B5a", "B5b", "NONE", ],
+        dtype= ConfiguredBand,
         doc="Configured band of the dish",
     )
 
@@ -375,7 +375,7 @@ class DishMaster(SKAMaster):
             self._achieved_pointing = [0, 0, 0]
             self._elevation_difference = 0
             self._azimuth_difference = 0
-            self._configured_band = int(ConfiguredBand.B1.value)
+            self._configured_band = ConfiguredBand.B1
             self.set_state(DevState.STANDBY)            # Set STATE to STANDBY
             # Initialise Point command variables
             self._current_time = 0
@@ -1136,8 +1136,9 @@ class DishMaster(SKAMaster):
             self._desired_pointing[1] = AZ
             self._desired_pointing[2] = EL
             receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
-            # ConfiguredBand("5b").value returns '5b' so index to first index
-            self._configured_band = int(ConfiguredBand(receiverBand).value[0])
+            band_index_map = {"5a": 4, "5b": 5}
+            receiverBand = band_index_map.get(receiverBand, int(receiverBand) - 1)
+            self._configured_band = ConfiguredBand(receiverBand)
             self.logger.debug(const.STR_CONFIG_SUCCESS)
 
         except ValueError as value_error:
