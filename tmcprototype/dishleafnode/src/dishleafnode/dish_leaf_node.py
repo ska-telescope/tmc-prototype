@@ -1003,7 +1003,7 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            Configures the Dish by setting pointing coordinates for a given observation.
+            Configures the Dish by setting pointing coordinates for a given scan.
             This function accepts the input json and calculate pointing parameters of Dish- Azimuth
             and Elevation Angle. Calculated parameters are again converted to json and fed to the
             dish master.
