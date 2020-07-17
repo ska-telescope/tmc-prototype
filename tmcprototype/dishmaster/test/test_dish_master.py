@@ -331,7 +331,7 @@ class TestDishMaster(object):
     def test_ConfiguredBand(self, tango_context):
         """Test for ConfiguredBand"""
         # PROTECTED REGION ID(DishMaster.test_ConfiguredBand) ENABLED START #
-        assert tango_context.device.configuredBand == 1
+        assert tango_context.device.configuredBand == 0
         # PROTECTED REGION END #    //  DishMaster.test_ConfiguredBand
 
     def test_maxCapabilities(self, tango_context):
@@ -380,7 +380,7 @@ class TestDishMaster(object):
         jsonArg = json.loads(input)
         Azimuth = jsonArg["pointing"]["AZ"]
         Elevation = jsonArg["pointing"]["EL"]
-        receiver_Band = int(jsonArg["dish"]["receiverBand"])
+        receiver_Band = int(jsonArg["dish"]["receiverBand"]) - 1
         # choose any of the configureBand command. using ConfigureBand1 for this test
         tango_context.device.ConfigureBand1(input)
         assert tango_context.device.desiredPointing[1] == Azimuth and \
