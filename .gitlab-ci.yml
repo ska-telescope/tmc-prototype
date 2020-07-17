@@ -262,7 +262,6 @@ unit tests:
   artifacts:
     paths:
       - ./unit_test_reports
-  retry: 2
 
 linting:
   stage: linting
