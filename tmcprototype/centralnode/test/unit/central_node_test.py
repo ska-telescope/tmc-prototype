@@ -357,7 +357,6 @@ def test_release_resources_should_raise_devfailed_exception():
             tango_context.device.ReleaseResources(release_input_str)
 
         # assert:
-        assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
         assert "Error occurred while releasing resources from the Subarray" in str(df.value)
 
 
@@ -369,7 +368,6 @@ def test_release_resources_invalid_json_value():
             tango_context.device.ReleaseResources(assign_release_invalid_str)
 
         # assert:
-        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
         assert "Invalid JSON format" in str(df.value)
 
 
@@ -380,7 +378,6 @@ def test_release_resources_invalid_key():
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(release_invalid_key)
         # assert:
-        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
         assert "JSON key not found" in str(df.value)
 
 

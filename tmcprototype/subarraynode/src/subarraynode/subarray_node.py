@@ -293,7 +293,7 @@ class SubarrayNode(SKASubarray):
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
                 # As a part of end command send Stop track command on dish leaf node
-                self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                 self.end_obj.succeeded()
             else:
                 # Assign Resource command success
