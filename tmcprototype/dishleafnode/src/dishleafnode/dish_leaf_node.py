@@ -14,7 +14,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import json
-#import importlib.resources
+import importlib.resources
 
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
