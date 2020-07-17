@@ -70,7 +70,7 @@ class TestDishLeafNode(object):
         assert tango_context.device.Reset() is None
         # PROTECTED REGION END #    //  DishLeafNode.test_Reset
 
-    def test_SetStandByLPMode(self, tango_context):
+    def test_SetStandByLPMode(self, tango_context, create_dish_proxy):
         """Test for SetStandByLPMode"""
         # PROTECTED REGION ID(DishLeafNode.test_SetStandByLPMode) ENABLED START #
         tango_context.device.SetStandByLPMode()
