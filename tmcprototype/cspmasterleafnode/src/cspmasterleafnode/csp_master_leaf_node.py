@@ -354,14 +354,11 @@ class CspMasterLeafNode(SKABaseDevice):
         A class for CspMasterLeafNode's On() command.
         """
 
-        def do(self,argin):
+        def do(self):
             """
             Invokes On command on the CSP Element.
 
-            :param argin: DevStringArray.
-
-            If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
-            , each array element specifies the FQDN of the CSP SubElement to switch ON.
+            :param argin: None
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -370,6 +367,9 @@ class CspMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
+            # Pass argin to csp master .
+            # If the array length is 0, the command applies to the whole CSP Element.
+            # If the array length is > 1 each array element specifies the FQDN of the CSP SubElement to switch ON.
             argin = []
             device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
@@ -380,15 +380,11 @@ class CspMasterLeafNode(SKABaseDevice):
         A class for CspMasterLeafNode's Off() command.
         """
 
-        def do(self,argin):
+        def do(self):
             """
             Invokes Off command on the CSP Element.
 
-            :param argin: DevStringArray.
-
-            If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
-            , each array element specifies the FQDN of the CSP SubElement to switch OFF.
-
+            :param argin: None.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -397,6 +393,9 @@ class CspMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
+            # pass argin to csp master.
+            # If the array length is 0, the command applies to the whole CSP Element.
+            # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
             argin = []
             device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)

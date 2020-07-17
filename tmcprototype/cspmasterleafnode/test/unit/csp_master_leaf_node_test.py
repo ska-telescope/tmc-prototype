@@ -56,7 +56,7 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
         off_input = []
 
         # act:
-
+        tango_context.device.On()
         tango_context.device.Off()
 
         # assert:
