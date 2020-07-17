@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eo pipefail
 #Entering into a bash shell script to run unit-test cases and generating reports
 cd /app/tmcprototype;
 python3 -m pip install pytest-forked

@@ -77,7 +77,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
         for receptor in receptorIDList_str:
             receptorIDList.append(int(receptor))
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
-                                                receptorIDList, any_method(with_name='AddReceptors_ended'))
+                                                receptorIDList, any_method(with_name='add_receptors_ended'))
         assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
 
