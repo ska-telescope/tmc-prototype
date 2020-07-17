@@ -300,12 +300,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         def do(self):
             """
             Releases all the resources of given SDPSubarrayLeafNode. It accepts the subarray id, releaseALL flag and
-            receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-            is invoked on the respective subarray. In this case, the receptorIDList tag is empty as all the
-            resources of the Subarray are released. When releaseALL is False, ReleaseResources will be invoked
-            on the Subarray and the resources provided in receptorIDList tag, are released from Subarray.
-            This selective release of the resources when releaseALL is False, will be implemented in the
-            later stages of the prototype.
+            receptorIDList in JSON string format.
 
             :param argin: None.
 
@@ -539,9 +534,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
-        def do(self,argin):
+        def do(self, argin):
             """
-            When commanded in the IDLE state: configures the Subarray device by providing the SDP PB
+            Configures the SDP Subarray device by providing the SDP PB
             configuration needed to execute the receive workflow
 
             :param argin: The string in JSON format. The JSON contains following values:
@@ -652,7 +647,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
-        def do(self,argin):
+        def do(self, argin):
             """
             Invoke Scan command to SDP subarray.
 
