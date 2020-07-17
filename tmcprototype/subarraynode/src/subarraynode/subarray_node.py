@@ -275,7 +275,7 @@ class SubarrayNode(SKASubarray):
                 self.release_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
-            log_msg = "Pointing state in track counts = "+ pointing_state_count_track
+            log_msg = "Pointing state in track counts = " + str(pointing_state_count_track)
             self.logger.debug(log_msg)
             log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
             self.logger.debug(log_msg)
@@ -837,7 +837,7 @@ class SubarrayNode(SKASubarray):
 
     class InitCommand(SKASubarray.InitCommand):
         """
-        A class for the TMC SubarrayNode's init_device() command.
+        A class for the TMC SubarrayNode's init_device() method.
         """
         def do(self):
             """
