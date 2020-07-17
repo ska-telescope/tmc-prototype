@@ -538,7 +538,7 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_input = '{"dish":{"receptorIDList":["0001","0002"]}}'
+        assign_input = assign_input_str
         assign_resources_input = []
         assign_resources_input.append(assign_input)
         with pytest.raises(tango.DevFailed) as df:
