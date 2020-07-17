@@ -29,17 +29,19 @@ CMD_CONFIGURE = "Configure"
 CMD_END_SCAN = "EndScan"
 CMD_TRACK = "Track"
 CMD_STOP_TRACK = "StopTrack"
-STR_CMD_STOP_TRACK_INV_DLN = "Command StopTrack is invoked on Dish Leaf Nodes Group"
+CMD_ON = "On"
+CMD_OFF = "Off"
+STR_CMD_STOP_TRACK_INV_DLN = "StopTrack command is invoked on DishLeafNodesGroup"
 CMD_ASSIGN_RESOURCES = "AssignResources"
-ASSIGN_RESOURCES_INV_CSP_SALN = "Assign Resources is invoked on CSP Subarray Leaf Node"
-ASSIGN_RESOURCES_INV_SDP_SALN = "Assign Resources is invoked on SDP Subarray Leaf Node"
+ASSIGN_RESOURCES_INV_CSP_SALN = "AssignResources command is invoked on CspSubarrayLeafNode"
+ASSIGN_RESOURCES_INV_SDP_SALN = "AssignResources command is invoked on SdpSubarrayLeafNode"
 CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
-RELEASE_ALL_RESOURCES_CSP_SALN = "ReleaseAllResources command is invoked on CSP Subarray Leaf Node"
-RELEASE_ALL_RESOURCES_SDP_SALN = "ReleaseAllResources command is invoked on SDP Subarray Leaf Node"
+RELEASE_ALL_RESOURCES_CSP_SALN = "ReleaseAllResources command is invoked on CspSubarrayLeafNode"
+RELEASE_ALL_RESOURCES_SDP_SALN = "ReleaseAllResources command is invoked on SdpSubarrayLeafNode"
 CMD_ENDSB = "EndSB"
-STR_CMD_ENDSB_INV_SDP = "Command EndSB is invoked on SDP Subarray Leaf Node."
+STR_CMD_ENDSB_INV_SDP = "EndSB command is invoked on SdpSubarrayLeafNode."
 CMD_GOTOIDLE = "GoToIdle"
-STR_CMD_GOTOIDLE_INV_CSP = "Command GoToIdle is invoked on CSP Subarray Leaf Node."
+STR_CMD_GOTOIDLE_INV_CSP = "GoToIdle command is invoked on CspSubarrayLeafNode."
 
 
 #GROUPS
@@ -173,6 +175,8 @@ ERR_SUBSR_CSPSDPSA_HEALTH_STATE = "Error in subscribing CSP/SDP Subarray healthS
                                   "LeafNodes. \n"
 ERR_DEVICE_NOT_READY = "Subarray Node is not in Ready observation state."
 ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on Subarray Node."
+ERR_INVOKING_ON_CMD = "Error while invoking ON command on Subarray Node."
+ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on Subarray Node."
 ERR_CSPSDP_SUBARRAY_OBS_STATE = "Key Error occurred while setting CSP/SDP Subarray obsState"
 ERR_SUBSR_CSPSDPSA_OBS_STATE = "Error in subscribing CSP/SDP Subarray obsState on respective " \
                                   "LeafNodes. \n"
@@ -180,6 +184,8 @@ ERR_SUBSR_CSPSDPSA_DEVICE_STATE = "Error in subscribing CSP/SDP Subarray Device 
 ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarray attribute"
 ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
 ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA = "Error in subscribing receive addresses of SDP Subarray"
+ERR_SA_INIT = "Subarray node initialization failed."
+
 
 # JSON keys
 STR_KEY_DISH = "dish"
