@@ -1045,7 +1045,7 @@ class DishMaster(SKAMaster):
     @DebugIt()
     def ConfigureBand1(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand1) ENABLED START #
-        self.ConfigureBand(argin)
+        self.configure_band(argin)
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand1
 
@@ -1056,7 +1056,7 @@ class DishMaster(SKAMaster):
     @DebugIt()
     def ConfigureBand2(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand2) ENABLED START #
-        self.ConfigureBand(argin)
+        self.configure_band(argin)
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand2
 
@@ -1067,7 +1067,7 @@ class DishMaster(SKAMaster):
     @DebugIt()
     def ConfigureBand3(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand3) ENABLED START #
-        self.ConfigureBand(argin)
+        self.configure_band(argin)
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand3
 
@@ -1078,7 +1078,7 @@ class DishMaster(SKAMaster):
     @DebugIt()
     def ConfigureBand4(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand4) ENABLED START #
-        self.ConfigureBand(argin)
+        self.configure_band(argin)
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand4
 
@@ -1089,7 +1089,7 @@ class DishMaster(SKAMaster):
     @DebugIt()
     def ConfigureBand5a(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand5a) ENABLED START #
-        self.ConfigureBand(argin)
+        self.configure_band(argin)
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand5a
 
@@ -1100,16 +1100,16 @@ class DishMaster(SKAMaster):
     @DebugIt()
     def ConfigureBand5b(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand5b) ENABLED START #
-        self.ConfigureBand(argin)
+        self.configure_band(argin)
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand5b
 
-    def ConfigureBand(self, argin):
-        # PROTECTED REGION ID(DishMaster.ConfigureBand) ENABLED START #
+    def configure_band(self, argin):
+        # PROTECTED REGION ID(DishMaster.configure_band) ENABLED START #
         """
         Configures the pointing parameters of the dish.
 
-        :param argin: DevString. JSON string consists of Azimuth(decimal degrees), Elevation(decimal degrees)
+        :param argin: String. JSON string consists of Azimuth(decimal degrees), Elevation(decimal degrees)
                 and receiverBand.
 
             Example:
@@ -1124,8 +1124,6 @@ class DishMaster(SKAMaster):
                 }
 
         :return: None.
-
-        Input from jive: {"pointing":{"AZ":1.0,"EL":1.0},"dish":{"receiverBand":"1"}} without any space.
         """
         excpt_msg = []
         excpt_count = 0
@@ -1173,7 +1171,7 @@ class DishMaster(SKAMaster):
             tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
                                          const.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
 
-        # PROTECTED REGION END #    //  DishMaster.ConfigureBand
+        # PROTECTED REGION END #    //  DishMaster.configure_band
 
     @command(
     )
