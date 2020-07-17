@@ -328,14 +328,6 @@ class DishMaster(SKAMaster):
              "configureTargetLock.")
     )
 
-    pointingBufferSize = attribute(
-        dtype='int',
-        access=AttrWriteType.READ,
-        doc=("Number of desiredPointing write values "
-             "that the buffer has space for."
-             "Defaulting to 100")
-    )
-
     synchronised = attribute(
         dtype='bool',
         access=AttrWriteType.READ,
@@ -553,12 +545,6 @@ class DishMaster(SKAMaster):
         """Internal construct of TANGO.Returns the achievedTargetLock  ."""
         return self._achieved_target_lock
         # PROTECTED REGION END #    //  DishMaster.achievedTargetLock_read
-
-    def read_pointingBufferSize(self):
-        # PROTECTED REGION ID(DishMaster.pointingBufferSize_read) ENABLED START #
-        """Internal construct of TANGO.Returns the pointingBufferSize  ."""
-        return self._pointing_buffer_size
-        # PROTECTED REGION END #    //  DishMaster.pointingBufferSize_read
 
     def read_synchronised(self):
         # PROTECTED REGION ID(DishMaster.synchronised_read) ENABLED START #
@@ -1086,7 +1072,7 @@ class DishMaster(SKAMaster):
     def ConfigureBand4(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand4) ENABLED START #
         self.ConfigureBand(argin)
-    
+
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand4
 
     @command(
