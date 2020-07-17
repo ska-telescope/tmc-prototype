@@ -616,11 +616,11 @@ class DishLeafNode(SKABaseDevice):
             """
             Checks whether the command is allowed to be run in the current state.
 
-            :return: True if this command is allowed to be run in current device state
+            :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state
+            :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
             device = self.target
@@ -649,11 +649,11 @@ class DishLeafNode(SKABaseDevice):
         """
         Checks whether the command is allowed to be run in the current state.
 
-        :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("SetStowMode")
@@ -664,7 +664,7 @@ class DishLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def SetStowMode(self):
-        """ Triggers the DishMaster to transit into Stow Mode. """
+        """ Invokes SetStowMode command on DishMaster. """
         handler = self.get_command_object("SetStowMode")
         (result_code, message) = handler()
         return [[result_code], [message]]
@@ -675,13 +675,13 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
-            :return: True if this command is allowed to be run in current device state
+            :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state
+            :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
             device = self.target
@@ -695,7 +695,7 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Sets the DishMaster into STANDBY-LP mode (i.e. Low Power State).
+            Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -709,13 +709,13 @@ class DishLeafNode(SKABaseDevice):
 
     def is_SetStandByLPMode_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
-        :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("SetStandByLPMode")
@@ -726,7 +726,7 @@ class DishLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def SetStandByLPMode(self):
-        """ Triggers the DishMaster into STANDBY-LP mode (i.e. Low Power State). """
+        """ Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster. """
         handler = self.get_command_object("SetStandByLPMode")
         (result_code, message) = handler()
         return [[result_code], [message]]
@@ -738,13 +738,13 @@ class DishLeafNode(SKABaseDevice):
         def check_allowed(self):
 
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
-            :return: True if this command is allowed to be run in current device state
+            :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state
+            :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
             device = self.target
@@ -758,7 +758,7 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Sets the DishMaster into Operate mode.
+            Invokes SetOperateMode command on DishMaster.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -772,7 +772,7 @@ class DishLeafNode(SKABaseDevice):
 
     def is_SetOperateMode_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -789,7 +789,7 @@ class DishLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def SetOperateMode(self):
-        """ Triggers the DishMaster to transit into Operate mode. """
+        """ Invokes SetOperateMode command on DishMaster. """
         handler = self.get_command_object("SetOperateMode")
         (result_code, message) = handler()
         return [[result_code], [message]]
@@ -800,7 +800,7 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
             :return: True if this command is allowed to be run in current device state.
 
@@ -829,8 +829,10 @@ class DishLeafNode(SKABaseDevice):
 
             Example: 10.0
 
-            """
+            :raises: ValurError if argin is of invalid (other than float) data type while
+             invoking this command.
 
+            """
             device = self.target
             exception_count = 0
             exception_message = []
@@ -860,7 +862,7 @@ class DishLeafNode(SKABaseDevice):
 
     def is_Scan_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -879,7 +881,7 @@ class DishLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def Scan(self, argin):
-        """ Triggers the DishMaster to start the Scan. """
+        """ Invokes Scan command on DishMaster. """
         handler = self.get_command_object("Scan")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
@@ -890,7 +892,7 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
             :return: True if this command is allowed to be run in current device state.
 
@@ -914,12 +916,15 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+             The message is for information purpose only.
 
             :rtype: (ResultCode, str)
 
-            TODO: EndScan argument in JSON format
-            {"timestamp": 0}
+            Example: 10.0
+
+            :raises: ValueError if argin is of invalid (other than float) data type while
+             invoking this command.
+
             """
 
             device = self.target
@@ -948,7 +953,7 @@ class DishLeafNode(SKABaseDevice):
 
     def is_EndScan_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -967,7 +972,7 @@ class DishLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def EndScan(self, argin):
-        """ Triggers the DishMaster to stop the Scan. """
+        """ Invokes StopCapture command on DishMaster. """
         handler = self.get_command_object("EndScan")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
@@ -978,7 +983,7 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
             :return: True if this command is allowed to be run in current device state.
 
@@ -1001,7 +1006,7 @@ class DishLeafNode(SKABaseDevice):
             Configures the Dish by setting pointing coordinates for a given observation.
             This function accepts the input json and calculate pointing parameters of Dish- Azimuth
             and Elevation Angle. Calculated parameters are again converted to json and fed to the
-             dish master.
+            dish master.
 
             :param argin:
             A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
@@ -1011,9 +1016,13 @@ class DishLeafNode(SKABaseDevice):
                 "dish":{"receiverBand":"1"}}
 
             :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+             The message is for information purpose only.
 
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
+                     ValueError if argin is not in valid JSON format.
+                     KayError if JSON key is not present in argin
 
             """
 
@@ -1076,11 +1085,11 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_CONFIGURE_EXEC)
+                device.throw_exception(exception_message, const.STR_CONFIGURE_EXEC)
 
     def is_Configure_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -1110,7 +1119,7 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
             :return: True if this command is allowed to be run in current device state.
 
@@ -1138,6 +1147,9 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
+            :raises: ValueError if argin is not in valid JSON format while invoking this
+             command on DishMaster.
+
             """
             device = self.target
             exception_count = 0
@@ -1157,11 +1169,11 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_STARTCAPTURE_EXEC)
+                device.throw_exception(exception_message, const.STR_STARTCAPTURE_EXEC)
 
     def is_StartCapture_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -1191,7 +1203,7 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
             :return: True if this command is allowed to be run in current device state.
 
@@ -1219,6 +1231,9 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
+            :raises: ValueError if argin is not in valid JSON format while invoking this
+             command on DishMaster.
+
             """
             device = self.target
             exception_count = 0
@@ -1241,13 +1256,13 @@ class DishLeafNode(SKABaseDevice):
 
     def is_StopCapture_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
-        :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state.
         """
         handler = self.get_command_object("StopCapture")
         return handler.check_allowed()
@@ -1259,7 +1274,7 @@ class DishLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def StopCapture(self, argin):
-        """ Triggers the DishMaster to Stop capture on the set configured band. """
+        """ Invokes StopCapture command on DishMaster on the set configured band. """
         handler = self.get_command_object("StopCapture")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
@@ -1270,13 +1285,13 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether this command is allowed to be run in current device state
+            Checks whether this command is allowed to be run in current device state.
 
-            :return: True if this command is allowed to be run in current device state
+            :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state
+            :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
             device = self.target
@@ -1290,7 +1305,7 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Sets the DishMaster into the STANDBY-FP (Standby-Full power) mode.
+            Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -1304,7 +1319,7 @@ class DishLeafNode(SKABaseDevice):
 
     def is_SetStandbyFPMode_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
         :return: True if this command is allowed to be run in current device state
 
@@ -1321,7 +1336,7 @@ class DishLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     def SetStandbyFPMode(self):
-        """ Sets the DishMaster into the STANDBY-FP (Standby-Full power) mode. """
+        """ Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode. """
         handler = self.get_command_object("SetStandbyFPMode")
         (result_code, message) = handler()
         return [[result_code], [message]]
@@ -1332,13 +1347,13 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
-            :return: True if this command is allowed to be run in current device state
+            :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state
+            :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
@@ -1360,6 +1375,9 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
+            :raises: ValueError if argin is not in valid JSON format while invoking this
+             command on DishMaster.
+
             """
             device = self.target
             exception_count = 0
@@ -1378,17 +1396,17 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_SLEW_EXEC)
+                device.throw_exception(exception_message, const.STR_SLEW_EXEC)
 
     def is_Slew_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
-        :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("Slew")
@@ -1412,13 +1430,13 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
-            :return: True if this command is allowed to be run in current device state
+            :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state
+            :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
@@ -1448,6 +1466,9 @@ class DishLeafNode(SKABaseDevice):
              The message is for information purpose only.
 
             :rtype: (ResultCode, str)
+
+            :raises: ValueError if argin is not in valid JSON format, KayError if JSON key is
+              not present in argin while invoking this command on DishMaster.
 
             """
             device = self.target
@@ -1489,13 +1510,13 @@ class DishLeafNode(SKABaseDevice):
 
     def is_Track_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
-        :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("Track")
@@ -1518,13 +1539,13 @@ class DishLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether the command is allowed to be run in the current state.
+            Checks whether this command is allowed to be run in the current device state.
 
-            :return: True if this command is allowed to be run in current device state
+            :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state
+            :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
@@ -1545,6 +1566,8 @@ class DishLeafNode(SKABaseDevice):
              The message is for information purpose only.
 
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
 
             """
             device = self.target
@@ -1575,13 +1598,13 @@ class DishLeafNode(SKABaseDevice):
 
     def is_StopTrack_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state.
+        Checks whether this command is allowed to be run in the current device state.
 
-        :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("StopTrack")
