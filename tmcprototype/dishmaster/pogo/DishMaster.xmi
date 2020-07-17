@@ -224,7 +224,52 @@
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="Configure" description="" execMethod="configure" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+    <commands name="ConfigureBand1" description="" execMethod="configure_band1" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="Pointing parameter of Dish.">
+        <type xsi:type="pogoDsl:StringType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="ConfigureBand2" description="" execMethod="configure_band2" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="Pointing parameter of Dish.">
+        <type xsi:type="pogoDsl:StringType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="ConfigureBand3" description="" execMethod="configure_band3" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="Pointing parameter of Dish.">
+        <type xsi:type="pogoDsl:StringType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="ConfigureBand4" description="" execMethod="configure_band4" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="Pointing parameter of Dish.">
+        <type xsi:type="pogoDsl:StringType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="ConfigureBand5a" description="" execMethod="configure_band5a" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="Pointing parameter of Dish.">
+        <type xsi:type="pogoDsl:StringType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="ConfigureBand5b" description="" execMethod="configure_band5b" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="Pointing parameter of Dish.">
         <type xsi:type="pogoDsl:StringType"/>
       </argin>
@@ -420,7 +465,7 @@
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
-    <attributes name="ConfiguredBand" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="0" maxX="" maxY="" allocReadMember="false" isDynamic="false">
+    <attributes name="configuredBand" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="0" maxX="" maxY="" allocReadMember="false" isDynamic="false">
       <dataType xsi:type="pogoDsl:EnumType"/>
       <changeEvent fire="false" libCheckCriteria="false"/>
       <archiveEvent fire="false" libCheckCriteria="false"/>
@@ -428,12 +473,12 @@
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
       <evArchiveCriteria relChange="" absChange="1" period=""/>
-      <enumLabels>BAND1</enumLabels>
-      <enumLabels>BAND2</enumLabels>
-      <enumLabels>BAND3</enumLabels>
-      <enumLabels>BAND4</enumLabels>
-      <enumLabels>BAND5a</enumLabels>
-      <enumLabels>BAND5b</enumLabels>
+      <enumLabels>B1</enumLabels>
+      <enumLabels>B2</enumLabels>
+      <enumLabels>B3</enumLabels>
+      <enumLabels>B4</enumLabels>
+      <enumLabels>B5a</enumLabels>
+      <enumLabels>B5b</enumLabels>
       <enumLabels>NONE</enumLabels>
     </attributes>
     <attributes name="maxCapabilities" attType="Spectrum" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="20" maxY="" allocReadMember="true">

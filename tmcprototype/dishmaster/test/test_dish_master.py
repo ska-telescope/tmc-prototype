@@ -328,11 +328,11 @@ class TestDishMaster(object):
         assert tango_context.device.capturing is False
         # PROTECTED REGION END #    //  DishMaster.test_capturing
 
-    def test_ConfiguredBand(self, tango_context):
-        """Test for ConfiguredBand"""
-        # PROTECTED REGION ID(DishMaster.test_ConfiguredBand) ENABLED START #
+    def test_configuredBand(self, tango_context):
+        """Test for configuredBand"""
+        # PROTECTED REGION ID(DishMaster.test_configuredBand) ENABLED START #
         assert tango_context.device.configuredBand == 0
-        # PROTECTED REGION END #    //  DishMaster.test_ConfiguredBand
+        # PROTECTED REGION END #    //  DishMaster.test_configuredBand
 
     def test_maxCapabilities(self, tango_context):
         """Test for maxCapabilities"""
