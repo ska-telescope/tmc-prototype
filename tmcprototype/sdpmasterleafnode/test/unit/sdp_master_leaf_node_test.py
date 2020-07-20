@@ -8,8 +8,9 @@ import pytest
 from mock import Mock, MagicMock
 
 # Tango imports
-from tango import DevState
+import tango
 from tango.test_context import DeviceTestContext
+from tango import DevState, DevFailed
 
 # Additional import
 from sdpmasterleafnode import SdpMasterLeafNode, const
@@ -49,10 +50,13 @@ def test_off_should_command_sdp_master_leaf_node_to_stop():
 
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+        tango_context.device.On()
         # act:
         tango_context.device.Off()
         # assert:
         assert tango_context.device.activityMessage in const.STR_OFF_CMD_SUCCESS
+        sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
+                                                               any_method(with_name='cmd_ended_cb'))
 
 
 def test_standby_should_command_sdp_master_leaf_node_to_standby():
@@ -96,6 +100,36 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable():
 
         # assert:
         assert tango_context.device.activityMessage in const.STR_DISABLE_CMS_SUCCESS
+        sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Disable,
+                                                               any_method(with_name='cmd_ended_cb'))
+
+
+
+def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {
+        'SdpMasterFQDN': sdp_master_fqdn
+    }
+
+    sdp_proxy_mock = Mock()
+
+    proxies_to_mock = {
+        sdp_master_fqdn: sdp_proxy_mock
+    }
+
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+
+        tango_context.device.On()
+        tango_context.device.DevState = DevState.FAULT
+        # act:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.Disable()
+
+        # assert:
+        assert "Failed to invoke Disable command on SdpMasterLeafNode." in str(df)
 
 
 def test_standby_should_command_with_callback_method():
@@ -157,7 +191,7 @@ def test_standby_should_command_with_callback_method_with_command_error():
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        with pytest.raises(Exception) as excp:
+        with pytest.raises(Exception) :
             tango_context.device.Standby()
             dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_STANDBY](dummy_event)
@@ -204,12 +238,6 @@ def test_processing_block_list():
         assert tango_context.device.ProcessingBlockList
 
 
-def test_state():
-    # act & assert:
-    with fake_tango_system(SdpMasterLeafNode) as tango_context:
-        assert tango_context.device.State() == DevState.ALARM
-
-
 def test_status():
     # act & assert:
     with fake_tango_system(SdpMasterLeafNode) as tango_context:
@@ -252,12 +280,6 @@ def test_control_mode():
         control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
-
-
-def test_admin_mode():
-    # act & assert:
-    with fake_tango_system(SdpMasterLeafNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
 def test_health_state():

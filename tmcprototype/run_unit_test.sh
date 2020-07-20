@@ -1,7 +1,7 @@
 #!/bin/bash
+set -eo pipefail
 #Entering into a bash shell script to run unit-test cases and generating reports
 cd /app/tmcprototype;
-
 python3 -m pip install pytest-forked
 
 #For each node sub-package inside tmc-prototype, coverage report for each device is generated using unit-test job.
@@ -10,7 +10,7 @@ for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 	echo $TMC_ELEMENT;
 	echo +++ Trying tests for $TMC_ELEMENT;
-	pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/site-packages/${TMC_ELEMENT} --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
+	pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
 	mv /app/tmcprototype/.coverage /report/unit_test/${TMC_ELEMENT}_coverage;
 done
 cd /report/unit_test

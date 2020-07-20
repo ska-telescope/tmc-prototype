@@ -17,7 +17,7 @@ autodoc_mock_imports = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta',
                  'future', 'future.utils', 'ska', 'ska.base', 'ska.base.SKABaseDevice', 'ska.base.SKAMaster',
                 'ska.base.SKASubarray', 'katpoint', 'numpy', 'centralnode', 'centralnode.central_node',
                 'subarraynode', 'subarraynode.subarray_node', 'marshmallow', 'ska.cdm.messages', 'ska.cdm.schemas',
-                'ska.cdm.messages.central_node.assign_resources', 'AssignResourcesRequest', 'CODEC', 'ValidationError'
+                'ska.cdm.messages.central_node.assign_resources', 'AssignResourcesRequest', 'CODEC', 'ValidationError',
                 'ska_telmodel'
                  ]
 
