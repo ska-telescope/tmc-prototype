@@ -1051,7 +1051,7 @@ class SubarrayNode(SKASubarray):
             self.logger.info(message)
             return (ResultCode.STARTED, message)
 
-    def call_stop_track_command(self):
+    def call_track_stop_command(self):
         # TODO: Getting exception while running test cases using device mocking
         self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
         self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
@@ -1084,7 +1084,7 @@ class SubarrayNode(SKASubarray):
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
                 self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
                 # TODO: Uncomment this after resolving issues
-                device.call_stop_track_command()
+                device.call_track_stop_command()
                 device._read_activity_message = const.STR_ENDSB_SUCCESS
                 self.logger.info(const.STR_ENDSB_SUCCESS)
                 device.set_status(const.STR_ENDSB_SUCCESS)

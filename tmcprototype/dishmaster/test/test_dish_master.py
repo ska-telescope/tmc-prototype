@@ -328,19 +328,11 @@ class TestDishMaster(object):
         assert tango_context.device.capturing is False
         # PROTECTED REGION END #    //  DishMaster.test_capturing
 
-    def test_ConfiguredBand(self, tango_context):
-        """Test for ConfiguredBand"""
-        # PROTECTED REGION ID(DishMaster.test_ConfiguredBand) ENABLED START #
-        assert tango_context.device.configuredBand == 1
-        # PROTECTED REGION END #    //  DishMaster.test_ConfiguredBand
-
-    def test_WindSpeed(self, tango_context):
-        """Test for WindSpeed"""
-        # PROTECTED REGION ID(DishMaster.test_WindSpeed) ENABLED START #
-        speed = 0
-        tango_context.device.WindSpeed = speed
-        assert tango_context.device.WindSpeed == speed
-        # PROTECTED REGION END #    //  DishMaster.test_WindSpeed
+    def test_configuredBand(self, tango_context):
+        """Test for configuredBand"""
+        # PROTECTED REGION ID(DishMaster.test_configuredBand) ENABLED START #
+        assert tango_context.device.configuredBand == 0
+        # PROTECTED REGION END #    //  DishMaster.test_configuredBand
 
     def test_maxCapabilities(self, tango_context):
         """Test for maxCapabilities"""
@@ -380,39 +372,40 @@ class TestDishMaster(object):
         assert all(result)
         # PROTECTED REGION END #    //  DishMaster.test_achievedPointing
 
-    def test_Configure(self, tango_context):
+    def test_configure_band(self, tango_context):
         """
         Test case to check DishMaster is successfully configured.
         """
-        input = '{"pointing":{"AZ":5.0,"EL":10.0},"dish":{"receiverBand":1}}'
+        input = '{"pointing":{"AZ":5.0,"EL":10.0},"dish":{"receiverBand":"1"}}'
         jsonArg = json.loads(input)
         Azimuth = jsonArg["pointing"]["AZ"]
         Elevation = jsonArg["pointing"]["EL"]
-        receiver_Band = jsonArg["dish"]["receiverBand"]
-        tango_context.device.Configure(input)
+        receiver_Band = int(jsonArg["dish"]["receiverBand"]) - 1
+        # choose any of the configureBand command. using ConfigureBand1 for this test
+        tango_context.device.ConfigureBand1(input)
         assert tango_context.device.desiredPointing[1] == Azimuth and \
                tango_context.device.desiredPointing[2] == Elevation and \
                tango_context.device.configuredBand == receiver_Band
 
-    def test_Configure_invalid_json(self, tango_context):
+    def test_configure_band_invalid_json(self, tango_context):
         """
         Negative test case to check invalid JSON argument.
         """
         test_input = '{"invalid_key"}'
         result = 'a'
         with pytest.raises(tango.DevFailed):
-            result = tango_context.device.Configure(test_input)
+            result = tango_context.device.ConfigureBand1(test_input)
         time.sleep(1)
         assert 'a' in result
 
-    def test_Configure_key_not_found(self, tango_context):
+    def test_configure_band_key_not_found(self, tango_context):
         """
         Negative test to check if key is found.
         """
         test_input = '{"pointing":{"AZ":1.0,"EL": 1.0}}'
         result = 'a'
         with pytest.raises(tango.DevFailed):
-            result = tango_context.device.Configure(test_input)
+            result = tango_context.device.ConfigureBand1(test_input)
         time.sleep(1)
         assert 'a' in result
 
@@ -424,12 +417,12 @@ class TestDishMaster(object):
         tango_context.device.Track("0")
         time.sleep(80)
         assert (tango_context.device.pointingState == 1 or tango_context.device.pointingState == 2)
-        tango_context.device.StopTrack()
+        tango_context.device.TrackStop()
 
-    def test_StopTrack(self, tango_context):
-        """Test for StopTrack command"""
+    def test_TrackStop(self, tango_context):
+        """Test for TrackStop command"""
         # Test for valid argument
-        tango_context.device.StopTrack()
+        tango_context.device.TrackStop()
         assert (tango_context.device.pointingState == 0)
         #tango_context.device.SetStandbyLPMode()
 
