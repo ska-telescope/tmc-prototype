@@ -945,14 +945,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     class AbortCommand(ResponseCommand):
-
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
         """
         A class for sdpSubarrayLeafNode's Abort() command.
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
+            Checks whether this command is allowed to be run in current device
             state
 
             :return: True if this command is allowed to be run in
@@ -1047,21 +1045,19 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
 
     class RestartCommand(ResponseCommand):
-
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.Restart) ENABLED START #
         """
         A class for sdpSubarrayLeafNode's Restart() command.
         """
         def check_allowed(self):
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
+
             :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
             """
             if self.state_model.dev_state in [
                 DevState.UNKNOWN, DevState.DISABLE,
@@ -1081,6 +1077,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                         message indicating status. The message is for
                         information purpose only.
             :rtype: (ReturnCode, str)
+
+            :raises: DevFailed if error occurs while invoking command on SDPSubarray.
+                    Exception if error occurs while executing the command.
             """
             device = self.target
             exception_message = []
@@ -1108,9 +1107,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
                 # throw exception:
                 if exception_count > 0:
-                    self.throw_exception(exception_message, const.ERR_RESTART_INVOKING_CMD)
-                    return (ResultCode.FAILED, const.ERR_RESTART_INVOKING_CMD)
-            #
+                    device.throw_exception(exception_message, const.ERR_RESTART_INVOKING_CMD)
             #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Restart
 
     @command(
@@ -1119,7 +1116,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def Restart(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.Restart) ENABLED START #
         """
         Invoke Abort on SdpSubarrayLeafNode.
         """
@@ -1127,23 +1123,20 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.Restart
-
     def is_Restart_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
-
-#     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Restart
 
 # class OnCommand(SKASubarray.OnCommand):
     #     """
