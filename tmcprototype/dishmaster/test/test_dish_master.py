@@ -19,7 +19,7 @@ import tango
 from tango import DevState
 
 # Additional import
-from dishmaster import DishMaster, const, ConfiguredBand
+from dishmaster import DishMaster, const, ConfiguredBand, DishMode
 from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:
@@ -40,9 +40,9 @@ class TestDishMaster(object):
     # PROTECTED REGION ID(DishMaster.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  DishMaster.test_additionnal_import
     device = DishMaster
-    properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
+    properties = {'SkaLevel': '4', 'GroupDefinitions': '',
                   'LoggingLevelDefault': '4', 'LoggingTargetsDefault':'console::cout',
-                  'NrSubarrays': '16', 'CapabilityTypes': '', 'MaxCapabilities': '', 'ReceptorNumber': '',
+                  'CapabilityTypes': '', 'MaxCapabilities': '', 'ReceptorNumber': '',
                   }
     empty = None  # Should be []
 
@@ -77,7 +77,7 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_SetStowMode) ENABLED START #
         tango_context.device.SetStowMode()
         assert tango_context.device.adminMode == AdminMode.OFFLINE
-        assert tango_context.device.dishMode == 6
+        assert tango_context.device.dishMode == DishMode.STOW
         assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  DishMaster.test_SetStowMode
 
@@ -85,7 +85,7 @@ class TestDishMaster(object):
         """Test for SetStandbyLPMode"""
         # PROTECTED REGION ID(DishMaster.test_SetStandbyLPMode) ENABLED START #
         tango_context.device.SetStandbyLPMode()
-        assert tango_context.device.dishMode == 3
+        assert tango_context.device.dishMode == DishMode.STANDBY_LP
         assert tango_context.device.State() == DevState.STANDBY
         # PROTECTED REGION END #    //  DishMaster.test_SetStandbyLPMode
 
@@ -94,7 +94,7 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_SetMaintenanceMode) ENABLED START #
         tango_context.device.SetMaintenanceMode()
         assert tango_context.device.adminMode == AdminMode.MAINTENANCE
-        assert tango_context.device.dishMode == 5
+        assert tango_context.device.dishMode == DishMode.MAINTENANCE
         assert tango_context.device.State() == DevState.DISABLE
         # PROTECTED REGION END #    //  DishMaster.test_SetMaintenanceMode
 
@@ -104,7 +104,7 @@ class TestDishMaster(object):
         tango_context.device.SetStandbyLPMode()
         tango_context.device.SetOperateMode()
         assert tango_context.device.adminMode == AdminMode.ONLINE
-        assert tango_context.device.dishMode == 8
+        assert tango_context.device.dishMode == DishMode.OPERATE
         assert tango_context.device.State() == DevState.ON
         # PROTECTED REGION END #    //  DishMaster.test_SetOperateMode
 
@@ -114,16 +114,15 @@ class TestDishMaster(object):
         # Testing for invalid argument
         # tango_context.device.Scan("a")
         with pytest.raises(tango.DevFailed) :
-            argin = "a"
-            tango_context.device.Scan(argin)
-        assert tango_context.device.pointingState != 3
+            tango_context.device.Scan()
+        assert tango_context.device.pointingState != PointingState.SCAN
         assert tango_context.device.capturing is not True
         # Testing for valid argument
-        tango_context.device.Scan("0")
-        assert tango_context.device.pointingState == 3
+        tango_context.device.Scan()
+        assert tango_context.device.pointingState == PointingState.SCAN
         assert tango_context.device.capturing is True
         # Testing if the Scan is already in progress
-        tango_context.device.Scan("0")
+        tango_context.device.Scan()
         assert tango_context.device.Status() == const.STR_DISH_NOT_READY
         # PROTECTED REGION END #    //  DishMaster.test_Scan
 
@@ -132,16 +131,15 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_StopCapture) ENABLED START #
         # Testing for invalid argument
         with pytest.raises(tango.DevFailed) :
-            argin = "a"
-            tango_context.device.StopCapture(argin)
+            tango_context.device.StopCapture()
         assert tango_context.device.capturing is not False
-        assert tango_context.device.pointingState != 0
+        assert tango_context.device.pointingState != PointingState.READY
         # Testing for valid argument
-        tango_context.device.StopCapture("0")
+        tango_context.device.StopCapture()
         assert tango_context.device.capturing is False
-        assert tango_context.device.pointingState == 0
+        assert tango_context.device.pointingState == PointingState.READY
         # Testing if data capturing is already stopped
-        tango_context.device.StopCapture("0")
+        tango_context.device.StopCapture()
         assert tango_context.device.Status() == const.STR_DATA_CAPTURE_ALREADY_STOPPED
         # PROTECTED REGION END #    //  DishMaster.test_StopCapture
 
@@ -150,16 +148,15 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_StartCapture) ENABLED START #
         # Testing for invalid argument
         with pytest.raises(tango.DevFailed) :
-            argin = "a"
-            tango_context.device.StartCapture(argin)
-        assert tango_context.device.pointingState != 3
+            tango_context.device.StartCapture()
+        assert tango_context.device.pointingState != PointingState.SCAN
         assert tango_context.device.capturing is not True
         # Testing for valid argument
-        tango_context.device.StartCapture("0")
-        assert tango_context.device.pointingState == 3
+        tango_context.device.StartCapture()
+        assert tango_context.device.pointingState == PointingState.SCAN
         assert tango_context.device.capturing is True
         # Testing if data capturing is already started
-        tango_context.device.StartCapture("0")
+        tango_context.device.StartCapture()
         assert tango_context.device.Status() == const.STR_DATA_CAPTURE_ALREADY_STARTED
         # PROTECTED REGION END #    //  DishMaster.test_StartCapture
 
@@ -197,7 +194,7 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_SetStandbyFPMode) ENABLED START #
         tango_context.device.SetStandbyLPMode()
         tango_context.device.SetStandbyFPMode()
-        assert tango_context.device.dishMode == 4
+        assert tango_context.device.dishMode == DishMode.STANDBY_FP
         assert tango_context.device.State() == DevState.STANDBY
         # PROTECTED REGION END #    //  DishMaster.test_SetStandbyFPMode
 
@@ -277,13 +274,13 @@ class TestDishMaster(object):
     def test_dishMode(self, tango_context):
         """Test for dishMode"""
         # PROTECTED REGION ID(DishMaster.test_dishMode) ENABLED START #
-        assert tango_context.device.dishMode == 4
+        assert tango_context.device.dishMode == DishMode.STANDBY_FP
         # PROTECTED REGION END #    //  DishMaster.test_dishMode
 
     def test_pointingState(self, tango_context):
         """Test for pointingState"""
         # PROTECTED REGION ID(DishMaster.test_pointingState) ENABLED START #
-        assert tango_context.device.pointingState == 0
+        assert tango_context.device.pointingState == PointingState.READY
         # PROTECTED REGION END #    //  DishMaster.test_pointingState
 
     def test_band1SamplerFrequency(self, tango_context):
@@ -394,16 +391,17 @@ class TestDishMaster(object):
         # Test for valid argument
         tango_context.device.SetStandbyLPMode()
         tango_context.device.SetOperateMode()
-        tango_context.device.Track("0")
+        tango_context.device.Track()
         time.sleep(80)
-        assert (tango_context.device.pointingState == 1 or tango_context.device.pointingState == 2)
+        assert (tango_context.device.pointingState == PointingState.SLEW
+                or tango_context.device.pointingState == PointingState.TRACK)
         tango_context.device.TrackStop()
 
     def test_TrackStop(self, tango_context):
         """Test for TrackStop command"""
         # Test for valid argument
         tango_context.device.TrackStop()
-        assert (tango_context.device.pointingState == 0)
+        assert (tango_context.device.pointingState == PointingState.READY)
         #tango_context.device.SetStandbyLPMode()
 
     def test_loggingLevel(self, tango_context):
