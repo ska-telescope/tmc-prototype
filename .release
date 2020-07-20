@@ -14,6 +14,7 @@ release=0.2.4
 tag=0.2.4
 tag_description=TMC to reflect changes in the observation state machine as per ADR-8.
 release_notes=This release Contains: <br/><ul><li>Updated TMC prototype to incorporate new observation states for commands as per ADR-8.</li><li>Updated TMC prototype to use 0.6.3 version of lmc-base-classes.</li><li>Refactored commands of each TMC node by inheriting commands from lmc-base-classes.</li><li>Updated unit test cases for TMC devices as per the new state model in ADR-8.</li></ul>
-gitlab_username=adityadangeska
-private_token=T-QnRqsjQgqga_BRsz_i
+gitlab_username=mesnehal
+private_token=hUoKCf7MRKGDXKqamXGP
+
 
