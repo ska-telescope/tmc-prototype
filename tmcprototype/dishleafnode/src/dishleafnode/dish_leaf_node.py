@@ -1033,7 +1033,7 @@ class DishLeafNode(SKABaseDevice):
                 jsonArgument = json.loads(argin)
                 ra_value = (jsonArgument["pointing"]["target"]["RA"])
                 dec_value = (jsonArgument["pointing"]["target"]["dec"])
-                receiver_band = int(jsonArgument["dish"]["receiverBand"])
+                receiver_band = jsonArgument["dish"]["receiverBand"]
                 # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
                 # Convert ra and dec to az and el
@@ -1055,8 +1055,9 @@ class DishLeafNode(SKABaseDevice):
                 }
                 dish_str_ip = json.dumps(arg_list)
                 # Send configure command to Dish Master
-                self._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE + receiver_band,
-                                                      str(dish_str_ip), self.cmd_ended_cb)
+                command = const.CMD_DISH_CONFIGURE + receiver_band
+                device._dish_proxy.command_inout_asynch(command, str(dish_str_ip),
+                                                        device.cmd_ended_cb)
                 return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except ValueError as value_error:

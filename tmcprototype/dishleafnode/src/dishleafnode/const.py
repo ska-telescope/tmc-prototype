@@ -115,7 +115,7 @@ STR_STOPCAPTURE_SUCCESS = "STOPCAPTURE command invoked on DishLeafNode device."
 STR_STANDBYFP_SUCCESS = "SETSTANDBYFP command invoked on DishLeafNode device."
 STR_SLEW_SUCCESS = "SLEW command invoked on DishLeafNode device."
 STR_TRACK_SUCCESS = "TRACK command invoked on DishLeafNode device."
-STR_STOP_TRACK_SUCCESS = "STOPTRACK command invoked on DishLeafNode device."
+STR_TRACK_STOP_SUCCESS = "TRACKSTOP command invoked on DishLeafNode device."
 
 STR_CMD_FAILED = "DishLeafNode_Commandfailed"
 STR_SLEW_EXEC = "Slew command execution"
