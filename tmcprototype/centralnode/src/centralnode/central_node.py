@@ -714,7 +714,7 @@ class CentralNode(SKABaseDevice):
         except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
             self.logger.exception("Exception in AssignResource(): %s", str(error))
             self._read_activity_message = "Exception in validating input: " + str(error)
-            exception_message.append("Exception in validating input: " + str(error))
+            exception_message.append(const.STR_RESOURCE_ALLOCATION_FAILED + " " + str(error))
             self.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
         except ResourceReassignmentError as resource_error:
             self.logger.exception("List of the dishes that are already allocated: %s", \

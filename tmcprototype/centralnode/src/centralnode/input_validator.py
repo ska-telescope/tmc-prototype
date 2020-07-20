@@ -36,7 +36,11 @@ class AssignResourceValidator():
         self.logger.debug("Available subarray ids: %s", self._subarrays)
 
         # Get available dish ids
-        self._receptor_list = receptor_list
+        # self._receptor_list = receptor_list
+        for receptor in receptor_list:
+            self._receptor_list.append(receptor.replace(dish_prefix))
+        self.logger.debug(self._receptor_list)
+
         self.logger.debug("Available dish ids: %s", self._receptor_list)
 
         self._dish_prefix = dish_prefix
@@ -58,22 +62,41 @@ class AssignResourceValidator():
         return ret_val
 
 
-    def _receptor_exists(self, receptor_id_list):
-        """Applies validation on receptor id list.
+    # def _receptor_exists(self, receptor_id_list):
+    #     """Applies validation on receptor id list.
 
-        :param: receptor_id_list: List of strings 
+    #     :param: receptor_id_list: List of strings
 
-        :return: True if all the receptors are present. False if a receptor is not present.
+    #     :return: True if all the receptors are present. False if a receptor is not present.
+    #     """
+    #     self.logger.debug("Existing receptors: %s", self._receptor_list)
+    #     for receptor_id in receptor_id_list:
+    #         receptor_id = self._dish_prefix + receptor_id
+    #         self.logger.debug("Checking for receptor %s", receptor_id)
+    #         if receptor_id not in self._receptor_list:
+    #             self.logger.debug("Receptor %s. is not present.", receptor_id)
+    #             return False
+
+    #     return True
+
+    def _search_invalid_receptors(self, receptor_id_list):
         """
-        self.logger.debug("Existing receptors: %s", self._receptor_list)
+        Searches the receptor ids in the received receptor id list and 
+        returns the ones that do not exist.
+
+        :param: receptor_id_list: List of strings
+
+        :returns: List of receptors that do not exist. Empty list is returned
+        when all receptors exist.
+
+        """
         for receptor_id in receptor_id_list:
-            receptor_id = self._dish_prefix + receptor_id
             self.logger.debug("Checking for receptor %s", receptor_id)
             if receptor_id not in self._receptor_list:
                 self.logger.debug("Receptor %s. is not present.", receptor_id)
-                return False
+                non_existing_receptors.append(receptor_id)
+        self.logger.debug(non_existing_receptors)
 
-        return True
 
     def loads(self, input_string):
         """
@@ -120,7 +143,7 @@ class AssignResourceValidator():
             raise ValueError("Empty receptorIDList") from ae
 
         if(not self._receptor_exists(assign_request["dish"]["receptorIDList"])):
-            exception_message = "Receptor id not present. Valid values are: " + str(self._receptor_list)
+            exception_message = "The following Receptor id(s) do not exist: " + str(self._receptor_list)
             raise ResourceNotPresentError(exception_message)
         self.logger.debug("receptor_id_list validation successful.")
 
