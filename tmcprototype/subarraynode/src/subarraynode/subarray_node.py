@@ -165,12 +165,15 @@ class SubarrayNode(SKASubarray):
         self.scan_obj = self.ScanCommand(*args)
         self.endscan_obj = self.EndScanCommand(*args)
         self.end_obj = self.EndCommand(*args)
+        self.restart_obj = self.RestartCommand(*args)
+        self.abort_obj = self.AbortCommand(*args)
+
 
     def receive_addresses_cb(self, event):
         """
         Retrieves the receiveAddresses attribute of SDP Subarray.
 
-        :param evt: A TANGO_CHANGE event on SDP Subarray receiveAddresses attribute.
+        :param event: A TANGO_CHANGE event on SDP Subarray receiveAddresses attribute.
 
         :return: None
         """
@@ -186,7 +189,7 @@ class SubarrayNode(SKASubarray):
         Retrieves the subscribed health states, aggregates them
         to calculate the overall subarray health state.
 
-        :param evt: A TANGO_CHANGE event on Subarray healthState.
+        :param event: A TANGO_CHANGE event on Subarray healthState.
 
         :return: None
         """
@@ -273,6 +276,16 @@ class SubarrayNode(SKASubarray):
             if self.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
                 self.release_obj.succeeded()
+            elif self.is_restart_command:
+                self.logger.info("Calling Restart command succeeded() method")
+                self.restart_obj.succeeded()
+                # Call InitCommand class's do() method
+                self.InitCommand()
+        elif self._csp_sa_obs_state == ObsState.ABORTED and self._sdp_sa_obs_state == \
+                ObsState.ABORTED:
+            if self.is_abort_command:
+                self.logger.info("Calling ABORT command succeeded() method")
+                self.abort_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
                 ObsState.READY:
             log_msg = "Pointing state in track counts = " + str(pointing_state_count_track)
@@ -447,7 +460,7 @@ class SubarrayNode(SKASubarray):
         """
         try:
             self._csp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
-            self.logger.info(const.RELEASE_ALL_RESOURCES_CSP_SALN)
+            self.logger.info(const.STR_RELEASE_ALL_RESOURCES_CSP_SALN)
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
             self.logger.debug(df)
@@ -463,7 +476,7 @@ class SubarrayNode(SKASubarray):
         """
         try:
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
-            self.logger.info(const.RELEASE_ALL_RESOURCES_SDP_SALN)
+            self.logger.info(const.STR_RELEASE_ALL_RESOURCES_SDP_SALN)
 
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
@@ -589,7 +602,7 @@ class SubarrayNode(SKASubarray):
             json_argument[const.STR_KEY_DISH] = dish
             arg_list.append(json.dumps(json_argument))
             self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
-            self.logger.debug(const.ASSIGN_RESOURCES_INV_CSP_SALN)
+            self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:
             # Log exception here as The callstack from this thread wont get
@@ -628,7 +641,7 @@ class SubarrayNode(SKASubarray):
         try:
             str_json_arg = json.dumps(argin)
             self._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
-            self.logger.debug(const.ASSIGN_RESOURCES_INV_SDP_SALN)
+            self.logger.info(const.STR_ASSIGN_RESOURCES_INV_SDP_SALN)
             argout = argin
         except DevFailed as df:
             self.logger.exception("SDP Subarray failed to allocate resources.")
@@ -859,7 +872,9 @@ class SubarrayNode(SKASubarray):
             device.isScanRunning = False
             device.is_scan_completed = False
             device.is_end_command = False
+            device.is_restart_command = False
             device.is_release_resources = False
+            device.is_abort_command = False
             device._scan_id = ""
             device._sb_id = ""
             device.scan_duration = 0
@@ -1101,6 +1116,48 @@ class SubarrayNode(SKASubarray):
                 device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
             # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
+    class AbortCommand(SKASubarray.AbortCommand):
+        """
+        A class for SubarrayNode's Abort() command.
+        """
+        def do(self):
+            """
+            This command on Subarray Node invokes Abort command on CSP Subarray Leaf Node and SDP
+            Subarray Leaf Node, and stops tracking of all the assigned dishes.
+
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
+                self.logger.info(const.STR_CMD_ABORT_INV_SDP)
+                device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
+                self.logger.info(const.STR_CMD_ABORT_INV_CSP)
+                # device._dish_leaf_node_group.command_inout(const.CMD_ABORT)
+                device._read_activity_message = const.STR_ABORT_SUCCESS
+                self.logger.info(const.STR_ABORT_SUCCESS)
+                device.set_status(const.STR_ABORT_SUCCESS)
+                device.is_abort_command = True
+                return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
+
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
+                return (ResultCode.FAILED, const.ERR_ABORT_INVOKING_CMD)
+            # PROTECTED REGION END #    //  SubarrayNode.Abort
+
     class TrackCommand(ResponseCommand):
         """
         A class for SubarrayNode's Track command.
@@ -1267,7 +1324,6 @@ class SubarrayNode(SKASubarray):
         """
         A class for SubarrayNode's Scan() command.
         """
-
         def do(self, argin):
             """
             This command accepts id as input. And it Schedule scan on subarray
@@ -1602,7 +1658,6 @@ class SubarrayNode(SKASubarray):
         """
         A class for SKASubarray's ReleaseAllResources() command.
         """
-
         def do(self):
             """
             It checks whether all resources are already released. If yes then it throws error while
@@ -1648,6 +1703,51 @@ class SubarrayNode(SKASubarray):
             message = str(argout)
             return (ResultCode.STARTED, message)
 
+    class RestartCommand(SKASubarray.RestartCommand):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Restart) ENABLED START #
+        """ """
+        def do(self):
+            """
+            This command invokes Restart command on CSP Subarray .
+            :return: A tuple containing a return code and a string
+                message indicating status. The message is for
+                information purpose only.
+            :rtype: (ResultCode, str)
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                self.logger.info("Restart command invoked on SubarrayNode.")
+                device._sdp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
+                self.logger.info(const.STR_CMD_RESTART_INV_SDP)
+                device._csp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
+                self.logger.info(const.STR_CMD_RESTART_INV_CSP)
+                # device._dish_leaf_node_group.command_inout(const.CMD_RESTART)
+                # self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
+                device._read_activity_message = const.STR_RESTART_SUCCESS
+                self.logger.info(const.STR_RESTART_SUCCESS)
+                device.set_status(const.STR_RESTART_SUCCESS)
+                device.is_restart_command = True
+                return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                          exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_RESTART_INVOKING_CMD)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_RESTART_INVOKING_CMD)
+
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_RESTART_EXEC)
+                return (ResultCode.FAILED, const.ERR_RESTART_INVOKING_CMD)
+            # PROTECTED REGION END #    //  SubarrayNode.Restart
+
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
@@ -1655,11 +1755,11 @@ class SubarrayNode(SKASubarray):
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
-        self.register_command_object("Track",self.TrackCommand(*args))
+        self.register_command_object("Track", self.TrackCommand(*args))
         # In order to pass self = subarray node as target device, the assign and release resource commands
         # are registered and inherited from SKASubarray
-        self.register_command_object("AssignResources",self.AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseAllResources",self.ReleaseAllResourcesCommand(*args))
+        self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
+        self.register_command_object("ReleaseAllResources", self.ReleaseAllResourcesCommand(*args))
 
 
 # ----------
@@ -1676,6 +1776,7 @@ def main(args=None, **kwargs):
     """
     return run((SubarrayNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SubarrayNode.main
+
 
 if __name__ == '__main__':
     main()
