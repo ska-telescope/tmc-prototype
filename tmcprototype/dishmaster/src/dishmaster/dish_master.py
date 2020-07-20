@@ -238,74 +238,6 @@ class DishMaster(SKAMaster):
         self._pointing_state = PointingState.TRACK
         self.logger.debug("Dish pointing state is set to TRACK")
 
-    def configure_band(self, argin):
-        """
-        Configures the pointing parameters of the dish.
-
-        :param argin: String. JSON string consists of Azimuth(decimal degrees), Elevation(decimal degrees)
-                and receiverBand.
-
-            Example:
-
-                {
-                    "pointing":
-                    {"AZ": 1.0,"EL": 1.0},
-
-                    "dish":
-                    {"receiverBand":"1"}
-
-                }
-
-        :return: None.
-        """
-        excpt_msg = []
-        excpt_count = 0
-        try:
-            log_msg = "Configure Json for DishMaster is" + str(argin)
-            self.logger.debug(log_msg)
-            jsonArgument_DM_Config = json.loads(argin)
-            AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
-            EL = jsonArgument_DM_Config[const.STR_POINTING]["EL"]
-            self._desired_pointing[1] = AZ
-            self._desired_pointing[2] = EL
-            receiverBand = jsonArgument_DM_Config["dish"]["receiverBand"]
-            band_index_map = {"5a": 4, "5b": 5}
-            receiverBand = band_index_map.get(receiverBand, int(receiverBand) - 1)
-            self._configured_band = ConfiguredBand(receiverBand)
-            self.logger.debug(const.STR_CONFIG_SUCCESS)
-
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON + str(value_error)
-            self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_INVALID_JSON + str(value_error))
-            excpt_count += 1
-
-        except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
-            excpt_count += 1
-
-        except DevFailed as dev_failed:
-            log_msg = const.ERR_CONFIG_DM + str(dev_failed)
-            self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(dev_failed))
-
-        except Exception as except_occurred:
-            log_msg = const.ERR_CONFIG_DM + str(except_occurred)
-            self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
-            excpt_count += 1
-
-        # throw exception:
-        if excpt_count > 0:
-            err_msg = ' '
-            for item in excpt_msg:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-                                         const.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
-    # PROTECTED REGION END #    //DishMaster.class_variable
-
     # -----------------
     # Device Properties
     # -----------------
@@ -1106,68 +1038,74 @@ class DishMaster(SKAMaster):
         # PROTECTED REGION END #    //  DishMaster.is_Track_allowed
 
     @command(
-        dtype_in='str',
-        doc_in="Pointing parameter of Dish.",
+        dtype_in='DevVoid',
+        dtype_out='DevVoid',
+        doc_in="Set the band to B1",
     )
     @DebugIt()
     def ConfigureBand1(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand1) ENABLED START #
-        self.configure_band(argin)
+        self._configured_band = ConfiguredBand.B1
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand1
 
     @command(
-        dtype_in='str',
-        doc_in="Pointing parameter of Dish.",
+        dtype_in='DevVoid',
+        dtype_out='DevVoid',
+        doc_in="Set the band to B2",
     )
     @DebugIt()
     def ConfigureBand2(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand2) ENABLED START #
-        self.configure_band(argin)
+        self._configured_band = ConfiguredBand.B2
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand2
 
     @command(
-        dtype_in='str',
-        doc_in="Pointing parameter of Dish.",
+        dtype_in='DevVoid',
+        dtype_out='DevVoid',
+        doc_in="Set the band to B3",
     )
     @DebugIt()
     def ConfigureBand3(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand3) ENABLED START #
-        self.configure_band(argin)
+        self._configured_band = ConfiguredBand.B3
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand3
 
     @command(
-        dtype_in='str',
-        doc_in="Pointing parameter of Dish.",
+        dtype_in='DevVoid',
+        dtype_out='DevVoid',
+        doc_in="Set the band to B4",
     )
     @DebugIt()
     def ConfigureBand4(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand4) ENABLED START #
-        self.configure_band(argin)
+        self._configured_band = ConfiguredBand.B4
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand4
 
     @command(
-        dtype_in='str',
-        doc_in="Pointing parameter of Dish.",
+        dtype_in='DevVoid',
+        dtype_out='DevVoid',
+        doc_in="Set the band to B5a",
     )
     @DebugIt()
     def ConfigureBand5a(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand5a) ENABLED START #
-        self.configure_band(argin)
+        self._configured_band = ConfiguredBand.B5a
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand5a
 
     @command(
-        dtype_in='str',
-        doc_in="Pointing parameter of Dish.",
+        dtype_in='DevVoid',
+        dtype_out='DevVoid',
+        doc_in="Set the band to B5b",
     )
     @DebugIt()
     def ConfigureBand5b(self, argin):
         # PROTECTED REGION ID(DishMaster.ConfigureBand5b) ENABLED START #
-        self.configure_band(argin)
+        self._configured_bandconfigured_band = ConfiguredBand.B5b
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand5b
 

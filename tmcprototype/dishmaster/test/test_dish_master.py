@@ -19,7 +19,7 @@ import tango
 from tango import DevState
 
 # Additional import
-from dishmaster import DishMaster, const
+from dishmaster import DishMaster, const, ConfiguredBand
 from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:
@@ -374,40 +374,20 @@ class TestDishMaster(object):
 
     def test_configure_band(self, tango_context):
         """
-        Test case to check DishMaster is successfully configured.
+        Test case to check DishMaster sets configured band
         """
-        input = '{"pointing":{"AZ":5.0,"EL":10.0},"dish":{"receiverBand":"1"}}'
-        jsonArg = json.loads(input)
-        Azimuth = jsonArg["pointing"]["AZ"]
-        Elevation = jsonArg["pointing"]["EL"]
-        receiver_Band = int(jsonArg["dish"]["receiverBand"]) - 1
-        # choose any of the configureBand command. using ConfigureBand1 for this test
-        tango_context.device.ConfigureBand1(input)
-        assert tango_context.device.desiredPointing[1] == Azimuth and \
-               tango_context.device.desiredPointing[2] == Elevation and \
-               tango_context.device.configuredBand == receiver_Band
-
-    def test_configure_band_invalid_json(self, tango_context):
-        """
-        Negative test case to check invalid JSON argument.
-        """
-        test_input = '{"invalid_key"}'
-        result = 'a'
-        with pytest.raises(tango.DevFailed):
-            result = tango_context.device.ConfigureBand1(test_input)
-        time.sleep(1)
-        assert 'a' in result
-
-    def test_configure_band_key_not_found(self, tango_context):
-        """
-        Negative test to check if key is found.
-        """
-        test_input = '{"pointing":{"AZ":1.0,"EL": 1.0}}'
-        result = 'a'
-        with pytest.raises(tango.DevFailed):
-            result = tango_context.device.ConfigureBand1(test_input)
-        time.sleep(1)
-        assert 'a' in result
+        tango_context.device.ConfigureBand1()
+        assert tango_context.device.configuredBand == ConfiguredBand.B1
+        tango_context.device.ConfigureBand2()
+        assert tango_context.device.configuredBand == ConfiguredBand.B2
+        tango_context.device.ConfigureBand3()
+        assert tango_context.device.configuredBand == ConfiguredBand.B3
+        tango_context.device.ConfigureBand4()
+        assert tango_context.device.configuredBand == ConfiguredBand.B4
+        tango_context.device.ConfigureBand5a()
+        assert tango_context.device.configuredBand == ConfiguredBand.B5a
+        tango_context.device.ConfigureBand5b()
+        assert tango_context.device.configuredBand == ConfiguredBand.B5b
 
     def test_Track(self, tango_context):
         """Test for Track command"""
