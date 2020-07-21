@@ -604,7 +604,7 @@ def test_abort_should_raise_devfailed_exception():
         assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
 
 
-def test_abort_should_failed_when_device_is_not_in_expected_obsstate():
+def test_abort_should_failed_when_device_obsstate_is_resourcing():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
@@ -627,7 +627,30 @@ def test_abort_should_failed_when_device_is_not_in_expected_obsstate():
         assert "Unable to invoke Abort command." in tango_context.device.activityMessage
 
 
-def test_restart_should_command_sdp_subarray_to_restart_when_it_is_aborted():
+def test_abort_should_failed_when_device_obsstate_is_empty():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Abort()
+
+        # assert:
+        assert "Unable to invoke Abort command." in tango_context.device.activityMessage
+
+
+def test_restart_should_command_sdp_subarray_to_restart_when_obsstate_is_aborted():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
@@ -651,7 +674,7 @@ def test_restart_should_command_sdp_subarray_to_restart_when_it_is_aborted():
                                                                      any_method(with_name='cmd_ended_cb'))
 
 
-def test_restart_should_command_sdp_subarray_to_restart_when_it_is_fault():
+def test_restart_should_command_sdp_subarray_to_restart_when_obsstate_is_fault():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
@@ -699,7 +722,7 @@ def test_restart_should_raise_devfailed_exception():
         assert const.ERR_RESTART_INVOKING_CMD in tango_context.device.activityMessage
 
 
-def test_abort_should_failed_when_device_is_in_resourcing():
+def test_restart_should_failed_when_device_obsstate_is_resourcing():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
@@ -722,7 +745,30 @@ def test_abort_should_failed_when_device_is_in_resourcing():
         assert "Unable to invoke Restart command" in tango_context.device.activityMessage
 
 
-def test_abort_should_failed_when_device_is_in_empty():
+def test_restart_should_failed_when_device_obsstate_is_scanning():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
+
+
+def test_restart_should_failed_when_device_obsstate_is_empty():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
@@ -745,7 +791,7 @@ def test_abort_should_failed_when_device_is_in_empty():
         assert "Unable to invoke Restart command" in tango_context.device.activityMessage
 
 
-def test_abort_should_failed_when_device_is_in_configuring():
+def test_restart_should_failed_when_device_obsstate_is_configuring():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
@@ -768,7 +814,7 @@ def test_abort_should_failed_when_device_is_in_configuring():
         assert "Unable to invoke Restart command" in tango_context.device.activityMessage
 
 
-def test_abort_should_failed_when_device_is_in_idle():
+def test_restart_should_failed_when_device_obsstate_is_idle():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
