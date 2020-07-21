@@ -1045,7 +1045,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
 #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
-
     class RestartCommand(ResponseCommand):
 
         # PROTECTED REGION ID(SdpSubarrayLeafNode.Restart) ENABLED START #
@@ -1165,7 +1164,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #         self.logger.info(message)
     #         return (ResultCode.OK, message)
 
->>>>>>> 65e50196c5258fb122fe0228cb7f3c29508d68eb
 
 # pylint: enable=unused-argument,unused-variable
 # ----------
