@@ -699,7 +699,99 @@ def test_restart_should_raise_devfailed_exception():
         assert const.ERR_RESTART_INVOKING_CMD in tango_context.device.activityMessage
 
 
-def test_restart_should_failed_when_device_is_not_in_expected_obsstate():
+def test_abort_should_failed_when_device_is_in_resourcing():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
+
+
+def test_abort_should_failed_when_device_is_in_empty():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
+
+
+def test_abort_should_failed_when_device_is_in_configuring():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
+
+
+def test_abort_should_failed_when_device_is_in_idle():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) \
+            as tango_context:
+        # act:
+        tango_context.device.Restart()
+
+        # assert:
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
+
+
+def test_restart_should_failed_when_device_obsstate_is_ready():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
     dut_properties = {
