@@ -791,33 +791,29 @@ class DishMaster(SKAMaster):
         # PROTECTED REGION END #    //  DishMaster.is_Scan_allowed
 
     @command(
-        dtype_in='str',
-        doc_in="The timestamp indicates the time, in UTC, at which command execution"
-               " should start.",
+        dtype_in='DevVoid',
+        doc_in="Triggers the dish to start capturing the data on the configured band",
     )
     @DebugIt()
-    def StartCapture(self, argin):
+    def StartCapture(self):
         # PROTECTED REGION ID(DishMaster.StartCapture) ENABLED START #
         """
         Triggers the dish to start capturing the data on the configured band.
-
-        :param argin: DevString. Timestamp in UTC at which command should be executed.
 
         :return: None
         """
         excpt_count = 0
         excpt_msg = []
         try:
-            if type(float(argin)) == float:
-                if self._capturing is False:
-                    # Command to start Data Capturing
-                    self._capturing = True                      # set Capturing to True
-                    self._pointing_state = PointingState.SCAN   # set pointingState to SCAN
-                    self.set_status(const.STR_DATA_CAPTURE_STRT)
-                    self.logger.info(const.STR_DATA_CAPTURE_STRT)
-                else:
-                    self.set_status(const.STR_DATA_CAPTURE_ALREADY_STARTED)
-                    self.logger.info(const.STR_DATA_CAPTURE_ALREADY_STARTED)
+            if self._capturing is False:
+                # Command to start Data Capturing
+                self._capturing = True                      # set Capturing to True
+                self._pointing_state = PointingState.SCAN   # set pointingState to SCAN
+                self.set_status(const.STR_DATA_CAPTURE_STRT)
+                self.logger.info(const.STR_DATA_CAPTURE_STRT)
+            else:
+                self.set_status(const.STR_DATA_CAPTURE_ALREADY_STARTED)
+                self.logger.info(const.STR_DATA_CAPTURE_ALREADY_STARTED)
         except Exception as except_occured:
             excpt_msg.append(const.ERR_EXE_STRT_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1
@@ -844,32 +840,29 @@ class DishMaster(SKAMaster):
         # PROTECTED REGION END #    //  DishMaster.is_StartCapture_allowed
 
     @command(
-        dtype_in='str',
-        doc_in="The timestamp indicates the time, in UTC, at which command execution should start",
+        dtype_in='DevVoid',
+        doc_in="Triggers the dish to stop capturing the data on the configured band.",
     )
     @DebugIt()
-    def StopCapture(self, argin):
+    def StopCapture(self):
         # PROTECTED REGION ID(DishMaster.StopCapture) ENABLED START #
         """
         Triggers the dish to stop capturing the data on the configured band.
-
-        :param argin: DevString. Timestamp in UTC at which command should be executed.
 
         :return: None
         """
         excpt_count = 0
         excpt_msg = []
         try:
-            if type(float(argin)) == float:
-                if self._capturing is True:
-                    # Command to stop Data Capturing
-                    self._capturing = False                     # set Capturing to FALSE
-                    self._pointing_state = PointingState.READY  # set pointingState to READY
-                    self.set_status(const.STR_DATA_CAPTURE_STOP)
-                    self.logger.info(const.STR_DATA_CAPTURE_STOP)
-                else:
-                    self.set_status(const.STR_DATA_CAPTURE_ALREADY_STOPPED)
-                    self.logger.info(const.STR_DATA_CAPTURE_ALREADY_STOPPED)
+            if self._capturing is True:
+                # Command to stop Data Capturing
+                self._capturing = False                     # set Capturing to FALSE
+                self._pointing_state = PointingState.READY  # set pointingState to READY
+                self.set_status(const.STR_DATA_CAPTURE_STOP)
+                self.logger.info(const.STR_DATA_CAPTURE_STOP)
+            else:
+                self.set_status(const.STR_DATA_CAPTURE_ALREADY_STOPPED)
+                self.logger.info(const.STR_DATA_CAPTURE_ALREADY_STOPPED)
         except Exception as except_occured:
             excpt_msg.append(const.ERR_EXE_STOP_CAPTURE_CMD + str(self.ReceptorNumber))
             excpt_count += 1

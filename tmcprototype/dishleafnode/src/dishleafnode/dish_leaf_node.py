@@ -1158,7 +1158,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 if type(float(argin)) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
-                                                          argin, device.cmd_ended_cb)
+                                                            device.cmd_ended_cb)
                     return (ResultCode.OK, const.STR_STARTCAPTURE_SUCCESS)
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
@@ -1241,7 +1241,8 @@ class DishLeafNode(SKABaseDevice):
             exception_message = []
             try:
                 if type(float(argin)) == float:
-                    device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE, argin, device.cmd_ended_cb)
+                    device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
+                                                            device.cmd_ended_cb)
                     return (ResultCode.OK, const.STR_STOPCAPTURE_SUCCESS)
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)

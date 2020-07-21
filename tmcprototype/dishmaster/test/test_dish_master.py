@@ -130,35 +130,21 @@ class TestDishMaster(object):
     def test_StopCapture(self, tango_context):
         """Test for StopCapture"""
         # PROTECTED REGION ID(DishMaster.test_StopCapture) ENABLED START #
-        # Testing for invalid argument
-        with pytest.raises(tango.DevFailed) :
-            tango_context.device.StopCapture()
-        assert tango_context.device.capturing is not False
+        tango_context.device.SetStandbyLPMode()
+        tango_context.device.SetOperateMode()
+        tango_context.device.StopCapture()
+        assert not tango_context.device.capturing
         assert tango_context.device.pointingState != PointingState.READY
-        # Testing for valid argument
-        tango_context.device.StopCapture()
-        assert tango_context.device.capturing is False
-        assert tango_context.device.pointingState == PointingState.READY
-        # Testing if data capturing is already stopped
-        tango_context.device.StopCapture()
-        assert tango_context.device.Status() == const.STR_DATA_CAPTURE_ALREADY_STOPPED
-        # PROTECTED REGION END #    //  DishMaster.test_StopCapture
 
     def test_StartCapture(self, tango_context):
         """Test for StartCapture"""
         # PROTECTED REGION ID(DishMaster.test_StartCapture) ENABLED START #
         # Testing for invalid argument
-        with pytest.raises(tango.DevFailed) :
-            tango_context.device.StartCapture()
-        assert tango_context.device.pointingState != PointingState.SCAN
-        assert tango_context.device.capturing is not True
-        # Testing for valid argument
+        tango_context.device.SetStandbyLPMode()
+        tango_context.device.SetOperateMode()
         tango_context.device.StartCapture()
         assert tango_context.device.pointingState == PointingState.SCAN
-        assert tango_context.device.capturing is True
-        # Testing if data capturing is already started
-        tango_context.device.StartCapture()
-        assert tango_context.device.Status() == const.STR_DATA_CAPTURE_ALREADY_STARTED
+        assert tango_context.device.capturing
         # PROTECTED REGION END #    //  DishMaster.test_StartCapture
 
     def test_Slew(self, tango_context):
