@@ -9,6 +9,7 @@ import pytest
 import mock
 from mock import Mock, MagicMock
 from os.path import dirname, join
+import threading
 
 # Tango imports
 import tango
@@ -78,16 +79,24 @@ path= join(dirname(__file__), 'data' , receive_addresses_file)
 with open(path, 'r') as f:
     receive_addresses_map=f.read()
 
+def set_timeout_event(event):
+    timer_event.set()
 
 def wait_for(tango_context, obs_state_to_change, timeout=10):
-    count_down = timeout
-    while tango_context.device.obsState != obs_state_to_change:
-        count_down -= 1
-        if count_down == 0:
-            # timeout occured
-            return "timeout"
-        else:
-            return True
+    timer_event = threading.Event()
+    timer_thread = threading.Timer(timeout, set_timeout_event, timer_event)
+    timer_thread.start()
+
+    # wait till timeout or obsState to change
+    while (not timer_event.isSet() and tango_context.device.obsState != obs_state_to_change):
+        print("tango_context.device.obsState: ", tango_context.device.obsState)
+        continue
+
+    if timer_event.isSet():
+        return "timeout"
+    else:
+        timer_thread.cancel()
+        return True
 
 @pytest.fixture(scope="function")
 def example_scan_configuration():
