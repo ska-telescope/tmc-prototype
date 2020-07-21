@@ -1487,7 +1487,7 @@ class DishLeafNode(SKABaseDevice):
                 radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
                 self.logger.info(
                     "Track command ignores RA dec coordinates passed in: %s. "
-                    "Uses coordinates form Configure command instead.",
+                    "Uses coordinates from Configure command instead.",
                     radec_value
                 )
                 # Invoke Track command on Dish Master

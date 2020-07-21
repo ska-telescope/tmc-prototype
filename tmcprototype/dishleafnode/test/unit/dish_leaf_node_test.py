@@ -184,6 +184,11 @@ def test_track_should_command_dish_to_start_tracking():
         dish1_proxy_mock.command_inout_asynch.assert_called_with(
             const.CMD_TRACK, any_method(with_name='cmd_ended_cb'))
 
+        # The Track command starts a new thread that sends updates
+        # periodically.  We need to allow time for it to start up before
+        # checking desiredPointing.  There is no event we can wait
+        # on to avoid sleeping.
+        time.sleep(0.1)
         json_argument = json.loads(config_input_str)
         ra_value = json_argument["pointing"]["target"]["RA"]
         dec_value = json_argument["pointing"]["target"]["dec"]
