@@ -9,7 +9,7 @@
 # See LICENSE.txt for more info.
 """Contain the tests for the DishMaster Simulator."""
 
-# Standard Python imports\
+# Standard Python imports
 import json
 import pytest
 import time
@@ -19,8 +19,7 @@ import tango
 from tango import DevState
 
 # Additional import
-from dishmaster import DishMaster, const, ConfiguredBand, PointingState
-from dishleafnode.const import DishMode
+from dishmaster import ConfiguredBand, DishMaster, DishMode, PointingState, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:

@@ -13,10 +13,11 @@ SKA Dish Master TANGO device server
 """
 from . import release, const
 from .dish_master import DishMaster
+from .dish_master import DishMode
 from .dish_master import ConfiguredBand
 from .dish_master import PointingState
 
-__all__ = ["const", "release", "DishMaster", "ConfiguredBand", "PointingState"]
+__all__ = ["const", "release", "DishMaster", "DishMode", "ConfiguredBand", "PointingState"]
 
 __version__ = release.version
 __version_info__ = release.version_info

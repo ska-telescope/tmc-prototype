@@ -25,7 +25,6 @@ from tango import DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run,attribute, command, device_property
 from ska.base import SKAMaster
 from ska.base.control_model import HealthState, AdminMode
-from dishleafnode.const import DishMode
 
 # Additional import
 import numpy
@@ -35,6 +34,22 @@ from . import const
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
+
+
+class DishMode(enum.IntEnum):
+    """
+    Dish's mode of operation
+    """
+    OFF = 0
+    STARTUP = 1
+    SHUTDOWN = 2
+    STANDBY_LP = 3
+    STANDBY_FP = 4
+    STOW = 5
+    CONFIG = 6
+    OPERATE = 7
+    MAINTENANCE = 8
+
 
 class PointingState(enum.IntEnum):
     """
@@ -46,7 +61,7 @@ class PointingState(enum.IntEnum):
     SCAN = 3
     NONE = 4
     UNKNOWN = 5
-# pylint: disable=unused-argument
+
 
 class ConfiguredBand(enum.IntEnum):
     """
