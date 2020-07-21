@@ -1,6 +1,7 @@
 # Standard Python imports
 import contextlib
 import importlib
+import time
 import types
 import sys
 import json
@@ -8,17 +9,17 @@ import mock
 from mock import Mock, MagicMock
 import tango
 import pytest
+import katpoint
 
 import numpy as np
 
 # Tango imports
-from tango import DevState
 from tango.test_context import DeviceTestContext
 from os.path import dirname, join
 
 # Additional import
 from dishleafnode import DishLeafNode, const
-from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
+from ska.base.control_model import HealthState, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import ObsState, LoggingLevel
 
 
@@ -43,6 +44,21 @@ with open(path, 'r') as f:
     config_track_invalid_str=f.read()
 
 
+def assert_desired_pointing_coordinates(actual_ra, actual_dec, desired_pointing):
+    # TODO: use more accurate time, azimuth and elevation
+    # for now, assume target is Polaris Australis and use large tolerance
+    # (since that target does not move much)
+    expected_time = time.time()
+    expected_az = 180.0
+    expected_el = 28.0
+    actual_time, actual_az, actual_el = desired_pointing
+    az_delta = katpoint.wrap_angle(expected_az - actual_az, period=360.0)
+    el_delta = katpoint.wrap_angle(expected_el - actual_el, period=360.0)
+    assert actual_time == pytest.approx(expected_time, abs=0.1)
+    assert abs(az_delta) < 2.0
+    assert abs(el_delta) < 2.0
+
+
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -64,8 +80,6 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
                                                                  any_method(with_name='cmd_ended_cb'))
 
 
-# TODO: actual AZ and EL values need to be generated.
-@pytest.mark.xfail
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -82,20 +96,16 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
         tango_context.device.Configure(dish_config)
 
         # assert:
-        jsonArgument = json.loads(dish_config)
-        # ra_value = (jsonArgument["pointing"]["target"]["RA"])
-        # dec_value = (jsonArgument["pointing"]["target"]["dec"])
-        receiver_band = jsonArgument["dish"]["receiverBand"]
-        expected_configure_command = const.CMD_DISH_CONFIGURE + receiver_band
+        json_argument = json.loads(dish_config)
+        ra_value = json_argument["pointing"]["target"]["RA"]
+        dec_value = json_argument["pointing"]["target"]["dec"]
+        receiver_band = json_argument["dish"]["receiverBand"]
+        expected_configure_command = const.CMD_DISH_CONFIGURE_BAND + receiver_band
         dish1_proxy_mock.command_inout_asynch.assert_called_with(expected_configure_command,
                                                                  any_method(with_name='cmd_ended_cb'))
-        expected_time = 12345.6
-        expected_az = 181.628111
-        expected_el = 27.336666
-        actual_time, actual_az, actual_el = dish1_proxy_mock.desiredPointing
-        assert actual_time == pytest.approx(expected_time)
-        assert actual_az == pytest.approx(expected_az)
-        assert actual_el == pytest.approx(expected_el)
+
+        assert_desired_pointing_coordinates(
+            ra_value, dec_value, dish1_proxy_mock.desiredPointing)
 
 
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
@@ -157,7 +167,6 @@ def test_set_operate_mode_should_command_dish_to_start():
                                                                 any_method(with_name='cmd_ended_cb'))
 
 
-@pytest.mark.xfail
 def test_track_should_command_dish_to_start_tracking():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -172,21 +181,14 @@ def test_track_should_command_dish_to_start_tracking():
         tango_context.device.Track(config_input_str)
 
         # assert:
-        jsonArgument = config_input_str
-        ra_value = (jsonArgument["pointing"]["target"]["RA"])
-        dec_value = (jsonArgument["pointing"]["target"]["dec"])
-        radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
         dish1_proxy_mock.command_inout_asynch.assert_called_with(
             const.CMD_TRACK, any_method(with_name='cmd_ended_cb'))
 
-        # TODO: use real time, azimuth and elevation
-        expected_time = 0.0
-        expected_az = 181.628111
-        expected_el = 27.336666
-        actual_time, actual_az, actual_el = dish1_proxy_mock.desiredPointing
-        assert actual_time == pytest.approx(expected_time)
-        assert actual_az == pytest.approx(expected_az)
-        assert actual_el == pytest.approx(expected_el)
+        json_argument = json.loads(config_input_str)
+        ra_value = json_argument["pointing"]["target"]["RA"]
+        dec_value = json_argument["pointing"]["target"]["dec"]
+        assert_desired_pointing_coordinates(
+            ra_value, dec_value, dish1_proxy_mock.desiredPointing)
 
 
 def test_stop_track_should_command_dish_to_stop_tracking():
@@ -888,7 +890,7 @@ def test_stop_capture_should_raise_exception_when_called_with_invalid_arguments(
 def test_slew_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = "a"
+        input_string = [1.23]
         with pytest.raises(tango.DevFailed):
             tango_context.device.Slew(input_string)
 
@@ -1013,7 +1015,7 @@ def test_scan_command_with_callback_method():
     event_subscription_map = {}
 
     dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
@@ -1043,7 +1045,7 @@ def test_scan_command_with_callback_method_with_event_error():
     event_subscription_map = {}
 
     dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
@@ -1073,7 +1075,7 @@ def test_scan_command_with_callback_method_with_command_error():
     event_subscription_map = {}
 
     dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,

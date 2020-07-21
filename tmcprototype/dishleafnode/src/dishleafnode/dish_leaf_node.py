@@ -59,31 +59,31 @@ class DishLeafNode(SKABaseDevice):
             self.logger.debug(log_msg)
             if not evt.err:
                 self._dish_mode = evt.attr_value.value
-                if self._dish_mode == 0:
+                if self._dish_mode == const.DishMode.OFF:
                     self.logger.debug(const.STR_DISH_OFF_MODE)
                     self._read_activity_message = const.STR_DISH_OFF_MODE
-                elif self._dish_mode == 1:
+                elif self._dish_mode == const.DishMode.STARTUP:
                     self.logger.debug(const.STR_DISH_STARTUP_MODE)
                     self._read_activity_message = const.STR_DISH_STARTUP_MODE
-                elif self._dish_mode == 2:
+                elif self._dish_mode == const.DishMode.SHUTDOWN:
                     self.logger.debug(const.STR_DISH_SHUTDOWN_MODE)
                     self._read_activity_message = const.STR_DISH_SHUTDOWN_MODE
-                elif self._dish_mode == 3:
+                elif self._dish_mode == const.DishMode.STANDBY_LP:
                     self.logger.debug(const.ERR_DISH_MODE_CB)
                     self._read_activity_message = const.STR_DISH_STANDBYLP_MODE
-                elif self._dish_mode == 4:
+                elif self._dish_mode == const.DishMode.STANDBY_FP:
                     self.logger.debug(const.STR_DISH_STANDBYFP_MODE)
                     self._read_activity_message = const.STR_DISH_STANDBYFP_MODE
-                elif self._dish_mode == 5:
+                elif self._dish_mode == const.DishMode.MAINTENANCE:
                     self.logger.debug(const.STR_DISH_MAINT_MODE)
                     self._read_activity_message = const.STR_DISH_MAINT_MODE
-                elif self._dish_mode == 6:
+                elif self._dish_mode == const.DishMode.STOW:
                     self.logger.debug(const.STR_DISH_STOW_MODE)
                     self._read_activity_message = const.STR_DISH_STOW_MODE
-                elif self._dish_mode == 7:
+                elif self._dish_mode == const.DishMode.CONFIG:
                     self.logger.debug(const.STR_DISH_CONFIG_MODE)
                     self._read_activity_message = const.STR_DISH_CONFIG_MODE
-                elif self._dish_mode == 8:
+                elif self._dish_mode == const.DishMode.OPERATE:
                     self.logger.debug(const.STR_DISH_OPERATE_MODE)
                     self._read_activity_message = const.STR_DISH_OPERATE_MODE
                 else:
@@ -359,7 +359,8 @@ class DishLeafNode(SKABaseDevice):
         try:
             while self.event_track_time.is_set() is False:
                 # timestamp_value = Current system time in UTC
-                timestamp_value = str(datetime.datetime.utcnow())
+                now = datetime.datetime.utcnow()
+                timestamp_value = str(now)
                 katpoint_arg = []
                 katpoint_arg.insert(0, argin)
                 katpoint_arg.insert(1, timestamp_value)
@@ -371,12 +372,10 @@ class DishLeafNode(SKABaseDevice):
                             self.az = 360 - abs(self.az)
 
                         roundoff_az_el = [round(self.az, 12), round(self.el, 12)]
-                        spectrum = [0]
+                        spectrum = [now.timestamp()]
                         spectrum.extend((roundoff_az_el))
                         # assign calculated AzEl to desiredPointing attribute of Dishmaster
                         self._dish_proxy.desiredPointing = spectrum
-                        # Invoke Track command of Dish Master
-                        self._dish_proxy.command_inout_asynch(const.CMD_TRACK, self.cmd_ended_cb)
                     else:
                         self.el_limit = True
                         self._read_activity_message = const.ERR_ELE_LIM
@@ -837,14 +836,14 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             # TODO: Accept Scan argument in JSON format
-            # jsonArgument = json.loads(argin)
-            # scan_duration = jsonArgument['scanDuration']
+            # json_argin = json.loads(argin)
+            # scan_duration = json_argin['scanDuration']
             # print("Scan duration:", scan_duration)
             try:
                 if type(float(argin)) == float:
                     self.logger.debug(const.STR_IN_SCAN)
                     device._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
-                                                          argin, device.cmd_ended_cb)
+                                                            device.cmd_ended_cb)
                     self.logger.debug(const.STR_OUT_SCAN)
                     return (ResultCode.OK, const.STR_SCAN_SUCCESS)
             except ValueError as value_error:
@@ -931,8 +930,8 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             # TODO: Accept EndScan argument in JSON format
-            # jsonArgument = json.loads(argin)
-            # timestamp = jsonArgument['timestamp']
+            # json_argin = json.loads(argin)
+            # timestamp = json_argin['timestamp']
             # print("End Scan timestamp:", timestamp)
             try:
                 if type(float(argin)) == float:
@@ -1030,34 +1029,29 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                jsonArgument = json.loads(argin)
-                ra_value = (jsonArgument["pointing"]["target"]["RA"])
-                dec_value = (jsonArgument["pointing"]["target"]["dec"])
-                receiver_band = jsonArgument["dish"]["receiverBand"]
+                json_argin = json.loads(argin)
+                ra_value = json_argin["pointing"]["target"]["RA"]
+                dec_value = json_argin["pointing"]["target"]["dec"]
+                receiver_band = json_argin["dish"]["receiverBand"]
                 # timestamp_value = Current system time in UTC
-                timestamp_value = str(datetime.datetime.utcnow())
+                now = datetime.datetime.utcnow()
+                timestamp_value = str(now)
                 # Convert ra and dec to az and el
                 radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
                 katpoint_arg = []
                 katpoint_arg.insert(0, radec_value)
                 katpoint_arg.insert(1, timestamp_value)
                 device.convert_radec_to_azel(katpoint_arg)
-                # Convert calulated AZ-El into JSON string
-                arg_list = {"pointing": {
-                    "AZ": device.az,
-                    "EL": device.el
 
-                },
-                    "dish": {
-                        "receiverBand": receiver_band
-                    }
+                # Set desiredPointing on Dish Master (it won't move until asked to
+                # track or scan, but provide initial coordinates for interest)
+                time_az_el = [now.timestamp(), device.az, device.el]
+                device._dish_proxy.desiredPointing = time_az_el
 
-                }
-                dish_str_ip = json.dumps(arg_list)
-                # Send configure command to Dish Master
-                command = const.CMD_DISH_CONFIGURE + receiver_band
-                device._dish_proxy.command_inout_asynch(command, str(dish_str_ip),
-                                                        device.cmd_ended_cb)
+                # Send configure band command to Dish Master
+                command = const.CMD_DISH_CONFIGURE_BAND + receiver_band
+                device._dish_proxy.command_inout_asynch(command, device.cmd_ended_cb)
+
                 return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except ValueError as value_error:
@@ -1370,7 +1364,9 @@ class DishLeafNode(SKABaseDevice):
             """
             Invokes Slew command on DishMaster to slew the dish towards the set pointing coordinates.
 
-            :param argin: timestamp
+            :param argin: DevVarDoubleArray
+              The azimuth and elevation co-ordinates to slew to, as a list [az, el],
+              in degrees.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -1385,14 +1381,21 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                if type(float(argin)) == float:
-                    device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW, argin, device.cmd_ended_cb)
+                if len(argin) == 2:
+                    az_el = argin[0:2]
+                    device._dish_proxy.command_inout_asynch(
+                        const.CMD_DISH_SLEW, az_el, device.cmd_ended_cb)
                     return (ResultCode.OK, const.STR_SLEW_SUCCESS)
-            except ValueError as value_error:
-                log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
+                else:
+                    raise ValueError(
+                        "Slew requires 2 coordinates [azimuth, elevation], not " + str(argin))
+            except ValueError as error:
+                log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(error)
                 self.logger.error(log_msg)
-                device._read_activity_message = const.ERR_EXE_SLEW_CMD + "\n" + const.ERR_INVALID_DATATYPE + \
-                                              str(value_error)
+                device._read_activity_message = (
+                    const.ERR_EXE_SLEW_CMD + "\n" +
+                    const.ERR_INVALID_DATATYPE + str(error)
+                )
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
 
@@ -1415,7 +1418,7 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in='DevVarDoubleArray',
         doc_in="Timestamp at which command should be executed.",
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
@@ -1478,17 +1481,26 @@ class DishLeafNode(SKABaseDevice):
             exception_message = []
             try:
                 device.el_limit = False
-                jsonArgument = json.loads(argin)
-                ra_value = (jsonArgument["pointing"]["target"]["RA"])
-                dec_value = (jsonArgument["pointing"]["target"]["dec"])
+                json_argin = json.loads(argin)
+                ra_value = (json_argin["pointing"]["target"]["RA"])
+                dec_value = (json_argin["pointing"]["target"]["dec"])
                 radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
+                self.logger.info(
+                    "Track command ignores RA dec coordinates passed in: %s. "
+                    "Uses coordinates form Configure command instead.",
+                    radec_value
+                )
+                # Invoke Track command on Dish Master
+                device._dish_proxy.command_inout_asynch(const.CMD_TRACK, device.cmd_ended_cb)
+
                 device.event_track_time.clear()
                 # TODO: For future reference
                 # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, const.THREAD_TRACK)
                 # self.tracking_time_thread1.start()
                 # Pass string argument in track_thread in brackets
-                device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK,
-                                                      args=(radec_value,))
+                device.track_thread1 = threading.Thread(
+                    None, device.track_thread, const.THREAD_TRACK,
+                    args=(radec_value,))
                 device.track_thread1.start()
                 return (ResultCode.OK, const.STR_TRACK_SUCCESS)
 
