@@ -79,8 +79,8 @@ path= join(dirname(__file__), 'data' , receive_addresses_file)
 with open(path, 'r') as f:
     receive_addresses_map=f.read()
 
-def set_timeout_event(event):
-    timer_event.set()
+def set_timeout_event(timeout_event):
+    timeout_event.set()
 
 def wait_for(tango_context, obs_state_to_change, timeout=10):
     timer_event = threading.Event()
