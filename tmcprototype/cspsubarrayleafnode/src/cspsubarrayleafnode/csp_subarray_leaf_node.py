@@ -866,7 +866,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
                 return (ResultCode.OK, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
-
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count, const.ERR_RELEASE_ALL_RESOURCES)
@@ -1193,7 +1192,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
                     return (ResultCode.OK, const.STR_ABORT_SUCCESS)
-
                 else:
                     log_msg = "Csp Subarray is in ObsState " + str(device.CspSubarrayProxy.obsState) + \
                               ". Unable to invoke Abort command."
@@ -1222,20 +1220,22 @@ class CspSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def Abort(self):
-        """ Invokes Abort command on cspsubarrayleafnode"""
+        """ Invokes Abort command on CspSubarrayLeafNode"""
         handler = self.get_command_object("Abort")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
     def is_Abort_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
+        Checks whether the command is allowed to be run in the current state
+
         :return: True if this command is allowed to be run in
-        current device state
+                 current device state
+
         :rtype: boolean
+
         :raises: DevFailed if this command is not allowed to be run
-        in current device state
+                 in current device state
         """
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
@@ -1287,7 +1287,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
                     return (ResultCode.OK, const.STR_RESTART_SUCCESS)
-
                 else:
                     log_msg = "Csp Subarray is in ObsState " + str(device.CspSubarrayProxy.obsState) + \
                               ". Unable to invoke Restart command."
@@ -1323,13 +1322,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def is_Restart_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
+        Checks whether the command is allowed to be run in the current state
+
         :return: True if this command is allowed to be run in
-        current device state
+                 current device state
+
         :rtype: boolean
+
         :raises: DevFailed if this command is not allowed to be run
-        in current device state
+                 in current device state
         """
         handler = self.get_command_object("Restart")
         return handler.check_allowed()

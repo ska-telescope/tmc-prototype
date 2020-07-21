@@ -118,7 +118,7 @@
       </argout>
       <status abstract="false" inherited="true" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="Abort" description="Command to request that all subarray processing is aborted." execMethod="abort" displayLevel="OPERATOR" polledPeriod="0">
+    <commands name="Abort" description="Command to abort the current operation being done on the CSP subarray." execMethod="abort" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
       </argin>
@@ -127,7 +127,7 @@
       </argout>
       <status abstract="false" inherited="true" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="Restart" description="Command to request that all subarray processing is Restarted." execMethod="restart" displayLevel="OPERATOR" polledPeriod="0">
+    <commands name="Restart" description="Command to restart the CSP subarray and bring it to its ON state." execMethod="restart" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
       </argin>
