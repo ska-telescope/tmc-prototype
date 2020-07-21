@@ -81,7 +81,6 @@ class ConfiguredBand(enum.IntEnum):
 # pylint: disable=unused-argument
 
 class DishMaster(SKAMaster):
-# class DishMaster(SKAMaster):
     """
     SKA Dish Master TANGO device server
     """
@@ -224,10 +223,10 @@ class DishMaster(SKAMaster):
         """
         while True:
             if self._pointing_state != PointingState.SLEW:
-                self._admin_mode = AdminMode.OFFLINE                        # Set adminMode to OFFLINE
-                self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
-                self._dish_mode = DishMode.STOW                         # Set dishMode to STOW
-                self._health_state = HealthState.OK                      # Set healthState to OK
+                self._admin_mode = AdminMode.OFFLINE
+                self.set_state(DevState.DISABLE)
+                self._dish_mode = DishMode.STOW
+                self._health_state = HealthState.OK
                 self.set_status(const.STR_DISH_STOW_SUCCESS)
                 self.logger.info(const.STR_DISH_STOW_SUCCESS)
                 break
@@ -322,7 +321,7 @@ class DishMaster(SKAMaster):
     )
 
     configuredBand = attribute(
-        dtype= ConfiguredBand,
+        dtype=ConfiguredBand,
         doc="Configured band of the dish",
     )
 
@@ -377,25 +376,25 @@ class DishMaster(SKAMaster):
         # PROTECTED REGION ID(DishMaster.init_device) ENABLED START #
         try:
             # Initialise Properties
-            self.SkaLevel = 1                           # Set SkaLevel to 1
+            self.SkaLevel = 1
             # Initialise Attributes
-            self._health_state = HealthState.OK         # Set healthState to OK
-            self._admin_mode = AdminMode.ONLINE         # Set adminMode to ONLINE
-            self._dish_mode = DishMode.STANDBY_LP                         # Set dishMode to STANDBY-LP Mode
-            self._pointing_state = PointingState.READY  # Set pointingState to READY Mode
-            self._band1_sampler_frequency = 0           # Set Band 1 Sampler Frequency to 0
-            self._band2_sampler_frequency = 0           # Set Band 2 Sampler Frequency to 0
-            self._band3_sampler_frequency = 0           # Set Band 3 Sampler Frequency to 0
-            self._band4_sampler_frequency = 0           # Set Band 4 Sampler Frequency to 0
-            self._band5a_sampler_frequency = 0          # Set Band 5a Sampler Frequency to 0
-            self._band5b_sampler_frequency = 0          # Set Band 5b Sampler Frequency to 0
+            self._health_state = HealthState.OK
+            self._admin_mode = AdminMode.ONLINE
+            self._dish_mode = DishMode.STANDBY_LP
+            self._pointing_state = PointingState.READY
+            self._band1_sampler_frequency = 0
+            self._band2_sampler_frequency = 0
+            self._band3_sampler_frequency = 0
+            self._band4_sampler_frequency = 0
+            self._band5a_sampler_frequency = 0
+            self._band5b_sampler_frequency = 0
             self._capturing = False
             self._desired_pointing = [0, 2, 4]
             self._achieved_pointing = [0, 0, 0]
             self._elevation_difference = 0
             self._azimuth_difference = 0
             self._configured_band = ConfiguredBand.UNKNOWN
-            self.set_state(DevState.STANDBY)            # Set STATE to STANDBY
+            self.set_state(DevState.STANDBY)
             # Initialise Point command variables
             self._current_time = 0
             self._point_execution_time = 0
@@ -638,8 +637,8 @@ class DishMaster(SKAMaster):
         excpt_msg = []
         try:
             # Command to set Dish to STANDBY-LP Mode
-            self.set_state(DevState.STANDBY)             # Set STATE to STANDBY
-            self._dish_mode = DishMode.STANDBY_LP                          # set dishMode to STANDBYLP
+            self.set_state(DevState.STANDBY)
+            self._dish_mode = DishMode.STANDBY_LP
             self.set_status(const.STR_DISH_STANDBYLP_MODE)
             self.logger.info(const.STR_DISH_STANDBYLP_MODE)
         except Exception as except_occured:
@@ -681,9 +680,9 @@ class DishMaster(SKAMaster):
         excpt_msg = []
         try:
             # Command to set Dish to MAINTENANCE Mode
-            self._admin_mode = AdminMode.MAINTENANCE                        # Set adminMode to MAINTENANCE
-            self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
-            self._dish_mode = DishMode.MAINTENANCE                         # set dishMode to MAINTENANCE
+            self._admin_mode = AdminMode.MAINTENANCE
+            self.set_state(DevState.DISABLE)
+            self._dish_mode = DishMode.MAINTENANCE
             self.set_status(const.STR_DISH_MAINT_MODE)
             self.logger.info(const.STR_DISH_MAINT_MODE)
         except Exception as except_occured:
@@ -724,9 +723,9 @@ class DishMaster(SKAMaster):
         excpt_msg = []
         try:
             # Command to set Dish to OPERATE Mode
-            self._admin_mode = AdminMode.ONLINE                        # Set adminMode to ONLINE
-            self.set_state(DevState.ON)                 # Set STATE to ON
-            self._dish_mode = DishMode.OPERATE                         # set dishMode to OPERATE
+            self._admin_mode = AdminMode.ONLINE
+            self.set_state(DevState.ON)
+            self._dish_mode = DishMode.OPERATE
             self.set_status(const.STR_DISH_OPERATE_MODE)
             self.logger.info(const.STR_DISH_OPERATE_MODE)
         except Exception as except_occured:
@@ -827,8 +826,8 @@ class DishMaster(SKAMaster):
         try:
             if self._capturing is False:
                 # Command to start Data Capturing
-                self._capturing = True                      # set Capturing to True
-                self._pointing_state = PointingState.SCAN   # set pointingState to SCAN
+                self._capturing = True
+                self._pointing_state = PointingState.SCAN
                 self.set_status(const.STR_DATA_CAPTURE_STRT)
                 self.logger.info(const.STR_DATA_CAPTURE_STRT)
             else:
@@ -876,8 +875,8 @@ class DishMaster(SKAMaster):
         try:
             if self._capturing is True:
                 # Command to stop Data Capturing
-                self._capturing = False                     # set Capturing to FALSE
-                self._pointing_state = PointingState.READY  # set pointingState to READY
+                self._capturing = False
+                self._pointing_state = PointingState.READY
                 self.set_status(const.STR_DATA_CAPTURE_STOP)
                 self.logger.info(const.STR_DATA_CAPTURE_STOP)
             else:
@@ -922,8 +921,8 @@ class DishMaster(SKAMaster):
         excpt_msg = []
         try:
             # Command to set Dish to STANDBY-FP Mode
-            self.set_state(DevState.STANDBY)            # set STATE to STANDBY
-            self._dish_mode = DishMode.STANDBY_FP                         # set dishMode to STANDBY-FP
+            self.set_state(DevState.STANDBY)
+            self._dish_mode = DishMode.STANDBY_FP
             self.set_status(const.STR_DISH_STANDBYFP_MODE)
             self.logger.info(const.STR_DISH_STANDBYFP_MODE)
         except Exception as except_occured:
@@ -1019,7 +1018,7 @@ class DishMaster(SKAMaster):
             if(float(actual_az_lim) <= self.preconfig_az_lim and
                float(actual_el_lim) <= self.preconfig_el_lim) is True:
             #if dish is within the preconfigured limit then dish will slew slowly (TRACK).
-                self._pointing_state = PointingState.TRACK                    # Set pointingState to TRACK Mode
+                self._pointing_state = PointingState.TRACK
                 # Inject fault in DishMaster1 if toggle_fault is enabled as a part of Subarray Isolation
                 if self._toggle_fault and 'd0001' in self.device_name:
                     # Set PointingState to SCAN to inject fault in DishMaster
@@ -1031,7 +1030,7 @@ class DishMaster(SKAMaster):
                 self.logger.debug("Dish is TRACKING.")
             else:
             #if dish is out of preconfigured limit then dish will slew fast (Slew).
-                self._pointing_state = PointingState.SLEW                   # Set pointingState to SLEW Mode
+                self._pointing_state = PointingState.SLEW
                 self.track_slew_thread = threading.Thread(None, self.track_slew, const.THREAD_TRACK)
                 self.track_slew_thread.start()
 
