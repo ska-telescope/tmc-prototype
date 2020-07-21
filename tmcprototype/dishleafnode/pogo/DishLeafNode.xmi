@@ -198,7 +198,8 @@
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="Abort" description="Command to abort operation on the Dish." execMethod="abort" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+    <commands name="Abort" description="Command to abort an ongoing operation on the Dish." execMethod="abort"
+     displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
       </argin>

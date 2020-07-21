@@ -316,25 +316,6 @@ def test_abort_should_command_dish_to_abort():
                                                                  any_method(with_name='cmd_ended_cb'))
 
 
-def test_abort_should_command_dish_to_abort():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        tango_context.device.Abort()
-
-        # assert:
-        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                                 any_method(with_name='cmd_ended_cb'))
-
-
 def test_abort_should_raise_dev_failed():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
