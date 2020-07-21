@@ -8,6 +8,8 @@ CMD_ENDSCAN = "EndScan"
 CMD_CONFIGURE = "Configure"
 CMD_STARTSCAN = "Scan"
 CMD_GOTOIDLE = "GoToIdle"
+CMD_ABORT = "Abort"
+CMD_RESTART = "Restart"
 
 #Event messages
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
@@ -29,8 +31,11 @@ ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command 
 ERR_INVALID_JSON_ASSIGN_RES = "Invalid JSON format while invoking AddReceptors command on CspSubarray."
 ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarray."
 ERR_DEVICE_NOT_READY = "Csp subarray is not in READY obsState."
+ERR_DEVICE_NOT_FAULT_ABORT = "Csp subarray is not in FAULT, ABORTED obsState."
 ERR_DEVICE_NOT_IN_SCAN = "CspSubarray is not in SCANNING obsState."
 ERR_GOTOIDLE_INVOKING_CMD = "Error while invoking GoToIdle command on CSP Subarray."
+ERR_ABORT_INVOKING_CMD = "Error while invoking Abort command on CSP Subarray."
+ERR_RESTART_INVOKING_CMD = "Error while invoking Restart command on CSP Subarray."
 ERR_IN_CREATE_PROXY_CSPSA = "Error in creating proxy of the CSP Subarray device."
 
 #strings
@@ -59,7 +64,10 @@ PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
 STR_START_SCAN_EXEC = "StartScan command execution"
 STR_CSPSA_FQDN = "CspSubarrayFQDN :-> "
 STR_GOTOIDLE_SUCCESS = "GoToIdle command is invoked successfully on CspSubarray."
+STR_ABORT_SUCCESS = "Abort command is invoked successfully on CspSubarray."
+STR_RESTART_SUCCESS = "Restart command is invoked successfully on CspSubarray."
 STR_GOTOIDLE_EXEC = "GoToIdle command execution"
+STR_ABORT_EXEC = "Abort command execution"
 STR_OBS_STATE = "CSP Subarray Leaf Node obsState is: "
 
 #INTEGERS
