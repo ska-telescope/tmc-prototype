@@ -936,30 +936,31 @@ class DishMaster(SKAMaster):
         # PROTECTED REGION END #    //  DishMaster.is_SetStandbyFPMode_allowed
 
     @command(
-        dtype_in='str',
-        doc_in="Timestamp at which command should be executed.",
+        dtype_in='DevVarDoubleArray',
+        doc_in="The desired azimuth and elevation",
     )
     @DebugIt()
-    def Slew(self, argin=0):
+    def Slew(self, argin):
         # PROTECTED REGION ID(DishMaster.Slew) ENABLED START #
         """
         Triggers the Dish to move (or slew) at the commanded pointing coordinates.
 
-        :param argin: DevString. Timestamp in UTC at which command should be executed.
+        :param argin: DevVarDoubleArray. [azimuth, elevation]
 
         :return: None
+
         """
         excpt_count = 0
         excpt_msg = []
         try:
-            if type(float(argin)) == float:
-                # Execute POINT command at given timestamp
-                self._current_time = time.time()
-                self._point_execution_time = self._desired_pointing[0]
-                self._point_delta_t = self._point_execution_time - self._current_time
-                schedule_slew_thread = Timer(self._point_delta_t, self.point)
-                schedule_slew_thread.start()
-                self.logger.info(const.STR_DISH_SLEW)
+            self._desired_pointing[1] = argin[0]
+            self._desired_pointing[2] = argin[1]
+            self._current_time = time.time()
+            self._point_execution_time = self._desired_pointing[0]
+            self._point_delta_t = self._point_execution_time - self._current_time
+            schedule_slew_thread = Timer(self._point_delta_t, self.point)
+            schedule_slew_thread.start()
+            self.logger.info(const.STR_DISH_SLEW)
         except Exception as except_occured:
             excpt_msg.append(const.ERR_EXE_SLEW_CMD + str(self.ReceptorNumber))
             excpt_count += 1

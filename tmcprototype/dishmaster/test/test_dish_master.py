@@ -150,30 +150,11 @@ class TestDishMaster(object):
     def test_Slew(self, tango_context):
         """Test for Slew"""
         # PROTECTED REGION ID(DishMaster.test_Slew) ENABLED START #
-        tango_context.device.StopCapture("0")
-        tango_context.device.desiredPointing = [0, 1.00, 1.00]
-        # Testing for invalid argument
-        with pytest.raises(tango.DevFailed) :
-            argin = "a"
-            tango_context.device.Slew(argin)
-        time.sleep(5)
-        result = []
-        for i in range(1, len(tango_context.device.achievedPointing)):
-            if (tango_context.device.achievedPointing[i] != 1):
-                result.append(True)
-            else:
-                result.append(False)
-        assert all(result)
-        # Testing for valid argument
-        tango_context.device.Slew("0")
-        time.sleep(5)
-        result = []
-        for i in range(1, len(tango_context.device.achievedPointing)):
-            if (tango_context.device.achievedPointing[i] == 1):
-                result.append(True)
-            else:
-                result.append(False)
-        assert all(result)
+        tango_context.device.Slew([1.2, 3.4])
+        time.sleep(1)
+        assert tango_context.device.desiredPointing[0] == 0
+        assert tango_context.device.desiredPointing[1] == 1.2
+        assert tango_context.device.desiredPointing[2] == 3.4
         # PROTECTED REGION END #    //  DishMaster.test_Slew
 
     def test_SetStandbyFPMode(self, tango_context):
