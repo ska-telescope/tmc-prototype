@@ -973,18 +973,16 @@ class DishMaster(SKAMaster):
         # PROTECTED REGION END #    //  DishMaster.Slew
 
     @command(
-        dtype_in='str',
+        dtype_in='DevVoid',
+        dtype_out='DevVoid',
         doc_in="Timestamp at which command should be executed."
     )
     @DebugIt()
-    def Track(self, argin):
+    def Track(self):
         """ Triggers Track on Dish. It accepts changes in DesiredPointing attribute value and tracks the
         source. When difference between Achieved and Desired pointing attributes is more than the pointing
         limits, Dish starts to slewing. Whereas Dish moves in tracking mode, when the difference becomes less
         than the pointing limits.
-
-        :param argin: DevString. Timestamp in UTC at which command should be executed.
-
 
         :return: None
 

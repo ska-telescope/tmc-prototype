@@ -376,7 +376,7 @@ class DishLeafNode(SKABaseDevice):
                         # assign calculated AzEl to desiredPointing attribute of Dishmaster
                         self._dish_proxy.desiredPointing = spectrum
                         # Invoke Track command of Dish Master
-                        self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
+                        self._dish_proxy.command_inout_asynch(const.CMD_TRACK, self.cmd_ended_cb)
                     else:
                         self.el_limit = True
                         self._read_activity_message = const.ERR_ELE_LIM
