@@ -1105,7 +1105,7 @@ class DishMaster(SKAMaster):
     @DebugIt()
     def ConfigureBand5b(self):
         # PROTECTED REGION ID(DishMaster.ConfigureBand5b) ENABLED START #
-        self._configured_bandconfigured_band = ConfiguredBand.B5b
+        self._configured_band = ConfiguredBand.B5b
 
         # PROTECTED REGION END #    //  DishMaster.ConfigureBand5b
 

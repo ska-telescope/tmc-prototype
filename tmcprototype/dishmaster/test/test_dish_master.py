@@ -19,7 +19,8 @@ import tango
 from tango import DevState
 
 # Additional import
-from dishmaster import DishMaster, const, ConfiguredBand, DishMode
+from dishmaster import DishMaster, const, ConfiguredBand
+from dishleafnode.const import DishMode
 from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:
@@ -385,6 +386,7 @@ class TestDishMaster(object):
         assert tango_context.device.configuredBand == ConfiguredBand.B5a
         tango_context.device.ConfigureBand5b()
         assert tango_context.device.configuredBand == ConfiguredBand.B5b
+
 
     def test_Track(self, tango_context):
         """Test for Track command"""
