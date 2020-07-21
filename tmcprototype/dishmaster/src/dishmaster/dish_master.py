@@ -1190,6 +1190,10 @@ class DishMaster(SKAMaster):
             else:
                 self._pointing_state = PointingState.READY
 
+            self._desired_pointing = [0, 0, 0]
+            self._capturing = False
+            self._configured_band = None
+
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_RESTART_CMD + str(dev_failed)
             self.logger.error(log_msg)
