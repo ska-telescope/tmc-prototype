@@ -1136,7 +1136,6 @@ class SubarrayNode(SKASubarray):
 
             :raises: DevFailed if error occurs in invoking command on any of the devices like CSPSubarrayLeafNode,
                     SDPSubarrayLeafNode or DishLeafNode
-                    Exception if error occurs in command execution
             """
             device = self.target
             exception_message = []
