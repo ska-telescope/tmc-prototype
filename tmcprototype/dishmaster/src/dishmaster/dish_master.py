@@ -43,6 +43,8 @@ class PointingState(enum.IntEnum):
     SLEW = 1
     TRACK = 2
     SCAN = 3
+    NONE = 4
+    UNKNOWN = 5
 # pylint: disable=unused-argument
 
 class ConfiguredBand(enum.IntEnum):
@@ -317,7 +319,7 @@ class DishMaster(SKAMaster):
     desiredPointing = attribute(
         dtype=('double',),
         access=AttrWriteType.READ_WRITE,
-        max_dim_x=7,
+        max_dim_x=3,
         doc="Desired pointing coordinates of the dish",
     )
 
