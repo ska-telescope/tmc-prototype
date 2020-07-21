@@ -2,14 +2,30 @@
 This file is part of the DishLeafNode project and defines variables used
 """
 
-#Events
+from enum import IntEnum
+
+
+# Enums
+class DishMode(IntEnum):
+    OFF = 0
+    STARTUP = 1
+    SHUTDOWN = 2
+    STANDBY_LP = 3
+    STANDBY_FP = 4
+    STOW = 5
+    CONFIG = 6
+    OPERATE = 7
+    MAINTENANCE = 8
+
+
+# Events
 EVT_DISH_MODE = "dishMode"
 EVT_DISH_POINTING_STATE = "pointingState"
 EVT_DISH_CAPTURING = "capturing"
 EVT_ACHVD_POINT = "achievedPointing"
 EVT_DESIRED_POINT = "desiredPointing"
 
-#In/out commands
+# In/out commands
 CMD_SET_STOW_MODE = "SetStowMode"
 CMD_SET_STANDBYLP_MODE = "SetStandbyLPMode"
 CMD_SET_OPERATE_MODE = "SetOperateMode"
@@ -22,7 +38,7 @@ CMD_START_CAPTURE = "StartCapture"
 CMD_TRACK = "Track"
 CMD_TRACK_STOP = "TrackStop"
 
-#string constants
+# string constants
 STR_DISH_STANDBYLP_MODE = "Dish is in STANDBY-LP mode."
 STR_DISH_STANDBYFP_MODE = "Dish is in STANDBY-FP mode."
 STR_DISH_MAINT_MODE = "Dish is in MAINTENANCE mode."
@@ -56,7 +72,7 @@ STR_FALSE = "False"
 STR_OK = "OK"
 
 
-#error messages
+# error messages
 ERR_DISH_MODE_CB = "Error in DishModeCallback "
 ERR_ON_SUBS_DISH_MODE_ATTR = "Error in subscribing DishMode attribute "
 

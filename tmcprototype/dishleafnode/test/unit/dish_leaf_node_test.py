@@ -9,6 +9,8 @@ from mock import Mock, MagicMock
 import tango
 import pytest
 
+import numpy as np
+
 # Tango imports
 from tango import DevState
 from tango.test_context import DeviceTestContext
@@ -58,9 +60,8 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
         tango_context.device.Scan(scan_input)
 
         # assert:
-        if type(float(scan_input)) == float:
-            dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, scan_input,
-                                                                    any_method(with_name='cmd_ended_cb'))
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN,
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 # TODO: actual AZ and EL values need to be generated.
@@ -78,29 +79,23 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         dish_config = config_input_str
         # act:
-        tango_context.device.Configure(json.dumps(dish_config))
+        tango_context.device.Configure(dish_config)
 
         # assert:
-        jsonArgument = (dish_config)
+        jsonArgument = json.loads(dish_config)
         # ra_value = (jsonArgument["pointing"]["target"]["RA"])
         # dec_value = (jsonArgument["pointing"]["target"]["dec"])
-        receiver_band = int(jsonArgument["dish"]["receiverBand"])
-
-        arg_list = {"pointing": {
-            "AZ": 181.6281105048956,
-            "EL": 27.336666294459825
-
-        },
-            "dish": {
-                "receiverBand": receiver_band
-            }
-
-        }
-        dish_str_ip = json.dumps(arg_list)
-
-        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
-                                                                str(dish_str_ip),
-                                                                any_method(with_name='cmd_ended_cb'))
+        receiver_band = jsonArgument["dish"]["receiverBand"]
+        expected_configure_command = const.CMD_DISH_CONFIGURE + receiver_band
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(expected_configure_command,
+                                                                 any_method(with_name='cmd_ended_cb'))
+        expected_time = 12345.6
+        expected_az = 181.628111
+        expected_el = 27.336666
+        actual_time, actual_az, actual_el = dish1_proxy_mock.desiredPointing
+        assert actual_time == pytest.approx(expected_time)
+        assert actual_az == pytest.approx(expected_az)
+        assert actual_el == pytest.approx(expected_el)
 
 
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
@@ -181,8 +176,17 @@ def test_track_should_command_dish_to_start_tracking():
         ra_value = (jsonArgument["pointing"]["target"]["RA"])
         dec_value = (jsonArgument["pointing"]["target"]["dec"])
         radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
-        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0",
-                                                                any_method(with_name='cmd_ended_cb'))
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(
+            const.CMD_TRACK, any_method(with_name='cmd_ended_cb'))
+
+        # TODO: use real time, azimuth and elevation
+        expected_time = 0.0
+        expected_az = 181.628111
+        expected_el = 27.336666
+        actual_time, actual_az, actual_el = dish1_proxy_mock.desiredPointing
+        assert actual_time == pytest.approx(expected_time)
+        assert actual_az == pytest.approx(expected_az)
+        assert actual_el == pytest.approx(expected_el)
 
 
 def test_stop_track_should_command_dish_to_stop_tracking():
@@ -214,14 +218,18 @@ def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinat
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        slew_arg = "0"
+        expected_az = 10.1
+        expected_el = 23.4
         # act:
-        tango_context.device.Slew(slew_arg)
+        tango_context.device.Slew([expected_az, expected_el])
 
         # assert:
-        if type(float(slew_arg)) == float:
-            dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW, slew_arg,
-                                                                    any_method(with_name='cmd_ended_cb'))
+        call_args = dish1_proxy_mock.command_inout_asynch.call_args_list[0][0]
+        cmd_name, (actual_az, actual_el), callback = call_args
+        assert cmd_name == const.CMD_DISH_SLEW
+        assert actual_az == pytest.approx(expected_az)
+        assert actual_el == pytest.approx(expected_el)
+        assert callback== any_method(with_name='cmd_ended_cb')
 
 
 def test_start_capture_should_command_dish_to_start_capture_on_the_set_configured_band():
@@ -239,9 +247,9 @@ def test_start_capture_should_command_dish_to_start_capture_on_the_set_configure
         tango_context.device.StartCapture(capture_arg)
 
         # assert:
-        if type(float(capture_arg)) == float:
-            dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE, capture_arg,
-                                                                    any_method(with_name='cmd_ended_cb'))
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(
+            const.CMD_START_CAPTURE,
+            any_method(with_name='cmd_ended_cb'))
 
 
 def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_band():
@@ -259,9 +267,9 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
         tango_context.device.StopCapture(capture_arg)
 
         # assert:
-        if type(float(capture_arg)) == float:
-            dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, capture_arg,
-                                                           any_method(with_name='cmd_ended_cb'))
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(
+            const.CMD_STOP_CAPTURE,
+            any_method(with_name='cmd_ended_cb'))
 
 
 def test_set_standby_fp_mode_should_command_dish_to_transition_to_standby_fp_mode():
@@ -325,7 +333,7 @@ def test_dish_leaf_node_dish_mode_is_off_when_dish_is_off():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 0
+        dish_mode_value = const.DishMode.OFF
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -349,7 +357,7 @@ def test_dish_leaf_node_dish_mode_is_startup_when_dish_is_startup():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 1
+        dish_mode_value = const.DishMode.STARTUP
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -374,7 +382,7 @@ def test_dish_leaf_node_dish_mode_is_shutdown_when_dish_is_shutdown():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 2
+        dish_mode_value = const.DishMode.SHUTDOWN
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -400,7 +408,7 @@ def test_dish_leaf_node_dish_mode_is_standby_when_dish_is_standby():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 3
+        dish_mode_value = const.DishMode.STANDBY_LP
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -426,7 +434,7 @@ def test_dish_leaf_node_dish_mode_is_stand_by_fp_when_dish_is_stand_by_fp():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 4
+        dish_mode_value = const.DishMode.STANDBY_FP
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -452,7 +460,7 @@ def test_dish_leaf_node_dish_mode_is_maint_when_dish_is_maint():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 5
+        dish_mode_value = const.DishMode.MAINTENANCE
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -478,7 +486,7 @@ def test_dish_leaf_node_dish_mode_is_stow_when_dish_is_stow():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 6
+        dish_mode_value = const.DishMode.STOW
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -504,7 +512,7 @@ def test_dish_leaf_node_dish_mode_is_config_when_dish_is_config():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 7
+        dish_mode_value = const.DishMode.CONFIG
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -530,39 +538,13 @@ def test_dish_leaf_node_dish_mode_is_operate_when_dish_is_operate():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 8
+        dish_mode_value = const.DishMode.OPERATE
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.activityMessage == const.STR_DISH_OPERATE_MODE
-
-
-def test_dish_leaf_node_dish_mode_is_unknown():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dish_master_dishmode_attribute = 'dishMode'
-    initial_dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    event_subscription_map = {}
-
-    dish_master_device_proxy_mock = Mock()
-    dish_master_device_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args,
-               **kwargs: event_subscription_map.update({attr_name: callback}))
-
-    proxies_to_mock = {dish_master1_fqdn: dish_master_device_proxy_mock}
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        # act:
-        dish_mode_value = 9
-        dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                      dish_master_dishmode_attribute)
-        event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-        # assert:
-        assert const.STR_DISH_UNKNOWN_MODE in tango_context.device.activityMessage
 
 
 def test_dish_leaf_node_dish_mode_with_error_event():
@@ -582,7 +564,7 @@ def test_dish_leaf_node_dish_mode_with_error_event():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = 9
+        dish_mode_value = const.DishMode.OPERATE
         dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_mode_value,
                                                     dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -738,7 +720,7 @@ def test_dish_leaf_node_when_achieved_pointing_callback_is_true():
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         attribute = 'achievedPointing'
-        value = 0.0
+        value = np.array([123.456, 10.2, 35.6])  # timestamp, az, el
         dummy_event = create_dummy_event(dish_master1_fqdn, attribute, value)
         event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
 
@@ -765,7 +747,7 @@ def test_dish_leaf_node_when_achieved_pointing_callback_with_error_event():
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         attribute = 'achievedPointing'
-        value = 0.0
+        value = np.array([123.456, 10.2, 35.6])  # timestamp, az, el
         dummy_event = create_dummy_event_with_error(dish_master1_fqdn, attribute, value)
         event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
 
@@ -791,7 +773,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_is_true():
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         attribute = 'desiredPointing'
-        value = 0.0
+        value = np.array([123.456, 10.2, 35.6])  # timestamp, az, el
         dummy_event = create_dummy_event(dish_master1_fqdn, attribute, value)
         event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
 
@@ -818,7 +800,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_with_error_event():
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
         attribute = 'desiredPointing'
-        value = 0.0
+        value = np.array([123.456, 10.2, 35.6])  # timestamp, az, el
         dummy_event = create_dummy_event_with_error(dish_master1_fqdn, attribute, value)
         event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
 
@@ -880,6 +862,7 @@ def test_end_scan_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
 
+
 def test_start_capture_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -939,6 +922,7 @@ def test_activity_message():
     with fake_tango_system(DishLeafNode) as tango_context:
         tango_context.device.activityMessage = const.STR_OK
         assert tango_context.device.activityMessage == const.STR_OK
+
 
 def test_status():
     # act & assert:
@@ -1014,6 +998,7 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
 
         # assert
         assert const.ERR_EXE_TRACK_STOP_CMD in tango_context.device.activityMessage
+
 
 def test_scan_command_with_callback_method():
     # arrange:
