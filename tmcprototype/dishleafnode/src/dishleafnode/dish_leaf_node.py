@@ -1676,6 +1676,8 @@ class DishLeafNode(SKABaseDevice):
                                              "Failed to invoke Abort command on DishMaster.",
                                              "DishLeafNode.Abort() ",
                                              tango.ErrSeverity.ERR)
+            return True
+        
         def do(self):
             """
             Invokes Abort command on the DishMaster.
@@ -1715,7 +1717,7 @@ class DishLeafNode(SKABaseDevice):
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_ABORT_EXEC)
                 return (ResultCode.FAILED, const.ERR_EXE_ABORT_CMD)
-            return True
+
 
     @command(
         dtype_out="DevVarLongStringArray",
