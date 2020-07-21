@@ -36,6 +36,9 @@ STR_CONFIG_DM_EXEC = "Configure command execution"
 STR_POINTING = "pointing"
 STR_AZ_THREAD_START= "Starting thread to change azimuth coordinates."
 STR_EL_THREAD_START= "Starting thread to change elevation coordinates."
+STR_DISH_RESTARTED = "Restart command excecuted succesfully."
+STR_DISH_ABORT = "Abort command excecuted succesfully."
+
 
 #Error messages
 ERR_EXE_POINT_FN = "Error in executing POINT function on Dish"
