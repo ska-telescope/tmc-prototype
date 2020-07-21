@@ -49,13 +49,17 @@ class ConfiguredBand(enum.IntEnum):
     """
     Configured band of the receiver
     """
-    B1 = 0
-    B2 = 1
-    B3 = 2
-    B4 = 3
-    B5a = 4
-    B5b = 5
-    NONE = 6
+    UNKNOWN = 0
+    B1 = 1
+    B2 = 2
+    B3 = 3
+    B4 = 4
+    B5a = 5
+    B5b = 6
+    NONE = 7
+    ERROR = 8
+    UNDEFINED = 9
+
 # pylint: disable=unused-argument
 
 class DishMaster(SKAMaster):
@@ -319,7 +323,7 @@ class DishMaster(SKAMaster):
 
     achievedPointing = attribute(
         dtype=('double',),
-        max_dim_x=7,
+        max_dim_x=3,
         doc="Achieved pointing coordinates of the dish",
     )
 
@@ -374,7 +378,7 @@ class DishMaster(SKAMaster):
             self._achieved_pointing = [0, 0, 0]
             self._elevation_difference = 0
             self._azimuth_difference = 0
-            self._configured_band = ConfiguredBand.B1
+            self._configured_band = ConfiguredBand.UNKNOWN
             self.set_state(DevState.STANDBY)            # Set STATE to STANDBY
             # Initialise Point command variables
             self._current_time = 0

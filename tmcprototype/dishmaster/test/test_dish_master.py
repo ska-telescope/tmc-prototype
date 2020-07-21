@@ -315,7 +315,7 @@ class TestDishMaster(object):
     def test_configuredBand(self, tango_context):
         """Test for configuredBand"""
         # PROTECTED REGION ID(DishMaster.test_configuredBand) ENABLED START #
-        assert tango_context.device.configuredBand == 0
+        assert tango_context.device.configuredBand == ConfiguredBand.UNKNOWN
         # PROTECTED REGION END #    //  DishMaster.test_configuredBand
 
     def test_maxCapabilities(self, tango_context):
