@@ -1043,7 +1043,7 @@ class DishMaster(SKAMaster):
         doc_in="Set the band to B1",
     )
     @DebugIt()
-    def ConfigureBand1(self, argin):
+    def ConfigureBand1(self):
         # PROTECTED REGION ID(DishMaster.ConfigureBand1) ENABLED START #
         self._configured_band = ConfiguredBand.B1
 
@@ -1055,7 +1055,7 @@ class DishMaster(SKAMaster):
         doc_in="Set the band to B2",
     )
     @DebugIt()
-    def ConfigureBand2(self, argin):
+    def ConfigureBand2(self):
         # PROTECTED REGION ID(DishMaster.ConfigureBand2) ENABLED START #
         self._configured_band = ConfiguredBand.B2
 
@@ -1067,7 +1067,7 @@ class DishMaster(SKAMaster):
         doc_in="Set the band to B3",
     )
     @DebugIt()
-    def ConfigureBand3(self, argin):
+    def ConfigureBand3(self):
         # PROTECTED REGION ID(DishMaster.ConfigureBand3) ENABLED START #
         self._configured_band = ConfiguredBand.B3
 
@@ -1079,7 +1079,7 @@ class DishMaster(SKAMaster):
         doc_in="Set the band to B4",
     )
     @DebugIt()
-    def ConfigureBand4(self, argin):
+    def ConfigureBand4(self):
         # PROTECTED REGION ID(DishMaster.ConfigureBand4) ENABLED START #
         self._configured_band = ConfiguredBand.B4
 
@@ -1091,7 +1091,7 @@ class DishMaster(SKAMaster):
         doc_in="Set the band to B5a",
     )
     @DebugIt()
-    def ConfigureBand5a(self, argin):
+    def ConfigureBand5a(self):
         # PROTECTED REGION ID(DishMaster.ConfigureBand5a) ENABLED START #
         self._configured_band = ConfiguredBand.B5a
 
@@ -1103,7 +1103,7 @@ class DishMaster(SKAMaster):
         doc_in="Set the band to B5b",
     )
     @DebugIt()
-    def ConfigureBand5b(self, argin):
+    def ConfigureBand5b(self):
         # PROTECTED REGION ID(DishMaster.ConfigureBand5b) ENABLED START #
         self._configured_bandconfigured_band = ConfiguredBand.B5b
 
