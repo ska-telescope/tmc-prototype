@@ -408,7 +408,7 @@ def test_dish_leaf_node_dish_mode_is_standby_when_dish_is_standby():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = const.DishMode.STANDBY_LP
+        dish_mode_value = const.DishMode.STANDBY-LP
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -434,7 +434,7 @@ def test_dish_leaf_node_dish_mode_is_stand_by_fp_when_dish_is_stand_by_fp():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dish_mode_value = const.DishMode.STANDBY_FP
+        dish_mode_value = const.DishMode.STANDBY-FP
         dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                       dish_master_dishmode_attribute)
         event_subscription_map[dish_master_dishmode_attribute](dummy_event)

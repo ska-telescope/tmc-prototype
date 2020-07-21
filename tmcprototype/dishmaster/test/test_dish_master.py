@@ -86,7 +86,7 @@ class TestDishMaster(object):
         """Test for SetStandbyLPMode"""
         # PROTECTED REGION ID(DishMaster.test_SetStandbyLPMode) ENABLED START #
         tango_context.device.SetStandbyLPMode()
-        assert tango_context.device.dishMode == DishMode.STANDBY_LP
+        assert tango_context.device.dishMode == DishMode.STANDBY-LP
         assert tango_context.device.State() == DevState.STANDBY
         # PROTECTED REGION END #    //  DishMaster.test_SetStandbyLPMode
 
@@ -181,7 +181,7 @@ class TestDishMaster(object):
         # PROTECTED REGION ID(DishMaster.test_SetStandbyFPMode) ENABLED START #
         tango_context.device.SetStandbyLPMode()
         tango_context.device.SetStandbyFPMode()
-        assert tango_context.device.dishMode == DishMode.STANDBY_FP
+        assert tango_context.device.dishMode == DishMode.STANDBY-FP
         assert tango_context.device.State() == DevState.STANDBY
         # PROTECTED REGION END #    //  DishMaster.test_SetStandbyFPMode
 
@@ -261,7 +261,7 @@ class TestDishMaster(object):
     def test_dishMode(self, tango_context):
         """Test for dishMode"""
         # PROTECTED REGION ID(DishMaster.test_dishMode) ENABLED START #
-        assert tango_context.device.dishMode == DishMode.STANDBY_FP
+        assert tango_context.device.dishMode == DishMode.STANDBY-FP
         # PROTECTED REGION END #    //  DishMaster.test_dishMode
 
     def test_pointingState(self, tango_context):
