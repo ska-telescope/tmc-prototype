@@ -773,7 +773,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
                     return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
-
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
                     log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
@@ -872,6 +871,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
                 return (ResultCode.OK, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -994,7 +994,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
                 return (ResultCode.OK, const.STR_ADD_RECEPTORS_SUCCESS)
-
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
                 self.logger.exception(log_msg)
@@ -1134,6 +1133,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("GoToIdle")
         return handler.check_allowed()
+     # PROTECTED REGION END #    //  CspSubarrayLeafNode.GoToIdle
 
     @command(
         dtype_out="DevVarLongStringArray",
@@ -1153,7 +1153,205 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.error("CSP Subarray is not in EMPTY obsState")
             self._read_activity_message = "Error in device obsState"
             raise InvalidObsStateError("CSP Subarray is not in EMPTY obsState")
+    class AbortCommand(ResponseCommand):
+        """
+        A class for CSPSubarrayLeafNode's Abort() command.
+        """
 
+        def check_allowed(self):
+            """
+            Checks whether this command is allowed to be run in current device state
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Abort() is not allowed in current state",
+                                             "Abort() is not allowed in current state",
+                                             "cspsubarrayleafnode.Abort()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def do(self):
+            """
+            This command invokes Abort command on CSP Subarray.
+
+            :return: A tuple containing a return code and a string message indicating status. The message is for
+                    information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs while invoking command on CSPSubarray.
+
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device.CspSubarrayProxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING, ObsState.IDLE]:
+                        # == ObsState.READY or \
+                        # device.CspSubarrayProxy.obsState == ObsState.CONFIGURING or\
+                        # device.CspSubarrayProxy.obsState == ObsState.SCANNING or \
+                        # device.CspSubarrayProxy.obsState == ObsState.IDLE:
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_ABORT_SUCCESS
+                    self.logger.info(const.STR_ABORT_SUCCESS)
+                    return (ResultCode.OK, const.STR_ABORT_SUCCESS)
+
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_IN_STATES
+                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    self.logger.error(const.ERR_DEVICE_NOT_IN_STATES)
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_IN_STATES)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                          exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_ABORT_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_ABORT_INVOKING_CMD)
+            # throw exception:
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_ABORT_EXEC)
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Abort(self):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Abort) ENABLED START #
+        """ Invokes Abort command on cspsubarrayleafnode"""
+        handler = self.get_command_object("Abort")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_Abort_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("Abort")
+        return handler.check_allowed()
+
+# PROTECTED REGION END #    //  CspSubarrayLeafNode.Abort
+
+    class RestartCommand(ResponseCommand):
+        """
+        A class for CSPSubarrayLeafNode's Restart() command.
+        """
+
+        def check_allowed(self):
+            """
+            Checks whether this command is allowed to be run in current device state
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
+            """
+            if self.state_model.dev_state in [
+                DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Restart() is not allowed in current state",
+                                             "Restart() is not allowed in current state",
+                                             "cspsubarrayleafnode.Restart()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def do(self):
+            """
+            This command invokes Restart command on CSPSubarray.
+
+            :return: A tuple containing a return code and a string message indicating status. The message is for
+                    information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs while invoking the command on CSpSubarray.
+                    Exception if error occurs while executing the command.
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device.CspSubarrayProxy.obsState in [ObsState.FAULT, ObsState.ABORTED] :
+                        # == ObsState.FAULT or \
+                        # device.CspSubarrayProxy.obsState == ObsState.ABORTED  :
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_RESTART, device.cmd_ended_cb)
+                    device._read_activity_message = const.STR_RESTART_SUCCESS
+                    self.logger.info(const.STR_RESTART_SUCCESS)
+                    return (ResultCode.OK, const.STR_RESTART_SUCCESS)
+
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_FAULT_ABORT
+                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    self.logger.error(const.ERR_DEVICE_NOT_FAULT_ABORT)
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_FAULT_ABORT)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                                                          exception_message,
+                                                                                          exception_count,
+                                                                                          const.ERR_RESTART_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                        exception_message,
+                                                                                        exception_count,
+                                                                                        const.ERR_RESTART_INVOKING_CMD)
+            # throw exception:
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_ABORT_EXEC)
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Restart(self):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.Restart) ENABLED START #
+        """ Invokes Restart command on cspsubarrayleafnode"""
+        handler = self.get_command_object("Restart")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_Restart_allowed(self):
+        """
+        Whether this command is allowed to be run in current device
+        state
+        :return: True if this command is allowed to be run in
+        current device state
+        :rtype: boolean
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+        """
+        handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.Restart
 
     def init_command_objects(self):
         """
@@ -1168,8 +1366,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("StartScan", self.StartScanCommand(*args))
         self.register_command_object("EndScan", self.EndScanCommand(*args))
         self.register_command_object("GoToIdle", self.GoToIdleCommand(*args))
-
-# pylint: enable=protected-access,unused-argument,unused-variable
+        self.register_command_object("Abort", self.AbortCommand(*args))
+        self.register_command_object("Restart", self.RestartCommand(*args))
 
 # ----------
 # Run server
