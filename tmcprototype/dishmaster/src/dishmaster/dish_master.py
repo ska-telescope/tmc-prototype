@@ -25,6 +25,7 @@ from tango import DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run,attribute, command, device_property
 from ska.base import SKAMaster
 from ska.base.control_model import HealthState, AdminMode
+from dishleafnode.const import DishMode
 
 # Additional import
 import numpy
@@ -204,7 +205,7 @@ class DishMaster(SKAMaster):
             if self._pointing_state != PointingState.SLEW:
                 self._admin_mode = AdminMode.OFFLINE                        # Set adminMode to OFFLINE
                 self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
-                self._dish_mode = 6                         # Set dishMode to STOW
+                self._dish_mode = DishMode.STOW                         # Set dishMode to STOW
                 self._health_state = HealthState.OK                      # Set healthState to OK
                 self.set_status(const.STR_DISH_STOW_SUCCESS)
                 self.logger.info(const.STR_DISH_STOW_SUCCESS)
@@ -361,7 +362,7 @@ class DishMaster(SKAMaster):
             # Initialise Attributes
             self._health_state = HealthState.OK         # Set healthState to OK
             self._admin_mode = AdminMode.ONLINE         # Set adminMode to ONLINE
-            self._dish_mode = 3                         # Set dishMode to STANDBY-LP Mode
+            self._dish_mode = DishMode.STANDBY_LP                         # Set dishMode to STANDBY-LP Mode
             self._pointing_state = PointingState.READY  # Set pointingState to READY Mode
             self._band1_sampler_frequency = 0           # Set Band 1 Sampler Frequency to 0
             self._band2_sampler_frequency = 0           # Set Band 2 Sampler Frequency to 0
@@ -619,7 +620,7 @@ class DishMaster(SKAMaster):
         try:
             # Command to set Dish to STANDBY-LP Mode
             self.set_state(DevState.STANDBY)             # Set STATE to STANDBY
-            self._dish_mode = 3                          # set dishMode to STANDBYLP
+            self._dish_mode = DishMode.STANDBY_LP                          # set dishMode to STANDBYLP
             self.set_status(const.STR_DISH_STANDBYLP_MODE)
             self.logger.info(const.STR_DISH_STANDBYLP_MODE)
         except Exception as except_occured:
@@ -663,7 +664,7 @@ class DishMaster(SKAMaster):
             # Command to set Dish to MAINTENANCE Mode
             self._admin_mode = AdminMode.MAINTENANCE                        # Set adminMode to MAINTENANCE
             self.set_state(DevState.DISABLE)            # Set STATE to DISABLE
-            self._dish_mode = 5                         # set dishMode to MAINTENANCE
+            self._dish_mode = DishMode.MAINTENANCE                         # set dishMode to MAINTENANCE
             self.set_status(const.STR_DISH_MAINT_MODE)
             self.logger.info(const.STR_DISH_MAINT_MODE)
         except Exception as except_occured:
@@ -706,7 +707,7 @@ class DishMaster(SKAMaster):
             # Command to set Dish to OPERATE Mode
             self._admin_mode = AdminMode.ONLINE                        # Set adminMode to ONLINE
             self.set_state(DevState.ON)                 # Set STATE to ON
-            self._dish_mode = 8                         # set dishMode to OPERATE
+            self._dish_mode = DishMode.OPERATE                         # set dishMode to OPERATE
             self.set_status(const.STR_DISH_OPERATE_MODE)
             self.logger.info(const.STR_DISH_OPERATE_MODE)
         except Exception as except_occured:
@@ -903,7 +904,7 @@ class DishMaster(SKAMaster):
         try:
             # Command to set Dish to STANDBY-FP Mode
             self.set_state(DevState.STANDBY)            # set STATE to STANDBY
-            self._dish_mode = 4                         # set dishMode to STANDBY-FP
+            self._dish_mode = DishMode.STANDBY_FP                         # set dishMode to STANDBY-FP
             self.set_status(const.STR_DISH_STANDBYFP_MODE)
             self.logger.info(const.STR_DISH_STANDBYFP_MODE)
         except Exception as except_occured:
