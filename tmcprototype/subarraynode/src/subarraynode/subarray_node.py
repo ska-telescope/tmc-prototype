@@ -282,8 +282,7 @@ class SubarrayNode(SKASubarray):
             elif self.is_restart_command:
                 self.logger.info("Calling Restart command succeeded() method")
                 self.restart_obj.succeeded()
-                # Call InitCommand class's do() method
-                self.init_obj.do()
+                # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
         elif self._csp_sa_obs_state == ObsState.ABORTED and self._sdp_sa_obs_state == \
                 ObsState.ABORTED:
             if self.is_abort_command:
@@ -326,7 +325,7 @@ class SubarrayNode(SKASubarray):
             #             self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
             #             self._obs_state = ObsState.IDLE
             #     else:
-            #         # Assign Resource command suceess
+            #         # Assign Resource command success
             #         # self._obs_state = ObsState.IDLE
             #         print("Calling AssignResource command succeeded() method")
             #         self.assign_obj.succeeded()
@@ -634,7 +633,8 @@ class SubarrayNode(SKASubarray):
             processing block ids are passed to this function.
 
         :return: List of strings.
-        Example: ['PB1', 'PB2']
+
+            Example: ['PB1', 'PB2']
 
             Returns the list of successfully assigned resources. Currently the
             SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
@@ -1146,8 +1146,7 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_CMD_ABORT_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
                 self.logger.info(const.STR_CMD_ABORT_INV_CSP)
-                # TODO : Enable once group command issue is resolved
-                # device._dish_leaf_node_group.command_inout(const.CMD_ABORT)
+                device._dish_leaf_node_group.command_inout(const.CMD_ABORT)
                 device._read_activity_message = const.STR_ABORT_SUCCESS
                 self.logger.info(const.STR_ABORT_SUCCESS)
                 device.set_status(const.STR_ABORT_SUCCESS)
@@ -1245,6 +1244,7 @@ class SubarrayNode(SKASubarray):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
+
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
@@ -1735,13 +1735,19 @@ class SubarrayNode(SKASubarray):
             exception_count = 0
             try:
                 self.logger.info("Restart command invoked on SubarrayNode.")
+                # As a part of Restart clear the attributes on SubarrayNode
+                device._scan_id = ""
+                device._sb_id = ""
+                device.scan_duration = 0
+                device._scan_type = ''
+                # Remove the group for receptors.
+                device.remove_receptors_in_group()
                 device._sdp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
                 self.logger.info(const.STR_CMD_RESTART_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
                 self.logger.info(const.STR_CMD_RESTART_INV_CSP)
-                # TODO: Enable once group command issue is resolved
-                # device._dish_leaf_node_group.command_inout(const.CMD_RESTART)
-                # self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
+                device._dish_leaf_node_group.command_inout(const.CMD_RESTART)
+                self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
                 device._read_activity_message = const.STR_RESTART_SUCCESS
                 self.logger.info(const.STR_RESTART_SUCCESS)
                 device.set_status(const.STR_RESTART_SUCCESS)

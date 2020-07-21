@@ -22,8 +22,6 @@ from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, Te
     LoggingLevel
 from subarraynode.exceptions import InvalidObsStateError
 
-# Command wait timeout:
-TIMEOUT = 10
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
@@ -1280,10 +1278,9 @@ def test_end_scan_should_raise_devfailed_exception_when_csp_subbarray_ln_throws_
         wait_for(tango_context, ObsState.IDLE)
         assert tango_context.device.obsState == ObsState.IDLE
 
-        receive_addresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
         attribute = "receiveAddresses"
         dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                               receive_addresses)
+                                               receive_addresses_map)
         event_subscription_map[attribute](dummy_event)
 
         tango_context.device.Configure(configure_str)
@@ -2123,7 +2120,8 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_sdp_subarr
         # assert:
         assert tango_context.device.State() == DevState.FAULT
 
-@pytest.mark.Xfail("Enable test case once tango group command issue gets resolved")
+
+@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_abort_should_command_subarray_to_abort_when_it_is_configuring():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -2199,10 +2197,9 @@ def test_abort_should_command_subarray_to_abort_when_it_is_configuring():
 
         assert tango_context.device.obsState == ObsState.IDLE
 
-        receive_addresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
         attribute = "receiveAddresses"
         dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                               receive_addresses)
+                                               receive_addresses_map)
         event_subscription_map[attribute](dummy_event)
 
         tango_context.device.Configure(configure_str)
@@ -2230,7 +2227,7 @@ def test_abort_should_command_subarray_to_abort_when_it_is_configuring():
         assert tango_context.device.obsState == ObsState.ABORTED
 
 
-@pytest.mark.Xfail("Enable test case once tango group command issue gets resolved")
+@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_abort_should_command_subarray_to_end_scan_when_it_is_idle():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -2325,7 +2322,8 @@ def test_abort_should_command_subarray_to_end_scan_when_it_is_idle():
         dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
         assert tango_context.device.obsState == ObsState.ABORTED
 
-@pytest.mark.Xfail("Enable test case once tango group command issue gets resolved")
+
+@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_abort_should_command_subarray_to_abort_when_it_is_READY():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -2397,10 +2395,9 @@ def test_abort_should_command_subarray_to_abort_when_it_is_READY():
         event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
         assert tango_context.device.obsState == ObsState.IDLE
 
-        receive_addresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
         attribute = "receiveAddresses"
         dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                               receive_addresses)
+                                               receive_addresses_map)
         event_subscription_map[attribute](dummy_event)
 
         tango_context.device.Configure(configure_str)
@@ -2434,7 +2431,8 @@ def test_abort_should_command_subarray_to_abort_when_it_is_READY():
         dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
         assert tango_context.device.obsState == ObsState.ABORTED
 
-@pytest.mark.Xfail("Enable test case once tango group command issue gets resolved")
+
+@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_abort_should_command_subarray_to_abort_when_it_is_scanning():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -2509,10 +2507,9 @@ def test_abort_should_command_subarray_to_abort_when_it_is_scanning():
         wait_for(tango_context, ObsState.IDLE)
         assert tango_context.device.obsState == ObsState.IDLE
 
-        receive_addresses = '{"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_A":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}}'
         attribute = "receiveAddresses"
         dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-                                               receive_addresses)
+                                               receive_addresses_map)
         event_subscription_map[attribute](dummy_event)
 
         tango_context.device.Configure(configure_str)
@@ -2646,7 +2643,8 @@ def test_abort_should_raise_devfailed_exception():
         assert tango_context.device.obsState == ObsState.FAULT
         assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
 
-@pytest.mark.Xfail("Enable test case once tango group command issue gets resolved")
+
+@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_abort_should_raise_devfailed_exception_when_obsstate_is_empty():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -2714,7 +2712,7 @@ def test_abort_should_raise_devfailed_exception_when_obsstate_is_empty():
         assert "SDP Subarray obsState is:ObsState.EMPTY" in tango_context.device.activityMessage
 
 
-@pytest.mark.Xfail("Enable test case once tango group command issue gets resolved")
+@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_abort_should_raise_devfailed_exception_when_obsstate_is_resourcing():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -2783,7 +2781,7 @@ def test_abort_should_raise_devfailed_exception_when_obsstate_is_resourcing():
         assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
 
 
-@pytest.mark.Xfail("Enable test case once tango group command issue gets resolved")
+@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_restart_should_command_subarray_to_restart_when_it_is_aborted():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -2889,7 +2887,7 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted():
         assert tango_context.device.obsState == ObsState.EMPTY
 
 
-@pytest.mark.Xfail("Enable test case once tango group command issue gets resolved")
+@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_restart_should_command_subarray_to_restart_when_it_is_Fault():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
