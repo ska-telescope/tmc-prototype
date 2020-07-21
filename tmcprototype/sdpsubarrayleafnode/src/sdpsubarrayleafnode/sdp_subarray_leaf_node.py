@@ -26,9 +26,9 @@ from . import const
 from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
-# pylint: disable=unused-argument,unused-variable
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
+# pylint: disable=unused-argument,unused-variable
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
@@ -1098,6 +1098,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
+
+# pylint: enable=unused-argument,unused-variable
 
 # ----------
 # Run server
