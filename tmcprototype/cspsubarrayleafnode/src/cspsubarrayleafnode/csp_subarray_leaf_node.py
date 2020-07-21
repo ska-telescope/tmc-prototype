@@ -37,7 +37,6 @@ from .exceptions import InvalidObsStateError
 __all__ = ["CspSubarrayLeafNode", "main"]
 
 
-# pylint: disable=protected-access,unused-argument,unused-variable
 class CspSubarrayLeafNode(SKABaseDevice):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
@@ -399,12 +398,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             Initializes the attributes and properties of the CspSubarrayLeafNode.
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
+            :return: A tuple containing a return code and a string message indicating status. The message is for
                 information purpose only.
 
             :rtype: (ReturnCode, str)
 
+            :raises: DevFailed if error occurs in creating proxy for CSPSubarray.
             """
             super().do()
             device=self.target
@@ -519,7 +518,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
-        def do(self,argin):
+        def do(self, argin):
             """
             This command configures a scan. It accepts configuration information in JSON string format and
             invokes Configure command on CspSubarray.
@@ -755,7 +754,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in obsState SCANNING
 
             :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
+                    The message is for information purpose only.
 
             :rtype: (ReturnCode, str)
 
@@ -797,13 +796,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether the command is allowed to be run in the current state
 
-        :return: True if this command is allowed to be run in
-        current device state
+        :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
         handler = self.get_command_object("EndScan")
@@ -828,13 +825,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             Checks whether the command is allowed to be run in the current state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+            :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
@@ -1018,13 +1013,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether the command is allowed to be run in the current state
 
-        :return: True if this command is allowed to be run in
-        current device state
+        :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
         handler = self.get_command_object("AssignResources")
@@ -1044,10 +1037,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except InvalidObsStateError as error:
             self.logger.exception(error)
-            tango.Except.throw_exception("ObsState is not in EMPTY state", "CSP subarray leaf node raised "
-                                                                           "exception",
-                                         "CSP.AddReceptors", tango.ErrSeverity.ERR)
-
+            tango.Except.throw_exception("ObsState is not in EMPTY state",
+                                         "CSP subarray leaf node raised exception",
+                                         "CSP.AddReceptors",
+                                         tango.ErrSeverity.ERR)
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
@@ -1153,6 +1146,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.error("CSP Subarray is not in EMPTY obsState")
             self._read_activity_message = "Error in device obsState"
             raise InvalidObsStateError("CSP Subarray is not in EMPTY obsState")
+
     class AbortCommand(ResponseCommand):
         """
         A class for CSPSubarrayLeafNode's Abort() command.
@@ -1173,7 +1167,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("Abort() is not allowed in current state",
-                                             "Abort() is not allowed in current state",
+                                             "Failed to invoke Abort command on CspSubarrayLeafNode.",
                                              "cspsubarrayleafnode.Abort()",
                                              tango.ErrSeverity.ERR)
 
@@ -1195,11 +1189,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             exception_count = 0
             try:
-                if device.CspSubarrayProxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING, ObsState.IDLE]:
-                        # == ObsState.READY or \
-                        # device.CspSubarrayProxy.obsState == ObsState.CONFIGURING or\
-                        # device.CspSubarrayProxy.obsState == ObsState.SCANNING or \
-                        # device.CspSubarrayProxy.obsState == ObsState.IDLE:
+                if device.CspSubarrayProxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
+                                                        ObsState.IDLE]:
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
@@ -1274,7 +1265,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("Restart() is not allowed in current state",
-                                             "Restart() is not allowed in current state",
+                                             "Failed to invoke Restart command on CspSubarrayLeafNode.",
                                              "cspsubarrayleafnode.Restart()",
                                              tango.ErrSeverity.ERR)
 
@@ -1297,8 +1288,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device.CspSubarrayProxy.obsState in [ObsState.FAULT, ObsState.ABORTED] :
-                        # == ObsState.FAULT or \
-                        # device.CspSubarrayProxy.obsState == ObsState.ABORTED  :
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_RESTART, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
