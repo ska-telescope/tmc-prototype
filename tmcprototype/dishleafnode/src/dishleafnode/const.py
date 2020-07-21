@@ -10,8 +10,8 @@ class DishMode(IntEnum):
     OFF = 0
     STARTUP = 1
     SHUTDOWN = 2
-    STANDBY-LP = 3
-    STANDBY-FP = 4
+    STANDBY_LP = 3
+    STANDBY_FP = 4
     STOW = 5
     CONFIG = 6
     OPERATE = 7

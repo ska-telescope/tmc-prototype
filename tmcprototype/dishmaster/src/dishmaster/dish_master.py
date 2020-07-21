@@ -366,7 +366,7 @@ class DishMaster(SKAMaster):
             # Initialise Attributes
             self._health_state = HealthState.OK         # Set healthState to OK
             self._admin_mode = AdminMode.ONLINE         # Set adminMode to ONLINE
-            self._dish_mode = DishMode.STANDBY-LP                         # Set dishMode to STANDBY-LP Mode
+            self._dish_mode = DishMode.STANDBY_LP                         # Set dishMode to STANDBY-LP Mode
             self._pointing_state = PointingState.READY  # Set pointingState to READY Mode
             self._band1_sampler_frequency = 0           # Set Band 1 Sampler Frequency to 0
             self._band2_sampler_frequency = 0           # Set Band 2 Sampler Frequency to 0
@@ -624,7 +624,7 @@ class DishMaster(SKAMaster):
         try:
             # Command to set Dish to STANDBY-LP Mode
             self.set_state(DevState.STANDBY)             # Set STATE to STANDBY
-            self._dish_mode = DishMode.STANDBY-LP                          # set dishMode to STANDBYLP
+            self._dish_mode = DishMode.STANDBY_LP                          # set dishMode to STANDBYLP
             self.set_status(const.STR_DISH_STANDBYLP_MODE)
             self.logger.info(const.STR_DISH_STANDBYLP_MODE)
         except Exception as except_occured:
@@ -908,7 +908,7 @@ class DishMaster(SKAMaster):
         try:
             # Command to set Dish to STANDBY-FP Mode
             self.set_state(DevState.STANDBY)            # set STATE to STANDBY
-            self._dish_mode = DishMode.STANDBY-FP                         # set dishMode to STANDBY-FP
+            self._dish_mode = DishMode.STANDBY_FP                         # set dishMode to STANDBY-FP
             self.set_status(const.STR_DISH_STANDBYFP_MODE)
             self.logger.info(const.STR_DISH_STANDBYFP_MODE)
         except Exception as except_occured:
