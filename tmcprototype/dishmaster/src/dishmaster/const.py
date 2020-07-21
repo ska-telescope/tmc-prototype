@@ -36,6 +36,9 @@ STR_CONFIG_DM_EXEC = "Configure command execution"
 STR_POINTING = "pointing"
 STR_AZ_THREAD_START= "Starting thread to change azimuth coordinates."
 STR_EL_THREAD_START= "Starting thread to change elevation coordinates."
+STR_DISH_RESTARTED = "Restart command excecuted succesfully."
+STR_DISH_ABORT = "Abort command excecuted succesfully."
+
 
 #Error messages
 ERR_EXE_POINT_FN = "Error in executing POINT function on Dish"
@@ -52,5 +55,7 @@ ERR_EXE_SLEW_CMD = "Error in executing Slew Command on Dish"
 ERR_INVALID_JSON = "Invalid JSON format."
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found."
 ERR_CONFIG_DM = "Error occured in Dish Master."
+ERR_EXE_ABORT_CMD = "Error in executing Abort Command on Dish"
+ERR_EXE_RESTART_CMD = "Error in executing Restart Command on Dish"
 
 THREAD_TRACK = "DishMaster"
