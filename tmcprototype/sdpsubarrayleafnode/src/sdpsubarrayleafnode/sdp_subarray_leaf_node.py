@@ -952,7 +952,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             exception_count = 0
             try:
-                if device.CspSubarrayProxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
+                if device._sdp_subarray_proxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
                                                         ObsState.IDLE]:
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
@@ -1047,7 +1047,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             exception_count = 0
             try:
-                if device.CspSubarrayProxy.obsState in [ObsState.ABORTED, ObsState.FAULT]:
+                if device._sdp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT]:
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
