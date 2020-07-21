@@ -150,7 +150,6 @@ def test_assign_command_assignresources_ended_raises_exception_for_error_event()
         # act:
         tango_context.device.AssignResources(assign_input_str)
         dummy_event = command_callback_with_event_error(const.CMD_ASSIGN_RESOURCES)
-
         with pytest.raises(tango.DevFailed) as df:
             event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
         # assert:
@@ -626,7 +625,6 @@ def test_abort_should_failed_when_device_is_not_in_expected_obsstate():
 
         # assert:
         assert "Unable to invoke Abort command." in tango_context.device.activityMessage
-        # assert_activity_message(tango_context.device, const.ERR_DEVICE_NOT_IN_STATE)
 
 
 def test_restart_should_command_sdp_subarray_to_restart_when_it_is_aborted():

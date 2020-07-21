@@ -26,9 +26,8 @@ from . import const
 from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
-
+# pylint: disable=unused-argument,unused-variable
 __all__ = ["SdpSubarrayLeafNode", "main"]
-
 
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
@@ -333,7 +332,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 # Call SDP Subarray Command asynchronously
                 device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
                                                                               device.cmd_ended_cb)
-
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
@@ -955,26 +953,26 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            It invokes Abort command on sdpSubarray. This command is allowed when sdpSubarray is in SCANNING,READY,
-            CONFIGURING,IDLE state.
+            Command to abort the current operation being done on the SDP subarray.
 
             :return: A tuple containing a return code and a string message indicating status. The message is for
                         information purpose only.
 
             :rtype: (ReturnCode, str)
 
+            :raises: DevFailed if error occurs while invoking command on CSPSubarray.
+
             """
             device = self.target
             exception_message = []
             exception_count = 0
             try:
-                if device._sdp_subarray_proxy.obsState == ObsState.READY or device._sdp_subarray_proxy.obsState ==\
-                        ObsState.SCANNING or device._sdp_subarray_proxy.obsState == ObsState.CONFIGURING or \
-                        device._sdp_subarray_proxy.obsState == ObsState.IDLE:
+                if device.CspSubarrayProxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
+                                                        ObsState.IDLE]:
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
-                    return(ResultCode.OK,const.STR_ABORT_SUCCESS)
+                    return(ResultCode.OK, const.STR_ABORT_SUCCESS)
 
                 else:
                     log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
@@ -1049,7 +1047,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            It invokes Restart command on sdpSubarray. This command is allowed when sdpSubarray is in Aborted,Fault state.
+            Command to restart the SDP subarray and bring it to its ON state.
 
             :return: A tuple containing a return code and a string message indicating status. The message is for
                         information purpose only.
@@ -1057,19 +1055,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ReturnCode, str)
 
             :raises: DevFailed if error occurs while invoking command on SDPSubarray.
-                    Exception if error occurs while executing the command.
+                     Exception if error occurs while executing the command.
 
             """
             device = self.target
             exception_message = []
             exception_count = 0
             try:
-                if device._sdp_subarray_proxy.obsState == ObsState.FAULT or device._sdp_subarray_proxy.obsState \
-                        == ObsState.ABORTED:
+                if device.CspSubarrayProxy.obsState in [ObsState.ABORTED, ObsState.FAULT]:
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
-                    return(ResultCode.OK,const.STR_RESTART_SUCCESS)
+                    return(ResultCode.OK, const.STR_RESTART_SUCCESS)
 
                 else:
                     log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
