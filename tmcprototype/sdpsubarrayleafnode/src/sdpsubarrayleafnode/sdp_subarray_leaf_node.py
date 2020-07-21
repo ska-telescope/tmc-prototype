@@ -29,12 +29,11 @@ from .exceptions import InvalidObsStateError
 
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
-# pylint: disable=unused-argument,unused-variable
+
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
     """
-    # __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SdpSubarrayLeafNode.class_variable) ENABLED START #
 
     def cmd_ended_cb(self, event):
@@ -191,7 +190,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            # try:
             # Initialise device state
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
 
@@ -288,6 +286,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
+
     class ReleaseAllResourcesCommand(ResponseCommand):
         """
         A class for SdpSubarayLeafNode's ReleaseAllResources() command.
@@ -337,7 +336,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
                                                                               device.cmd_ended_cb)
 
-            # Update the status of command execution status in activity message
+                # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
                 return(ResultCode.OK, const.STR_REL_RESOURCES)
@@ -353,7 +352,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             # throw exception:
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
-
 
     def is_ReleaseAllResources_allowed(self):
         """
@@ -496,9 +494,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                                         exception_count,
                                                                                         const.ERR_ASSGN_RESOURCES)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-
-
-             # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
+    # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
     @command(
         dtype_in=('str'),
@@ -513,7 +509,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("AssignResources")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.AssignResources
 
     def is_AssignResources_allowed(self):
         """
@@ -723,7 +718,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         :rtype: boolean
 
         """
-
         handler = self.get_command_object("Scan")
         return handler.check_allowed()
 
@@ -840,7 +834,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     class EndSBCommand(ResponseCommand):
         """
         A class for SdpSubarrayLeafNode's EndSB() command.
-
         """
         def check_allowed(self):
             """
@@ -879,8 +872,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device._sdp_subarray_proxy.obsState == ObsState.READY:
-                    # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset,
-                    #  Add this in const.py
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSB_SUCCESS
                     self.logger.info(const.STR_ENDSB_SUCCESS)
@@ -932,15 +923,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_EndSB_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
-        :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
-        """
+        Checks whether this command is allowed to be run in current device state
 
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
         handler = self.get_command_object("EndSB")
         return handler.check_allowed()
 
@@ -950,34 +941,34 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         def check_allowed(self):
             """
-            Checks whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
+
             :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
             """
             if self.state_model.dev_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("Abort() is not allowed in current state",
-                                             "Abort() is not allowed in current state",
+                                             "Failed to invoke Abort command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.Abort()",
                                              tango.ErrSeverity.ERR)
-
             return True
 
         def do(self):
             """
             It invokes Abort command on sdpSubarray. This command is allowed when sdpSubarray is in SCANNING,READY,
             CONFIGURING,IDLE state.
-            state.
-            :return: A tuple containing a return code and a string
-                        message indicating status. The message is for
+
+            :return: A tuple containing a return code and a string message indicating status. The message is for
                         information purpose only.
+
             :rtype: (ReturnCode, str)
+
             """
             device = self.target
             exception_message = []
@@ -1027,18 +1018,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_Abort_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-        current device state
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
-
-
 #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
     class RestartCommand(ResponseCommand):
@@ -1060,7 +1050,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("Restart() is not allowed in current state",
-                                             "Restart() is not allowed in current state",
+                                             "Failed to invoke Restart command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.Restart()",
                                              tango.ErrSeverity.ERR)
 
@@ -1069,14 +1059,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         def do(self):
             """
             It invokes Restart command on sdpSubarray. This command is allowed when sdpSubarray is in Aborted,Fault state.
-            state.
-            :return: A tuple containing a return code and a string
-                        message indicating status. The message is for
+
+            :return: A tuple containing a return code and a string message indicating status. The message is for
                         information purpose only.
+
             :rtype: (ReturnCode, str)
 
             :raises: DevFailed if error occurs while invoking command on SDPSubarray.
                     Exception if error occurs while executing the command.
+
             """
             device = self.target
             exception_message = []
@@ -1134,29 +1125,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
-
-# class OnCommand(SKASubarray.OnCommand):
-    #     """
-    #     A class for the cspsubarrayleafnode's On() command.
-    #     """
-    #
-    #     def do(self):
-    #         """
-    #         Stateless hook for On() command functionality.
-    #
-    #         :return: A tuple containing a return code and a string
-    #             message indicating status. The message is for
-    #             information purpose only.
-    #         :rtype: (ResultCode, str)
-    #         """
-    #         device = self.target
-    #         print("On command device object:", device)
-    #         message = "On command completed OK"
-    #         self.logger.info(message)
-    #         return (ResultCode.OK, message)
-
-
-# pylint: enable=unused-argument,unused-variable
 # ----------
 # Run server
 # ----------
