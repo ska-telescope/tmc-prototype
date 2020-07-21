@@ -251,9 +251,7 @@ class DishMaster(SKAMaster):
     # Attributes
     # ----------
     dishMode = attribute(
-        dtype='DevEnum',
-        enum_labels=["OFF", "STARTUP", "SHUTDOWN", "STANDBY-LP",
-                     "STANDBY-FP", "MAINTENANCE", "STOW", "CONFIG", "OPERATE", ],
+        dtype=DishMode,
         doc="Mode of the dish",
     )
 
