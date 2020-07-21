@@ -167,6 +167,7 @@ class SubarrayNode(SKASubarray):
         self.end_obj = self.EndCommand(*args)
         self.restart_obj = self.RestartCommand(*args)
         self.abort_obj = self.AbortCommand(*args)
+        self.init_obj = self.InitCommand(*args)
 
 
     def receive_addresses_cb(self, event):
@@ -218,7 +219,9 @@ class SubarrayNode(SKASubarray):
     def observation_state_cb(self, evt):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
+
         :param evt: A TANGO_CHANGE event on CSP and SDP Subarray obsState.
+
         :return: None
         """
         exception_message = []
@@ -280,7 +283,7 @@ class SubarrayNode(SKASubarray):
                 self.logger.info("Calling Restart command succeeded() method")
                 self.restart_obj.succeeded()
                 # Call InitCommand class's do() method
-                self.InitCommand()
+                self.init_obj.do()
         elif self._csp_sa_obs_state == ObsState.ABORTED and self._sdp_sa_obs_state == \
                 ObsState.ABORTED:
             if self.is_abort_command:
@@ -323,7 +326,7 @@ class SubarrayNode(SKASubarray):
             #             self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
             #             self._obs_state = ObsState.IDLE
             #     else:
-            #         # Assign Resource command success
+            #         # Assign Resource command suceess
             #         # self._obs_state = ObsState.IDLE
             #         print("Calling AssignResource command succeeded() method")
             #         self.assign_obj.succeeded()
@@ -629,9 +632,10 @@ class SubarrayNode(SKASubarray):
         :param argin: List of strings
             Contains the list of strings that has the resources ids. Currently
             processing block ids are passed to this function.
-            Example: ['PB1', 'PB2']
 
         :return: List of strings.
+        Example: ['PB1', 'PB2']
+
             Returns the list of successfully assigned resources. Currently the
             SDPSubarrayLeafNode.AssignResources function returns void. Thus, this
             function just loops back the input argument in case of success or returns exception
@@ -1129,6 +1133,10 @@ class SubarrayNode(SKASubarray):
                 message indicating status. The message is for
                 information purpose only.
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs in invoking command on any of the devices like CSPSubarrayLeafNode,
+                    SDPSubarrayLeafNode or DishLeafNode
+                    Exception if error occurs in command execution
             """
             device = self.target
             exception_message = []
@@ -1138,6 +1146,7 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_CMD_ABORT_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
                 self.logger.info(const.STR_CMD_ABORT_INV_CSP)
+                # TODO : Enable once group command issue is resolved
                 # device._dish_leaf_node_group.command_inout(const.CMD_ABORT)
                 device._read_activity_message = const.STR_ABORT_SUCCESS
                 self.logger.info(const.STR_ABORT_SUCCESS)
@@ -1155,7 +1164,6 @@ class SubarrayNode(SKASubarray):
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
-                return (ResultCode.FAILED, const.ERR_ABORT_INVOKING_CMD)
             # PROTECTED REGION END #    //  SubarrayNode.Abort
 
     class TrackCommand(ResponseCommand):
@@ -1232,17 +1240,16 @@ class SubarrayNode(SKASubarray):
 
     def is_Track_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
         handler = self.get_command_object("Track")
         return handler.check_allowed()
-
 
     @command(
         dtype_in='str',
@@ -1264,11 +1271,11 @@ class SubarrayNode(SKASubarray):
         """
         def do(self):
             """
-            Stateless hook for On() command functionality.
+            This command invokes On Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
+            changes Subaray device state from OFF to ON.
 
-            :return: A tuple containing a return code and a string
-                message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status. The message is for
+                    information purpose only.
 
             :rtype: (ResultCode, str)
 
@@ -1295,7 +1302,8 @@ class SubarrayNode(SKASubarray):
         """
         def do(self):
             """
-            Stateless hook for Off() command functionality.
+            This command invokes Off Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
+            changes Subaray device state from ON to OFF.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
@@ -1704,15 +1712,23 @@ class SubarrayNode(SKASubarray):
             return (ResultCode.STARTED, message)
 
     class RestartCommand(SKASubarray.RestartCommand):
-        # PROTECTED REGION ID(CspSubarrayLeafNode.Restart) ENABLED START #
-        """ """
+        """
+        A class for SubarrayNode's Restart() command.
+        """
+
         def do(self):
             """
-            This command invokes Restart command on CSP Subarray .
+            This command invokes Restart command on CSPSubarrayLeafNode, SDpSubarrayLeafNode and DishLeafNode.
+
             :return: A tuple containing a return code and a string
                 message indicating status. The message is for
                 information purpose only.
+
             :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs while invoking command on CSPSubarrayLeafNode, SDpSubarrayLeafNode or
+                    DishLeafNode.
+                    Exception if error occurs while executing the command.
             """
             device = self.target
             exception_message = []
@@ -1723,6 +1739,7 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_CMD_RESTART_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
                 self.logger.info(const.STR_CMD_RESTART_INV_CSP)
+                # TODO: Enable once group command issue is resolved
                 # device._dish_leaf_node_group.command_inout(const.CMD_RESTART)
                 # self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
                 device._read_activity_message = const.STR_RESTART_SUCCESS
@@ -1745,7 +1762,6 @@ class SubarrayNode(SKASubarray):
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_RESTART_EXEC)
-                return (ResultCode.FAILED, const.ERR_RESTART_INVOKING_CMD)
             # PROTECTED REGION END #    //  SubarrayNode.Restart
 
     def init_command_objects(self):
@@ -1776,7 +1792,6 @@ def main(args=None, **kwargs):
     """
     return run((SubarrayNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SubarrayNode.main
-
 
 if __name__ == '__main__':
     main()

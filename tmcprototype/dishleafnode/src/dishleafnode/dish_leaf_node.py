@@ -1662,14 +1662,14 @@ class DishLeafNode(SKABaseDevice):
         def check_allowed(self):
 
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
+
             :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Abort() is not allowed in current state",
@@ -1678,11 +1678,14 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
         def do(self):
             """
-                Invokes Abort command on the DishMaster.
+            Invokes Abort command on the DishMaster.
 
-                :param argin: DevVoid
+            :param argin: DevVoid
 
-                :return: None
+            :return: None
+
+            :raises: DevFailed if error ocuurs while invoking command on DishMaster.
+                    Exception if error occurs while executing the command.
 
             """
             device = self.target
@@ -1726,13 +1729,13 @@ class DishLeafNode(SKABaseDevice):
 
     def is_Abort_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
         """
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
@@ -1744,14 +1747,14 @@ class DishLeafNode(SKABaseDevice):
         def check_allowed(self):
 
             """
-            Whether this command is allowed to be run in current device
-            state
+            Checks whether this command is allowed to be run in current device state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
+
             :rtype: boolean
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
             """
             if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Restart() is not allowed in current state",
@@ -1762,11 +1765,14 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self):
             """
-                Invokes Restart command on the DishMaster.
+            Invokes Restart command on the DishMaster.
 
-                :param argin: DevVoid
+            :param argin: DevVoid
 
-                :return: None
+            :return: None
+
+            raises: DevFailed if error occurs while invoking command on DishMaster
+                    Exception if error occurs while executing the command
 
             """
             device = self.target
@@ -1809,13 +1815,13 @@ class DishLeafNode(SKABaseDevice):
 
     def is_Restart_allowed(self):
         """
-        Whether this command is allowed to be run in current device
-        state
-        :return: True if this command is allowed to be run in
-            current device state
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
-        :raises: DevFailed if this command is not allowed to be run
-            in current device state
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
         """
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
