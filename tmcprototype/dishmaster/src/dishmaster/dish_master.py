@@ -764,7 +764,7 @@ class DishMaster(SKAMaster):
                 self._current_time = time.time()
                 self._scan_execution_time = float(argin)
                 self._scan_delta_t = self._scan_execution_time - self._current_time
-                schedule_scan_thread = Timer(self._scan_delta_t, self.StartCapture, [argin])
+                schedule_scan_thread = Timer(self._scan_delta_t, self.StartCapture)
                 self.logger.debug("Starting thread to enable SCAN.")
                 schedule_scan_thread.start()
                 self.logger.info(const.STR_SCAN_INPROG)
