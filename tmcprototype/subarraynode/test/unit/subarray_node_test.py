@@ -22,6 +22,7 @@ from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, Te
     LoggingLevel
 from subarraynode.exceptions import InvalidObsStateError
 
+# Command wait timeout:
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
@@ -500,8 +501,9 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
     }
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+
+        tango_context.device.On()
         with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.On()
             tango_context.device.AssignResources(assign_invalid_key)
 
         # assert:
@@ -2709,7 +2711,7 @@ def test_abort_should_raise_devfailed_exception_when_obsstate_is_empty():
             tango_context.device.Abort()
             # assert:
         assert tango_context.device.obsState == ObsState.FAULT
-        assert "SDP Subarray obsState is:ObsState.EMPTY" in tango_context.device.activityMessage
+        assert df in tango_context.device.activityMessage
 
 
 @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
@@ -2945,9 +2947,11 @@ def test_restart_should_command_subarray_to_restart_when_it_is_Fault():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+
+        tango_context.device.On()
         with pytest.raises(tango.DevFailed):
-            tango_context.device.On()
             tango_context.device.AssignResources(assign_invalid_key)
+
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
                                                    attribute, ObsState.FAULT)
