@@ -1137,9 +1137,80 @@ class DishMaster(SKAMaster):
             tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
                                          const.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
 
+    @command(
+    )
+    @DebugIt()
+    def Abort(self):
+        # PROTECTED REGION ID(DishMaster.Abort) ENABLED START #
+        """
+        This command aborts the Track or Scan operation when invoked.
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if (self._pointing_state == PointingState.SLEW):
+                pass
+            else:
+                self._pointing_state = PointingState.READY
 
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_EXE_ABORT_CMD + str(dev_failed)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_EXE_ABORT_CMD + str(dev_failed))
 
-        # PROTECTED REGION END #    //  DishMaster.StopTrack
+        except Exception as except_occurred:
+            log_msg = const.ERR_CONFIG_DM + str(except_occurred)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.ERR_EXE_ABORT_CMD, tango.ErrSeverity.ERR)
+
+        # PROTECTED REGION END #    //  DishMaster.Abort
+
+    @command(
+    )
+    @DebugIt()
+    def Restart(self):
+        # PROTECTED REGION ID(DishMaster.Restart) ENABLED START #
+        """
+        This command Restart the Track or Scan operation when invoked.
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if (self._pointing_state == PointingState.READY):
+                pass
+            else:
+                self._pointing_state = PointingState.READY
+
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_EXE_RESTART_CMD + str(dev_failed)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_EXE_RESTART_CMD + str(dev_failed))
+
+        except Exception as except_occurred:
+            log_msg = const.ERR_CONFIG_DM + str(except_occurred)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.ERR_EXE_RESTART_CMD, tango.ErrSeverity.ERR)
+
+        # PROTECTED REGION END #    //  DishMaster.Restart
+
 # pylint: enable=unused-argument
 
 # ----------
