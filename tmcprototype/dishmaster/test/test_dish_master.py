@@ -19,7 +19,7 @@ import tango
 from tango import DevState
 
 # Additional import
-from dishmaster import DishMaster, const, ConfiguredBand
+from dishmaster import DishMaster, const, ConfiguredBand, PointingState
 from dishleafnode.const import DishMode
 from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
