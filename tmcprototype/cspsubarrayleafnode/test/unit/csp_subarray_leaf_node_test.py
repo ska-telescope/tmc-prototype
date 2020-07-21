@@ -708,7 +708,7 @@ def test_abort_should_failed_when_device_is_in_resourcing():
         device_proxy.Abort()
 
         # assert:
-        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_IN_STATES)
+        assert "Unable to invoke Abort command" in tango_context.device.activityMessage
 
 
 def test_abort_should_failed_when_device_is_in_empty():
@@ -732,7 +732,7 @@ def test_abort_should_failed_when_device_is_in_empty():
         device_proxy.Abort()
 
         # assert:
-        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_IN_STATES)
+        assert "Unable to invoke Abort command" in tango_context.device.activityMessage
 
 
 def test_restart_should_failed_when_device_obsstate_is_idle():
@@ -756,7 +756,7 @@ def test_restart_should_failed_when_device_obsstate_is_idle():
         device_proxy.Restart()
 
         # assert:
-        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_FAULT_ABORT)
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
 
 
 def test_restart_should_failed_when_device_obsstate_is_scanning():
@@ -780,7 +780,7 @@ def test_restart_should_failed_when_device_obsstate_is_scanning():
         device_proxy.Restart()
 
         # assert:
-        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_FAULT_ABORT)
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
 
 
 def test_restart_should_failed_when_device_obsstate_is_configuring():
@@ -804,7 +804,7 @@ def test_restart_should_failed_when_device_obsstate_is_configuring():
         device_proxy.Restart()
 
         # assert:
-        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_FAULT_ABORT)
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
 
 
 def test_restart_should_failed_when_device_obsstate_is_ready():
@@ -828,7 +828,7 @@ def test_restart_should_failed_when_device_obsstate_is_ready():
         device_proxy.Restart()
 
         # assert:
-        assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_FAULT_ABORT)
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
 
 
 def test_restart_should_command_csp_subarray_to_restart_when_it_is_in_fault():

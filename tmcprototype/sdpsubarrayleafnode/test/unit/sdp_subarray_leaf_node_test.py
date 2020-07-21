@@ -625,7 +625,8 @@ def test_abort_should_failed_when_device_is_not_in_expected_obsstate():
         tango_context.device.Abort()
 
         # assert:
-        assert_activity_message(tango_context.device, const.ERR_DEVICE_NOT_IN_STATE)
+        assert "Unable to invoke Abort command." in tango_context.device.activityMessage
+        # assert_activity_message(tango_context.device, const.ERR_DEVICE_NOT_IN_STATE)
 
 
 def test_restart_should_command_sdp_subarray_to_restart_when_it_is_aborted():
@@ -720,7 +721,7 @@ def test_restart_should_failed_when_device_is_not_in_expected_obsstate():
         tango_context.device.Restart()
 
         # assert:
-        assert_activity_message(tango_context.device, const.ERR_DEVICE_NOT_IN_FAULT_ABORTED)
+        assert "Unable to invoke Restart command" in tango_context.device.activityMessage
 
 
 def assert_activity_message(device_proxy, expected_message):

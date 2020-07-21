@@ -208,8 +208,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._sdp_subarray_proxy = DeviceProxy(device.SdpSubarrayFQDN)
             return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
 
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
-
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
@@ -351,7 +349,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+                device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
 
     def is_ReleaseAllResources_allowed(self):
         """
@@ -494,7 +492,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                                         exception_count,
                                                                                         const.ERR_ASSGN_RESOURCES)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-    # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
 
     @command(
         dtype_in=('str'),
@@ -607,7 +604,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_CONFIG_EXEC)
+                device.throw_exception(exception_message, const.STR_CONFIG_EXEC)
 
     def is_Configure_allowed(self):
         """
@@ -707,7 +704,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_SCAN_EXEC)
+                device.throw_exception(exception_message, const.STR_SCAN_EXEC)
 
     def is_Scan_allowed(self):
         """
@@ -800,7 +797,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
+                device.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
 
 
     def is_EndScan_allowed(self):
@@ -829,7 +826,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         (result_code, message) = handler()
         return [[result_code], [message]]
-
 
     class EndSBCommand(ResponseCommand):
         """
@@ -891,7 +887,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+                device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
 
 
     def is_EndSB_allowed(self):
@@ -919,8 +915,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.EndSB
-
     def is_EndSB_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state
@@ -937,7 +931,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     class AbortCommand(ResponseCommand):
         """
-        A class for SdpSubarrayLeafNode's Abort() command.
+        A class for sdpSubarrayLeafNode's Abort() command.
         """
         def check_allowed(self):
             """
@@ -983,9 +977,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     return(ResultCode.OK,const.STR_ABORT_SUCCESS)
 
                 else:
-                    device._read_activity_message = const.ERR_DEVICE_NOT_IN_STATE
-                    self.logger.error(const.ERR_DEVICE_NOT_IN_STATE)
-                    return(ResultCode.FAILED,const.ERR_DEVICE_NOT_IN_STATE)
+                    log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
+                              ". Unable to invoke Abort command."
+                    device._read_activity_message = log_msg
+                    self.logger.error(log_msg)
+                    return(ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -997,8 +993,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
                 # throw exception:
                 if exception_count > 0:
-                    self.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
-            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
+                    device.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
 
     @command(
         dtype_out="DevVarLongStringArray",
@@ -1006,15 +1001,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def Abort(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
         """
         Invoke Abort on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("Abort")
         (result_code, message) = handler()
         return [[result_code], [message]]
-
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.Abort
 
     def is_Abort_allowed(self):
         """
@@ -1029,11 +1021,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
-#     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
 
     class RestartCommand(ResponseCommand):
         """
-        A class for SdpSubarrayLeafNode's Restart() command.
+        A class for sdpSubarrayLeafNode's Restart() command.
         """
         def check_allowed(self):
             """
@@ -1081,9 +1072,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     return(ResultCode.OK,const.STR_RESTART_SUCCESS)
 
                 else:
-                    device._read_activity_message = const.ERR_DEVICE_NOT_IN_FAULT_ABORTED
-                    self.logger.error(const.ERR_DEVICE_NOT_IN_FAULT_ABORTED)
-                    return(ResultCode.FAILED,const.ERR_DEVICE_NOT_IN_FAULT_ABORTED)
+                    log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
+                              ". Unable to invoke Restart command."
+                    device._read_activity_message = log_msg
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1096,7 +1089,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 # throw exception:
                 if exception_count > 0:
                     device.throw_exception(exception_message, const.ERR_RESTART_INVOKING_CMD)
-            #     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Restart
 
     @command(
         dtype_out="DevVarLongStringArray",
