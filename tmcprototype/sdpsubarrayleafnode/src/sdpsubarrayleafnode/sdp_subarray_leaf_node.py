@@ -889,7 +889,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
 
-
     def is_EndSB_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
@@ -914,20 +913,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndSB")
         (result_code, message) = handler()
         return [[result_code], [message]]
-
-    def is_EndSB_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state
-
-        :return: True if this command is allowed to be run in current device state
-
-        :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state
-
-        """
-        handler = self.get_command_object("EndSB")
-        return handler.check_allowed()
 
     class AbortCommand(ResponseCommand):
         """
