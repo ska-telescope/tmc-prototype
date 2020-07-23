@@ -10,6 +10,8 @@ CMD_STARTSCAN = "Scan"
 CMD_GOTOIDLE = "GoToIdle"
 CMD_ABORT = "Abort"
 CMD_RESTART = "Restart"
+CMD_ON = "On"
+CMD_OFF = "Off"
 
 #Event messages
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
@@ -69,6 +71,8 @@ STR_RESTART_SUCCESS = "Restart command is invoked successfully on CspSubarray."
 STR_GOTOIDLE_EXEC = "GoToIdle command execution"
 STR_ABORT_EXEC = "Abort command execution"
 STR_OBS_STATE = "CSP Subarray Leaf Node obsState is: "
+STR_ON_CMD_ISSUED = "ON command invoked successfully from CSP Subarray leaf node."
+STR_OFF_CMD_ISSUED = "OFF command invoked successfully from CSP Subarray leaf node."
 
 #INTEGERS
 INT_SKA_LEVEL = 3

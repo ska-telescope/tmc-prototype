@@ -8,6 +8,8 @@ CMD_ENDSB = "EndSB"
 CMD_RESET = "End"
 CMD_ABORT = "Abort"
 CMD_RESTART = "Restart"
+CMD_ON = "On"
+CMD_OFF = "Off"
 
 # #Error messages
 ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes " \
@@ -65,6 +67,7 @@ STR_ENDSB_EXEC = "EndSB command execution"
 STR_CMD_CALLBK = "SdpSubarrayLeafNode Command Callback"
 STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = " invoked successfully."
+STR_OFF_CMD_SUCCESS = "Off command executed successfully."
 
 # #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_1"

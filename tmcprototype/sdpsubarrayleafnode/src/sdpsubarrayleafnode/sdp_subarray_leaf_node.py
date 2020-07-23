@@ -1099,6 +1099,49 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
+
+    class OnCommand(SKABaseDevice.OnCommand):
+        """
+        A class for SDP Subarray's On() command.
+        """
+        def do(self):
+            """
+
+            :param argin: None.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
+            device=self.target
+            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ON, device.cmd_ended_cb)
+            log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            self.logger.debug(log_msg)
+            return (ResultCode.OK, log_msg)
+
+    class OffCommand(SKABaseDevice.OffCommand):
+        """
+        A class for SDP master's Off() command.
+        """
+        def do(self):
+            """
+            Sets the OperatingState to Off.
+
+            :param argin: None.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
+            device=self.target
+            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OFF, device.cmd_ended_cb)
+            self.logger.debug(const.STR_OFF_CMD_SUCCESS)
+            device._read_activity_message = const.STR_OFF_CMD_SUCCESS
+            return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
 # pylint: enable=unused-argument,unused-variable
 
 # ----------

@@ -6,9 +6,9 @@ EVT_PSS_HEALTH = "cspPssHealthState"
 EVT_PST_HEALTH = "cspPstHealthState"
 
 #In/out commands
-CMD_ON = "ON Command"
-CMD_OFF = "OFF Command"
-CMD_STANDBY = "Standby Command"
+CMD_ON = "On"
+CMD_OFF = "Off"
+CMD_STANDBY = "Standby"
 CMD_SET_CBF_ADMIN_MODE = "SetCbfAdminMode"
 CMD_SET_PSS_ADMIN_MODE = "SetPssAdminMode"
 CMD_SET_PST_ADMIN_MODE = "SetPstAdminMode"
