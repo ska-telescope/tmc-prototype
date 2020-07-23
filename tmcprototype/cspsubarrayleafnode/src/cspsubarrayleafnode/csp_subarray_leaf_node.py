@@ -417,12 +417,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._read_activity_message = " "
             device._delay_model = " "
             device._versioninfo = " "
-            device.receptorIDList = []
             device.receptorIDList_str = []
             device.fsp_ids_object =[]
             device.fsids_list = []
-            device.target_Ra = ""
-            device.target_Dec = ""
             ## Start thread to update delay model ##
             # Create event
             device._stop_delay_model_event = threading.Event()
@@ -549,6 +546,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             exception_message = []
             exception_count = 0
+            device.target_Ra = ""
+            device.target_Dec = ""
             try:
                 argin_json = json.loads(argin)
                 # Used to extract FSP IDs
@@ -970,6 +969,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             exception_message = []
             exception_count = 0
+            device.receptorIDList = []
             try:
                 # Parse receptorIDList from JSON string.
                 jsonArgument = json.loads(argin[0])

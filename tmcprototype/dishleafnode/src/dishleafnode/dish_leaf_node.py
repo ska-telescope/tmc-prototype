@@ -354,6 +354,8 @@ class DishLeafNode(SKABaseDevice):
 
         :raises: Exception if error occurs in RaDec to AzEl conversion.
         """
+        ele_max_lim = 90
+        ele_min_lim = 17.5
         try:
             while self.event_track_time.is_set() is False:
                 # timestamp_value = Current system time in UTC
@@ -364,7 +366,7 @@ class DishLeafNode(SKABaseDevice):
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
                 if self.RaDec_AzEl_Conversion is True:
-                    if self.el >= self.ele_min_lim and self.el <= self.ele_max_lim:
+                    if self.el >= ele_min_lim and self.el <= ele_max_lim:
                         if self.az < 0:
                             self.az = 360 - abs(self.az)
 
@@ -526,13 +528,9 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
 
             self.logger.info(const.STR_INIT_LEAF_NODE)
-            device.SkaLevel = 3
             device.el = 50.0
             device.az = 0
             device.RaDec_AzEl_Conversion = False
-            device.ele_max_lim = 90
-            device.horizon_el = 0
-            device.ele_min_lim = 17.5
             device.el_limit = False
             exception_message = []
             exception_count = 0

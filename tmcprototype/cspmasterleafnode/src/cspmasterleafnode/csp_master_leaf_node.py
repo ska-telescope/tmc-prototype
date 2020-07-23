@@ -273,7 +273,6 @@ class CspMasterLeafNode(SKABaseDevice):
             super().do()
             exception_count = 0
             exception_message = []
-
             device = self.target
             device.SkaLevel = const.INT_SKA_LEVEL
             device._health_state = HealthState.OK  # Setting healthState to "OK"
