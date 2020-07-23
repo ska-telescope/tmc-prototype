@@ -117,12 +117,9 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
         tango_context.device.EndScan(scan_input)
 
         # assert:
-        # if type(float(scan_input)) == float:
-        #     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, scan_input,
-        #                                                              any_method(with_name='stopcapture_cmd_ended_cb'))
         if type(float(scan_input)) == float:
             dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, scan_input,
-                                                                 any_method(with_name='endscan_cmd_ended_cb'))
+                                                                     any_method(with_name='stopcapture_cmd_ended_cb'))
 
 
 def test_standby_lp_mode_should_command_dish_to_standby():

@@ -1572,7 +1572,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 if type(float(argin)) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
-                                                          argin, device.endscan_cmd_ended_cb)
+                                                          argin, device.stopcapture_cmd_ended_cb)
                     return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
