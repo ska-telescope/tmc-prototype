@@ -19,7 +19,7 @@ import katpoint
 import numpy as np
 import json
 
-# PROTECTED REGION ID(CspSubarrayLeafNode.additionnal_import) ENABLED START #
+# PROTECTED REGION ID(CspSubarrayLeafNode.additional_import) ENABLED START #
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
@@ -32,7 +32,7 @@ from ska.base.control_model import HealthState, ObsState
 from . import const
 from .exceptions import InvalidObsStateError
 
-# PROTECTED REGION END #    //  CspSubarrayLeafNode.additionnal_import
+# PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]
 
@@ -400,8 +400,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             Initializes the attributes and properties of the CspSubarrayLeafNode.
 
-            :return: A tuple containing a return code and a string message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status. The message is
+            for information purpose only.
 
             :rtype: (ReturnCode, str)
 
@@ -528,12 +528,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             :param argin:DevString. The string in JSON format. The JSON contains following values:
 
             Example:
-            {"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":"CORR",
-            "frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],
-            "fspChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost":[[0,"192.168.1.1"]],"outputPort":
-            [[0,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,
-            "channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,"outputLinkMap":[[0,4],[200,5]],"outputHost":
-            [[0,"192.168.1.1"]],"outputPort":[[0,9744,1]]}],"delayModelSubscriptionPoint":
+            {"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":
+            "CORR", "frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":
+            [[0,2],[744,0]], "fspChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost":[[0,
+            "192.168.1.1"]],"outputPort": [[0,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,
+            "integrationTime":1400,"corrBandwidth":0, "channelAveragingMap":[[0,2],[744,0]],
+             "fspChannelOffset":744,"outputLinkMap":[[0,4],[200,5]],"outputHost": [[0,"192.168.1.1"]],
+             "outputPort":[[0,9744,1]]}],"delayModelSubscriptionPoint":
             "ska_mid/tm_leaf_node/csp_subarray01/delayModel","pointing":{"target":{"system":"ICRS",
             "name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
 
@@ -587,16 +588,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_CONFIGURE_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                       const.ERR_CONFIGURE_INVOKING_CMD)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_CONFIGURE_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                                     const.ERR_CONFIGURE_INVOKING_CMD)
 
             # throw exception:
             if exception_count > 0:
@@ -658,7 +657,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in ObsState READY.
+            This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in
+            ObsState READY.
+
             :param argin: JSON string consists of scan id (int).
 
             Example:
@@ -695,16 +696,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_STARTSCAN_RESOURCES)
+                [exception_message, exception_count] = \
+                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                       const.ERR_STARTSCAN_RESOURCES)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_STARTSCAN_RESOURCES)
+                [exception_message, exception_count] =\
+                    device._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                                     const.ERR_STARTSCAN_RESOURCES)
                 # return (ResultCode.FAILED, const.ERR_STARTSCAN_RESOURCES)
 
             # throw exception:
@@ -766,7 +765,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in obsState SCANNING
+            It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in
+            obsState SCANNING
 
             :return: A tuple containing a return code and a string message indicating status.
                     The message is for information purpose only.
@@ -795,16 +795,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_IN_SCAN)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_ENDSCAN_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                       const.ERR_ENDSCAN_INVOKING_CMD)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_ENDSCAN_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                                     const.ERR_ENDSCAN_INVOKING_CMD)
 
             # throw exception:
             if exception_count > 0:
@@ -888,16 +886,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 return (ResultCode.OK, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_RELEASE_ALL_RESOURCES)
+                [exception_message, exception_count] =\
+                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                       const.ERR_RELEASE_ALL_RESOURCES)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_RELEASE_ALL_RESOURCES)
+                [exception_message, exception_count] =\
+                    device._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                                     const.ERR_RELEASE_ALL_RESOURCES)
 
             # throw exception:
             if exception_count > 0:
@@ -939,8 +935,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             Checks whether the command is allowed to be run in the current state
 
-            :return: True if this command is allowed to be run in
-                current device state
+            :return: True if this command is allowed to be run in current device state
 
             :rtype: boolean
 
@@ -980,7 +975,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
               }
             }
 
-            Note: Enter the json string without spaces as a input.
+            Note: Enter the json string without spaces as an input.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
@@ -1007,7 +1002,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device.update_config_params()
                 # Invoke AddReceptors command on CspSubarray
                 self.logger.info("Invoking AddReceptors on CSP subarray")
-                device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, device.receptorIDList,
+                device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS,
+                                                             str(device.receptorIDList),
                                                              device.add_receptors_ended)
                 self.logger.info("After invoking AddReceptors on CSP subarray")
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
@@ -1029,8 +1025,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                           exception_message,
                                                                                           exception_count,
-                                                                                          const.ERR_ASSGN_RESOURCES)
-                device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+                                                                                          const.
+                                                                                          ERR_ASSGN_RESOURCES)
+                # throw exception:
+                if exception_count > 0:
+                    device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
     def is_AssignResources_allowed(self):
         """
@@ -1124,16 +1123,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_GOTOIDLE_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                       const.ERR_GOTOIDLE_INVOKING_CMD)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_GOTOIDLE_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                                     const.ERR_GOTOIDLE_INVOKING_CMD)
 
             # throw exception:
             if exception_count > 0:
@@ -1204,8 +1201,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             This command invokes Abort command on CSP Subarray.
 
-            :return: A tuple containing a return code and a string message indicating status. The message is for
-                    information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
 
             :rtype: (ResultCode, str)
 
@@ -1231,16 +1228,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     return (ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_ABORT_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                       const.ERR_ABORT_INVOKING_CMD)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_ABORT_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                                     const.ERR_ABORT_INVOKING_CMD)
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.STR_ABORT_EXEC)
@@ -1301,8 +1296,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             This command invokes Restart command on CSPSubarray.
 
-            :return: A tuple containing a return code and a string message indicating status. The message is for
-                    information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
 
             :rtype: (ResultCode, str)
 
@@ -1319,23 +1314,21 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     self.logger.info(const.STR_RESTART_SUCCESS)
                     return (ResultCode.OK, const.STR_RESTART_SUCCESS)
                 else:
-                    log_msg = "Csp Subarray is in ObsState " + str(device.CspSubarrayProxy.obsState) + \
-                              ". Unable to invoke Restart command."
+                    log_msg = "Csp Subarray is in ObsState. " + str(device.CspSubarrayProxy.obsState) + \
+                              "Unable to invoke Restart command."
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
                     return (ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_RESTART_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
+                                                       const.ERR_RESTART_INVOKING_CMD)
 
             except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_RESTART_INVOKING_CMD)
+                [exception_message, exception_count] =\
+                    device._handle_generic_exception(except_occurred, exception_message, exception_count,
+                                                     const.ERR_RESTART_INVOKING_CMD)
             # throw exception:
             if exception_count > 0:
                 device.throw_exception(exception_message, const.ERR_RESTART_INVOKING_CMD)
