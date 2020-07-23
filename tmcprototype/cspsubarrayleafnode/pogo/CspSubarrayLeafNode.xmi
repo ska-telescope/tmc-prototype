@@ -102,7 +102,7 @@
     </commands>
     <commands name="AssignResources" description="" execMethod="assign_resources" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="">
-        <type xsi:type="pogoDsl:StringArrayType"/>
+        <type xsi:type="pogoDsl:StringType"/>
       </argin>
       <argout description="">
         <type xsi:type="pogoDsl:VoidType"/>
