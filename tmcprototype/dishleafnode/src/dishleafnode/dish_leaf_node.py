@@ -1703,6 +1703,7 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
+                device.event_track_time.set()
                 device._dish_proxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
                 device._read_activity_message = const.STR_ABORT_SUCCESS
                 self.logger.info(device._read_activity_message)
