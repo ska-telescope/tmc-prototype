@@ -553,13 +553,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # Used to extract FSP IDs
                 device.fsp_ids_object = argin_json["fsp"]
                 device.update_config_params()
-                device.pointing_params = argin_json["pointing"]
-                target_Ra = device.pointing_params["target"]["RA"]
-                target_Dec = device.pointing_params["target"]["dec"]
+                pointing_params = argin_json["pointing"]
+                target_Ra = pointing_params["target"]["RA"]
+                target_Dec = pointing_params["target"]["dec"]
 
                 # Create target object
                 device.target = katpoint.Target('radec , ' + str(target_Ra) + ", " + str(target_Dec))
 
+                cspConfiguration = argin_json.copy()
                 cspConfiguration = argin_json.copy()
                 # Keep configuration specific to CSP and delete pointing configuration
                 if "pointing" in cspConfiguration:
