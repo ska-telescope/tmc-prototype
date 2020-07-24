@@ -63,30 +63,31 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
     #
     # with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
     #                        proxies_to_mock=proxies_to_mock) as tango_context:
-        assign_resources_input = []
-        assign_resources_input.append(assign_input_str)
-        # print("tango context is ::::::::::::::", tango_context)
-        # print("tango context device proxy::::::::", tango_context.device)
-        a = create_device_proxy
-        device_proxy = a[0]
-        csp_subarray1_proxy_mock = a [1]
+    assign_resources_input = []
+    assign_resources_input.append(assign_input_str)
+    # print("tango context is ::::::::::::::", tango_context)
+    # print("tango context device proxy::::::::", tango_context.device)
+    a = create_device_proxy
+    device_proxy = a[0]
+    csp_subarray1_proxy_mock = a [1]
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
-        # device_proxy=tango_context.device
-        # print("device proxy in positive test case::::::", device_proxy)
-        # print("type of device proxy in positive test case::::", type(device_proxy))
-        device_proxy.On()
-        #act
-        device_proxy.AssignResources(assign_resources_input)
-        #assert
-        receptorIDList = []
-        jsonArgument = json.loads(assign_resources_input[0])
-        receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
-        # convert receptorIDList from list of string to list of int
-        for receptor in receptorIDList_str:
-            receptorIDList.append(int(receptor))
-        csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
-                                                receptorIDList, any_method(with_name='add_receptors_ended'))
-        assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
+    # device_proxy=tango_context.device
+    # print("device proxy in positive test case::::::", device_proxy)
+    # print("type of device proxy in positive test case::::", type(device_proxy))
+    device_proxy.On()
+    #act
+    device_proxy.AssignResources(assign_resources_input)
+    #assert
+    receptorIDList = []
+    jsonArgument = json.loads(assign_resources_input[0])
+    receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
+    # convert receptorIDList from list of string to list of int
+    for receptor in receptorIDList_str:
+        receptorIDList.append(int(receptor))
+    csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
+                                            receptorIDList, any_method(with_name='add_receptors_ended'))
+    assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
 
 @pytest.fixture(scope="function")
@@ -98,7 +99,7 @@ def create_device_proxy():
     }
 
     csp_subarray1_proxy_mock = Mock()
-    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    # csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     proxies_to_mock = {
         csp_subarray1_fqdn: csp_subarray1_proxy_mock
@@ -133,6 +134,7 @@ def test_assign_resources_should_raise_devfailed_exception(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a [1]
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
     print("device proxy in negative test case::::::", device_proxy)
     print("type of device proxy in negative test case::::", type(device_proxy))
@@ -154,6 +156,7 @@ def test_assign_command_with_callback_method(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a [1]
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     event_subscription_map = {}
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
@@ -184,6 +187,8 @@ def test_assign_command_with_callback_method_with_event_error(create_device_prox
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+
     event_subscription_map = {}
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
@@ -213,6 +218,7 @@ def test_assign_command_with_callback_method_with_devfailed_error(create_device_
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     event_subscription_map = {}
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
@@ -264,6 +270,8 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources(c
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+
     assign_resources_input = []
     assign_resources_input.append(assign_input_str)
     device_proxy.On()
@@ -292,6 +300,7 @@ def test_release_resource_should_raise_devfail_exception(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     # with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
@@ -325,6 +334,8 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+
     csp_config = configure_str
     assign_resources_input = []
     assign_resources_input.append(assign_input_str)
@@ -357,6 +368,7 @@ def test_configure_to_raise_devfailed_exception(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
     # with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
@@ -399,7 +411,9 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
 
+    print("csp subarray proxy  mock :::::::::", csp_subarray1_proxy_mock)
     # act:
     device_proxy.StartScan(scan_input_str)
 
@@ -426,7 +440,8 @@ def test_start_scan_should_not_command_csp_subarray_to_start_its_scan_when_it_is
     #                        proxies_to_mock=proxies_to_mock) as tango_context:
     a = create_device_proxy
     device_proxy = a[0]
-    # csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
 
     # act:
     device_proxy.StartScan(scan_input_str)
@@ -451,6 +466,7 @@ def test_start_scan_should_raise_devfailed_exception(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     # with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
@@ -483,6 +499,7 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning(cr
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     device_proxy.EndScan()
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN, any_method(with_name='cmd_ended_cb'))
@@ -509,6 +526,7 @@ def test_end_scan_should_not_command_csp_subarray_to_end_scan_when_it_is_not_sca
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     device_proxy.EndScan()
     assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_IN_SCAN)
@@ -530,6 +548,7 @@ def test_end_scan_should_raise_devfailed_exception(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     # with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
@@ -560,6 +579,7 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready(create
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     device_proxy.GoToIdle()
 
@@ -588,6 +608,7 @@ def test_goto_idle_should_not_command_csp_subarray_to_end_sb_when_it_is_idle(cre
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
 
     device_proxy.GoToIdle()
     assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_READY)
@@ -608,6 +629,7 @@ def test_goto_idle_should_raise_devfailed_exception(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     # with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
@@ -628,6 +650,7 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     event_subscription_map = {}
 
@@ -645,7 +668,7 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
     assert "CSP subarray leaf node raised exception" in str(df.value)
 
 
-def test_assign_resource_should_raise_exception_when_key_not_found(create_device_proxy):
+def test_assign_resource_should_raise_exception_when_key_not_found():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assignresources_input = []
@@ -686,6 +709,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_scanning(create_d
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     device_proxy.Abort()
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
@@ -712,6 +736,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_ready(create_devi
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     # act:
     device_proxy.Abort()
@@ -740,6 +765,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_configuring(creat
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
 
     # act:
     device_proxy.Abort()
@@ -768,6 +794,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_idle(create_devic
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
 
     # act:
     device_proxy.Abort()
@@ -793,6 +820,7 @@ def test_abort_should_raise_devfailed_exception(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     # with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
@@ -802,7 +830,7 @@ def test_abort_should_raise_devfailed_exception(create_device_proxy):
     with pytest.raises(tango.DevFailed):
         device_proxy.Abort()
     # assert
-    assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
+    assert const.ERR_ABORT_INVOKING_CMD in device_proxy.activityMessage
 
 
 def test_abort_should_failed_when_device_is_in_resourcing(create_device_proxy):
@@ -825,6 +853,7 @@ def test_abort_should_failed_when_device_is_in_resourcing(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
 
     # act:
     device_proxy.Abort()
@@ -852,7 +881,8 @@ def test_abort_should_failed_when_device_is_in_empty(create_device_proxy):
     #     device_proxy = tango_context.device
     a = create_device_proxy
     device_proxy = a[0]
-    # csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     # act:
     device_proxy.Abort()
@@ -880,7 +910,8 @@ def test_restart_should_failed_when_device_obsstate_is_idle(create_device_proxy)
     #     device_proxy = tango_context.device
     a = create_device_proxy
     device_proxy = a[0]
-    # csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
 
     # act:
     device_proxy.Restart()
@@ -909,6 +940,7 @@ def test_restart_should_failed_when_device_obsstate_is_scanning(create_device_pr
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     # act:
     device_proxy.Restart()
@@ -937,6 +969,7 @@ def test_restart_should_failed_when_device_obsstate_is_configuring(create_device
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
 
     # act:
     device_proxy.Restart()
@@ -964,7 +997,8 @@ def test_restart_should_failed_when_device_obsstate_is_ready(create_device_proxy
     #     device_proxy = tango_context.device
     a = create_device_proxy
     device_proxy = a[0]
-    # csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     # act:
     device_proxy.Restart()
@@ -992,6 +1026,7 @@ def test_restart_should_command_csp_subarray_to_restart_when_it_is_in_fault(crea
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.FAULT
 
     # act:
     device_proxy.Restart()
@@ -1020,6 +1055,7 @@ def test_restart_should_command_csp_subarray_to_restart_when_it_is_aborted(creat
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
 
     # act:
     device_proxy.Restart()
@@ -1045,6 +1081,7 @@ def test_restart_should_raise_devfailed_exception(create_device_proxy):
     a = create_device_proxy
     device_proxy = a[0]
     csp_subarray1_proxy_mock = a[1]
+    csp_subarray1_proxy_mock.obsState = ObsState.FAULT
 
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     # with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
