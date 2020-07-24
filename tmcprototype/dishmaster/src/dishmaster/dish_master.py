@@ -206,7 +206,7 @@ class DishMaster(SKAMaster):
         az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
         el_increament = el_diff / 10           #Dish will move in 10 steps to desired el.
         for _ in range(10):
-            if (self._abort_in_slew == False):          #Flag Sets to true if abort called
+            if (self._abort_in_slew == False):            #Flag Sets to true if abort called
                 if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
                     self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
                 else:
@@ -221,9 +221,16 @@ class DishMaster(SKAMaster):
                 time.sleep(2)
             else:
                 break
-        # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
-        self._pointing_state = PointingState.TRACK
-        self.logger.debug("Dish pointing state is set to TRACK")
+
+        if (self._abort_in_slew == False):             # Flag Sets to true if abort called
+            # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
+            self._pointing_state = PointingState.TRACK
+            self.logger.debug("Dish pointing state is set to TRACK")
+        else:
+            # Slew Aborted in between by abort command, set the pointingState to READY
+            self._pointing_state = PointingState.READY
+            self.logger.debug("Dish pointing state is set to READY")
+
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -1198,6 +1205,7 @@ class DishMaster(SKAMaster):
             self._desired_pointing = [0, 0, 0]
             self._capturing = False
             self._configured_band = None
+            self._abort_in_slew = False
             self.logger.info(const.STR_DISH_RESTARTED)
 
         except DevFailed as dev_failed:
