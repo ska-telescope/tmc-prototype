@@ -994,9 +994,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 # Parse receptorIDList from JSON string.
                 json_argument = json.loads(argin)
-                self.logger.info("Type of json arguments is:", type(json_argument)) #debugging
-                self.logger.info("argin is :", argin) #debugging
-                self.logger.info("Type of argin is :", type(argin))  # debugging
                 device.receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
                 # convert receptorIDList from list of string to list of int
                 for receptor in device.receptorIDList_str:
