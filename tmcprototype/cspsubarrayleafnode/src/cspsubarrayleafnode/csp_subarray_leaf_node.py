@@ -546,19 +546,19 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             exception_message = []
             exception_count = 0
-            device.target_Ra = ""
-            device.target_Dec = ""
+            target_Ra = ""
+            target_Dec = ""
             try:
                 argin_json = json.loads(argin)
                 # Used to extract FSP IDs
                 device.fsp_ids_object = argin_json["fsp"]
                 device.update_config_params()
                 device.pointing_params = argin_json["pointing"]
-                device.target_Ra = device.pointing_params["target"]["RA"]
-                device.target_Dec = device.pointing_params["target"]["dec"]
+                target_Ra = device.pointing_params["target"]["RA"]
+                target_Dec = device.pointing_params["target"]["dec"]
 
                 # Create target object
-                device.target = katpoint.Target('radec , ' + str(device.target_Ra) + ", " + str(device.target_Dec))
+                device.target = katpoint.Target('radec , ' + str(target_Ra) + ", " + str(target_Dec))
 
                 cspConfiguration = argin_json.copy()
                 # Keep configuration specific to CSP and delete pointing configuration
@@ -969,19 +969,19 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             exception_message = []
             exception_count = 0
-            device.receptorIDList = []
+            receptorIDList = []
             try:
                 # Parse receptorIDList from JSON string.
                 jsonArgument = json.loads(argin[0])
                 device.receptorIDList_str = jsonArgument[const.STR_DISH][const.STR_RECEPTORID_LIST]
                 # convert receptorIDList from list of string to list of int
                 for receptor in device.receptorIDList_str:
-                    device.receptorIDList.append(int(receptor))
-                self.logger.info("receptorIDList: %s", str(device.receptorIDList))
+                    receptorIDList.append(int(receptor))
+                self.logger.info("receptorIDList: %s", str(receptorIDList))
                 device.update_config_params()
                 # Invoke AddReceptors command on CspSubarray
                 self.logger.info("Invoking AddReceptors on CSP subarray")
-                device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, device.receptorIDList,
+                device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, receptorIDList,
                                                            device.add_receptors_ended)
                 self.logger.info("After invoking AddReceptors on CSP subarray")
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
