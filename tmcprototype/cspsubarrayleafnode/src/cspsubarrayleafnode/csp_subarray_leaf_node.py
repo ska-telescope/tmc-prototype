@@ -138,6 +138,338 @@ class CspSubarrayLeafNode(SKABaseDevice):
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_CMD_CALLBK)
 
+
+    def configure_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the Configure command has been successfully invoked on CspSubarray.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises:Exception if Configure command execution throws any type of exception
+
+        """
+        exception_count = 0
+        exception_message = []
+        # Update logs and activity message attribute with received event
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_CONFIGURE_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def startscan_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the StartScan command has been successfully invoked on CspSubarray.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises:Exception if StartScan command execution throws any type of exception
+
+        """
+        exception_count = 0
+        exception_message = []
+        # Update logs and activity message attribute with received event
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_STARTSCAN_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def endscan_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the EndScan command has been successfully invoked on CspSubarray.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises:Exception if EndScan command execution throws any type of exception
+
+        """
+        exception_count = 0
+        exception_message = []
+        # Update logs and activity message attribute with received event
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_ENDSCAN_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def releaseallresources_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the ReleaseAllResources command has been successfully invoked on CspSubarray.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises:Exception if ReleaseAllResources command execution throws any type of exception
+
+        """
+        exception_count = 0
+        exception_message = []
+        # Update logs and activity message attribute with received event
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                    exception_message, exception_count,
+                                                                    const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+
+    def gotoidle_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the GoToIdle command has been successfully invoked on CspSubarray.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises:Exception if GoToIdle command execution throws any type of exception
+
+        """
+        exception_count = 0
+        exception_message = []
+        # Update logs and activity message attribute with received event
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                    exception_message, exception_count,
+                                                                    const.ERR_EXCEPT_GO_TO_IDLE_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+
+    def abort_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the Abort command has been successfully invoked on CspSubarray.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises:Exception if Abort command execution throws any type of exception
+
+        """
+        exception_count = 0
+        exception_message = []
+        # Update logs and activity message attribute with received event
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                    exception_message, exception_count,
+                                                                    const.ERR_EXCEPT_ABORT_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def restart_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the Restart command has been successfully invoked on CspSubarray.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises:Exception if Restart command execution throws any type of exception
+
+        """
+        exception_count = 0
+        exception_message = []
+        # Update logs and activity message attribute with received event
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_RESTART_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.class_variable
 
     # -----------------
@@ -568,7 +900,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
                 self.logger.debug(log_msg)
                 device.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
-                                                           device.cmd_ended_cb)
+                                                           device.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
                 return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
@@ -672,7 +1004,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             #Check if CspSubarray is in READY state
                 if device.CspSubarrayProxy.obsState == ObsState.READY:
                     #Invoke StartScan command on CspSubarray
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0", device.cmd_ended_cb)
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0",
+                                                                 device.startscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_STARTSCAN_SUCCESS
                     self.logger.info(const.STR_STARTSCAN_SUCCESS)
                     return (ResultCode.OK, const.STR_STARTSCAN_SUCCESS)
@@ -767,7 +1100,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 # Invoke EndScan command on CspSubarray
                 if device.CspSubarrayProxy.obsState == ObsState.SCANNING:
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, device.cmd_ended_cb)
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, device.endscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
                     return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
@@ -861,7 +1194,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device.receptorIDList = []
                 device.fsids_list = []
                 device.update_config_params()
-                device.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS, device.cmd_ended_cb)
+                device.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS,
+                                                             device.releaseallresources_cmd_ended_cb)
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
                 return (ResultCode.OK, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
@@ -1086,7 +1420,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device.CspSubarrayProxy.obsState == ObsState.READY:
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, device.cmd_ended_cb)
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, device.gotoidle_cmd_ended_cb)
                     device._read_activity_message = const.STR_GOTOIDLE_SUCCESS
                     self.logger.info(const.STR_GOTOIDLE_SUCCESS)
                     return (ResultCode.OK, const.STR_GOTOIDLE_SUCCESS)
@@ -1188,7 +1522,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 if device.CspSubarrayProxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
                                                         ObsState.IDLE]:
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, device.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
                     return (ResultCode.OK, const.STR_ABORT_SUCCESS)
@@ -1283,7 +1617,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device.CspSubarrayProxy.obsState in [ObsState.FAULT, ObsState.ABORTED] :
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_RESTART, device.cmd_ended_cb)
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_RESTART, device.restart_cmd_ended_cb)
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
                     return (ResultCode.OK, const.STR_RESTART_SUCCESS)

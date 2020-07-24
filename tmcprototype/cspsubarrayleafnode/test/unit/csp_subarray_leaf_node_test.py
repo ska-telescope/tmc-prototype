@@ -223,7 +223,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources()
         device_proxy.ReleaseAllResources()
         # assert:
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_REMOVE_ALL_RECEPTORS,
-                                                               any_method(with_name='cmd_ended_cb'))
+                                                               any_method(with_name='releaseallresources_cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
 
@@ -283,7 +283,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
         if "pointing" in cspConfiguration:
             del cspConfiguration["pointing"]
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
-                                    json.dumps(cspConfiguration), any_method(with_name='cmd_ended_cb'))
+                                    json.dumps(cspConfiguration), any_method(with_name='configure_cmd_ended_cb'))
 
 
 def test_configure_to_raise_devfailed_exception():
@@ -342,7 +342,7 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
 
         # assert:
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, '0',
-                                                                         any_method(with_name='cmd_ended_cb'))
+                                                                        any_method(with_name='startscan_cmd_ended_cb'))
 
 
 def test_start_scan_should_not_command_csp_subarray_to_start_its_scan_when_it_is_idle():
@@ -411,7 +411,7 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning():
         device_proxy = tango_context.device
         tango_context.device.EndScan()
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with\
-            (const.CMD_ENDSCAN, any_method(with_name='cmd_ended_cb'))
+            (const.CMD_ENDSCAN, any_method(with_name='endscan_cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
 
 
@@ -478,7 +478,7 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready():
         tango_context.device.GoToIdle()
 
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with\
-            (const.CMD_GOTOIDLE, any_method(with_name='cmd_ended_cb'))
+            (const.CMD_GOTOIDLE, any_method(with_name='gotoidle_cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
 
@@ -587,7 +587,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_scanning():
         device_proxy = tango_context.device
         device_proxy.Abort()
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                                         any_method(with_name='cmd_ended_cb'))
+                                                                         any_method(with_name='abort_cmd_ended_cb'))
         assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
 
 
@@ -612,7 +612,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_ready():
 
         # assert:
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                             any_method(with_name='cmd_ended_cb'))
+                                                             any_method(with_name='abort_cmd_ended_cb'))
 
 
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_configuring():
@@ -636,7 +636,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_configuring():
 
         # assert:
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                             any_method(with_name='cmd_ended_cb'))
+                                                             any_method(with_name='abort_cmd_ended_cb'))
 
 
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_idle():
@@ -660,7 +660,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_idle():
 
         # assert:
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                             any_method(with_name='cmd_ended_cb'))
+                                                             any_method(with_name='abort_cmd_ended_cb'))
 
 
 def test_abort_should_raise_devfailed_exception():
@@ -852,7 +852,7 @@ def test_restart_should_command_csp_subarray_to_restart_when_it_is_in_fault():
 
         # assert:
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
-                                                             any_method(with_name='cmd_ended_cb'))
+                                                             any_method(with_name='restart_cmd_ended_cb'))
 
 
 def test_restart_should_command_csp_subarray_to_restart_when_it_is_aborted():
@@ -876,7 +876,7 @@ def test_restart_should_command_csp_subarray_to_restart_when_it_is_aborted():
 
         # assert:
         csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
-                                                             any_method(with_name='cmd_ended_cb'))
+                                                             any_method(with_name='restart_cmd_ended_cb'))
 
 
 def test_restart_should_raise_devfailed_exception():
