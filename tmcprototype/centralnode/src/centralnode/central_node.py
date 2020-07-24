@@ -596,6 +596,7 @@ class CentralNode(SKABaseDevice):
 
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
+                    device._leaf_device_proxy[name].command_inout(const.CMD_OFF)
                     device._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
                     log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(device._leaf_device_proxy[name])
                     self.logger.info(log_msg)
@@ -607,6 +608,7 @@ class CentralNode(SKABaseDevice):
                     device._read_activity_message = const.ERR_EXE_STANDBY_CMD
 
             try:
+                device._csp_master_leaf_proxy.command_inout(const.CMD_OFF)
                 device._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
                 self.logger.info(const.STR_CMD_STANDBY_CSP_DEV)
             except DevFailed as dev_failed:
@@ -617,6 +619,7 @@ class CentralNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_EXE_STANDBY_CMD
 
             try:
+                device._sdp_master_leaf_proxy.command_inout(const.CMD_OFF)
                 device._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
                 self.logger.info(const.STR_CMD_STANDBY_SDP_DEV)
             except DevFailed as dev_failed:
@@ -1133,7 +1136,7 @@ class CentralNode(SKABaseDevice):
                     return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     res_not_released = ast.literal_eval(return_val[1][0])
                     log_msg = "\n\n res_not_released:" + str(res_not_released)
-                    self.logger.info()
+                    self.logger.info(log_msg)
                     log_msg = const.STR_REL_RESOURCES
                     device._read_activity_message = log_msg
                     if not res_not_released:

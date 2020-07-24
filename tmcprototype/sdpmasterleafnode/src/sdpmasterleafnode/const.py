@@ -1,4 +1,4 @@
-    # """ Python file containing String Variables for CSP Master Leaf Node"""
+    # """ Python file containing String Variables for SDP Master Leaf Node"""
 #
 # Events
 # In/out commands

@@ -697,7 +697,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device.throw_exception(exception_message, const.STR_START_SCAN_EXEC)
 
     @command(
-        dtype_in=('str'),
+        dtype_in=('str',),
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
@@ -1343,7 +1343,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Invokes On command on the CSP Element.
+            Invokes On command on the CSP Subarray.
 
             :param argin: None
 
@@ -1365,7 +1365,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Invokes Off command on the CSP Element.
+            Invokes Off command on the CSP Subarray.
 
             :param argin: None.
 

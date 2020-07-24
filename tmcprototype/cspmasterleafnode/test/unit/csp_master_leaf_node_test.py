@@ -11,6 +11,7 @@ from mock import Mock, MagicMock
 # Tango imports
 import pytest
 import tango
+from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
@@ -60,8 +61,11 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
         tango_context.device.Off()
 
         # assert:
-        csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_input,
-                                                                      any_method(with_name='cmd_ended_cb'))
+        assert tango_context.device.activityMessage in const.STR_OFF_CMD_ISSUED
+        # assert tango_context.device.state() == DevState.OFF  - goes into alarm state due to forwarded attribute
+        # Do not invoke OFF command on master devices
+        # csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_input,
+        #                                                               any_method(with_name='cmd_ended_cb'))
 
 
 def test_standby_should_command_to_standby_with_callback_method():

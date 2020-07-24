@@ -69,7 +69,7 @@ class DishLeafNode(SKABaseDevice):
                     self.logger.debug(const.STR_DISH_SHUTDOWN_MODE)
                     self._read_activity_message = const.STR_DISH_SHUTDOWN_MODE
                 elif self._dish_mode == 3:
-                    self.logger.debug(const.ERR_DISH_MODE_CB)
+                    self.logger.debug(const.STR_DISH_STANDBYLP_MODE)
                     self._read_activity_message = const.STR_DISH_STANDBYLP_MODE
                 elif self._dish_mode == 4:
                     self.logger.debug(const.STR_DISH_STANDBYFP_MODE)
@@ -1619,6 +1619,7 @@ class DishLeafNode(SKABaseDevice):
             exception_message = []
             try:
                 device.event_track_time.set()
+                self.logger.info("Dish pointing State before stop track " + str(device.event_track_time))
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, device.cmd_ended_cb)
                 device._read_activity_message = const.STR_STOP_TRACK_SUCCESS
                 self.logger.info(device._read_activity_message)
