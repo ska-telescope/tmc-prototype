@@ -994,6 +994,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 # Parse receptorIDList from JSON string.
                 json_argument = json.loads(argin)
+                self.logger.info("Type of json arguments is:", type(json_argument)) #debugging
+                self.logger.info("argin is :", argin) #debugging
+                self.logger.info("Type of argin is :", type(argin))  # debugging
                 device.receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
                 # convert receptorIDList from list of string to list of int
                 for receptor in device.receptorIDList_str:
@@ -1003,7 +1006,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # Invoke AddReceptors command on CspSubarray
                 self.logger.info("Invoking AddReceptors on CSP subarray")
                 device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS,
-                                                             str(device.receptorIDList),
+                                                             device.receptorIDList,
                                                              device.add_receptors_ended)
                 self.logger.info("After invoking AddReceptors on CSP subarray")
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
@@ -1046,7 +1049,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=('str',),
+        dtype_in=('str'),
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
