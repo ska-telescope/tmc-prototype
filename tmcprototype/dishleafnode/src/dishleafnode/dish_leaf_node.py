@@ -364,7 +364,7 @@ class DishLeafNode(SKABaseDevice):
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
                 if self.RaDec_AzEl_Conversion is True:
-                    if self.el >= ele_min_lim and self.el <= ele_max_lim:
+                    if self.el >= self.ele_min_lim and self.el <= self.ele_max_lim:
                         if self.az < 0:
                             self.az = 360 - abs(self.az)
 
