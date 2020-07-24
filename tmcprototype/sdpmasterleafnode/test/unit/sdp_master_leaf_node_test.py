@@ -35,7 +35,7 @@ def test_on_should_command_sdp_master_leaf_node_to_start():
 
         # assert:
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
-                                                               any_method(with_name='cmd_ended_cb'))
+                                                               any_method(with_name='on_cmd_ended_cb'))
 
 
 def test_off_should_command_sdp_master_leaf_node_to_stop():
@@ -56,7 +56,7 @@ def test_off_should_command_sdp_master_leaf_node_to_stop():
         # assert:
         assert tango_context.device.activityMessage in const.STR_OFF_CMD_SUCCESS
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
-                                                               any_method(with_name='cmd_ended_cb'))
+                                                               any_method(with_name='off_cmd_ended_cb'))
 
 
 def test_standby_should_command_sdp_master_leaf_node_to_standby():
@@ -76,7 +76,7 @@ def test_standby_should_command_sdp_master_leaf_node_to_standby():
 
         # assert:
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY,
-                                                               any_method(with_name='cmd_ended_cb'))
+                                                               any_method(with_name='standby_cmd_ended_cb'))
 
 
 def test_disable_should_command_sdp_master_leaf_node_to_disable():
@@ -101,7 +101,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable():
         # assert:
         assert tango_context.device.activityMessage in const.STR_DISABLE_CMS_SUCCESS
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Disable,
-                                                               any_method(with_name='cmd_ended_cb'))
+                                                               any_method(with_name='disable_cmd_ended_cb'))
 
 
 
@@ -196,7 +196,7 @@ def test_standby_should_command_with_callback_method_with_command_error():
             dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
+        assert const.ERR_EXCEPT_STANDBY_CMD_CB in tango_context.device.activityMessage
 
 
 def command_callback(command_name):

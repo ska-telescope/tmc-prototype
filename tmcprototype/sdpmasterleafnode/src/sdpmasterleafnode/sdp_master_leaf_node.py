@@ -81,6 +81,178 @@ class SdpMasterLeafNode(SKABaseDevice):
             if exception_count > 0:
                 self.throw_exception(exception_message, const.STR_SDP_CMD_CALLBK)
 
+    def on_cmd_ended_cb(self, event):
+
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the On command has been successfully invoked on SDP Master.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
+
+        """
+        exception_count = 0
+        exception_message = []
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_ON_CMD_CB)
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_SDP_CMD_CALLBK)
+
+    def off_cmd_ended_cb(self, event):
+
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the OFF command has been successfully invoked on SDP Master.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
+
+        """
+        exception_count = 0
+        exception_message = []
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_OFF_CMD_CB)
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_SDP_CMD_CALLBK)
+
+    def disable_cmd_ended_cb(self, event):
+
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the disable command has been successfully invoked on SDP Master.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
+
+        """
+        exception_count = 0
+        exception_message = []
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_DISABLE_CMD_CB)
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_SDP_CMD_CALLBK)
+
+    def standby_cmd_ended_cb(self, event):
+
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the standby command has been successfully invoked on SDP Master.
+
+        :param event: a CmdDoneEvent object. This class is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
+
+        """
+        exception_count = 0
+        exception_message = []
+        try:
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                self._read_activity_message = log_msg
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_STANDBY_CMD_CB)
+            # Throw Exception
+            if exception_count > 0:
+                self.throw_exception(exception_message, const.STR_SDP_CMD_CALLBK)
+
     # Function for handling all Devfailed exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(df)
@@ -259,7 +431,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device=self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_ON, device.cmd_ended_cb)
+            device._sdp_proxy.command_inout_asynch(const.CMD_ON, device.on_cmd_ended_cb)
             log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
             return (ResultCode.OK, log_msg)
@@ -281,7 +453,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device=self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_OFF, device.cmd_ended_cb)
+            device._sdp_proxy.command_inout_asynch(const.CMD_OFF, device.off_cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_SUCCESS)
             device._read_activity_message = const.STR_OFF_CMD_SUCCESS
             exception_message = []
@@ -327,7 +499,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_Disable, device.cmd_ended_cb)
+            device._sdp_proxy.command_inout_asynch(const.CMD_Disable, device.disable_cmd_ended_cb)
             self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
             device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
             return (ResultCode.OK, const.STR_DISABLE_CMS_SUCCESS)
@@ -394,7 +566,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device= self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, device.cmd_ended_cb)
+            device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, device.standby_cmd_ended_cb)
             log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
             return (ResultCode.OK, log_msg)

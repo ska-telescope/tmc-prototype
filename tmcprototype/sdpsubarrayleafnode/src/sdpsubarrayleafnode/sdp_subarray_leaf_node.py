@@ -81,6 +81,383 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         if exception_count > 0:
             self.throw_exception(exception_message, const.STR_CMD_CALLBK)
 
+    def releaseallresources_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked command returns.
+        Checks whether the releaseallresources command has been successfully invoked on SDP Subarray.
+
+        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                      callback model for command execution.
+
+        :type: CmdDoneEvent object
+
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises: Exception if command execution throws any type of exception.
+
+        """
+        exception_count = 0
+        exception_message = []
+
+        try:
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self._read_activity_message = log
+                self.logger.error(log)
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    # def assignresources_cmd_ended_cb(self, event):
+    #     """
+    #     Callback function immediately executed when the asynchronous invoked command returns.
+    #     Checks whether the assignresources command has been successfully invoked on SDP Subarray.
+    #
+    #     :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+    #                   callback model for command execution.
+    #
+    #     :type: CmdDoneEvent object
+    #
+    #         It has the following members:
+    #             - device     : (DeviceProxy) The DeviceProxy object on which the
+    #                            call was executed.
+    #             - cmd_name   : (str) The command name
+    #             - argout_raw : (DeviceData) The command argout
+    #             - argout     : The command argout
+    #             - err        : (bool) A boolean flag set to true if the command
+    #                            failed. False otherwise
+    #             - errors     : (sequence<DevError>) The error stack
+    #             - ext
+    #
+    #     :return: none
+    #
+    #     :raises: Exception if command execution throws any type of exception.
+    #
+    #     """
+    #     exception_count = 0
+    #     exception_message = []
+    #
+    #     try:
+    #         if event.err:
+    #             log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+    #             self._read_activity_message = log
+    #             self.logger.error(log)
+    #         else:
+    #             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+    #             self._read_activity_message = log
+    #             self.logger.info(log)
+    #     except Exception as except_occurred:
+    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+    #                                                                               exception_message, exception_count,
+    #                                                                         const.ERR_EXCEPT_ASSIGN_RESOURCES_CMD_CB)
+    #
+    #     # Throw Exception
+    #     if exception_count > 0:
+    #         self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def configure_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked command returns.
+        Checks whether the configure command has been successfully invoked on SDP Subarray.
+
+        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                      callback model for command execution.
+
+        :type: CmdDoneEvent object
+
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises: Exception if command execution throws any type of exception.
+
+        """
+        exception_count = 0
+        exception_message = []
+
+        try:
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self._read_activity_message = log
+                self.logger.error(log)
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_CONFIGURE_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def scan_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked command returns.
+        Checks whether the scan command has been successfully invoked on SDP Subarray.
+
+        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                      callback model for command execution.
+
+        :type: CmdDoneEvent object
+
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises: Exception if command execution throws any type of exception.
+
+        """
+        exception_count = 0
+        exception_message = []
+
+        try:
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self._read_activity_message = log
+                self.logger.error(log)
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_SCAN_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def endscan_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked command returns.
+        Checks whether the endscan command has been successfully invoked on SDP Subarray.
+
+        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                      callback model for command execution.
+
+        :type: CmdDoneEvent object
+
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises: Exception if command execution throws any type of exception.
+
+        """
+        exception_count = 0
+        exception_message = []
+
+        try:
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self._read_activity_message = log
+                self.logger.error(log)
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_END_SCAN_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def endsb_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked command returns.
+        Checks whether the endsb command has been successfully invoked on SDP Subarray.
+
+        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                      callback model for command execution.
+
+        :type: CmdDoneEvent object
+
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises: Exception if command execution throws any type of exception.
+
+        """
+        exception_count = 0
+        exception_message = []
+
+        try:
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self._read_activity_message = log
+                self.logger.error(log)
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_END_SB_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def abort_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked command returns.
+        Checks whether the abort command has been successfully invoked on SDP Subarray.
+
+        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                      callback model for command execution.
+
+        :type: CmdDoneEvent object
+
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises: Exception if command execution throws any type of exception.
+
+        """
+        exception_count = 0
+        exception_message = []
+
+        try:
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self._read_activity_message = log
+                self.logger.error(log)
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_ABORT_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+    def restart_cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked command returns.
+        Checks whether the restart command has been successfully invoked on SDP Subarray.
+
+        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                      callback model for command execution.
+
+        :type: CmdDoneEvent object
+
+            It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                               call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                               failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+
+        :return: none
+
+        :raises: Exception if command execution throws any type of exception.
+
+        """
+        exception_count = 0
+        exception_message = []
+
+        try:
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self._read_activity_message = log
+                self.logger.error(log)
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                self._read_activity_message = log
+                self.logger.info(log)
+        except Exception as except_occurred:
+            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
+                                                                                  exception_message, exception_count,
+                                                                                  const.ERR_EXCEPT_RESTART_CMD_CB)
+
+        # Throw Exception
+        if exception_count > 0:
+            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+
+
 
     def AssignResources_ended(self, event):
         """
@@ -331,7 +708,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             try:
                 # Call SDP Subarray Command asynchronously
                 device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                              device.cmd_ended_cb)
+                                                                              device.releaseallresources_cmd_ended_cb)
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
@@ -572,7 +949,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
                 self.logger.debug(log_msg)
                 device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
-                                                              device.cmd_ended_cb)
+                                                              device.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.debug(str(sdpConfiguration))
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
@@ -683,7 +1060,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 if sdp_subarray_obs_state == ObsState.READY:
                     log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
                     self.logger.debug(log_msg)
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, device.cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, device.scan_cmd_ended_cb)
                     device._read_activity_message = const.STR_SCAN_SUCCESS
                     self.logger.info(const.STR_SCAN_SUCCESS)
                     return(ResultCode.OK, const.STR_SCAN_SUCCESS)
@@ -772,7 +1149,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device._sdp_subarray_proxy.obsState == ObsState.SCANNING:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, device.cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, device.endscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
                     return(ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
@@ -866,7 +1243,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device._sdp_subarray_proxy.obsState == ObsState.READY:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, device.cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, device.endsb_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSB_SUCCESS
                     self.logger.info(const.STR_ENDSB_SUCCESS)
                     return(ResultCode.OK, const.STR_ENDSB_SUCCESS)
@@ -954,7 +1331,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             try:
                 if device._sdp_subarray_proxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
                                                         ObsState.IDLE]:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, device.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
                     return(ResultCode.OK, const.STR_ABORT_SUCCESS)
@@ -1048,7 +1425,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device._sdp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT]:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART, device.cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART, device.restart_cmd_ended_cb)
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
                     return(ResultCode.OK, const.STR_RESTART_SUCCESS)
