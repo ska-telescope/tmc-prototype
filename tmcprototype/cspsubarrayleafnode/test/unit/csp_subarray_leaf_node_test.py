@@ -69,8 +69,6 @@ def create_device_proxy():
 
 
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list(create_device_proxy):
-    # assign_resources_input = []
-    # assign_resources_input.append(assign_input_str)
     device_proxy = create_device_proxy[0]
     csp_subarray1_proxy_mock = create_device_proxy[1]
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -91,8 +89,6 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
 
 
 def test_assign_resources_should_raise_devfailed_exception(create_device_proxy):
-    # assign_resources_input = []
-    # assign_resources_input.append(assign_input_str)
     device_proxy = create_device_proxy[0]
     csp_subarray1_proxy_mock = create_device_proxy[1]
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -109,8 +105,6 @@ def test_assign_command_with_callback_method(create_device_proxy, event_subscrip
     device_proxy = create_device_proxy[0]
     csp_subarray1_proxy_mock = create_device_proxy[1]
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    # assign_resources_input = []
-    # assign_resources_input.append(assign_input_str)
     # act
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
@@ -124,8 +118,6 @@ def test_assign_command_with_callback_method_with_event_error(create_device_prox
     device_proxy = create_device_proxy[0]
     csp_subarray1_proxy_mock = create_device_proxy[1]
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    # assign_resources_input = []
-    # assign_resources_input.append(assign_input_str)
     # act
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
@@ -139,8 +131,6 @@ def test_assign_command_with_callback_method_with_devfailed_error(create_device_
     device_proxy = create_device_proxy[0]
     csp_subarray1_proxy_mock = create_device_proxy[1]
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    # assign_resources_input = []
-    # assign_resources_input.append(assign_input_str)
     # act:
     device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
@@ -165,8 +155,6 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources(c
     device_proxy = create_device_proxy[0]
     csp_subarray1_proxy_mock = create_device_proxy[1]
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    # assign_resources_input = []
-    # assign_resources_input.append(assign_input_str)
     # act:
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
@@ -193,9 +181,6 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
     device_proxy = create_device_proxy[0]
     csp_subarray1_proxy_mock = create_device_proxy[1]
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    # csp_config = configure_str
-    # assign_resources_input = []
-    # assign_resources_input.append(assign_input_str)
     # act
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
@@ -327,9 +312,6 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
     device_proxy = create_device_proxy[0]
     csp_subarray1_proxy_mock = create_device_proxy[1]
     csp_subarray1_proxy_mock.obsState = ObsState.READY
-    # assign_input = assign_input_str
-    # assign_resources_input = []
-    # assign_resources_input.append(assign_input_str)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(json.dumps(assign_input_file))
     # assert:
@@ -339,8 +321,6 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
 def test_assign_resource_should_raise_exception_when_key_not_found():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        # assignresources_input = []
-        # assignresources_input.append(assign_invalid_key)
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_invalid_key)
         # assert:
