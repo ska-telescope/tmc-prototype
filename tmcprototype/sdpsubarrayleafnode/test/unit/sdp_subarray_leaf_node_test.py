@@ -46,7 +46,6 @@ path= join(dirname(__file__), 'data' , configure_invalid_format_file)
 with open(path, 'r') as f:
     configure_invalid_format =f.read()
 
-
 def test_end_sb_command_with_callback_method():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -64,6 +63,106 @@ def test_end_sb_command_with_callback_method():
         tango_context.device.EndSB()
         dummy_event = command_callback(const.CMD_RESET)
         event_subscription_map[const.CMD_RESET](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+
+def test_scan_command_with_callback_method():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act
+        tango_context.device.Scan(scan_input_str)
+        dummy_event = command_callback(const.CMD_SCAN)
+        event_subscription_map[const.CMD_SCAN](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+
+def test_configure_command_with_callback_method():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act
+        tango_context.device.Configure(configure_str)
+        dummy_event = command_callback(const.CMD_CONFIGURE)
+        event_subscription_map[const.CMD_CONFIGURE](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+
+def test_end_scan_command_with_callback_method():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act
+        tango_context.device.EndScan()
+        dummy_event = command_callback(const.CMD_ENDSCAN)
+        event_subscription_map[const.CMD_ENDSCAN](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+
+def test_abort_command_with_callback_method():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act
+        tango_context.device.Abort()
+        dummy_event = command_callback(const.CMD_ABORT)
+        event_subscription_map[const.CMD_ABORT](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+
+def test_restart_command_with_callback_method():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act
+        tango_context.device.Restart()
+        dummy_event = command_callback(const.CMD_RESTART)
+        event_subscription_map[const.CMD_RESTART](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
 
