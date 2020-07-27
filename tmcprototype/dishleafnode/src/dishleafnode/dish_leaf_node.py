@@ -2319,6 +2319,8 @@ class DishLeafNode(SKABaseDevice):
             exception_message = []
             try:
                 device._dish_proxy.command_inout_asynch(const.CMD_ABORT, device.abort_cmd_ended_cb)
+                device.event_track_time.set()
+                device._dish_proxy.command_inout_asynch(const.CMD_ABORT, device.cmd_ended_cb)
                 device._read_activity_message = const.STR_ABORT_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
