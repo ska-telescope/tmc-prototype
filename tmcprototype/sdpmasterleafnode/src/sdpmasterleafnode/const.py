@@ -2,10 +2,10 @@
 #
 # Events
 # In/out commands
-CMD_ON = "On"
-CMD_OFF = "Off"
-CMD_STANDBY = "Standby"
-CMD_Disable = "Disable"
+CMD_ON = "On Command"
+CMD_OFF = "Off Command"
+CMD_STANDBY = "Standby Command"
+CMD_Disable = "Disable Command"
 # String constants
 STR_INIT_SUCCESS = "SDP Master Leaf Node is initialized successfully."
 STR_SDPMASTER_FQDN = "SdpMasterFQDN :-> "
