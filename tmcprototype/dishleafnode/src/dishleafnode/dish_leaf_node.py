@@ -501,24 +501,21 @@ class DishLeafNode(SKABaseDevice):
             device.el_limit = False
             exception_message = []
             exception_count = 0
+            device.set_dish_name_number()
+            device.set_observer_lat_long_alt()
+            log_msg = const.STR_DISHMASTER_FQDN + str(device.DishMasterFQDN)
+            self.logger.debug(log_msg)
+            device.event_track_time = threading.Event()
+            device._health_state = HealthState.OK  # Setting healthState to "OK"
+            device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
+
             try:
-                device.set_dish_name_number()
-                device.set_observer_lat_long_alt()
-                log_msg = const.STR_DISHMASTER_FQDN + str(device.DishMasterFQDN)
-                self.logger.debug(log_msg)
-                device._read_activity_message = log_msg
                 device._dish_proxy = DeviceProxy(str(device.DishMasterFQDN))  # Creating proxy to the DishMaster
-                device.event_track_time = threading.Event()
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                             exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
-            device._health_state = HealthState.OK                                    #Setting healthState to "OK"
-            device._simulation_mode = SimulationMode.FALSE                           #Enabling the simulation mode
-            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
-            self.logger.error(log_msg)
-            device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
-                ApiUtil.instance().get_asynch_cb_sub_model())
+                self.logger.error(const.ERR_DISH_INIT)
+
             # Subscribing to DishMaster Attributes
             try:
                 device._dish_proxy.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT,
@@ -537,6 +534,11 @@ class DishLeafNode(SKABaseDevice):
                 device.set_status(const.ERR_DISH_INIT)
                 self.logger.error(const.ERR_DISH_INIT)
 
+            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+            self.logger.debug(log_msg)
+            device._read_activity_message = const.STR_SETTING_CB_MODEL + \
+                                            str(ApiUtil.instance().get_asynch_cb_sub_model())
             if exception_count > 0:
                 self.logger.info(device._read_activity_message)
                 device.throw_exception(exception_message, device._read_activity_message)
@@ -831,7 +833,7 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                if type(float(argin)) == float:
+                if type(argin) == float:
                     self.logger.debug(const.STR_IN_SCAN)
                     device._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
                                                             argin, device.cmd_ended_cb)
@@ -840,6 +842,9 @@ class DishLeafNode(SKABaseDevice):
                     self.logger.info(log_msg)
                     device._read_activity_message = const.STR_SCAN_SUCCESS
                     return (ResultCode.OK, device._read_activity_message)
+                else:
+                    raise ValueError
+
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
@@ -923,10 +928,13 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                if type(float(argin)) == float:
+                if type(argin) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
                                                           argin, device.cmd_ended_cb)
                     return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
+                else:
+                    raise ValueError
+
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
@@ -1150,12 +1158,15 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                if type(float(argin)) == float:
+                if type(argin) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
                                                             argin, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_STARTCAPTURE_SUCCESS
                     self.logger.info(device._read_activity_message)
                     return (ResultCode.OK, device._read_activity_message)
+                else:
+                    raise ValueError
+
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
@@ -1237,11 +1248,14 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                if type(float(argin)) == float:
+                if type(argin) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE, argin, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_STOPCAPTURE_SUCCESS
                     self.logger.info(device._read_activity_message)
                     return (ResultCode.OK, device._read_activity_message)
+                else:
+                    raise ValueError
+
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
@@ -1387,11 +1401,14 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                if type(float(argin)) == float:
+                if type(argin) == float:
                     device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW, argin, device.cmd_ended_cb)
                     device._read_activity_message = const.STR_SLEW_SUCCESS
                     self.logger.info(device._read_activity_message)
                     return (ResultCode.OK, device._read_activity_message)
+                else:
+                    raise ValueError
+
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
