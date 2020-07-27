@@ -1,3 +1,5 @@
+# PROTECTED REGION ID(CspMasterLeafNode.import) ENABLED START #
+
 # Standard Python imports
 import contextlib
 import importlib
@@ -9,14 +11,14 @@ from mock import Mock, MagicMock
 # Tango imports
 import pytest
 import tango
-from tango import DevState, DevFailed
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from cspmasterleafnode import CspMasterLeafNode, const
-from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
+from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 
+# PROTECTED REGION END #    //  CspMasterLeafNode imports
 
 def test_on_should_command_csp_master_leaf_node_to_start():
     # arrange:
@@ -30,38 +32,13 @@ def test_on_should_command_csp_master_leaf_node_to_start():
 
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        on_input = []
         # act:
-        tango_context.device.On(on_input)
+        on_input = []
+        tango_context.device.On()
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
-                                                                    any_method(with_name='cmd_ended_cb'))
-
-
-def raise_devfailed_exception(evt_name, evt_type, callaback, stateless=True):
-    tango.Except.throw_exception("CspMasterLeafNode_cspCbfHealthCallback_with_exceptionfailed", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
-
-
-def test_event_to_raise_devfailed_exception():
-    # arrange:
-    csp_master_fqdn = 'mid_csp/elt/master'
-    csp_cbf_health_state_attribute = 'cspCbfHealthState'
-    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
-
-    csp_master_proxy_mock = Mock()
-    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-
-    csp_master_proxy_mock.subscribe_event.side_effect = raise_devfailed_exception
-    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        health_state_value = HealthState.OK
-        dummy_event1 = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                          csp_cbf_health_state_attribute)
-        # assert:
-        assert tango_context.device.State() == DevState.FAULT
+                                                                      any_method(with_name='cmd_ended_cb'))
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
@@ -77,36 +54,17 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         off_input = []
+
         # act:
-        tango_context.device.Off(off_input)
+        tango_context.device.On()
+        tango_context.device.Off()
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_input,
-                                                                    any_method(with_name='cmd_ended_cb'))
+                                                                      any_method(with_name='cmd_ended_cb'))
 
 
-def test_standby_should_command_csp_master_leaf_node_to_standby():
-    # arrange:
-    csp_master_fqdn = 'mid_csp/elt/master'
-
-    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
-
-    csp_master_proxy_mock = Mock()
-
-    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-
-    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        standby_input = []
-        # act:
-        tango_context.device.Standby(standby_input)
-
-        # assert:
-        csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY, standby_input,
-                                                                    any_method(with_name='cmd_ended_cb'))
-
-
-def test_standby_should_command_with_callback_method():
+def test_standby_should_command_to_standby_with_callback_method():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
 
@@ -116,12 +74,13 @@ def test_standby_should_command_with_callback_method():
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
     csp_master_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, arg, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        standby_input = []
+
         # act:
+        standby_input = []
         tango_context.device.Standby(standby_input)
         dummy_event = command_callback(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
@@ -139,12 +98,13 @@ def test_standby_should_command_with_callback_method_with_event_error():
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
     csp_master_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, arg, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        standby_input = []
+
         # act:
+        standby_input = []
         tango_context.device.Standby(standby_input)
         dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
@@ -162,7 +122,7 @@ def test_standby_should_command_with_callback_method_with_command_error():
     event_subscription_map = {}
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
     csp_master_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
+        lambda command_name, arg, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -214,8 +174,8 @@ def test_attribute_csp_cbf_health_state_of_csp_master_is_ok():
         # act:
         health_state_value = HealthState.OK
         dummy_event = \
-            create_dummy_event_for_health_state\
-                (csp_master_fqdn,health_state_value,csp_cbf_health_state_attribute)
+            create_dummy_event_for_health_state \
+                (csp_master_fqdn, health_state_value, csp_cbf_health_state_attribute)
         event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
@@ -241,7 +201,7 @@ def test_attribute_csp_cbf_health_state_of_csp_master_is_degraded():
         # act:
         health_state_value = HealthState.DEGRADED
         dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_cbf_health_state_attribute)
+                                                          csp_cbf_health_state_attribute)
         event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
@@ -267,7 +227,7 @@ def test_attribute_csp_cbf_health_state_of_csp_master_is_failed():
         # act:
         health_state_value = HealthState.FAILED
         dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_cbf_health_state_attribute)
+                                                          csp_cbf_health_state_attribute)
         event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
@@ -293,7 +253,7 @@ def test_attribute_csp_cbf_health_state_of_csp_master_is_unknown():
         # act:
         health_state_value = HealthState.UNKNOWN
         dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_cbf_health_state_attribute)
+                                                          csp_cbf_health_state_attribute)
         event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
@@ -319,11 +279,12 @@ def test_attribute_csp_cbf_health_state_of_csp_master_with_error_event():
         # act:
         health_state_value = HealthState.UNKNOWN
         dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
-                                                               csp_cbf_health_state_attribute)
+                                                                     csp_cbf_health_state_attribute)
         event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(dummy_event.errors)
+        assert tango_context.device.activityMessage == const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(
+            dummy_event.errors)
 
 
 def test_attribute_csp_pss_health_callback_of_csp_master_is_ok():
@@ -345,8 +306,8 @@ def test_attribute_csp_pss_health_callback_of_csp_master_is_ok():
         # act:
         health_state_value = HealthState.OK
         dummy_event = \
-            create_dummy_event_for_health_state\
-                (csp_master_fqdn,health_state_value,csp_pss_health_state_attribute)
+            create_dummy_event_for_health_state \
+                (csp_master_fqdn, health_state_value, csp_pss_health_state_attribute)
         event_subscription_map[csp_pss_health_state_attribute](dummy_event)
 
         # assert:
@@ -372,7 +333,7 @@ def test_attribute_csp_pss_health_callback_of_csp_master_is_degraded():
         # act:
         health_state_value = HealthState.DEGRADED
         dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_pss_health_state_attribute)
+                                                          csp_pss_health_state_attribute)
         event_subscription_map[csp_pss_health_state_attribute](dummy_event)
 
         # assert:
@@ -398,7 +359,7 @@ def test_attribute_csp_pss_health_callback_of_csp_master_is_failed():
         # act:
         health_state_value = HealthState.FAILED
         dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_pss_health_state_attribute)
+                                                          csp_pss_health_state_attribute)
         event_subscription_map[csp_pss_health_state_attribute](dummy_event)
 
         # assert:
@@ -424,7 +385,7 @@ def test_attribute_csp_pss_health_callback_of_csp_master_is_unknown():
         # act:
         health_state_value = HealthState.UNKNOWN
         dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_pss_health_state_attribute)
+                                                          csp_pss_health_state_attribute)
         event_subscription_map[csp_pss_health_state_attribute](dummy_event)
 
         # assert:
@@ -450,11 +411,12 @@ def test_attribute_csp_pss_health_callback_of_csp_master_with_error_event():
         # act:
         health_state_value = HealthState.UNKNOWN
         dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
-                                                               csp_pss_health_state_attribute)
+                                                                     csp_pss_health_state_attribute)
         event_subscription_map[csp_pss_health_state_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(dummy_event.errors)
+        assert tango_context.device.activityMessage == const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(
+            dummy_event.errors)
 
 
 def test_attribute_csp_pst_health_callback_of_csp_master_is_ok():
@@ -476,8 +438,8 @@ def test_attribute_csp_pst_health_callback_of_csp_master_is_ok():
         # act:
         health_state_value = HealthState.OK
         dummy_event = \
-            create_dummy_event_for_health_state\
-                (csp_master_fqdn,health_state_value,csp_pst_health_state_attribute)
+            create_dummy_event_for_health_state \
+                (csp_master_fqdn, health_state_value, csp_pst_health_state_attribute)
         event_subscription_map[csp_pst_health_state_attribute](dummy_event)
 
         # assert:
@@ -503,7 +465,7 @@ def test_attribute_csp_pst_health_callback_of_csp_master_is_degraded():
         # act:
         health_state_value = HealthState.DEGRADED
         dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_pst_health_state_attribute)
+                                                          csp_pst_health_state_attribute)
         event_subscription_map[csp_pst_health_state_attribute](dummy_event)
 
         # assert:
@@ -529,7 +491,7 @@ def test_attribute_csp_pst_health_callback_of_csp_master_is_failed():
         # act:
         health_state_value = HealthState.FAILED
         dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_pst_health_state_attribute)
+                                                          csp_pst_health_state_attribute)
         event_subscription_map[csp_pst_health_state_attribute](dummy_event)
 
         # assert:
@@ -555,7 +517,7 @@ def test_attribute_csp_pst_health_callback_of_csp_master_is_unknown():
         # act:
         health_state_value = HealthState.UNKNOWN
         dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-                                                               csp_pst_health_state_attribute)
+                                                          csp_pst_health_state_attribute)
         event_subscription_map[csp_pst_health_state_attribute](dummy_event)
 
         # assert:
@@ -581,11 +543,12 @@ def test_attribute_csp_pst_health_callback_of_csp_master_with_error_event():
         # act:
         health_state_value = HealthState.UNKNOWN
         dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
-                                                               csp_pst_health_state_attribute)
+                                                                     csp_pst_health_state_attribute)
         event_subscription_map[csp_pst_health_state_attribute](dummy_event)
 
         # assert:
-        assert tango_context.device.activityMessage == const.ERR_ON_SUBS_CSP_PST_HEALTH + str(dummy_event.errors)
+        assert tango_context.device.activityMessage == const.ERR_ON_SUBS_CSP_PST_HEALTH + str(
+            dummy_event.errors)
 
 
 def test_attribute_csp_pst_health_callback_with_exception():
@@ -660,7 +623,7 @@ def test_attribute_csp_cbf_health_state_callback_with_exception():
         assert const.ERR_CSP_CBF_HEALTH_CB in tango_context.device.activityMessage
 
 
-def create_dummy_event_for_health_state(device_fqdn,health_state_value,attribute):
+def create_dummy_event_for_health_state(device_fqdn, health_state_value, attribute):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
@@ -668,7 +631,7 @@ def create_dummy_event_for_health_state(device_fqdn,health_state_value,attribute
     return fake_event
 
 
-def create_dummy_event_for_health_state_with_error(device_fqdn,health_state_value,attribute):
+def create_dummy_event_for_health_state_with_error(device_fqdn, health_state_value, attribute):
     fake_event = Mock()
     fake_event.err = True
     fake_event.errors = 'Event error in attribute callback'
@@ -691,12 +654,6 @@ def test_write_activity_message():
         assert tango_context.device.activityMessage == 'test'
 
 
-def test_state():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        assert tango_context.device.State() == DevState.ALARM
-
-
 def test_status():
     # act & assert:
     with fake_tango_system(CspMasterLeafNode) as tango_context:
@@ -715,36 +672,6 @@ def test_logging_targets():
     with fake_tango_system(CspMasterLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
-
-
-def test_test_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        test_mode = TestMode.NONE
-        tango_context.device.testMode = test_mode
-        assert tango_context.device.testMode == test_mode
-
-
-def test_simulation_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        simulation_mode = SimulationMode.FALSE
-        tango_context.device.simulationMode = simulation_mode
-        assert tango_context.device.simulationMode == simulation_mode
-
-
-def test_control_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        control_mode = ControlMode.REMOTE
-        tango_context.device.controlMode = control_mode
-        assert tango_context.device.controlMode == control_mode
-
-
-def test_admin_mode():
-    # act & assert:
-    with fake_tango_system(CspMasterLeafNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
 
 
 def test_health_state():
@@ -767,7 +694,6 @@ def any_method(with_name=None):
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
                       device_proxy_import_path='tango.DeviceProxy'):
-
     with mock.patch(device_proxy_import_path) as patched_constructor:
         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         patched_module = importlib.reload(sys.modules[device_under_test.__module__])

@@ -28,6 +28,7 @@ class AssignResourceValidator():
     def __init__(self, subarray_list, receptor_list, dish_prefix, logger=module_logger):
         self.logger = logger
         self._subarrays = []
+        self._receptor_list = []
 
         # get the ids of the numerical ids of available subarrays
         for subarray in subarray_list:
@@ -38,7 +39,7 @@ class AssignResourceValidator():
         # Get available dish ids
         # self._receptor_list = receptor_list
         for receptor in receptor_list:
-            self._receptor_list.append(receptor.replace(dish_prefix))
+            self._receptor_list.append(receptor.replace(dish_prefix, ''))
         self.logger.debug(self._receptor_list)
 
         self.logger.debug("Available dish ids: %s", self._receptor_list)
@@ -90,12 +91,14 @@ class AssignResourceValidator():
         when all receptors exist.
 
         """
+        non_existing_receptors = []
         for receptor_id in receptor_id_list:
             self.logger.debug("Checking for receptor %s", receptor_id)
             if receptor_id not in self._receptor_list:
                 self.logger.debug("Receptor %s. is not present.", receptor_id)
                 non_existing_receptors.append(receptor_id)
         self.logger.debug(non_existing_receptors)
+        return non_existing_receptors
 
 
     def loads(self, input_string):
@@ -114,7 +117,7 @@ class AssignResourceValidator():
 
             ResourceNotPresentError: When a receptor in the receptor_id_list is not present.
         """
-        
+
         ## Check if JSON is correct
         self.logger.info("Checking JSON format.")
         try:
@@ -131,7 +134,7 @@ class AssignResourceValidator():
         # JSON string.
         assign_request = json.loads(input_string)
         if(not self._subarray_exists(assign_request["subarrayID"])):
-            exception_message = "Subarray not present. Available subarrays are: " + str(self._subarrays)
+            exception_message = "The Subarray '" + str(assign_request["subarrayID"]) + "' does not exit."
             raise SubarrayNotPresentError(exception_message)
         self.logger.debug("SubarrayID validation successful.")
 
@@ -142,8 +145,10 @@ class AssignResourceValidator():
         except AssertionError as ae:
             raise ValueError("Empty receptorIDList") from ae
 
-        if(not self._receptor_exists(assign_request["dish"]["receptorIDList"])):
-            exception_message = "The following Receptor id(s) do not exist: " + str(self._receptor_list)
+        # if(not self._receptor_exists(assign_request["dish"]["receptorIDList"])):
+        non_existing_receptors = self._search_invalid_receptors(assign_request["dish"]["receptorIDList"])
+        if(non_existing_receptors):
+            exception_message = "The following Receptor id(s) do not exist: " + str(non_existing_receptors)
             raise ResourceNotPresentError(exception_message)
         self.logger.debug("receptor_id_list validation successful.")
 

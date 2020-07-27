@@ -4,7 +4,6 @@ import importlib
 import types
 import sys
 import json
-import threading
 import mock
 from mock import Mock, MagicMock
 import tango
@@ -40,6 +39,7 @@ invalid_key_config_track_file='invalid_key_Configure_Track.json'
 path= join(dirname(__file__), 'data' , invalid_key_config_track_file)
 with open(path, 'r') as f:
     config_track_invalid_str=f.read()
+
 
 def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
     # arrange:
@@ -880,7 +880,6 @@ def test_end_scan_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
 
-
 def test_start_capture_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -941,13 +940,6 @@ def test_activity_message():
         tango_context.device.activityMessage = const.STR_OK
         assert tango_context.device.activityMessage == const.STR_OK
 
-
-def test_state():
-    # act & assert:
-    with fake_tango_system(DishLeafNode) as tango_context:
-        assert tango_context.device.State() == DevState.ALARM
-
-
 def test_status():
     # act & assert:
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -992,12 +984,6 @@ def test_control_mode():
         assert tango_context.device.controlMode == control_mode
 
 
-def test_admin_mode():
-    # act & assert:
-    with fake_tango_system(DishLeafNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
-
-
 def test_health_state():
     # act & assert:
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -1028,7 +1014,6 @@ def test_stop_track_should_command_dish_to_stop_tracking_raise_dev_failed():
 
         # assert
         assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
-
 
 def test_scan_command_with_callback_method():
     # arrange:

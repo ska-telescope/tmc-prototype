@@ -16,11 +16,12 @@ from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
+
 from centralnode import CentralNode, const
-from centralnode.const import CMD_SET_STOW_MODE, STR_STARTUP_CMD_ISSUED, \
-    STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
+from centralnode.const import CMD_SET_STOW_MODE, STR_ON_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
+from ska.base.commands import ResultCode
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
@@ -28,7 +29,7 @@ with open(path, 'r') as f:
     assign_input_str = f.read()
 
 release_input_file='command_ReleaseResources.json'
-path= join(dirname(__file__), 'data' ,release_input_file)
+path= join(dirname(__file__), 'data' , release_input_file)
 with open(path, 'r') as f:
     release_input_str= f.read()
 
@@ -113,18 +114,6 @@ def test_activity_message():
         assert tango_context.device.activityMessage == ''
 
 
-def test_state():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.State() == DevState.ON
-
-
-def test_status():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.Status() == const.STR_INIT_SUCCESS
-
-
 def test_logging_level():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
@@ -163,24 +152,19 @@ def test_control_mode():
         assert tango_context.device.controlMode == control_mode
 
 
-def test_admin_mode():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.adminMode == AdminMode.ONLINE
-
-
 def test_health_state():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
 
+# Need to check the failure
 def test_activity_message_attribute_captures_the_last_received_command():
     # act & assert:
     with fake_tango_system(CentralNode)as tango_context:
         dut = tango_context.device
         dut.StartUpTelescope()
-        assert_activity_message(dut, STR_STARTUP_CMD_ISSUED)
+        assert_activity_message(dut, STR_ON_CMD_ISSUED)
 
         dut.StandByTelescope()
         assert_activity_message(dut, STR_STANDBY_CMD_ISSUED)
@@ -189,7 +173,7 @@ def test_activity_message_attribute_captures_the_last_received_command():
 # Test cases for commands
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
-    dish_device_ids = [str(i).zfill(4) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
         'DishLeafNodePrefix': fqdn_prefix,
@@ -209,7 +193,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
 
 def test_stow_antennas_should_raise_devfailed_exception():
     # arrange:
-    dish_device_ids = [str(i).zfill(4) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
     fqdn_prefix = "ska_mid/tm_leaf_node/d"
     initial_dut_properties = {
         'DishLeafNodePrefix': fqdn_prefix,
@@ -240,7 +224,6 @@ def test_stow_antennas_invalid_value():
         # assert:
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
 
-
 def test_assign_resources():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
@@ -252,7 +235,8 @@ def test_assign_resources():
     # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
     # which supports this facility.
     subarray1_proxy_mock = MagicMock()
-    subarray1_proxy_mock.DevState = DevState.OFF
+    #mocking subarray device state as ON as per new state model
+    subarray1_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
         subarray1_fqdn: subarray1_proxy_mock
     }
@@ -272,7 +256,7 @@ def test_assign_resources():
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def test_assign_resources_should_raise_devfailed_exception():
+def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn
@@ -304,7 +288,7 @@ def test_assign_resources_invalid_json_value():
             tango_context.device.AssignResources(assign_release_invalid_str)
 
         # assert:
-        assert "Exception in validating input" in str(df.value)
+        assert "Resource allocation failed. Malformed input string." in str(df.value)
 
 
 def test_assign_resources_invalid_key():
@@ -318,7 +302,72 @@ def test_assign_resources_invalid_key():
         # assert:
         assert 'test' in result
 
+def mock_subarray_call_success(device_proxy):
+    return_list = ["0001"]
+    # return (125, str(return_list))
+    return [[ResultCode.STARTED], return_list]
 
+#TODO: Implement test case for resource reallocation
+def test_assign_resources_raise_devfailed_when_reseource_reallocation():
+    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    subarray2_fqdn = 'ska_mid/tm_subarray_node/2'
+    tm_subarrays = []
+    tm_subarrays.append(subarray1_fqdn)
+    tm_subarrays.append(subarray2_fqdn)
+    dut_properties = {
+        'TMMidSubarrayNodes': tm_subarrays,
+        'NumDishes' : 4
+    }
+    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
+    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # which supports this facility.
+    subarray1_proxy_mock = MagicMock()
+    subarray2_proxy_mock = MagicMock()
+    #mocking subarray device state as ON as per new state model
+    subarray1_proxy_mock.DevState = DevState.ON
+    subarray2_proxy_mock.DevState = DevState.ON
+    proxies_to_mock = {
+        subarray1_fqdn: subarray1_proxy_mock,
+        subarray2_fqdn: subarray2_proxy_mock
+    }
+    
+    receptorIDList_success = []
+    receptorIDList_success.append("0001")
+    dish = {}
+    dish["receptorIDList_success"] = receptorIDList_success
+    success_response = {}
+    success_response["dish"] = dish
+
+    # arrange:
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy=tango_context.device
+        subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_success(device_proxy)
+        # device_proxy._subarray_allocation = {
+        #     'dish0001': 'SA1',
+        #     'dish0002': 'NOT_ALLOCATED',
+        #     'dish0003': 'NOT_ALLOCATED',
+        #     'dish0004': 'NOT_ALLOCATED'
+        #     }
+
+        response_code, message = device_proxy.AssignResources(assign_input_str)
+        print("response: ", response_code)
+        # print("Subarray allocation: ", device_proxy._subarray_allocation)
+        assert json.loads(message) == success_response
+
+
+    # act:
+        with pytest.raises(tango.DevFailed) as df:
+            reallocation_request = json.loads(assign_input_str)
+            reallocation_request["subarrayID"] = 2
+            device_proxy.AssignResources(json.dumps(reallocation_request))
+
+    # assert:
+    assert const.STR_RESOURCE_ALLOCATION_FAILED in message
+
+
+# TODO: check the test functionality
 @pytest.mark.xfail
 def test_release_resources():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
@@ -344,8 +393,9 @@ def test_release_resources():
 
         # assert:
         jsonArgument = json.loads(release_input_str)
-        if jsonArgument['releaseALL'] == True:
-            subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
+
+        # if jsonArgument['releaseALL'] == true:
+        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
 
 def test_release_resources_should_raise_devfailed_exception():
@@ -368,32 +418,32 @@ def test_release_resources_should_raise_devfailed_exception():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(release_input_str)
 
         # assert:
-        assert const.ERR_RELEASE_RESOURCES in tango_context.device.activityMessage
+        assert "Error occurred while releasing resources from the Subarray" in str(df.value)
 
 
 def test_release_resources_invalid_json_value():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(assign_release_invalid_str)
 
         # assert:
-        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert "Invalid JSON format" in str(df.value)
 
 
 def test_release_resources_invalid_key():
     # act
     with fake_tango_system(CentralNode) \
             as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(release_invalid_key)
         # assert:
-        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        assert "JSON key not found" in str(df.value)
 
 
 def test_standby():
@@ -401,7 +451,7 @@ def test_standby():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {
@@ -429,14 +479,18 @@ def test_standby():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         # act:
+        tango_context.device.StartUpTelescope()
+        assert_activity_message(tango_context.device, const.STR_ON_CMD_ISSUED)
+        assert tango_context.device.state() == DevState.ON
         tango_context.device.StandByTelescope()
 
         # assert:
         dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_SET_STANDBY_MODE)
         csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY, [])
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
-        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
+        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
         assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
+        assert tango_context.device.state() == DevState.OFF
 
 
 def test_standby_should_raise_devfailed_exception():
@@ -444,7 +498,7 @@ def test_standby_should_raise_devfailed_exception():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {
@@ -482,6 +536,7 @@ def test_standby_should_raise_devfailed_exception():
 
     # assert:
         assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
+        assert tango_context.device.state() == DevState.FAULT
 
 
 def test_startup():
@@ -489,7 +544,7 @@ def test_startup():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {
@@ -520,12 +575,14 @@ def test_startup():
         # act:
         tango_context.device.StartUpTelescope()
 
+
         # assert:
         dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_SET_OPERATE_MODE)
-        csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP, [])
-        sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
-        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_STARTUP)
-        assert_activity_message(tango_context.device, const.STR_STARTUP_CMD_ISSUED)
+        csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+        sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+        assert_activity_message(tango_context.device, const.STR_ON_CMD_ISSUED)
+        assert tango_context.device.state() == DevState.ON
 
 
 def test_startup_should_raise_devfailed_exception():
@@ -533,7 +590,7 @@ def test_startup_should_raise_devfailed_exception():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1,4)]
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
     dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
 
     dut_properties = {
@@ -570,7 +627,8 @@ def test_startup_should_raise_devfailed_exception():
             tango_context.device.StartUpTelescope()
 
         # assert:
-        assert const.ERR_EXE_STARTUP_CMD in tango_context.device.activityMessage
+        assert const.ERR_EXE_ON_CMD in tango_context.device.activityMessage
+        assert tango_context.device.state() == DevState.FAULT
 
 
 # Test cases for Telescope Health State

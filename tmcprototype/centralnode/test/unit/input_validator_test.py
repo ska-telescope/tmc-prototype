@@ -216,7 +216,7 @@ class TestAssignResourceValidator():
 
         with pytest.raises(SubarrayNotPresentError) as excinfo:
             input_validator.loads(json.dumps(input_json))
-        assert "Subarray not present. Available subarrays are" in str(excinfo.value)
+        assert "The Subarray '99' does not exit." in str(excinfo.value)
 
     def test_validate_incorrect_receptor_id(self):
         """
@@ -234,4 +234,4 @@ class TestAssignResourceValidator():
         with pytest.raises(ResourceNotPresentError) as excinfo:
             input_validator.loads(json.dumps(input_json))
 
-        assert "Receptor id not present. Valid values are: " in str(excinfo.value)
+        assert "The following Receptor id(s) do not exist:" in str(excinfo.value)

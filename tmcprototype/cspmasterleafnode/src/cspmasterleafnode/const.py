@@ -6,14 +6,15 @@ EVT_PSS_HEALTH = "cspPssHealthState"
 EVT_PST_HEALTH = "cspPstHealthState"
 
 #In/out commands
-CMD_ON = "On"
-CMD_OFF = "Off"
-CMD_STANDBY = "Standby"
+CMD_ON = "ON Command"
+CMD_OFF = "OFF Command"
+CMD_STANDBY = "Standby Command"
 CMD_SET_CBF_ADMIN_MODE = "SetCbfAdminMode"
 CMD_SET_PSS_ADMIN_MODE = "SetPssAdminMode"
 CMD_SET_PST_ADMIN_MODE = "SetPstAdminMode"
 
 # String constants
+STR_INIT_SUCCESS = "SDP Master Leaf Node is initialized successfully."
 STR_CSP_CBF_HEALTH_OK = "CSP CBF health is OK."
 STR_CSP_CBF_HEALTH_DEGRADED = "CSP CBF health is DEGRADED."
 STR_CSP_CBF_HEALTH_FAILED = "CSP CBF health is FAILED."
@@ -30,7 +31,7 @@ STR_ON_CMD_ISSUED = "ON command invoked successfully from CSP Master leaf node."
 STR_STANDBY_CMD_ISSUED = "StandByTelescope command invoked successfully from CSP Master leaf node."
 STR_OFF_CMD_ISSUED = "OFF command invoked successfully from CSP Master leaf node."
 STR_COMMAND = "Command :-> "
-STR_INVOKE_SUCCESS = " invoked successfully."
+STR_INVOKE_SUCCESS = "Command invoked successfully."
 STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
 STR_CSP_MASTER_LEAF_INIT_SUCCESS = "Csp Master Leaf Node initialized successfully."
 STR_CSP_INIT_LEAF_NODE = "Initializing CSP Master Leaf Node ...."
@@ -55,7 +56,9 @@ ERR_IN_CREATE_PROXY_CSP_MASTER = "Error in creating proxy to the CSP Master "
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_MSG = "Error message is: "
-ERR_ON_CMD = "Error in invoking command: ON"
+ERR_ON_CMD = "Error in invoking ON command."
+ERR_OFF_CMD = "Error in invoking OFF command."
+ERR_STANDBY_CMD = "Error in invoking STANDBY command."
 
 #INTEGERS
 INT_SKA_LEVEL = 3
