@@ -526,12 +526,10 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
 
             self.logger.info(const.STR_INIT_LEAF_NODE)
-            device.SkaLevel = 3
             device.el = 50.0
             device.az = 0
             device.RaDec_AzEl_Conversion = False
             device.ele_max_lim = 90
-            device.horizon_el = 0
             device.ele_min_lim = 17.5
             device.el_limit = False
             exception_message = []

@@ -871,7 +871,6 @@ class SubarrayNode(SKASubarray):
 
             device = self.target
             device.set_status(const.STR_SA_INIT)
-            device.SkaLevel = 2  # set SKALevel to "2"
             device._obs_mode = ObsMode.IDLE
             device.isScanRunning = False
             device.is_scan_completed = False
@@ -895,7 +894,6 @@ class SubarrayNode(SKASubarray):
             device._csp_sa_obs_state = None
             device._sdp_sa_obs_state = None
             device.only_dishconfig_flag = False
-            device._scan_type = ''
             _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
             device.scan_thread = None
 

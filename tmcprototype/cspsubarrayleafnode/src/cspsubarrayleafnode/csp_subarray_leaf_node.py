@@ -419,12 +419,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._read_activity_message = " "
             device._delay_model = " "
             device._versioninfo = " "
-            device.receptorIDList = []
             device.receptorIDList_str = []
             device.fsp_ids_object = []
             device.fsids_list = []
-            device.target_Ra = ""
-            device.target_Dec = ""
+            ## Start thread to update delay model ##
             # Start thread to update delay model
             # Create event
             device._stop_delay_model_event = threading.Event()
@@ -553,19 +551,20 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             exception_message = []
             exception_count = 0
+            target_Ra = ""
+            target_Dec = ""
             try:
                 argin_json = json.loads(argin)
                 # Used to extract FSP IDs
                 device.fsp_ids_object = argin_json["fsp"]
                 device.update_config_params()
-                device.pointing_params = argin_json["pointing"]
-                device.target_Ra = device.pointing_params["target"]["RA"]
-                device.target_Dec = device.pointing_params["target"]["dec"]
+                pointing_params = argin_json["pointing"]
+                target_Ra = pointing_params["target"]["RA"]
+                target_Dec = pointing_params["target"]["dec"]
 
                 # Create target object
-                device.target = katpoint.Target(
-                    'radec , ' + str(device.target_Ra) + ", " + str(device.target_Dec))
-
+                device.target = katpoint.Target('radec , ' + str(target_Ra) + ", " + str(target_Dec))
+                cspConfiguration = argin_json.copy()
                 cspConfiguration = argin_json.copy()
                 # Keep configuration specific to CSP and delete pointing configuration
                 if "pointing" in cspConfiguration:
@@ -991,20 +990,20 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             exception_message = []
             exception_count = 0
+            receptorIDList = []
             try:
                 # Parse receptorIDList from JSON string.
                 json_argument = json.loads(argin)
                 device.receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
                 # convert receptorIDList from list of string to list of int
                 for receptor in device.receptorIDList_str:
-                    device.receptorIDList.append(int(receptor))
-                self.logger.info("receptorIDList: %s", str(device.receptorIDList))
+                    receptorIDList.append(int(receptor))
+                self.logger.info("receptorIDList: %s", str(receptorIDList))
                 device.update_config_params()
                 # Invoke AddReceptors command on CspSubarray
                 self.logger.info("Invoking AddReceptors on CSP subarray")
-                device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS,
-                                                             device.receptorIDList,
-                                                             device.add_receptors_ended)
+                device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, receptorIDList,
+                                                           device.add_receptors_ended)
                 self.logger.info("After invoking AddReceptors on CSP subarray")
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)

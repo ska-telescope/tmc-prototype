@@ -59,6 +59,3 @@ ERR_MSG = "Error message is: "
 ERR_ON_CMD = "Error in invoking ON command."
 ERR_OFF_CMD = "Error in invoking OFF command."
 ERR_STANDBY_CMD = "Error in invoking STANDBY command."
-
-#INTEGERS
-INT_SKA_LEVEL = 3
