@@ -105,7 +105,7 @@ def test_assign_command_with_callback_method_with_devfailed_error():
         # act:
         with pytest.raises(tango.DevFailed) as df:
             # arrange:
-            tango_context.device.On()
+            # tango_context.device.On()
             tango_context.device.AssignResources(assign_input_str)
             dummy_event = command_callback_with_devfailed_exception()
             event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
@@ -278,7 +278,7 @@ def test_assign_resources_should_raise_devfailed_for_invalid_obstate():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
-        device_proxy.On()
+        # device_proxy.On()
         # act:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_input_str)

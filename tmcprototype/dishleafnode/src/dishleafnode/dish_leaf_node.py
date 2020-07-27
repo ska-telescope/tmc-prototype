@@ -355,6 +355,7 @@ class DishLeafNode(SKABaseDevice):
         :raises: Exception if error occurs in RaDec to AzEl conversion.
         """
         try:
+            self.logger.info("event_track_time In track thread" + str(self.event_track_time.is_set()))
             while self.event_track_time.is_set() is False:
                 # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
@@ -1619,7 +1620,7 @@ class DishLeafNode(SKABaseDevice):
             exception_message = []
             try:
                 device.event_track_time.set()
-                self.logger.info("Dish pointing State before stop track " + str(device.event_track_time))
+                self.logger.info("event_track_time In track thread" + str(device.event_track_time.is_set()))
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, device.cmd_ended_cb)
                 device._read_activity_message = const.STR_STOP_TRACK_SUCCESS
                 self.logger.info(device._read_activity_message)

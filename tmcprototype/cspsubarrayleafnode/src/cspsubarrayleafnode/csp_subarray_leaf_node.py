@@ -1336,50 +1336,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
 
-    class OnCommand(SKABaseDevice.OnCommand):
-        """
-        A class for CspSubarrayLeafNode's On() command.
-        """
-
-        def do(self):
-            """
-            Invokes On command on the CSP Subarray.
-
-            :param argin: None
-
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
-
-            """
-            device = self.target
-            device.CspSubarrayProxy.command_inout_asynch(const.CMD_ON, device.cmd_ended_cb)
-            self.logger.debug(const.STR_ON_CMD_ISSUED)
-            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
-
-    class OffCommand(SKABaseDevice.OffCommand):
-        """
-        A class for CspSubarrayLeafNode's Off() command.
-        """
-
-        def do(self):
-            """
-            Invokes Off command on the CSP Subarray.
-
-            :param argin: None.
-
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
-
-            """
-            device = self.target
-            device.CspSubarrayProxy.command_inout_asynch(const.CMD_OFF, device.cmd_ended_cb)
-            self.logger.debug(const.STR_OFF_CMD_ISSUED)
-            return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
-
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
