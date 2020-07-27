@@ -15,6 +15,7 @@ CMD_SET_STANDBYLP_MODE = "SetStandbyLPMode"
 CMD_SET_OPERATE_MODE = "SetOperateMode"
 CMD_SET_STANDBYFP_MODE = "SetStandbyFPMode"
 CMD_DISH_SCAN = "Scan"
+CMD_DISH_ENDSCAN = "EndScan"
 CMD_DISH_SLEW = "Slew"
 CMD_DISH_CONFIGURE = 'Configure'
 CMD_STOP_CAPTURE = "StopCapture"

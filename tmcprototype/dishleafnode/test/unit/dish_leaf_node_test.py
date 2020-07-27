@@ -1091,6 +1091,90 @@ def test_stop_track_should_raise_dev_failed():
         # assert
         assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
 
+def test_setstowmode_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.SetStowMode()
+        dummy_event = command_callback(const.CMD_SET_STOW_MODE)
+        event_subscription_map[const.CMD_SET_STOW_MODE](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_SET_STOW_MODE in tango_context.device.activityMessage
+
+def test_setstandbylpmode_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.SetStandByLPMode()
+        dummy_event = command_callback(const.CMD_SET_STANDBYLP_MODE)
+        event_subscription_map[const.CMD_SET_STANDBYLP_MODE](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_SET_STANDBYLP_MODE in tango_context.device.activityMessage
+
+
+def test_operatemode_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.SetOperateMode()
+        dummy_event = command_callback(const.CMD_SET_OPERATE_MODE)
+        event_subscription_map[const.CMD_SET_OPERATE_MODE](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_SET_OPERATE_MODE in tango_context.device.activityMessage
 
 def test_scan_command_with_callback_method():
     # arrange:
@@ -1119,6 +1203,308 @@ def test_scan_command_with_callback_method():
 
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_DISH_SCAN in tango_context.device.activityMessage
+
+
+def test_endscan_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        scan_input = "0"
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.EndScan(scan_input)
+        dummy_event = command_callback(const.CMD_STOP_CAPTURE)
+        event_subscription_map[const.CMD_STOP_CAPTURE](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_STOP_CAPTURE in tango_context.device.activityMessage
+
+# TODO: actual AZ and EL values need to be generated.
+@pytest.mark.xfail
+def test_configure_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        dish_config = config_input_str
+        # act:
+        device_proxy = tango_context.device
+
+        device_proxy.Configure(json.dumps(dish_config))
+
+        # act
+        dummy_event = command_callback(const.CMD_DISH_CONFIGURE)
+        event_subscription_map[const.CMD_DISH_CONFIGURE](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_DISH_CONFIGURE in tango_context.device.activityMessage
+
+def test_startcapture_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        capture_arg = "0"
+
+        device_proxy.StartCapture(capture_arg)
+
+        dummy_event = command_callback(const.CMD_START_CAPTURE)
+        event_subscription_map[const.CMD_START_CAPTURE](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_START_CAPTURE in tango_context.device.activityMessage
+
+def test_stopcapture_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        capture_arg = "0"
+
+        device_proxy.StopCapture(capture_arg)
+
+        dummy_event = command_callback(const.CMD_STOP_CAPTURE)
+        event_subscription_map[const.CMD_STOP_CAPTURE](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_STOP_CAPTURE in tango_context.device.activityMessage
+
+
+def test_setstandbyfpmode_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.SetStandByFPMode()
+        dummy_event = command_callback(const.CMD_SET_STANDBYFP_MODE)
+        event_subscription_map[const.CMD_SET_STANDBYFP_MODE](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_SET_STANDBYFP_MODE in tango_context.device.activityMessage
+
+
+def test_slew_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, argument, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        slew_input = '0'
+        device_proxy.Slew(slew_input)
+        dummy_event = command_callback(const.CMD_DISH_SLEW)
+        event_subscription_map[const.CMD_DISH_SLEW](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_DISH_SLEW in tango_context.device.activityMessage
+
+# TODO: actual AZ and EL values need to be generated.
+@pytest.mark.xfail
+def test_track_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.Track()
+        dummy_event = command_callback(const.CMD_TRACK)
+        event_subscription_map[const.CMD_TRACK](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
+
+
+def test_stoptrack_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        #slew_input = '0'
+        device_proxy.StopTrack()
+        dummy_event = command_callback(const.CMD_STOP_TRACK)
+        event_subscription_map[const.CMD_STOP_TRACK](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_STOP_TRACK in tango_context.device.activityMessage
+
+
+def test_abort_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.Abort()
+        dummy_event = command_callback(const.CMD_ABORT)
+        event_subscription_map[const.CMD_ABORT](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_ABORT in tango_context.device.activityMessage
+
+def test_restart_command_with_callback_method():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.Restart()
+        dummy_event = command_callback(const.CMD_RESTART)
+        event_subscription_map[const.CMD_RESTART](dummy_event)
+
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_RESTART in tango_context.device.activityMessage
 
 
 def test_scan_command_with_callback_method_with_event_error():
