@@ -86,6 +86,56 @@ def test_standby_should_command_to_standby_with_callback_method():
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_STANDBY in tango_context.device.activityMessage
+
+
+def test_on_should_command_to_on_with_callback_method():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+
+        # act:
+        tango_context.device.On()
+        dummy_event = command_callback(const.CMD_ON)
+        event_subscription_map[const.CMD_ON](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_ON in tango_context.device.activityMessage
+
+
+def test_off_should_command_to_on_with_callback_method():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+
+        # act:
+        tango_context.device.On()
+        tango_context.device.Off()
+        dummy_event = command_callback(const.CMD_OFF)
+        event_subscription_map[const.CMD_OFF](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
 
 
 def test_standby_should_command_with_callback_method_with_event_error():
