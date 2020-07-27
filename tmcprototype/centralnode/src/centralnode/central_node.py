@@ -24,6 +24,7 @@ from ska.base.commands import ResponseCommand, ResultCode
 from ska.base.control_model import HealthState
 # Additional import
 from . import const
+from . import release
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
@@ -295,6 +296,8 @@ class CentralNode(SKABaseDevice):
                 device.subarray_FQDN_dict = {}
                 device._subarray_allocation = {}
                 device._read_activity_message = ""
+                device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
+                device._version_id = release.version
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
