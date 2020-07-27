@@ -8,6 +8,7 @@ import math
 import re
 
 
+# In future, PointingState class will be moved to a file for all the enum attributes for DishLeafNode.
 class PointingState(enum.IntEnum):
     """
     Pointing state of the dish.
