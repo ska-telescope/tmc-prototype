@@ -65,6 +65,29 @@ def test_end_sb_command_with_callback_method():
         event_subscription_map[const.CMD_RESET](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_RESET in tango_context.device.activityMessage
+
+def test_release_resources_command_with_callback_method():
+    # arrange:
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
+    sdp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
+    event_subscription_map = {}
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act
+        tango_context.device.ReleaseAllResources()
+        dummy_event = command_callback(const.CMD_RELEASE_RESOURCES)
+        event_subscription_map[const.CMD_RELEASE_RESOURCES](dummy_event)
+        # assert:
+        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_RELEASE_RESOURCES in tango_context.device.activityMessage
+
 
 def test_scan_command_with_callback_method():
     # arrange:
@@ -85,6 +108,7 @@ def test_scan_command_with_callback_method():
         event_subscription_map[const.CMD_SCAN](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_SCAN in tango_context.device.activityMessage
 
 def test_configure_command_with_callback_method():
     # arrange:
@@ -105,6 +129,7 @@ def test_configure_command_with_callback_method():
         event_subscription_map[const.CMD_CONFIGURE](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_CONFIGURE in tango_context.device.activityMessage
 
 def test_end_scan_command_with_callback_method():
     # arrange:
@@ -125,6 +150,7 @@ def test_end_scan_command_with_callback_method():
         event_subscription_map[const.CMD_ENDSCAN](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_ENDSCAN in tango_context.device.activityMessage
 
 def test_abort_command_with_callback_method():
     # arrange:
@@ -145,6 +171,7 @@ def test_abort_command_with_callback_method():
         event_subscription_map[const.CMD_ABORT](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_ABORT in tango_context.device.activityMessage
 
 def test_restart_command_with_callback_method():
     # arrange:
@@ -165,7 +192,7 @@ def test_restart_command_with_callback_method():
         event_subscription_map[const.CMD_RESTART](dummy_event)
         # assert:
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
-
+        assert const.STR_COMMAND + const.CMD_RESTART in tango_context.device.activityMessage
 
 def test_end_sb_command_with_callback_method_with_event_error():
     # arrange:
@@ -231,6 +258,7 @@ def test_assign_command_assignresources_ended_with_callback_method():
         event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
         # assert:
         assert const.STR_COMMAND in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_ASSIGN_RESOURCES in tango_context.device.activityMessage
 
 
 def test_assign_command_assignresources_ended_raises_exception_for_error_event():
