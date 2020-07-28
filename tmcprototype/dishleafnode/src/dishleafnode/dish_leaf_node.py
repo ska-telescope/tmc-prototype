@@ -283,7 +283,7 @@ class DishLeafNode(SKABaseDevice):
 
         # Throw Exception
         if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+            self.throw_exception(exception_message, const.STR_STOPCAPTURE_CMD_CALLBK)
 
     def dmstodd(self, dish_antenna_latitude):
         """Converts latitude from deg:min:sec to decimal degree format.
@@ -748,7 +748,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SET_STOW_MODE_CMD_CALLBK)
 
         def do(self):
             """
@@ -860,7 +860,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SET_SETSTANDBYLP_CMD_CALLBK)
 
 
         def do(self):
@@ -973,7 +973,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SET_SETOPERATE_CMD_CALLBK)
 
         def do(self):
             """
@@ -1083,7 +1083,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SCAN_CMD_CALLBK)
 
 
         def do(self, argin):
@@ -1312,7 +1312,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_CONFIGURE_CMD_CALLBK)
 
         def do(self, argin):
             """
@@ -1503,7 +1503,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_STARTCAPTURE_CMD_CALLBK)
 
         def do(self, argin):
             """
@@ -1725,7 +1725,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SET_SETSTANDBYFP_CMD_CALLBK)
 
         def do(self):
             """
@@ -1838,7 +1838,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SLEW_CMD_CALLBK)
 
         def do(self, argin):
             """
@@ -2131,7 +2131,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                self.throw_exception(exception_message, const.STR_STOPTRACK_CMD_CALLBK)
 
 
         def do(self):
@@ -2269,7 +2269,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_ABORT_CMD_CALLBK)
 
 
         def do(self):
@@ -2406,7 +2406,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_RESTART_CMD_CALLBK)
 
 
         def do(self):
