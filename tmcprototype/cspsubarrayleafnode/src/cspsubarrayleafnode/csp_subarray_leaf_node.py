@@ -955,7 +955,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                                                       exception_message,
                                                                                       exception_count,
-                                                                                      const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB)
+                                                                    const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB)
 
             # Throw Exception
             if exception_count > 0:
@@ -1282,7 +1282,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                                                       exception_message,
                                                                                       exception_count,
-                                                                                      const.ERR_EXCEPT_GO_TO_IDLE_CMD_CB)
+                                                                                const.ERR_EXCEPT_GO_TO_IDLE_CMD_CB)
 
             # Throw Exception
             if exception_count > 0:
