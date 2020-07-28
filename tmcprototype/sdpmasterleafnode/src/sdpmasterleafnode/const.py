@@ -19,7 +19,10 @@ STR_SETTING_CB_MODEL = "Setting callback Model as :-> "
 STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = " invoked successfully."
 STR_CMD_FAILED = "SdpSubarray_Commandfailed"
-STR_SDP_CMD_CALLBK = "SdpMasterLeafNode Command callback"
+STR_SDP_ON_CMD_CALLBK = "SdpMasterLeafNode On Command callback"
+STR_SDP_OFF_CMD_CALLBK = "SdpMasterLeafNode Off Command callback"
+STR_SDP_DISABLE_CMD_CALLBK = "SdpMasterLeafNode Disable Command callback"
+STR_SDP_STANDBY_CMD_CALLBK = "SdpMasterLeafNode StandBy Command callback"
 STR_ERR_MSG = "Error message is: "
 
 # Error messages

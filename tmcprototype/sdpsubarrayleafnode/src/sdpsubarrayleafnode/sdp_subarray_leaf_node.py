@@ -35,64 +35,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     """
     # PROTECTED REGION ID(SdpSubarrayLeafNode.class_variable) ENABLED START #
 
-    # def cmd_ended_cb(self, event):
-    #     """
-    #     Callback function immediately executed when the asynchronous invoked command returns.
-    #     Checks whether the command has been successfully invoked on SDP Subarray.
-    #
-    #     :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
-    #                   callback model for command execution.
-    #
-    #     :type: CmdDoneEvent object
-    #
-    #         It has the following members:
-    #             - device     : (DeviceProxy) The DeviceProxy object on which the
-    #                            call was executed.
-    #             - cmd_name   : (str) The command name
-    #             - argout_raw : (DeviceData) The command argout
-    #             - argout     : The command argout
-    #             - err        : (bool) A boolean flag set to true if the command
-    #                            failed. False otherwise
-    #             - errors     : (sequence<DevError>) The error stack
-    #             - ext
-    #
-    #     :return: none
-    #
-    #     :raises: Exception if command execution throws any type of exception.
-    #
-    #     """
-    #     exception_count = 0
-    #     exception_message = []
-    #
-    #     try:
-    #         if event.err:
-    #             log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-    #             self._read_activity_message = log
-    #             self.logger.error(log)
-    #         else:
-    #             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-    #             self._read_activity_message = log
-    #             self.logger.info(log)
-    #     except Exception as except_occurred:
-    #         [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-    #                                             exception_message, exception_count, const.ERR_EXCEPT_CMD_CB)
-    #
-    #     # Throw Exception
-    #     if exception_count > 0:
-    #         self.throw_exception(exception_message, const.STR_CMD_CALLBK)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     # Throw exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
@@ -338,7 +280,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_RELEASE_RES_CMD_CALLBK)
 
         def do(self):
             """
@@ -648,7 +590,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_CONFIGURE_CMD_CALLBK)
 
         def do(self, argin):
             """
@@ -810,7 +752,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SCAN_CMD_CALLBK)
 
         def do(self, argin):
             """
@@ -959,7 +901,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_ENDSCAN_CMD_CALLBK)
 
         def do(self):
             """
@@ -1104,7 +1046,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_ENDSB_CMD_CALLBK)
 
         def do(self):
             """
@@ -1241,7 +1183,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_ABORT_CMD_CALLBK)
 
         def do(self):
             """
@@ -1384,7 +1326,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_RESTART_CMD_CALLBK)
 
         def do(self):
             """

@@ -39,7 +39,9 @@ STR_CSPMASTER_FQDN = "CspMasterFQDN :-> "
 STR_FALSE = "False"
 STR_DEV_ALARM = "The device is in ALARM state."
 STR_CMD_FAILED = "CspMasterLeafNode_Commandfailed"
-STR_CSP_CMD_CALLBK = "CspMasterLeafNode Command Callback"
+STR_CSP_ON_CMD_CALLBK = "CspMasterLeafNode On Command Callback"
+STR_CSP_OFF_CMD_CALLBK = "CspMasterLeafNode Off Command Callback"
+STR_CSP_STANDBY_CMD_CALLBK = "CspMasterLeafNode StandBy Command Callback"
 
 # Error messages
 ERR_INIT_PROP_ATTR = "Error on initialising properties and attributes "

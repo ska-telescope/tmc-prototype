@@ -354,7 +354,7 @@ class CspMasterLeafNode(SKABaseDevice):
                                                                                       const.ERR_EXCEPT_ON_CMD_CB)
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CSP_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_CSP_ON_CMD_CALLBK)
 
         def do(self):
             """
@@ -426,7 +426,7 @@ class CspMasterLeafNode(SKABaseDevice):
                                                                                       const.ERR_EXCEPT_OFF_CMD_CB)
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CSP_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_CSP_OFF_CMD_CALLBK)
 
         def do(self):
             """
@@ -517,7 +517,7 @@ class CspMasterLeafNode(SKABaseDevice):
                                                                                       const.ERR_EXCEPT_STANDBY_CMD_CB)
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CSP_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_CSP_STANDBY_CMD_CALLBK)
 
         def do(self, argin):
             """

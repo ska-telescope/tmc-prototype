@@ -249,7 +249,7 @@ class SdpMasterLeafNode(SKABaseDevice):
                                                                                       const.ERR_EXCEPT_ON_CMD_CB)
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_SDP_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SDP_ON_CMD_CALLBK)
 
         def do(self):
             """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
@@ -316,7 +316,7 @@ class SdpMasterLeafNode(SKABaseDevice):
                                                                                       const.ERR_EXCEPT_OFF_CMD_CB)
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_SDP_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SDP_OFF_CMD_CALLBK)
 
         def do(self):
             """
@@ -407,7 +407,7 @@ class SdpMasterLeafNode(SKABaseDevice):
                                                                                       const.ERR_EXCEPT_DISABLE_CMD_CB)
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_SDP_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_SDP_DISABLE_CMD_CALLBK)
 
         def do(self):
             """
@@ -518,7 +518,7 @@ class SdpMasterLeafNode(SKABaseDevice):
                                                                                       const.ERR_EXCEPT_STANDBY_CMD_CB)
                 # Throw Exception
                 if exception_count > 0:
-                    device.throw_exception(exception_message, const.STR_SDP_CMD_CALLBK)
+                    device.throw_exception(exception_message, const.STR_SDP_STANDBY_CMD_CALLBK)
 
         def do(self):
             """ Informs the SDP to stop any executing Processing. To get into the STANDBY state all running
