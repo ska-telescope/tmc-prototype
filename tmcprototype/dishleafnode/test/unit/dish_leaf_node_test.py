@@ -1507,6 +1507,65 @@ def test_restart_command_with_callback_method():
         assert const.STR_COMMAND + const.CMD_RESTART in tango_context.device.activityMessage
 
 
+def test_setstowmode_command_with_callback_method_with_event_error():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        device_proxy.SetStowMode()
+        dummy_event = command_callback_with_event_error(const.CMD_SET_STOW_MODE)
+        event_subscription_map[const.CMD_SET_STOW_MODE](dummy_event)
+
+        # assert:
+        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+
+
+def test_setstowmode_command_with_callback_method_with_command_error():
+    # arrange:
+    dish_master1_fqdn = 'mid_d0001/elt/master'
+    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
+
+    dish1_proxy_mock = Mock()
+
+    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
+
+    event_subscription_map = {}
+
+    dish1_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+
+    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+
+        # act
+        with pytest.raises(Exception):
+            device_proxy.SetStowMode()
+            dummy_event = command_callback_with_command_exception(const.CMD_SET_STOW_MODE)
+            event_subscription_map[const.CMD_SET_STOW_MODE](dummy_event)
+
+        # assert:
+        assert const.ERR_EXCEPT_SSM_CMD_CB in tango_context.device.activityMessage
+
+
+
+
 def test_scan_command_with_callback_method_with_event_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'

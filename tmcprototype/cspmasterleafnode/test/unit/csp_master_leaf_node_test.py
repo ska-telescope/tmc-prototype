@@ -113,7 +113,7 @@ def test_on_should_command_to_on_with_callback_method():
         assert const.STR_COMMAND + const.CMD_ON in tango_context.device.activityMessage
 
 
-def test_off_should_command_to_on_with_callback_method():
+def test_off_should_command_to_off_with_callback_method():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
 
