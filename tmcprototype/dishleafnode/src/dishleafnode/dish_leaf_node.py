@@ -1544,8 +1544,8 @@ class DishLeafNode(SKABaseDevice):
                 #                                         args=(radec_value,))
                 # device.track_thread1.start()
 
-                # New logic added to resolve mutiple thread issues
-                if device._dish_proxy.pointingState == 0:
+                # Updated logic added to resolve mutiple thread issues
+                if device._dish_proxy.pointingState == 0:    # PointingState = READY
                     self.logger.info("When pointing state is READY --> Create Track thread")
                     device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK)
                     self.logger.info("When pointing state is READY --> Thread status: " + str(device.track_thread1.is_alive()))
@@ -1554,7 +1554,7 @@ class DishLeafNode(SKABaseDevice):
                     else:
                         self.logger.info("When pointing state is READY --> Start Track thread")
                         device.track_thread1.start()
-                elif device._dish_proxy.pointingState == 2:
+                elif device._dish_proxy.pointingState == 2:   # PointingState = TRACK
                     self.logger.info("When pointing state is TRACK --> Do nothing")
 
                 device._read_activity_message = const.STR_TRACK_SUCCESS
