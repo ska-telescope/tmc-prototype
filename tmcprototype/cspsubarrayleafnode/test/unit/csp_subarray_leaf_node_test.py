@@ -36,7 +36,7 @@ with open(path, 'r') as f:
 invalid_json_assign_config_file = 'invalid_json_Assign_Resources_Configure.json'
 path = join(dirname(__file__), 'data', invalid_json_assign_config_file)
 with open(path, 'r') as f:
-    assign_config_invalid_str = f.read()
+    assign_resources_invalid_str = f.read()
 
 assign_invalid_key_file = 'invalid_key_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_invalid_key_file)
@@ -65,7 +65,7 @@ def create_device_proxy():
     }
     with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        yield (tango_context.device, csp_subarray1_proxy_mock)
+        yield tango_context.device, csp_subarray1_proxy_mock
 
 
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list(create_device_proxy):
@@ -98,7 +98,7 @@ def test_assign_resources_should_raise_devfailed_exception(create_device_proxy):
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
     # assert
-    assert "This is error message for devfailed" in str(df.value)
+    assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
 def test_assign_command_with_callback_method(create_device_proxy, event_subscription):
@@ -138,17 +138,7 @@ def test_assign_command_with_callback_method_with_devfailed_error(create_device_
         dummy_event = command_callback_with_devfailed_exception()
         event_subscription[const.CMD_ADD_RECEPTORS](dummy_event)
     # assert:
-    assert "CspSubarrayLeafNode_Commandfailed in callback" in str(df.value)
-
-
-def command_callback_with_devfailed_exception():
-    tango.Except.throw_exception("This is error message for devfailed",
-                                 "CspSubarrayLeafNode_Commandfailed in callback", " ", tango.ErrSeverity.ERR)
-
-
-def raise_devfailed_with_arg(cmd_name, input_arg1, input_arg2):
-    tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", "This is error message for devfailed",
-                                 cmd_name, tango.ErrSeverity.ERR)
+    assert const.ERR_CALLBACK_CMD_FAILED in str(df.value)
 
 
 def test_release_resource_should_command_csp_subarray_to_release_all_resources(create_device_proxy):
@@ -174,7 +164,7 @@ def test_release_resource_should_raise_devfail_exception(create_device_proxy):
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.ReleaseAllResources()
     # assert:
-    assert "Error while invoking ReleaseAllResources command on CSP Subarray" in str(df.value)
+    assert const.ERR_RELEASE_ALL_RESOURCES in str(df.value)
 
 
 def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(create_device_proxy):
@@ -206,16 +196,16 @@ def test_configure_to_raise_devfailed_exception(create_device_proxy):
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Configure(configure_str)
     # Assert
-    assert "This is error message for devfailed" in str(df.value)
+    assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
 def test_configure_should_raise_exception_when_called_invalid_json():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.Configure(assign_config_invalid_str)
+            tango_context.device.Configure(assign_resources_invalid_str)
         # assert:
-        assert "Invalid JSON format while invoking Configure command on CspSubarray." in str(df.value)
+        assert const.ERR_INVALID_JSON_CONFIG in str(df.value)
 
 
 def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready(create_device_proxy):
@@ -229,7 +219,7 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
                                                                      any_method(with_name = 'cmd_ended_cb'))
 
 
-def test_start_scan_should_not_command_csp_subarray_to_start_its_scan_when_it_is_idle(create_device_proxy):
+def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idle(create_device_proxy):
     device_proxy = create_device_proxy[0]
     csp_subarray1_proxy_mock = create_device_proxy[1]
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
@@ -248,7 +238,7 @@ def test_start_scan_should_raise_devfailed_exception(create_device_proxy):
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.StartScan(scan_input_str)
     # assert:
-    assert "Error while invoking StartScan command on CSP Subarray" in str(df.value)
+    assert const.ERR_STARTSCAN_RESOURCES in str(df.value)
 
 
 def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning(create_device_proxy):
@@ -276,7 +266,7 @@ def test_end_scan_should_raise_devfailed_exception(create_device_proxy):
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.EndScan()
-    assert "Error while invoking EndScan command on CSP Subarray" in str(df.value)
+    assert const.ERR_ENDSCAN_INVOKING_CMD in str(df.value)
 
 
 def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready(create_device_proxy):
@@ -305,7 +295,7 @@ def test_goto_idle_should_raise_devfailed_exception(create_device_proxy):
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.GoToIdle()
     # assert
-    assert "Error while invoking GoToIdle command on CSP Subarray" in str(df.value)
+    assert const.ERR_GOTOIDLE_INVOKING_CMD in str(df.value)
 
 
 def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_state(create_device_proxy, event_subscription):
@@ -315,7 +305,7 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(json.dumps(assign_input_file))
     # assert:
-    assert "CSP subarray leaf node raised exception" in str(df.value)
+    assert const.ERR_RAISED_EXCEPTION in str(df.value)
 
 
 def test_assign_resource_should_raise_exception_when_key_not_found():
@@ -324,7 +314,7 @@ def test_assign_resource_should_raise_exception_when_key_not_found():
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_invalid_key)
         # assert:
-        assert "CSP subarray leaf node raised exception" in str(df)
+        assert const.ERR_RAISED_EXCEPTION in str(df)
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
@@ -418,7 +408,7 @@ def test_restart_should_failed_when_device_obsstate_is_idle(create_device_proxy)
     # act:
     device_proxy.Restart()
     # assert:
-    assert "Unable to invoke Restart command" in device_proxy.activityMessage
+    assert const.ERR_UNABLE_RESTART_CMD in device_proxy.activityMessage
 
 
 def test_restart_should_failed_when_device_obsstate_is_scanning(create_device_proxy):
@@ -428,7 +418,7 @@ def test_restart_should_failed_when_device_obsstate_is_scanning(create_device_pr
     # act:
     device_proxy.Restart()
     # assert:
-    assert "Unable to invoke Restart command" in device_proxy.activityMessage
+    assert const.ERR_UNABLE_RESTART_CMD in device_proxy.activityMessage
 
 
 def test_restart_should_failed_when_device_obsstate_is_configuring(create_device_proxy):
@@ -438,7 +428,7 @@ def test_restart_should_failed_when_device_obsstate_is_configuring(create_device
     # act:
     device_proxy.Restart()
     # assert:
-    assert "Unable to invoke Restart command" in device_proxy.activityMessage
+    assert const.ERR_UNABLE_RESTART_CMD in device_proxy.activityMessage
 
 
 def test_restart_should_failed_when_device_obsstate_is_ready(create_device_proxy):
@@ -448,7 +438,7 @@ def test_restart_should_failed_when_device_obsstate_is_ready(create_device_proxy
     # act:
     device_proxy.Restart()
     # assert:
-    assert "Unable to invoke Restart command" in device_proxy.activityMessage
+    assert const.ERR_UNABLE_RESTART_CMD in device_proxy.activityMessage
 
 
 def test_restart_should_command_csp_subarray_to_restart_when_it_is_in_fault(create_device_proxy):
@@ -499,12 +489,23 @@ def command_callback_with_event_error(command_name):
     return fake_event
 
 
+def command_callback_with_devfailed_exception():
+    # "This function is called when command is failed with DevFailed exception."
+    tango.Except.throw_exception(const.ERR_DEVFAILED_MSG,
+                                 const.ERR_CALLBACK_CMD_FAILED, " ", tango.ErrSeverity.ERR)
+
+
+def raise_devfailed_with_arg(cmd_name, input_arg1, input_arg2):
+    tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
+                                 cmd_name, tango.ErrSeverity.ERR)
+
+
 def command_callback_with_command_exception():
     return Exception("Exception in command callback")
 
 
 def raise_devfailed_exception(cmd_name):
-    tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", "This is error message for devfailed",
+    tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
                                  " ", tango.ErrSeverity.ERR)
 
 
