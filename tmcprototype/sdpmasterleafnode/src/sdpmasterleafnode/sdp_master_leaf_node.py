@@ -25,7 +25,7 @@ from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import TestMode
 
 # Additional import
-from . import const
+from . import const, release
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
@@ -167,6 +167,8 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device._processing_block_list = "test"
                 device._read_activity_message = 'OK'
                 device.set_status(const.STR_INIT_SUCCESS)
+                device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+                device._version_id = release.version
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,

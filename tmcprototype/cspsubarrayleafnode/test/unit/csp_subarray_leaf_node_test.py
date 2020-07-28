@@ -15,7 +15,7 @@ from os.path import dirname, join
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from cspsubarrayleafnode import CspSubarrayLeafNode, const
+from cspsubarrayleafnode import CspSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 
 assign_input_file = 'command_AssignResources.json'
@@ -965,6 +965,18 @@ def test_logging_targets():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
+
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
+
+def test_build_state():
+    """Test for buildState"""
+    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
+        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
+
 
 
 def any_method(with_name=None):

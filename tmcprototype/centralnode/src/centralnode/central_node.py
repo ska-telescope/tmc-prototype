@@ -23,8 +23,7 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResponseCommand, ResultCode
 from ska.base.control_model import HealthState
 # Additional import
-from . import const
-from . import release
+from . import const, release
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
