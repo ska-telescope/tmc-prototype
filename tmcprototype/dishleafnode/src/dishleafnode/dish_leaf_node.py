@@ -1721,7 +1721,7 @@ class DishLeafNode(SKABaseDevice):
                 [exception_count, exception_message] = device._handle_generic_exception(except_occurred,
                                                                                       exception_message,
                                                                                       exception_count,
-                                                                                const.ERR_EXCEPT_SSFM_CMD_CB_CMD_CB)
+                                                                                const.ERR_EXCEPT_SSFM_CMD_CB)
 
             # Throw Exception
             if exception_count > 0:
@@ -2402,7 +2402,7 @@ class DishLeafNode(SKABaseDevice):
                 [exception_count, exception_message] = device._handle_generic_exception(except_occurred,
                                                                                       exception_message,
                                                                                       exception_count,
-                                                                                      const.ERR_EXCEPT_STOPTRACK_CMD_CB)
+                                                                                      const.ERR_EXCEPT_RESTART_CMD_CB)
 
             # Throw Exception
             if exception_count > 0:
