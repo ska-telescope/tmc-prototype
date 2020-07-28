@@ -346,6 +346,7 @@ def test_restart_command_with_callback_method():
         assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_RESTART in tango_context.device.activityMessage
 
+####event errors________________________________________
 
 def test_assign_command_with_callback_method_with_event_error():
     # arrange:
@@ -552,6 +553,7 @@ def test_restart_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
 
+### command error_________________________________________
 
 def test_configure_command_with_callback_method_with_command_error():
     # arrange:

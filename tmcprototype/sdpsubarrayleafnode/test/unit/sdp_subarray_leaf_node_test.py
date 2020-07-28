@@ -45,6 +45,8 @@ configure_invalid_format_file='invalid_format_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_format_file)
 with open(path, 'r') as f:
     configure_invalid_format =f.read()
+
+
 #command callback methods----------------------------------------------
 
 def test_end_sb_command_with_callback_method():
@@ -270,8 +272,6 @@ def test_assign_command_assignresources_ended_raises_exception_for_error_event()
             event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
         # assert:
         assert "Event error in Command Callback" in str(df)
-        # assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
-
 
 def test_scan_command_with_callback_method_with_event_error():
     # arrange:
