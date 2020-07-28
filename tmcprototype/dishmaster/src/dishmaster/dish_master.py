@@ -369,6 +369,7 @@ class DishMaster(SKAMaster):
             self._azeloffset = [0, 0]
             self._azimuthoverwrap = False
             self._toggle_fault = False
+            self.is_stop_track = False
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.debug(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
@@ -990,6 +991,7 @@ class DishMaster(SKAMaster):
 
         """
         try:
+            self.logger.info("TRACK command received on DishMaster")
             # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
             self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
             self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
@@ -1000,16 +1002,17 @@ class DishMaster(SKAMaster):
             if(float(actual_az_lim) <= self.preconfig_az_lim and
                float(actual_el_lim) <= self.preconfig_el_lim) is True:
             #if dish is within the preconfigured limit then dish will slew slowly (TRACK).
-                self._pointing_state = PointingState.TRACK                    # Set pointingState to TRACK Mode
-                # Inject fault in DishMaster1 if toggle_fault is enabled as a part of Subarray Isolation
-                if self._toggle_fault and 'd0001' in self.device_name:
-                    # Set PointingState to SCAN to inject fault in DishMaster
-                    self._pointing_state = PointingState.SCAN
-                self._achieved_pointing[1] = self._desired_pointing[1]
-                self._achieved_pointing[2] = self._desired_pointing[2]
-                log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
-                self.logger.debug(log_msg)
-                self.logger.debug("Dish is TRACKING.")
+                if not self.is_stop_track: 
+                    self._pointing_state = PointingState.TRACK                    # Set pointingState to TRACK Mode
+                    # Inject fault in DishMaster1 if toggle_fault is enabled as a part of Subarray Isolation
+                    if self._toggle_fault and 'd0001' in self.device_name:
+                        # Set PointingState to SCAN to inject fault in DishMaster
+                        self._pointing_state = PointingState.SCAN
+                    self._achieved_pointing[1] = self._desired_pointing[1]
+                    self._achieved_pointing[2] = self._desired_pointing[2]
+                    log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
+                    self.logger.debug(log_msg)
+                    self.logger.debug("Dish is TRACKING.")
             else:
             #if dish is out of preconfigured limit then dish will slew fast (Slew).
                 self._pointing_state = PointingState.SLEW                   # Set pointingState to SLEW Mode
@@ -1063,6 +1066,7 @@ class DishMaster(SKAMaster):
         try:
             log_msg = "Configure Json for DishMaster is" + str(argin)
             self.logger.debug(log_msg)
+            self.is_stop_track = False
             jsonArgument_DM_Config = json.loads(argin)
             AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
             EL = jsonArgument_DM_Config[const.STR_POINTING]["EL"]
@@ -1115,6 +1119,8 @@ class DishMaster(SKAMaster):
         """
         excpt_msg = []
         excpt_count = 0
+        self.logger.info("STOPTRACK command is received on DishMaster")
+        self.is_stop_track = True
         try:
             if (self._pointing_state == PointingState.SLEW or self._pointing_state == PointingState.TRACK):
                 self._pointing_state = PointingState.READY

@@ -338,7 +338,7 @@ class DishLeafNode(SKABaseDevice):
             elif self.el_limit == True:
                 break
 
-    def track_thread(self, argin):
+    def track_thread(self):
         """This thread invokes Track command on DishMaster at the rate of 20 Hz.
 
         :param argin: DevVarStringArray
@@ -355,12 +355,15 @@ class DishLeafNode(SKABaseDevice):
         :raises: Exception if error occurs in RaDec to AzEl conversion.
         """
         try:
-            self.logger.info("event_track_time In track thread" + str(self.event_track_time.is_set()))
+            self.logger.info("event_track_time In track thread outside while: " + str(self.event_track_time.is_set()))
+            log_msg="print track_thread thread name: ", str(threading.currentThread().getName()),str(threading.get_ident())
+            self.logger.info(log_msg)
             while self.event_track_time.is_set() is False:
+                self.logger.info("event_track_time In track thread inside while: " + str(self.event_track_time.is_set()))
                 # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
                 katpoint_arg = []
-                katpoint_arg.insert(0, argin)
+                katpoint_arg.insert(0, self.global_radec_value)
                 katpoint_arg.insert(1, timestamp_value)
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
@@ -375,14 +378,21 @@ class DishLeafNode(SKABaseDevice):
                         # assign calculated AzEl to desiredPointing attribute of Dishmaster
                         self._dish_proxy.desiredPointing = spectrum
                         # Invoke Track command of Dish Master
-                        self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
+                        if self.event_track_time.is_set() is False:
+                            self.logger.info(">>>>> Invoking TRACK command on DishMaster")
+                            self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
+                        else:
+                            self.logger.info("<<<<<< Breaking while loop for track" + str(self.event_track_time.is_set()))
+                            break
                     else:
                         self.el_limit = True
                         self._read_activity_message = const.ERR_ELE_LIM
                         break
                 else:
                     break
+                self.logger.info("event_track_time In track thread inside : " + str(self.event_track_time.is_set()))
                 time.sleep(0.05)
+                self.logger.info("event_track_time In track thread after sleep : " + str(self.event_track_time.is_set()))
                 # self._dish_proxy.pointingState = 0
         except Exception as except_occurred:
             self.logger.error(const.ERR_EXE_TRACK, str(except_occurred))
@@ -537,6 +547,7 @@ class DishLeafNode(SKABaseDevice):
             device.el_limit = False
             exception_message = []
             exception_count = 0
+            device.global_radec_value = ""
             try:
                 device.set_dish_name_number()
                 device.set_observer_lat_long_alt()
@@ -1523,14 +1534,29 @@ class DishLeafNode(SKABaseDevice):
                 ra_value = (jsonArgument["pointing"]["target"]["RA"])
                 dec_value = (jsonArgument["pointing"]["target"]["dec"])
                 radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
+                device.global_radec_value = radec_value
                 device.event_track_time.clear()
                 # TODO: For future reference
                 # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, const.THREAD_TRACK)
                 # self.tracking_time_thread1.start()
                 # Pass string argument in track_thread in brackets
-                device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK,
-                                                        args=(radec_value,))
-                device.track_thread1.start()
+                # device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK,
+                #                                         args=(radec_value,))
+                # device.track_thread1.start()
+
+                # New logic added to resolve mutiple thread issues
+                if device._dish_proxy.pointingState == 0:
+                    self.logger.info("When pointing state is READY --> Create Track thread")
+                    device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK)
+                    self.logger.info("When pointing state is READY --> Thread status: " + str(device.track_thread1.is_alive()))
+                    if device.track_thread1.is_alive():
+                        self.logger.info("When pointing state is READY --> Do not Start Track thread")
+                    else:
+                        self.logger.info("When pointing state is READY --> Start Track thread")
+                        device.track_thread1.start()
+                elif device._dish_proxy.pointingState == 2:
+                    self.logger.info("When pointing state is TRACK --> Do nothing")
+
                 device._read_activity_message = const.STR_TRACK_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
@@ -1620,7 +1646,7 @@ class DishLeafNode(SKABaseDevice):
             exception_message = []
             try:
                 device.event_track_time.set()
-                self.logger.info("event_track_time In track thread" + str(device.event_track_time.is_set()))
+                self.logger.info("event_track_time in STOPTRACK command: " + str(device.event_track_time.is_set()))
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, device.cmd_ended_cb)
                 device._read_activity_message = const.STR_STOP_TRACK_SUCCESS
                 self.logger.info(device._read_activity_message)
