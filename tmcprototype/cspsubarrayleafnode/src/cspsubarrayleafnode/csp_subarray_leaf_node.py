@@ -476,7 +476,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_CONFIGURE_CMD_CALLBK)
 
         def do(self, argin):
             """
@@ -658,7 +658,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_STARTSCAN_CMD_CALLBK)
 
 
         def do(self, argin):
@@ -816,7 +816,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_ENDSCAN_CMD_CALLBK)
 
         def do(self):
             """
@@ -959,7 +959,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_RELEASE_RES_CMD_CALLBACK)
 
         def do(self):
             """
@@ -1055,7 +1055,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
-        #@DebugIt()
         def add_receptors_ended(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
@@ -1287,7 +1286,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_GO_TO_IDLE_CMD_CALLBK)
 
         def do(self):
             """
@@ -1440,7 +1439,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_ABORT_CMD_CALLBK)
 
         def do(self):
             """
@@ -1585,7 +1584,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_RESTART_CMD_CALLBK)
 
 
         def do(self):
