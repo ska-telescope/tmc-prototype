@@ -28,7 +28,6 @@ ERR_INVALID_JSON_SCAN = "Invalid JSON format while invoking Scan command on SDP 
 ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB = "Exception in ReleaseAllResources CommandCallback: \n"
-# ERR_EXCEPT_ASSIGN_RESOURCES_CMD_CB = "Exception in AssignResources CommandCallback: \n"
 ERR_EXCEPT_CONFIGURE_CMD_CB = "Exception in Configure CommandCallback: \n"
 ERR_EXCEPT_SCAN_CMD_CB = "Exception in Scan CommandCallback: \n"
 ERR_EXCEPT_END_SCAN_CMD_CB = "Exception in EndScan CommandCallback: \n"
