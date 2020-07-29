@@ -301,6 +301,7 @@ class CentralNode(SKABaseDevice):
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed, exception_message,
                                                                                         exception_count, const.ERR_INIT_PROP_ATTR_CN)
                 device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
+                device.throw_exception(exception_message, device._read_activity_message)
 
                 #  Get Dish Leaf Node devices List
                 # TODO: Getting DishLeafNode devices list from TANGO DB
@@ -335,6 +336,7 @@ class CentralNode(SKABaseDevice):
                                                                                            exception_count,
                                                                                            const.ERR_IN_CREATE_PROXY)
                     device._read_activity_message = const.ERR_IN_CREATE_PROXY
+                    device.throw_exception(exception_message, device._read_activity_message)
 
             # Create device proxy for CSP Master Leaf Node
             try:
@@ -348,6 +350,7 @@ class CentralNode(SKABaseDevice):
                                                                                        exception_count,
                                                                                        const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH)
                 device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
+                device.throw_exception(exception_message, device._read_activity_message)
 
             # Create device proxy for SDP Master Leaf Node
             try:
@@ -361,6 +364,7 @@ class CentralNode(SKABaseDevice):
                                                                                        exception_count,
                                                                                        const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH)
                 device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
+                device.throw_exception(exception_message, device._read_activity_message)
 
             # Create device proxy for Subarray Node
             for subarray in range(0, len(device.TMMidSubarrayNodes)):
@@ -381,10 +385,7 @@ class CentralNode(SKABaseDevice):
                                                                                            exception_count,
                                                                                            const.ERR_SUBSR_SA_HEALTH_STATE)
                     device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
-
-            if exception_count >0:
-                self.logger.info(device._read_activity_message)
-                device.throw_exception(exception_message, device._read_activity_message)
+                    device.throw_exception(exception_message, device._read_activity_message)
 
             device._read_activity_message = "Central Node initialised successfully."
             self.logger.info(device._read_activity_message)

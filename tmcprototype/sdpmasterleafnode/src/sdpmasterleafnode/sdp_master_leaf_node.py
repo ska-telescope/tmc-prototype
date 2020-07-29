@@ -171,6 +171,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                     exception_message,exception_count, const.ERR_INIT_PROP_ATTR)
+                device.throw_exception(exception_message, device._read_activity_message)
 
             try:
                 device._read_activity_message = const.STR_SDPMASTER_FQDN + device.SdpMasterFQDN
@@ -180,14 +181,11 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                     exception_message, exception_count,const.ERR_IN_CREATE_PROXY_SDP_MASTER)
+                device.throw_exception(exception_message, device._read_activity_message)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
                 ApiUtil.instance().get_asynch_cb_sub_model())
-
-            if exception_count > 0:
-                self.logger.info(device._read_activity_message)
-                device.throw_exception(exception_message, device._read_activity_message)
 
             device._read_activity_message = const.STR_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
