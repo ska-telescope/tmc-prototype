@@ -134,7 +134,6 @@ def test_off_should_command_to_off_with_callback_method():
         # assert:
         assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
 
-
 def test_standby_should_command_with_callback_method_with_event_error():
     # arrange:
     csp_master_fqdn = 'mid_csp/elt/master'
@@ -156,7 +155,7 @@ def test_standby_should_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in tango_context.device.activityMessage
 
 def test_on_should_command_with_callback_method_with_event_error():
     # arrange:
@@ -178,7 +177,7 @@ def test_on_should_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_ON)
         event_subscription_map[const.CMD_ON](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_ON in tango_context.device.activityMessage
 
 def test_off_should_command_with_callback_method_with_event_error():
     # arrange:
@@ -201,8 +200,7 @@ def test_off_should_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_OFF)
         event_subscription_map[const.CMD_OFF](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
-
+        assert const.ERR_INVOKING_CMD + const.CMD_OFF in tango_context.device.activityMessage
 
 def test_standby_should_command_with_callback_method_with_command_error():
     # arrange:
