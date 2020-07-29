@@ -147,11 +147,6 @@ def test_configure_command_when_obstate_is_idle_with_callback_method():
 
         # act
         device_proxy.Configure(csp_config)
-        # Assert
-        argin_json = json.loads(csp_config)
-        cspConfiguration = argin_json.copy()
-        if "pointing" in cspConfiguration:
-            del cspConfiguration["pointing"]
         # assert:
         dummy_event = command_callback(const.CMD_CONFIGURE)
         event_subscription_map[const.CMD_CONFIGURE](dummy_event)
@@ -177,11 +172,6 @@ def test_configure_command_when_obstate_is_ready_with_callback_method():
 
         # act
         device_proxy.Configure(csp_config)
-        # Assert
-        argin_json = json.loads(csp_config)
-        cspConfiguration = argin_json.copy()
-        if "pointing" in cspConfiguration:
-            del cspConfiguration["pointing"]
         # assert:
         dummy_event = command_callback(const.CMD_CONFIGURE)
         event_subscription_map[const.CMD_CONFIGURE](dummy_event)
@@ -393,10 +383,6 @@ def test_configure_command_with_callback_method_with_event_error():
         # act
         device_proxy.Configure(csp_config)
         # Assert
-        argin_json = json.loads(csp_config)
-        cspConfiguration = argin_json.copy()
-        if "pointing" in cspConfiguration:
-            del cspConfiguration["pointing"]
         dummy_event = command_callback_with_event_error(const.CMD_CONFIGURE)
         event_subscription_map[const.CMD_CONFIGURE](dummy_event)
         # assert:
@@ -578,10 +564,6 @@ def test_configure_command_with_callback_method_with_command_error():
         # act
         with pytest.raises(Exception):
             device_proxy.Configure(csp_config)
-            argin_json = json.loads(csp_config)
-            cspConfiguration = argin_json.copy()
-            if "pointing" in cspConfiguration:
-                del cspConfiguration["pointing"]
             dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_CONFIGURE](dummy_event)
 
