@@ -22,7 +22,7 @@ from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode,ResponseCommand
 # Additional imports
 import json
-from . import const
+from . import const, release
 from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
@@ -197,6 +197,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._sdp_subarray_health_state = HealthState.OK
             device._read_activity_message = ""
             device._active_processing_block = ""
+            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._version_id = release.version
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             log_msg = const.STR_SDPSALN_INIT_SUCCESS

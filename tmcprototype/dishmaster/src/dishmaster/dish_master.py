@@ -30,7 +30,7 @@ from ska.base.control_model import HealthState, AdminMode
 import numpy
 import math
 import enum
-from . import const
+from . import const, release
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
@@ -383,6 +383,8 @@ class DishMaster(SKAMaster):
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.debug(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
+            self._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            self._version_id = release.version
         except Exception as except_occured:
             log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
