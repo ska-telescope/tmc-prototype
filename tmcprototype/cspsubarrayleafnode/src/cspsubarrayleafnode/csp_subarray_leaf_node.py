@@ -29,7 +29,7 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 
 # Additional import
-from . import const
+from . import const, release
 from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
@@ -325,6 +325,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.ERR_IN_CREATE_PROXY_CSPSA + str(dev_failed)
                 self.logger.debug(log_msg)
                 return (ResultCode.FAILED, log_msg)
+            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._version_id = release.version
             device._read_activity_message = " "
             device._delay_model = " "
             device._versioninfo = " "

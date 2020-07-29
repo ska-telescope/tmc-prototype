@@ -14,7 +14,7 @@ import tango
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from cspmasterleafnode import CspMasterLeafNode, const
+from cspmasterleafnode import CspMasterLeafNode, const, release
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 
@@ -816,6 +816,18 @@ def test_health_state():
     # act & assert:
     with fake_tango_system(CspMasterLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
+
+
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(CspMasterLeafNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
+
+def test_build_state():
+    """Test for buildState"""
+    with fake_tango_system(CspMasterLeafNode) as tango_context:
+        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
 
 
 def any_method(with_name=None):

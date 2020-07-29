@@ -28,7 +28,7 @@ from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, Even
 from tango.server import run,attribute, command, device_property
 
 # Additional import
-from . import const
+from . import const, release
 from .const import PointingState
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -881,6 +881,8 @@ class SubarrayNode(SKASubarray):
             device.is_abort_command = False
             device._scan_id = ""
             device._sb_id = ""
+            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._version_id = release.version
             device.scan_duration = 0
             device._receptor_id_list = []
             device.dishPointingStateMap = {}

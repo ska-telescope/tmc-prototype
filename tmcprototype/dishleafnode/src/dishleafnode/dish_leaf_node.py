@@ -28,7 +28,7 @@ from .utils import PointingState, UnitConverter
 
 # Additional import
 import threading
-from . import const
+from . import const, release
 import math
 import katpoint
 import datetime
@@ -563,6 +563,8 @@ class DishLeafNode(SKABaseDevice):
             device.ele_max_lim = 90
             device.ele_min_lim = 17.5
             device.el_limit = False
+            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._version_id = release.version
             exception_message = []
             exception_count = 0
             device.set_dish_name_number()

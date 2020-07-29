@@ -25,7 +25,7 @@ from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 # Additional import
-from . import const
+from . import const, release
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
@@ -232,6 +232,8 @@ class CspMasterLeafNode(SKABaseDevice):
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
+            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._version_id = release.version
             device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
             try:
                 device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)

@@ -15,7 +15,7 @@ from tango.test_context import DeviceTestContext
 from os.path import dirname, join
 
 # Additional import
-from dishleafnode import DishLeafNode, const
+from dishleafnode import DishLeafNode, const, release
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
 
@@ -2132,6 +2132,18 @@ def test_restart_command_with_callback_method_with_command_error():
 
         # assert:
         assert const.ERR_EXCEPT_RESTART_CMD_CB in tango_context.device.activityMessage
+
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(DishLeafNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
+
+def test_build_state():
+    """Test for buildState"""
+    with fake_tango_system(DishLeafNode) as tango_context:
+        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
+
 
 
 def command_callback(command_name):

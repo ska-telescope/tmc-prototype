@@ -17,7 +17,7 @@ from tango import DevState, DeviceData, DevString, DevVarStringArray
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from subarraynode import SubarrayNode, const, ElementDeviceData
+from subarraynode import SubarrayNode, const, ElementDeviceData, release
 from subarraynode.const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
     LoggingLevel
@@ -295,12 +295,16 @@ def test_activation_time():
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.activationTime == 0.0
 
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
 
 def test_build_state():
     """Test for buildState"""
     with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.buildState == (
-        "lmcbaseclasses, 0.6.3, A set of generic base devices for SKA Telescope.")
+        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
 
 
 def test_configuration_delay_expected():
@@ -313,12 +317,6 @@ def test_configuration_progress():
     """Test for configurationProgress"""
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.configurationProgress == 0
-
-
-def test_version_id():
-    """Test for versionId"""
-    with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.versionId == "0.6.3"
 
 
 def test_scan_id():
