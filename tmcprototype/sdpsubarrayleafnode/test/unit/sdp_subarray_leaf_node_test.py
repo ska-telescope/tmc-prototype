@@ -46,9 +46,6 @@ path= join(dirname(__file__), 'data' , configure_invalid_format_file)
 with open(path, 'r') as f:
     configure_invalid_format =f.read()
 
-
-#command callback methods----------------------------------------------
-
 def test_end_sb_command_with_callback_method():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -210,8 +207,6 @@ def test_restart_command_with_callback_method():
         # assert:
         assert const.STR_COMMAND + const.CMD_RESTART in tango_context.device.activityMessage
 
-# event error methods -----------------------------------------------------------------
-
 def test_end_sb_command_with_callback_method_with_event_error():
     # arrange:
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
@@ -230,7 +225,7 @@ def test_end_sb_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_RESET)
         event_subscription_map[const.CMD_RESET](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_RESET in tango_context.device.activityMessage
 
 def test_release_resource_command_with_callback_method_with_event_error():
     # arrange:
@@ -291,7 +286,7 @@ def test_scan_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_SCAN)
         event_subscription_map[const.CMD_SCAN](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_SCAN in tango_context.device.activityMessage
 
 def test_end_scan_command_with_callback_method_with_event_error():
     # arrange:
@@ -311,7 +306,7 @@ def test_end_scan_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_ENDSCAN)
         event_subscription_map[const.CMD_ENDSCAN](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_ENDSCAN in tango_context.device.activityMessage
 
 def test_configure_command_with_callback_method_with_event_error():
     # arrange:
@@ -331,7 +326,7 @@ def test_configure_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_CONFIGURE)
         event_subscription_map[const.CMD_CONFIGURE](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD +const.CMD_CONFIGURE in tango_context.device.activityMessage
 
 def test_abort_command_with_callback_method_with_event_error():
     # arrange:
@@ -351,7 +346,7 @@ def test_abort_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_ABORT)
         event_subscription_map[const.CMD_ABORT](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_ABORT in tango_context.device.activityMessage
 
 
 def test_restart_command_with_callback_method_with_event_error():
@@ -372,9 +367,7 @@ def test_restart_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_RESTART)
         event_subscription_map[const.CMD_RESTART](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
-
-# command error ---------------------------------------------------------------------
+        assert const.ERR_INVOKING_CMD + const.CMD_RESTART in tango_context.device.activityMessage
 
 def test_release_resources_command_with_callback_method_with_command_error():
     # arrange:
