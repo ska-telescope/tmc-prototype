@@ -36,7 +36,7 @@ with open(path, 'r') as f:
 invalid_json_assign_config_file = 'invalid_json_Assign_Resources_Configure.json'
 path = join(dirname(__file__), 'data', invalid_json_assign_config_file)
 with open(path, 'r') as f:
-    assign_resources_invalid_str = f.read()
+    invalid_key_str = f.read()
 
 assign_invalid_key_file = 'invalid_key_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_invalid_key_file)
@@ -203,7 +203,7 @@ def test_configure_should_raise_exception_when_called_invalid_json():
     # act
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.Configure(assign_resources_invalid_str)
+            tango_context.device.Configure(invalid_key_str)
         # assert:
         assert const.ERR_INVALID_JSON_CONFIG in str(df.value)
 
