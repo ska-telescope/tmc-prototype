@@ -1116,7 +1116,6 @@ def test_setstowmode_command_with_callback_method():
         event_subscription_map[const.CMD_SET_STOW_MODE](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_SET_STOW_MODE in tango_context.device.activityMessage
 
 def test_setstandbylpmode_command_with_callback_method():
@@ -1144,7 +1143,6 @@ def test_setstandbylpmode_command_with_callback_method():
         event_subscription_map[const.CMD_SET_STANDBYLP_MODE](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_SET_STANDBYLP_MODE in tango_context.device.activityMessage
 
 
@@ -1173,7 +1171,6 @@ def test_operatemode_command_with_callback_method():
         event_subscription_map[const.CMD_SET_OPERATE_MODE](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_SET_OPERATE_MODE in tango_context.device.activityMessage
 
 def test_scan_command_with_callback_method():
@@ -1202,7 +1199,6 @@ def test_scan_command_with_callback_method():
         event_subscription_map[const.CMD_DISH_SCAN](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_DISH_SCAN in tango_context.device.activityMessage
 
 
@@ -1232,7 +1228,6 @@ def test_endscan_command_with_callback_method():
         event_subscription_map[const.CMD_STOP_CAPTURE](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_STOP_CAPTURE in tango_context.device.activityMessage
 
 # TODO: actual AZ and EL values need to be generated.
@@ -1265,7 +1260,6 @@ def test_configure_command_with_callback_method():
         event_subscription_map[const.CMD_DISH_CONFIGURE](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_DISH_CONFIGURE in tango_context.device.activityMessage
 
 def test_startcapture_command_with_callback_method():
@@ -1296,7 +1290,6 @@ def test_startcapture_command_with_callback_method():
         event_subscription_map[const.CMD_START_CAPTURE](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_START_CAPTURE in tango_context.device.activityMessage
 
 def test_stopcapture_command_with_callback_method():
@@ -1327,7 +1320,6 @@ def test_stopcapture_command_with_callback_method():
         event_subscription_map[const.CMD_STOP_CAPTURE](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_STOP_CAPTURE in tango_context.device.activityMessage
 
 
@@ -1356,7 +1348,6 @@ def test_setstandbyfpmode_command_with_callback_method():
         event_subscription_map[const.CMD_SET_STANDBYFP_MODE](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_SET_STANDBYFP_MODE in tango_context.device.activityMessage
 
 
@@ -1386,7 +1377,6 @@ def test_slew_command_with_callback_method():
         event_subscription_map[const.CMD_DISH_SLEW](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_DISH_SLEW in tango_context.device.activityMessage
 
 # TODO: actual AZ and EL values need to be generated.
@@ -1416,7 +1406,6 @@ def test_track_command_with_callback_method():
         event_subscription_map[const.CMD_TRACK](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
 
 
@@ -1446,7 +1435,6 @@ def test_stoptrack_command_with_callback_method():
         event_subscription_map[const.CMD_STOP_TRACK](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_STOP_TRACK in tango_context.device.activityMessage
 
 
@@ -1475,7 +1463,6 @@ def test_abort_command_with_callback_method():
         event_subscription_map[const.CMD_ABORT](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_ABORT in tango_context.device.activityMessage
 
 def test_restart_command_with_callback_method():
@@ -1503,7 +1490,6 @@ def test_restart_command_with_callback_method():
         event_subscription_map[const.CMD_RESTART](dummy_event)
 
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_RESTART in tango_context.device.activityMessage
 
 
