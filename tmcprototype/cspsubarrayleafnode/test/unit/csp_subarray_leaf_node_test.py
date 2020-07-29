@@ -532,7 +532,6 @@ def test_startscan_command_with_callback_method_with_command_error():
             device_proxy.StartScan(scan_input_str)
             dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_STARTSCAN](dummy_event)
-
         # assert:
         assert const.ERR_EXCEPT_STARTSCAN_CMD_CB in tango_context.device.activityMessage
 
