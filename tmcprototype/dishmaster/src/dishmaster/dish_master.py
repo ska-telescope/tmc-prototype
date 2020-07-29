@@ -383,8 +383,8 @@ class DishMaster(SKAMaster):
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.debug(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
-            device._version_id = release.version
+            self._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            self._version_id = release.version
         except Exception as except_occured:
             log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
