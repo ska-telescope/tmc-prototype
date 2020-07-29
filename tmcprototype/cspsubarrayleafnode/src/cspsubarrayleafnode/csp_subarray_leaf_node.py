@@ -690,7 +690,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 # Check if CspSubarray is in READY state
                 if device.CspSubarrayProxy.obsState == ObsState.READY:
-                    #Invoke StartScan command on CspSubarray
+                    # Invoke StartScan command on CspSubarray
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0",
                                                                  self.startscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_STARTSCAN_SUCCESS
