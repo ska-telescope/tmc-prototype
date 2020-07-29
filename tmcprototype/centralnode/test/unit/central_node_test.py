@@ -9,7 +9,6 @@ import mock
 from mock import MagicMock
 from mock import Mock
 from os.path import dirname, join
-import re
 
 # Tango imports
 import tango
