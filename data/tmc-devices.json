@@ -540,6 +540,9 @@
                             "CspMasterFQDN": [
                                 "mid_csp/elt/master"
                             ],
+                            "SkaLevel": [
+                                "3"
+                            ],
                             "LoggingTargetsDefault": [
                                 "tango::logger"
                             ],
@@ -732,6 +735,9 @@
                         "properties": {
                             "SdpMasterFQDN": [
                                 "mid_sdp/elt/master"
+                            ],
+                            "SkaLevel": [
+                                "3"
                             ],
                             "LoggingTargetsDefault": [
                                 "tango::logger"

@@ -24,15 +24,16 @@ from tango.server import run, command, device_property, attribute
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
+from .utils import PointingState, UnitConverter
 
 # Additional import
 import threading
 from . import const
 import math
 import katpoint
-import re
 import datetime
 import time
+import re
 
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
@@ -348,7 +349,7 @@ class DishLeafNode(SKABaseDevice):
             # Geodetic latitude of the observer
             # TODO: For refererence
             # latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
-            latitude_degree_decimal = self.dmstodd(str(dish_antenna_latitude))
+            latitude_degree_decimal = UnitConverter().dms_to_dd(str(dish_antenna_latitude))
             latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
 
             # Calculate enu coordinates
@@ -458,24 +459,6 @@ class DishLeafNode(SKABaseDevice):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
-    # TODO: This function can be moved to utility class
-    def dms_to_rad(self,dms):
-        deg = float(dms[0])
-        min = float(dms[1])
-        sec = float(dms[2])
-        rad_value = ((math.pi / 180) * ((deg) + (min / 60) + (sec / 3600)))
-        return rad_value
-
-    def rad_to_dms(self, rad_value):
-        dms = []
-        frac_min, deg = math.modf(rad_value * (180 / math.pi))
-        frac_sec, min = math.modf(frac_min * 60)
-        sec = frac_sec * 60
-        dms.append(deg)
-        dms.append(min)
-        dms.append(sec)
-        return dms
-
     def set_dish_name_number(self):
         # Find out dish number from DishMasterFQDN property
         dish_name_string = self.DishMasterFQDN.split("/")
@@ -496,8 +479,9 @@ class DishLeafNode(SKABaseDevice):
                 ref_ant_altitude = ant.ref_observer.elevation
                 ant_delay_model = ant.delay_model.values()
         # Convert reference antenna lat and long into radian
-        ref_ant_lat_rad = self.dms_to_rad(str(ref_ant_lat).split(":"))
-        ref_ant_long_rad = self.dms_to_rad(str(ref_ant_long).split(":"))
+        obj_unitconverter = UnitConverter()
+        ref_ant_lat_rad = obj_unitconverter.dms_to_rad(str(ref_ant_lat).split(":"))
+        ref_ant_long_rad = obj_unitconverter.dms_to_rad(str(ref_ant_long).split(":"))
 
         # Find latitude, longitude and altitude of Dish antenna
         # Convert enu to ecef coordinates for dish
@@ -508,8 +492,8 @@ class DishLeafNode(SKABaseDevice):
         dish_lat_long_alt_rad = katpoint.ecef_to_lla(dish_ecef_coordinates[0], dish_ecef_coordinates[1],
                                                      dish_ecef_coordinates[2])
         # Convert lla coordinates from rad to dms
-        dish_lat_dms = self.rad_to_dms(dish_lat_long_alt_rad[0])
-        dish_long_dms = self.rad_to_dms(dish_lat_long_alt_rad[1])
+        dish_lat_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[0])
+        dish_long_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[1])
 
         self.observer_location_lat = str(dish_lat_dms[0]) + ":" + str(dish_lat_dms[1]) + ":" + str(
             dish_lat_dms[2])
@@ -573,12 +557,10 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
 
             self.logger.info(const.STR_INIT_LEAF_NODE)
-            device.SkaLevel = 3
             device.el = 50.0
             device.az = 0
             device.RaDec_AzEl_Conversion = False
             device.ele_max_lim = 90
-            device.horizon_el = 0
             device.ele_min_lim = 17.5
             device.el_limit = False
             exception_message = []
@@ -806,7 +788,7 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            if device._dish_proxy.pointingState in [1, 2, 3]:
+            if device._dish_proxy.pointingState in [PointingState.SLEW, PointingState.TRACK, PointingState.SCAN]:
                 tango.Except.throw_exception("SetStandByLPMode() is not allowed in current state",
                                              "Failed to invoke SetStandByLpMode command on DishLeafNode.",
                                              "DishLeafNode.SetStandByLPMode() ",
