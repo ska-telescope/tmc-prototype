@@ -125,7 +125,7 @@ def test_assign_command_with_callback_method():
         dummy_event = command_callback(const.CMD_ADD_RECEPTORS)
         event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_ADD_RECEPTORS in tango_context.device.activityMessage
 
 
 def test_configure_command_when_obstate_is_idle_with_callback_method():
