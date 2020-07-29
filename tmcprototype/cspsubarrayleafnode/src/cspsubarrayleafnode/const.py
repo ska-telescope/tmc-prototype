@@ -37,7 +37,10 @@ ERR_GOTOIDLE_INVOKING_CMD = "Error while invoking GoToIdle command on CSP Subarr
 ERR_ABORT_INVOKING_CMD = "Error while invoking Abort command on CSP Subarray."
 ERR_RESTART_INVOKING_CMD = "Error while invoking Restart command on CSP Subarray."
 ERR_IN_CREATE_PROXY_CSPSA = "Error in creating proxy of the CSP Subarray device."
-
+ERR_DEVFAILED_MSG = "This is error message for devfailed"
+ERR_CALLBACK_CMD_FAILED = "CspSubarrayLeafNode_Commandfailed in callback"
+ERR_UNABLE_RESTART_CMD = "Unable to invoke Restart command"
+ERR_RAISED_EXCEPTION = "CSP subarray leaf node raised exception"
 #strings
 #General strings
 STR_RECEPTORID_LIST = "receptorIDList"
@@ -56,7 +59,6 @@ STR_CONFIG_EXEC = "Configure command execution"
 STR_ENDSCAN_EXEC = "EndScan command execution"
 STR_INVOKE_SUCCESS = " invoked successfully."
 STR_COMMAND = "Command :-> "
-STR_CMD_FAILED = "CspSubarrayLeafNode Commandfailed"
 STR_CMD_CALLBK = "CspSubarrayLeafNode Command Callback"
 STR_FALSE = "False"
 STR_STARTSCAN_SUCCESS = "Scan command is executed successfully."
