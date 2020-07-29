@@ -199,7 +199,6 @@ def test_startscan_command_with_callback_method():
         # assert:
         dummy_event = command_callback(const.CMD_STARTSCAN)
         event_subscription_map[const.CMD_STARTSCAN](dummy_event)
-
         assert const.STR_COMMAND + const.CMD_STARTSCAN in tango_context.device.activityMessage
 
 
@@ -225,8 +224,6 @@ def test_endscan_command_with_callback_method():
         # assert:
         dummy_event = command_callback(const.CMD_ENDSCAN)
         event_subscription_map[const.CMD_ENDSCAN](dummy_event)
-
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_ENDSCAN in tango_context.device.activityMessage
 
 
@@ -252,7 +249,6 @@ def test_releaseallresources_command_with_callback_method():
         # assert:
         dummy_event = command_callback(const.CMD_REMOVE_ALL_RECEPTORS)
         event_subscription_map[const.CMD_REMOVE_ALL_RECEPTORS](dummy_event)
-
         assert const.STR_COMMAND + const.CMD_REMOVE_ALL_RECEPTORS in tango_context.device.activityMessage
 
 
@@ -278,8 +274,6 @@ def test_gotoidle_command_with_callback_method():
         # assert:
         dummy_event = command_callback(const.CMD_GOTOIDLE)
         event_subscription_map[const.CMD_GOTOIDLE](dummy_event)
-
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_GOTOIDLE in tango_context.device.activityMessage
 
 
@@ -305,8 +299,6 @@ def test_abort_command_with_callback_method():
         # assert:
         dummy_event = command_callback(const.CMD_ABORT)
         event_subscription_map[const.CMD_ABORT](dummy_event)
-
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_ABORT in tango_context.device.activityMessage
 
 
@@ -332,11 +324,8 @@ def test_restart_command_with_callback_method():
         # assert:
         dummy_event = command_callback(const.CMD_RESTART)
         event_subscription_map[const.CMD_RESTART](dummy_event)
-
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
         assert const.STR_COMMAND + const.CMD_RESTART in tango_context.device.activityMessage
 
-####event errors________________________________________
 
 def test_assign_command_with_callback_method_with_event_error():
     # arrange:
@@ -359,7 +348,7 @@ def test_assign_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_ADD_RECEPTORS)
         event_subscription_map[const.CMD_ADD_RECEPTORS](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_ADD_RECEPTORS in tango_context.device.activityMessage
 
 
 def test_configure_command_with_callback_method_with_event_error():
@@ -386,7 +375,7 @@ def test_configure_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_CONFIGURE)
         event_subscription_map[const.CMD_CONFIGURE](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_CONFIGURE in tango_context.device.activityMessage
 
 
 def test_startscan_command_with_callback_method_with_event_error():
@@ -412,7 +401,7 @@ def test_startscan_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_STARTSCAN)
         event_subscription_map[const.CMD_STARTSCAN](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_STARTSCAN in tango_context.device.activityMessage
 
 
 def test_endscan_command_with_callback_method_with_event_error():
@@ -438,7 +427,7 @@ def test_endscan_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_ENDSCAN)
         event_subscription_map[const.CMD_ENDSCAN](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_ENDSCAN in tango_context.device.activityMessage
 
 
 def test_releaseallresources_command_with_callback_method_with_event_error():
@@ -464,7 +453,7 @@ def test_releaseallresources_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_REMOVE_ALL_RECEPTORS)
         event_subscription_map[const.CMD_REMOVE_ALL_RECEPTORS](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_REMOVE_ALL_RECEPTORS in tango_context.device.activityMessage
 
 
 def test_gotoidle_command_with_callback_method_with_event_error():
@@ -489,7 +478,7 @@ def test_gotoidle_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_GOTOIDLE)
         event_subscription_map[const.CMD_GOTOIDLE](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_GOTOIDLE in tango_context.device.activityMessage
 
 def test_abort_command_with_callback_method_with_event_error():
     # arrange:
@@ -513,7 +502,7 @@ def test_abort_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_ABORT)
         event_subscription_map[const.CMD_ABORT](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_ABORT in tango_context.device.activityMessage
 
 def test_restart_command_with_callback_method_with_event_error():
     # arrange:
@@ -537,9 +526,8 @@ def test_restart_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_RESTART)
         event_subscription_map[const.CMD_RESTART](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_RESTART in tango_context.device.activityMessage
 
-### command error_________________________________________
 
 def test_configure_command_with_callback_method_with_command_error():
     # arrange:
