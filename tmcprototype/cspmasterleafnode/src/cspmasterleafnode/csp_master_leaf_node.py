@@ -293,6 +293,7 @@ class CspMasterLeafNode(SKABaseDevice):
                     device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                        const.ERR_IN_CREATE_PROXY)
                 device._read_activity_message = log_msg
+                device.throw_exception(exception_message, device._read_activity_message)
 
             # Subscribing to CSPMaster Attributes
             try:
@@ -306,11 +307,12 @@ class CspMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
-                device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                                   const.ERR_CSP_MASTER_LEAF_INIT)
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                        exception_message, exception_count, const.ERR_CSP_MASTER_LEAF_INIT)
 
                 device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
                 device._read_activity_message = log_msg
+                device.throw_exception(exception_message, device._read_activity_message)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
