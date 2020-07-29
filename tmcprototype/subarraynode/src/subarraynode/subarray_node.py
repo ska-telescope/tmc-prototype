@@ -868,7 +868,8 @@ class SubarrayNode(SKASubarray):
             :raises: DevFailed if the error while subscribing the tango attribute
             """
             super().do()
-
+            exception_message = []
+            exception_count = 0
             device = self.target
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
@@ -894,7 +895,6 @@ class SubarrayNode(SKASubarray):
             device._csp_sa_obs_state = None
             device._sdp_sa_obs_state = None
             device.only_dishconfig_flag = False
-            _state_fault_flag = False    # flag use to check whether state set to fault if exception occurs.
             device.scan_thread = None
 
             # Create proxy for CSP Subarray Leaf Node
@@ -922,9 +922,11 @@ class SubarrayNode(SKASubarray):
                 log_msg = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
-                _state_fault_flag = True
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                    exception_message, exception_count, const.ERR_SUBS_CSP_SA_LEAF_ATTR)
                 device.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
                 self.logger.error(const.ERR_CSP_SA_LEAF_INIT)
+                device.throw_exception(exception_message, device._read_activity_message)
 
             try:
                 device.subarray_ln_health_state_map[device._sdp_subarray_ln_proxy.dev_name()] = (
@@ -946,19 +948,14 @@ class SubarrayNode(SKASubarray):
                 log_msg = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
-                _state_fault_flag = True
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                exception_message, exception_count, const.ERR_SUBS_SDP_SA_LEAF_ATTR)
                 device.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
+                device.throw_exception(exception_message, device._read_activity_message)
 
-            if _state_fault_flag:
-                message = const.ERR_SA_INIT
-                return_code = ResultCode.FAILED
-            else:
-                message = const.STR_SA_INIT_SUCCESS
-                return_code = ResultCode.OK
-
-            device._read_activity_message = message
-            self.logger.info(message)
-            return (return_code, message)
+            device._read_activity_message = const.STR_SA_INIT_SUCCESS
+            self.logger.info(device._read_activity_message)
+            return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
         """ Internal construct of TANGO. """
