@@ -304,10 +304,10 @@ def test_assign_resources_invalid_key():
 
 def mock_subarray_call_success(device_proxy):
     return_list = ["0001"]
-    # return (125, str(return_list))
-    return [[ResultCode.STARTED], return_list]
+    return (ResultCode.STARTED, str(return_list))
 
 #TODO: Implement test case for resource reallocation
+@pytest.mark.skip(reason="Return value of sn.AssignResource() is not mocked correctly")
 def test_assign_resources_raise_devfailed_when_reseource_reallocation():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     subarray2_fqdn = 'ska_mid/tm_subarray_node/2'
@@ -344,16 +344,8 @@ def test_assign_resources_raise_devfailed_when_reseource_reallocation():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy=tango_context.device
         subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_success(device_proxy)
-        # device_proxy._subarray_allocation = {
-        #     'dish0001': 'SA1',
-        #     'dish0002': 'NOT_ALLOCATED',
-        #     'dish0003': 'NOT_ALLOCATED',
-        #     'dish0004': 'NOT_ALLOCATED'
-        #     }
 
         response_code, message = device_proxy.AssignResources(assign_input_str)
-        print("response: ", response_code)
-        # print("Subarray allocation: ", device_proxy._subarray_allocation)
         assert json.loads(message) == success_response
 
 

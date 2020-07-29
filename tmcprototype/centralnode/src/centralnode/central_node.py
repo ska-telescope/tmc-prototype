@@ -956,12 +956,7 @@ class CentralNode(SKABaseDevice):
 
                 resources_allocated_return = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                # self.logger.info(str(resources_allocated_return))
-                # self.logger.info(resources_allocated_return)
-                # self.logger.info(msg)
-                # self.logger.info(type(resources_allocated_return))
-                for i in resources_allocated_return:
-                    self.logger.info(i)
+                self.logger.debug(type(resources_allocated_return))
 
                 resources_allocated = resources_allocated_return[1]
                 self.logger.info("resources_allocated_return: %s", resources_allocated_return)
