@@ -573,7 +573,7 @@ def test_assign_command_with_callback_method_with_devfailed_error():
             dummy_event = command_callback_with_devfailed_exception()
             event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
         # assert:
-        assert "SdpSubarrayLeafNode_Commandfailed in callback" in str(df.value)
+        assert const.ERR_CMD_FAILED in str(df.value)
 
 
 def command_callback(command_name):
