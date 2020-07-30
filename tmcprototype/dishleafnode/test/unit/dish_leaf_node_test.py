@@ -51,14 +51,14 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = "0"
+        scan_input = 0.0
         # act:
-        tango_context.device.Scan(scan_input)
+        tango_context.device.Scan(str(scan_input))
 
         # assert:
-        if type(float(scan_input)) == float:
-            dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, scan_input,
-                                                                     any_method(with_name='scan_cmd_ended_cb'))
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN, 
+                                                                str(scan_input),
+                                                                any_method(with_name='scan_cmd_ended_cb'))
 
 
 # TODO: actual AZ and EL values need to be generated.
@@ -112,14 +112,14 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning():
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = "0"
+        scan_input = 0.0
         # act:
-        tango_context.device.EndScan(scan_input)
+        tango_context.device.EndScan(str(scan_input))
 
         # assert:
-        if type(float(scan_input)) == float:
-            dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, scan_input,
-                                                                     any_method(with_name='stopcapture_cmd_ended_cb'))
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE,
+                                                                str(scan_input),
+                                                                any_method(with_name='stopcapture_cmd_ended_cb'))
 
 
 def test_standby_lp_mode_should_command_dish_to_standby():
@@ -212,14 +212,14 @@ def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinat
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        slew_arg = "0"
+        slew_arg = 0.0
         # act:
-        tango_context.device.Slew(slew_arg)
+        tango_context.device.Slew(str(slew_arg))
 
         # assert:
-        if type(float(slew_arg)) == float:
-            dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW, slew_arg,
-                                                                     any_method(with_name='slew_cmd_ended_cb'))
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW,
+                                                                str(slew_arg),
+                                                                any_method(with_name='slew_cmd_ended_cb'))
 
 
 def test_start_capture_should_command_dish_to_start_capture_on_the_set_configured_band():
@@ -232,14 +232,14 @@ def test_start_capture_should_command_dish_to_start_capture_on_the_set_configure
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        capture_arg = "0"
+        capture_arg = 0.0
         # act:
-        tango_context.device.StartCapture(capture_arg)
+        tango_context.device.StartCapture(str(capture_arg))
 
         # assert:
-        if type(float(capture_arg)) == float:
-            dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE, capture_arg,
-                                                                     any_method(with_name='startcapture_cmd_ended_cb'))
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE, 
+                                                                str(capture_arg),
+                                                                any_method(with_name='startcapture_cmd_ended_cb'))
 
 
 def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_band():
@@ -252,14 +252,15 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
 
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        capture_arg = "0"
+        capture_arg = 0.0
         # act:
-        tango_context.device.StopCapture(capture_arg)
+        tango_context.device.StopCapture(str(capture_arg))
 
         # assert:
-        if type(float(capture_arg)) == float:
-            dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE, capture_arg,
-                                                                     any_method(with_name='stopcapture_cmd_ended_cb'))
+        # if type(float(capture_arg)) == float:
+        dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE,
+                                                                str(capture_arg),
+                                                                any_method(with_name='stopcapture_cmd_ended_cb'))
 
 
 def test_set_standby_fp_mode_should_command_dish_to_transition_to_standby_fp_mode():
