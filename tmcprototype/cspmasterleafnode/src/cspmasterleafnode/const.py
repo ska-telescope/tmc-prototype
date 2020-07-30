@@ -39,7 +39,9 @@ STR_CSPMASTER_FQDN = "CspMasterFQDN :-> "
 STR_FALSE = "False"
 STR_DEV_ALARM = "The device is in ALARM state."
 STR_CMD_FAILED = "CspMasterLeafNode_Commandfailed"
-STR_CSP_CMD_CALLBK = "CspMasterLeafNode Command Callback"
+STR_CSP_ON_CMD_CALLBK = "CspMasterLeafNode On Command Callback"
+STR_CSP_OFF_CMD_CALLBK = "CspMasterLeafNode Off Command Callback"
+STR_CSP_STANDBY_CMD_CALLBK = "CspMasterLeafNode StandBy Command Callback"
 
 # Error messages
 ERR_INIT_PROP_ATTR = "Error on initialising properties and attributes "
@@ -54,11 +56,11 @@ ERR_SUBS_CSP_MASTER_LEAF_ATTR = "Exception occurred while subscribing to Csp Mas
 ERR_CSP_MASTER_LEAF_INIT = "Error occured in Csp Master Leaf Node initialization "
 ERR_IN_CREATE_PROXY_CSP_MASTER = "Error in creating proxy to the CSP Master "
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
+ERR_EXCEPT_ON_CMD_CB = "Exception in On CommandCallback: \n"
+ERR_EXCEPT_OFF_CMD_CB = "Exception in Off CommandCallback: \n"
+ERR_EXCEPT_STANDBY_CMD_CB = "Exception in StandBy CommandCallback: \n"
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_MSG = "Error message is: "
-ERR_ON_CMD = "Error in invoking ON command."
-ERR_OFF_CMD = "Error in invoking OFF command."
-ERR_STANDBY_CMD = "Error in invoking STANDBY command."
 
 #INTEGERS
 INT_SKA_LEVEL = 3

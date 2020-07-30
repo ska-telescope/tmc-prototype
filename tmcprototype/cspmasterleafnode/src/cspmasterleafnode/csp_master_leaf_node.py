@@ -25,7 +25,7 @@ from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 # Additional import
-from . import const
+from . import const, release
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
@@ -159,51 +159,6 @@ class CspMasterLeafNode(SKABaseDevice):
             self._handle_generic_exception(except_occurred, exception_message, exception_count,
                                            const.ERR_CSP_PST_HEALTH_CB)
 
-    def cmd_ended_cb(self, event):
-        """
-        Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the command has been successfully invoked on CSPMaster.
-
-        :param event: a CmdDoneEvent object. This class is used to pass data
-            to the callback method in asynchronous callback model for command
-            execution.
-        :type: CmdDoneEvent object
-            It has the following members:
-                - device     : (DeviceProxy) The DeviceProxy object on which the
-                               call was executed.
-                - cmd_name   : (str) The command name
-                - argout_raw : (DeviceData) The command argout
-                - argout     : The command argout
-                - err        : (bool) A boolean flag set to true if the command
-                               failed. False otherwise
-                - errors     : (sequence<DevError>) The error stack
-                - ext
-        :return: none
-
-        :raises: Exception if error occurs command callback.
-        """
-        exception_count = 0
-        exception_message = []
-        # Update logs and activity message attribute with received event
-        try:
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                self._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                self._read_activity_message = log_msg
-
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_EXCEPT_CMD_CB)
-        # Throw Exception
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_CSP_CMD_CALLBK)
-
     # Function for handling all Devfailed exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(df)
@@ -273,12 +228,12 @@ class CspMasterLeafNode(SKABaseDevice):
             super().do()
             exception_count = 0
             exception_message = []
-
             device = self.target
-            device.SkaLevel = const.INT_SKA_LEVEL
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
+            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._version_id = release.version
             device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
             try:
                 device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
@@ -293,6 +248,7 @@ class CspMasterLeafNode(SKABaseDevice):
                     device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
                                                        const.ERR_IN_CREATE_PROXY)
                 device._read_activity_message = log_msg
+                device.throw_exception(exception_message, device._read_activity_message)
 
             # Subscribing to CSPMaster Attributes
             try:
@@ -306,11 +262,12 @@ class CspMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
-                device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                                   const.ERR_CSP_MASTER_LEAF_INIT)
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                        exception_message, exception_count, const.ERR_CSP_MASTER_LEAF_INIT)
 
                 device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
                 device._read_activity_message = log_msg
+                device.throw_exception(exception_message, device._read_activity_message)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
@@ -355,6 +312,52 @@ class CspMasterLeafNode(SKABaseDevice):
         A class for CspMasterLeafNode's On() command.
         """
 
+        def on_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns. Checks whether the On command has been successfully invoked on CSPMaster.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+            :return: none
+
+            :raises: Exception if error occurs On command callback.
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+            # Update logs and activity message attribute with received event
+            try:
+                if event.err:
+                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    self.logger.error(log_msg)
+                    device._read_activity_message = log_msg
+                else:
+                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                    self.logger.info(log_msg)
+                    device._read_activity_message = log_msg
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_ON_CMD_CB)
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_CSP_ON_CMD_CALLBK)
+
         def do(self):
             """
             Invokes On command on the CSP Element.
@@ -372,7 +375,7 @@ class CspMasterLeafNode(SKABaseDevice):
             # If the array length is 0, the command applies to the whole CSP Element.
             # If the array length is > 1 each array element specifies the FQDN of the CSP SubElement to switch ON.
             argin = []
-            device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, device.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, self.on_cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
@@ -380,6 +383,52 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         A class for CspMasterLeafNode's Off() command.
         """
+
+        def off_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns. Checks whether the Off command has been successfully invoked on CSPMaster.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+            :return: none
+
+            :raises: Exception if error occurs Off command callback.
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+            # Update logs and activity message attribute with received event
+            try:
+                if event.err:
+                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    self.logger.error(log_msg)
+                    device._read_activity_message = log_msg
+                else:
+                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                    self.logger.info(log_msg)
+                    device._read_activity_message = log_msg
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_OFF_CMD_CB)
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_CSP_OFF_CMD_CALLBK)
 
         def do(self):
             """
@@ -398,7 +447,7 @@ class CspMasterLeafNode(SKABaseDevice):
             # If the array length is 0, the command applies to the whole CSP Element.
             # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
             argin = []
-            device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, self.off_cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
@@ -426,6 +475,52 @@ class CspMasterLeafNode(SKABaseDevice):
 
             return True
 
+        def standby_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns. Checks whether the StandBy command has been successfully invoked on CSPMaster.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+            :return: none
+
+            :raises: Exception if error occurs StandBy command callback.
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+            # Update logs and activity message attribute with received event
+            try:
+                if event.err:
+                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    self.logger.error(log_msg)
+                    device._read_activity_message = log_msg
+                else:
+                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                    self.logger.info(log_msg)
+                    device._read_activity_message = log_msg
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_STANDBY_CMD_CB)
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_CSP_STANDBY_CMD_CALLBK)
+
         def do(self, argin):
             """
             It invokes the STANDBY command on CSP Master.
@@ -443,7 +538,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, device.cmd_ended_cb)
+            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.standby_cmd_ended_cb)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
             return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 

@@ -22,11 +22,10 @@ from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode,ResponseCommand
 # Additional imports
 import json
-from . import const
+from . import const, release
 from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
-
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 # pylint: disable=unused-argument,unused-variable
@@ -34,84 +33,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
     """
-    # __metaclass__ = DeviceMeta
     # PROTECTED REGION ID(SdpSubarrayLeafNode.class_variable) ENABLED START #
 
-    def cmd_ended_cb(self, event):
-        """
-        Callback function immediately executed when the asynchronous invoked command returns.
-        Checks whether the command has been successfully invoked on SDP Subarray.
-
-        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
-                      callback model for command execution.
-
-        :type: CmdDoneEvent object
-
-            It has the following members:
-                - device     : (DeviceProxy) The DeviceProxy object on which the
-                               call was executed.
-                - cmd_name   : (str) The command name
-                - argout_raw : (DeviceData) The command argout
-                - argout     : The command argout
-                - err        : (bool) A boolean flag set to true if the command
-                               failed. False otherwise
-                - errors     : (sequence<DevError>) The error stack
-                - ext
-
-        :return: none
-
-        :raises: Exception if command execution throws any type of exception.
-
-        """
-        exception_count = 0
-        exception_message = []
-
-        try:
-            if event.err:
-                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self._read_activity_message = log
-                self.logger.error(log)
-            else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self._read_activity_message = log
-                self.logger.info(log)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, const.ERR_EXCEPT_CMD_CB)
-
-        # Throw Exception
-        if exception_count > 0:
-            self.throw_exception(exception_message, const.STR_CMD_CALLBK)
-
-
-    def AssignResources_ended(self, event):
-        """
-        This is the callback method of AssignResources command of the SDP Subarray.
-        It checks whether the AssignResources command on SDP subarray is successful.
-
-        :param argin:
-
-            event: response from SDP Subarray for the invoked assign resource command.
-
-        :return: None
-
-        :raises: Exception if command execution throws any type of exception
-
-        """
-        if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            self._read_activity_message = log
-            self.logger.error(log)
-            tango.Except.throw_exception(
-                "SDP Subarray returned error while assigning resources",
-                str(event.errors),
-                event.cmd_name,
-                tango.ErrSeverity.ERR
-            )
-        else:
-            log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            self._read_activity_message = log
-            self.logger.debug(log)
 
     # Throw exception
     def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
@@ -191,7 +114,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            # try:
             # Initialise device state
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
 
@@ -200,6 +122,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._sdp_subarray_health_state = HealthState.OK
             device._read_activity_message = ""
             device._active_processing_block = ""
+            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._version_id = release.version
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             log_msg = const.STR_SDPSALN_INIT_SUCCESS
@@ -210,8 +134,21 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._sdp_subarray_proxy = DeviceProxy(device.SdpSubarrayFQDN)
             return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
 
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.init_device
-
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
+        self.register_command_object("ReleaseAllResources", self.ReleaseAllResourcesCommand(*args))
+        self.register_command_object("Configure", self.ConfigureCommand(*args))
+        self.register_command_object("Scan", self.ScanCommand(*args))
+        self.register_command_object("EndScan", self.EndScanCommand(*args))
+        self.register_command_object("EndSB", self.EndSBCommand(*args))
+        self.register_command_object("Abort", self.AbortCommand(*args))
+        self.register_command_object("Restart", self.RestartCommand(*args))
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -273,6 +210,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
+
     class ReleaseAllResourcesCommand(ResponseCommand):
         """
         A class for SdpSubarayLeafNode's ReleaseAllResources() command.
@@ -297,6 +235,55 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
+        def releaseallresources_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the releaseallresources command has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                          callback model for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+
+            :raises: Exception if command execution throws any type of exception.
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if event.err:
+                    log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    device._read_activity_message = log
+                    self.logger.error(log)
+                else:
+                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    device._read_activity_message = log
+                    self.logger.info(log)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_RELEASE_RES_CMD_CALLBK)
+
         def do(self):
             """
             Releases all the resources of given SDPSubarrayLeafNode. It accepts the subarray id, releaseALL flag and
@@ -320,9 +307,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             try:
                 # Call SDP Subarray Command asynchronously
                 device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                              device.cmd_ended_cb)
-
-            # Update the status of command execution status in activity message
+                                                                              self.releaseallresources_cmd_ended_cb)
+                # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
                 return(ResultCode.OK, const.STR_REL_RESOURCES)
@@ -337,8 +323,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
-
+                device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
 
     def is_ReleaseAllResources_allowed(self):
         """
@@ -391,6 +376,36 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             return True
+
+        def AssignResources_ended(self, event):
+            """
+            This is the callback method of AssignResources command of the SDP Subarray.
+            It checks whether the AssignResources command on SDP subarray is successful.
+
+            :param argin:
+
+                event: response from SDP Subarray for the invoked assign resource command.
+
+            :return: None
+
+            :raises: Exception if command execution throws any type of exception
+
+            """
+            device = self.target
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                device._read_activity_message = log
+                self.logger.error(log)
+                tango.Except.throw_exception(
+                    "SDP Subarray returned error while assigning resources",
+                    str(event.errors),
+                    event.cmd_name,
+                    tango.ErrSeverity.ERR
+                )
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                device._read_activity_message = log
+                self.logger.debug(log)
 
         def do(self, argin):
             """
@@ -457,7 +472,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
                 # Call SDP Subarray Command asynchronously
                 device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
-                                                                              argin, device.AssignResources_ended)
+                                                                              argin, self.AssignResources_ended)
 
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
@@ -482,9 +497,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                                         const.ERR_ASSGN_RESOURCES)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
 
-
-             # PROTECTED REGION END #    //  SdpSubarrayLeafNode.AssignResources
-
     @command(
         dtype_in=('str'),
         dtype_out="DevVarLongStringArray",
@@ -498,7 +510,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("AssignResources")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
-    # PROTECTED REGION END # // SdpSubarrayLeafNode.AssignResources
 
     def is_AssignResources_allowed(self):
         """
@@ -534,6 +545,55 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
+        def configure_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the configure command has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                          callback model for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+
+            :raises: Exception if command execution throws any type of exception.
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if event.err:
+                    log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    device._read_activity_message = log
+                    self.logger.error(log)
+                else:
+                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    device._read_activity_message = log
+                    self.logger.info(log)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_CONFIGURE_CMD_CB)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_CONFIGURE_CMD_CALLBK)
+
         def do(self, argin):
             """
             Configures the SDP Subarray device by providing the SDP PB
@@ -567,7 +627,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
                 self.logger.debug(log_msg)
                 device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
-                                                              device.cmd_ended_cb)
+                                                              self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.debug(str(sdpConfiguration))
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
@@ -597,7 +657,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_CONFIG_EXEC)
+                device.throw_exception(exception_message, const.STR_CONFIG_EXEC)
 
     def is_Configure_allowed(self):
         """
@@ -647,6 +707,55 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
+        def scan_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the scan command has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                          callback model for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+
+            :raises: Exception if command execution throws any type of exception.
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if event.err:
+                    log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    device._read_activity_message = log
+                    self.logger.error(log)
+                else:
+                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    device._read_activity_message = log
+                    self.logger.info(log)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_SCAN_CMD_CB)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_SCAN_CMD_CALLBK)
+
         def do(self, argin):
             """
             Invoke Scan command to SDP subarray.
@@ -676,15 +785,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
                 # Check if SDP Subarray obsState is READY
                 if sdp_subarray_obs_state == ObsState.READY:
-                 # TODO : Pass id as a string argument to sdp Subarray Scan command
-
                     log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
                     self.logger.debug(log_msg)
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, device.cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin, self.scan_cmd_ended_cb)
                     device._read_activity_message = const.STR_SCAN_SUCCESS
                     self.logger.info(const.STR_SCAN_SUCCESS)
                     return(ResultCode.OK, const.STR_SCAN_SUCCESS)
-
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
@@ -700,7 +806,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_SCAN_EXEC)
+                device.throw_exception(exception_message, const.STR_SCAN_EXEC)
 
     def is_Scan_allowed(self):
         """
@@ -711,7 +817,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         :rtype: boolean
 
         """
-
         handler = self.get_command_object("Scan")
         return handler.check_allowed()
 
@@ -751,6 +856,55 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
+        def endscan_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the endscan command has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                          callback model for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+
+            :raises: Exception if command execution throws any type of exception.
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if event.err:
+                    log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    device._read_activity_message = log
+                    self.logger.error(log)
+                else:
+                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    device._read_activity_message = log
+                    self.logger.info(log)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_END_SCAN_CMD_CB)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_ENDSCAN_CMD_CALLBK)
+
         def do(self):
             """
             It invokes EndScan command on SdpSubarray. This command is allowed when SdpSubarray is in SCANNING state.
@@ -771,11 +925,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device._sdp_subarray_proxy.obsState == ObsState.SCANNING:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, device.cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.endscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
                     return(ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
-
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
                     self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
@@ -795,7 +948,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
+                device.throw_exception(exception_message, const.STR_ENDSCAN_EXEC)
 
 
     def is_EndScan_allowed(self):
@@ -825,11 +978,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-
     class EndSBCommand(ResponseCommand):
         """
         A class for SdpSubarrayLeafNode's EndSB() command.
-
         """
         def check_allowed(self):
             """
@@ -850,6 +1001,55 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             return True
 
+        def endsb_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the endsb command has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                          callback model for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+
+            :raises: Exception if command execution throws any type of exception.
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if event.err:
+                    log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    device._read_activity_message = log
+                    self.logger.error(log)
+                else:
+                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    device._read_activity_message = log
+                    self.logger.info(log)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_END_SB_CMD_CB)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_ENDSB_CMD_CALLBK)
+
         def do(self):
             """
             This command invokes EndSB command on SDP subarray to end the current Scheduling block.
@@ -868,13 +1068,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_count = 0
             try:
                 if device._sdp_subarray_proxy.obsState == ObsState.READY:
-                    # TODO : Instead of calling EndSB command, call Reset command here. cmdName = Reset,
-                    #  Add this in const.py
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, device.cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.endsb_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSB_SUCCESS
                     self.logger.info(const.STR_ENDSB_SUCCESS)
                     return(ResultCode.OK, const.STR_ENDSB_SUCCESS)
-
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
@@ -890,8 +1087,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # throw exception:
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_ENDSB_EXEC)
-
+                device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
 
     def is_EndSB_allowed(self):
         """
@@ -912,36 +1108,299 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def EndSB(self):
-
-        """ This command invokes EndSB command on SDP subarray to end the current Scheduling block. """
-
+        """ This command invokes EndSB command on SDP subarray to end the current Scheduling block.
+        """
         handler = self.get_command_object("EndSB")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
+    class AbortCommand(ResponseCommand):
+        """
+        A class for sdpSubarrayLeafNode's Abort() command.
+        """
+        def check_allowed(self):
+            """
+            Checks whether this command is allowed to be run in current device state
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
+            """
+            if self.state_model.dev_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Abort() is not allowed in current state",
+                                             "Failed to invoke Abort command on SdpSubarrayLeafNode.",
+                                             "sdpsubarrayleafnode.Abort()",
+                                             tango.ErrSeverity.ERR)
+            return True
+
+        def abort_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the abort command has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                          callback model for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+
+            :raises: Exception if command execution throws any type of exception.
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if event.err:
+                    log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    device._read_activity_message = log
+                    self.logger.error(log)
+                else:
+                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    device._read_activity_message = log
+                    self.logger.info(log)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_ABORT_CMD_CB)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_ABORT_CMD_CALLBK)
+
+        def do(self):
+            """
+            Command to abort the current operation being done on the SDP subarray.
+
+            :return: A tuple containing a return code and a string message indicating status. The message is for
+                        information purpose only.
+
+            :rtype: (ReturnCode, str)
+
+            :raises: DevFailed if error occurs while invoking command on CSPSubarray.
+
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device._sdp_subarray_proxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
+                                                        ObsState.IDLE]:
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
+                    device._read_activity_message = const.STR_ABORT_SUCCESS
+                    self.logger.info(const.STR_ABORT_SUCCESS)
+                    return(ResultCode.OK, const.STR_ABORT_SUCCESS)
+
+                else:
+                    log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
+                              ". Unable to invoke Abort command."
+                    device._read_activity_message = log_msg
+                    self.logger.error(log_msg)
+                    return(ResultCode.FAILED, log_msg)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
+
+                # throw exception:
+                if exception_count > 0:
+                    device.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
+
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Abort(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.Abort) ENABLED START #
-        """ Abort command. Not yet implememnted."""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.Abort
+        """
+        Invoke Abort on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Abort")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
 
-    def init_command_objects(self):
+    def is_Abort_allowed(self):
         """
-        Initialises the command handlers for commands supported by this
-        device.
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
         """
-        super().init_command_objects()
-        args = (self, self.state_model, self.logger)
-        self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseAllResources", self.ReleaseAllResourcesCommand(*args))
-        self.register_command_object("Configure", self.ConfigureCommand(*args))
-        self.register_command_object("Scan", self.ScanCommand(*args))
-        self.register_command_object("EndScan", self.EndScanCommand(*args))
-        self.register_command_object("EndSB", self.EndSBCommand(*args))
+        handler = self.get_command_object("Abort")
+        return handler.check_allowed()
+
+    class RestartCommand(ResponseCommand):
+        """
+        A class for sdpSubarrayLeafNode's Restart() command.
+        """
+        def check_allowed(self):
+            """
+            Checks whether this command is allowed to be run in current device state
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
+            """
+            if self.state_model.dev_state in [
+                DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("Restart() is not allowed in current state",
+                                             "Failed to invoke Restart command on SdpSubarrayLeafNode.",
+                                             "sdpsubarrayleafnode.Restart()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def restart_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the restart command has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                          callback model for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+
+            :raises: Exception if command execution throws any type of exception.
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if event.err:
+                    log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    device._read_activity_message = log
+                    self.logger.error(log)
+                else:
+                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    device._read_activity_message = log
+                    self.logger.info(log)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_RESTART_CMD_CB)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_RESTART_CMD_CALLBK)
+
+        def do(self):
+            """
+            Command to restart the SDP subarray and bring it to its ON state.
+
+            :return: A tuple containing a return code and a string message indicating status. The message is for
+                        information purpose only.
+
+            :rtype: (ReturnCode, str)
+
+            :raises: DevFailed if error occurs while invoking command on SDPSubarray.
+                     Exception if error occurs while executing the command.
+
+            """
+            device = self.target
+            exception_message = []
+            exception_count = 0
+            try:
+                if device._sdp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT]:
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART, self.restart_cmd_ended_cb)
+                    device._read_activity_message = const.STR_RESTART_SUCCESS
+                    self.logger.info(const.STR_RESTART_SUCCESS)
+                    return(ResultCode.OK, const.STR_RESTART_SUCCESS)
+
+                else:
+                    log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
+                              ". Unable to invoke Restart command."
+                    device._read_activity_message = log_msg
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, log_msg)
+
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                                                exception_message, exception_count, const.ERR_RESTART_INVOKING_CMD)
+
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                            exception_message, exception_count, const.ERR_RESTART_INVOKING_CMD)
+
+                # throw exception:
+                if exception_count > 0:
+                    device.throw_exception(exception_message, const.ERR_RESTART_INVOKING_CMD)
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def Restart(self):
+        """
+        Invoke Abort on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Restart")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_Restart_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        handler = self.get_command_object("Restart")
+        return handler.check_allowed()
 
 # pylint: enable=unused-argument,unused-variable
+
 # ----------
 # Run server
 # ----------

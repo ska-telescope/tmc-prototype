@@ -30,7 +30,7 @@ from ska.base.control_model import HealthState, AdminMode
 import numpy
 import math
 import enum
-from . import const
+from . import const, release
 # PROTECTED REGION END #    //  DishMaster.additionnal_import
 
 __all__ = ["DishMaster", "main"]
@@ -206,21 +206,31 @@ class DishMaster(SKAMaster):
         az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
         el_increament = el_diff / 10           #Dish will move in 10 steps to desired el.
         for _ in range(10):
-            if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
-                self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
-            else:
-                self._achieved_pointing[1] = self._achieved_pointing[1] - az_increament
+            if (self._abort_in_slew == False):            #Flag Sets to true if abort called
+                if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
+                    self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
+                else:
+                    self._achieved_pointing[1] = self._achieved_pointing[1] - az_increament
 
-            if (self._desired_pointing[2] - self._achieved_pointing[2]) > 0:
-                self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
+                if (self._desired_pointing[2] - self._achieved_pointing[2]) > 0:
+                    self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
+                else:
+                    self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
+                log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
+                self.logger.debug(log_msg)
+                time.sleep(2)
             else:
-                self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
-            log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
-            self.logger.debug(log_msg)
-            time.sleep(2)
-        # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
-        self._pointing_state = PointingState.TRACK
-        self.logger.debug("Dish pointing state is set to TRACK")
+                break
+
+        if (self._abort_in_slew == False):             # Flag Sets to true if abort called
+            # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
+            self._pointing_state = PointingState.TRACK
+            self.logger.debug("Dish pointing state is set to TRACK")
+        else:
+            # Slew Aborted in between by abort command, set the pointingState to READY
+            self._pointing_state = PointingState.READY
+            self.logger.debug("Dish pointing state is set to READY")
+
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -369,9 +379,12 @@ class DishMaster(SKAMaster):
             self._azeloffset = [0, 0]
             self._azimuthoverwrap = False
             self._toggle_fault = False
+            self._abort_in_slew = False               #Flag use to abort when dish is in slew
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.debug(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
+            self._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            self._version_id = release.version
         except Exception as except_occured:
             log_msg = const.ERR_MSG + str(except_occured)
             self.logger.error(log_msg)
@@ -1137,9 +1150,87 @@ class DishMaster(SKAMaster):
             tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
                                          const.STR_CONFIG_DM_EXEC, tango.ErrSeverity.ERR)
 
+    @command(
+    )
+    @DebugIt()
+    def Abort(self):
+        # PROTECTED REGION ID(DishMaster.Abort) ENABLED START #
+        """
+        This command aborts the Track or Scan operation when invoked.
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if (self._pointing_state == PointingState.SLEW):
+                self._abort_in_slew = True
+            else:
+                self._pointing_state = PointingState.READY
+            self.logger.info(const.STR_DISH_ABORT)
 
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_EXE_ABORT_CMD + str(dev_failed)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_EXE_ABORT_CMD + str(dev_failed))
 
-        # PROTECTED REGION END #    //  DishMaster.StopTrack
+        except Exception as except_occurred:
+            log_msg = const.ERR_CONFIG_DM + str(except_occurred)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.ERR_EXE_ABORT_CMD, tango.ErrSeverity.ERR)
+
+        # PROTECTED REGION END #    //  DishMaster.Abort
+
+    @command(
+    )
+    @DebugIt()
+    def Restart(self):
+        # PROTECTED REGION ID(DishMaster.Restart) ENABLED START #
+        """
+        This command Restart the Track or Scan operation when invoked.
+        """
+        excpt_msg = []
+        excpt_count = 0
+        try:
+            if (self._pointing_state == PointingState.READY):
+                pass
+            else:
+                self._pointing_state = PointingState.READY
+
+            self._desired_pointing = [0, 0, 0]
+            self._capturing = False
+            self._configured_band = None
+            self._abort_in_slew = False
+            self.logger.info(const.STR_DISH_RESTARTED)
+
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_EXE_RESTART_CMD + str(dev_failed)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_EXE_RESTART_CMD + str(dev_failed))
+
+        except Exception as except_occurred:
+            log_msg = const.ERR_CONFIG_DM + str(except_occurred)
+            self.logger.error(log_msg)
+            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
+            excpt_count += 1
+
+        # throw exception:
+        if excpt_count > 0:
+            err_msg = ' '
+            for item in excpt_msg:
+                err_msg += item + "\n"
+            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
+                                         const.ERR_EXE_RESTART_CMD, tango.ErrSeverity.ERR)
+
+        # PROTECTED REGION END #    //  DishMaster.Restart
+
 # pylint: enable=unused-argument
 
 # ----------

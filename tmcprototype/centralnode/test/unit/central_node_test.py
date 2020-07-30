@@ -17,7 +17,7 @@ from tango.test_context import DeviceTestContext
 
 # Additional import
 
-from centralnode import CentralNode, const
+from centralnode import CentralNode, const, release
 from centralnode.const import CMD_SET_STOW_MODE, STR_ON_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
@@ -765,6 +765,18 @@ def raise_devfailed_exception(cmd_name):
 def raise_devfailed_exception_with_args(cmd_name, input_args):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
+
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(CentralNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
+
+def test_build_state():
+    """Test for buildState"""
+    with fake_tango_system(CentralNode) as tango_context:
+        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
+
 
 def any_method(with_name=None):
     class AnyMethod():

@@ -102,7 +102,7 @@
     </commands>
     <commands name="AssignResources" description="" execMethod="assign_resources" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="">
-        <type xsi:type="pogoDsl:StringArrayType"/>
+        <type xsi:type="pogoDsl:StringType"/>
       </argin>
       <argout description="">
         <type xsi:type="pogoDsl:VoidType"/>
@@ -110,6 +110,24 @@
       <status abstract="false" inherited="true" concrete="true" concreteHere="true"/>
     </commands>
     <commands name="GoToIdle" description="" execMethod="go_to_idle" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="true" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="Abort" description="Command to abort the current operation being done on the CSP subarray." execMethod="abort" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="true" concrete="true" concreteHere="true"/>
+    </commands>
+    <commands name="Restart" description="Command to restart the CSP subarray and bring it to its ON state." execMethod="restart" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
       </argin>
