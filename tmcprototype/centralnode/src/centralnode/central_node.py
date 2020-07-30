@@ -74,8 +74,9 @@ class CentralNode(SKABaseDevice):
         self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
 
         if duplicate_allocation_count > 0:
-            raise ResourceReassignmentError("The following Receptor id(s) are allocated to other subarrays",
-             str(duplicate_allocation_dish_ids))
+            exception_message = "The following Receptor id(s) are allocated to other subarrays: "
+            exception_message += (str(duplicate_allocation_dish_ids))
+            raise ResourceReassignmentError(exception_message)
 
     def health_state_cb(self, evt):
         """
@@ -956,12 +957,11 @@ class CentralNode(SKABaseDevice):
 
                 resources_allocated_return = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                self.logger.debug(type(resources_allocated_return))
+                self.logger.debug("resources_allocated_return: %s", resources_allocated_return)
 
                 resources_allocated = resources_allocated_return[1]
-                self.logger.info("resources_allocated_return: %s", resources_allocated_return)
-                log_msg = "\n\n resources_assigned:" + str(resources_allocated)
-                self.logger.info(log_msg)
+                log_msg = "resources_assigned:" + str(resources_allocated)
+                self.logger.debug(log_msg)
 
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
