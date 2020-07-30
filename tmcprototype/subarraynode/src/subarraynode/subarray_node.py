@@ -267,6 +267,7 @@ class SubarrayNode(SKASubarray):
         self.logger.info("\n\n In Calculate observation state method")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
+        pointing_state_count_ready = 0
         log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
         self.logger.info(log_msg)
         for value in list(self.dishPointingStateMap.values()):
@@ -274,6 +275,8 @@ class SubarrayNode(SKASubarray):
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == PointingState.SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
+            elif value == PointingState.READY:
+                pointing_state_count_ready = pointing_state_count_ready + 1
         if self._csp_sa_obs_state == ObsState.EMPTY and self._sdp_sa_obs_state ==\
                 ObsState.EMPTY:
             if self.is_release_resources:
@@ -304,12 +307,13 @@ class SubarrayNode(SKASubarray):
                     self.configure_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
                 ObsState.IDLE:
-            if self.is_end_command:
-                # End command success
-                self.logger.info("Calling End command succeeded() method")
-                # As a part of end command send Stop track command on dish leaf node
-                # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-                self.end_obj.succeeded()
+            if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
+                if self.is_end_command:
+                    # End command success
+                    self.logger.info("Calling End command succeeded() method")
+                    # As a part of end command send Stop track command on dish leaf node
+                    # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                    self.end_obj.succeeded()
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
@@ -515,6 +519,7 @@ class SubarrayNode(SKASubarray):
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix + str_leafId)
                 devProxy = DeviceProxy(self.DishLeafNodePrefix + str_leafId)
                 self._dish_leaf_node_proxy.append(devProxy)
+                print("dish leaf node proxy:::::", self._dish_leaf_node_proxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
                 # Subscribe Dish Health State
@@ -538,6 +543,7 @@ class SubarrayNode(SKASubarray):
                 log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID)
                 self.logger.debug(log_msg)
                 self._receptor_id_list.append(int(str_leafId))
+                print("receptor id list is:::::::", self._receptor_id_list)
                 self._read_activity_message = const.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
                 self._read_activity_message = const.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
