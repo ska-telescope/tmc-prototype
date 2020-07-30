@@ -307,8 +307,8 @@ class SubarrayNode(SKASubarray):
                     self.configure_obj.succeeded()
         elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
                 ObsState.IDLE:
-            if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
-                if self.is_end_command:
+            if self.is_end_command:
+                if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                     # End command success
                     self.logger.info("Calling End command succeeded() method")
                     # As a part of end command send Stop track command on dish leaf node
