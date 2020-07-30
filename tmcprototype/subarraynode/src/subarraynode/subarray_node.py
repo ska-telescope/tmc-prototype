@@ -312,6 +312,7 @@ class SubarrayNode(SKASubarray):
                     # End command success
                     self.logger.info("Calling End command succeeded() method")
                     # As a part of end command send Stop track command on dish leaf node
+                    #  TODO: Stop track command will be invoked once tango group command issue gets resolved.
                     # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                     self.end_obj.succeeded()
             else:
@@ -519,7 +520,6 @@ class SubarrayNode(SKASubarray):
                 self._dish_leaf_node_group.add(self.DishLeafNodePrefix + str_leafId)
                 devProxy = DeviceProxy(self.DishLeafNodePrefix + str_leafId)
                 self._dish_leaf_node_proxy.append(devProxy)
-                print("dish leaf node proxy:::::", self._dish_leaf_node_proxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
                 # Subscribe Dish Health State
@@ -543,7 +543,6 @@ class SubarrayNode(SKASubarray):
                 log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID)
                 self.logger.debug(log_msg)
                 self._receptor_id_list.append(int(str_leafId))
-                print("receptor id list is:::::::", self._receptor_id_list)
                 self._read_activity_message = const.STR_GRP_DEF + str(
                     self._dish_leaf_node_group.get_device_list(True))
                 self._read_activity_message = const.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
