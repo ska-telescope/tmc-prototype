@@ -27,10 +27,19 @@ ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command 
 ERR_INVALID_JSON_SCAN = "Invalid JSON format while invoking Scan command on SDP Subarray."
 ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
+ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB = "Exception in ReleaseAllResources CommandCallback: \n"
+ERR_EXCEPT_CONFIGURE_CMD_CB = "Exception in Configure CommandCallback: \n"
+ERR_EXCEPT_SCAN_CMD_CB = "Exception in Scan CommandCallback: \n"
+ERR_EXCEPT_END_SCAN_CMD_CB = "Exception in EndScan CommandCallback: \n"
+ERR_EXCEPT_END_SB_CMD_CB = "Exception in EndSB CommandCallback: \n"
+ERR_EXCEPT_ABORT_CMD_CB = "Exception in Abort CommandCallback: \n"
+ERR_EXCEPT_RESTART_CMD_CB = "Exception in Restart CommandCallback: \n"
 ERR_DEVICE_NOT_READY = "SdpSubarray is not in ready state."
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_IN_CREATE_PROXY_SDPSA = "Error in creating proxy of the SDP Subarray device."
-#
+ERR_CMD_FAILED = "SdpSubarrayLeafNode_Commandfailed in callback"
+
+
 # #strings
 # #General strings
 STR_HEALTH_STATE = "healthState of "
@@ -62,7 +71,13 @@ STR_RELEASE_RES_EXEC = "ReleaseResources command execution"
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
 STR_ENDSCAN_EXEC = "EndScan command execution"
 STR_ENDSB_EXEC = "EndSB command execution"
-STR_CMD_CALLBK = "SdpSubarrayLeafNode Command Callback"
+STR_RELEASE_RES_CMD_CALLBK = "SdpSubarrayLeafNode ReleaseAllresources Command Callback"
+STR_CONFIGURE_CMD_CALLBK = "SdpSubarrayLeafNode Configure Command Callback"
+STR_SCAN_CMD_CALLBK = "SdpSubarrayLeafNode Scan Command Callback"
+STR_ENDSCAN_CMD_CALLBK = "SdpSubarrayLeafNode EndScan Command Callback"
+STR_ENDSB_CMD_CALLBK = "SdpSubarrayLeafNode EndSB Command Callback"
+STR_ABORT_CMD_CALLBK = "SdpSubarrayLeafNode Abort Command Callback"
+STR_RESTART_CMD_CALLBK = "SdpSubarrayLeafNode Restart Command Callback"
 STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = " invoked successfully."
 

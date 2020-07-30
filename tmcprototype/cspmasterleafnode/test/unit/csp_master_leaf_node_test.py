@@ -38,7 +38,7 @@ def test_on_should_command_csp_master_leaf_node_to_start():
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
-                                                                      any_method(with_name='cmd_ended_cb'))
+                                                                      any_method(with_name='on_cmd_ended_cb'))
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop():
@@ -61,7 +61,7 @@ def test_off_should_command_csp_master_leaf_node_to_stop():
 
         # assert:
         csp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF, off_input,
-                                                                      any_method(with_name='cmd_ended_cb'))
+                                                                      any_method(with_name='off_cmd_ended_cb'))
 
 
 def test_standby_should_command_to_standby_with_callback_method():
@@ -85,8 +85,54 @@ def test_standby_should_command_to_standby_with_callback_method():
         dummy_event = command_callback(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_STANDBY in tango_context.device.activityMessage
 
+
+def test_on_should_command_to_on_with_callback_method():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+
+        # act:
+        tango_context.device.On()
+        dummy_event = command_callback(const.CMD_ON)
+        event_subscription_map[const.CMD_ON](dummy_event)
+        # assert:
+        assert const.STR_COMMAND + const.CMD_ON in tango_context.device.activityMessage
+
+
+def test_off_should_command_to_off_with_callback_method():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+
+        # act:
+        tango_context.device.On()
+        tango_context.device.Off()
+        dummy_event = command_callback(const.CMD_OFF)
+        event_subscription_map[const.CMD_OFF](dummy_event)
+        # assert:
+        assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
 
 def test_standby_should_command_with_callback_method_with_event_error():
     # arrange:
@@ -109,8 +155,52 @@ def test_standby_should_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in tango_context.device.activityMessage
 
+def test_on_should_command_with_callback_method_with_event_error():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+
+        # act:
+        tango_context.device.On()
+        dummy_event = command_callback_with_event_error(const.CMD_ON)
+        event_subscription_map[const.CMD_ON](dummy_event)
+        # assert:
+        assert const.ERR_INVOKING_CMD + const.CMD_ON in tango_context.device.activityMessage
+
+def test_off_should_command_with_callback_method_with_event_error():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+
+        # act:
+        tango_context.device.On()
+        tango_context.device.Off()
+        dummy_event = command_callback_with_event_error(const.CMD_OFF)
+        event_subscription_map[const.CMD_OFF](dummy_event)
+        # assert:
+        assert const.ERR_INVOKING_CMD + const.CMD_OFF in tango_context.device.activityMessage
 
 def test_standby_should_command_with_callback_method_with_command_error():
     # arrange:
@@ -133,7 +223,55 @@ def test_standby_should_command_with_callback_method_with_command_error():
             dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
+        assert const.ERR_EXCEPT_STANDBY_CMD_CB in tango_context.device.activityMessage
+
+
+def test_on_should_command_with_callback_method_with_command_error():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(Exception) as excp:
+            tango_context.device.On()
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[const.CMD_ON](dummy_event)
+        # assert:
+        assert const.ERR_EXCEPT_ON_CMD_CB in tango_context.device.activityMessage
+
+
+def test_off_should_command_with_callback_method_with_command_error():
+    # arrange:
+    csp_master_fqdn = 'mid_csp/elt/master'
+
+    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+
+    csp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+    csp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.On()
+
+        with pytest.raises(Exception) as excp:
+            tango_context.device.Off()
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[const.CMD_OFF](dummy_event)
+        # assert:
+        assert const.ERR_EXCEPT_OFF_CMD_CB in tango_context.device.activityMessage
 
 
 def command_callback(command_name):
