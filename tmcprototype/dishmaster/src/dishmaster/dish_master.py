@@ -200,8 +200,9 @@ class DishMaster(SKAMaster):
 
         :return: None
         """
-        log_msg = "print track_slew thread name: ", str(threading.currentThread().getName()), str(threading.get_ident())
-        self.logger.info(log_msg)
+        log_msg = "Track thread name and id are: ", str(threading.currentThread().getName()), \
+                  str(threading.get_ident())
+        self.logger.debug(log_msg)
         self.logger.debug("Dish is SLEWING.")
         az_diff = abs(self._desired_pointing[1] - self._achieved_pointing[1])
         el_diff = abs(self._desired_pointing[2] - self._achieved_pointing[2])
@@ -221,32 +222,6 @@ class DishMaster(SKAMaster):
             # Slew Aborted in between by abort command, set the pointingState to READY
             self._pointing_state = PointingState.READY
             self.logger.debug("Dish pointing state is set to READY")
-        # for _ in range(10):
-        #     if (self._abort_in_slew == False):            #Flag Sets to true if abort called
-        #         if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
-        #             self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
-        #         else:
-        #             self._achieved_pointing[1] = self._achieved_pointing[1] - az_increament
-        #
-        #         if (self._desired_pointing[2] - self._achieved_pointing[2]) > 0:
-        #             self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
-        #         else:
-        #             self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
-        #         log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
-        #         self.logger.debug(log_msg)
-        #         time.sleep(2)
-        #     else:
-        #         break
-
-        # if (self._abort_in_slew == False):             # Flag Sets to true if abort called
-        #     # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
-        #     self._pointing_state = PointingState.TRACK
-        #     self.logger.debug("Dish pointing state is set to TRACK")
-        # else:
-        #     # Slew Aborted in between by abort command, set the pointingState to READY
-        #     self._pointing_state = PointingState.READY
-        #     self.logger.debug("Dish pointing state is set to READY")
-
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -395,8 +370,8 @@ class DishMaster(SKAMaster):
             self._azeloffset = [0, 0]
             self._azimuthoverwrap = False
             self._toggle_fault = False
-            self._abort_in_slew = False               #Flag used to abort when dish is in slew
-            self.is_stop_track = False                # Flag indicating if stopTrack command is invoked
+            self._abort_in_slew = False              # Flag used to abort when dish is in slew
+            self.is_stop_track = False               # Flag indicating if stopTrack command is invoked
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.debug(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
@@ -1021,16 +996,16 @@ class DishMaster(SKAMaster):
         """
         try:
             # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
-            self.logger.info("TRACK command received on DishMaster")
+            self.logger.info(const.STR_TRACK_RECEIVED)
             self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
             self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
             actual_az_lim = abs((self._achieved_pointing[1] - self._desired_pointing[1])
                                 * math.cos(((self._desired_pointing[2]) * math.pi)/180))
             actual_el_lim = abs(self._achieved_pointing[2] - self._desired_pointing[2])
             log_msg = "Actual Azimuth limit is: ", str(actual_az_lim)
-            self.logger.info(log_msg)
+            self.logger.debug(log_msg)
             log_msg = "Actual Elevation limit is: ", str(actual_el_lim)
-            self.logger.info(log_msg)
+            self.logger.debug(log_msg)
 
             if(float(actual_az_lim) <= self.preconfig_az_lim and
                float(actual_el_lim) <= self.preconfig_el_lim) is True:
@@ -1057,15 +1032,6 @@ class DishMaster(SKAMaster):
             self.logger.error(const.ERR_MSG, except_occured)
 
         # PROTECTED REGION END #    //  DishMaster.Track
-
-
-    # def is_Track_allowed(self):
-    #     # PROTECTED REGION ID(DishMaster.is_Track_allowed) ENABLED START #
-    #     """ Checks if the Track is allowed in the current pointing state of DishMaster. Ignore the TRACK
-    #     command while Dish is slewing."""
-    #     return self._pointing_state not in [PointingState.SLEW]
-
-    # PROTECTED REGION END #    //  DishMaster.is_Track_allowed
 
     @command(
         dtype_in='str',

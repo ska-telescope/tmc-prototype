@@ -39,6 +39,7 @@ import re
 
 __all__ = ["DishLeafNode", "main"]
 
+# pylint: disable=unused-variable
 class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.
@@ -425,8 +426,8 @@ class DishLeafNode(SKABaseDevice):
                             # Invoke Track command of Dish Master
                             self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
                         else:
-                            self.logger.info(
-                                "Breaking while loop for track" + str(self.event_track_time.is_set()))
+                            log_msg = const.STR_BREAK_LOOP + str(self.event_track_time.is_set())
+                            self.logger.debug(log_msg)
                             break
                     else:
                         self.el_limit = True
@@ -2010,19 +2011,18 @@ class DishLeafNode(SKABaseDevice):
                 #                                         args=(radec_value,))
                 # device.track_thread1.start()
 
-                # Updated logic added to resolve mutiple thread issues
-                if device._dish_proxy.pointingState == 0:  # PointingState = READY
-                    self.logger.info("When pointing state is READY --> Create Track thread")
+                # Updated logic added to run only one thread for TRACK functionality
+                # Check if it is first Track command in scheduling block
+                if device._dish_proxy.pointingState == PointingState.READY:
+                    self.logger.debug("When pointing state is READY --> Create Track thread")
                     device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK)
-                    self.logger.info(
-                        "When pointing state is READY --> Thread status: " + str(device.track_thread1.is_alive()))
-                    if device.track_thread1.is_alive():
-                        self.logger.info("When pointing state is READY --> Do not Start Track thread")
-                    else:
-                        self.logger.info("When pointing state is READY --> Start Track thread")
+                    # Check if track thread already exists
+                    if not device.track_thread1.is_alive():
+                        self.logger.debug("When pointing state is READY --> Start Track thread")
                         device.track_thread1.start()
-                elif device._dish_proxy.pointingState == 2:  # PointingState = TRACK
-                    self.logger.info("When pointing state is TRACK --> Do nothing")
+                # This elif can be removed once testing of SP-1019 is done.
+                elif device._dish_proxy.pointingState == PointingState.TRACK:
+                    self.logger.debug("When pointing state is TRACK --> Do nothing")
 
                 device._read_activity_message = const.STR_TRACK_SUCCESS
                 self.logger.info(device._read_activity_message)
