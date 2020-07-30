@@ -21,6 +21,7 @@ from centralnode import CentralNode, const, release
 from centralnode.const import CMD_SET_STOW_MODE, STR_ON_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
+from ska.base.commands import ResultCode
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
@@ -223,8 +224,21 @@ def test_stow_antennas_invalid_value():
         # assert:
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
 
+def mock_subarray_call_success(arg1, arg2):
+    arg = json.loads(assign_input_str)
+    return [ResultCode.STARTED, arg["dish"]["receptorIDList"]]
+
+def mock_subarray_call_success1(arg1, arg2):
+    return_list = []
+    return (ResultCode.STARTED, str(return_list))
+
+
 def test_assign_resources():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    subarray2_fqdn = 'ska_mid/tm_subarray_node/2'
+    tm_subarrays = []
+    tm_subarrays.append(subarray1_fqdn)
+    tm_subarrays.append(subarray2_fqdn)
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn,
         'NumDishes' : 4
@@ -234,25 +248,29 @@ def test_assign_resources():
     # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
     # which supports this facility.
     subarray1_proxy_mock = MagicMock()
-    #mocking subarray device state as ON as per new state model
+    subarray2_proxy_mock = MagicMock()
+    # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
+    subarray2_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
-        subarray1_fqdn: subarray1_proxy_mock
+        subarray1_fqdn: subarray1_proxy_mock,
+        subarray2_fqdn: subarray2_proxy_mock
     }
+    receptorIDList_success = []
+    receptorIDList_success.append("0001")
+    dish = {}
+    dish["receptorIDList_success"] = receptorIDList_success
+    success_response = {}
+    success_response["dish"] = dish
 
+    # arrange:
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy=tango_context.device
-        device_proxy.AssignResources(assign_input_str)
-        # assert:
-        jsonArgument = json.loads(assign_input_str)
-        input_json_subarray = jsonArgument.copy()
-        del input_json_subarray["subarrayID"]
-        input_to_sa = json.dumps(input_json_subarray)
-        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES,
-                                                             input_to_sa)
+        device_proxy = tango_context.device
+        subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_success
+        response_code, message = device_proxy.AssignResources(assign_input_str)
 
-        assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
+    assert json.loads(message[0]) == success_response
 
 
 def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws__devfailed_exception():
@@ -332,6 +350,46 @@ def test_release_resources():
         # if jsonArgument['releaseALL'] == true:
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
+def test_release_resources_with_return_mock_value():
+    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    subarray2_fqdn = 'ska_mid/tm_subarray_node/2'
+    tm_subarrays = []
+    tm_subarrays.append(subarray1_fqdn)
+    tm_subarrays.append(subarray2_fqdn)
+    dut_properties = {
+        'TMMidSubarrayNodes': tm_subarrays,
+        'NumDishes': 4
+    }
+    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
+    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # which supports this facility.
+    subarray1_proxy_mock = MagicMock()
+    subarray2_proxy_mock = MagicMock()
+    # mocking subarray device state as ON as per new state model
+    subarray1_proxy_mock.DevState = DevState.ON
+    subarray2_proxy_mock.DevState = DevState.ON
+    proxies_to_mock = {
+        subarray1_fqdn: subarray1_proxy_mock,
+        subarray2_fqdn: subarray2_proxy_mock
+    }
+    receptorIDList_success = []
+    receptorIDList_success.append("0001")
+    dish = {}
+    dish["receptorIDList_success"] = receptorIDList_success
+    success_response = {}
+    success_response["dish"] = dish
+
+    # arrange:
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy = tango_context.device
+        subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_success1
+
+        responce_code, message = device_proxy.ReleaseResources(release_input_file)
+    # print("output is", output)
+    # assert ("receptorIDList = True") in output
+    assert 1
 
 def test_release_resources_should_raise_devfailed_exception():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
