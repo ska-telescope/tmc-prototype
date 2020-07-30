@@ -13,7 +13,7 @@ from tango.test_context import DeviceTestContext
 from tango import DevState, DevFailed
 
 # Additional import
-from sdpmasterleafnode import SdpMasterLeafNode, const
+from sdpmasterleafnode import SdpMasterLeafNode, const, release
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
 
@@ -35,7 +35,7 @@ def test_on_should_command_sdp_master_leaf_node_to_start():
 
         # assert:
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
-                                                               any_method(with_name='cmd_ended_cb'))
+                                                               any_method(with_name='on_cmd_ended_cb'))
 
 
 def test_off_should_command_sdp_master_leaf_node_to_stop():
@@ -56,7 +56,7 @@ def test_off_should_command_sdp_master_leaf_node_to_stop():
         # assert:
         assert tango_context.device.activityMessage in const.STR_OFF_CMD_SUCCESS
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
-                                                               any_method(with_name='cmd_ended_cb'))
+                                                               any_method(with_name='off_cmd_ended_cb'))
 
 
 def test_standby_should_command_sdp_master_leaf_node_to_standby():
@@ -76,7 +76,7 @@ def test_standby_should_command_sdp_master_leaf_node_to_standby():
 
         # assert:
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY,
-                                                               any_method(with_name='cmd_ended_cb'))
+                                                               any_method(with_name='standby_cmd_ended_cb'))
 
 
 def test_disable_should_command_sdp_master_leaf_node_to_disable():
@@ -101,7 +101,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable():
         # assert:
         assert tango_context.device.activityMessage in const.STR_DISABLE_CMS_SUCCESS
         sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Disable,
-                                                               any_method(with_name='cmd_ended_cb'))
+                                                               any_method(with_name='disable_cmd_ended_cb'))
 
 
 
@@ -131,6 +131,70 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed():
         # assert:
         assert "Failed to invoke Disable command on SdpMasterLeafNode." in str(df)
 
+def test_on_should_command_with_callback_method():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.On()
+        dummy_event = command_callback(const.CMD_ON)
+        event_subscription_map[const.CMD_ON](dummy_event)
+        # assert:
+        assert const.STR_COMMAND + const.CMD_ON in tango_context.device.activityMessage
+
+def test_off_should_command_with_callback_method():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        tango_context.device.On()
+        # act:
+        tango_context.device.Off()
+        dummy_event = command_callback(const.CMD_OFF)
+        event_subscription_map[const.CMD_OFF](dummy_event)
+        # assert:
+        assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
+
+def test_disable_should_command_with_callback_method():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.Disable()
+        dummy_event = command_callback(const.CMD_Disable)
+        event_subscription_map[const.CMD_Disable](dummy_event)
+        # assert:
+        assert const.STR_COMMAND + const.CMD_Disable in tango_context.device.activityMessage
+
 
 def test_standby_should_command_with_callback_method():
     # arrange:
@@ -151,7 +215,74 @@ def test_standby_should_command_with_callback_method():
         dummy_event = command_callback(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        assert const.STR_INVOKE_SUCCESS in tango_context.device.activityMessage
+        assert const.STR_COMMAND + const.CMD_STANDBY in tango_context.device.activityMessage
+
+
+def test_on_should_command_with_callback_method_with_event_error():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.On()
+        dummy_event = command_callback_with_event_error(const.CMD_ON)
+        event_subscription_map[const.CMD_ON](dummy_event)
+        # assert:
+        assert const.ERR_INVOKING_CMD + const.CMD_ON in tango_context.device.activityMessage
+
+
+def test_off_should_command_with_callback_method_with_event_error():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        tango_context.device.On()
+        # act:
+        tango_context.device.Off()
+        dummy_event = command_callback_with_event_error(const.CMD_OFF)
+        event_subscription_map[const.CMD_OFF](dummy_event)
+        # assert:
+        assert const.ERR_INVOKING_CMD + const.CMD_OFF in tango_context.device.activityMessage
+
+
+def test_disable_should_command_with_callback_method_with_event_error():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        tango_context.device.Disable()
+        dummy_event = command_callback_with_event_error(const.CMD_Disable)
+        event_subscription_map[const.CMD_Disable](dummy_event)
+        # assert:
+        assert const.ERR_INVOKING_CMD + const.CMD_Disable in tango_context.device.activityMessage
 
 
 def test_standby_should_command_with_callback_method_with_event_error():
@@ -173,7 +304,74 @@ def test_standby_should_command_with_callback_method_with_event_error():
         dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
         event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        assert const.ERR_INVOKING_CMD in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in tango_context.device.activityMessage
+
+def test_on_should_command_with_callback_method_with_command_error():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(Exception) :
+            tango_context.device.On()
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[const.CMD_ON](dummy_event)
+        # assert:
+        assert const.ERR_EXCEPT_ON_CMD_CB in tango_context.device.activityMessage
+
+def test_off_should_command_with_callback_method_with_command_error():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        tango_context.device.On()
+        # act:
+        with pytest.raises(Exception) :
+            tango_context.device.Off()
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[const.CMD_OFF](dummy_event)
+        # assert:
+        assert const.ERR_EXCEPT_OFF_CMD_CB in tango_context.device.activityMessage
+
+def test_disable_should_command_with_callback_method_with_command_error():
+    # arrange:
+    sdp_master_fqdn = 'mid_sdp/elt/master'
+
+    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+
+    sdp_master_proxy_mock = Mock()
+    event_subscription_map = {}
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        # act:
+        with pytest.raises(Exception) :
+            tango_context.device.Disable()
+            dummy_event = command_callback_with_command_exception()
+            event_subscription_map[const.CMD_Disable](dummy_event)
+        # assert:
+        assert const.ERR_EXCEPT_DISABLE_CMD_CB in tango_context.device.activityMessage
 
 
 def test_standby_should_command_with_callback_method_with_command_error():
@@ -196,7 +394,10 @@ def test_standby_should_command_with_callback_method_with_command_error():
             dummy_event = command_callback_with_command_exception()
             event_subscription_map[const.CMD_STANDBY](dummy_event)
         # assert:
-        assert const.ERR_EXCEPT_CMD_CB in tango_context.device.activityMessage
+        assert const.ERR_EXCEPT_STANDBY_CMD_CB in tango_context.device.activityMessage
+
+
+
 
 
 def command_callback(command_name):
@@ -286,6 +487,18 @@ def test_health_state():
     # act & assert:
     with fake_tango_system(SdpMasterLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
+
+
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
+
+def test_build_state():
+    """Test for buildState"""
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
+        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
 
 
 def any_method(with_name=None):
