@@ -200,37 +200,28 @@ class DishMaster(SKAMaster):
 
         :return: None
         """
+        log_msg = "Track thread name and id are: ", str(threading.currentThread().getName()), \
+                  str(threading.get_ident())
+        self.logger.debug(log_msg)
         self.logger.debug("Dish is SLEWING.")
         az_diff = abs(self._desired_pointing[1] - self._achieved_pointing[1])
         el_diff = abs(self._desired_pointing[2] - self._achieved_pointing[2])
         az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
         el_increament = el_diff / 10           #Dish will move in 10 steps to desired el.
-        for _ in range(10):
-            if (self._abort_in_slew == False):            #Flag Sets to true if abort called
-                if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
-                    self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
-                else:
-                    self._achieved_pointing[1] = self._achieved_pointing[1] - az_increament
-
-                if (self._desired_pointing[2] - self._achieved_pointing[2]) > 0:
-                    self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
-                else:
-                    self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
-                log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
-                self.logger.debug(log_msg)
-                time.sleep(2)
+        if (self._abort_in_slew == False):
+            if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
+                self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
             else:
-                break
+                self._achieved_pointing[1] = self._achieved_pointing[1] - az_increament
+            if (self._desired_pointing[2] - self._achieved_pointing[2]) > 0:
+                self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
+            else:
+                self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
 
-        if (self._abort_in_slew == False):             # Flag Sets to true if abort called
-            # After slewing the dish to the desired position in 10 steps, set the pointingState to TRACK
-            self._pointing_state = PointingState.TRACK
-            self.logger.debug("Dish pointing state is set to TRACK")
         else:
             # Slew Aborted in between by abort command, set the pointingState to READY
             self._pointing_state = PointingState.READY
             self.logger.debug("Dish pointing state is set to READY")
-
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -379,7 +370,8 @@ class DishMaster(SKAMaster):
             self._azeloffset = [0, 0]
             self._azimuthoverwrap = False
             self._toggle_fault = False
-            self._abort_in_slew = False               #Flag use to abort when dish is in slew
+            self._abort_in_slew = False              # Flag used to abort when dish is in slew
+            self.is_stop_track = False               # Flag indicating if stopTrack command is invoked
             self.set_status(const.STR_DISH_INIT_SUCCESS)
             self.logger.debug(const.STR_DISH_INIT_SUCCESS)
             self.device_name = str(self.get_name())
@@ -1004,25 +996,32 @@ class DishMaster(SKAMaster):
         """
         try:
             # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
+            self.logger.info(const.STR_TRACK_RECEIVED)
             self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
             self.preconfig_el_lim = 0.1                 #Preconfigured pointing limit in elevation
             actual_az_lim = abs((self._achieved_pointing[1] - self._desired_pointing[1])
                                 * math.cos(((self._desired_pointing[2]) * math.pi)/180))
             actual_el_lim = abs(self._achieved_pointing[2] - self._desired_pointing[2])
+            log_msg = "Actual Azimuth limit is: ", str(actual_az_lim)
+            self.logger.debug(log_msg)
+            log_msg = "Actual Elevation limit is: ", str(actual_el_lim)
+            self.logger.debug(log_msg)
 
             if(float(actual_az_lim) <= self.preconfig_az_lim and
                float(actual_el_lim) <= self.preconfig_el_lim) is True:
-            #if dish is within the preconfigured limit then dish will slew slowly (TRACK).
-                self._pointing_state = PointingState.TRACK                    # Set pointingState to TRACK Mode
-                # Inject fault in DishMaster1 if toggle_fault is enabled as a part of Subarray Isolation
-                if self._toggle_fault and 'd0001' in self.device_name:
-                    # Set PointingState to SCAN to inject fault in DishMaster
-                    self._pointing_state = PointingState.SCAN
-                self._achieved_pointing[1] = self._desired_pointing[1]
-                self._achieved_pointing[2] = self._desired_pointing[2]
-                log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
-                self.logger.debug(log_msg)
-                self.logger.debug("Dish is TRACKING.")
+                #if dish is within the preconfigured limit then dish will slew slowly (TRACK).
+                # check if stopTrack command is invoked on Dish
+                if not self.is_stop_track:
+                    self._pointing_state = PointingState.TRACK                    # Set pointingState to TRACK Mode
+                    # Inject fault in DishMaster1 if toggle_fault is enabled as a part of Subarray Isolation
+                    if self._toggle_fault and 'd0001' in self.device_name:
+                        # Set PointingState to SCAN to inject fault in DishMaster
+                        self._pointing_state = PointingState.SCAN
+                    self._achieved_pointing[1] = self._desired_pointing[1]
+                    self._achieved_pointing[2] = self._desired_pointing[2]
+                    log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
+                    self.logger.debug(log_msg)
+                    self.logger.debug("Dish is TRACKING.")
             else:
             #if dish is out of preconfigured limit then dish will slew fast (Slew).
                 self._pointing_state = PointingState.SLEW                   # Set pointingState to SLEW Mode
@@ -1033,15 +1032,6 @@ class DishMaster(SKAMaster):
             self.logger.error(const.ERR_MSG, except_occured)
 
         # PROTECTED REGION END #    //  DishMaster.Track
-
-
-    def is_Track_allowed(self):
-        # PROTECTED REGION ID(DishMaster.is_Track_allowed) ENABLED START #
-        """ Checks if the Track is allowed in the current pointing state of DishMaster. Ignore the TRACK
-        command while Dish is slewing."""
-        return self._pointing_state not in [PointingState.SLEW]
-
-    # PROTECTED REGION END #    //  DishMaster.is_Track_allowed
 
     @command(
         dtype_in='str',
@@ -1076,6 +1066,7 @@ class DishMaster(SKAMaster):
         try:
             log_msg = "Configure Json for DishMaster is" + str(argin)
             self.logger.debug(log_msg)
+            self.is_stop_track = False
             jsonArgument_DM_Config = json.loads(argin)
             AZ = jsonArgument_DM_Config[const.STR_POINTING]["AZ"]
             EL = jsonArgument_DM_Config[const.STR_POINTING]["EL"]
@@ -1088,24 +1079,24 @@ class DishMaster(SKAMaster):
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON + str(value_error)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_INVALID_JSON + str(value_error))
+            excpt_msg.append(log_msg)
             excpt_count += 1
 
         except KeyError as key_error:
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            excpt_msg.append(log_msg)
             excpt_count += 1
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_CONFIG_DM + str(dev_failed)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(dev_failed))
+            excpt_msg.append(log_msg)
 
         except Exception as except_occurred:
             log_msg = const.ERR_CONFIG_DM + str(except_occurred)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
+            excpt_msg.append(log_msg)
             excpt_count += 1
 
         # throw exception:
@@ -1128,18 +1119,21 @@ class DishMaster(SKAMaster):
         """
         excpt_msg = []
         excpt_count = 0
+        self.logger.info("STOPTRACK command is received on DishMaster")
+        # Setting is_stop_track flag to True to indicate that stoptrack command is invoked
+        self.is_stop_track = True
         try:
             if (self._pointing_state == PointingState.SLEW or self._pointing_state == PointingState.TRACK):
                 self._pointing_state = PointingState.READY
         except DevFailed as dev_failed:
             log_msg = const.ERR_CONFIG_DM + str(dev_failed)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(dev_failed))
+            excpt_msg.append(log_msg)
 
         except Exception as except_occurred:
             log_msg = const.ERR_CONFIG_DM + str(except_occurred)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
+            excpt_msg.append(log_msg)
             excpt_count += 1
 
         # throw exception:
@@ -1170,12 +1164,12 @@ class DishMaster(SKAMaster):
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_ABORT_CMD + str(dev_failed)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_EXE_ABORT_CMD + str(dev_failed))
+            excpt_msg.append(log_msg)
 
         except Exception as except_occurred:
             log_msg = const.ERR_CONFIG_DM + str(except_occurred)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
+            excpt_msg.append(log_msg)
             excpt_count += 1
 
         # throw exception:
@@ -1213,12 +1207,12 @@ class DishMaster(SKAMaster):
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_RESTART_CMD + str(dev_failed)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_EXE_RESTART_CMD + str(dev_failed))
+            excpt_msg.append(log_msg)
 
         except Exception as except_occurred:
             log_msg = const.ERR_CONFIG_DM + str(except_occurred)
             self.logger.error(log_msg)
-            excpt_msg.append(const.ERR_CONFIG_DM + str(except_occurred))
+            excpt_msg.append(log_msg)
             excpt_count += 1
 
         # throw exception:
