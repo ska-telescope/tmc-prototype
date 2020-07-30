@@ -39,6 +39,7 @@ import re
 
 __all__ = ["DishLeafNode", "main"]
 
+# pylint: disable=unused-variable
 class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.
@@ -90,11 +91,11 @@ class DishLeafNode(SKABaseDevice):
                 else:
                     log_msg = const.STR_DISH_UNKNOWN_MODE + str(evt)
                     self.logger.debug(log_msg)
-                    self._read_activity_message = const.STR_DISH_UNKNOWN_MODE + str(evt)
+                    self._read_activity_message = log_msg
             else:
                 log_msg = const.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
                 self.logger.debug(log_msg)
-                self._read_activity_message = const.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_DISH_MODE_ATTR)
         except Exception as except_occurred:
             log_msg = const.ERR_DISH_MODE_CB + str(except_occurred.message)
@@ -125,11 +126,11 @@ class DishLeafNode(SKABaseDevice):
                 else:
                     log_msg = const.STR_DISH_CAPTURING_UNKNOWN + str(evt)
                     self.logger.debug(log_msg)
-                    self._read_activity_message = const.STR_DISH_CAPTURING_UNKNOWN + str(evt)
+                    self._read_activity_message = log_msg
             else:
                 log_msg = const.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_SUBSR_CAPTURING_ATTR)
         except Exception as except_occurred:
             log_msg = const.ERR_DISH_CAPTURING_CB + str(except_occurred.message)
@@ -154,11 +155,11 @@ class DishLeafNode(SKABaseDevice):
                 self._achieved_pointing = evt.attr_value.value
                 log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
                 self.logger.debug(log_msg)
-                self._read_activity_message = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
+                self._read_activity_message = log_msg
             else:
                 log_msg = const.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_DISH_ACHVD_ATTR)
         except Exception as except_occurred:
             log_msg = const.ERR_DISH_ACHVD_POINT + str(except_occurred.message)
@@ -181,11 +182,11 @@ class DishLeafNode(SKABaseDevice):
                 self._desired_pointing = evt.attr_value.value
                 log_msg = const.STR_DESIRED_POINTING + str(self._desired_pointing)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.STR_DESIRED_POINTING + str(self._desired_pointing)
+                self._read_activity_message = log_msg
             else:
                 log_msg = const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
                 self.logger.error(log_msg)
-                self._read_activity_message = const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
+                self._read_activity_message = log_msg
                 self.logger.error(const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR)
         except Exception as except_occurred:
             log_msg = const.ERR_DISH_DESIRED_POINT + str(except_occurred.message)
@@ -361,10 +362,10 @@ class DishLeafNode(SKABaseDevice):
             self.el = katpoint.rad2deg(self.az_el_coordinates[1])
             self.RaDec_AzEl_Conversion = True
         except ValueError as value_err:
-            self.logger.error(const.ERR_RADEC_TO_AZEL_VAL_ERR)
             self.RaDec_AzEl_Conversion = False
-            self._read_activity_message = const.ERR_RADEC_TO_AZEL_VAL_ERR + str(value_err)
-            self.logger.error(const.ERR_RADEC_TO_AZEL_VAL_ERR)
+            log_msg = const.ERR_RADEC_TO_AZEL_VAL_ERR + str(value_err)
+            self._read_activity_message = log_msg
+            self.logger.error(log_msg)
         except Exception as except_occurred:
             self.RaDec_AzEl_Conversion = False
             self._handle_generic_exception(except_occurred, [], 0, const.ERR_RADEC_TO_AZEL)
@@ -386,7 +387,7 @@ class DishLeafNode(SKABaseDevice):
             elif self.el_limit == True:
                 break
 
-    def track_thread(self, argin):
+    def track_thread(self):
         """This thread invokes Track command on DishMaster at the rate of 20 Hz.
 
         :param argin: DevVarStringArray
@@ -407,7 +408,7 @@ class DishLeafNode(SKABaseDevice):
                 # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
                 katpoint_arg = []
-                katpoint_arg.insert(0, argin)
+                katpoint_arg.insert(0, self.radec_value)
                 katpoint_arg.insert(1, timestamp_value)
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
@@ -421,8 +422,13 @@ class DishLeafNode(SKABaseDevice):
                         spectrum.extend((roundoff_az_el))
                         # assign calculated AzEl to desiredPointing attribute of Dishmaster
                         self._dish_proxy.desiredPointing = spectrum
-                        # Invoke Track command of Dish Master
-                        self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
+                        if self.event_track_time.is_set() is False:
+                            # Invoke Track command of Dish Master
+                            self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
+                        else:
+                            log_msg = const.STR_BREAK_LOOP + str(self.event_track_time.is_set())
+                            self.logger.debug(log_msg)
+                            break
                     else:
                         self.el_limit = True
                         self._read_activity_message = const.ERR_ELE_LIM
@@ -432,8 +438,8 @@ class DishLeafNode(SKABaseDevice):
                 time.sleep(0.05)
                 # self._dish_proxy.pointingState = 0
         except Exception as except_occurred:
-            self.logger.error(const.ERR_EXE_TRACK, str(except_occurred))
-            self.logger.error(const.ERR_EXE_TRACK)
+            log_msg = const.ERR_EXE_TRACK + str(except_occurred)
+            self.logger.error(log_msg)
             self._handle_generic_exception(except_occurred, [], 0, const.ERR_EXE_TRACK)
 
     # Function for handling all Devfailed exception
@@ -567,10 +573,12 @@ class DishLeafNode(SKABaseDevice):
             device._version_id = release.version
             exception_message = []
             exception_count = 0
+            device.radec_value = ""
             device.set_dish_name_number()
             device.set_observer_lat_long_alt()
             log_msg = const.STR_DISHMASTER_FQDN + str(device.DishMasterFQDN)
             self.logger.debug(log_msg)
+            device._read_activity_message = log_msg
             device.event_track_time = threading.Event()
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
@@ -593,8 +601,6 @@ class DishLeafNode(SKABaseDevice):
                                                    device.dish_achieved_pointing_cb, stateless=True)
                 device._dish_proxy.subscribe_event(const.EVT_DESIRED_POINT, EventType.CHANGE_EVENT,
                                                    device.dish_desired_pointing_cb, stateless=True)
-                device.set_status(const.STR_DISH_INIT_SUCCESS)
-                self.logger.info(const.STR_DISH_INIT_SUCCESS)
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                 exception_message, exception_count,const.ERR_SUBS_DISH_ATTR)
@@ -605,9 +611,8 @@ class DishLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
             self.logger.debug(log_msg)
-            device._read_activity_message = const.STR_SETTING_CB_MODEL + \
-                                            str(ApiUtil.instance().get_asynch_cb_sub_model())
-            
+            device._read_activity_message = log_msg
+            device.set_status(const.STR_DISH_INIT_SUCCESS)
             device._read_activity_message = const.STR_DISH_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
@@ -1105,9 +1110,8 @@ class DishLeafNode(SKABaseDevice):
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
-                device._read_activity_message = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + \
-                                                str(value_error)
-                exception_message.append(device._read_activity_message)
+                device._read_activity_message = log_msg
+                exception_message.append(log_msg)
                 exception_count += 1
 
             # Throw Exception
@@ -1194,9 +1198,8 @@ class DishLeafNode(SKABaseDevice):
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
-                device._read_activity_message = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + \
-                                                str(value_error)
-                exception_message.append(device._read_activity_message)
+                device._read_activity_message = log_msg
+                exception_message.append(log_msg)
                 exception_count += 1
 
             # Throw Exception
@@ -1363,17 +1366,17 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
+                device._read_activity_message = log_msg
                 self.logger.error(log_msg)
-                exception_message.append(const.ERR_INVALID_JSON + str(value_error))
+                exception_message.append(log_msg)
                 exception_count += 1
 
             except KeyError as key_error:
-                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                device._read_activity_message = log_msg
                 self.logger.error(log_msg)
-                exception_message.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+                exception_message.append(log_msg)
                 exception_count += 1
 
             except DevFailed as dev_failed:
@@ -1523,9 +1526,8 @@ class DishLeafNode(SKABaseDevice):
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
-                device._read_activity_message = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + \
-                                                str(value_error)
-                exception_message.append(device._read_activity_message)
+                device._read_activity_message = log_msg
+                exception_message.append(log_msg)
                 exception_count += 1
 
             # Throw Exception
@@ -1611,9 +1613,8 @@ class DishLeafNode(SKABaseDevice):
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
-                device._read_activity_message = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + \
-                                                str(value_error)
-                exception_message.append(device._read_activity_message)
+                device._read_activity_message = log_msg
+                exception_message.append(log_msg)
                 exception_count += 1
 
             # Throw Exception
@@ -1861,9 +1862,8 @@ class DishLeafNode(SKABaseDevice):
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
-                device._read_activity_message = const.ERR_EXE_SLEW_CMD + "\n" + const.ERR_INVALID_DATATYPE + \
-                                                str(value_error)
-                exception_message.append(device._read_activity_message)
+                device._read_activity_message = log_msg
+                exception_message.append(log_msg)
                 exception_count += 1
 
             # Throw Exception
@@ -2001,30 +2001,45 @@ class DishLeafNode(SKABaseDevice):
                 ra_value = (jsonArgument["pointing"]["target"]["RA"])
                 dec_value = (jsonArgument["pointing"]["target"]["dec"])
                 radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
+                device.radec_value = radec_value
                 device.event_track_time.clear()
                 # TODO: For future reference
                 # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, const.THREAD_TRACK)
                 # self.tracking_time_thread1.start()
                 # Pass string argument in track_thread in brackets
-                device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK,
-                                                        args=(radec_value,))
-                device.track_thread1.start()
+                # device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK,
+                #                                         args=(radec_value,))
+                # device.track_thread1.start()
+
+                # Updated logic added to run only one thread for TRACK functionality
+                # Check if it is first Track command in scheduling block
+                if device._dish_proxy.pointingState == PointingState.READY:
+                    self.logger.debug("When pointing state is READY --> Create Track thread")
+                    device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK)
+                    # Check if track thread already exists
+                    if not device.track_thread1.is_alive():
+                        self.logger.debug("When pointing state is READY --> Start Track thread")
+                        device.track_thread1.start()
+                # This elif can be removed once testing of SP-1019 is done.
+                elif device._dish_proxy.pointingState == PointingState.TRACK:
+                    self.logger.debug("When pointing state is TRACK --> Do nothing")
+
                 device._read_activity_message = const.STR_TRACK_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
+                device._read_activity_message = log_msg
                 self.logger.error(log_msg)
-                exception_message.append(const.ERR_INVALID_JSON + str(value_error))
+                exception_message.append(log_msg)
                 exception_count += 1
 
             except KeyError as key_error:
-                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                device._read_activity_message = log_msg
                 device.logger.error(log_msg)
-                exception_message.append(const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+                exception_message.append(log_msg)
                 exception_count += 1
 
             # Throw Exception
