@@ -767,7 +767,7 @@ class CentralNode(SKABaseDevice):
                 device._read_activity_message =  const.ERR_EXE_ON_CMD
 
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_ON_EXEC)
+                device.throw_exception(exception_message, const.STR_ON_EXEC)
 
             return (ResultCode.OK, device._read_activity_message)
 
