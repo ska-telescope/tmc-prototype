@@ -571,7 +571,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin),
                                                               device.cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
-                self.logger.debug(str(argin))
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
                 return(ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
