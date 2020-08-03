@@ -1092,7 +1092,6 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                input_check = float(argin)
                 self.logger.debug(const.STR_IN_SCAN)
                 device._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
                                                         argin, self.scan_cmd_ended_cb)
@@ -1185,8 +1184,6 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-
-                input_check = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
                                                       argin, device.stopcapture_cmd_ended_cb)
                 return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
@@ -1512,8 +1509,6 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-
-                input_check = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
                                                         argin, self.startcapture_cmd_ended_cb)
                 device._read_activity_message = const.STR_STARTCAPTURE_SUCCESS
@@ -1601,8 +1596,6 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-
-                input_check = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE, argin, device.stopcapture_cmd_ended_cb)
                 device._read_activity_message = const.STR_STOPCAPTURE_SUCCESS
                 self.logger.info(device._read_activity_message)
@@ -1850,8 +1843,6 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-
-                input_check = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW, argin, self.slew_cmd_ended_cb)
                 device._read_activity_message = const.STR_SLEW_SUCCESS
                 self.logger.info(device._read_activity_message)
