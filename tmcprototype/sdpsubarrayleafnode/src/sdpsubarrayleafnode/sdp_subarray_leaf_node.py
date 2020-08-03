@@ -624,7 +624,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
                 self.logger.debug(log_msg)
                 device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin),
-                                                              device.cmd_ended_cb)
+                                                              self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
                 return(ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
