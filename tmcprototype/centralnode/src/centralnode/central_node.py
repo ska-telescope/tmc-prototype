@@ -327,7 +327,7 @@ class CentralNode(SKABaseDevice):
                 # Update device._dish_leaf_node_devices variable
                 device._dish_leaf_node_devices.append(device.DishLeafNodePrefix + "000" + str(dish))
 
-                # Initialize device.subarray_allocation variable (map of Dish Id and allocation status)
+                # Initialize device._subarray_allocation variable (map of Dish Id and allocation status)
                 # to indicate availability of the dishes
                 dish_ID = "dish000" + str(dish)
                 device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
@@ -948,7 +948,6 @@ class CentralNode(SKABaseDevice):
                 ## check for duplicate allocation
                 self.logger.info("Checking for resource reallocation.")
                 device._check_receptor_reassignment(json_argument["dish"]["receptorIDList"])
-                self.logger.info("device._subarray_allocation: %s", str(device._subarray_allocation))
 
                 ## Allocate resources to subarray
                 # Remove Subarray Id key from input json argument and send the json with
@@ -962,6 +961,8 @@ class CentralNode(SKABaseDevice):
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
                 self.logger.debug("resources_allocated_return: %s", resources_allocated_return)
 
+                # Note: resources_allocated_return[1] contains the JSON string containing 
+                # allocated resources.
                 resources_allocated = resources_allocated_return[1]
                 log_msg = "resources_assigned:" + str(resources_allocated)
                 self.logger.debug(log_msg)
@@ -973,7 +974,6 @@ class CentralNode(SKABaseDevice):
                     dish_ID = "dish" + (resources_allocated[dish])
                     device._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
                     receptorIDList.append(resources_allocated[dish])
-                self.logger.info("device._subarray_allocation: %s", str(device._subarray_allocation))
 
                 # Allocation successful
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
@@ -1145,7 +1145,7 @@ class CentralNode(SKABaseDevice):
                     device._read_activity_message = log_msg
                     if not res_not_released:
                         release_success = True
-                        for Dish_ID, Dish_Status in device.subarray_allocation.items():
+                        for Dish_ID, Dish_Status in device._subarray_allocation.items():
                             if Dish_Status == subarray_name:
                                 device._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                         argout = {
