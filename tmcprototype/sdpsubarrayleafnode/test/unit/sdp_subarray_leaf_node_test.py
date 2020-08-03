@@ -36,15 +36,6 @@ path= join(dirname(__file__), 'data' , configure_input_file)
 with open(path, 'r') as f:
     configure_str=f.read()
 
-configure_invalid_key_file='invalid_key_Configure.json'
-path= join(dirname(__file__), 'data' , configure_invalid_key_file)
-with open(path, 'r') as f:
-    configure_invalid_key=f.read()
-
-configure_invalid_format_file='invalid_format_Configure.json'
-path= join(dirname(__file__), 'data' , configure_invalid_format_file)
-with open(path, 'r') as f:
-    configure_invalid_format =f.read()
 
 def test_end_sb_command_with_callback_method():
     # arrange:
@@ -775,12 +766,9 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
         tango_context.device.Configure(configure_str)
 
         # assert:
-        json_argument = json.loads(configure_str)
-        sdp_arg = json_argument["sdp"]
-        sdp_configuration = sdp_arg.copy()
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
-                                                                         json.dumps(sdp_configuration),
-                                                                         any_method(with_name='configure_cmd_ended_cb'))
+                                                                         json.dumps(configure_str),
+                                                                         any_method(with_name='cmd_ended_cb'))
 
 
 def test_configure_should_raise_devfailed_exception():
@@ -1372,32 +1360,6 @@ def test_build_state():
     """Test for buildState"""
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
-
-
-def test_configure_invalid_key():
-    # act & assert:
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(configure_invalid_key)
-        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
-
-
-def test_configure_invalid_format():
-    # act & assert:
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        test_input = configure_invalid_format
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(test_input)
-        assert const.ERR_INVALID_JSON_CONFIG in tango_context.device.activityMessage
-
-
-def test_configure_generic_exception():
-    # act & assert:
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        test_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(test_input)
-        assert const.ERR_CONFIGURE in tango_context.device.activityMessage
 
 
 def test_scan_device_not_ready():

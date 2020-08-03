@@ -75,18 +75,13 @@ class ElementDeviceData:
         sdp_scan_config = scan_config.get("sdp", {})
         if sdp_scan_config:
             scan_type = sdp_scan_config.get("scan_type")
-            if scan_type:
-                scan_config.pop("pointing", None)
-                scan_config.pop("dish", None)
-                scan_config.pop("csp", None)
-                scan_config.pop("tmc", None)
-            else:
+            if not scan_type:
                 raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
         else:
             # Need to check if sdp already has scan type if yes then msg showing continue with old scan .
             # and if no earlier scan exist throw error as below.
             raise KeyError("SDP configuration must be given. Aborting SDP configuration.")
-        return json.dumps(scan_config)
+        return json.dumps(sdp_scan_config)
 
     @staticmethod
     def build_up_csp_cmd_data(scan_config, attr_name_map, receive_addresses_map):
