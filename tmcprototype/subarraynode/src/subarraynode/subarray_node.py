@@ -550,7 +550,6 @@ class SubarrayNode(SKASubarray):
                 self._read_activity_message = const.STR_SUBS_ATTRS_LN
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
-                # allocation_success.append(dev_failed)
                 self.logger.exception("Receptor %s allocation failed.", str_leafId)
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
@@ -569,7 +568,6 @@ class SubarrayNode(SKASubarray):
                     devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
 
             except (TypeError) as except_occurred:
-                # allocation_success.append(except_occurred)
                 self.logger.exception(except_occurred)
                 allocation_failure.append(str_leafId)
                 exception_count += 1

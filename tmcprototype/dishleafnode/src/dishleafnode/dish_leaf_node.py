@@ -1097,10 +1097,10 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-                input_check = float(argin)
+                scan_timestamp = float(argin)
                 self.logger.debug(const.STR_IN_SCAN)
                 device._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
-                                                        argin, self.scan_cmd_ended_cb)
+                                                        str(scan_timestamp), self.scan_cmd_ended_cb)
                 self.logger.debug(const.STR_OUT_SCAN)
                 log_msg = const.STR_SCAN_SUCCESS + " with input argument as "+str(argin)
                 self.logger.info(log_msg)
@@ -1169,7 +1169,7 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            Invokes StopCapture command on DishMaster.
+            Invokes EndScan command on DishMaster.
 
             :param argin: timestamp
 
@@ -1189,10 +1189,10 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-
-                input_check = float(argin)
+                end_scan_timestamp = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
-                                                      argin, device.stopcapture_cmd_ended_cb)
+                                                      str(end_scan_timestamp),
+                                                      device.stopcapture_cmd_ended_cb)
                 return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
 
             except ValueError as value_error:
@@ -1516,9 +1516,10 @@ class DishLeafNode(SKABaseDevice):
             exception_message = []
             try:
 
-                input_check = float(argin)
+                start_capture_timestamp = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
-                                                        argin, self.startcapture_cmd_ended_cb)
+                                                        str(start_capture_timestamp),
+                                                        self.startcapture_cmd_ended_cb)
                 device._read_activity_message = const.STR_STARTCAPTURE_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
@@ -1603,9 +1604,10 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-
-                input_check = float(argin)
-                device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE, argin, device.stopcapture_cmd_ended_cb)
+                stop_capture_timestamp = float(argin)
+                device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
+                                                        str(stop_capture_timestamp),
+                                                        device.stopcapture_cmd_ended_cb)
                 device._read_activity_message = const.STR_STOPCAPTURE_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
@@ -1851,13 +1853,13 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-
-                input_check = float(argin)
-                device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW, argin, self.slew_cmd_ended_cb)
+                slew_timestamp = float(argin)
+                device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW,
+                                                        str(slew_timestamp),
+                                                        self.slew_cmd_ended_cb)
                 device._read_activity_message = const.STR_SLEW_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
-
 
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)

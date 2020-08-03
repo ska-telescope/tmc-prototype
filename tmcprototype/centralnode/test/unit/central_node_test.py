@@ -21,6 +21,7 @@ from centralnode import CentralNode, const, release
 from centralnode.const import CMD_SET_STOW_MODE, STR_ON_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
 from ska.base.control_model import LoggingLevel
+from ska.base.commands import ResultCode
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
@@ -255,7 +256,7 @@ def test_assign_resources():
         assert_activity_message(tango_context.device, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
-def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws__devfailed_exception():
+def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn
@@ -287,7 +288,7 @@ def test_assign_resources_invalid_json_value():
             tango_context.device.AssignResources(assign_release_invalid_str)
 
         # assert:
-        assert "Exception in validating input" in str(df.value)
+        assert const.STR_RESOURCE_ALLOCATION_FAILED in str(df.value)
 
 
 def test_assign_resources_invalid_key():
@@ -300,6 +301,58 @@ def test_assign_resources_invalid_key():
 
         # assert:
         assert 'test' in result
+
+def mock_subarray_call_success(arg1, arg2):
+    arg = json.loads(assign_input_str)
+    return [ResultCode.STARTED, arg["dish"]["receptorIDList"]]
+
+def test_assign_resources_raise_devfailed_when_reseource_reallocation():
+    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    subarray2_fqdn = 'ska_mid/tm_subarray_node/2'
+    tm_subarrays = []
+    tm_subarrays.append(subarray1_fqdn)
+    tm_subarrays.append(subarray2_fqdn)
+    dut_properties = {
+        'TMMidSubarrayNodes': tm_subarrays,
+        'NumDishes' : 4
+    }
+    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
+    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
+    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
+    # which supports this facility.
+    subarray1_proxy_mock = MagicMock()
+    subarray2_proxy_mock = MagicMock()
+    #mocking subarray device state as ON as per new state model
+    subarray1_proxy_mock.DevState = DevState.ON
+    subarray2_proxy_mock.DevState = DevState.ON
+    proxies_to_mock = {
+        subarray1_fqdn: subarray1_proxy_mock,
+        subarray2_fqdn: subarray2_proxy_mock
+    }
+    
+    receptorIDList_success = []
+    receptorIDList_success.append("0001")
+    dish = {}
+    dish["receptorIDList_success"] = receptorIDList_success
+    success_response = {}
+    success_response["dish"] = dish
+
+    # arrange:
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        device_proxy=tango_context.device
+        subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_success
+        response_code, message = device_proxy.AssignResources(assign_input_str)
+        assert json.loads(message[0]) == success_response
+
+    # act:
+        with pytest.raises(tango.DevFailed) as df:
+            reallocation_request = json.loads(assign_input_str)
+            reallocation_request["subarrayID"] = 2
+            device_proxy.AssignResources(json.dumps(reallocation_request))
+
+    # assert:
+    assert const.ERR_RECEPTOR_ID_REALLOCATION in str(df.value)
 
 
 # TODO: check the test functionality
