@@ -36,8 +36,9 @@ class AssignResourceValidator():
             self._subarrays.append(int(tokens[2]))
         self.logger.debug("Available subarray ids: %s", self._subarrays)
 
-        # Get available dish ids
-        # self._receptor_list = receptor_list
+        # Populate the list of receptor ids from list of existing dish leaf node 
+        # FQDNs. The list is used later to search for any invalid receptor id 
+        # in AssignReources request JSON.
         for receptor in receptor_list:
             self._receptor_list.append(receptor.replace(dish_prefix, ''))
         self.logger.debug(self._receptor_list)
@@ -62,28 +63,12 @@ class AssignResourceValidator():
         
         return ret_val
 
-
-    # def _receptor_exists(self, receptor_id_list):
-    #     """Applies validation on receptor id list.
-
-    #     :param: receptor_id_list: List of strings
-
-    #     :return: True if all the receptors are present. False if a receptor is not present.
-    #     """
-    #     self.logger.debug("Existing receptors: %s", self._receptor_list)
-    #     for receptor_id in receptor_id_list:
-    #         receptor_id = self._dish_prefix + receptor_id
-    #         self.logger.debug("Checking for receptor %s", receptor_id)
-    #         if receptor_id not in self._receptor_list:
-    #             self.logger.debug("Receptor %s. is not present.", receptor_id)
-    #             return False
-
-    #     return True
-
     def _search_invalid_receptors(self, receptor_id_list):
         """
-        Searches the receptor ids in the received receptor id list and 
-        returns the ones that do not exist.
+        This method accepts the receptor id list from the AssignResources request. It searches 
+        each of the receptor id from this list into the list of receptors which are present in the
+        system. The receptor ids that are not found in the list of present receptors are added in a 
+        list and returned to the caller.
 
         :param: receptor_id_list: List of strings
 
@@ -104,7 +89,8 @@ class AssignResourceValidator():
     def loads(self, input_string):
         """
         Validates the input string received as an argument of AssignResources command. 
-        If the request is correct, returns the deserialized JSON object.
+        If the request is correct, returns the deserialized JSON object. The cdm-shared-library
+        is used to validate the JSON.
 
         :param: input_string: A JSON string
 
@@ -134,7 +120,7 @@ class AssignResourceValidator():
         # JSON string.
         assign_request = json.loads(input_string)
         if(not self._subarray_exists(assign_request["subarrayID"])):
-            exception_message = "The Subarray '" + str(assign_request["subarrayID"]) + "' does not exit."
+            exception_message = "The Subarray '" + str(assign_request["subarrayID"]) + "' does not exist."
             raise SubarrayNotPresentError(exception_message)
         self.logger.debug("SubarrayID validation successful.")
 

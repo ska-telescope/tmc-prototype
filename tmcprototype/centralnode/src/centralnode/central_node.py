@@ -74,8 +74,7 @@ class CentralNode(SKABaseDevice):
         self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
 
         if duplicate_allocation_count > 0:
-            exception_message = "The following Receptor id(s) are allocated to other subarrays: "
-            exception_message += (str(duplicate_allocation_dish_ids))
+            exception_message = const.ERR_RECEPTOR_ID_REALLOCATION + (str(duplicate_allocation_dish_ids))
             raise ResourceReassignmentError(exception_message)
 
     def health_state_cb(self, evt):

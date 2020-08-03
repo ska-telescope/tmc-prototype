@@ -288,7 +288,7 @@ def test_assign_resources_invalid_json_value():
             tango_context.device.AssignResources(assign_release_invalid_str)
 
         # assert:
-        assert "Resource allocation failed. Malformed input string." in str(df.value)
+        assert const.STR_RESOURCE_ALLOCATION_FAILED in str(df.value)
 
 
 def test_assign_resources_invalid_key():
@@ -352,7 +352,7 @@ def test_assign_resources_raise_devfailed_when_reseource_reallocation():
             device_proxy.AssignResources(json.dumps(reallocation_request))
 
     # assert:
-    assert "The following Receptor id(s) are allocated to other subarrays" in str(df.value)
+    assert const.ERR_RECEPTOR_ID_REALLOCATION in str(df.value)
 
 
 # TODO: check the test functionality
