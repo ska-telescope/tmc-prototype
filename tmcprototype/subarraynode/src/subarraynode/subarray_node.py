@@ -267,6 +267,7 @@ class SubarrayNode(SKASubarray):
         self.logger.info("\n\n In Calculate observation state method")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
+        pointing_state_count_ready = 0
         log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
         self.logger.info(log_msg)
         for value in list(self.dishPointingStateMap.values()):
@@ -274,6 +275,8 @@ class SubarrayNode(SKASubarray):
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == PointingState.SLEW:
                 pointing_state_count_slew = pointing_state_count_slew + 1
+            elif value == PointingState.READY:
+                pointing_state_count_ready = pointing_state_count_ready + 1
         if self._csp_sa_obs_state == ObsState.EMPTY and self._sdp_sa_obs_state ==\
                 ObsState.EMPTY:
             if self.is_release_resources:
@@ -305,11 +308,13 @@ class SubarrayNode(SKASubarray):
         elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
                 ObsState.IDLE:
             if self.is_end_command:
-                # End command success
-                self.logger.info("Calling End command succeeded() method")
-                # As a part of end command send Stop track command on dish leaf node
-                # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-                self.end_obj.succeeded()
+                if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
+                    # End command success
+                    self.logger.info("Calling End command succeeded() method")
+                    # As a part of end command send Stop track command on dish leaf node
+                    #  TODO: Stop track command will be invoked once tango group command issue gets resolved.
+                    # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+                    self.end_obj.succeeded()
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
@@ -545,7 +550,6 @@ class SubarrayNode(SKASubarray):
                 self._read_activity_message = const.STR_SUBS_ATTRS_LN
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
-                # allocation_success.append(dev_failed)
                 self.logger.exception("Receptor %s allocation failed.", str_leafId)
                 [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
@@ -564,7 +568,6 @@ class SubarrayNode(SKASubarray):
                     devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
 
             except (TypeError) as except_occurred:
-                # allocation_success.append(except_occurred)
                 self.logger.exception(except_occurred)
                 allocation_failure.append(str_leafId)
                 exception_count += 1

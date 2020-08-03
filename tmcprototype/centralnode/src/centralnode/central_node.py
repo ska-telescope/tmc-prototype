@@ -60,19 +60,22 @@ class CentralNode(SKABaseDevice):
         self.logger.info("Checking for duplicate allocation of dishes.")
         duplicate_allocation_count = 0
         duplicate_allocation_dish_ids = []
+        self.logger.info(self._subarray_allocation)
 
         for receptor in input_receptors_list:
             dish_ID = "dish" + receptor
             self.logger.info("Checking allocation status of dish %s.", dish_ID)
             if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
                 self.logger.info("Dish %s is already allocated.", dish_ID)
-                duplicate_allocation_dish_ids.append(dish_ID)
+                # duplicate_allocation_dish_ids.append(dish_ID)
+                duplicate_allocation_dish_ids.append(receptor)
                 duplicate_allocation_count = duplicate_allocation_count + 1
         self.logger.info("No of dishes already allocated: %d", duplicate_allocation_count)
         self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
 
         if duplicate_allocation_count > 0:
-            raise ResourceReassignmentError("Resources already assigned.", duplicate_allocation_dish_ids)
+            exception_message = const.ERR_RECEPTOR_ID_REALLOCATION + (str(duplicate_allocation_dish_ids))
+            raise ResourceReassignmentError(exception_message)
 
     def health_state_cb(self, evt):
         """
@@ -323,7 +326,7 @@ class CentralNode(SKABaseDevice):
                 # Update device._dish_leaf_node_devices variable
                 device._dish_leaf_node_devices.append(device.DishLeafNodePrefix + "000" + str(dish))
 
-                # Initialize device.subarray_allocation variable (map of Dish Id and allocation status)
+                # Initialize device._subarray_allocation variable (map of Dish Id and allocation status)
                 # to indicate availability of the dishes
                 dish_ID = "dish000" + str(dish)
                 device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
@@ -766,7 +769,7 @@ class CentralNode(SKABaseDevice):
                 device._read_activity_message =  const.ERR_EXE_ON_CMD
 
             if exception_count > 0:
-                self.throw_exception(exception_message, const.STR_ON_EXEC)
+                device.throw_exception(exception_message, const.STR_ON_EXEC)
 
             return (ResultCode.OK, device._read_activity_message)
 
@@ -920,12 +923,7 @@ class CentralNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: Custom exceptions as InvalidJSONError or ResourceNotPresentError or SubarrayNotPresentError if input
-                    argument json string is not valid.
-                    Custom exception as ResourceReassignmentError when an already assigned resource is received in
-                    input argument.
-                    ValueError if input argument json string contains invalid value
-                    DevFailed if the command execution or invocation on subarray node is not successful
+            :raises: DevFailed when the API fails to allocate resources.
 
             Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
 
@@ -957,11 +955,16 @@ class CentralNode(SKABaseDevice):
                 input_json_subarray = json_argument.copy()
                 del input_json_subarray["subarrayID"]
                 input_to_sa = json.dumps(input_json_subarray)
+
                 resources_allocated_return = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
+                self.logger.debug("resources_allocated_return: %s", resources_allocated_return)
+
+                # Note: resources_allocated_return[1] contains the JSON string containing 
+                # allocated resources.
                 resources_allocated = resources_allocated_return[1]
-                log_msg = "\n\n resources_assigned:" + str(resources_allocated)
-                self.logger.info(log_msg)
+                log_msg = "resources_assigned:" + str(resources_allocated)
+                self.logger.debug(log_msg)
 
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
@@ -985,13 +988,13 @@ class CentralNode(SKABaseDevice):
             except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
                 self.logger.exception("Exception in AssignResource(): %s", str(error))
                 device._read_activity_message = "Exception in validating input: " + str(error)
-                exception_message.append("Exception in validating input: " + str(error))
+                exception_message.append(const.STR_RESOURCE_ALLOCATION_FAILED + " " + str(error))
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
             except ResourceReassignmentError as resource_error:
                 self.logger.exception("List of the dishes that are already allocated: %s", \
                                       str(resource_error.resources_reallocation))
                 device._read_activity_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
-                exception_message.append(const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation))
+                exception_message.append(const.STR_RESOURCE_ALLOCATION_FAILED + str(resource_error))
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
             except ValueError as ve:
                 self.logger.exception("Exception in AssignResources command: %s", str(ve))

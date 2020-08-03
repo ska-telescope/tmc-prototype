@@ -43,6 +43,9 @@ ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray 
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 ERR_STOW_ARGIN = "Invalid StowAntennas arguments \n"
 ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
+ERR_SUBARRAY_ID_DOES_NOT_EXIST = "The Subarray '99' does not exist."
+ERR_RECEPTOR_ID_DOES_NOT_EXIST = "The following Receptor id(s) do not exist:"
+ERR_RECEPTOR_ID_REALLOCATION = "The following Receptor id(s) are allocated to other subarrays: "
 
 #strings
 #General strings
@@ -71,6 +74,7 @@ STR_RELEASE_RES_EXEC = "RELEASERESOURCES command execution"
 STR_ASSIGN_RES_EXEC = "ASSIGNRESOURCES command execution"
 STR_ON_EXEC = "STARTUPTELESCOPE (ON) command execution"
 STR_STANDBY_EXEC = "STANDBYTELESCOPE command execution"
+STR_RESOURCE_ALLOCATION_FAILED = "Resource allocation failed."
 
 #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SA1 = "ska_mid/tm_subarray_node/1"

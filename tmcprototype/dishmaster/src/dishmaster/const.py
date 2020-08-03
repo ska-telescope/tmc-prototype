@@ -20,6 +20,8 @@ STR_DATA_CAPTURE_ALREADY_STARTED = "Data Capuring is already in progress."
 STR_DATA_CAPTURE_ALREADY_STOPPED = "Data Capuring is already stopped."
 STR_FALSE = "False"
 STR_ACHIEVED_POINTING = "Achieved Pointing"
+STR_BREAK_LOOP = "Breaking a track while loop"
+STR_TRACK_RECEIVED = "TRACK command is received on DishMaster"
 
 STR_CMD_FAILED = "DishMaster_Commandfailed"
 STR_SLEW_EXEC = "Slew command execution"

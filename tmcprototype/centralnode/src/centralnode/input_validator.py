@@ -28,6 +28,7 @@ class AssignResourceValidator():
     def __init__(self, subarray_list, receptor_list, dish_prefix, logger=module_logger):
         self.logger = logger
         self._subarrays = []
+        self._receptor_list = []
 
         # get the ids of the numerical ids of available subarrays
         for subarray in subarray_list:
@@ -35,8 +36,13 @@ class AssignResourceValidator():
             self._subarrays.append(int(tokens[2]))
         self.logger.debug("Available subarray ids: %s", self._subarrays)
 
-        # Get available dish ids
-        self._receptor_list = receptor_list
+        # Populate the list of receptor ids from list of existing dish leaf node 
+        # FQDNs. The list is used later to search for any invalid receptor id 
+        # in AssignReources request JSON.
+        for receptor in receptor_list:
+            self._receptor_list.append(receptor.replace(dish_prefix, ''))
+        self.logger.debug(self._receptor_list)
+
         self.logger.debug("Available dish ids: %s", self._receptor_list)
 
         self._dish_prefix = dish_prefix
@@ -57,28 +63,34 @@ class AssignResourceValidator():
         
         return ret_val
 
-
-    def _receptor_exists(self, receptor_id_list):
-        """Applies validation on receptor id list.
-
-        :param: receptor_id_list: List of strings 
-
-        :return: True if all the receptors are present. False if a receptor is not present.
+    def _search_invalid_receptors(self, receptor_id_list):
         """
-        self.logger.debug("Existing receptors: %s", self._receptor_list)
+        This method accepts the receptor id list from the AssignResources request. It searches 
+        each of the receptor id from this list into the list of receptors which are present in the
+        system. The receptor ids that are not found in the list of present receptors are added in a 
+        list and returned to the caller.
+
+        :param: receptor_id_list: List of strings
+
+        :returns: List of receptors that do not exist. Empty list is returned
+        when all receptors exist.
+
+        """
+        non_existing_receptors = []
         for receptor_id in receptor_id_list:
-            receptor_id = self._dish_prefix + receptor_id
             self.logger.debug("Checking for receptor %s", receptor_id)
             if receptor_id not in self._receptor_list:
                 self.logger.debug("Receptor %s. is not present.", receptor_id)
-                return False
+                non_existing_receptors.append(receptor_id)
+        self.logger.debug(non_existing_receptors)
+        return non_existing_receptors
 
-        return True
 
     def loads(self, input_string):
         """
         Validates the input string received as an argument of AssignResources command. 
-        If the request is correct, returns the deserialized JSON object.
+        If the request is correct, returns the deserialized JSON object. The cdm-shared-library
+        is used to validate the JSON.
 
         :param: input_string: A JSON string
 
@@ -91,7 +103,7 @@ class AssignResourceValidator():
 
             ResourceNotPresentError: When a receptor in the receptor_id_list is not present.
         """
-        
+
         ## Check if JSON is correct
         self.logger.info("Checking JSON format.")
         try:
@@ -108,7 +120,7 @@ class AssignResourceValidator():
         # JSON string.
         assign_request = json.loads(input_string)
         if(not self._subarray_exists(assign_request["subarrayID"])):
-            exception_message = "Subarray not present. Available subarrays are: " + str(self._subarrays)
+            exception_message = "The Subarray '" + str(assign_request["subarrayID"]) + "' does not exist."
             raise SubarrayNotPresentError(exception_message)
         self.logger.debug("SubarrayID validation successful.")
 
@@ -119,8 +131,10 @@ class AssignResourceValidator():
         except AssertionError as ae:
             raise ValueError("Empty receptorIDList") from ae
 
-        if(not self._receptor_exists(assign_request["dish"]["receptorIDList"])):
-            exception_message = "Receptor id not present. Valid values are: " + str(self._receptor_list)
+        # if(not self._receptor_exists(assign_request["dish"]["receptorIDList"])):
+        non_existing_receptors = self._search_invalid_receptors(assign_request["dish"]["receptorIDList"])
+        if(non_existing_receptors):
+            exception_message = "The following Receptor id(s) do not exist: " + str(non_existing_receptors)
             raise ResourceNotPresentError(exception_message)
         self.logger.debug("receptor_id_list validation successful.")
 

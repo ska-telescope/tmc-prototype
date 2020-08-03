@@ -6,6 +6,7 @@ import json
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
+from centralnode import const
 
 # Sample 'good' JSON
 sample_assign_resources_request = {
@@ -216,7 +217,7 @@ class TestAssignResourceValidator():
 
         with pytest.raises(SubarrayNotPresentError) as excinfo:
             input_validator.loads(json.dumps(input_json))
-        assert "Subarray not present. Available subarrays are" in str(excinfo.value)
+        assert const.ERR_SUBARRAY_ID_DOES_NOT_EXIST in str(excinfo.value)
 
     def test_validate_incorrect_receptor_id(self):
         """
@@ -234,4 +235,4 @@ class TestAssignResourceValidator():
         with pytest.raises(ResourceNotPresentError) as excinfo:
             input_validator.loads(json.dumps(input_json))
 
-        assert "Receptor id not present. Valid values are: " in str(excinfo.value)
+        assert const.ERR_RECEPTOR_ID_DOES_NOT_EXIST in str(excinfo.value)
