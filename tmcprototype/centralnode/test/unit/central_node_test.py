@@ -358,7 +358,7 @@ def test_assign_resources_raise_devfailed_when_reseource_reallocation():
         device_proxy=tango_context.device
         subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_assign_resources_success
         message = device_proxy.AssignResources(assign_input_str)
-        assert json.loads(message[0]) == success_response
+        assert json.loads(message) == success_response
 
     # act:
         with pytest.raises(tango.DevFailed) as df:
