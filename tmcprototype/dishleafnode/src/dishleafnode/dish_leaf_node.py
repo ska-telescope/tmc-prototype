@@ -1515,7 +1515,6 @@ class DishLeafNode(SKABaseDevice):
             exception_count = 0
             exception_message = []
             try:
-
                 start_capture_timestamp = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
                                                         str(start_capture_timestamp),
