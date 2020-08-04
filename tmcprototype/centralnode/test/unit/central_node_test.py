@@ -225,13 +225,13 @@ def test_stow_antennas_invalid_value():
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
 
 
-# Mocking AssignResources command success on SubarrayNode
+# Mocking AssignResources command success responce from SubarrayNode
 def mock_subarray_call_assign_resources_success(arg1, arg2):
     arg = json.loads(assign_input_str)
     return [ResultCode.STARTED, arg["dish"]["receptorIDList"]]
 
 
-# Mocking ReleaseResources command success on SubarrayNode
+# Mocking ReleaseResources command success responce from SubarrayNode
 def mock_subarray_call_release_resources_success(arg1):
     argout = ["[]"]
     return [ResultCode.STARTED, argout]
@@ -771,18 +771,17 @@ def create_dummy_event(device_fqdn, health_state):
     return fake_event
 
 
-# reads tango attribute
 def assert_activity_message(dut, expected_message):
-    assert dut.activityMessage == expected_message
+    assert dut.activityMessage == expected_message # reads tango attribute
 
 
-# Mocking Devfailed exception on SubarrayNode
+# Throw Devfailed exception for command without argument
 def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
 
-# Mocking Devfailed exception with on SubarrayNode
+# Throw Devfailed exception for command with argument
 def raise_devfailed_exception_with_args(cmd_name, input_args):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
