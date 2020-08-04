@@ -556,7 +556,7 @@ def test_assign_command_with_callback_method_with_devfailed_error():
                **kwargs: event_subscription_map.update({command_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        tango_context.device.On()
+        # tango_context.device.On()
         # act:
         with pytest.raises(tango.DevFailed) as df:
             # arrange:
