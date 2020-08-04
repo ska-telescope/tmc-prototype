@@ -224,20 +224,26 @@ def test_stow_antennas_invalid_value():
         # assert:
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
 
-def mock_subarray_call_success(arg1, arg2):
+
+# Mocking AssignResources command success on SubarrayNode
+def mock_subarray_call_assign_resources_success(arg1, arg2):
     arg = json.loads(assign_input_str)
     return [ResultCode.STARTED, arg["dish"]["receptorIDList"]]
 
+
+# Mocking ReleaseResources command success on SubarrayNode
 def mock_subarray_call_release_resources_success(arg1):
     argout = ["[]"]
     return [ResultCode.STARTED, argout]
 
+
 def test_assign_resources():
+    # arrange
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     tm_subarrays = []
     tm_subarrays.append(subarray1_fqdn)
     dut_properties = {
-        'TMMidSubarrayNodes': subarray1_fqdn,
+        'TMMidSubarrayNodes': tm_subarrays,
         'NumDishes' : 4
     }
     # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
@@ -248,7 +254,7 @@ def test_assign_resources():
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
-        subarray1_fqdn: subarray1_proxy_mock,
+        subarray1_fqdn: subarray1_proxy_mock
     }
     receptorIDList_success = []
     receptorIDList_success.append("0001")
@@ -261,10 +267,11 @@ def test_assign_resources():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
-        subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_success
+        subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_assign_resources_success
         response_code, message = device_proxy.AssignResources(assign_input_str)
 
     assert json.loads(message[0]) == success_response
+
 
 def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
@@ -291,6 +298,7 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
         # assert:
         assert "Error occurred while assigning resources to the Subarray" in str(df)
 
+
 def test_assign_resources_invalid_json_value():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
@@ -299,6 +307,7 @@ def test_assign_resources_invalid_json_value():
 
         # assert:
         assert const.STR_RESOURCE_ALLOCATION_FAILED in str(df.value)
+
 
 def test_assign_resources_invalid_key():
     # act
@@ -311,9 +320,6 @@ def test_assign_resources_invalid_key():
         # assert:
         assert 'test' in result
 
-def mock_subarray_call_success(arg1, arg2):
-    arg = json.loads(assign_input_str)
-    return [ResultCode.STARTED, arg["dish"]["receptorIDList"]]
 
 def test_assign_resources_raise_devfailed_when_reseource_reallocation():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
@@ -331,7 +337,7 @@ def test_assign_resources_raise_devfailed_when_reseource_reallocation():
     # which supports this facility.
     subarray1_proxy_mock = MagicMock()
     subarray2_proxy_mock = MagicMock()
-    #mocking subarray device state as ON as per new state model
+    # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
     subarray2_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
@@ -350,7 +356,7 @@ def test_assign_resources_raise_devfailed_when_reseource_reallocation():
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy=tango_context.device
-        subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_success
+        subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_assign_resources_success
         response_code, message = device_proxy.AssignResources(assign_input_str)
         assert json.loads(message[0]) == success_response
 
@@ -363,7 +369,9 @@ def test_assign_resources_raise_devfailed_when_reseource_reallocation():
     # assert:
     assert const.ERR_RECEPTOR_ID_REALLOCATION in str(df.value)
 
+
 def test_release_resources():
+    # arrange
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     tm_subarrays = []
     tm_subarrays.append(subarray1_fqdn)
@@ -379,7 +387,7 @@ def test_release_resources():
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
     proxies_to_mock = {
-        subarray1_fqdn: subarray1_proxy_mock,
+        subarray1_fqdn: subarray1_proxy_mock
     }
 
     release_all_success = {"ReleaseAll": True, "receptorIDList": []}
@@ -394,7 +402,9 @@ def test_release_resources():
         #assert
         assert json.dumps(release_all_success) in message
 
+
 def test_release_resources_should_raise_devfailed_exception():
+    # arrange
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     dut_properties = {
         'TMMidSubarrayNodes': subarray1_fqdn
@@ -761,15 +771,17 @@ def create_dummy_event(device_fqdn, health_state):
     return fake_event
 
 
+# reads tango attribute
 def assert_activity_message(dut, expected_message):
-    assert dut.activityMessage == expected_message # reads tango attribute
+    assert dut.activityMessage == expected_message
 
 
+# Mocking Devfailed exception on SubarrayNode
 def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
-
+# Mocking Devfailed exception with on SubarrayNode
 def raise_devfailed_exception_with_args(cmd_name, input_args):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)

@@ -1138,7 +1138,6 @@ class CentralNode(SKABaseDevice):
                     # Invoke "ReleaseAllResources" on SubarrayNode
                     return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     res_not_released = ast.literal_eval(return_val[1][0])
-                    log_msg = "\n\n res_not_released:" + str(res_not_released)
                     log_msg = const.STR_REL_RESOURCES
                     device._read_activity_message = log_msg
                     if not res_not_released:
