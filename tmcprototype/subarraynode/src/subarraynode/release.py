@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """subarraynode"""
-version = "0.2.4"
+version = "0.2.8"
 version_info = version.split(".")
 description = """Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray."""

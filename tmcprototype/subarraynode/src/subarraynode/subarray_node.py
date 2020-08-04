@@ -1364,9 +1364,7 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_SDP_SCAN_INIT)
                 device._read_activity_message = const.STR_SDP_SCAN_INIT
                 # Invoke Scan command on CSP Subarray Leaf Node
-                self.logger.info("Trpe of default argin in SCAN commnd "+ str(type(argin)))
                 csp_argin = [argin]
-                self.logger.info("Trpe of default csp_argin in SCAN commnd " + str(type(csp_argin)))
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
                 self.logger.info(const.STR_CSP_SCAN_INIT)
                 device._read_activity_message = const.STR_CSP_SCAN_INIT

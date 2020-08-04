@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """sdpsubarrayleafnode"""
-version = "0.2.4"
+version = "0.2.8"
 version_info = version.split(".")
 description = """"""
 author = "kalyanit.ska"

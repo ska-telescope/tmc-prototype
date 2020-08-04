@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.7"
+version = "0.2.8"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -10,11 +10,11 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.2.7
-tag=0.2.7
-tag_description=AssignResources command updates.
-release_notes=This release Contains: <br/><ul><li>Updated AssignResources and ReleaseResources commands return value.</li></ul>
-gitlab_username=mesnehal
-private_token=hUoKCf7MRKGDXKqamXGP
+release=0.2.8
+tag=0.2.8
+tag_description=Release TMC docker image with Abort and Restart functionality.
+release_notes=This release Contains: <br/><ul><li>Updated tmc-prototype to incorporate Abort and Restart functionality.</li><li>Optimized Track implementation.</li><li>Refactored CspSubarrayLeafNode unit test file to add fixtures.</li><li>Implemented technical debt related items in tmc-prototype.</li></ul><br/>
+gitlab_username=JayantKumbhar
+private_token=ZuRepssBtkmFSWc1sD2K
 
 
