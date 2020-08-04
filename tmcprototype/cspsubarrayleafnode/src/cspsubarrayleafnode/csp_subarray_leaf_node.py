@@ -272,6 +272,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # wait for timer event
                 self._stop_delay_model_event.wait(delay_update_interval)
             else:
+                # TODO: This waiting on event is added temporarily to reduce high CPU usage.
+                self._stop_delay_model_event.wait(0.02)
                 self._delay_model = " "
 
         self.logger.debug("Stop event received. Thread exit.")
