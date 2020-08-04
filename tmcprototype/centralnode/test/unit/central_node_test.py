@@ -225,13 +225,13 @@ def test_stow_antennas_invalid_value():
         assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
 
 
-# Mocking AssignResources command success responce from SubarrayNode
+# Mocking AssignResources command success response from SubarrayNode
 def mock_subarray_call_assign_resources_success(arg1, arg2):
     arg = json.loads(assign_input_str)
     return [ResultCode.STARTED, arg["dish"]["receptorIDList"]]
 
 
-# Mocking ReleaseResources command success responce from SubarrayNode
+# Mocking ReleaseResources command success response from SubarrayNode
 def mock_subarray_call_release_resources_success(arg1):
     argout = ["[]"]
     return [ResultCode.STARTED, argout]
