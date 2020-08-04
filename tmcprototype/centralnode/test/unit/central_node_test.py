@@ -268,9 +268,9 @@ def test_assign_resources():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_assign_resources_success
-        response_code, message = device_proxy.AssignResources(assign_input_str)
+        message = device_proxy.AssignResources(assign_input_str)
 
-    assert json.loads(message[0]) == success_response
+    assert json.loads(message) == success_response
 
 
 def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception():
@@ -357,8 +357,8 @@ def test_assign_resources_raise_devfailed_when_reseource_reallocation():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy=tango_context.device
         subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_assign_resources_success
-        response_code, message = device_proxy.AssignResources(assign_input_str)
-        assert json.loads(message[0]) == success_response
+        message = device_proxy.AssignResources(assign_input_str)
+        assert json.loads(message) == success_response
 
     # act:
         with pytest.raises(tango.DevFailed) as df:
@@ -397,7 +397,7 @@ def test_release_resources():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         device_proxy = tango_context.device
         subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_release_resources_success
-        response_code, message = device_proxy.ReleaseResources(release_input_str)
+        message = device_proxy.ReleaseResources(release_input_str)
 
         #assert
         assert json.dumps(release_all_success) in message
@@ -491,7 +491,7 @@ def test_standby():
         tango_context.device.StandByTelescope()
 
         # assert:
-        dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_SET_STANDBY_MODE)
+        dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
         csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY, [])
         sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
         subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)

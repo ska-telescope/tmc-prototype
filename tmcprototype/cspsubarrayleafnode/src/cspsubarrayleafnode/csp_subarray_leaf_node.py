@@ -721,7 +721,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device.throw_exception(exception_message, const.STR_START_SCAN_EXEC)
 
     @command(
-        dtype_in=('str'),
+        dtype_in=('str',),
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
@@ -1659,6 +1659,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
+
 
     def init_command_objects(self):
         """

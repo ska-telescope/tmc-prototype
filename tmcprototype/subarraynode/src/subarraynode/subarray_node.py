@@ -1043,6 +1043,7 @@ class SubarrayNode(SKASubarray):
             :raises: JSONDecodeError if input argument json string contains invalid value
             """
             device = self.target
+            device.is_scan_completed = False
             self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
             log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
             self.logger.info(log_msg)
@@ -1516,6 +1517,7 @@ class SubarrayNode(SKASubarray):
             # exception_message = []
             device = self.target
             argout = []
+            device.is_end_command = False
             # Validate if Subarray is in IDLE obsState
             # TODO: Need to get idea if this is required?
             # try:

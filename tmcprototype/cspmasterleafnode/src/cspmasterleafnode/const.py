@@ -6,15 +6,15 @@ EVT_PSS_HEALTH = "cspPssHealthState"
 EVT_PST_HEALTH = "cspPstHealthState"
 
 #In/out commands
-CMD_ON = "ON Command"
-CMD_OFF = "OFF Command"
-CMD_STANDBY = "Standby Command"
+CMD_ON = "On"
+CMD_OFF = "Off"
+CMD_STANDBY = "Standby"
 CMD_SET_CBF_ADMIN_MODE = "SetCbfAdminMode"
 CMD_SET_PSS_ADMIN_MODE = "SetPssAdminMode"
 CMD_SET_PST_ADMIN_MODE = "SetPstAdminMode"
 
 # String constants
-STR_INIT_SUCCESS = "SDP Master Leaf Node is initialized successfully."
+STR_INIT_SUCCESS = "CSP Master Leaf Node is initialized successfully."
 STR_CSP_CBF_HEALTH_OK = "CSP CBF health is OK."
 STR_CSP_CBF_HEALTH_DEGRADED = "CSP CBF health is DEGRADED."
 STR_CSP_CBF_HEALTH_FAILED = "CSP CBF health is FAILED."

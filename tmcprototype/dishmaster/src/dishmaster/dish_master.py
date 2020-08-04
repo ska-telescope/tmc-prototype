@@ -217,11 +217,11 @@ class DishMaster(SKAMaster):
                 self._achieved_pointing[2] = self._achieved_pointing[2] + el_increament
             else:
                 self._achieved_pointing[2] = self._achieved_pointing[2] - el_increament
-
         else:
             # Slew Aborted in between by abort command, set the pointingState to READY
             self._pointing_state = PointingState.READY
             self.logger.debug("Dish pointing state is set to READY")
+
     # PROTECTED REGION END #    //DishMaster.class_variable
 
     # -----------------
@@ -995,6 +995,7 @@ class DishMaster(SKAMaster):
 
         """
         try:
+            self.logger.info("TRACK command received on DishMaster")
             # PROTECTED REGION ID(DishMaster.Track) ENABLED START #
             self.logger.info(const.STR_TRACK_RECEIVED)
             self.preconfig_az_lim = 0.1                 #Preconfigured pointing limit in azimuth
@@ -1009,8 +1010,8 @@ class DishMaster(SKAMaster):
 
             if(float(actual_az_lim) <= self.preconfig_az_lim and
                float(actual_el_lim) <= self.preconfig_el_lim) is True:
-                #if dish is within the preconfigured limit then dish will slew slowly (TRACK).
-                # check if stopTrack command is invoked on Dish
+                #if dish is within the preconfigured limit then dish will Track.
+                # Check if stoptrack command is invoked on Dish, if not then only set the Pointingstate to TRACK
                 if not self.is_stop_track:
                     self._pointing_state = PointingState.TRACK                    # Set pointingState to TRACK Mode
                     # Inject fault in DishMaster1 if toggle_fault is enabled as a part of Subarray Isolation
