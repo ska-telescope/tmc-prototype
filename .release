@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.4"
+version = "0.2.6"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -10,10 +10,10 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.2.4
-tag=0.2.4
-tag_description=TMC to reflect changes in the observation state machine as per ADR-8.
-release_notes=This release Contains: <br/><ul><li>Updated TMC prototype to incorporate new observation states for commands as per ADR-8.</li><li>Updated TMC prototype to use 0.6.3 version of lmc-base-classes.</li><li>Refactored commands of each TMC node by inheriting commands from lmc-base-classes.</li><li>Updated unit test cases for TMC devices as per the new state model in ADR-8.</li></ul>
+release=0.2.6
+tag=0.2.6
+tag_description=Track thread implementation enhancement.
+release_notes=This release Contains: <br/><ul><li>Updated track thread implementation dishLeafNode for TRACK and STOPTRACK commands </li></ul>
 gitlab_username=mesnehal
 private_token=hUoKCf7MRKGDXKqamXGP
 

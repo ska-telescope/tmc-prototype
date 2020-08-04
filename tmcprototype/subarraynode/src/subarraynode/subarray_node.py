@@ -1043,6 +1043,7 @@ class SubarrayNode(SKASubarray):
             :raises: JSONDecodeError if input argument json string contains invalid value
             """
             device = self.target
+            device.is_scan_completed = False
             self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
             log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
             self.logger.info(log_msg)
@@ -1363,7 +1364,9 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_SDP_SCAN_INIT)
                 device._read_activity_message = const.STR_SDP_SCAN_INIT
                 # Invoke Scan command on CSP Subarray Leaf Node
+                self.logger.info("Trpe of default argin in SCAN commnd "+ str(type(argin)))
                 csp_argin = [argin]
+                self.logger.info("Trpe of default csp_argin in SCAN commnd " + str(type(csp_argin)))
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
                 self.logger.info(const.STR_CSP_SCAN_INIT)
                 device._read_activity_message = const.STR_CSP_SCAN_INIT
@@ -1516,6 +1519,7 @@ class SubarrayNode(SKASubarray):
             # exception_message = []
             device = self.target
             argout = []
+            device.is_end_command = False
             # Validate if Subarray is in IDLE obsState
             # TODO: Need to get idea if this is required?
             # try:

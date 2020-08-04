@@ -1381,6 +1381,147 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
+
+    class OnCommand(SKABaseDevice.OnCommand):
+        """
+        A class for SDP Subarray's On() command.
+        """
+        def on_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the on command has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                          callback model for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+
+            :raises: Exception if command execution throws any type of exception.
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if event.err:
+                    log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    device._read_activity_message = log
+                    self.logger.error(log)
+                else:
+                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    device._read_activity_message = log
+                    self.logger.info(log)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_RELEASE_RES_CMD_CALLBK)
+
+        def do(self):
+            """
+
+            :param argin: None.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
+            device=self.target
+            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
+            log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            self.logger.debug(log_msg)
+            return (ResultCode.OK, log_msg)
+
+    class OffCommand(SKABaseDevice.OffCommand):
+        """
+        A class for SDP master's Off() command.
+        """
+        def off_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the off command has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                          callback model for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+
+            :raises: Exception if command execution throws any type of exception.
+
+            """
+            device = self.target
+            exception_count = 0
+            exception_message = []
+
+            try:
+                if event.err:
+                    log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                    device._read_activity_message = log
+                    self.logger.error(log)
+                else:
+                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    device._read_activity_message = log
+                    self.logger.info(log)
+            except Exception as except_occurred:
+                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
+                                                                                      exception_message,
+                                                                                      exception_count,
+                                                                                      const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB)
+
+            # Throw Exception
+            if exception_count > 0:
+                device.throw_exception(exception_message, const.STR_RELEASE_RES_CMD_CALLBK)
+
+        def do(self):
+            """
+            Sets the OperatingState to Off.
+
+            :param argin: None.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
+            device=self.target
+            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
+            self.logger.debug(const.STR_OFF_CMD_SUCCESS)
+            device._read_activity_message = const.STR_OFF_CMD_SUCCESS
+            return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
 # pylint: enable=unused-argument,unused-variable
 
 # ----------

@@ -71,7 +71,7 @@ class DishLeafNode(SKABaseDevice):
                     self.logger.debug(const.STR_DISH_SHUTDOWN_MODE)
                     self._read_activity_message = const.STR_DISH_SHUTDOWN_MODE
                 elif self._dish_mode == 3:
-                    self.logger.debug(const.ERR_DISH_MODE_CB)
+                    self.logger.debug(const.STR_DISH_STANDBYLP_MODE)
                     self._read_activity_message = const.STR_DISH_STANDBYLP_MODE
                 elif self._dish_mode == 4:
                     self.logger.debug(const.STR_DISH_STANDBYFP_MODE)
@@ -404,7 +404,11 @@ class DishLeafNode(SKABaseDevice):
         :raises: Exception if error occurs in RaDec to AzEl conversion.
         """
         try:
+            self.logger.info("event_track_time In track thread outside while: " + str(self.event_track_time.is_set()))
+            log_msg="print track_thread thread name: ", str(threading.currentThread().getName()),str(threading.get_ident())
+            self.logger.info(log_msg)
             while self.event_track_time.is_set() is False:
+                self.logger.info("event_track_time In track thread inside while: " + str(self.event_track_time.is_set()))
                 # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
                 katpoint_arg = []
@@ -435,7 +439,9 @@ class DishLeafNode(SKABaseDevice):
                         break
                 else:
                     break
+                self.logger.info("event_track_time In track thread inside : " + str(self.event_track_time.is_set()))
                 time.sleep(0.05)
+                self.logger.info("event_track_time In track thread after sleep : " + str(self.event_track_time.is_set()))
                 # self._dish_proxy.pointingState = 0
         except Exception as except_occurred:
             log_msg = const.ERR_EXE_TRACK + str(except_occurred)
@@ -2024,7 +2030,6 @@ class DishLeafNode(SKABaseDevice):
                 # This elif can be removed once testing of SP-1019 is done.
                 elif device._dish_proxy.pointingState == PointingState.TRACK:
                     self.logger.debug("When pointing state is TRACK --> Do nothing")
-
                 device._read_activity_message = const.STR_TRACK_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
