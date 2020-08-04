@@ -299,7 +299,7 @@ class CentralNode(SKABaseDevice):
                 device._subarray_allocation = {}
                 device._read_activity_message = ""
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
--               device._version_id = release.version
+                device._version_id = release.version
 
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
@@ -603,10 +603,10 @@ class CentralNode(SKABaseDevice):
 
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
-                    device._leaf_device_proxy[name].command_inout(const.CMD_OFF)
                     device._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
                     log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(device._leaf_device_proxy[name])
                     self.logger.info(log_msg)
+                    device._leaf_device_proxy[name].command_inout(const.CMD_OFF)
                 except DevFailed as dev_failed:
                     [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                               exception_message,
