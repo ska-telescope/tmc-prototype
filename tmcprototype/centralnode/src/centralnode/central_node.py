@@ -20,7 +20,7 @@ import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
-from ska.base.commands import ResponseCommand, ResultCode
+from ska.base.commands import ResponseCommand, ResultCode, BaseCommand
 from ska.base.control_model import HealthState
 # Additional import
 from . import const, release
@@ -299,7 +299,8 @@ class CentralNode(SKABaseDevice):
                 device._subarray_allocation = {}
                 device._read_activity_message = ""
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
-                device._version_id = release.version
+-               device._version_id = release.version
+
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
@@ -804,7 +805,7 @@ class CentralNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    class AssignResourcesCommand(ResponseCommand):
+    class AssignResourcesCommand(BaseCommand):
         """
         A class for CentralNode's AssignResources() command.
         """
@@ -1013,7 +1014,7 @@ class CentralNode(SKABaseDevice):
 
             message = json.dumps(argout)
             self.logger.info(message)
-            return (ResultCode.OK, message)
+            return message
 
             # PROTECTED REGION END #    //  CentralNode.AssignResources
 
@@ -1037,8 +1038,8 @@ class CentralNode(SKABaseDevice):
                "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
                "The individual string should contain dish numbers in string format with "
                "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
+        dtype_out='str',
+        doc_out="information-only string",
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -1046,10 +1047,10 @@ class CentralNode(SKABaseDevice):
         AssignResources command invokes the AssignResources command on lower level devices.
         """
         handler = self.get_command_object("AssignResources")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        message = handler(argin)
+        return message
 
-    class ReleaseResourcesCommand(ResponseCommand):
+    class ReleaseResourcesCommand(BaseCommand):
         """
         A class for CentralNode's ReleaseResources() command.
         """
@@ -1155,7 +1156,7 @@ class CentralNode(SKABaseDevice):
                         }
                         message = json.dumps(argout)
                         self.logger.info(message)
-                        return (ResultCode.OK, message)
+                        return message
                     else:
                         log_msg = const.STR_LIST_RES_NOT_REL + str(res_not_released)
                         device._read_activity_message = log_msg
@@ -1205,8 +1206,8 @@ class CentralNode(SKABaseDevice):
         dtype_in="str",
         doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
                "releaseALL boolean as true and receptorIDList.",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
+        dtype_out="str",
+        doc_out="information-only string",
     )
     @DebugIt()
     def ReleaseResources(self, argin):
@@ -1215,8 +1216,8 @@ class CentralNode(SKABaseDevice):
         """
         handler = self.get_command_object("ReleaseResources")
 
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        message = handler(argin)
+        return message
 
     def init_command_objects(self):
         """
