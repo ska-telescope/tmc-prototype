@@ -1389,7 +1389,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         def on_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked command returns.
-            Checks whether the on command has been successfully invoked on SDP Subarray.
+            Checks whether the On command has been successfully invoked on SDP Subarray.
 
             :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
                           callback model for command execution.
@@ -1429,11 +1429,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                                                       exception_message,
                                                                                       exception_count,
-                                                                                      const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB)
+                                                                                      const.ERR_EXCEPT_ON_CMD_CB)
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_RELEASE_RES_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_ON_CALLBK)
 
         def do(self):
             """
@@ -1499,11 +1499,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
                                                                                       exception_message,
                                                                                       exception_count,
-                                                                                      const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB)
+                                                                                      const.ERR_EXCEPT_OFF_CMD_CB)
 
             # Throw Exception
             if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_RELEASE_RES_CMD_CALLBK)
+                device.throw_exception(exception_message, const.STR_OFF_CALLBK)
 
         def do(self):
             """
