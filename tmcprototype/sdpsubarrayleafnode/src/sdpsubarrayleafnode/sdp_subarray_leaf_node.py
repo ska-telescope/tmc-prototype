@@ -603,7 +603,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             Example:
 
-            { "scan_type": "science_A" }}
+            { "scan_type": "science_A" }
 
             :return: A tuple containing a return code and a string message indicating status.
                      The message is for information purpose only.
@@ -621,31 +621,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             exception_count = 0
             try:
-                jsonArgument = json.loads(argin)
-                sdp_arg = jsonArgument["sdp"]
-                sdpConfiguration = sdp_arg.copy()
                 log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
                 self.logger.debug(log_msg)
-                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(sdpConfiguration),
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin),
                                                               self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
-                self.logger.debug(str(sdpConfiguration))
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
                 return(ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
-
-            except ValueError as value_error:
-                log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-                self.logger.info(log_msg)
-                device._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-                exception_message.append(device._read_activity_message)
-                exception_count += 1
-
-            except KeyError as key_error:
-                log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                self.logger.error(log_msg)
-                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND
-                exception_message.append(device._read_activity_message)
-                exception_count += 1
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,

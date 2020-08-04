@@ -194,9 +194,7 @@ class TestElementDeviceData:
         sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config)
 
         expected_string_dict = {
-            "sdp": {
                 "scan_type": "science_A"
-            }
           }
         expected_string_dict = json.dumps(expected_string_dict)
         assert isinstance(sdp_cmd_data, str)
