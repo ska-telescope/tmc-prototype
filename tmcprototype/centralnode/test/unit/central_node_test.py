@@ -781,6 +781,7 @@ def raise_devfailed_exception(cmd_name):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
+
 # Mocking Devfailed exception with on SubarrayNode
 def raise_devfailed_exception_with_args(cmd_name, input_args):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
