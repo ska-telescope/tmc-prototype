@@ -374,7 +374,8 @@ def test_off_command_should_change_subarray_device_state_to_off():
         assert tango_context.device.obsState == ObsState.EMPTY
 
 
-def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources():
+@pytest.fixture(scope="function")
+def mock_lower_devices():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
@@ -386,7 +387,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         'CspSubarrayFQDN': csp_subarray1_fqdn,
         'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
         'SdpSubarrayFQDN': sdp_subarray1_fqdn,
-        'DishLeafNodePrefix' : dish_ln_prefix
+        'DishLeafNodePrefix': dish_ln_prefix
     }
 
     csp_subarray1_ln_proxy_mock = Mock()
@@ -396,30 +397,63 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     dish_ln_proxy_mock = Mock()
 
     proxies_to_mock = {
-        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
         dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        tango_context.device.On()
-        assign_input_dict = json.loads(assign_input_str)
-        tango_context.device.AssignResources(assign_input_str)
+        yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock
 
-        str_json_arg = json.dumps(assign_input_dict.get("sdp"))
-        sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, str_json_arg)
+def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources(mock_lower_devices):
+    # csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    # csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    # sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    # sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    # dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+    #
+    # dut_properties = {
+    #     'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+    #     'CspSubarrayFQDN': csp_subarray1_fqdn,
+    #     'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+    #     'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+    #     'DishLeafNodePrefix' : dish_ln_prefix
+    # }
+    #
+    # csp_subarray1_ln_proxy_mock = Mock()
+    # csp_subarray1_proxy_mock = Mock()
+    # sdp_subarray1_ln_proxy_mock = Mock()
+    # sdp_subarray1_proxy_mock = Mock()
+    # dish_ln_proxy_mock = Mock()
+    #
+    # proxies_to_mock = {
+    #     csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
+    #     csp_subarray1_fqdn : csp_subarray1_proxy_mock,
+    #     sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
+    #     sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
+    #     dish_ln_prefix + "0001": dish_ln_proxy_mock
+    # }
+    # with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+    #                        proxies_to_mock=proxies_to_mock) as tango_context:
+    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock = mock_lower_devices
+    tango_context.device.On()
+    assign_input_dict = json.loads(assign_input_str)
+    tango_context.device.AssignResources(assign_input_str)
 
-        arg_list = []
-        json_argument = {}
-        dish = {}
-        receptor_list = assign_input_dict["dish"]["receptorIDList"]
-        dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
-        json_argument[const.STR_KEY_DISH] = dish
-        arg_list.append(json.dumps(json_argument))
-        csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
-        assert tango_context.device.obsState == ObsState.RESOURCING
+    str_json_arg = json.dumps(assign_input_dict.get("sdp"))
+    sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, str_json_arg)
+
+    arg_list = []
+    json_argument = {}
+    dish = {}
+    receptor_list = assign_input_dict["dish"]["receptorIDList"]
+    dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
+    json_argument[const.STR_KEY_DISH] = dish
+    arg_list.append(json.dumps(json_argument))
+    csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
+    assert tango_context.device.obsState == ObsState.RESOURCING
 
 
 def test_assign_resource_is_completed_when_csp_and_sdp_is_idle():
