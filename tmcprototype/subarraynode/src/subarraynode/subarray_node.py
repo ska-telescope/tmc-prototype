@@ -598,9 +598,17 @@ class SubarrayNode(SKASubarray):
         argout = []
         dish = {}
         try:
+            log_msg = "argin is" + str(argin) + str(type(argin))
+            self.logger.info(log_msg)
             dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
+            log_msg = "dish is" + str(dish) + str(type(dish))
+            self.logger.info(log_msg)
             json_argument[const.STR_KEY_DISH] = dish
+            log_msg = "json_argument is" + str(json_argument) + str(type(json_argument))
+            self.logger.info(log_msg)
             arg_list.append(json.dumps(json_argument))
+            log_msg = "arg_list is" + str(arg_list) + str(type(arg_list))
+            self.logger.info(log_msg)
             self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
