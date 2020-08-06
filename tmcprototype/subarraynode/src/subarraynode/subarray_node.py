@@ -72,14 +72,15 @@ class ElementDeviceData:
     @staticmethod
     def build_up_sdp_cmd_data(scan_config):
         scan_config = scan_config.copy()
-	log_msg = "scan_config" + str(scan_config) + str(type(scan_config))
-	self.logger.info(log_msg)
+        log_msg = "scan_config" + str(scan_config) + str(type(scan_config))
+        # self.logger.info(log_msg)
         sdp_scan_config = scan_config.get("sdp", {})
-	log_msg = "sdp_scan_config" + str(sdp_scan_config) + str(type(sdp_scan_config))
-	self.logger.info(log_msg)
+        log_msg = "sdp_scan_config" + str(sdp_scan_config) + str(type(sdp_scan_config))
+        # self.logger.info(log_msg)
         if sdp_scan_config:
             scan_type = sdp_scan_config.get("scan_type")
-	    
+            log_msg = "scan_type" + str(scan_type) + str(type(scan_type))
+            # self.logger.info(log_msg)
             if not scan_type:
                 raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
         else:
@@ -711,6 +712,8 @@ class SubarrayNode(SKASubarray):
 
     def _configure_sdp(self, scan_configuration):
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
+        log_msg = "cmd_data is" + cmd_data + str(type(cmd_data))
+        self.logger.info(log_msg)
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
@@ -1058,6 +1061,8 @@ class SubarrayNode(SKASubarray):
             """
             device = self.target
             device.is_scan_completed = False
+            device.is_release_resources = False
+            device.is_restart_command = False
             self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
             log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
             self.logger.info(log_msg)
@@ -1106,6 +1111,8 @@ class SubarrayNode(SKASubarray):
             device.is_end_command = False
             exception_message = []
             exception_count = 0
+            device.is_release_resources = False
+            device.is_restart_command = False
             try:
                 self.logger.info("End command invoked on SubarrayNode.")
                 device._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
@@ -1150,6 +1157,8 @@ class SubarrayNode(SKASubarray):
             device = self.target
             exception_message = []
             exception_count = 0
+            device.is_release_resources = False
+            device.is_restart_command = False
             try:
                 device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
                 self.logger.info(const.STR_CMD_ABORT_INV_SDP)
@@ -1216,6 +1225,8 @@ class SubarrayNode(SKASubarray):
             exception_count = 0
             log_msg = "Track:", argin
             self.logger.debug(log_msg)
+            device.is_restart_command = False
+            device.is_release_resources = False
             try:
                 device._read_activity_message = const.STR_TRACK_IP_ARG + argin
                 cmd_input = [argin]
@@ -1293,6 +1304,8 @@ class SubarrayNode(SKASubarray):
             device = self.target
             exception_message = []
             exception_count = 0
+            device.is_restart_command = False
+            device.is_release_resources = False
             try:
                 device._csp_subarray_ln_proxy.On()
                 device._sdp_subarray_ln_proxy.On()
@@ -1324,6 +1337,8 @@ class SubarrayNode(SKASubarray):
             device = self.target
             exception_message = []
             exception_count = 0
+            device.is_restart_command = False
+            device.is_release_resources = False
             try:
                 device._csp_subarray_ln_proxy.Off()
                 device._sdp_subarray_ln_proxy.Off()
@@ -1366,6 +1381,8 @@ class SubarrayNode(SKASubarray):
             """
             device = self.target
             device.is_scan_completed = False
+            device.is_release_resources = False
+            device.is_restart_command = False
             exception_count = 0
             exception_message = []
             try:
@@ -1432,6 +1449,8 @@ class SubarrayNode(SKASubarray):
             device = self.target
             exception_count = 0
             exception_message = []
+            device.is_release_resources = False
+            device.is_restart_command = False
 
             try:
                 if device.scan_thread:
@@ -1532,6 +1551,8 @@ class SubarrayNode(SKASubarray):
             device = self.target
             argout = []
             device.is_end_command = False
+            device.is_release_resources = False
+            device.is_restart_command = False
             # Validate if Subarray is in IDLE obsState
             # TODO: Need to get idea if this is required?
             # try:
@@ -1695,6 +1716,7 @@ class SubarrayNode(SKASubarray):
             """
             device = self.target
             device.is_release_resources = False
+            device.is_restart_command = False
             try:
                 assert device._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
             except AssertionError as assert_err:
@@ -1743,6 +1765,7 @@ class SubarrayNode(SKASubarray):
             device = self.target
             exception_message = []
             exception_count = 0
+            device.is_release_resources = False
             try:
                 self.logger.info("Restart command invoked on SubarrayNode.")
                 # As a part of Restart clear the attributes on SubarrayNode

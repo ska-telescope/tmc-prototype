@@ -621,10 +621,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             exception_count = 0
             try:
-                log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
+                log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin + str(type(argin))
                 self.logger.debug(log_msg)
-                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin),
-                                                              self.configure_cmd_ended_cb)
+                log_msg = "json dumps argin" + json.dumps(argin) + str(type(json.dumps(argin)))
+                self.logger.info(log_msg)
+                # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin),
+                #                                               self.configure_cmd_ended_cb)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
+                                                                self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
                 return(ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
