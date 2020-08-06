@@ -72,9 +72,14 @@ class ElementDeviceData:
     @staticmethod
     def build_up_sdp_cmd_data(scan_config):
         scan_config = scan_config.copy()
+	log_msg = "scan_config" + str(scan_config) + str(type(scan_config))
+	self.logger.info(log_msg)
         sdp_scan_config = scan_config.get("sdp", {})
+	log_msg = "sdp_scan_config" + str(sdp_scan_config) + str(type(sdp_scan_config))
+	self.logger.info(log_msg)
         if sdp_scan_config:
             scan_type = sdp_scan_config.get("scan_type")
+	    
             if not scan_type:
                 raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
         else:
@@ -609,7 +614,8 @@ class SubarrayNode(SKASubarray):
             arg_list.append(json.dumps(json_argument))
             log_msg = "arg_list is" + str(arg_list) + str(type(arg_list))
             self.logger.info(log_msg)
-            self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
+            # self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
+            self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:
