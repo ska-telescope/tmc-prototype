@@ -232,8 +232,6 @@ class SubarrayNode(SKASubarray):
             self.logger.info(log_msg)
             if not evt.err:
                 self._observetion_state = evt.attr_value.value
-                log_msg = 'Observation State Attribute value is: ' + str(self._observetion_state)
-                self.logger.info(log_msg)
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa_obs_state = self._observetion_state
                     self._read_activity_message = const.STR_CSP_SUBARRAY_OBS_STATE + str(
@@ -271,6 +269,26 @@ class SubarrayNode(SKASubarray):
         pointing_state_count_ready = 0
         log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
         self.logger.info(log_msg)
+        log_msg = "self._csp_sa_obs_state is: " + str(self._csp_sa_obs_state)  + str(type(self._csp_sa_obs_state))
+        self.logger.info(log_msg)
+        log_msg = "self._sdp_sa_obs_state is: " + str(self._sdp_sa_obs_state) + str(type(self._sdp_sa_obs_state))
+        self.logger.info(log_msg)
+        log_msg = "self.is_release_resources: " + str(self.is_release_resources)
+        self.logger.info(log_msg)
+        log_msg = "self.is_restart_command: " + str(self.is_restart_command)
+        self.logger.info(log_msg)
+        log_msg = "self.is_abort_command: " + str(self.is_abort_command)
+        self.logger.info(log_msg)
+        log_msg = "self.is_scan_completed: " + str(self.is_scan_completed)
+        self.logger.info(log_msg)
+        log_msg = "self.is_end_command: " + str(self.is_end_command)
+        self.logger.info(log_msg)
+
+        log_msg = "test is _csp_sa_obs_state: " + str((self._csp_sa_obs_state == ObsState.ABORTED))
+        self.logger.info(log_msg)
+        log_msg = "test is _sdp_sa_obs_state: " + str((self._sdp_sa_obs_state == ObsState.ABORTED))
+        self.logger.info(log_msg)
+
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
@@ -278,8 +296,7 @@ class SubarrayNode(SKASubarray):
                 pointing_state_count_slew = pointing_state_count_slew + 1
             elif value == PointingState.READY:
                 pointing_state_count_ready = pointing_state_count_ready + 1
-        if self._csp_sa_obs_state == ObsState.EMPTY and self._sdp_sa_obs_state ==\
-                ObsState.EMPTY:
+        if ((self._csp_sa_obs_state == ObsState.EMPTY) and (self._sdp_sa_obs_state == ObsState.EMPTY)):
             if self.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
                 self.release_obj.succeeded()
@@ -287,27 +304,25 @@ class SubarrayNode(SKASubarray):
                 self.logger.info("Calling Restart command succeeded() method")
                 self.restart_obj.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
-        elif self._csp_sa_obs_state == ObsState.ABORTED and self._sdp_sa_obs_state == \
-                ObsState.ABORTED:
+        elif ((self._csp_sa_obs_state == ObsState.ABORTED) and (self._sdp_sa_obs_state == ObsState.ABORTED)):
             if self.is_abort_command:
                 self.logger.info("Calling ABORT command succeeded() method")
                 self.abort_obj.succeeded()
-        elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
-                ObsState.READY:
+        elif ((self._csp_sa_obs_state == ObsState.READY) and (self._sdp_sa_obs_state == ObsState.READY)):
             log_msg = "Pointing state in track counts = " + str(pointing_state_count_track)
             self.logger.debug(log_msg)
             log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
             self.logger.debug(log_msg)
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                if self.is_scan_completed:
-                    self.logger.info("Calling EndScan command succeeded() method")
-                    self.endscan_obj.succeeded()
-                else:
-                    # Configure command success
-                    self.logger.info("Calling Configure command succeeded() method")
-                    self.configure_obj.succeeded()
-        elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
-                ObsState.IDLE:
+                if not self.is_abort_command:
+                    if self.is_scan_completed:
+                        self.logger.info("Calling EndScan command succeeded() method")
+                        self.endscan_obj.succeeded()
+                    else:
+                        # Configure command success
+                        self.logger.info("Calling Configure command succeeded() method")
+                        self.configure_obj.succeeded()
+        elif ((self._csp_sa_obs_state == ObsState.IDLE) and (self._sdp_sa_obs_state == ObsState.IDLE)):
             if self.is_end_command:
                 if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                     # End command success
@@ -335,6 +350,7 @@ class SubarrayNode(SKASubarray):
             #         # self._obs_state = ObsState.IDLE
             #         print("Calling AssignResource command succeeded() method")
             #         self.assign_obj.succeeded()
+        self.logger.info("calculate_observation_state got executed.")
 
     def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
         log_msg = read_actvity_msg + str(exception)
@@ -1063,6 +1079,7 @@ class SubarrayNode(SKASubarray):
             device.is_scan_completed = False
             device.is_release_resources = False
             device.is_restart_command = False
+            device.is_abort_command = False
             self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
             log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
             self.logger.info(log_msg)
@@ -1113,6 +1130,7 @@ class SubarrayNode(SKASubarray):
             exception_count = 0
             device.is_release_resources = False
             device.is_restart_command = False
+            device.is_abort_command = False
             try:
                 self.logger.info("End command invoked on SubarrayNode.")
                 device._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
@@ -1160,6 +1178,9 @@ class SubarrayNode(SKASubarray):
             device.is_release_resources = False
             device.is_restart_command = False
             try:
+                if device.scan_thread:
+                    if device.scan_thread.is_alive():
+                        device.scan_thread.cancel()  # stop timer when EndScan command is called
                 device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
                 self.logger.info(const.STR_CMD_ABORT_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
@@ -1227,6 +1248,7 @@ class SubarrayNode(SKASubarray):
             self.logger.debug(log_msg)
             device.is_restart_command = False
             device.is_release_resources = False
+            device.is_abort_command = False
             try:
                 device._read_activity_message = const.STR_TRACK_IP_ARG + argin
                 cmd_input = [argin]
@@ -1306,6 +1328,7 @@ class SubarrayNode(SKASubarray):
             exception_count = 0
             device.is_restart_command = False
             device.is_release_resources = False
+            device.is_abort_command = False
             try:
                 device._csp_subarray_ln_proxy.On()
                 device._sdp_subarray_ln_proxy.On()
@@ -1339,6 +1362,7 @@ class SubarrayNode(SKASubarray):
             exception_count = 0
             device.is_restart_command = False
             device.is_release_resources = False
+            device.is_abort_command = False
             try:
                 device._csp_subarray_ln_proxy.Off()
                 device._sdp_subarray_ln_proxy.Off()
@@ -1383,6 +1407,7 @@ class SubarrayNode(SKASubarray):
             device.is_scan_completed = False
             device.is_release_resources = False
             device.is_restart_command = False
+            device.is_abort_command = False
             exception_count = 0
             exception_message = []
             try:
@@ -1451,6 +1476,7 @@ class SubarrayNode(SKASubarray):
             exception_message = []
             device.is_release_resources = False
             device.is_restart_command = False
+            device.is_abort_command = False
 
             try:
                 if device.scan_thread:
@@ -1553,6 +1579,7 @@ class SubarrayNode(SKASubarray):
             device.is_end_command = False
             device.is_release_resources = False
             device.is_restart_command = False
+            device.is_abort_command = False
             # Validate if Subarray is in IDLE obsState
             # TODO: Need to get idea if this is required?
             # try:
@@ -1717,6 +1744,7 @@ class SubarrayNode(SKASubarray):
             device = self.target
             device.is_release_resources = False
             device.is_restart_command = False
+            device.is_abort_command = False
             try:
                 assert device._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
             except AssertionError as assert_err:
@@ -1766,6 +1794,7 @@ class SubarrayNode(SKASubarray):
             exception_message = []
             exception_count = 0
             device.is_release_resources = False
+            device.is_abort_command = False
             try:
                 self.logger.info("Restart command invoked on SubarrayNode.")
                 # As a part of Restart clear the attributes on SubarrayNode
