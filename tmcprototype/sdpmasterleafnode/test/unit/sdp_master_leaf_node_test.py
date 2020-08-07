@@ -25,74 +25,70 @@ def tango_context():
 
 
 @pytest.fixture(scope="function")
-def event_subscription(mock_sdp_subarray):
+def event_subscription(mock_sdp_master):
     event_subscription_map = {}
-    mock_sdp_subarray[1].command_inout_asynch.side_effect = (
+    mock_sdp_master[1].command_inout_asynch.side_effect = (
         lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
 
 
 @pytest.fixture(scope="function")
-def mock_sdp_subarray():
+def mock_sdp_master():
     sdp_master_fqdn = 'mid_sdp/elt/master'
     dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
-    sdp_proxy_mock = Mock()
-    proxies_to_mock = {sdp_master_fqdn: sdp_proxy_mock}
+    sdp_master_proxy_mock = Mock()
+    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        yield tango_context.device, sdp_proxy_mock
+        yield tango_context.device, sdp_master_proxy_mock
 
 
-def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_subarray):
-    device_proxy = mock_sdp_subarray[0]
-    sdp_proxy_mock = mock_sdp_subarray[1]
+def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master):
+    device_proxy,sdp_master_proxy_mock = mock_sdp_master
     # act:
     device_proxy.On()
     # assert:
-    sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
+    sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
                                                            any_method(with_name='on_cmd_ended_cb'))
 
 
-def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_subarray):
+def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
-    sdp_proxy_mock = mock_sdp_subarray[1]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
     # act:
     device_proxy.Off()
     # assert:
     assert device_proxy.activityMessage in const.STR_OFF_CMD_SUCCESS
-    sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
+    sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
                                                                any_method(with_name='off_cmd_ended_cb'))
 
 
-def test_standby_should_command_sdp_master_leaf_node_to_standby(mock_sdp_subarray):
+def test_standby_should_command_sdp_master_leaf_node_to_standby(mock_sdp_master):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
-    sdp_proxy_mock = mock_sdp_subarray[1]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     device_proxy.Standby()
     # assert:
-    sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY,
+    sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY,
                                                            any_method(with_name='standby_cmd_ended_cb'))
 
 
-def test_disable_should_command_sdp_master_leaf_node_to_disable(mock_sdp_subarray):
+def test_disable_should_command_sdp_master_leaf_node_to_disable(mock_sdp_master):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
-    sdp_proxy_mock = mock_sdp_subarray[1]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     device_proxy.Disable()
     # assert:
     assert device_proxy.activityMessage in const.STR_DISABLE_CMS_SUCCESS
-    sdp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Disable,
+    sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Disable,
                                                            any_method(with_name='disable_cmd_ended_cb'))
 
 
-def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_sdp_subarray):
+def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_sdp_master):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
     device_proxy.DevState = DevState.FAULT
     # act:
@@ -101,9 +97,9 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_s
     # assert:
     assert "Failed to invoke Disable command on SdpMasterLeafNode." in str(df)
 
-def test_on_should_command_with_callback_method(mock_sdp_subarray, event_subscription):
+def test_on_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
@@ -111,9 +107,9 @@ def test_on_should_command_with_callback_method(mock_sdp_subarray, event_subscri
     # assert:
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
-def test_off_should_command_with_callback_method(mock_sdp_subarray, event_subscription):
+def test_off_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
     # act:
     device_proxy.Off()
@@ -122,9 +118,9 @@ def test_off_should_command_with_callback_method(mock_sdp_subarray, event_subscr
     # assert:
     assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
 
-def test_disable_should_command_with_callback_method(mock_sdp_subarray, event_subscription):
+def test_disable_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     device_proxy.Disable()
     dummy_event = command_callback(const.CMD_Disable)
@@ -133,9 +129,9 @@ def test_disable_should_command_with_callback_method(mock_sdp_subarray, event_su
     assert const.STR_COMMAND + const.CMD_Disable in device_proxy.activityMessage
 
 
-def test_standby_should_command_with_callback_method(mock_sdp_subarray, event_subscription):
+def test_standby_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     device_proxy.Standby()
     dummy_event = command_callback(const.CMD_STANDBY)
@@ -144,9 +140,9 @@ def test_standby_should_command_with_callback_method(mock_sdp_subarray, event_su
     assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
 
 
-def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarray, event_subscription):
+def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     device_proxy.On()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
@@ -155,9 +151,9 @@ def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarr
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subarray, event_subscription):
+def test_off_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
     # act:
     device_proxy.Off()
@@ -167,9 +163,9 @@ def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subar
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
-def test_disable_should_command_with_callback_method_with_event_error(mock_sdp_subarray, event_subscription):
+def test_disable_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     device_proxy.Disable()
     dummy_event = command_callback_with_event_error(const.CMD_Disable)
@@ -178,9 +174,9 @@ def test_disable_should_command_with_callback_method_with_event_error(mock_sdp_s
     assert const.ERR_INVOKING_CMD + const.CMD_Disable in device_proxy.activityMessage
 
 
-def test_standby_should_command_with_callback_method_with_event_error(mock_sdp_subarray, event_subscription):
+def test_standby_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     device_proxy.Standby()
     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
@@ -188,9 +184,9 @@ def test_standby_should_command_with_callback_method_with_event_error(mock_sdp_s
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
 
-def test_on_should_command_with_callback_method_with_command_error(mock_sdp_subarray, event_subscription):
+def test_on_should_command_with_callback_method_with_command_error(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     with pytest.raises(Exception) :
         device_proxy.On()
@@ -199,9 +195,9 @@ def test_on_should_command_with_callback_method_with_command_error(mock_sdp_suba
     # assert:
     assert const.ERR_EXCEPT_ON_CMD_CB in device_proxy.activityMessage
 
-def test_off_should_command_with_callback_method_with_command_error(mock_sdp_subarray, event_subscription):
+def test_off_should_command_with_callback_method_with_command_error(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
     # act:
     with pytest.raises(Exception) :
@@ -211,9 +207,9 @@ def test_off_should_command_with_callback_method_with_command_error(mock_sdp_sub
     # assert:
     assert const.ERR_EXCEPT_OFF_CMD_CB in device_proxy.activityMessage
 
-def test_disable_should_command_with_callback_method_with_command_error(mock_sdp_subarray, event_subscription):
+def test_disable_should_command_with_callback_method_with_command_error(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     with pytest.raises(Exception) :
         device_proxy.Disable()
@@ -223,9 +219,9 @@ def test_disable_should_command_with_callback_method_with_command_error(mock_sdp
     assert const.ERR_EXCEPT_DISABLE_CMD_CB in device_proxy.activityMessage
 
 
-def test_standby_should_command_with_callback_method_with_command_error(mock_sdp_subarray, event_subscription):
+def test_standby_should_command_with_callback_method_with_command_error(mock_sdp_master, event_subscription):
     # arrange:
-    device_proxy = mock_sdp_subarray[0]
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
     # act:
     with pytest.raises(Exception) :
         device_proxy.Standby()
