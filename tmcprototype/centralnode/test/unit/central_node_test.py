@@ -49,6 +49,61 @@ with open(path, 'r') as f:
     release_invalid_key=f.read()
 
 
+@pytest.fixture(scope = 'function')
+def mock_subarraynode_device():
+    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    initial_dut_properties = {
+        'TMMidSubarrayNodes': subarray1_fqdn
+    }
+
+    event_subscription_map = {}
+    subarray1_device_proxy_mock = Mock()
+    subarray1_device_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    proxies_to_mock = {
+        subarray1_fqdn: subarray1_device_proxy_mock
+    }
+
+    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        yield tango_context.device, subarray1_device_proxy_mock, subarray1_fqdn, event_subscription_map
+
+
+@pytest.fixture(scope='function')
+def mock_central_lower_devices1():
+    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
+    sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
+    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
+    dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
+
+    dut_properties = {
+        'DishLeafNodePrefix': dish_leaf_fqdn_prefix,
+        'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
+        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
+        'TMMidSubarrayNodes': subarray1_fqdn,
+        'NumDishes': len(dish_device_ids)
+    }
+    # For subarray node and dish leaf node proxy creation MagicMock is used instead of Mock because when
+    # proxy inout is called it returns list of resources allocated where length of list need to be evaluated
+    # but Mock does not support len function for returned object. Hence MagicMock which is a superset of
+    # Mock is used which supports this facility.
+    dish_ln1_proxy_mock = MagicMock()
+    csp_master_ln_proxy_mock = Mock()
+    sdp_master_ln_proxy_mock = Mock()
+    subarray1_proxy_mock = MagicMock()
+    proxies_to_mock = {
+        dish_leaf_fqdn_prefix + "0001": dish_ln1_proxy_mock,
+        csp_master_ln_fqdn: csp_master_ln_proxy_mock,
+        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
+        subarray1_fqdn: subarray1_proxy_mock
+    }
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        yield tango_context.device, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock
+
+
 @pytest.fixture( scope="function",
     params=[HealthState.DEGRADED, HealthState.OK, HealthState.UNKNOWN, HealthState.FAILED])
 def central_node_test_info(request):
@@ -273,30 +328,14 @@ def test_assign_resources():
     assert json.loads(message) == success_response
 
 
-def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception():
-    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dut_properties = {
-        'TMMidSubarrayNodes': subarray1_fqdn
-    }
-
-    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
-    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
-    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
-    # which supports this facility.
-    subarray1_proxy_mock = MagicMock()
+def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(mock_subarraynode_device):
+    device_proxy, subarray1_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
     subarray1_proxy_mock.DevState = DevState.OFF
-    proxies_to_mock = {
-        subarray1_fqdn: subarray1_proxy_mock
-    }
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
-
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.AssignResources(assign_input_str)
-
-        # assert:
-        assert "Error occurred while assigning resources to the Subarray" in str(df)
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.AssignResources(assign_input_str)
+    # assert:
+    assert "Error occurred while assigning resources to the Subarray" in str(df)
 
 
 def test_assign_resources_invalid_json_value():
@@ -433,8 +472,7 @@ def test_release_resources_should_raise_devfailed_exception():
 
 def test_release_resources_invalid_json_value():
     # act
-    with fake_tango_system(CentralNode) \
-            as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(assign_release_invalid_str)
 
@@ -444,197 +482,71 @@ def test_release_resources_invalid_json_value():
 
 def test_release_resources_invalid_key():
     # act
-    with fake_tango_system(CentralNode) \
-            as tango_context:
+    with fake_tango_system(CentralNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(release_invalid_key)
         # assert:
         assert "JSON key not found" in str(df.value)
 
 
-def test_standby():
+def test_standby(mock_central_lower_devices1):
     # arrange:
-    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
-    sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
-    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
-    dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
-
-    dut_properties = {
-        'DishLeafNodePrefix': dish_leaf_fqdn_prefix,
-        'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
-        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
-        'TMMidSubarrayNodes': subarray1_fqdn,
-        'NumDishes': len(dish_device_ids)
-    }
-
-    # For subarray node and dish leaf node proxy creation MagicMock is used instead of Mock because when
-    # proxy inout is called it returns list of resources allocated where length of list need to be evaluated
-    # but Mock does not support len function for returned object. Hence MagicMock which is a superset of
-    # Mock is used which supports this facility.
-    dish_ln1_proxy_mock = MagicMock()
-    csp_master_ln_proxy_mock = Mock()
-    sdp_master_ln_proxy_mock = Mock()
-    subarray1_proxy_mock = MagicMock()
-    proxies_to_mock = {
-        dish_leaf_fqdn_prefix + "0001": dish_ln1_proxy_mock,
-        csp_master_ln_fqdn: csp_master_ln_proxy_mock,
-        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
-        subarray1_fqdn: subarray1_proxy_mock
-    }
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        tango_context.device.StartUpTelescope()
-        assert_activity_message(tango_context.device, const.STR_ON_CMD_ISSUED)
-        assert tango_context.device.state() == DevState.ON
-        tango_context.device.StandByTelescope()
-
-        # assert:
-        dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
-        csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY, [])
-        sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
-        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
-        assert_activity_message(tango_context.device, const.STR_STANDBY_CMD_ISSUED)
-        assert tango_context.device.state() == DevState.OFF
-
-
-def test_standby_should_raise_devfailed_exception():
-    # arrange:
-    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
-    sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
-    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
-    dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
-
-    dut_properties = {
-        'DishLeafNodePrefix': dish_leaf_fqdn_prefix,
-        'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
-        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
-        'TMMidSubarrayNodes': subarray1_fqdn,
-        'NumDishes': len(dish_device_ids)
-    }
-
-    # For subarray node and dish leaf node proxy creation MagicMock is used instead of Mock because when
-    # proxy inout is called it returns list of resources allocated where length of list need to be evaluated
-    # but Mock does not support len function for returned object. Hence MagicMock which is a superset of
-    # Mock is used which supports this facility.
-    dish_ln1_proxy_mock = MagicMock()
-    csp_master_ln_proxy_mock = Mock()
-    sdp_master_ln_proxy_mock = Mock()
-    subarray1_proxy_mock = MagicMock()
-    proxies_to_mock = {
-        dish_leaf_fqdn_prefix + "0001": dish_ln1_proxy_mock,
-        csp_master_ln_fqdn: csp_master_ln_proxy_mock,
-        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
-        subarray1_fqdn: subarray1_proxy_mock
-    }
-    dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
-    sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StandByTelescope()
+    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices1
+    # act:
+    device_proxy.StartUpTelescope()
+    assert_activity_message(device_proxy, const.STR_ON_CMD_ISSUED)
+    assert device_proxy.state() == DevState.ON
+    device_proxy.StandByTelescope()
 
     # assert:
-        assert const.ERR_EXE_STANDBY_CMD in tango_context.device.activityMessage
-        assert tango_context.device.state() == DevState.FAULT
+    dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
+    csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY, [])
+    sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
+    subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
+    assert_activity_message(device_proxy, const.STR_STANDBY_CMD_ISSUED)
+    assert device_proxy.state() == DevState.OFF
 
 
-def test_startup():
-    # arrange:
-    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
-    sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
-    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
-    dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
-
-    dut_properties = {
-        'DishLeafNodePrefix': dish_leaf_fqdn_prefix,
-        'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
-        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
-        'TMMidSubarrayNodes': subarray1_fqdn,
-        'NumDishes': len(dish_device_ids)
-    }
-
-    # For subarray node and dish leaf node proxy creation MagicMock is used instead of Mock because when
-    # proxy inout is called it returns list of resources allocated where length of list need to be evaluated
-    # but Mock does not support len function for returned object. Hence MagicMock which is a superset of
-    # Mock is used which supports this facility.
-    dish_ln1_proxy_mock = MagicMock()
-    csp_master_ln_proxy_mock = Mock()
-    sdp_master_ln_proxy_mock = Mock()
-    subarray1_proxy_mock = MagicMock()
-    proxies_to_mock = {
-        dish_leaf_fqdn_prefix + "0001": dish_ln1_proxy_mock,
-        csp_master_ln_fqdn: csp_master_ln_proxy_mock,
-        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
-        subarray1_fqdn: subarray1_proxy_mock
-    }
-
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        tango_context.device.StartUpTelescope()
-
-
-        # assert:
-        dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_SET_OPERATE_MODE)
-        csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
-        sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
-        subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
-        assert_activity_message(tango_context.device, const.STR_ON_CMD_ISSUED)
-        assert tango_context.device.state() == DevState.ON
-
-
-def test_startup_should_raise_devfailed_exception():
-    # arrange:
-    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
-    sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
-    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dish_device_ids = [str(i).zfill(1) for i in range(1, 4)]
-    dish_leaf_fqdn_prefix = "ska_mid/tm_leaf_node/d"
-
-    dut_properties = {
-        'DishLeafNodePrefix': dish_leaf_fqdn_prefix,
-        'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn,
-        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
-        'TMMidSubarrayNodes': subarray1_fqdn,
-        'NumDishes': len(dish_device_ids)
-    }
-
-    # For subarray node and dish leaf node proxy creation MagicMock is used instead of Mock because when
-    # proxy inout is called it returns list of resources allocated where length of list need to be evaluated
-    # but Mock does not support len function for returned object. Hence MagicMock which is a superset of
-    # Mock is used which supports this facility.
-    dish_ln1_proxy_mock = MagicMock()
-    csp_master_ln_proxy_mock = Mock()
-    sdp_master_ln_proxy_mock = Mock()
-    subarray1_proxy_mock = MagicMock()
-    proxies_to_mock = {
-        dish_leaf_fqdn_prefix + "0001": dish_ln1_proxy_mock,
-        csp_master_ln_fqdn: csp_master_ln_proxy_mock,
-        sdp_master_ln_fqdn: sdp_master_ln_proxy_mock,
-        subarray1_fqdn: subarray1_proxy_mock
-    }
+def test_standby_should_raise_devfailed_exception(mock_central_lower_devices1):
+    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices1
     dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StartUpTelescope()
+    with pytest.raises(tango.DevFailed):
+        device_proxy.StandByTelescope()
 
-        # assert:
-        assert const.ERR_EXE_ON_CMD in tango_context.device.activityMessage
-        assert tango_context.device.state() == DevState.FAULT
+    # assert:
+    assert const.ERR_EXE_STANDBY_CMD in device_proxy.activityMessage
+    assert device_proxy.state() == DevState.FAULT
+
+
+def test_startup(mock_central_lower_devices1):
+    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices1
+    # act:
+    device_proxy.StartUpTelescope()
+    # assert:
+    dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_SET_OPERATE_MODE)
+    csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+    sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+    subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+    assert_activity_message(device_proxy, const.STR_ON_CMD_ISSUED)
+    assert device_proxy.state() == DevState.ON
+
+
+def test_startup_should_raise_devfailed_exception(mock_central_lower_devices1):
+    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices1
+    dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
+    sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed):
+        device_proxy.StartUpTelescope()
+
+    # assert:
+    assert const.ERR_EXE_ON_CMD in device_proxy.activityMessage
+    assert device_proxy.state() == DevState.FAULT
 
 
 # Test cases for Telescope Health State
@@ -682,31 +594,13 @@ def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_star
         assert tango_context.device.telescopeHealthState == HealthState.OK
 
 
-def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start():
-    # arrange:
-    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start(mock_subarraynode_device):
+    device_proxy , subarray1_device_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
     subarray1_health_attribute = 'healthState'
-    initial_dut_properties = {
-        'TMMidSubarrayNodes': subarray1_fqdn
-    }
-
-    event_subscription_map = {}
-    subarray1_device_proxy_mock = Mock()
-    subarray1_device_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args,
-               **kwargs: event_subscription_map.update({attr_name: callback}))
-
-    proxies_to_mock = {
-        subarray1_fqdn: subarray1_device_proxy_mock
-    }
-
-    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        # act:
-        dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
-        event_subscription_map[subarray1_health_attribute](dummy_event)
-
-        # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.OK
+    dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
+    event_subscription_map[subarray1_health_attribute](dummy_event)
+    # assert:
+    assert device_proxy.telescopeHealthState == HealthState.OK
 
 
 def test_telescope_health_state_is_ok_when_subarray2_leaf_node_is_ok_after_start():
