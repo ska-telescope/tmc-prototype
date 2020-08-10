@@ -19,16 +19,15 @@ from __future__ import absolute_import
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 import random
 import string
-from concurrent.futures import ThreadPoolExecutor
 import json
 import threading
 # Tango imports
 import tango
-from tango import DebugIt, DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
+from tango import DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
 
 # Additional import
-from . import const, release, assign_resources
+from . import const, release, assign_resources, release_all_resources
 from .const import PointingState
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -36,7 +35,7 @@ from ska.base import SKASubarray
 from subarraynode.exceptions import InvalidObsStateError
 from ska_telmodel.csp import interface
 
-__all__ = ["SubarrayNode", "main", "assign_resources"]
+__all__ = ["SubarrayNode", "main", "assign_resources", "release_all_resources"]
 
 csp_interface_version = 0
 sdp_interface_version = 0
@@ -156,7 +155,7 @@ class SubarrayNode(SKASubarray):
         args = (self, self.state_model, self.logger)
         self.configure_obj = self.ConfigureCommand(*args)
         self.assign_obj = assign_resources.AssignResourcesCommand(*args)
-        self.release_obj = self.ReleaseAllResourcesCommand(*args)
+        self.release_obj = release_all_resources.ReleaseAllResourcesCommand(*args)
         self.scan_obj = self.ScanCommand(*args)
         self.endscan_obj = self.EndScanCommand(*args)
         self.end_obj = self.EndCommand(*args)
@@ -411,78 +410,78 @@ class SubarrayNode(SKASubarray):
                 self.logger.error(log_message )
                 self._read_activity_message = log_message
 
-    def remove_receptors_in_group(self):
-        """
-        Deletes tango group of the resources allocated in the subarray.
-
-        Note: Currently there are only receptors allocated so the group contains only receptor ids.
-
-        :param argin:
-            DevVoid
-        :return:
-            DevVoid
-        """
-        if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
-            return
-        try:
-            self._dish_leaf_node_group.remove_all()
-            log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
-            self.logger.debug(log_message)
-            self._read_activity_message = log_message
-            self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
-        except DevFailed as dev_failed:
-            log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
-            self.logger.error(log_message)
-            self._read_activity_message = log_message
-            return
-
-        self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
-        self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
-
-        # clearing dictonaries and lists
-        self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
-        self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
-        self._health_event_id.clear()
-        self._remove_subarray_dish_lns_health_states()
-        self.dishPointingStateMap.clear()
-        self._pointing_state_event_id.clear()
-        self._dish_leaf_node_proxy.clear()
-        self._receptor_id_list.clear()
-        self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
-
-    def release_csp_resources(self):
-        """
-            This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
-            Node.
-
-            :param argin: DevVoid
-
-            :return: DevVoid
-
-        """
-        try:
-            self._csp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
-            self.logger.info(const.STR_RELEASE_ALL_RESOURCES_CSP_SALN)
-        except DevFailed as df:
-            self.logger.error(const.ERR_CSP_CMD)
-            self.logger.debug(df)
-
-    def release_sdp_resources(self):
-        """
-            This function invokes releaseAllResources command on SDP Subarray via SDP Subarray Leaf Node.
-
-            :param argin: DevVoid
-
-            :return: DevVoid
-
-        """
-        try:
-            self._sdp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
-            self.logger.info(const.STR_RELEASE_ALL_RESOURCES_SDP_SALN)
-
-        except DevFailed as df:
-            self.logger.error(const.ERR_SDP_CMD)
-            self.logger.debug(df)
+    # def remove_receptors_in_group(self):
+    #     """
+    #     Deletes tango group of the resources allocated in the subarray.
+    #
+    #     Note: Currently there are only receptors allocated so the group contains only receptor ids.
+    #
+    #     :param argin:
+    #         DevVoid
+    #     :return:
+    #         DevVoid
+    #     """
+    #     if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
+    #         return
+    #     try:
+    #         self._dish_leaf_node_group.remove_all()
+    #         log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
+    #         self.logger.debug(log_message)
+    #         self._read_activity_message = log_message
+    #         self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
+    #     except DevFailed as dev_failed:
+    #         log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
+    #         self.logger.error(log_message)
+    #         self._read_activity_message = log_message
+    #         return
+    #
+    #     self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
+    #     self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
+    #
+    #     # clearing dictonaries and lists
+    #     self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
+    #     self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
+    #     self._health_event_id.clear()
+    #     self._remove_subarray_dish_lns_health_states()
+    #     self.dishPointingStateMap.clear()
+    #     self._pointing_state_event_id.clear()
+    #     self._dish_leaf_node_proxy.clear()
+    #     self._receptor_id_list.clear()
+    #     self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
+    #
+    # def release_csp_resources(self):
+    #     """
+    #         This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
+    #         Node.
+    #
+    #         :param argin: DevVoid
+    #
+    #         :return: DevVoid
+    #
+    #     """
+    #     try:
+    #         self._csp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
+    #         self.logger.info(const.STR_RELEASE_ALL_RESOURCES_CSP_SALN)
+    #     except DevFailed as df:
+    #         self.logger.error(const.ERR_CSP_CMD)
+    #         self.logger.debug(df)
+    #
+    # def release_sdp_resources(self):
+    #     """
+    #         This function invokes releaseAllResources command on SDP Subarray via SDP Subarray Leaf Node.
+    #
+    #         :param argin: DevVoid
+    #
+    #         :return: DevVoid
+    #
+    #     """
+    #     try:
+    #         self._sdp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
+    #         self.logger.info(const.STR_RELEASE_ALL_RESOURCES_SDP_SALN)
+    #
+    #     except DevFailed as df:
+    #         self.logger.error(const.ERR_SDP_CMD)
+    #         self.logger.debug(df)
 
     def __len__(self):
         """
@@ -1286,54 +1285,54 @@ class SubarrayNode(SKASubarray):
                 device.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
 
 
-    class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
-        """
-        A class for SKASubarray's ReleaseAllResources() command.
-        """
-        def do(self):
-            """
-            It checks whether all resources are already released. If yes then it throws error while
-            executing command. If not it Releases all the resources from the subarray i.e. Releases
-            resources from TMC Subarray Node, CSP Subarray and SDP Subarray. If the command
-            execution fails, array of receptors(device names) which are failed to be released from the
-            subarray, is returned to Central Node. Upon successful execution, all the resources of a given
-            subarray get released and empty array is returned. Selective release is not yet supported.
-
-            :return: A tuple containing a return code and "[]" as a string on successful release all resources.
-            Example: "[]" as string on successful release all resources.
-
-            :rtype: (ResultCode, str)
-
-            :raises: Exception if command execution throws any type of exception
-                    DevFailed if the command execution is not successful
-            """
-            device = self.target
-            device.is_release_resources = False
-            try:
-                assert device._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
-            except AssertionError as assert_err:
-                log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
-                self.logger.error(log_message)
-                device._read_activity_message = log_message
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                             const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
-
-            self.logger.info(const.STR_DISH_RELEASE)
-            device.remove_receptors_in_group()
-            self.logger.info(const.STR_CSP_RELEASE)
-            device.release_csp_resources()
-            self.logger.info(const.STR_SDP_RELEASE)
-            device.release_sdp_resources()
-            device._scan_id = ""
-            # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
-            # It will be moved to that command.
-            device._sb_id = ""
-            device.is_release_resources = True
-            argout = device._dish_leaf_node_group.get_device_list(True)
-            log_msg = "Release_all_resources:", argout
-            self.logger.debug(log_msg)
-            message = str(argout)
-            return (ResultCode.STARTED, message)
+    # class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
+    #     """
+    #     A class for SKASubarray's ReleaseAllResources() command.
+    #     """
+    #     def do(self):
+    #         """
+    #         It checks whether all resources are already released. If yes then it throws error while
+    #         executing command. If not it Releases all the resources from the subarray i.e. Releases
+    #         resources from TMC Subarray Node, CSP Subarray and SDP Subarray. If the command
+    #         execution fails, array of receptors(device names) which are failed to be released from the
+    #         subarray, is returned to Central Node. Upon successful execution, all the resources of a given
+    #         subarray get released and empty array is returned. Selective release is not yet supported.
+    #
+    #         :return: A tuple containing a return code and "[]" as a string on successful release all resources.
+    #         Example: "[]" as string on successful release all resources.
+    #
+    #         :rtype: (ResultCode, str)
+    #
+    #         :raises: Exception if command execution throws any type of exception
+    #                 DevFailed if the command execution is not successful
+    #         """
+    #         device = self.target
+    #         device.is_release_resources = False
+    #         try:
+    #             assert device._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
+    #         except AssertionError as assert_err:
+    #             log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
+    #             self.logger.error(log_message)
+    #             device._read_activity_message = log_message
+    #             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+    #                                          const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
+    #
+    #         self.logger.info(const.STR_DISH_RELEASE)
+    #         device.remove_receptors_in_group()
+    #         self.logger.info(const.STR_CSP_RELEASE)
+    #         device.release_csp_resources()
+    #         self.logger.info(const.STR_SDP_RELEASE)
+    #         device.release_sdp_resources()
+    #         device._scan_id = ""
+    #         # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
+    #         # It will be moved to that command.
+    #         device._sb_id = ""
+    #         device.is_release_resources = True
+    #         argout = device._dish_leaf_node_group.get_device_list(True)
+    #         log_msg = "Release_all_resources:", argout
+    #         self.logger.debug(log_msg)
+    #         message = str(argout)
+    #         return (ResultCode.STARTED, message)
 
     class RestartCommand(SKASubarray.RestartCommand):
         """
@@ -1405,7 +1404,7 @@ class SubarrayNode(SKASubarray):
         # In order to pass self = subarray node as target device, the assign and release resource commands
         # are registered and inherited from SKASubarray
         self.register_command_object("AssignResources", assign_resources.AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseAllResources", self.ReleaseAllResourcesCommand(*args))
+        self.register_command_object("ReleaseAllResources", release_all_resources.ReleaseAllResourcesCommand(*args))
 
 
 # ----------

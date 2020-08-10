@@ -14,19 +14,17 @@ from tango import DebugIt, DevFailed, DeviceProxy
 from . import const
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base import SKASubarray
-import logging
-module_logger = logging.getLogger(__name__)
 
 
 class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNode's AssignResources() command.
     """
-    def __init__(self, target, state_model, logger=module_logger):
-        super().__init__(target, state_model, logger=module_logger)
-        self.logger = logger
-        self.target = target
-        self.state_model = state_model
+    # def __init__(self, target, state_model, logger):
+    #     super().__init__(target, state_model, logger)
+    #     self.logger = logger
+    #     self.target = target
+    #     self.state_model = state_model
 
     def do(self, argin):
         """
