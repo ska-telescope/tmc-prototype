@@ -10,6 +10,8 @@ import mock
 from mock import Mock, MagicMock
 from os.path import dirname, join
 import threading
+import logging
+import re
 
 # Tango imports
 import tango
@@ -21,7 +23,9 @@ from subarraynode import SubarrayNode, const, ElementDeviceData, release
 from subarraynode.const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
     LoggingLevel
-from subarraynode.exceptions import InvalidObsStateError
+from ska.base import SKASubarray, SKASubarrayResourceManager, SKASubarrayStateModel
+from ska.base.faults import CommandError, StateModelError
+from conftest import load_data, StateMachineTester
 
 # Command wait timeout:
 assign_input_file = 'command_AssignResources.json'
@@ -29,58 +33,60 @@ path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
     assign_input_str = f.read()
 
-scan_input_file= 'command_Scan.json'
-path= join(dirname(__file__), 'data', scan_input_file)
+scan_input_file = 'command_Scan.json'
+path = join(dirname(__file__), 'data', scan_input_file)
 with open(path, 'r') as f:
-    scan_input_str=f.read()
+    scan_input_str = f.read()
 
-configure_input_file= 'command_Configure.json'
-path= join(dirname(__file__), 'data' , configure_input_file)
+configure_input_file = 'command_Configure.json'
+path = join(dirname(__file__), 'data', configure_input_file)
 with open(path, 'r') as f:
-    configure_str=f.read()
+    configure_str = f.read()
 
-configure_invalid_key_file='invalid_key_Configure.json'
-path= join(dirname(__file__), 'data' , configure_invalid_key_file)
+configure_invalid_key_file = 'invalid_key_Configure.json'
+path = join(dirname(__file__), 'data', configure_invalid_key_file)
 with open(path, 'r') as f:
-    configure_invalid_key=f.read()
+    configure_invalid_key = f.read()
 
-configure_invalid_input_file='invalid_input_Configure.json'
-path= join(dirname(__file__), 'data' , configure_invalid_input_file)
+configure_invalid_input_file = 'invalid_input_Configure.json'
+path = join(dirname(__file__), 'data', configure_invalid_input_file)
 with open(path, 'r') as f:
-    invalid_conf_input=f.read()
+    invalid_conf_input = f.read()
 
-assign_invalid_key_file='invalid_key_AssignResources.json'
-path= join(dirname(__file__), 'data' , assign_invalid_key_file)
+assign_invalid_key_file = 'invalid_key_AssignResources.json'
+path = join(dirname(__file__), 'data', assign_invalid_key_file)
 with open(path, 'r') as f:
-    assign_invalid_key=f.read()
+    assign_invalid_key = f.read()
 
-sdp_configure_input_file= 'command_sdp_Configure.json'
-path= join(dirname(__file__), 'data' , sdp_configure_input_file)
+sdp_configure_input_file = 'command_sdp_Configure.json'
+path = join(dirname(__file__), 'data', sdp_configure_input_file)
 with open(path, 'r') as f:
-    sdp_conf_str=f.read()
+    sdp_conf_str = f.read()
 
-csp_configure_input_file= 'command_csp_Configure.json'
-path= join(dirname(__file__), 'data' , csp_configure_input_file)
+csp_configure_input_file = 'command_csp_Configure.json'
+path = join(dirname(__file__), 'data', csp_configure_input_file)
 with open(path, 'r') as f:
-    csp_conf_str=f.read()
+    csp_conf_str = f.read()
 
-scan_config_file= 'example_scan_config.json'
-path= join(dirname(__file__), 'data' , scan_config_file)
+scan_config_file = 'example_scan_config.json'
+path = join(dirname(__file__), 'data', scan_config_file)
 with open(path, 'r') as f:
-    scan_config_str=f.read()
+    scan_config_str = f.read()
 
-invalid_scan_config_file= 'example_invalid_scan_config.json'
-path= join(dirname(__file__), 'data' , invalid_scan_config_file)
+invalid_scan_config_file = 'example_invalid_scan_config.json'
+path = join(dirname(__file__), 'data', invalid_scan_config_file)
 with open(path, 'r') as f:
-    invalid_scan_config_str=f.read()
+    invalid_scan_config_str = f.read()
 
-receive_addresses_file= 'receive_addresses.json'
-path= join(dirname(__file__), 'data' , receive_addresses_file)
+receive_addresses_file = 'receive_addresses.json'
+path = join(dirname(__file__), 'data', receive_addresses_file)
 with open(path, 'r') as f:
-    receive_addresses_map=f.read()
+    receive_addresses_map = f.read()
+
 
 def set_timeout_event(timeout_event):
     timeout_event.set()
+
 
 def wait_for(tango_context, obs_state_to_change, timeout=10):
     timer_event = threading.Event()
@@ -98,15 +104,18 @@ def wait_for(tango_context, obs_state_to_change, timeout=10):
         timer_thread.cancel()
         return True
 
+
 @pytest.fixture(scope="function")
 def example_scan_configuration():
-    scan_config=json.loads(scan_config_str)
+    scan_config = json.loads(scan_config_str)
     return scan_config
+
 
 @pytest.fixture(scope="function")
 def example_invalid_scan_configuration():
-    scan_config=json.loads(invalid_scan_config_str)
+    scan_config = json.loads(invalid_scan_config_str)
     return scan_config
+
 
 @pytest.fixture(scope="function")
 def csp_func_args():
@@ -122,8 +131,8 @@ def sdp_func_receive_addresses():
     return receive_addresses_map
 
 
-@pytest.fixture( scope="function",
-    params=[ObsState.EMPTY, ObsState.IDLE, ObsState.RESOURCING, ObsState.READY, ObsState.SCANNING])
+@pytest.fixture(scope="function",
+                params=[ObsState.EMPTY, ObsState.IDLE, ObsState.RESOURCING, ObsState.READY, ObsState.SCANNING])
 def subarray_node_test_info(request):
     # arrange:
     device_under_test = SubarrayNode
@@ -187,6 +196,80 @@ def subarray_node_test_info(request):
     return test_info
 
 
+@pytest.fixture
+def subarray_state_model():
+    """
+    Yields a new SKASubarrayStateModel for testing
+    """
+    yield SKASubarrayStateModel(logging.getLogger())
+
+
+@pytest.mark.state_machine_tester(load_data("subarray_state_machine"))
+class TestSKASubarrayStateModel(StateMachineTester):
+    """
+    This class contains the test for the SKASubarrayStateModel class.
+    """
+
+    @pytest.fixture
+    def machine(self, subarray_state_model):
+        """
+        Fixture that returns the state machine under test in this class
+        """
+        yield subarray_state_model
+
+    state_checks = {
+        "UNINITIALISED":
+            (None, None, ObsState.EMPTY),
+        "FAULT_ENABLED":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.FAULT, ObsState.EMPTY),
+        "FAULT_DISABLED":
+            ([AdminMode.NOT_FITTED, AdminMode.OFFLINE], DevState.FAULT, ObsState.EMPTY),
+        "INIT_ENABLED":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.INIT, ObsState.EMPTY),
+        "INIT_DISABLED":
+            ([AdminMode.NOT_FITTED, AdminMode.OFFLINE], DevState.INIT, ObsState.EMPTY),
+        "DISABLED":
+            ([AdminMode.NOT_FITTED, AdminMode.OFFLINE], DevState.DISABLE, ObsState.EMPTY),
+        "OFF":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.OFF, ObsState.EMPTY),
+        "EMPTY":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.EMPTY),
+        "RESOURCING":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.RESOURCING),
+        "IDLE":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.IDLE),
+        "CONFIGURING":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.CONFIGURING),
+        "READY":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.READY),
+        "SCANNING":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.SCANNING),
+        "ABORTING":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.ABORTING),
+        "ABORTED":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.ABORTED),
+        "FAULT":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.FAULT),
+        "RESETTING":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.RESETTING),
+        "RESTARTING":
+            ([AdminMode.ONLINE, AdminMode.MAINTENANCE], DevState.ON, ObsState.RESTARTING),
+
+    }
+
+    def to_state(self, machine, target_state):
+        """
+        Transition the state machine to a target state.
+
+        :param machine: the state machine under test
+        :type machine: state machine object instance
+        :param target_state: the state that we want to get the state
+            machine under test into
+        :type target_state: str
+        """
+        machine._straight_to_state(target_state)
+
+
 class TestElementDeviceData:
 
     def test_build_up_sdp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
@@ -194,8 +277,8 @@ class TestElementDeviceData:
         sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config)
 
         expected_string_dict = {
-                "scan_type": "science_A"
-          }
+            "scan_type": "science_A"
+        }
         expected_string_dict = json.dumps(expected_string_dict)
         assert isinstance(sdp_cmd_data, str)
         assert expected_string_dict == sdp_cmd_data
@@ -219,11 +302,11 @@ class TestElementDeviceData:
         valid_scan_config = example_scan_configuration
         attr_name_map = csp_func_args
         receive_addresses_map = sdp_func_receive_addresses
-        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map,receive_addresses_map)
-        expected_json_string_file= 'expected_json_string.json'
+        csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map, receive_addresses_map)
+        expected_json_string_file = 'expected_json_string.json'
         path = join(dirname(__file__), 'data', expected_json_string_file)
         with open(path, 'r') as f:
-            expected_json=f.read()
+            expected_json = f.read()
         assert isinstance(csp_cmd_data, str)
         assert expected_json == csp_cmd_data
 
@@ -293,6 +376,7 @@ def test_activation_time():
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.activationTime == 0.0
 
+
 def test_version_id():
     """Test for versionId"""
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -302,7 +386,8 @@ def test_version_id():
 def test_build_state():
     """Test for buildState"""
     with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
+        assert tango_context.device.buildState == (
+            '{},{},{}'.format(release.name, release.version, release.description))
 
 
 def test_configuration_delay_expected():
@@ -386,7 +471,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         'CspSubarrayFQDN': csp_subarray1_fqdn,
         'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
         'SdpSubarrayFQDN': sdp_subarray1_fqdn,
-        'DishLeafNodePrefix' : dish_ln_prefix
+        'DishLeafNodePrefix': dish_ln_prefix
     }
 
     csp_subarray1_ln_proxy_mock = Mock()
@@ -396,10 +481,10 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     dish_ln_proxy_mock = Mock()
 
     proxies_to_mock = {
-        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
         dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
@@ -464,7 +549,6 @@ def test_assign_resource_is_completed_when_csp_and_sdp_is_idle():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-
         tango_context.device.On()
         tango_context.device.AssignResources(assign_input_str)
         # Mock the behaviour of Csp and SDP subarray's ObsState
@@ -506,7 +590,6 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input()
     }
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-
         tango_context.device.On()
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_invalid_key)
@@ -529,7 +612,7 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
         'CspSubarrayFQDN': csp_subarray1_fqdn,
         'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
         'SdpSubarrayFQDN': sdp_subarray1_fqdn,
-        'DishLeafNodePrefix' : dish_ln_prefix
+        'DishLeafNodePrefix': dish_ln_prefix
     }
 
     csp_subarray1_ln_proxy_mock = Mock()
@@ -539,10 +622,10 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
     dish_ln_proxy_mock = Mock()
 
     proxies_to_mock = {
-        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
         dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
     # Generate dummy devFailed exception raised by Csp Subarray Leaf Node
@@ -572,7 +655,7 @@ def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devf
         'CspSubarrayFQDN': csp_subarray1_fqdn,
         'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
         'SdpSubarrayFQDN': sdp_subarray1_fqdn,
-        'DishLeafNodePrefix' : dish_ln_prefix
+        'DishLeafNodePrefix': dish_ln_prefix
     }
 
     csp_subarray1_ln_proxy_mock = Mock()
@@ -582,10 +665,10 @@ def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devf
     dish_ln_proxy_mock = Mock()
 
     proxies_to_mock = {
-        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
         dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
     event_subscription_map = {}
@@ -619,7 +702,7 @@ def test_release_resource_command_subarray():
         'CspSubarrayFQDN': csp_subarray1_fqdn,
         'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
         'SdpSubarrayFQDN': sdp_subarray1_fqdn,
-        'DishLeafNodePrefix' : dish_ln_prefix
+        'DishLeafNodePrefix': dish_ln_prefix
     }
 
     csp_subarray1_ln_proxy_mock = Mock()
@@ -629,10 +712,10 @@ def test_release_resource_command_subarray():
     dish_ln_proxy_mock = Mock()
 
     proxies_to_mock = {
-        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
         dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
 
@@ -716,7 +799,7 @@ def test_configure_command_obsstate_changes_from_configuring_to_ready():
         'CspSubarrayFQDN': csp_subarray1_fqdn,
         'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
         'SdpSubarrayFQDN': sdp_subarray1_fqdn,
-        'DishLeafNodePrefix' : dish_ln_prefix
+        'DishLeafNodePrefix': dish_ln_prefix
     }
 
     csp_subarray1_ln_proxy_mock = Mock()
@@ -726,11 +809,11 @@ def test_configure_command_obsstate_changes_from_configuring_to_ready():
     dish_ln_proxy_mock = Mock()
 
     proxies_to_mock = {
-        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
-        dish_ln_prefix + "0001" : dish_ln_proxy_mock
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + "0001": dish_ln_proxy_mock
     }
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
@@ -883,11 +966,11 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready():
     dish_ln_proxy_mock = Mock()
 
     proxies_to_mock = {
-        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
-        dish_ln_prefix + '0001' : dish_ln_proxy_mock
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + '0001': dish_ln_proxy_mock
     }
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
@@ -1000,11 +1083,11 @@ def test_start_scan_should_raise_devfailed_exception():
     dish_ln_proxy_mock = Mock()
 
     proxies_to_mock = {
-        csp_subarray1_ln_fqdn : csp_subarray1_ln_proxy_mock,
-        csp_subarray1_fqdn : csp_subarray1_proxy_mock,
-        sdp_subarray1_ln_fqdn : sdp_subarray1_ln_proxy_mock,
-        sdp_subarray1_fqdn : sdp_subarray1_proxy_mock,
-        dish_ln_prefix + '0001' : dish_ln_proxy_mock
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + '0001': dish_ln_proxy_mock
     }
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
@@ -1146,7 +1229,6 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning():
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
             update({attr_name: callback}))
-
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -1446,7 +1528,7 @@ def test_endsb_command_subarray_when_in_invalid_state():
     with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
         tango_context.device.EndSB()
-        #assert
+        # assert
         assert tango_context.device.obsState == ObsState.IDLE
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
@@ -1630,7 +1712,7 @@ def test_obs_state_is_with_event_error():
         # act:
         attribute = 'ObsState'
         dummy_event_csp = create_dummy_event_state_with_error(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                                   attribute, ObsState.SCANNING)
+                                                              attribute, ObsState.SCANNING)
         event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
         # assert:
         assert tango_context.device.activityMessage == const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(dummy_event_csp)
@@ -1903,7 +1985,7 @@ def test_pointing_state_with_error_event():
         tango_context.device.AssignResources(assign_input_str)
         attribute = 'dishPointingState'
         dummy_event_dish = create_dummy_event_state_with_error(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
-                                                    PointingState.SCAN)
+                                                               PointingState.SCAN)
         dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
         # assert:
         assert tango_context.device.activityMessage == const.ERR_SUBSR_DSH_POINTING_STATE + str(dummy_event_dish.errors)
@@ -2184,7 +2266,6 @@ def test_abort_should_command_subarray_to_abort_when_it_is_configuring():
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
             update({attr_name: callback}))
 
-
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         tango_context.device.On()
@@ -2290,7 +2371,6 @@ def test_abort_should_command_subarray_to_end_scan_when_it_is_idle():
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
             update({attr_name: callback}))
 
-
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         tango_context.device.On()
@@ -2385,7 +2465,6 @@ def test_abort_should_command_subarray_to_abort_when_it_is_READY():
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
             update({attr_name: callback}))
-
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -2494,7 +2573,6 @@ def test_abort_should_command_subarray_to_abort_when_it_is_scanning():
     dish_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
             update({attr_name: callback}))
-
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
@@ -2657,7 +2735,7 @@ def test_abort_should_raise_devfailed_exception_when_obsstate_is_empty():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-    
+
     dut_properties = {
         'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
         'CspSubarrayFQDN': csp_subarray1_fqdn,
@@ -2952,7 +3030,6 @@ def test_restart_should_command_subarray_to_restart_when_it_is_Fault():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-
         tango_context.device.On()
         with pytest.raises(tango.DevFailed):
             tango_context.device.AssignResources(assign_invalid_key)
@@ -3030,6 +3107,53 @@ def test_restart_should_command_subarray_to_restart_when_it_is_invalid_state():
         assert "Error executing command RestartCommand" in str(df)
 
 
+def test_assign_resources_command_should_have_direct_state_transition(self, resource_manager, subarray_state_model):
+    """
+        Test for SKASubarray.AssignResourcesCommand
+        """
+    assign_resources = SKASubarray.AssignResourcesCommand(
+        resource_manager,
+        subarray_state_model
+    )
+
+    all_states = {
+        "UNINITIALISED", "FAULT_ENABLED", "FAULT_DISABLED", "INIT_ENABLED",
+        "INIT_DISABLED", "DISABLED", "OFF", "EMPTY", "RESOURCING", "IDLE",
+        "CONFIGURING", "READY", "SCANNING", "ABORTING", "ABORTED", "FAULT",
+        "RESETTING", "RESTARTING",
+    }
+
+    # in all states except EMPTY and IDLE, the assign resources command is
+    # not permitted, should not be allowed, should fail, should have no
+    # side-effect
+    for state in all_states - {"EMPTY", "IDLE"}:
+        subarray_state_model._straight_to_state(state)
+        assert not assign_resources.is_allowed()
+        with pytest.raises(CommandError):
+            assign_resources('{"example": ["foo"]}')
+        assert not len(resource_manager)
+        assert resource_manager.get() == set()
+        assert subarray_state_model._state == state
+
+    # now push to empty, a state in which is IS allowed
+    subarray_state_model._straight_to_state("EMPTY")
+    assert assign_resources.is_allowed()
+    assert assign_resources('{"example": ["foo"]}') == (
+        ResultCode.OK, "AssignResources command completed OK"
+    )
+    assert len(resource_manager) == 1
+    assert resource_manager.get() == set(["foo"])
+
+    assert subarray_state_model._state == "IDLE"
+
+    # AssignResources is still allowed in ON_IDLE
+    assert assign_resources.is_allowed()
+    assert assign_resources('{"example": ["bar"]}') == (
+        ResultCode.OK, "AssignResources command completed OK"
+    )
+    assert len(resource_manager) == 2
+    assert resource_manager.get() == set(["foo", "bar"])
+
 
 def any_method(with_name=None):
     class AnyMethod():
@@ -3047,7 +3171,7 @@ def create_dummy_event_healthstate_with_proxy(proxy_mock, device_fqdn, health_st
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = health_state_value
-    fake_event.device= proxy_mock
+    fake_event.device = proxy_mock
     return fake_event
 
 
@@ -3056,7 +3180,7 @@ def create_dummy_event_healthstate_with_error(proxy_mock, device_fqdn, health_st
     fake_event.err = True
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = health_state_value
-    fake_event.device= proxy_mock
+    fake_event.device = proxy_mock
     return fake_event
 
 
@@ -3078,6 +3202,7 @@ def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr
     fake_event.device = proxy_mock
     return fake_event
 
+
 def create_dummy_event_custom_exception(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event = MagicMock()
     fake_event.err = True
@@ -3086,7 +3211,6 @@ def create_dummy_event_custom_exception(proxy_mock, device_fqdn, attribute, attr
     fake_event.attr_value = "Subarray is not in IDLE obsState, please check the subarray obsState"
     fake_event.device = proxy_mock
     return fake_event
-
 
 
 def create_dummy_event_sdp_receiceAddresses(proxy_mock, device_fqdn, attribute, attr_value):
@@ -3131,10 +3255,11 @@ def raise_devfailed_end_command(cmd_name, input_arg):
                                      cmd_name, tango.ErrSeverity.ERR)
 
 
-def raise_devfailed_for_event_subscription(evt_name,evt_type,callaback, stateless=True):
+def raise_devfailed_for_event_subscription(evt_name, evt_type, callaback, stateless=True):
     tango.Except.throw_exception("SubarrayNode_CommandCallbackfailed",
                                  "This is error message for devfailed",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
+
 
 def raise_devfailed_abort_command(cmd_name, input_arg):
     if cmd_name == 'Abort':
@@ -3154,14 +3279,13 @@ def command_callback_with_devfailed_exception():
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = tango.Except.throw_exception("TestDevfailed", "This is error message for devfailed",
-                                 "From function test devfailed", tango.ErrSeverity.ERR)
+                                                        "From function test devfailed", tango.ErrSeverity.ERR)
     return fake_event
 
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
                       device_proxy_import_path='tango.DeviceProxy'):
-
     with mock.patch(device_proxy_import_path) as patched_constructor:
         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
