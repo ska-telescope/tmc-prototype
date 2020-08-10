@@ -272,7 +272,7 @@ def test_gotoidle_command_with_callback_method_with_event_error(mock_csp_subarra
     csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     # act
-    device_proxy.device.GoToIdle()
+    device_proxy.GoToIdle()
     dummy_event = command_callback_with_event_error(const.CMD_GOTOIDLE)
     event_subscription_without_arg[const.CMD_GOTOIDLE](dummy_event)
     # assert:
