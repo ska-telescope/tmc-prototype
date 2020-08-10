@@ -177,7 +177,7 @@ class SubarrayNode(SKASubarray):
             self._receive_addresses_map = event.attr_value.value
         else:
             log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
-            self.logger.debug(log_msg)
+            # self.logger.debug(log_msg)
             self._read_activity_message = log_msg
 
     def health_state_cb(self, event):
@@ -222,12 +222,12 @@ class SubarrayNode(SKASubarray):
         exception_message = []
         exception_count = 0
         try:
-            log_msg = 'Observation State Attribute change event is: ' + str(evt)
-            self.logger.info(log_msg)
+            # log_msg = 'Observation State Attribute change event is: ' + str(evt)
+            # self.logger.info(log_msg)
             if not evt.err:
                 self._observetion_state = evt.attr_value.value
                 log_msg = 'Observation State Attribute value is: ' + str(self._observetion_state)
-                self.logger.info(log_msg)
+                # self.logger.info(log_msg)
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa_obs_state = self._observetion_state
                     self._read_activity_message = const.STR_CSP_SUBARRAY_OBS_STATE + str(
@@ -243,7 +243,7 @@ class SubarrayNode(SKASubarray):
 
             else:
                 log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
-                self.logger.debug(log_msg)
+                # self.logger.debug(log_msg)
                 self._read_activity_message = log_msg
         except KeyError as key_error:
             log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
@@ -259,12 +259,12 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated observation state of Subarray.
         """
-        self.logger.info("\n\n In Calculate observation state method")
+        # self.logger.debug("In Calculate observation state method")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         pointing_state_count_ready = 0
-        log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
-        self.logger.info(log_msg)
+        # log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
+        # self.logger.debug(log_msg)
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
@@ -576,7 +576,7 @@ class SubarrayNode(SKASubarray):
         self.logger.debug(log_msg)
         return allocation_success
 
-    def assign_csp_resources(self, argin):
+    def assign_csp_resources(self, receptor_list):
         """
         This function accepts the receptor IDs list as input and invokes the assign resources command on
         the CSP Subarray Leaf Node.
@@ -593,24 +593,30 @@ class SubarrayNode(SKASubarray):
             the input argument in case of successful resource allocation, or returns exception
             object in case of failure.
         """
-        arg_list = []
+        # arg_list = []
         json_argument = {}
         argout = []
         dish = {}
         try:
-            dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
+            self.logger.debug(receptor_list)
+            dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
             json_argument[const.STR_KEY_DISH] = dish
-            arg_list.append(json.dumps(json_argument))
-            self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
-            self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
-            argout = argin
+            self.logger.info("Argument to CSP SALN: %s", json.dumps(json_argument))
+            result_code = self._csp_subarray_ln_proxy.command_inout(
+                const.CMD_ASSIGN_RESOURCES,
+                json.dumps(json_argument))
+            self.logger.info(result_code)
+
+            # Prepare argout
+            # Note: Currently we are returning the receptor_list. This will change in future.
+            argout = receptor_list
         except DevFailed as df:
             # Log exception here as The callstack from this thread wont get
             # propagated to main thread.
             self.logger.exception("CSP Subarray failed to allocate resources.")
             tango.Except.re_throw_exception(df,
-                "CSP Subarray failed to allocate resources.",
-                "******Some problem",
+                "An exception occurred on CSP Subarray Leaf Node",
+                "The CSP Subarray Leaf Node raised an exception while assigning resources.",
                 "SubarrayNode.assign_csp_resources",
                 tango.ErrSeverity.ERR
             )
@@ -656,8 +662,8 @@ class SubarrayNode(SKASubarray):
 
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
-        log_msg = "assign_sdp_resources::", argout
-        self.logger.debug(log_msg)
+        # log_msg = "assign_sdp_resources::", argout
+        # self.logger.debug(log_msg)
         return argout
 
     def __len__(self):
@@ -742,13 +748,13 @@ class SubarrayNode(SKASubarray):
         exception_count = 0
         try:
             log_msg= 'Pointing state Attribute change event is : ' + str(evt)
-            self.logger.info(log_msg)
+            # self.logger.debug(log_msg)
             if not evt.err:
                 self._dish_pointing_state = evt.attr_value.value
                 self.dishPointingStateMap[evt.device] = self._dish_pointing_state
                 if self._dish_pointing_state == PointingState.READY:
                     str_log = const.STR_POINTING_STATE + str(evt.device) + const.STR_READY
-                    self.logger.debug(str_log)
+                    # self.logger.debug(str_log)
                     self._read_activity_message = str_log
                 elif self._dish_pointing_state == PointingState.SLEW:
                     str_log = const.STR_POINTING_STATE + str(evt.device) + const.STR_SLEW
@@ -1584,6 +1590,7 @@ class SubarrayNode(SKASubarray):
                     tango.Except.re_throw_exception(
                         df,
                         "Dish allocation failed."
+                        "Dish Allocation raised erxception",
                         "SubarrayNode.AssignResources",
                         tango.ErrSeverity.ERR
                     )
@@ -1601,6 +1608,7 @@ class SubarrayNode(SKASubarray):
                     tango.Except.re_throw_exception(
                         df,
                         "CSP allocation failed."
+                        "CSP Subarray Leaf Node raised erxception",
                         "SubarrayNode.AssignResources",
                         tango.ErrSeverity.ERR
                     )
@@ -1623,6 +1631,7 @@ class SubarrayNode(SKASubarray):
                     tango.Except.re_throw_exception(
                         df,
                         "SDP allocation failed."
+                        "SDP Subarray Leaf Node raised erxception",
                         "SubarrayNode.AssignResources",
                         tango.ErrSeverity.ERR
                     )

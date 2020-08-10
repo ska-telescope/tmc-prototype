@@ -18,11 +18,12 @@ import pytz
 import katpoint
 import numpy as np
 import json
+import queue
 
 # PROTECTED REGION ID(CspSubarrayLeafNode.additional_import) ENABLED START #
 # PyTango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed, ApiUtil
 from tango.server import run, attribute, command, device_property
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base import SKABaseDevice
@@ -335,8 +336,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device.receptorIDList_str = []
             device.fsp_ids_object = []
             device.fsids_list = []
+
+            # Set callback model to PUSH_CALLBACK
+            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+            self.logger.debug(log_msg)
+
             ## Start thread to update delay model ##
-            # Start thread to update delay model
             # Create event
             device._stop_delay_model_event = threading.Event()
 
@@ -1082,24 +1088,36 @@ class CspSubarrayLeafNode(SKABaseDevice):
             in current device state
 
             """
-            device = self.target
-            self.logger.info("Executing callback add_receptors_ended")
-            try:
-                if event.err:
-                    device._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                        event.errors)
-                    log = const.ERR_INVOKING_CMD + event.cmd_name
-                    self.logger.error(log)
-                else:
-                    log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                    device._read_activity_message = log
-                    self.logger.info(log)
+            with self.callback_done:
+                device = self.target
+                self.logger.info("Executing callback add_receptors_ended")
+                try:
+                    # if not event.err:
+                    #     log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                    #     device._read_activity_message = log
+                    #     self.logger.info(log)
+                    #     return (ResultCode.OK, const.STR_ADD_RECEPTORS_SUCCESS)
+                    # else:
+                    #     self.logger.info("Error event from CSP Subarray")
+                    #     device._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                    #         event.errors)
+                    #     log = const.ERR_INVOKING_CMD + event.cmd_name
+                    #     self.logger.error(log)
+                    self.result_queue.put(event)
+                except DevFailed as df:
+                    # TODO: Test if this except block is really required. The observation so far is 
+                    # that the exception thrown by CSP Subarray is received in the event object
+                    # and the 'else' block processes it.
+                    self.logger.exception("Exception from CSP subarray: %s", df)
+                    device._read_activity_message = "Re-throwing Exception from CSP subarray"
+                    # tango.Except.re_throw_exception(df,
+                    #     "CSP subarray gave an error response",
+                    #     "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
+                    #     "AssignResourcesCommand.add_receptors_ended",
+                    #     tango.ErrSeverity.ERR)
 
-            except tango.DevFailed as df:
-                self.logger.exception(df)
-                tango.Except.re_throw_exception(df, "CSP subarray gave an error response",
-                                                "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
-                                                "AddReceptors", tango.ErrSeverity.ERR)
+                self.callback_done.notify()
+            self.logger.info("Callback execution finished.")
 
         def do(self, argin):
             """
@@ -1138,11 +1156,17 @@ class CspSubarrayLeafNode(SKABaseDevice):
                      Exception if command execution throws any type of exception
 
             """
+            self.logger.info("inside assignresources do method")
+            self.logger.info(argin)
             device = self.target
             exception_message = []
             exception_count = 0
             receptorIDList = []
+            self.result_queue = queue.Queue()
+
             try:
+                self.callback_done = threading.Condition()
+                
                 # Parse receptorIDList from JSON string.
                 json_argument = json.loads(argin)
                 device.receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
@@ -1151,16 +1175,41 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     receptorIDList.append(int(receptor))
                 self.logger.info("receptorIDList: %s", str(receptorIDList))
                 device.update_config_params()
+ 
                 # Invoke AddReceptors command on CspSubarray
                 self.logger.info("Invoking AddReceptors on CSP subarray")
-
                 device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, receptorIDList,
                                                            self.add_receptors_ended)
 
                 self.logger.info("After invoking AddReceptors on CSP subarray")
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
-                return (ResultCode.OK, const.STR_ADD_RECEPTORS_SUCCESS)
+
+                # wait for callback to execute
+                with self.callback_done:
+                    self.callback_done.wait(2)
+                    self.logger.info("Callback completed: %s", self.result_queue)
+                    callback_event_data = self.result_queue.get()
+
+                    if not callback_event_data.err:
+                        log = const.STR_COMMAND + callback_event_data.cmd_name + \
+                            const.STR_INVOKE_SUCCESS
+                        device._read_activity_message = log
+                        self.logger.info(log)
+                        return (ResultCode.OK, const.STR_ADD_RECEPTORS_SUCCESS)
+                    else:
+                        self.logger.info("Error event from CSP Subarray")
+                        device._read_activity_message = const.ERR_INVOKING_CMD + \
+                            str(callback_event_data.cmd_name) + "\n" + str(callback_event_data.errors)
+                        log = const.ERR_INVOKING_CMD + callback_event_data.cmd_name
+                        self.logger.error(log)
+                        # return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
+                        tango.Except.throw_exception("CSP Subarray raised exception",
+                            str(callback_event_data.errors),
+                            "AssignResourcesCommand.do",
+                            tango.ErrSeverity.ERR
+                            )
+
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
                 self.logger.exception(log_msg)
@@ -1179,9 +1228,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                                                           exception_count,
                                                                                           const.
                                                                                           ERR_ASSGN_RESOURCES)
-                # throw exception:
-                if exception_count > 0:
-                    device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+                device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+            except RuntimeError as callback_error:
+                self.logger.exception("Callback wait time exceeded.")
+                tango.Except.throw_exception("Callback wait timeout.",
+                    str(callback_error),
+                    "AssignResourcesCommand.do",
+                    tango.ErrSeverity.ERR
+                    )
+
 
     def is_AssignResources_allowed(self):
         """
@@ -1202,11 +1257,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
     )
-    @DebugIt()
+    @DebugIt(show_args=True)
     def AssignResources(self, argin):
         """ Invokes AssignResources command on CspSubarrayLeafNode. """
-        handler = self.get_command_object("AssignResources")
         try:
+            self.logger.info("Validating obsState")
             self.validate_obs_state()
 
         except InvalidObsStateError as error:
@@ -1215,6 +1270,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                          "CSP subarray leaf node raised exception",
                                          "CSP.AddReceptors",
                                          tango.ErrSeverity.ERR)
+        self.logger.debug("Calling do method")
+        handler = self.get_command_object("AssignResources")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 

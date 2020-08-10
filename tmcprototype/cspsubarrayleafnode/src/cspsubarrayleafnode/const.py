@@ -76,7 +76,7 @@ STR_RELEASE_RES_CMD_CALLBACK = "CspSubarrayLeafNode ReleaseAllResources Command 
 STR_GO_TO_IDLE_CMD_CALLBK = "CspSubarrayLeafNode GoToIdle Command Callback"
 STR_ABORT_CMD_CALLBK = "CspSubarrayLeafNode Abort Command Callback"
 STR_RESTART_CMD_CALLBK = "CspSubarrayLeafNode Restart Command Callback"
-
+STR_SETTING_CB_MODEL = "Setting CallBack Model as "
 
 STR_FALSE = "False"
 STR_STARTSCAN_SUCCESS = "Scan command is executed successfully."
