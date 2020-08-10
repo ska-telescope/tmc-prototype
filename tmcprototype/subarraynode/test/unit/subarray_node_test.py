@@ -25,7 +25,6 @@ from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, Te
     LoggingLevel
 from ska.base import SKASubarray, SKASubarrayResourceManager, SKASubarrayStateModel
 from ska.base.faults import CommandError, StateModelError
-from conftest import load_data, StateMachineTester
 
 # Command wait timeout:
 assign_input_file = 'command_AssignResources.json'
