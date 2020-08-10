@@ -204,6 +204,119 @@ def subarray_state_model():
     yield SKASubarrayStateModel(logging.getLogger())
 
 
+class StateMachineTester:
+    """
+    Abstract base class for a class for testing state machines
+    """
+
+    def test_state_machine(
+            self, machine, state_under_test, action_under_test, expected_state,
+    ):
+        """
+        Implements the unit test for a state machine: for a given
+        initial state and an action, does execution of that action, from
+        that state, yield the expected results? If the action was
+        allowed from that state, does the machine transition to the
+        correct state? If the action was not allowed from that state,
+        does the machine reject the action (e.g. raise an exception or
+        return an error code) and remain in the current state?
+
+        :param machine: the state machine under test
+        :type machine: state machine object instance
+        :param state_under_test: the state from which the
+            `action_under_test` is being tested
+        :type state_under_test: string
+        :param action_under_test: the action being tested from the
+            `state_under_test`
+        :type action_under_test: string
+        :param expected_state: the state to which the machine is
+            expected to transition, as a result of performing the
+            `action_under_test` in the `state_under_test`. If None, then
+            the action should be disallowed and result in no change of
+            state.
+        :type expected_state: string
+
+        """
+        # Put the device into the state under test
+        self.to_state(machine, state_under_test)
+
+        # Check that we are in the state under test
+        self.assert_state(machine, state_under_test)
+
+        # Test that the action under test does what we expect it to
+        if expected_state is None:
+            # Action should fail and the state should not change
+            self.check_action_disallowed(machine, action_under_test)
+            self.assert_state(machine, state_under_test)
+        else:
+            # Action should succeed
+            self.perform_action(machine, action_under_test)
+            self.assert_state(machine, expected_state)
+
+    def assert_state(self, machine, state):
+        """
+        Abstract method for asserting the current state of the state
+        machine under test
+
+        :param machine: the state machine under test
+        :type machine: state machine object instance
+        :param state: the state that we are asserting to be the current
+            state of the state machine under test
+        :type state: string
+        """
+        raise NotImplementedError()
+
+    def perform_action(self, machine, action):
+        """
+        Abstract method for performing an action on the state machine
+
+        :param machine: the state machine under test
+        :type machine: state machine object instance
+        :param action: action to be performed on the state machine
+        :type action: str
+        """
+        raise NotImplementedError()
+
+    def check_action_disallowed(self, machine, action):
+        """
+        Abstract method for asserting that an action fails if performed
+        on the state machine under test in its current state.
+
+        :param machine: the state machine under test
+        :type machine: state machine object instance
+        :param action: action to be performed on the state machine
+        :type action: str
+        """
+        raise NotImplementedError()
+
+    def to_state(self, machine, target_state):
+        """
+        Abstract method for getting the state machine into a target
+        state.
+
+        :param machine: the state machine under test
+        :type machine: state machine object instance
+        :param target_state: the state that we want to get the state
+            machine under test into
+        :type target_state: str
+        """
+        raise NotImplementedError()
+
+
+def load_data(name):
+    """
+    Loads a dataset by name. This implementation uses the name to find a
+    JSON file containing the data to be loaded.
+
+    :param name: name of the dataset to be loaded; this implementation
+        uses the name to find a JSON file containing the data to be
+        loaded.
+    :type name: string
+    """
+    with open(f"tests/data/{name}.json", "r") as json_file:
+        return json.load(json_file)
+
+
 @pytest.mark.state_machine_tester(load_data("subarray_state_machine"))
 class TestSKASubarrayStateModel(StateMachineTester):
     """
