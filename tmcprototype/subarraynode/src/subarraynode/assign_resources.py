@@ -1,3 +1,7 @@
+"""
+AssignResourcesCommand class for SubarrayNode.
+"""
+
 from __future__ import print_function
 from __future__ import absolute_import
 
@@ -40,7 +44,8 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
 
         {"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":
         "sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",
-        "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,
+        "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":
+        [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,
         "link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,
         "freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]},{"id":
         "calibration_B","coordinate_system":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",
@@ -141,7 +146,8 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 self.logger.exception("Dish allocation failed.")
                 tango.Except.re_throw_exception(
                     df,
-                    "Dish allocation failed."
+                    "Dish allocation failed.",
+                    "Failed to allocate receptors to Subarray.",
                     "SubarrayNode.AssignResources",
                     tango.ErrSeverity.ERR
                 )
@@ -158,18 +164,11 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 # The exception is already logged so not logged again.
                 tango.Except.re_throw_exception(
                     df,
-                    "CSP allocation failed."
+                    "CSP allocation failed.",
+                    "Failed to allocate CSP resources to Subarray.",
                     "SubarrayNode.AssignResources",
                     tango.ErrSeverity.ERR
                 )
-            # except AssertionError as error:
-            #     self.logger.exception("Failed to assign CSP resources: actual %s != %s expected",
-            #         csp_allocation_result, receptor_list)
-            #     tango.Except.throw_exception(
-            #         "Assign resources failed on CspSubarrayLeafNode",
-            #         str(csp_allocation_result),
-            #         "subarraynode.AssignResources()",
-            #         tango.ErrSeverity.ERR)
 
             try:
                 sdp_allocation_result = sdp_allocation_status.result()
@@ -178,9 +177,9 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 self.logger.info("Assign Resources on SDPSubarray successful")
             except DevFailed as df:
                 # The exception is already logged so not logged again.
-                tango.Except.re_throw_exception(
-                    df,
-                    "SDP allocation failed."
+                tango.Except.re_throw_exception(df,
+                    "SDP allocation failed.",
+                    "Failed to allocate SDP resources to Subarray.",
                     "SubarrayNode.AssignResources",
                     tango.ErrSeverity.ERR
                 )
@@ -252,23 +251,23 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
                 # Subscribe Dish Health State
-                device._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
+                self._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
                                                           tango.EventType.CHANGE_EVENT,
                                                           device.health_state_cb,
                                                           stateless=True)
-                device._dishLnVsHealthEventID[devProxy] = device._event_id
-                device._health_event_id.append(device._event_id)
+                device._dishLnVsHealthEventID[devProxy] = self._event_id
+                device._health_event_id.append(self._event_id)
                 log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(device._dishLnVsHealthEventID)
                 self.logger.debug(log_msg)
 
                 # Subscribe Dish Pointing State
                 device.dishPointingStateMap[devProxy] = -1
-                device._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
+                self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
                                                           tango.EventType.CHANGE_EVENT,
                                                           device.pointing_state_cb,
                                                           stateless=True)
-                device._dishLnVsPointingStateEventID[devProxy] = device._event_id
-                device._pointing_state_event_id.append(device._event_id)
+                device._dishLnVsPointingStateEventID[devProxy] = self._event_id
+                device._pointing_state_event_id.append(self._event_id)
                 log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(device._dishLnVsPointingStateEventID)
                 self.logger.debug(log_msg)
                 device._receptor_id_list.append(int(str_leafId))
