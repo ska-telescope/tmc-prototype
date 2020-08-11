@@ -5,23 +5,15 @@ ScanCommand class for SubarrayNode
 from __future__ import print_function
 from __future__ import absolute_import
 
-# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
-import random
-import string
-import json
 import threading
 # Tango imports
 import tango
-from tango import DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
-from tango.server import run,attribute, command, device_property
+from tango import DevFailed
 
 # Additional import
-from . import const, release, assign_resources, release_all_resources, configure
-from .const import PointingState
+from . import const
 from ska.base.commands import ResultCode, ResponseCommand
-from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
-from subarraynode.exceptions import InvalidObsStateError
 
 
 class ScanCommand(SKASubarray.ScanCommand):
