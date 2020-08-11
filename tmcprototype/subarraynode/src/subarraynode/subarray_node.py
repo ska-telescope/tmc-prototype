@@ -410,6 +410,46 @@ class SubarrayNode(SKASubarray):
             raise InvalidObsStateError("Subarray is not in EMPTY obsState, \
                 please check the subarray obsState")
 
+
+    def remove_receptors_in_group(self):
+        """
+        Deletes tango group of the resources allocated in the subarray.
+
+        Note: Currently there are only receptors allocated so the group contains only receptor ids.
+
+        :param argin:
+            DevVoid
+        :return:
+            DevVoid
+        """
+        if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
+            return
+        try:
+            self._dish_leaf_node_group.remove_all()
+            log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
+            self.logger.debug(log_message)
+            self._read_activity_message = log_message
+            self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
+        except DevFailed as dev_failed:
+            log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
+            self.logger.error(log_message)
+            self._read_activity_message = log_message
+            return
+
+        self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
+        self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
+
+        # clearing dictonaries and lists
+        self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
+        self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
+        self._health_event_id.clear()
+        self._remove_subarray_dish_lns_health_states()
+        self.dishPointingStateMap.clear()
+        self._pointing_state_event_id.clear()
+        self._dish_leaf_node_proxy.clear()
+        self._receptor_id_list.clear()
+        self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
+
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 
     # -----------------

@@ -54,7 +54,7 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
                                          const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
 
         self.logger.info(const.STR_DISH_RELEASE)
-        self.remove_receptors_in_group()
+        device.remove_receptors_in_group()
         self.logger.info(const.STR_CSP_RELEASE)
         self.release_csp_resources()
         self.logger.info(const.STR_SDP_RELEASE)
@@ -70,45 +70,6 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         message = str(argout)
         return (ResultCode.STARTED, message)
 
-    def remove_receptors_in_group(self):
-        """
-        Deletes tango group of the resources allocated in the subarray.
-
-        Note: Currently there are only receptors allocated so the group contains only receptor ids.
-
-        :param argin:
-            DevVoid
-        :return:
-            DevVoid
-        """
-        device = self.target
-        if not device._dishLnVsHealthEventID or not device._dishLnVsPointingStateEventID:
-            return
-        try:
-            device._dish_leaf_node_group.remove_all()
-            log_message = const.STR_GRP_DEF + str(device._dish_leaf_node_group.get_device_list(True))
-            self.logger.debug(log_message)
-            device._read_activity_message = log_message
-            self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
-        except DevFailed as dev_failed:
-            log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
-            self.logger.error(log_message)
-            device._read_activity_message = log_message
-            return
-
-        device._unsubscribe_resource_events(device._dishLnVsHealthEventID)
-        device._unsubscribe_resource_events(device._dishLnVsPointingStateEventID)
-
-        # clearing dictonaries and lists
-        device._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
-        device._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
-        device._health_event_id.clear()
-        device._remove_subarray_dish_lns_health_states()
-        device.dishPointingStateMap.clear()
-        device._pointing_state_event_id.clear()
-        device._dish_leaf_node_proxy.clear()
-        device._receptor_id_list.clear()
-        self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 
     def release_csp_resources(self):
         """
