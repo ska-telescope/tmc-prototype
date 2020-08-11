@@ -61,7 +61,7 @@ def test_off_should_command_with_callback_method():
     dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
     sdp_subarray1_proxy_mock = Mock()
     event_subscription_map = {}
-    proxies_to_mock = {sdp_subarray1_proxy_mock: sdp_subarray1_proxy_mock}
+    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = (
         lambda command_name, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
