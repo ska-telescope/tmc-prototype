@@ -27,14 +27,14 @@ from tango import DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
 
 # Additional import
-from . import const, release, assign_resources, release_all_resources, configure
+from . import const, release, assign_resources, release_all_resources, configure, scan
 from .const import PointingState
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from subarraynode.exceptions import InvalidObsStateError
 
-__all__ = ["SubarrayNode", "main", "assign_resources", "release_all_resources", "configure"]
+__all__ = ["SubarrayNode", "main", "assign_resources", "release_all_resources", "configure", "scan"]
 
 
 class SubarrayHealthState:
@@ -78,7 +78,7 @@ class SubarrayNode(SKASubarray):
         self.configure_obj = configure.ConfigureCommand(*args)
         self.assign_obj = assign_resources.AssignResourcesCommand(*args)
         self.release_obj = release_all_resources.ReleaseAllResourcesCommand(*args)
-        self.scan_obj = self.ScanCommand(*args)
+        self.scan_obj = scan.ScanCommand(*args)
         self.endscan_obj = self.EndScanCommand(*args)
         self.end_obj = self.EndCommand(*args)
         self.restart_obj = self.RestartCommand(*args)
@@ -889,79 +889,6 @@ class SubarrayNode(SKASubarray):
                                                                                   exception_count,
                                                                                   const.ERR_INVOKING_OFF_CMD)
 
-    class ScanCommand(SKASubarray.ScanCommand):
-        """
-        A class for SubarrayNode's Scan() command.
-        """
-        def do(self, argin):
-            """
-            This command accepts id as input. And it Schedule scan on subarray
-            from where scan command is invoked on respective CSP and SDP subarray node for the
-            provided interval of time. It checks whether the scan is already in progress. If yes it
-            throws error showing duplication of command.
-
-            :param argin: DevString. JSON string containing id.
-
-            JSON string example as follows:
-
-            {"id": 1}
-
-            Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
-
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ReturnCode, str)
-
-            :raises: Exception if command execution throws any type of exception
-                    DevFailed if the command execution is not successful
-            """
-            device = self.target
-            device.is_scan_completed = False
-            exception_count = 0
-            exception_message = []
-            try:
-                log_msg = const.STR_SCAN_IP_ARG + str(argin)
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-                device.isScanRunning = True
-                # Invoke scan command on Sdp Subarray Leaf Node with input argument as scan id
-                device._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
-                self.logger.info(const.STR_SDP_SCAN_INIT)
-                device._read_activity_message = const.STR_SDP_SCAN_INIT
-                # Invoke Scan command on CSP Subarray Leaf Node
-                csp_argin = [argin]
-                device._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
-                self.logger.info(const.STR_CSP_SCAN_INIT)
-                device._read_activity_message = const.STR_CSP_SCAN_INIT
-                # TODO: Update observation state aggregation logic
-                # if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
-                #         ObsState.IDLE:
-                #     if len(self.dishPointingStateMap.values()) != 0:
-                #         self.calculate_observation_state()
-                device.set_status(const.STR_SA_SCANNING)
-                self.logger.info(const.STR_SA_SCANNING)
-                device._read_activity_message = const.STR_SCAN_SUCCESS
-                # Once Scan Duration is complete call EndScan Command
-                self.logger.info("Starting Scan Thread")
-                device.scan_thread = threading.Timer(device.scan_duration, device.call_end_scan_command)
-                device.scan_thread.start()
-                self.logger.info("Scan thread started")
-                return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_SCAN_CMD)
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_SCAN_CMD)
-            # Throw Exception
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_SCAN_EXEC)
-
     class EndScanCommand(SKASubarray.EndScanCommand):
         """
         A class for SubarrayNode's EndScan() command.
@@ -1100,6 +1027,7 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("AssignResources", assign_resources.AssignResourcesCommand(*args))
         self.register_command_object("ReleaseAllResources", release_all_resources.ReleaseAllResourcesCommand(*args))
         self.register_command_object("Configure", configure.ConfigureCommand(*args))
+        self.register_command_object("Scan", scan.ScanCommand(*args))
 
 
 # ----------
