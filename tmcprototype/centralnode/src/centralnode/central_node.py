@@ -162,8 +162,8 @@ class CentralNode(SKABaseDevice):
             self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
             self.logger.critical(log_msg)
-        except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
+        except DevFailed as dev_failed:
+            [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
                                                                                   exception_message, exception_count,
                                                                                   const.ERR_AGGR_HEALTH_STATE)
 
@@ -510,23 +510,26 @@ class CentralNode(SKABaseDevice):
                                                                                                   exception_count,
                                                                                                   const.ERR_EXE_STOW_CMD)
                         device._read_activity_message = const.ERR_EXE_STOW_CMD
+                        device.throw_exception(exception_message, const.ERR_EXE_STOW_CMD)
 
             except ValueError as value_error:
                 self.logger.error(const.ERR_STOW_ARGIN)
                 device._read_activity_message = const.ERR_STOW_ARGIN + str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
+                device.throw_exception(exception_message, const.ERR_STOW_ARGIN)
 
-            except Exception as except_occured:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occured,
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
                                                                                         exception_message,
                                                                                         exception_count,
                                                                                         const.ERR_EXE_STOW_CMD)
                 device._read_activity_message = const.ERR_EXE_STOW_CMD
+                device.throw_exception(exception_message, const.ERR_EXE_STOW_CMD)
 
             # throw exception:
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
+            # if exception_count > 0:
+            #     device.throw_exception(exception_message, const.STR_STOW_ANTENNA_EXEC)
 
             return (ResultCode.OK, device._read_activity_message)
 
@@ -648,8 +651,8 @@ class CentralNode(SKABaseDevice):
                                                                                           const.ERR_EXE_STANDBY_CMD)
                 device._read_activity_message = const.ERR_EXE_STANDBY_CMD
 
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_STANDBY_EXEC)
+            # if exception_count > 0:
+            #     device.throw_exception(exception_message, const.STR_STANDBY_EXEC)
 
             return (ResultCode.OK, device._read_activity_message)
 
@@ -744,8 +747,8 @@ class CentralNode(SKABaseDevice):
                 device._csp_master_leaf_proxy.command_inout(const.CMD_ON)
                 self.logger.info(const.STR_CMD_ON_CSP_DEV)
 
-            except Exception as except_occured:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occured,exception_message,
+            except DevFailed as dev_failed:
+                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,exception_message,
                                                                                           exception_count,
                                                                                           const.ERR_EXE_ON_CMD)
 
@@ -772,8 +775,8 @@ class CentralNode(SKABaseDevice):
 
                 device._read_activity_message =  const.ERR_EXE_ON_CMD
 
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_ON_EXEC)
+            # if exception_count > 0:
+            #     device.throw_exception(exception_message, const.STR_ON_EXEC)
 
             return (ResultCode.OK, device._read_activity_message)
 
@@ -1171,12 +1174,14 @@ class CentralNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
+                device.throw_exception(exception_message, const.ERR_INVALID_JSON)
 
             except KeyError as key_error:
                 self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 exception_message.append(device._read_activity_message)
                 exception_count += 1
+                device.throw_exception(exception_message, const.ERR_JSON_KEY_NOT_FOUND)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1184,9 +1189,10 @@ class CentralNode(SKABaseDevice):
                                                                                           exception_count,
                                                                                           const.ERR_RELEASE_RESOURCES)
                 device._read_activity_message = const.ERR_RELEASE_RESOURCES
+                device.throw_exception(exception_message, const.ERR_RELEASE_RESOURCES)
 
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
+            # if exception_count > 0:
+            #     device.throw_exception(exception_message, const.STR_RELEASE_RES_EXEC)
 
     def is_ReleaseResources_allowed(self):
         """
