@@ -2,7 +2,6 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 
-# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 import json
 # Tango imports
 import tango

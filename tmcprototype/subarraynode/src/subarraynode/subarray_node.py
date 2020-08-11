@@ -1099,6 +1099,7 @@ class SubarrayNode(SKASubarray):
         # are registered and inherited from SKASubarray
         self.register_command_object("AssignResources", assign_resources.AssignResourcesCommand(*args))
         self.register_command_object("ReleaseAllResources", release_all_resources.ReleaseAllResourcesCommand(*args))
+        self.register_command_object("Configure", configure.ConfigureCommand(*args))
 
 
 # ----------
