@@ -209,6 +209,9 @@ class DishMaster(SKAMaster):
         az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
         el_increament = el_diff / 10           #Dish will move in 10 steps to desired el.
         if (self._abort_in_slew == False):
+            log_msg = "Track slew thread -> " + str(self._abort_in_slew)
+            self.logger.debug(log_msg)
+            self.logger.debug("Dish is SLEWING.")
             if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
                 self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
             else:
@@ -1158,6 +1161,9 @@ class DishMaster(SKAMaster):
         try:
             if (self._pointing_state == PointingState.SLEW):
                 self._abort_in_slew = True
+                log_msg = "Abort -> IN SLEW: " + str(self._abort_in_slew)
+                self.logger.error(log_msg)
+                self._pointing_state = PointingState.READY
             else:
                 self._pointing_state = PointingState.READY
             self.logger.info(const.STR_DISH_ABORT)
@@ -1203,6 +1209,8 @@ class DishMaster(SKAMaster):
             self._capturing = False
             self._configured_band = None
             self._abort_in_slew = False
+            log_msg = "Restart -> IN SLEW: " + str(self._abort_in_slew)
+            self.logger.error(log_msg)
             self.logger.info(const.STR_DISH_RESTARTED)
 
         except DevFailed as dev_failed:
