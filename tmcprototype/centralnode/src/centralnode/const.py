@@ -18,12 +18,14 @@ STR_CMD_ON_SA_DEV = "ON command invoked on SubarrayNode device"
 #Event messages
 EVT_UNKNOWN = "Event from the Unknown device!"
 EVT_SUBSR_HEALTH_STATE = "healthState"
+EVT_SUBSR_OBS_STATE = "obsState"
 EVT_SUBSR_CSP_MASTER_HEALTH = "cspHealthState"
 EVT_SUBSR_SDP_MASTER_HEALTH = "sdpHealthState"
 
 #Error messages
-ERR_AGGR_HEALTH_STATE = "Error while aggregating Subarray healthState \n"
+ERR_AGGR_OBS_STATE = "Error in Subarray obsState callback \n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
+ERR_SUBSR_SA_OBS_STATE = "Error in subscribing Subarray obsState \n"
 ERR_SUBSR_CSP_MASTER_LEAF_HEALTH = "Error in subscribing CSP Master Leaf Node healthState \n"
 ERR_SUBSR_SDP_MASTER_LEAF_HEALTH = "Error in subscribing SDP Master Leaf Node healthState \n"
 ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes " \
