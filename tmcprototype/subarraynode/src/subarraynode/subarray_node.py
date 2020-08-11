@@ -19,22 +19,21 @@ from __future__ import absolute_import
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 import random
 import string
-import json
-import threading
 # Tango imports
 import tango
 from tango import DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
 
 # Additional import
-from . import const, release, assign_resources, release_all_resources, configure, scan, end_scan
+from . import const, release, assign_resources, release_all_resources, configure, scan, end_scan, end
 from .const import PointingState
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from subarraynode.exceptions import InvalidObsStateError
 
-__all__ = ["SubarrayNode", "main", "assign_resources", "release_all_resources", "configure", "scan", "end_scan"]
+__all__ = ["SubarrayNode", "main", "assign_resources", "release_all_resources", "configure", "scan",
+           "end_scan", "end"]
 
 
 class SubarrayHealthState:
@@ -80,7 +79,7 @@ class SubarrayNode(SKASubarray):
         self.release_obj = release_all_resources.ReleaseAllResourcesCommand(*args)
         self.scan_obj = scan.ScanCommand(*args)
         self.endscan_obj = end_scan.EndScanCommand(*args)
-        self.end_obj = self.EndCommand(*args)
+        self.end_obj = end.EndCommand(*args)
         self.restart_obj = self.RestartCommand(*args)
         self.abort_obj = self.AbortCommand(*args)
         self.init_obj = self.InitCommand(*args)
@@ -632,55 +631,6 @@ class SubarrayNode(SKASubarray):
     # Commands
     # --------
 
-    def call_stop_track_command(self):
-        # TODO: Getting exception while running test cases using device mocking
-        self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-        self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
-
-    class EndCommand(SKASubarray.EndCommand):
-        """
-        A class for SubarrayNode's End() command.
-        """
-        def do(self):
-            """
-            This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP
-            Subarray Leaf Node, and stops tracking of all the assigned dishes.
-
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
-
-            :raises: Exception if command execution throws any generic type of exception
-                    DevFailed if the command execution is not successful
-            """
-            device = self.target
-            device.is_end_command = False
-            exception_message = []
-            exception_count = 0
-            try:
-                self.logger.info("End command invoked on SubarrayNode.")
-                device._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
-                self.logger.info(const.STR_CMD_ENDSB_INV_SDP)
-                device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
-                self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
-                # TODO: Uncomment this after resolving issues
-                device.call_stop_track_command()
-                device._read_activity_message = const.STR_ENDSB_SUCCESS
-                self.logger.info(const.STR_ENDSB_SUCCESS)
-                device.set_status(const.STR_ENDSB_SUCCESS)
-                device.is_end_command = True
-                return (ResultCode.OK, const.STR_ENDSB_SUCCESS)
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-            # throw exception:
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
-            # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
     class AbortCommand(SKASubarray.AbortCommand):
         """
@@ -963,6 +913,7 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Configure", configure.ConfigureCommand(*args))
         self.register_command_object("Scan", scan.ScanCommand(*args))
         self.register_command_object("EndScan", end_scan.EndScanCommand(*args))
+        self.register_command_object("End", end.EndCommand(*args))
 
 
 # ----------
