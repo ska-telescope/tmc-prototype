@@ -83,6 +83,8 @@ class SubarrayNode(SKASubarray):
         self.restart_obj = self.RestartCommand(*args)
         self.abort_obj = self.AbortCommand(*args)
         self.init_obj = self.InitCommand(*args)
+        self.on_obj = on.OnCommand(*args)
+        self.off_obj = off.OffCommand(*args)
 
 
     def receive_addresses_cb(self, event):
@@ -851,6 +853,8 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Scan", scan.ScanCommand(*args))
         self.register_command_object("EndScan", end_scan.EndScanCommand(*args))
         self.register_command_object("End", end.EndCommand(*args))
+        self.register_command_object("On", on.OnCommand(*args))
+        self.register_command_object("Off", off.OffCommand(*args))
 
 
 # ----------
