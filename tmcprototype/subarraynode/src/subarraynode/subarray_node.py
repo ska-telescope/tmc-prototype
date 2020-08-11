@@ -25,7 +25,7 @@ from tango import DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
 
 # Additional import
-from . import const, release, assign_resources, release_all_resources, configure, scan, end_scan, end
+from . import const, release, assign_resources, release_all_resources, configure, scan, end_scan, end, on, off
 from .const import PointingState
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -33,7 +33,7 @@ from ska.base import SKASubarray
 from subarraynode.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main", "assign_resources", "release_all_resources", "configure", "scan",
-           "end_scan", "end"]
+           "end_scan", "end", "on", "off"]
 
 
 class SubarrayHealthState:
@@ -775,69 +775,6 @@ class SubarrayNode(SKASubarray):
         handler = self.get_command_object("Track")
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
-
-    class OnCommand(SKASubarray.OnCommand):
-        """
-        A class for the SubarrayNode's On() command.
-        """
-        def do(self):
-            """
-            This command invokes On Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
-            changes Subaray device state from OFF to ON.
-
-            :return: A tuple containing a return code and a string message indicating status. The message is for
-                    information purpose only.
-
-            :rtype: (ResultCode, str)
-
-            :raises: DevFailed if the command execution is not successful
-            """
-            device = self.target
-            exception_message = []
-            exception_count = 0
-            try:
-                device._csp_subarray_ln_proxy.On()
-                device._sdp_subarray_ln_proxy.On()
-                message = "On command completed OK"
-                self.logger.info(message)
-                return (ResultCode.OK, message)
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_INVOKING_ON_CMD)
-
-    class OffCommand(SKASubarray.OffCommand):
-        """
-        A class for the SubarrayNodes's Off() command.
-        """
-        def do(self):
-            """
-            This command invokes Off Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
-            changes Subaray device state from ON to OFF.
-
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
-
-            :raises: DevFailed if the command execution is not successful
-            """
-            device = self.target
-            exception_message = []
-            exception_count = 0
-            try:
-                device._csp_subarray_ln_proxy.Off()
-                device._sdp_subarray_ln_proxy.Off()
-                message = "Off command completed OK"
-                self.logger.info(message)
-                return (ResultCode.OK, message)
-
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_INVOKING_OFF_CMD)
 
     class RestartCommand(SKASubarray.RestartCommand):
         """
