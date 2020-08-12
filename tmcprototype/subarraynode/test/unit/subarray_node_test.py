@@ -194,7 +194,7 @@ def subarray_node_test_info(request):
     }
     return test_info
 
-'''
+
 @pytest.fixture
 def subarray_state_model():
     """
@@ -302,21 +302,21 @@ class StateMachineTester:
         raise NotImplementedError()
 
 
-def load_data(name):
-    """
-    Loads a dataset by name. This implementation uses the name to find a
-    JSON file containing the data to be loaded.
+# def load_data(name):
+#     """
+#     Loads a dataset by name. This implementation uses the name to find a
+#     JSON file containing the data to be loaded.
+#
+#     :param name: name of the dataset to be loaded; this implementation
+#         uses the name to find a JSON file containing the data to be
+#         loaded.
+#     :type name: string
+#     """
+#     with open(f"test/unit/data/{name}.json", "r") as json_file:
+#         return json.load(json_file)
 
-    :param name: name of the dataset to be loaded; this implementation
-        uses the name to find a JSON file containing the data to be
-        loaded.
-    :type name: string
-    """
-    with open(f"test/unit/data/{name}.json", "r") as json_file:
-        return json.load(json_file)
 
-
-@pytest.mark.state_machine_tester(load_data("subarray_state_machine"))
+# @pytest.mark.state_machine_tester(load_data("subarray_state_machine"))
 class TestSKASubarrayStateModel(StateMachineTester):
     """
     This class contains the test for the SKASubarrayStateModel class.
@@ -380,7 +380,7 @@ class TestSKASubarrayStateModel(StateMachineTester):
         :type target_state: str
         """
         machine._straight_to_state(target_state)
-'''
+
 
 class TestElementDeviceData:
 
