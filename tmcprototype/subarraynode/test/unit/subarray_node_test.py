@@ -3228,7 +3228,7 @@ def resource_manager():
 '''
 
 
-def test_configure_command_should_have_direct_state_transition(self, resource_manager, subarray_state_model):
+def test_configure_command_should_have_direct_state_transition():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
