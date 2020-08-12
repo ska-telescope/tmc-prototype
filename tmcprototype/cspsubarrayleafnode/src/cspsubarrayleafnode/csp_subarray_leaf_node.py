@@ -81,6 +81,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     cspSubarrayObsState = attribute(name="cspSubarrayObsState", label="cspSubarrayObsState", forwarded=True)
 
+    callback_done = threading.Condition()
+    result_queue = queue.Queue()
     # ---------------
     # General methods
     # ---------------
@@ -1088,18 +1090,18 @@ class CspSubarrayLeafNode(SKABaseDevice):
             in current device state
 
             """
-            with self.callback_done:
-                device = self.target
+            device = self.target
+            with device.callback_done:
                 self.logger.info("Executing callback add_receptors_ended")
                 try:
-                    self.result_queue.put(event)
+                    device.result_queue.put(event)
                 except DevFailed as df:
                     # TODO: Test if this except block is really required. The observation so far is 
                     # that the exception thrown by CSP Subarray is received in the event object
                     # and the 'else' block processes it.
                     self.logger.exception("Exception from CSP subarray: %s", df)
                     device._read_activity_message = "Re-throwing Exception from CSP subarray"
-                self.callback_done.notify()
+                    device.callback_done.notify()
             self.logger.info("Callback execution finished.")
 
         def do(self, argin):
@@ -1145,11 +1147,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             exception_message = []
             # exception_count = 0
             receptorIDList = []
-            self.result_queue = queue.Queue()
 
-            try:
-                self.callback_done = threading.Condition()
-                
+            try:                
                 # Parse receptorIDList from JSON string.
                 json_argument = json.loads(argin)
                 device.receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
@@ -1169,10 +1168,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
                 # wait for callback to execute
-                with self.callback_done:
-                    self.callback_done.wait(2)
-                    self.logger.debug("Callback completed: %s", self.result_queue)
-                    callback_event_data = self.result_queue.get()
+                with device.callback_done:
+                    device.callback_done.wait(2)
+                    self.logger.debug("Callback completed: %s", device.result_queue)
+                    callback_event_data = device.result_queue.get()
 
                     if not callback_event_data.err:
                         log = const.STR_COMMAND + callback_event_data.cmd_name + \
