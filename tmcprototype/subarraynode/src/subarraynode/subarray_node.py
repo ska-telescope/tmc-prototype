@@ -1589,7 +1589,7 @@ class SubarrayNode(SKASubarray):
                     self.logger.exception("Dish allocation failed.")
                     tango.Except.re_throw_exception(
                         df,
-                        "Dish allocation failed."
+                        "Dish allocation failed.",
                         "Dish Allocation raised erxception",
                         "SubarrayNode.AssignResources",
                         tango.ErrSeverity.ERR
@@ -1601,25 +1601,16 @@ class SubarrayNode(SKASubarray):
                     self.logger.debug(log_msg)
 
                     csp_allocation_result.sort()
-                    # assert csp_allocation_result == receptor_list
                     self.logger.info("Assign Resources on CSPSubarray successful")
                 except DevFailed as df:
                     # The exception is already logged so not logged again.
                     tango.Except.re_throw_exception(
                         df,
-                        "CSP allocation failed."
-                        "CSP Subarray Leaf Node raised erxception",
-                        "SubarrayNode.AssignResources",
+                        "API_CommandFailed",
+                        "Command on CSP Subarray Leaf Node failed.",
+                        "AssignResourcesCommand.do",
                         tango.ErrSeverity.ERR
                     )
-                # except AssertionError as error:
-                #     self.logger.exception("Failed to assign CSP resources: actual %s != %s expected",
-                #         csp_allocation_result, receptor_list)
-                #     tango.Except.throw_exception(
-                #         "Assign resources failed on CspSubarrayLeafNode",
-                #         str(csp_allocation_result),
-                #         "subarraynode.AssignResources()",
-                #         tango.ErrSeverity.ERR)
 
                 try:
                     sdp_allocation_result = sdp_allocation_status.result()
@@ -1630,7 +1621,7 @@ class SubarrayNode(SKASubarray):
                     # The exception is already logged so not logged again.
                     tango.Except.re_throw_exception(
                         df,
-                        "SDP allocation failed."
+                        "SDP allocation failed.",
                         "SDP Subarray Leaf Node raised erxception",
                         "SubarrayNode.AssignResources",
                         tango.ErrSeverity.ERR

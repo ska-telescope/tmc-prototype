@@ -1092,17 +1092,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device = self.target
                 self.logger.info("Executing callback add_receptors_ended")
                 try:
-                    # if not event.err:
-                    #     log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                    #     device._read_activity_message = log
-                    #     self.logger.info(log)
-                    #     return (ResultCode.OK, const.STR_ADD_RECEPTORS_SUCCESS)
-                    # else:
-                    #     self.logger.info("Error event from CSP Subarray")
-                    #     device._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    #         event.errors)
-                    #     log = const.ERR_INVOKING_CMD + event.cmd_name
-                    #     self.logger.error(log)
                     self.result_queue.put(event)
                 except DevFailed as df:
                     # TODO: Test if this except block is really required. The observation so far is 
@@ -1110,12 +1099,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     # and the 'else' block processes it.
                     self.logger.exception("Exception from CSP subarray: %s", df)
                     device._read_activity_message = "Re-throwing Exception from CSP subarray"
-                    # tango.Except.re_throw_exception(df,
-                    #     "CSP subarray gave an error response",
-                    #     "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
-                    #     "AssignResourcesCommand.add_receptors_ended",
-                    #     tango.ErrSeverity.ERR)
-
                 self.callback_done.notify()
             self.logger.info("Callback execution finished.")
 
@@ -1160,7 +1143,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.info(argin)
             device = self.target
             exception_message = []
-            exception_count = 0
+            # exception_count = 0
             receptorIDList = []
             self.result_queue = queue.Queue()
 
@@ -1188,7 +1171,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # wait for callback to execute
                 with self.callback_done:
                     self.callback_done.wait(2)
-                    self.logger.info("Callback completed: %s", self.result_queue)
+                    self.logger.debug("Callback completed: %s", self.result_queue)
                     callback_event_data = self.result_queue.get()
 
                     if not callback_event_data.err:
@@ -1198,13 +1181,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                         self.logger.info(log)
                         return (ResultCode.OK, const.STR_ADD_RECEPTORS_SUCCESS)
                     else:
-                        self.logger.info("Error event from CSP Subarray")
+                        self.logger.error("Error event from CSP Subarray. Raising exception.")
                         device._read_activity_message = const.ERR_INVOKING_CMD + \
                             str(callback_event_data.cmd_name) + "\n" + str(callback_event_data.errors)
-                        log = const.ERR_INVOKING_CMD + callback_event_data.cmd_name
-                        self.logger.error(log)
-                        # return (ResultCode.FAILED, const.ERR_ASSGN_RESOURCES)
-                        tango.Except.throw_exception("CSP Subarray raised exception",
+                        tango.Except.throw_exception("API_CommandFailed",
                             str(callback_event_data.errors),
                             "AssignResourcesCommand.do",
                             tango.ErrSeverity.ERR
@@ -1222,13 +1202,19 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 exception_message.append(device._read_activity_message)
                 device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
-            except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.
-                                                                                          ERR_ASSGN_RESOURCES)
-                device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
+            except DevFailed as df:
+                tango.Except.re_throw_exception(df,
+                    const.ERR_ASSGN_RESOURCES,
+                    "An unexpected error occurred.",
+                    "AssignResourcesCommand.do",
+                    tango.ErrSeverity.ERR
+                )
+                # [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
+                #                                                                           exception_message,
+                #                                                                           exception_count,
+                #                                                                           const.
+                #                                                                           ERR_ASSGN_RESOURCES)
+                # device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
             except RuntimeError as callback_error:
                 self.logger.exception("Callback wait time exceeded.")
                 tango.Except.throw_exception("Callback wait timeout.",
