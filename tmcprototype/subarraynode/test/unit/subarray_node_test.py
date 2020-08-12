@@ -194,7 +194,7 @@ def subarray_node_test_info(request):
     }
     return test_info
 
-
+'''
 @pytest.fixture
 def subarray_state_model():
     """
@@ -380,7 +380,7 @@ class TestSKASubarrayStateModel(StateMachineTester):
         :type target_state: str
         """
         machine._straight_to_state(target_state)
-
+'''
 
 class TestElementDeviceData:
 
@@ -3218,53 +3218,112 @@ def test_restart_should_command_subarray_to_restart_when_it_is_invalid_state():
             tango_context.device.Restart()
         assert "Error executing command RestartCommand" in str(df)
 
-
-def test_assign_resources_command_should_have_direct_state_transition(self, resource_manager, subarray_state_model):
+'''
+@pytest.fixture
+def resource_manager():
     """
-        Test for SKASubarray.AssignResourcesCommand
-        """
-    assign_resources = SKASubarray.AssignResourcesCommand(
-        resource_manager,
-        subarray_state_model
-    )
+    Fixture that yields an SKASubarrayResourceManager
+    """
+    yield SKASubarrayResourceManager()
+'''
 
-    all_states = {
-        "UNINITIALISED", "FAULT_ENABLED", "FAULT_DISABLED", "INIT_ENABLED",
-        "INIT_DISABLED", "DISABLED", "OFF", "EMPTY", "RESOURCING", "IDLE",
-        "CONFIGURING", "READY", "SCANNING", "ABORTING", "ABORTED", "FAULT",
-        "RESETTING", "RESTARTING",
+
+def test_configure_command_should_have_direct_state_transition(self, resource_manager, subarray_state_model):
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+        'DishLeafNodePrefix': dish_ln_prefix
     }
 
-    # in all states except EMPTY and IDLE, the assign resources command is
-    # not permitted, should not be allowed, should fail, should have no
-    # side-effect
-    for state in all_states - {"EMPTY", "IDLE"}:
-        subarray_state_model._straight_to_state(state)
-        assert not assign_resources.is_allowed()
-        with pytest.raises(CommandError):
-            assign_resources('{"example": ["foo"]}')
-        assert not len(resource_manager)
-        assert resource_manager.get() == set()
-        assert subarray_state_model._state == state
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_ln_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
 
-    # now push to empty, a state in which is IS allowed
-    subarray_state_model._straight_to_state("EMPTY")
-    assert assign_resources.is_allowed()
-    assert assign_resources('{"example": ["foo"]}') == (
-        ResultCode.OK, "AssignResources command completed OK"
-    )
-    assert len(resource_manager) == 1
-    assert resource_manager.get() == set(["foo"])
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + "0001": dish_ln_proxy_mock
+    }
+    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
+    sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+    dish_pointing_state_attribute = "dishPointingState"
 
-    assert subarray_state_model._state == "IDLE"
+    event_subscription_map = {}
+    dish_pointing_state_map = {}
 
-    # AssignResources is still allowed in ON_IDLE
-    assert assign_resources.is_allowed()
-    assert assign_resources('{"example": ["bar"]}') == (
-        ResultCode.OK, "AssignResources command completed OK"
-    )
-    assert len(resource_manager) == 2
-    assert resource_manager.get() == set(["foo", "bar"])
+    sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    sdp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    dish_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
+            update({attr_name: callback}))
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        tango_context.device.On()
+        # tango_context.device.AssignResources(assign_input_str)
+        # # Mock the behaviour of Csp and SDP subarray ObsState
+        # attribute = 'ObsState'
+        # dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+        #                                            attribute, ObsState.IDLE)
+        # event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+        #
+        # dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+        #                                            attribute, ObsState.IDLE)
+        # event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+
+        tango_context.device._straight_to_state(ObsState.IDLE)
+        wait_for(tango_context, ObsState.IDLE)
+        assert tango_context.device.obsState == ObsState.IDLE
+
+        attribute = "receiveAddresses"
+        dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
+                                               receive_addresses_map)
+        event_subscription_map[attribute](dummy_event)
+        tango_context.device.Configure(configure_str)
+        # assert:
+        sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, sdp_conf_str)
+        csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_conf_str)
+        assert tango_context.device.obsState == ObsState.CONFIGURING
+
+        # Mock the behaviour of Csp and SDP subarray ObsState
+        attribute = 'ObsState'
+        dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
+        event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+
+        dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                                   attribute, ObsState.READY)
+        event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+
+        attribute = 'PointingState'
+        dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                    PointingState.TRACK)
+        dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
+        wait_for(tango_context, ObsState.READY)
+        # assert:
+        assert tango_context.device.obsState == ObsState.READY
 
 
 def any_method(with_name=None):
