@@ -20,12 +20,6 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNode's AssignResources() command.
     """
-    # def __init__(self, target, state_model, logger):
-    #     super().__init__(target, state_model, logger)
-    #     self.logger = logger
-    #     self.target = target
-    #     self.state_model = state_model
-
     def do(self, argin):
         """
         Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string

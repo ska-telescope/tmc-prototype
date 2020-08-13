@@ -19,12 +19,6 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
     """
     A class for SKASubarray's ReleaseAllResources() command.
     """
-    # def __init__(self, target, state_model, logger):
-    #     super().__init__(target, state_model, logger)
-    #     self.logger = logger
-    #     self.target = target
-    #     self.state_model = state_model
-
     def do(self):
         """
         It checks whether all resources are already released. If yes then it throws error while
@@ -69,7 +63,6 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         self.logger.debug(log_msg)
         message = str(argout)
         return (ResultCode.STARTED, message)
-
 
     def release_csp_resources(self):
         """

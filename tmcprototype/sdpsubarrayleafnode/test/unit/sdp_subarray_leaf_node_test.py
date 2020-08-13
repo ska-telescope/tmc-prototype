@@ -767,7 +767,7 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
 
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
-                                                                         json.dumps(configure_str),
+                                                                         configure_str,
                                                                          any_method(with_name='configure_cmd_ended_cb'))
 
 

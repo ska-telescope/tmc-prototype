@@ -1,3 +1,7 @@
+"""
+ConfigureCommand class for SubarrayNode.
+"""
+
 from __future__ import print_function
 from __future__ import absolute_import
 
@@ -70,7 +74,6 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         message = "Configure command invoked"
         self.logger.info(message)
         return (ResultCode.STARTED, message)
-
 
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         device = self.target
