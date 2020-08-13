@@ -37,17 +37,6 @@ class SdpMasterLeafNode(SKABaseDevice):
     The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
     """
-    # PROTECTED REGION ID(SdpMasterLeafNode.class_variable) ENABLED START #
-
-
-    def throw_exception(self, except_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in except_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
-
-    # PROTECTED REGION END #    //  SdpMasterLeafNode.class_variable
-
     # -----------------
     # Device Properties
     # -----------------
@@ -112,7 +101,9 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device._version_id = release.version
 
             except DevFailed as dev_failed:
-                device.throw_exception(str(dev_failed), const.ERR_INIT_PROP_ATTR)
+                self.logger.exception(dev_failed)
+                device.throw_exception(const.ERR_OFF_CMD_FAIL,str(dev_failed),
+                                       "InitCommand.do", const.ERR_INIT_PROP_ATTR)
 
             try:
                 device._read_activity_message = const.STR_SDPMASTER_FQDN + device.SdpMasterFQDN
@@ -120,7 +111,9 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device._sdp_proxy = DeviceProxy(device.SdpMasterFQDN)
 
             except DevFailed as dev_failed:
-               device.throw_exception(str(dev_failed), const.ERR_IN_CREATE_PROXY_SDP_MASTER)
+                self.logger.exception(dev_failed)
+                device.throw_exception(const.ERR_OFF_CMD_FAIL, str(dev_failed),
+                                       "InitCommand.do", const.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
