@@ -102,7 +102,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                device.throw_exception(const.ERR_OFF_CMD_FAIL,str(dev_failed),
+                device.throw_exception(const.ERR_INVOKING_CMD,str(dev_failed),
                                        "InitCommand.do", const.ERR_INIT_PROP_ATTR)
 
             try:
@@ -112,7 +112,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                device.throw_exception(const.ERR_OFF_CMD_FAIL, str(dev_failed),
+                device.throw_exception(const.ERR_INVOKING_CMD, str(dev_failed),
                                        "InitCommand.do", const.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
