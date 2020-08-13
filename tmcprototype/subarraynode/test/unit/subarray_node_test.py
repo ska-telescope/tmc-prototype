@@ -23,7 +23,7 @@ from subarraynode import SubarrayNode, const, ElementDeviceData, release
 from subarraynode.const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
     LoggingLevel
-from ska.base import SKASubarray, SKASubarrayResourceManager, SKASubarrayStateModel, TestSKASubarrayStateModel
+from ska.base import SKASubarray, SKASubarrayResourceManager, SKASubarrayStateModel
 from ska.base.faults import CommandError, StateModelError
 
 # Command wait timeout:
@@ -3249,7 +3249,9 @@ def test_configure_command_should_have_direct_state_transition():
     sdp_subarray1_ln_proxy_mock = Mock()
     sdp_subarray1_proxy_mock = Mock()
     dish_ln_proxy_mock = Mock()
-    state_machine = SKASubarrayStateModel.to_state()
+    test_ska = SKASubarrayStateModel()
+    state_machine = test_ska._straight_to_state
+
 
     proxies_to_mock = {
         csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
@@ -3295,7 +3297,7 @@ def test_configure_command_should_have_direct_state_transition():
         #                                            attribute, ObsState.IDLE)
         # event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-        state_machine._straight_to_state(ObsState.IDLE)
+        state_machine(ObsState.IDLE)
         wait_for(tango_context, ObsState.IDLE)
         assert tango_context.device.obsState == ObsState.IDLE
 
