@@ -15,7 +15,7 @@ import time
 import tango
 from tango import DevState, EventType
 import pytest
-from dishleafnode import DishLeafNode, const
+from dishleafnode import DishLeafNode, const, release
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, TestMode, ControlMode, LoggingLevel
 # Note:
 #
@@ -280,14 +280,13 @@ class TestDishLeafNode(object):
     def test_buildState(self, tango_context):
         """Test for buildState"""
         # PROTECTED REGION ID(DishLeafNode.test_buildState) ENABLED START #
-        assert tango_context.device.buildState == (
-            "lmcbaseclasses, 0.6.3, A set of generic base devices for SKA Telescope.")
+        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
         # PROTECTED REGION END #    //  DishLeafNode.test_buildState
 
     def test_versionId(self, tango_context):
         """Test for versionId"""
         # PROTECTED REGION ID(DishLeafNode.test_versionId) ENABLED START #
-        assert tango_context.device.versionId == "0.6.3"
+        assert tango_context.device.versionId == release.version
         # PROTECTED REGION END #    //  DishLeafNode.test_versionId
 
     def test_healthState(self, tango_context):
