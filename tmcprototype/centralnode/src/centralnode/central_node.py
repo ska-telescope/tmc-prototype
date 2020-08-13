@@ -167,20 +167,6 @@ class CentralNode(SKABaseDevice):
             log_msg = const.ERR_AGGR_HEALTH_STATE + ": " + str(dev_failed)
             self.logger.error(log_msg)
 
-    def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
-        str_log = read_actvity_msg + str(df)
-        self.logger.error(str_log)
-        self._read_activity_message = read_actvity_msg + str(df)
-        excpt_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [excpt_msg_list, exception_count]
-
-    def throw_exception(self, excpt_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in excpt_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
-        self.logger.error(const.STR_CMD_FAILED)
 
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
