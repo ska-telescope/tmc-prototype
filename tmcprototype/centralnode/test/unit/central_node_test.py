@@ -494,7 +494,6 @@ def test_standby(mock_central_lower_devices):
     device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
     # act:
     device_proxy.StartUpTelescope()
-    assert_activity_message(device_proxy, const.STR_ON_CMD_ISSUED)
     assert device_proxy.state() == DevState.ON
     device_proxy.StandByTelescope()
 
@@ -503,7 +502,6 @@ def test_standby(mock_central_lower_devices):
     csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY, [])
     sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
-    assert_activity_message(device_proxy, const.STR_STANDBY_CMD_ISSUED)
     assert device_proxy.state() == DevState.OFF
 
 
@@ -518,7 +516,6 @@ def test_standby_should_raise_devfailed_exception(mock_central_lower_devices):
         device_proxy.StandByTelescope()
 
     # assert:
-    assert const.ERR_EXE_STANDBY_CMD in device_proxy.activityMessage
     assert device_proxy.state() == DevState.FAULT
 
 
@@ -531,7 +528,6 @@ def test_startup(mock_central_lower_devices):
     csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
     sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
-    assert_activity_message(device_proxy, const.STR_ON_CMD_ISSUED)
     assert device_proxy.state() == DevState.ON
 
 
@@ -545,7 +541,6 @@ def test_startup_should_raise_devfailed_exception(mock_central_lower_devices):
         device_proxy.StartUpTelescope()
 
     # assert:
-    assert const.ERR_EXE_ON_CMD in device_proxy.activityMessage
     assert device_proxy.state() == DevState.FAULT
 
 

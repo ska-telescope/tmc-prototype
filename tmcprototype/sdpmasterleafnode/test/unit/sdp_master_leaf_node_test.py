@@ -60,7 +60,7 @@ def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
     # act:
     device_proxy.Off()
     # assert:
-    assert device_proxy.activityMessage in const.STR_OFF_CMD_SUCCESS
+    assert const.STR_OFF_CMD_SUCCESS in device_proxy.activityMessage
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
                                                                any_method(with_name='off_cmd_ended_cb'))
 
@@ -81,7 +81,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable(mock_sdp_master)
     # act:
     device_proxy.Disable()
     # assert:
-    assert device_proxy.activityMessage in const.STR_DISABLE_CMS_SUCCESS
+    assert const.STR_DISABLE_CMS_SUCCESS in device_proxy.activityMessage
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Disable,
                                                            any_method(with_name='disable_cmd_ended_cb'))
 
@@ -295,9 +295,8 @@ def test_test_mode(tango_context):
 
 def test_simulation_mode(tango_context):
     # act & assert:
-    simulation_mode = False
-    tango_context.device.simulationMode = simulation_mode
-    assert tango_context.device.simulationMode == simulation_mode
+    tango_context.device.simulationMode = SimulationMode.FALSE
+    assert tango_context.device.simulationMode == SimulationMode.FALSE
 
 
 def test_control_mode(tango_context):

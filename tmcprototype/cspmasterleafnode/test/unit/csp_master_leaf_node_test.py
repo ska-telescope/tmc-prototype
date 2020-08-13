@@ -51,11 +51,11 @@ def tango_context():
 
 def test_on_should_command_csp_master_leaf_node_to_start(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
+    on_input = []
 
     # act:
-    on_input = []
-    device_proxy.On()
+    device_proxy.On(on_input)
     # assert:
     csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
                                                                   any_method(with_name='on_cmd_ended_cb'))
@@ -86,7 +86,7 @@ def test_standby_should_command_to_standby_with_callback_method(mock_csp_master,
 
 def test_on_should_command_to_on_with_callback_method(mock_csp_master, event_subscription):
     # arrange:
-    device_proxy= mock_csp_master[1]
+    device_proxy=mock_csp_master[1]
 
     # act:
     device_proxy.On()
@@ -114,7 +114,7 @@ def test_off_should_command_to_off_with_callback_method(mock_csp_master):
 
 def test_standby_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription):
     # arrange:
-    device_proxy= mock_csp_master[1]
+    device_proxy=mock_csp_master[1]
 
     # act:
     device_proxy.Standby([])
@@ -125,7 +125,7 @@ def test_standby_should_command_with_callback_method_with_event_error(mock_csp_m
 
 def test_on_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription ):
     # arrange:
-    device_proxy= mock_csp_master[1]
+    device_proxy=mock_csp_master[1]
 
    #act
     device_proxy.On()
@@ -214,7 +214,7 @@ def command_callback_with_command_exception():
 
 def test_attribute_csp_cbf_health_state_of_csp_master_is_ok(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_cbf_health_state_attribute = 'cspCbfHealthState'
 
     # act:
@@ -229,7 +229,7 @@ def test_attribute_csp_cbf_health_state_of_csp_master_is_ok(mock_csp_master):
 
 def test_attribute_csp_cbf_health_state_of_csp_master_is_degraded(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_cbf_health_state_attribute = 'cspCbfHealthState'
 
     # act:
@@ -243,7 +243,7 @@ def test_attribute_csp_cbf_health_state_of_csp_master_is_degraded(mock_csp_maste
 
 def test_attribute_csp_cbf_health_state_of_csp_master_is_failed(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_cbf_health_state_attribute = 'cspCbfHealthState'
 
     # act:
@@ -257,7 +257,7 @@ def test_attribute_csp_cbf_health_state_of_csp_master_is_failed(mock_csp_master)
 
 def test_attribute_csp_cbf_health_state_of_csp_master_is_unknown(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_cbf_health_state_attribute = 'cspCbfHealthState'
 
     # act:
@@ -300,7 +300,7 @@ def test_attribute_csp_pss_health_callback_of_csp_master_is_ok(mock_csp_master):
 
 def test_attribute_csp_pss_health_callback_of_csp_master_is_degraded(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pss_health_state_attribute = 'cspPssHealthState'
 
     # act:
@@ -314,7 +314,7 @@ def test_attribute_csp_pss_health_callback_of_csp_master_is_degraded(mock_csp_ma
 
 def test_attribute_csp_pss_health_callback_of_csp_master_is_failed(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pss_health_state_attribute = 'cspPssHealthState'
     # act:
     health_state_value = HealthState.FAILED
@@ -327,7 +327,7 @@ def test_attribute_csp_pss_health_callback_of_csp_master_is_failed(mock_csp_mast
 
 def test_attribute_csp_pss_health_callback_of_csp_master_is_unknown(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pss_health_state_attribute = 'cspPssHealthState'
 
     # act:
@@ -341,7 +341,7 @@ def test_attribute_csp_pss_health_callback_of_csp_master_is_unknown(mock_csp_mas
 
 def test_attribute_csp_pss_health_callback_of_csp_master_with_error_event(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pss_health_state_attribute = 'cspPssHealthState'
 
     # act:
@@ -356,7 +356,7 @@ def test_attribute_csp_pss_health_callback_of_csp_master_with_error_event(mock_c
 
 def test_attribute_csp_pst_health_callback_of_csp_master_is_ok(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pst_health_state_attribute = 'cspPstHealthState'
 
     # act:
@@ -371,7 +371,7 @@ def test_attribute_csp_pst_health_callback_of_csp_master_is_ok(mock_csp_master):
 
 def test_attribute_csp_pst_health_callback_of_csp_master_is_degraded(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pst_health_state_attribute = 'cspPstHealthState'
 
     # act:
@@ -385,7 +385,7 @@ def test_attribute_csp_pst_health_callback_of_csp_master_is_degraded(mock_csp_ma
 
 def test_attribute_csp_pst_health_callback_of_csp_master_is_failed(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pst_health_state_attribute = 'cspPstHealthState'
 
     # act:
@@ -399,7 +399,7 @@ def test_attribute_csp_pst_health_callback_of_csp_master_is_failed(mock_csp_mast
 
 def test_attribute_csp_pst_health_callback_of_csp_master_is_unknown(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pst_health_state_attribute = 'cspPstHealthState'
 
     # act:
@@ -413,7 +413,7 @@ def test_attribute_csp_pst_health_callback_of_csp_master_is_unknown(mock_csp_mas
 
 def test_attribute_csp_pst_health_callback_of_csp_master_with_error_event(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pst_health_state_attribute = 'cspPstHealthState'
 
     # act:
@@ -428,7 +428,7 @@ def test_attribute_csp_pst_health_callback_of_csp_master_with_error_event(mock_c
 
 def test_attribute_csp_pst_health_callback_with_exception(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pst_health_state_attribute = 'cspPstHealthState'
 
     # act:
@@ -440,7 +440,7 @@ def test_attribute_csp_pst_health_callback_with_exception(mock_csp_master):
 
 def test_attribute_csp_pss_health_callback_with_exception(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pss_health_state_attribute = 'cspPssHealthState'
 
     # act:
@@ -452,7 +452,7 @@ def test_attribute_csp_pss_health_callback_with_exception(mock_csp_master):
 
 def test_attribute_csp_cbf_health_state_callback_with_exception(mock_csp_master):
     # arrange:
-    csp_proxy_mock,device_proxy,csp_master_fqdn,event_subscription_map = mock_csp_master
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_cbf_health_state_attribute = 'cspCbfHealthState'
 
     # act:
