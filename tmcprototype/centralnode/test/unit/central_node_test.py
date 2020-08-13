@@ -71,7 +71,7 @@ def mock_subarraynode_device():
 
 
 @pytest.fixture(scope='function')
-def mock_central_lower_devices1():
+def mock_central_lower_devices():
     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
@@ -489,9 +489,9 @@ def test_release_resources_invalid_key():
         assert "JSON key not found" in str(df.value)
 
 
-def test_standby(mock_central_lower_devices1):
+def test_standby(mock_central_lower_devices):
     # arrange:
-    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices1
+    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
     # act:
     device_proxy.StartUpTelescope()
     assert_activity_message(device_proxy, const.STR_ON_CMD_ISSUED)
@@ -507,8 +507,8 @@ def test_standby(mock_central_lower_devices1):
     assert device_proxy.state() == DevState.OFF
 
 
-def test_standby_should_raise_devfailed_exception(mock_central_lower_devices1):
-    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices1
+def test_standby_should_raise_devfailed_exception(mock_central_lower_devices):
+    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
     dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
@@ -522,8 +522,8 @@ def test_standby_should_raise_devfailed_exception(mock_central_lower_devices1):
     assert device_proxy.state() == DevState.FAULT
 
 
-def test_startup(mock_central_lower_devices1):
-    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices1
+def test_startup(mock_central_lower_devices):
+    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
     # act:
     device_proxy.StartUpTelescope()
     # assert:
@@ -535,8 +535,8 @@ def test_startup(mock_central_lower_devices1):
     assert device_proxy.state() == DevState.ON
 
 
-def test_startup_should_raise_devfailed_exception(mock_central_lower_devices1):
-    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices1
+def test_startup_should_raise_devfailed_exception(mock_central_lower_devices):
+    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
     dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception

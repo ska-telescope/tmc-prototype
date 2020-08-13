@@ -54,11 +54,11 @@ def event_subscription(mock_csp_subarray):
 
 @pytest.fixture(scope="function")
 def event_subscription_without_arg(mock_csp_subarray):
-    event_subscription_map1 = {}
+    event_subscription_map = {}
     mock_csp_subarray[1].command_inout_asynch.side_effect = (
         lambda command_name, callback, *args,
-               **kwargs: event_subscription_map1.update({command_name: callback}))
-    yield event_subscription_map1
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    yield event_subscription_map
 
 @pytest.fixture(scope="function")
 def mock_csp_subarray():
@@ -77,7 +77,7 @@ def mock_csp_subarray():
 
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list(mock_csp_subarray):
     #arrange
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
 
     # act
@@ -98,7 +98,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
 
 def test_configure_command_when_obstate_is_idle_with_callback_method(mock_csp_subarray, event_subscription):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
 
     # act
     device_proxy.Configure(configure_str)
@@ -110,7 +110,7 @@ def test_configure_command_when_obstate_is_idle_with_callback_method(mock_csp_su
 
 def test_configure_command_when_obstate_is_ready_with_callback_method(mock_csp_subarray, event_subscription):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
 
     # act
     device_proxy.Configure(configure_str)
@@ -121,7 +121,7 @@ def test_configure_command_when_obstate_is_ready_with_callback_method(mock_csp_s
 
 def test_startscan_command_with_callback_method(mock_csp_subarray, event_subscription):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     # act
@@ -134,7 +134,7 @@ def test_startscan_command_with_callback_method(mock_csp_subarray, event_subscri
 
 def test_endscan_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     # act
@@ -147,7 +147,7 @@ def test_endscan_command_with_callback_method(mock_csp_subarray, event_subscript
 
 def test_releaseallresources_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
 
     # act
@@ -160,7 +160,7 @@ def test_releaseallresources_command_with_callback_method(mock_csp_subarray, eve
 
 def test_gotoidle_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     # act
@@ -173,7 +173,7 @@ def test_gotoidle_command_with_callback_method(mock_csp_subarray, event_subscrip
 
 def test_abort_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     # act
@@ -186,7 +186,7 @@ def test_abort_command_with_callback_method(mock_csp_subarray, event_subscriptio
 
 def test_restart_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
 
     # act
@@ -227,7 +227,7 @@ def test_configure_command_with_callback_method_with_event_error(mock_csp_subarr
 
 def test_startscan_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription ):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     # act
@@ -241,7 +241,7 @@ def test_startscan_command_with_callback_method_with_event_error(mock_csp_subarr
 
 def test_endscan_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     # act
@@ -255,7 +255,7 @@ def test_endscan_command_with_callback_method_with_event_error(mock_csp_subarray
 
 def test_releaseallresources_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
 
     # act
@@ -268,7 +268,7 @@ def test_releaseallresources_command_with_callback_method_with_event_error(mock_
 
 def test_gotoidle_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     # act
@@ -281,7 +281,7 @@ def test_gotoidle_command_with_callback_method_with_event_error(mock_csp_subarra
 
 def test_abort_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     # act
@@ -293,7 +293,7 @@ def test_abort_command_with_callback_method_with_event_error(mock_csp_subarray, 
 
 def test_restart_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
 
     # act
@@ -306,7 +306,7 @@ def test_restart_command_with_callback_method_with_event_error(mock_csp_subarray
 
 def test_configure_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
 
     # act
     with pytest.raises(Exception):
@@ -320,7 +320,7 @@ def test_configure_command_with_callback_method_with_command_error(mock_csp_suba
 
 def test_startscan_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     # act
@@ -334,7 +334,7 @@ def test_startscan_command_with_callback_method_with_command_error(mock_csp_suba
 
 def test_endscan_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     # act
@@ -348,7 +348,7 @@ def test_endscan_command_with_callback_method_with_command_error(mock_csp_subarr
 
 def test_releaseallresources_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
 
     # act
     with pytest.raises(Exception):
@@ -362,7 +362,7 @@ def test_releaseallresources_command_with_callback_method_with_command_error(moc
 
 def test_gotoidle_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
 
     # act
@@ -377,7 +377,7 @@ def test_gotoidle_command_with_callback_method_with_command_error(mock_csp_subar
 
 def test_abort_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
 
     # act
@@ -392,7 +392,7 @@ def test_abort_command_with_callback_method_with_command_error(mock_csp_subarray
 
 def test_restart_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
 
     # act
@@ -670,7 +670,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_idle(mock_csp_sub
 
 
 def test_abort_should_raise_devfailed_exception(mock_csp_subarray):
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed):
@@ -758,7 +758,7 @@ def test_restart_should_command_csp_subarray_to_restart_when_it_is_aborted(mock_
 
 
 def test_restart_should_raise_devfailed_exception(mock_csp_subarray):
-    device_proxy,csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.FAULT
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed):

@@ -67,7 +67,7 @@ def mock_sdp_subarray():
         yield tango_context.device, sdp_subarray1_proxy_mock
 
 def test_end_sb_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
     # act
     device_proxy.EndSB()
@@ -77,7 +77,7 @@ def test_end_sb_command_with_callback_method(mock_sdp_subarray,event_subscriptio
     assert const.STR_COMMAND + const.CMD_RESET in device_proxy.activityMessage
 
 def test_release_resources_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
     # act
     device_proxy.ReleaseAllResources()
@@ -87,7 +87,7 @@ def test_release_resources_command_with_callback_method(mock_sdp_subarray,event_
     assert const.STR_COMMAND + const.CMD_RELEASE_RESOURCES in device_proxy.activityMessage
 
 def test_assign_command_assignresources_ended_with_callback_method(mock_sdp_subarray,event_subscription_with_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     # act:
     device_proxy.AssignResources(assign_input_str)
@@ -98,7 +98,7 @@ def test_assign_command_assignresources_ended_with_callback_method(mock_sdp_suba
 
 
 def test_scan_command_with_callback_method(mock_sdp_subarray,event_subscription_with_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
     # act
     device_proxy.Scan(scan_input_str)
@@ -108,7 +108,7 @@ def test_scan_command_with_callback_method(mock_sdp_subarray,event_subscription_
     assert const.STR_COMMAND + const.CMD_SCAN in device_proxy.activityMessage
 
 def test_configure_command_with_callback_method(mock_sdp_subarray,event_subscription_with_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
     # act
     device_proxy.Configure(configure_str)
@@ -118,7 +118,7 @@ def test_configure_command_with_callback_method(mock_sdp_subarray,event_subscrip
     assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
 
 def test_end_scan_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
     # act
     device_proxy.EndScan()
@@ -138,7 +138,7 @@ def test_abort_command_with_callback_method(mock_sdp_subarray,event_subscription
     assert const.STR_COMMAND + const.CMD_ABORT in device_proxy.activityMessage
 
 def test_restart_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
     # act
     device_proxy.Restart()
@@ -148,7 +148,7 @@ def test_restart_command_with_callback_method(mock_sdp_subarray,event_subscripti
     assert const.STR_COMMAND + const.CMD_RESTART in device_proxy.activityMessage
 
 def test_end_sb_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_without_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
     # act
     device_proxy.EndSB()
@@ -159,7 +159,7 @@ def test_end_sb_command_with_callback_method_with_event_error(mock_sdp_subarray,
 
 def test_release_resource_command_with_callback_method_with_event_error(mock_sdp_subarray,
                                                                         event_subscription_without_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
     # act
     device_proxy.ReleaseAllResources()
@@ -170,7 +170,7 @@ def test_release_resource_command_with_callback_method_with_event_error(mock_sdp
 
 def test_assign_command_assign_resources_ended_raises_exception_for_error_event(mock_sdp_subarray,
                                                                                 event_subscription_with_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     # act:
     device_proxy.AssignResources(assign_input_str)
@@ -201,7 +201,7 @@ def test_end_scan_command_with_callback_method_with_event_error(mock_sdp_subarra
     assert const.ERR_INVOKING_CMD + const.CMD_ENDSCAN in device_proxy.activityMessage
 
 def test_configure_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_with_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
     # act
     device_proxy.Configure(configure_str)
@@ -280,7 +280,7 @@ def test_scan_command_with_callback_method_with_command_error(mock_sdp_subarray,
 
 
 def test_end_scan_command_with_callback_method_with_command_error(mock_sdp_subarray,event_subscription_without_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
     # act
     with pytest.raises(Exception):
@@ -315,7 +315,7 @@ def test_restart_command_with_callback_method_with_command_error(mock_sdp_subarr
 
 
 def test_assign_command_with_callback_method_with_devfailed_error(mock_sdp_subarray,event_subscription_with_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     # act:
     with pytest.raises(tango.DevFailed) as df:
@@ -379,7 +379,7 @@ def test_start_scan_should_raise_devfailed_exception(mock_sdp_subarray):
 
 
 def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block_list(mock_sdp_subarray):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.On()
     # act:
@@ -392,7 +392,7 @@ def test_assign_resources_should_send_sdp_subarray_with_correct_processing_block
 
 
 def test_assign_resources_should_raise_devfailed_for_invalid_obstate(mock_sdp_subarray):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
     # act:
     with pytest.raises(tango.DevFailed) as df:
@@ -402,7 +402,7 @@ def test_assign_resources_should_raise_devfailed_for_invalid_obstate(mock_sdp_su
 
 
 def test_release_resources_when_sdp_subarray_is_idle(mock_sdp_subarray):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
     # act:
     device_proxy.ReleaseAllResources()
@@ -413,7 +413,7 @@ def test_release_resources_when_sdp_subarray_is_idle(mock_sdp_subarray):
 
 
 def test_release_resources_should_raise_devfailed_exception(mock_sdp_subarray):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     # act:
@@ -435,7 +435,7 @@ def test_configure_to_send_correct_configuration_data_when_sdp_subarray_is_idle(
 
 
 def test_configure_should_raise_devfailed_exception(mock_sdp_subarray,event_subscription_with_arg):
-    device_proxy,sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     # act:

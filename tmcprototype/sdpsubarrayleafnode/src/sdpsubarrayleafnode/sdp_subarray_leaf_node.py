@@ -311,11 +311,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             try:
                 # Call SDP Subarray Command asynchronously
                 device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                                  self.releaseallresources_cmd_ended_cb)
+                                                                                 self.releaseallresources_cmd_ended_cb)
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
-                return (ResultCode.OK, const.STR_REL_RESOURCES)
+                return(ResultCode.OK, const.STR_REL_RESOURCES)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -638,7 +638,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                 self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
-                return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
+                return(ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -789,11 +789,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                     self.scan_cmd_ended_cb)
                     device._read_activity_message = const.STR_SCAN_SUCCESS
                     self.logger.info(const.STR_SCAN_SUCCESS)
-                    return (ResultCode.OK, const.STR_SCAN_SUCCESS)
+                    return(ResultCode.OK, const.STR_SCAN_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
-                    return (ResultCode.FAILED, const.ERR_SCAN)
+                    return(ResultCode.FAILED, const.ERR_SCAN)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -933,11 +933,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                     self.endscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
-                    return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
+                    return(ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
                     self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
-                    return (ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
+                    return(ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1076,11 +1076,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.endsb_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSB_SUCCESS
                     self.logger.info(const.STR_ENDSB_SUCCESS)
-                    return (ResultCode.OK, const.STR_ENDSB_SUCCESS)
+                    return(ResultCode.OK, const.STR_ENDSB_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
-                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
+                    return(ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1219,14 +1219,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
-                    return (ResultCode.OK, const.STR_ABORT_SUCCESS)
+                    return(ResultCode.OK, const.STR_ABORT_SUCCESS)
 
                 else:
                     log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
                               ". Unable to invoke Abort command."
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
-                    return (ResultCode.FAILED, log_msg)
+                    return(ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
@@ -1368,14 +1368,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                     self.restart_cmd_ended_cb)
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
-                    return (ResultCode.OK, const.STR_RESTART_SUCCESS)
+                    return(ResultCode.OK, const.STR_RESTART_SUCCESS)
 
                 else:
                     log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
                               ". Unable to invoke Restart command."
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
-                    return (ResultCode.FAILED, log_msg)
+                    return(ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
                 [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,

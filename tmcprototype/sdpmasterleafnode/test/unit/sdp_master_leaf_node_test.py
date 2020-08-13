@@ -295,7 +295,7 @@ def test_test_mode(tango_context):
 
 def test_simulation_mode(tango_context):
     # act & assert:
-    simulation_mode = SimulationMode.FALSE
+    simulation_mode = False
     tango_context.device.simulationMode = simulation_mode
     assert tango_context.device.simulationMode == simulation_mode
 
