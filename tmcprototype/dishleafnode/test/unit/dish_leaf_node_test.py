@@ -925,6 +925,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
+@pytest.mark.skip(reason = "testcase Will be removed, since generic exceptions are removed now")
 def test_configure_should_raise_generic_exception():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -1521,7 +1522,7 @@ def test_setstowmode_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_SET_STOW_MODE in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_setstowmode_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1578,7 +1579,7 @@ def test_setstandbylpmode_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_SET_STANDBYLP_MODE in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_setstandbylpmode_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1635,7 +1636,7 @@ def test_setoperatemode_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_SET_OPERATE_MODE in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_setoperatemode_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1693,7 +1694,7 @@ def test_scan_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_DISH_SCAN in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_scan_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1753,7 +1754,7 @@ def test_startcapture_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_START_CAPTURE in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_startcapture_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1814,7 +1815,7 @@ def test_stopcapture_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_STOP_CAPTURE in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_stopcapture_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1873,7 +1874,7 @@ def test_setstandbyfpmode_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_SET_STANDBYFP_MODE in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_setstandbyfpmode_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1932,7 +1933,7 @@ def test_slew_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_DISH_SLEW in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_slew_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1991,7 +1992,7 @@ def test_stoptrack_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_STOP_TRACK in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_stoptrack_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -2048,7 +2049,7 @@ def test_abort_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_ABORT in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_abort_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -2105,7 +2106,7 @@ def test_restart_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_RESTART in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_restart_command_with_callback_method_with_command_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
