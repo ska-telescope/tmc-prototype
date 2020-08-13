@@ -52,12 +52,11 @@ def tango_context():
 def test_on_should_command_csp_master_leaf_node_to_start(mock_csp_master):
     # arrange:
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    on_input = []
 
     # act:
-    device_proxy.On(on_input)
+    device_proxy.On()
     # assert:
-    csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, on_input,
+    csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, [],
                                                                   any_method(with_name='on_cmd_ended_cb'))
 
 
