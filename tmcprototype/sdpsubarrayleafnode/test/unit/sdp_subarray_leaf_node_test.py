@@ -36,6 +36,7 @@ path= join(dirname(__file__), 'data' , configure_input_file)
 with open(path, 'r') as f:
     configure_str=f.read()
 
+
 @pytest.fixture(scope="function")
 def event_subscription_with_arg(mock_sdp_subarray):
     event_subscription_map = {}
@@ -43,6 +44,7 @@ def event_subscription_with_arg(mock_sdp_subarray):
         lambda command_name, argument, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
+
 
 @pytest.fixture(scope="function")
 def event_subscription_without_arg(mock_sdp_subarray):
@@ -65,6 +67,30 @@ def mock_sdp_subarray():
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield tango_context.device, sdp_subarray1_proxy_mock
+
+def test_on_should_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    # act:
+    device_proxy.On()
+    dummy_event = command_callback(const.CMD_ON)
+    event_subscription_without_arg[const.CMD_ON](dummy_event)
+    # assert:
+    assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
+    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
+                                                                         any_method(with_name='on_cmd_ended_cb'))
+
+
+def test_off_should_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy.On()
+    # act:
+    device_proxy.Off()
+    dummy_event = command_callback(const.CMD_OFF)
+    event_subscription_without_arg[const.CMD_OFF](dummy_event)
+    # assert:
+    assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
+    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
+                                                                         any_method(with_name='off_cmd_ended_cb'))
 
 def test_end_sb_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
@@ -95,6 +121,27 @@ def test_assign_command_assignresources_ended_with_callback_method(mock_sdp_suba
     event_subscription_with_arg[const.CMD_ASSIGN_RESOURCES](dummy_event)
     # assert:
     assert const.STR_COMMAND + const.CMD_ASSIGN_RESOURCES in device_proxy.activityMessage
+
+
+def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_without_arg):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    # act:
+    device_proxy.On()
+    dummy_event = command_callback_with_event_error(const.CMD_ON)
+    event_subscription_without_arg[const.CMD_ON](dummy_event)
+    # assert:
+    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
+
+
+def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_without_arg):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy.On()
+    # act:
+    device_proxy.Off()
+    dummy_event = command_callback_with_event_error(const.CMD_OFF)
+    event_subscription_without_arg[const.CMD_OFF](dummy_event)
+    # assert:
+    assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
 def test_scan_command_with_callback_method(mock_sdp_subarray,event_subscription_with_arg):
@@ -228,8 +275,33 @@ def test_restart_command_with_callback_method_with_event_error(mock_sdp_subarray
     device_proxy.Restart()
     dummy_event = command_callback_with_event_error(const.CMD_RESTART)
     event_subscription_without_arg[const.CMD_RESTART](dummy_event)
+
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_RESTART in device_proxy.activityMessage
+
+
+def test_on_should_command_with_callback_method_with_command_error(mock_sdp_subarray,event_subscription_without_arg):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    # act:
+    with pytest.raises(Exception) as df:
+        device_proxy.On()
+        dummy_event = command_callback_with_command_exception()
+        event_subscription_without_arg[const.CMD_ON](dummy_event)
+    # assert:
+    assert 'SDP Subarray Leaf Node_CommandFailed' in str(df)
+
+
+def test_off_should_command_with_callback_method_with_command_error(mock_sdp_subarray,event_subscription_without_arg):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy.On()
+    # act:
+    with pytest.raises(Exception) as df:
+        device_proxy.Off()
+        dummy_event = command_callback_with_command_exception()
+        event_subscription_without_arg[const.CMD_OFF](dummy_event)
+    # assert:
+    assert 'SDP Subarray Leaf Node_CommandFailed' in str(df)
+
 
 def test_release_resources_command_with_callback_method_with_command_error(mock_sdp_subarray,
                                                                            event_subscription_without_arg):
@@ -239,9 +311,9 @@ def test_release_resources_command_with_callback_method_with_command_error(mock_
         device_proxy.ReleaseAllResources()
         dummy_event = command_callback_with_command_exception()
         event_subscription_without_arg[const.CMD_RELEASE_RESOURCES](dummy_event)
-
     # assert:
     assert const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB in device_proxy.activityMessage
+
 
 def test_end_sb_command_with_callback_method_with_command_error(mock_sdp_subarray,event_subscription_without_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
