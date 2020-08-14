@@ -435,9 +435,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises:Exception if Configure command execution throws any type of exception
-
             """
             device = self.target
             # Update logs and activity message attribute with received event
@@ -477,8 +474,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :raises: DevFailed if the command execution is not successful
                      ValueError if input argument json string contains invalid value
-                     Exception if command execution throws any type of exception
-
             """
             device = self.target
             exception_message = []
@@ -510,11 +505,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except ValueError as value_error:
-                # log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-                # self.logger.error(log_msg)
-                # device._read_activity_message = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-                # exception_message.append(device._read_activity_message)
-                # exception_count += 1
                 log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -524,9 +514,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             except DevFailed as dev_failed:
-                # [exception_message, exception_count] =\
-                #     device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                #                                        const.ERR_CONFIGURE_INVOKING_CMD)
                 log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -664,14 +651,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
-                # [exception_message, exception_count] = \
-                #     device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                #                                        const.ERR_STARTSCAN_RESOURCES)
                 log_msg = const.ERR_STARTSCAN_RESOURCES + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.ERR_STARTSCAN_RESOURCES, log_msg,
+                tango.Except.throw_exception(const.STR_START_SCAN_EXEC, log_msg,
                                              "CspSubarrayLeafNode.StartScanCommand",
                                              tango.ErrSeverity.ERR)
 
@@ -773,8 +756,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             :rtype: (ReturnCode, str)
 
             :raises: DevFailed if the command execution is not successful
-                     Exception if command execution throws any type of exception
-
             """
             device = self.target
             try:
@@ -792,11 +773,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_IN_SCAN)
 
             except DevFailed as dev_failed:
-                # [exception_message, exception_count] =\
-                #     device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                #                                        const.ERR_ENDSCAN_INVOKING_CMD)
                 log_msg = const.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, log_msg,
@@ -912,9 +889,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 return (ResultCode.OK, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
             except DevFailed as dev_failed:
-                # [exception_message, exception_count] =\
-                #     device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                #                                        const.ERR_RELEASE_ALL_RESOURCES)
                 log_msg = const.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -1051,12 +1025,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             :raises: ValueError if input argument json string contains invalid value
                      KeyError if input argument json string contains invalid key
                      DevFailed if the command execution is not successful
-                     Exception if command execution throws any type of exception
-
             """
             device = self.target
-            exception_message = []
-            exception_count = 0
             receptorIDList = []
             try:
                 # Parse receptorIDList from JSON string.
@@ -1077,28 +1047,20 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
                 return (ResultCode.OK, const.STR_ADD_RECEPTORS_SUCCESS)
+
             except ValueError as value_error:
-                # log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-                # self.logger.exception(log_msg)
-                # device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-                # exception_message.append(device._read_activity_message)
-                # device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
                 self.logger.error(log_msg)
-                device._read_activity_message = log_msg
+                device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
                                              "CspSubarrayLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
+
             except KeyError as key_error:
-                # log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                # self.logger.exception(log_msg)
-                # device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                # exception_message.append(device._read_activity_message)
-                # device.throw_exception(exception_message, const.STR_ASSIGN_RES_EXEC)
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.error(log_msg)
-                device._read_activity_message = log_msg
+                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.exception(key_error)
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
                                              "CspSubarrayLeafNode.AssignResourcesCommand",
