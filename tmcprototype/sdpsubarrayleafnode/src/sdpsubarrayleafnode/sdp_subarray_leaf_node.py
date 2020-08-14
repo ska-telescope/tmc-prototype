@@ -229,9 +229,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises: Exception if command execution throws any type of exception.
-
             """
             device = self.target
             if event.err:
@@ -257,8 +254,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             :raises: DevFailed if the command execution is not successful.
-                     Exception if command execution throws any type of exception.
-
             """
             device = self.target
             try:
@@ -341,9 +336,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 event: response from SDP Subarray for the invoked assign resource command.
 
             :return: None
-
-            :raises: Exception if command execution throws any type of exception
-
             """
             device = self.target
             if event.err:
@@ -414,10 +406,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: Exception if command execution throws any type of exception
-                     ValueError if input argument json string contains invalid value.
+            :raises: ValueError if input argument json string contains invalid value.
                      DevFailed if the command execution is not successful.
-
             """
             device = self.target
             try:
@@ -521,9 +511,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises: Exception if command execution throws any type of exception.
-
             """
             device = self.target
             if event.err:
@@ -555,13 +542,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: ValueError if input argument json string contains invalid value.
                      KeyError if input argument json string contains invalid key.
                      DevFailed if the command execution is not successful
-                     Exception if command execution throws any type of exception
-
             """
-
             device = self.target
-            exception_message = []
-            exception_count = 0
             try:
                 log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
                 self.logger.debug(log_msg)
@@ -651,9 +633,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises: Exception if command execution throws any type of exception.
-
             """
             device = self.target
             if event.err:
@@ -683,10 +662,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             :raises: DevFailed if the command execution is not successful.
-                     Exception if command execution throws any type of exception.
-
             """
-
             device = self.target
             try:
                 sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
@@ -704,7 +680,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
                     return(ResultCode.FAILED, const.ERR_SCAN)
 
-
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SCAN + str(dev_failed)
                 device._read_activity_message = log_msg
@@ -712,7 +687,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
                                              "SdpSubarrayLeafNode.ScanCommand()",
                                              tango.ErrSeverity.ERR)
-
 
     def is_Scan_allowed(self):
         """
@@ -785,9 +759,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises: Exception if command execution throws any type of exception.
-
             """
             device = self.target
             if event.err:
@@ -798,7 +769,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 device._read_activity_message = log
                 self.logger.info(log)
-
 
         def do(self):
             """
@@ -813,8 +783,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             :raises: DevFailed if the command execution is not successful.
-                     Exception if command execution throws any type of exception.
-
             """
             device = self.target
             try:
@@ -836,7 +804,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
                                              "SdpSubarrayLeafNode.EndScanCommand()",
                                              tango.ErrSeverity.ERR)
-
 
 
     def is_EndScan_allowed(self):
@@ -909,9 +876,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises: Exception if command execution throws any type of exception.
-
             """
             device = self.target
             if event.err:
@@ -933,8 +897,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             :raises: DevFailed if the command execution is not successful.
-                     Exception if command execution throws any type of exception.
-
             """
             device = self.target
             try:
@@ -1028,9 +990,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises: Exception if command execution throws any type of exception.
-
             """
             device = self.target
             if event.err:
@@ -1041,7 +1000,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 device._read_activity_message = log
                 self.logger.info(log)
-
 
         def do(self):
             """
@@ -1154,9 +1112,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises: Exception if command execution throws any type of exception.
-
             """
             device = self.target
             if event.err:
@@ -1179,7 +1134,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ReturnCode, str)
 
             :raises: DevFailed if error occurs while invoking command on SDPSubarray.
-                     Exception if error occurs while executing the command.
 
             """
             device = self.target
@@ -1259,9 +1213,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises: Exception if command execution throws any type of exception.
-
             """
             device = self.target
             if event.err:
@@ -1318,9 +1269,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     - ext
 
             :return: none
-
-            :raises: Exception if command execution throws any type of exception.
-
             """
             device = self.target
             if event.err:
@@ -1331,7 +1279,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 device._read_activity_message = log
                 self.logger.info(log)
-
 
         def do(self):
             """
