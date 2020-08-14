@@ -16,10 +16,10 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 # PyTango imports
 import tango
 from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run,command, device_property, attribute
+from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
-from ska.base.commands import ResultCode,ResponseCommand
+from ska.base.commands import ResultCode, ResponseCommand
 # Additional imports
 import json
 from . import const, release
@@ -27,6 +27,7 @@ from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 __all__ = ["SdpSubarrayLeafNode", "main"]
+
 
 # pylint: disable=unused-argument,unused-variable
 class SdpSubarrayLeafNode(SKABaseDevice):
@@ -74,6 +75,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for the TMC SdpSubarrayLeafNode's init_device() method.
         """
+
         def do(self):
             """
             Initializes the attributes and properties of the SdpSubarrayLeafNode.
@@ -82,7 +84,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                      The message is for information purpose only.
 
             :rtype: (ResultCode, str)
-            
+
             """
             super().do()
             device = self.target
@@ -179,6 +181,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             self.logger.error("Subarray is not in EMPTY obstate")
             self._read_activity_message = "Error in device obstate."
             raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
+
     # --------
     # Commands
     # --------
@@ -187,6 +190,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for SdpSubarayLeafNode's ReleaseAllResources() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state
@@ -240,7 +244,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = log
                 self.logger.info(log)
 
-
         def do(self):
             """
             Releases all the resources of given SDPSubarrayLeafNode. It accepts the subarray id,
@@ -259,7 +262,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             try:
                 # Call SDP Subarray Command asynchronously
                 device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                     self.releaseallresources_cmd_ended_cb)
+                                                                                 self.releaseallresources_cmd_ended_cb)
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
@@ -272,7 +275,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
                                              "SdpSubarrayLeafNode.ReleaseAllResourcesCommand()",
                                              tango.ErrSeverity.ERR)
-
 
     def is_ReleaseAllResources_allowed(self):
         """
@@ -306,6 +308,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for SdpSubarayLeafNode's AssignResources() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state.
@@ -414,9 +417,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device.validate_obs_state()
 
                 # Call SDP Subarray Command asynchronously
-                device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES,
-                                                                        argin, self.AssignResources_ended)
-
+                device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES, argin,
+                                                                                  self.AssignResources_ended)
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                 self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
@@ -471,6 +473,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for SdpSubarrayLeafNode's Configure() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state
@@ -522,7 +525,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = log
                 self.logger.info(log)
 
-
         def do(self, argin):
             """
             Configures the SDP Subarray device by providing the SDP PB
@@ -548,7 +550,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
                 self.logger.debug(log_msg)
                 device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin),
-                                                              self.configure_cmd_ended_cb)
+                                                                self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
                 return(ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
@@ -592,6 +594,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for SdpSubarrayLeafNode's Scan() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state.
@@ -643,7 +646,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                 device._read_activity_message = log
                 self.logger.info(log)
-
 
         def do(self, argin):
             """
@@ -717,6 +719,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for SdpSubarrayLeafNode's EndScan() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device
@@ -805,7 +808,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              "SdpSubarrayLeafNode.EndScanCommand()",
                                              tango.ErrSeverity.ERR)
 
-
     def is_EndScan_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
@@ -834,6 +836,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for SdpSubarrayLeafNode's EndSB() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state.
@@ -947,6 +950,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for sdpSubarrayLeafNode's Abort() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state
@@ -1015,8 +1019,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._sdp_subarray_proxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
-                                                        ObsState.IDLE]:
+                if device._sdp_subarray_proxy.obsState in [ObsState.READY, ObsState.CONFIGURING,
+                                                           ObsState.SCANNING,
+                                                           ObsState.IDLE]:
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
@@ -1068,6 +1073,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for sdpSubarrayLeafNode's Restart() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state
@@ -1123,7 +1129,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = log
                 self.logger.info(log)
 
-
         def do(self):
             """
             Command to restart the SDP subarray and bring it to its ON state.
@@ -1139,7 +1144,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device = self.target
             try:
                 if device._sdp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT]:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART, self.restart_cmd_ended_cb)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART,
+                                                                    self.restart_cmd_ended_cb)
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
                     return(ResultCode.OK, const.STR_RESTART_SUCCESS)
@@ -1149,7 +1155,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                               ". Unable to invoke Restart command."
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
-                    return (ResultCode.FAILED, log_msg)
+                    return(ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
@@ -1186,11 +1192,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
-
     class OnCommand(SKABaseDevice.OnCommand):
         """
         A class for SDP Subarray's On() command.
         """
+
         def on_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked command returns.
@@ -1224,7 +1230,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = log
                 self.logger.info(log)
 
-
         def do(self):
             """
 
@@ -1236,7 +1241,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device=self.target
+            device = self.target
             device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
             log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
@@ -1246,6 +1251,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         A class for SDP master's Off() command.
         """
+
         def off_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked command returns.
@@ -1292,11 +1298,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device=self.target
+            device = self.target
             device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_SUCCESS)
             device._read_activity_message = const.STR_OFF_CMD_SUCCESS
             return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+
+
 # pylint: enable=unused-argument,unused-variable
 
 # ----------
@@ -1318,6 +1326,7 @@ def main(args=None, **kwargs):
     """
     return run((SdpSubarrayLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.main
+
 
 if __name__ == '__main__':
     main()

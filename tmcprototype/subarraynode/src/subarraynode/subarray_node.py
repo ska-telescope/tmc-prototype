@@ -1100,9 +1100,9 @@ class SubarrayNode(SKASubarray):
                 log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
                 self.logger.error(log_msg)
                 self.logger.exception(dev_failed)
-                tango.Except.re_throw_exception(const.ERR_ABORT_INVOKING_CMD,
+                tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD,
                                              log_msg,
-                                             "SubarrayNode.AbortCommand()",
+                                             "SubarrayNode.AbortCommand",
                                              tango.ErrSeverity.ERR)
             # PROTECTED REGION END #    //  SubarrayNode.Abort
 
