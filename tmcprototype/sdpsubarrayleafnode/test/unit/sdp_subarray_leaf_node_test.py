@@ -54,6 +54,8 @@ def test_on_should_command_with_callback_method():
         event_subscription_map[const.CMD_ON](dummy_event)
         # assert:
         assert const.STR_COMMAND + const.CMD_ON in tango_context.device.activityMessage
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
+                                                                         any_method(with_name='on_cmd_ended_cb'))
 
 
 def test_off_should_command_with_callback_method():
@@ -75,6 +77,8 @@ def test_off_should_command_with_callback_method():
         event_subscription_map[const.CMD_OFF](dummy_event)
         # assert:
         assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
+        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
+                                                                         any_method(with_name='off_cmd_ended_cb'))
 
 
 def test_end_sb_command_with_callback_method():
@@ -764,23 +768,6 @@ def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready()
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN, scan_input_str,
                                                                          any_method(with_name='scan_cmd_ended_cb'))
-
-
-def test_on_should_command_sdp_subaaray_leaf_node_to_start():
-    # arrange:
-    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
-    sdp_subarray1_proxy_mock = Mock()
-    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
-
-    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        tango_context.device.On()
-
-        # assert:
-        sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
-                                                               any_method(with_name='on_cmd_ended_cb'))
 
 
 def test_start_scan_should_raise_devfailed_exception():
