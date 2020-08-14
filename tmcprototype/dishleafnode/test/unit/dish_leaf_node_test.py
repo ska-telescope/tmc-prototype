@@ -924,19 +924,6 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-
-@pytest.mark.skip(reason = "testcase Will be removed, since generic exceptions are removed now")
-def test_configure_should_raise_generic_exception():
-    # act
-    with fake_tango_system(DishLeafNode) as tango_context:
-        Configure_input = '[123]'
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Configure(Configure_input)
-
-        # assert:
-        assert const.ERR_EXE_CONFIGURE_CMD in tango_context.device.activityMessage
-
-
 def test_scan_should_raise_exception_when_called_with_invalid_arguments():
     # act
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -1522,36 +1509,6 @@ def test_setstowmode_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_SET_STOW_MODE in tango_context.device.activityMessage
 
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_setstowmode_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.SetStowMode()
-            dummy_event = command_callback_with_command_exception(const.CMD_SET_STOW_MODE)
-            event_subscription_map[const.CMD_SET_STOW_MODE](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_SSM_CMD_CB in tango_context.device.activityMessage
-
-
 def test_setstandbylpmode_command_with_callback_method_with_event_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1578,36 +1535,6 @@ def test_setstandbylpmode_command_with_callback_method_with_event_error():
 
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_SET_STANDBYLP_MODE in tango_context.device.activityMessage
-
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_setstandbylpmode_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.SetStandByLPMode()
-            dummy_event = command_callback_with_command_exception(const.CMD_SET_STANDBYLP_MODE)
-            event_subscription_map[const.CMD_SET_STANDBYLP_MODE](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_SSLM_CMD_CB in tango_context.device.activityMessage
-
 
 def test_setoperatemode_command_with_callback_method_with_event_error():
     # arrange:
@@ -1636,36 +1563,6 @@ def test_setoperatemode_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_SET_OPERATE_MODE in tango_context.device.activityMessage
 
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_setoperatemode_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.SetOperateMode()
-            dummy_event = command_callback_with_command_exception(const.CMD_SET_OPERATE_MODE)
-            event_subscription_map[const.CMD_SET_OPERATE_MODE](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_SOM_CMD_CB in tango_context.device.activityMessage
-
-
 def test_scan_command_with_callback_method_with_event_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1693,37 +1590,6 @@ def test_scan_command_with_callback_method_with_event_error():
 
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_DISH_SCAN in tango_context.device.activityMessage
-
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_scan_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        scan_input = "0"
-        device_proxy = tango_context.device
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.Scan(scan_input)
-            dummy_event = command_callback_with_command_exception(const.CMD_DISH_SCAN)
-            event_subscription_map[const.CMD_DISH_SCAN](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_SCAN_CMD_CB in tango_context.device.activityMessage
-
 
 def test_startcapture_command_with_callback_method_with_event_error():
     # arrange:
@@ -1754,38 +1620,6 @@ def test_startcapture_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_START_CAPTURE in tango_context.device.activityMessage
 
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_startcapture_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        capture_arg = "0"
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.StartCapture(capture_arg)
-            dummy_event = command_callback_with_command_exception(const.CMD_START_CAPTURE)
-            event_subscription_map[const.CMD_START_CAPTURE](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_SC_CMD_CB in tango_context.device.activityMessage
-
-
 def test_stopcapture_command_with_callback_method_with_event_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1815,38 +1649,6 @@ def test_stopcapture_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_STOP_CAPTURE in tango_context.device.activityMessage
 
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_stopcapture_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        capture_arg = "0"
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.StopCapture(capture_arg)
-            dummy_event = command_callback_with_command_exception(const.CMD_STOP_CAPTURE)
-            event_subscription_map[const.CMD_STOP_CAPTURE](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_STC_CMD_CB in tango_context.device.activityMessage
-
-
 def test_setstandbyfpmode_command_with_callback_method_with_event_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1873,36 +1675,6 @@ def test_setstandbyfpmode_command_with_callback_method_with_event_error():
 
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_SET_STANDBYFP_MODE in tango_context.device.activityMessage
-
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_setstandbyfpmode_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.SetStandByFPMode()
-            dummy_event = command_callback_with_command_exception(const.CMD_SET_STANDBYFP_MODE)
-            event_subscription_map[const.CMD_SET_STANDBYFP_MODE](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_SSFM_CMD_CB in tango_context.device.activityMessage
-
 
 def test_slew_command_with_callback_method_with_event_error():
     # arrange:
@@ -1933,38 +1705,6 @@ def test_slew_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_DISH_SLEW in tango_context.device.activityMessage
 
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_slew_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        slew_arg = "0"
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.Slew(slew_arg)
-            dummy_event = command_callback_with_command_exception(const.CMD_DISH_SLEW)
-            event_subscription_map[const.CMD_DISH_SLEW](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_SLEW_CMD_CB in tango_context.device.activityMessage
-
-
 def test_stoptrack_command_with_callback_method_with_event_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -1991,36 +1731,6 @@ def test_stoptrack_command_with_callback_method_with_event_error():
 
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_STOP_TRACK in tango_context.device.activityMessage
-
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_stoptrack_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.StopTrack()
-            dummy_event = command_callback_with_command_exception(const.CMD_STOP_TRACK)
-            event_subscription_map[const.CMD_STOP_TRACK](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_STOPTRACK_CMD_CB in tango_context.device.activityMessage
-
 
 def test_abort_command_with_callback_method_with_event_error():
     # arrange:
@@ -2049,36 +1759,6 @@ def test_abort_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_ABORT in tango_context.device.activityMessage
 
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_abort_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.Abort()
-            dummy_event = command_callback_with_command_exception(const.CMD_ABORT)
-            event_subscription_map[const.CMD_ABORT](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_ABORT_CMD_CB in tango_context.device.activityMessage
-
-
 def test_restart_command_with_callback_method_with_event_error():
     # arrange:
     dish_master1_fqdn = 'mid_d0001/elt/master'
@@ -2105,35 +1785,6 @@ def test_restart_command_with_callback_method_with_event_error():
 
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_RESTART in tango_context.device.activityMessage
-
-@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
-def test_restart_command_with_callback_method_with_command_error():
-    # arrange:
-    dish_master1_fqdn = 'mid_d0001/elt/master'
-    dut_properties = {'DishMasterFQDN': dish_master1_fqdn}
-
-    dish1_proxy_mock = Mock()
-
-    proxies_to_mock = {dish_master1_fqdn: dish1_proxy_mock}
-
-    event_subscription_map = {}
-
-    dish1_proxy_mock.command_inout_asynch.side_effect = (
-        lambda command_name, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-
-        # act
-        with pytest.raises(Exception):
-            device_proxy.Restart()
-            dummy_event = command_callback_with_command_exception(const.CMD_RESTART)
-            event_subscription_map[const.CMD_RESTART](dummy_event)
-
-        # assert:
-        assert const.ERR_EXCEPT_RESTART_CMD_CB in tango_context.device.activityMessage
 
 def test_version_id():
     """Test for versionId"""

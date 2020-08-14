@@ -307,6 +307,9 @@ class DishLeafNode(SKABaseDevice):
             log_msg = const.ERR_RADEC_TO_AZEL_VAL_ERR + str(value_err)
             self._read_activity_message = log_msg
             self.logger.error(log_msg)
+        except Exception as except_occurred:
+            self.RaDec_AzEl_Conversion = False
+            self._handle_generic_exception(except_occurred, [], 0, const.ERR_RADEC_TO_AZEL)
 
     def tracking_time_thread(self):
         """This thread allows the dish to track the source for a specified Duration.
@@ -540,13 +543,10 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.subscribe_event(const.EVT_DESIRED_POINT, EventType.CHANGE_EVENT,
                                                    device.dish_desired_pointing_cb, stateless=True)
             except DevFailed as dev_failed:
-                # [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                #                 exception_message, exception_count,const.ERR_SUBS_DISH_ATTR)
-                # device.set_status(const.ERR_DISH_INIT)
-                # self.logger.error(const.ERR_DISH_INIT)
-                # device.throw_exception(exception_message, device._read_activity_message)
                 log_msg = const.ERR_SUBS_DISH_ATTR + str(dev_failed)
                 self.logger.error(log_msg)
+                device.set_status(const.ERR_DISH_INIT)
+                self.logger.error(const.ERR_DISH_INIT)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "DishLeafNode.InitCommand",
@@ -970,8 +970,6 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
             try:
                 scan_timestamp = float(argin)
                 self.logger.debug(const.STR_IN_SCAN)
@@ -984,9 +982,6 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                # device._read_activity_message = log_msg
-                # exception_message.append(log_msg)
-                # exception_count += 1
                 log_msg = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -1062,8 +1057,6 @@ class DishLeafNode(SKABaseDevice):
             """
 
             device = self.target
-            exception_count = 0
-            exception_message = []
             try:
                 end_scan_timestamp = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
@@ -1072,11 +1065,6 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
 
             except ValueError as value_error:
-                # log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-                # self.logger.error(log_msg)
-                # device._read_activity_message = log_msg
-                # exception_message.append(log_msg)
-                # exception_count += 1
                 log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -1196,8 +1184,6 @@ class DishLeafNode(SKABaseDevice):
             """
 
             device = self.target
-            exception_count = 0
-            exception_message = []
             try:
                 jsonArgument = json.loads(argin)
                 ra_value = (jsonArgument["pointing"]["target"]["RA"])
@@ -1231,11 +1217,6 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                # log_msg = const.ERR_INVALID_JSON + str(value_error)
-                # device._read_activity_message = log_msg
-                # self.logger.error(log_msg)
-                # exception_message.append(log_msg)
-                # exception_count += 1
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -1244,11 +1225,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             except KeyError as key_error:
-                # log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                # device._read_activity_message = log_msg
-                # self.logger.error(log_msg)
-                # exception_message.append(log_msg)
-                # exception_count += 1
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -1335,9 +1311,6 @@ class DishLeafNode(SKABaseDevice):
                     - errors     : (sequence<DevError>) The error stack
                     - ext
             :return: none
-
-            :raises: Exception if error occurs in SetStowMode command callback method.
-
             """
             device = self.target
             # Update logs and activity message attribute with received event
@@ -1376,11 +1349,6 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                # log_msg = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-                # self.logger.error(log_msg)
-                # device._read_activity_message = log_msg
-                # exception_message.append(log_msg)
-                # exception_count += 1
                 log_msg = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -1464,21 +1432,12 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                # log_msg = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-                # self.logger.error(log_msg)
-                # device._read_activity_message = log_msg
-                # exception_message.append(log_msg)
-                # exception_count += 1
                 log_msg = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_STOPCAPTURE_EXEC, log_msg, "DishLeafNode.StopCaptureCommand",
                                              tango.ErrSeverity.ERR)
-
-            # # Throw Exception
-            # if exception_count > 0:
-            #     device.throw_exception(exception_message, const.STR_STOPCAPTURE_EXEC)
 
     def is_StopCapture_allowed(self):
         """
@@ -1675,8 +1634,6 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
             try:
                 slew_timestamp = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW,
@@ -1687,11 +1644,6 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                # log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-                # self.logger.error(log_msg)
-                # device._read_activity_message = log_msg
-                # exception_message.append(log_msg)
-                # exception_count += 1
                 log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -1822,8 +1774,6 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
             try:
                 device.el_limit = False
                 jsonArgument = json.loads(argin)
@@ -1857,11 +1807,6 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                # log_msg = const.ERR_INVALID_JSON + str(value_error)
-                # device._read_activity_message = log_msg
-                # self.logger.error(log_msg)
-                # exception_message.append(log_msg)
-                # exception_count += 1
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -1870,11 +1815,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             except KeyError as key_error:
-                # log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                # device._read_activity_message = log_msg
-                # device.logger.error(log_msg)
-                # exception_message.append(log_msg)
-                # exception_count += 1
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.error(log_msg)
                 device._read_activity_message = log_msg
@@ -1950,9 +1890,6 @@ class DishLeafNode(SKABaseDevice):
                     - errors     : (sequence<DevError>) The error stack
                     - ext
             :return: none
-
-            :raises: Exception if error occurs in StopTrack command callback method.
-
             """
             device = self.target
             # Update logs and activity message attribute with received event
@@ -1980,8 +1917,6 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
             try:
                 device.event_track_time.set()
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.stoptrack_cmd_ended_cb)
@@ -2064,9 +1999,6 @@ class DishLeafNode(SKABaseDevice):
                     - errors     : (sequence<DevError>) The error stack
                     - ext
             :return: none
-
-            :raises: Exception if error occurs in StopTrack command callback method.
-
             """
             device = self.target
             # Update logs and activity message attribute with received event
