@@ -654,11 +654,11 @@ class SubarrayNode(SKASubarray):
 
             # Create proxy for CSP Subarray Leaf Node
             device._csp_subarray_ln_proxy = None
-            device._csp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(self.CspSubarrayLNFQDN)
+            device._csp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(device.CspSubarrayLNFQDN)
             #device.create_csp_ln_proxy()
             # Create proxy for SDP Subarray Leaf Node
             device._sdp_subarray_ln_proxy = None
-            device._sdp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(self.SdpSubarrayLNFQDN)
+            device._sdp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(device.SdpSubarrayLNFQDN)
             #device.create_sdp_ln_proxy()
             device._csp_sa_proxy = DeviceProxy(device.CspSubarrayFQDN)
             device._sdp_sa_proxy = DeviceProxy(device.SdpSubarrayFQDN)
