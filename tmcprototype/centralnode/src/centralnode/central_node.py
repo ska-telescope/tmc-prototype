@@ -469,7 +469,7 @@ class CentralNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command StowAntennas is not allowed in current state.",
                                              "Failed to invoke StowAntennas command on CentralNode.",
                                              "CentralNode.StowAntennas()",
@@ -574,7 +574,7 @@ class CentralNode(SKABaseDevice):
 
             :raises: DevFailed if this command is not allowed to be run in current device state
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command StandByTelescope is not allowed in current state.",
                                              "Failed to invoke StandByTelescope command on CentralNode.",
                                              "CentralNode.StandByTelescope()",
@@ -697,7 +697,7 @@ class CentralNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command StartUpTelescope is not allowed in current state.",
                                              "Failed to invoke StartUpTelescope command on CentralNode.",
                                              "CentralNode.StartUpTelescope()",
@@ -823,7 +823,7 @@ class CentralNode(SKABaseDevice):
 
             """
 
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command AssignResources is not allowed in current state.",
                                              "Failed to invoke AssignResources command on CentralNode.",
                                              "CentralNode.AssignResources()",
@@ -1066,7 +1066,7 @@ class CentralNode(SKABaseDevice):
 
             """
 
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
                 tango.Except.throw_exception("Command ReleaseResources is not allowed in current state.",
                                              "Failed to invoke ReleaseResources command on CentralNode.",
                                              "CentralNode.ReleaseResources()",
