@@ -478,7 +478,7 @@ def test_restart_command_with_callback_method_with_event_error():
         # assert:
         assert const.ERR_INVOKING_CMD + const.CMD_RESTART in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_configure_command_with_callback_method_with_command_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -508,7 +508,7 @@ def test_configure_command_with_callback_method_with_command_error():
         # assert:
         assert const.ERR_EXCEPT_CONFIGURE_CMD_CB in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_startscan_command_with_callback_method_with_command_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -535,6 +535,7 @@ def test_startscan_command_with_callback_method_with_command_error():
         # assert:
         assert const.ERR_EXCEPT_STARTSCAN_CMD_CB in tango_context.device.activityMessage
 
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_endscan_command_with_callback_method_with_command_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -562,6 +563,7 @@ def test_endscan_command_with_callback_method_with_command_error():
         # assert:
         assert const.ERR_EXCEPT_ENDSCAN_CMD_CB in tango_context.device.activityMessage
 
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_releaseallresources_command_with_callback_method_with_command_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -589,7 +591,7 @@ def test_releaseallresources_command_with_callback_method_with_command_error():
         # assert:
         assert const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_gotoidle_command_with_callback_method_with_command_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -617,7 +619,7 @@ def test_gotoidle_command_with_callback_method_with_command_error():
         # assert:
         assert const.ERR_EXCEPT_GO_TO_IDLE_CMD_CB in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_abort_command_with_callback_method_with_command_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -645,7 +647,7 @@ def test_abort_command_with_callback_method_with_command_error():
         # assert:
         assert const.ERR_EXCEPT_ABORT_CMD_CB in tango_context.device.activityMessage
 
-
+@pytest.mark.skip(reason = "testcase will be removed, since generic exceptions are removed now")
 def test_restart_command_with_callback_method_with_command_error():
     # arrange:
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -806,7 +808,7 @@ def test_start_scan_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy = mock_csp_subarray[0]
     csp_subarray1_proxy_mock = mock_csp_subarray[1]
     csp_subarray1_proxy_mock.obsState = ObsState.READY
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_for_scan
     # act:
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.StartScan(scan_input_str)
@@ -1091,7 +1093,12 @@ def command_callback_with_command_exception():
     return Exception("Exception in command callback")
 
 
-def raise_devfailed_exception(cmd_name):
+def raise_devfailed_exception(cmd_name, inp_str):
+    # "This function is called to raise DevFailed exception."
+    tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
+                                 " ", tango.ErrSeverity.ERR)
+
+def raise_devfailed_exception_for_scan(cmd_name, inp_str, cmd_cb):
     # "This function is called to raise DevFailed exception."
     tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
                                  " ", tango.ErrSeverity.ERR)
