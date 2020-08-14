@@ -349,7 +349,7 @@ def test_assign_command_assign_resources_ended_raises_exception_for_error_event(
         with pytest.raises(tango.DevFailed) as df:
             event_subscription_map[const.CMD_ASSIGN_RESOURCES](dummy_event)
         # assert:
-        # assert const.ERR_INVOKING_CMD + const.CMD_ASSIGN_RESOURCES in tango_context.device.activityMessage
+        assert const.ERR_INVOKING_CMD + const.CMD_ASSIGN_RESOURCES in tango_context.device.activityMessage
 
 
 def test_scan_command_with_callback_method_with_event_error():
@@ -781,22 +781,6 @@ def test_on_should_command_sdp_subaaray_leaf_node_to_start():
         # assert:
         sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
                                                                any_method(with_name='on_cmd_ended_cb'))
-
-
-def test_off_should_command_sdp_subarray_leaf_node_to_stop():
-    # arrange:
-    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
-    dut_properties = {'SdpSubarrayFQDN': sdp_subarray1_fqdn}
-    sdp_subarray1_proxy_mock = Mock()
-    proxies_to_mock = {sdp_subarray1_fqdn: sdp_subarray1_proxy_mock}
-
-    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        tango_context.device.On()
-        # act:
-        tango_context.device.Off()
-        # assert:
-        assert tango_context.device.activityMessage in const.STR_OFF_CMD_SUCCESS
 
 
 def test_start_scan_should_raise_devfailed_exception():
