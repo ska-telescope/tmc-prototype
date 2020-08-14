@@ -180,8 +180,6 @@ class CspMasterLeafNode(SKABaseDevice):
                     subscribing the evennts.
             """
             super().do()
-            exception_count = 0
-            exception_message = []
             device = self.target
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
@@ -198,6 +196,7 @@ class CspMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
                 self.logger.debug(log_msg)
+                self.logger.exception(dev_failed)
                 device._read_activity_message = log_msg
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
                                              tango.ErrSeverity.ERR)
