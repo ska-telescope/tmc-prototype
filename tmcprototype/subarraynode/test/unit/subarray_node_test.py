@@ -505,7 +505,7 @@ def test_release_resource_should_raise_exception_when_called_before_assign_resou
     assert "Error executing command ReleaseAllResourcesCommand" in str(df.value)
 
 
-def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices, subarray_state_model):
+def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
