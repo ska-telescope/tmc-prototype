@@ -388,7 +388,7 @@ class SubarrayNode(SKASubarray):
 
         return len(self._receptor_id_list)
 
-    def remove_receptors_in_group(self):
+    def remove_receptors_from_group(self):
         """
         Deletes tango group of the resources allocated in the subarray.
 

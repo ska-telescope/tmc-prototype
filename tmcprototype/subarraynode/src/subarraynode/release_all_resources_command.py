@@ -48,7 +48,7 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
                                          const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
 
         self.logger.info(const.STR_DISH_RELEASE)
-        device.remove_receptors_in_group()
+        device.remove_receptors_from_group()
         self.logger.info(const.STR_CSP_RELEASE)
         self.release_csp_resources()
         self.logger.info(const.STR_SDP_RELEASE)
