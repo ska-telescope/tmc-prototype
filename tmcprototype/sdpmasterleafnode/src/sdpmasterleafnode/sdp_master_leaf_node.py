@@ -22,7 +22,6 @@ from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, ResponseCommand
-from ska.base.control_model import TestMode
 
 # Additional import
 from . import const, release
@@ -90,8 +89,6 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             super().do()
             device = self.target
-            exception_message = []
-            exception_count = 0
             try:
                 device._version_info = "1.0"
                 device._processing_block_list = "test"

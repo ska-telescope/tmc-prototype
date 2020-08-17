@@ -476,8 +476,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                      ValueError if input argument json string contains invalid value
             """
             device = self.target
-            exception_message = []
-            exception_count = 0
             target_Ra = ""
             target_Dec = ""
             try:
@@ -506,7 +504,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
@@ -515,7 +512,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
@@ -632,8 +628,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if the command execution is not successful
             """
             device = self.target
-            exception_message = []
-            exception_count = 0
             try:
                 # Check if CspSubarray is in READY state
                 if device.CspSubarrayProxy.obsState == ObsState.READY:
@@ -647,7 +641,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
-                    self.logger.error(log_msg)
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
@@ -769,7 +762,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
                     log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
                     self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
-                    self.logger.error(log_msg)
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_IN_SCAN)
 
             except DevFailed as dev_failed:
@@ -890,7 +882,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
@@ -1050,7 +1041,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
@@ -1059,7 +1049,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             except KeyError as key_error:
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.exception(key_error)
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
@@ -1067,7 +1056,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
@@ -1192,12 +1180,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
-                    self.logger.error(log_msg)
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_GOTOIDLE_INVOKING_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.ERR_GOTOIDLE_INVOKING_CMD, log_msg,
@@ -1329,7 +1315,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_ABORT_EXEC, log_msg,
@@ -1450,7 +1435,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.ERR_RESTART_INVOKING_CMD, log_msg,
