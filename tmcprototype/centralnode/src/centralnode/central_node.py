@@ -172,8 +172,6 @@ class CentralNode(SKABaseDevice):
         :raises: KeyError if error occurs while setting Subarray obsState
                 Exception if error occurs in callback
         """
-        exception_count = 0
-        exception_message = []
         try:
             log_msg = 'Observation state attribute change event is : ' + str(evt)
             self.logger.info(log_msg)
@@ -961,18 +959,15 @@ class CentralNode(SKABaseDevice):
 
                 resources_allocated_return = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                # self.logger.debug("resources_allocated_return: %s", resources_allocated_return)
 
                 # Note: resources_allocated_return[1] contains the JSON string containing 
                 # allocated resources.
                 # resources_allocated = resources_allocated_return[1]
-                self.logger.info("Return value from subarray node:" + str(resources_allocated_return))
-                resources_allocated = ast.literal_eval(resources_allocated_return[1][0])
-                log_msg = "\n\n resources_assigned:" + str(resources_allocated) + str(type(resources_allocated))
+                log_msg = "Return value from subarray node: " + str(resources_allocated_return)
                 self.logger.info(log_msg)
-                log_msg = "resources_assigned:" + str(resources_allocated)
+                resources_allocated = ast.literal_eval(resources_allocated_return[1][0])
+                log_msg = "resources_assigned: " + str(resources_allocated)
                 self.logger.debug(log_msg)
-
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
