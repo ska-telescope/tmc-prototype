@@ -277,7 +277,6 @@ class CentralNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_INIT_PROP_ATTR_CN + str(dev_failed)
-                self.logger.error(log_msg)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand.do()",
@@ -307,7 +306,6 @@ class CentralNode(SKABaseDevice):
                     device._leaf_device_proxy.append(DeviceProxy(device._dish_leaf_node_devices[name]))
                 except (DevFailed, KeyError) as except_occurred:
                     log_msg = const.ERR_IN_CREATE_PROXY + str(except_occurred)
-                    self.logger.error(log_msg)
                     self.logger.exception(except_occurred)
                     device._read_activity_message = const.ERR_IN_CREATE_PROXY
                     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
@@ -352,7 +350,6 @@ class CentralNode(SKABaseDevice):
                     device.subarray_FQDN_dict[subarrayID] = subarray_proxy
                 except DevFailed as dev_failed:
                     log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                    self.logger.error(log_msg)
                     self.logger.exception(dev_failed)
                     device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
                     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
@@ -471,7 +468,6 @@ class CentralNode(SKABaseDevice):
                         device_proxy.command_inout(const.CMD_SET_STOW_MODE)
                     except DevFailed as dev_failed:
                         log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
-                        self.logger.error(log_msg)
                         self.logger.exception(dev_failed)
                         device._read_activity_message = const.ERR_EXE_STOW_CMD
                         tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
@@ -480,7 +476,6 @@ class CentralNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_STOW_ARGIN + str(value_error)
-                self.logger.error(log_msg)
                 self.logger.exception(value_error)
                 device._read_activity_message = const.ERR_STOW_ARGIN
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
@@ -488,7 +483,6 @@ class CentralNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_EXE_STOW_CMD
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
@@ -573,7 +567,6 @@ class CentralNode(SKABaseDevice):
                     device._leaf_device_proxy[name].command_inout(const.CMD_OFF)
                 except DevFailed as dev_failed:
                     log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-                    self.logger.error(log_msg)
                     self.logger.exception(dev_failed)
                     device._read_activity_message = const.ERR_EXE_STANDBY_CMD
                     tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
@@ -586,7 +579,6 @@ class CentralNode(SKABaseDevice):
                 self.logger.info(const.STR_CMD_STANDBY_CSP_DEV)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_EXE_STANDBY_CMD
                 tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
@@ -599,7 +591,6 @@ class CentralNode(SKABaseDevice):
                 self.logger.info(const.STR_CMD_STANDBY_SDP_DEV)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_EXE_STANDBY_CMD
                 tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
@@ -612,7 +603,6 @@ class CentralNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_EXE_STANDBY_CMD
                 tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
@@ -688,8 +678,6 @@ class CentralNode(SKABaseDevice):
 
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
             log_msg = const.STR_ON_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
@@ -897,8 +885,6 @@ class CentralNode(SKABaseDevice):
 
             """
             receptorIDList = []
-            exception_message = []
-            exception_count = 0
             argout = []
             device = self.target
 
@@ -957,7 +943,6 @@ class CentralNode(SKABaseDevice):
                 self.logger.exception("Exception in AssignResource(): %s", str(error))
                 device._read_activity_message = "Exception in validating input: " + str(error)
                 log_msg = const.STR_ASSIGN_RES_EXEC + str(error)
-                self.logger.error(log_msg)
                 self.logger.exception(error)
                 tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
                                              "CentralNode.AssignResourcesCommand",
@@ -1151,7 +1136,6 @@ class CentralNode(SKABaseDevice):
                 self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                self.logger.error(key_error)
                 self.logger.exception(key_error)
                 tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
                                              "CentralNode.ReleaseResourcesCommand",
@@ -1159,8 +1143,8 @@ class CentralNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_RELEASE_RESOURCES + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = const.ERR_RELEASE_RESOURCES
+                self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
                                              "CentralNode.ReleaseResourcesCommand",
                                              tango.ErrSeverity.ERR)
