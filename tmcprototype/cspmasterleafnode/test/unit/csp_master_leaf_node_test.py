@@ -122,6 +122,7 @@ def test_standby_should_command_with_callback_method_with_event_error(mock_csp_m
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
 
+
 def test_on_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription ):
     # arrange:
     device_proxy=mock_csp_master[1]
@@ -148,48 +149,6 @@ def test_off_should_command_with_callback_method_with_event_error(mock_csp_maste
     event_subscription[const.CMD_OFF](dummy_event)
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
-
-
-def test_standby_should_command_with_callback_method_with_command_error(mock_csp_master, event_subscription ):
-    # arrange:
-    device_proxy= mock_csp_master[1]
-    # act:
-    with pytest.raises(Exception) as excp:
-        device_proxy.Standby([])
-        dummy_event = command_callback_with_command_exception()
-        event_subscription[const.CMD_STANDBY](dummy_event)
-    # assert:
-    assert const.ERR_EXCEPT_STANDBY_CMD_CB in device_proxy.activityMessage
-
-
-def test_on_should_command_with_callback_method_with_command_error(mock_csp_master, event_subscription):
-    # arrange:
-    device_proxy = mock_csp_master[1]
-
-    # act:
-    with pytest.raises(Exception) as excp:
-        device_proxy.On()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription[const.CMD_ON](dummy_event)
-    # assert:
-    assert const.ERR_EXCEPT_ON_CMD_CB in device_proxy.activityMessage
-
-
-#TODO: FOR FUTURE USE
-@pytest.mark.xfail(reason="Off command is not generating command error in current implementation. "
-                          "Will be updated later.")
-def test_off_should_command_with_callback_method_with_command_error(mock_csp_master, event_subscription ):
-    # arrange:
-    device_proxy = mock_csp_master[1]
-
-    # act:
-    device_proxy.On()
-    with pytest.raises(Exception) as excp:
-        device_proxy.Off()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription[const.CMD_OFF](dummy_event)
-    # assert:
-    assert const.ERR_EXCEPT_OFF_CMD_CB in device_proxy.activityMessage
 
 
 def command_callback(command_name):
@@ -423,42 +382,6 @@ def test_attribute_csp_pst_health_callback_of_csp_master_with_error_event(mock_c
     # assert:
     assert device_proxy.activityMessage == const.ERR_ON_SUBS_CSP_PST_HEALTH + str(
         dummy_event.errors)
-
-
-def test_attribute_csp_pst_health_callback_with_exception(mock_csp_master):
-    # arrange:
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_pst_health_state_attribute = 'cspPstHealthState'
-
-    # act:
-    dummy_event = command_callback_with_command_exception()
-    event_subscription_map[csp_pst_health_state_attribute](dummy_event)
-    # assert:
-    assert const.ERR_CSP_PST_HEALTH_CB in device_proxy.activityMessage
-
-
-def test_attribute_csp_pss_health_callback_with_exception(mock_csp_master):
-    # arrange:
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_pss_health_state_attribute = 'cspPssHealthState'
-
-    # act:
-    dummy_event = command_callback_with_command_exception()
-    event_subscription_map[csp_pss_health_state_attribute](dummy_event)
-    # assert:
-    assert const.ERR_CSP_PSS_HEALTH_CB in device_proxy.activityMessage
-
-
-def test_attribute_csp_cbf_health_state_callback_with_exception(mock_csp_master):
-    # arrange:
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_cbf_health_state_attribute = 'cspCbfHealthState'
-
-    # act:
-    dummy_event = command_callback_with_command_exception()
-    event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
-    # assert:
-    assert const.ERR_CSP_CBF_HEALTH_CB in device_proxy.activityMessage
 
 
 def create_dummy_event_for_health_state(device_fqdn, health_state_value, attribute):

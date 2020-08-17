@@ -184,55 +184,6 @@ def test_standby_should_command_with_callback_method_with_event_error(mock_sdp_m
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
 
-def test_on_should_command_with_callback_method_with_command_error(mock_sdp_master, event_subscription):
-    # arrange:
-    device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    # act:
-    with pytest.raises(Exception) :
-        device_proxy.On()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription[const.CMD_ON](dummy_event)
-    # assert:
-    assert const.ERR_EXCEPT_ON_CMD_CB in device_proxy.activityMessage
-
-def test_off_should_command_with_callback_method_with_command_error(mock_sdp_master, event_subscription):
-    # arrange:
-    device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    device_proxy.On()
-    # act:
-    with pytest.raises(Exception) :
-        device_proxy.Off()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription[const.CMD_OFF](dummy_event)
-    # assert:
-    assert const.ERR_EXCEPT_OFF_CMD_CB in device_proxy.activityMessage
-
-def test_disable_should_command_with_callback_method_with_command_error(mock_sdp_master, event_subscription):
-    # arrange:
-    device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    # act:
-    with pytest.raises(Exception) :
-        device_proxy.Disable()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription[const.CMD_Disable](dummy_event)
-    # assert:
-    assert const.ERR_EXCEPT_DISABLE_CMD_CB in device_proxy.activityMessage
-
-
-def test_standby_should_command_with_callback_method_with_command_error(mock_sdp_master, event_subscription):
-    # arrange:
-    device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    # act:
-    with pytest.raises(Exception) :
-        device_proxy.Standby()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription[const.CMD_STANDBY](dummy_event)
-    # assert:
-    assert const.ERR_EXCEPT_STANDBY_CMD_CB in device_proxy.activityMessage
-
-
-
-
 
 def command_callback(command_name):
     fake_event = MagicMock()

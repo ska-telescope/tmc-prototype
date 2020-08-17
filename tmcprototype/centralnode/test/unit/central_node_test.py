@@ -383,7 +383,7 @@ def test_assign_resources_raise_devfailed_when_reseource_reallocation():
         subarray1_fqdn: subarray1_proxy_mock,
         subarray2_fqdn: subarray2_proxy_mock
     }
-    
+
     receptorIDList_success = []
     receptorIDList_success.append("0001")
     dish = {}
@@ -562,12 +562,14 @@ def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_
         # assert:
         assert tango_context.device.telescopeHealthState == csp_master_ln_health_state
 
-
 def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_start():
     # arrange:
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
+    csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
+
     sdp_master_ln_health_attribute = 'sdpHealthState'
     initial_dut_properties = {
+        'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
         'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn
     }
 
