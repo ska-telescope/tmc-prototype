@@ -275,39 +275,39 @@ class SubarrayNode(SKASubarray):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
-    # def create_csp_ln_proxy(self):
-    #     """
-    #     Creates proxy of CSP Subarray Leaf Node.
-    #     """
-    #     retry = 0
-    #     proxy_created_flag = False
-    #     while retry < 3:
-    #         try:
-    #             self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
-    #             proxy_created_flag = True
-    #             break
-    #         except Exception:
-    #             retry += 1
-    #             continue
-    #
-    #     return proxy_created_flag
+    def create_csp_ln_proxy(self):
+        """
+        Creates proxy of CSP Subarray Leaf Node.
+        """
+        retry = 0
+        proxy_created_flag = False
+        while retry < 3:
+            try:
+                self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
+                proxy_created_flag = True
+                break
+            except Exception:
+                retry += 1
+                continue
 
-    # def create_sdp_ln_proxy(self):
-    #     """
-    #      Creates proxy of SDP Subarray Leaf Node.
-    #     """
-    #     retry = 0
-    #     proxy_created_flag = False
-    #     while retry < 3:
-    #         try:
-    #             self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
-    #             proxy_created_flag = True
-    #             break
-    #         except tango.DevFailed:
-    #             retry += 1
-    #             continue
-    #
-    #     return proxy_created_flag
+        return proxy_created_flag
+
+    def create_sdp_ln_proxy(self):
+        """
+         Creates proxy of SDP Subarray Leaf Node.
+        """
+        retry = 0
+        proxy_created_flag = False
+        while retry < 3:
+            try:
+                self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
+                proxy_created_flag = True
+                break
+            except tango.DevFailed:
+                retry += 1
+                continue
+
+        return proxy_created_flag
 
     def _remove_subarray_dish_lns_health_states(self):
         subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
@@ -654,12 +654,12 @@ class SubarrayNode(SKASubarray):
 
             # Create proxy for CSP Subarray Leaf Node
             device._csp_subarray_ln_proxy = None
-            device._csp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(self.CspSubarrayLNFQDN)
-            #device.create_csp_ln_proxy()
+            #device._csp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(device.CspSubarrayLNFQDN)
+            device.create_csp_ln_proxy()
             # Create proxy for SDP Subarray Leaf Node
             device._sdp_subarray_ln_proxy = None
-            device._sdp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(self.SdpSubarrayLNFQDN)
-            #device.create_sdp_ln_proxy()
+            #device._sdp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(device.SdpSubarrayLNFQDN)
+            device.create_sdp_ln_proxy()
             device._csp_sa_proxy = DeviceProxy(device.CspSubarrayFQDN)
             device._sdp_sa_proxy = DeviceProxy(device.SdpSubarrayFQDN)
             device.command_class_object()
