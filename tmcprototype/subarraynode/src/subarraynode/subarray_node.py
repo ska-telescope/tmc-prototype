@@ -77,17 +77,17 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         args = (self, self.state_model, self.logger)
-        self.configure_obj = configure.ConfigureCommand(*args)
-        self.assign_obj = assign_resources.AssignResourcesCommand(*args)
-        self.release_obj = release_all_resources.ReleaseAllResourcesCommand(*args)
-        self.scan_obj = scan.ScanCommand(*args)
-        self.endscan_obj = end_scan.EndScanCommand(*args)
-        self.end_obj = end.EndCommand(*args)
-        self.restart_obj = restart.RestartCommand(*args)
+        self.configure_obj = configure_command.ConfigureCommand(*args)
+        self.assign_obj = assign_resources_command.AssignResourcesCommand(*args)
+        self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
+        self.scan_obj = scan_command.ScanCommand(*args)
+        self.endscan_obj = end_scan_command.EndScanCommand(*args)
+        self.end_obj = end_command.EndCommand(*args)
+        self.restart_obj = restart_command.RestartCommand(*args)
         self.abort_obj = abort_command.AbortCommand(*args)
         self.init_obj = self.InitCommand(*args)
-        self.on_obj = on.OnCommand(*args)
-        self.off_obj = off.OffCommand(*args)
+        self.on_obj = on_command.OnCommand(*args)
+        self.off_obj = off_command.OffCommand(*args)
 
     def receive_addresses_cb(self, event):
         """
@@ -686,19 +686,19 @@ class SubarrayNode(SKASubarray):
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
-        self.register_command_object("Track", track.TrackCommand(*args))
+        self.register_command_object("Track", track_command.TrackCommand(*args))
         # In order to pass self = subarray node as target device, the assign and release resource commands
         # are registered and inherited from SKASubarray
-        self.register_command_object("AssignResources", assign_resources.AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseAllResources", release_all_resources.ReleaseAllResourcesCommand(*args))
-        self.register_command_object("Configure", configure.ConfigureCommand(*args))
-        self.register_command_object("Scan", scan.ScanCommand(*args))
-        self.register_command_object("EndScan", end_scan.EndScanCommand(*args))
-        self.register_command_object("End", end.EndCommand(*args))
-        self.register_command_object("On", on.OnCommand(*args))
-        self.register_command_object("Off", off.OffCommand(*args))
+        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*args))
+        self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
+        self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
+        self.register_command_object("Scan", scan_command.ScanCommand(*args))
+        self.register_command_object("EndScan", end_scan_command.EndScanCommand(*args))
+        self.register_command_object("End", end_command.EndCommand(*args))
+        self.register_command_object("On", on_command.OnCommand(*args))
+        self.register_command_object("Off", off_command.OffCommand(*args))
         self.register_command_object("Abort", abort_command.AbortCommand(*args))
-        self.register_command_object("Restart", restart.RestartCommand(*args))
+        self.register_command_object("Restart", restart_command.RestartCommand(*args))
 
 # ----------
 # Run server
