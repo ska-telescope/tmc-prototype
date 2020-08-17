@@ -72,15 +72,9 @@ class ElementDeviceData:
     @staticmethod
     def build_up_sdp_cmd_data(scan_config):
         scan_config = scan_config.copy()
-        log_msg = "scan_config" + str(scan_config) + str(type(scan_config))
-        # self.logger.info(log_msg)
         sdp_scan_config = scan_config.get("sdp", {})
-        log_msg = "sdp_scan_config" + str(sdp_scan_config) + str(type(sdp_scan_config))
-        # self.logger.info(log_msg)
         if sdp_scan_config:
             scan_type = sdp_scan_config.get("scan_type")
-            log_msg = "scan_type" + str(scan_type) + str(type(scan_type))
-            # self.logger.info(log_msg)
             if not scan_type:
                 raise KeyError("SDP Subarray scan_type is empty. Command data not built up")
         else:
@@ -195,27 +189,20 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            device_name = event.device.dev_name()
-            if not event.err:
-                event_health_state = event.attr_value.value
-                self.subarray_ln_health_state_map[device_name] = event_health_state
 
-                log_message = SubarrayHealthState.generate_health_state_log_msg(
-                    event_health_state, device_name, event)
-                self._read_activity_message = log_message
-                self._health_state = SubarrayHealthState.calculate_health_state(
-                    self.subarray_ln_health_state_map.values())
-            else:
-                log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-                self._read_activity_message = log_message
-        except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_AGGR_HEALTH_STATE)
+        device_name = event.device.dev_name()
+        if not event.err:
+            event_health_state = event.attr_value.value
+            self.subarray_ln_health_state_map[device_name] = event_health_state
+
+            log_message = SubarrayHealthState.generate_health_state_log_msg(
+                event_health_state, device_name, event)
+            self._read_activity_message = log_message
+            self._health_state = SubarrayHealthState.calculate_health_state(
+                self.subarray_ln_health_state_map.values())
+        else:
+            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
+            self._read_activity_message = log_message
 
     def observation_state_cb(self, evt):
         """
@@ -225,13 +212,13 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        exception_message = []
-        exception_count = 0
         try:
             log_msg = 'Observation State Attribute change event is: ' + str(evt)
             self.logger.info(log_msg)
             if not evt.err:
                 self._observetion_state = evt.attr_value.value
+                log_msg = 'Observation State Attribute value is: ' + str(self._observetion_state)
+                self.logger.info(log_msg)
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa_obs_state = self._observetion_state
                     self._read_activity_message = const.STR_CSP_SUBARRAY_OBS_STATE + str(
@@ -253,11 +240,6 @@ class SubarrayNode(SKASubarray):
             log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
             self.logger.error(log_msg)
             self._read_activity_message = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
-        except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_AGGR_OBS_STATE)
 
     def calculate_observation_state(self):
         """
@@ -269,26 +251,6 @@ class SubarrayNode(SKASubarray):
         pointing_state_count_ready = 0
         log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
         self.logger.info(log_msg)
-        log_msg = "self._csp_sa_obs_state is: " + str(self._csp_sa_obs_state)  + str(type(self._csp_sa_obs_state))
-        self.logger.info(log_msg)
-        log_msg = "self._sdp_sa_obs_state is: " + str(self._sdp_sa_obs_state) + str(type(self._sdp_sa_obs_state))
-        self.logger.info(log_msg)
-        log_msg = "self.is_release_resources: " + str(self.is_release_resources)
-        self.logger.info(log_msg)
-        log_msg = "self.is_restart_command: " + str(self.is_restart_command)
-        self.logger.info(log_msg)
-        log_msg = "self.is_abort_command: " + str(self.is_abort_command)
-        self.logger.info(log_msg)
-        log_msg = "self.is_scan_completed: " + str(self.is_scan_completed)
-        self.logger.info(log_msg)
-        log_msg = "self.is_end_command: " + str(self.is_end_command)
-        self.logger.info(log_msg)
-
-        log_msg = "test is _csp_sa_obs_state: " + str((self._csp_sa_obs_state == ObsState.ABORTED))
-        self.logger.info(log_msg)
-        log_msg = "test is _sdp_sa_obs_state: " + str((self._sdp_sa_obs_state == ObsState.ABORTED))
-        self.logger.info(log_msg)
-
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
@@ -296,7 +258,8 @@ class SubarrayNode(SKASubarray):
                 pointing_state_count_slew = pointing_state_count_slew + 1
             elif value == PointingState.READY:
                 pointing_state_count_ready = pointing_state_count_ready + 1
-        if ((self._csp_sa_obs_state == ObsState.EMPTY) and (self._sdp_sa_obs_state == ObsState.EMPTY)):
+        if self._csp_sa_obs_state == ObsState.EMPTY and self._sdp_sa_obs_state ==\
+                ObsState.EMPTY:
             if self.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
                 self.release_obj.succeeded()
@@ -304,6 +267,7 @@ class SubarrayNode(SKASubarray):
                 self.logger.info("Calling Restart command succeeded() method")
                 self.restart_obj.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
+
         elif ((self._csp_sa_obs_state == ObsState.ABORTED) and (self._sdp_sa_obs_state == ObsState.ABORTED)):
             if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                 if self.is_abort_command:
@@ -315,15 +279,15 @@ class SubarrayNode(SKASubarray):
             log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
             self.logger.debug(log_msg)
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                if not self.is_abort_command:
-                    if self.is_scan_completed:
-                        self.logger.info("Calling EndScan command succeeded() method")
-                        self.endscan_obj.succeeded()
-                    else:
-                        # Configure command success
-                        self.logger.info("Calling Configure command succeeded() method")
-                        self.configure_obj.succeeded()
-        elif ((self._csp_sa_obs_state == ObsState.IDLE) and (self._sdp_sa_obs_state == ObsState.IDLE)):
+                if self.is_scan_completed:
+                    self.logger.info("Calling EndScan command succeeded() method")
+                    self.endscan_obj.succeeded()
+                else:
+                    # Configure command success
+                    self.logger.info("Calling Configure command succeeded() method")
+                    self.configure_obj.succeeded()
+        elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
+                ObsState.IDLE:
             if self.is_end_command:
                 if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                     # End command success
@@ -351,29 +315,6 @@ class SubarrayNode(SKASubarray):
             #         # self._obs_state = ObsState.IDLE
             #         print("Calling AssignResource command succeeded() method")
             #         self.assign_obj.succeeded()
-        self.logger.info("calculate_observation_state got executed.")
-
-    def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
-        log_msg = read_actvity_msg + str(exception)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(exception)
-        excpt_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [excpt_msg_list, exception_count]
-
-    def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
-        log_msg = read_actvity_msg + str(df)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(df)
-        excpt_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [excpt_msg_list, exception_count]
-
-    def throw_exception(self, excpt_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in excpt_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
     def create_csp_ln_proxy(self):
         """
@@ -526,8 +467,6 @@ class SubarrayNode(SKASubarray):
             DevVarStringArray. List of Resources added to the Subarray.
             Example: ['0001', '0002']
         """
-        exception_count = 0
-        exception_message = []
         allocation_success = []
         allocation_failure = []
         # Add each dish into the tango group
@@ -569,10 +508,13 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
                 self.logger.exception("Receptor %s allocation failed.", str_leafId)
-                [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_ADDING_LEAFNODE)
+                log_msg = const.ERR_ADDING_LEAFNODE + str(dev_failed)
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.ERR_ADDING_LEAFNODE,
+                                                 log_msg,
+                                                 "SubarrayNode.add_receptors_in_group",
+                                                 tango.ErrSeverity.ERR
+                                                )
                 allocation_failure.append(str_leafId)
                 # Exception Logic to remove Id from subarray group
                 group_dishes = self._dish_leaf_node_group.get_device_list()
@@ -586,14 +528,12 @@ class SubarrayNode(SKASubarray):
                     devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
 
             except (TypeError) as except_occurred:
-                self.logger.exception(except_occurred)
                 allocation_failure.append(str_leafId)
-                exception_count += 1
-
-        # Throw Exception
-        if exception_count > 0:
-            exception_msg = "Failed to allocate receptors [", allocation_failure, "]"
-            self.throw_exception(exception_msg, const.STR_ASSIGN_RES_EXEC)
+                log_msg = const.ERR_ADDING_LEAFNODE + str(except_occurred)
+                self.logger.exception(except_occurred)
+                tango.Except.throw_exception(const.ERR_ADDING_LEAFNODE, log_msg,
+                                             "SubarrayNode.add_receptors_in_group",
+                                             tango.ErrSeverity.ERR)
 
         log_msg = "List of Resources added to the Subarray::",allocation_success
         self.logger.debug(log_msg)
@@ -621,19 +561,10 @@ class SubarrayNode(SKASubarray):
         argout = []
         dish = {}
         try:
-            log_msg = "argin is" + str(argin) + str(type(argin))
-            self.logger.info(log_msg)
             dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
-            log_msg = "dish is" + str(dish) + str(type(dish))
-            self.logger.info(log_msg)
             json_argument[const.STR_KEY_DISH] = dish
-            log_msg = "json_argument is" + str(json_argument) + str(type(json_argument))
-            self.logger.info(log_msg)
             arg_list.append(json.dumps(json_argument))
-            log_msg = "arg_list is" + str(arg_list) + str(type(arg_list))
-            self.logger.info(log_msg)
-            # self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
-            self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
+            self._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, arg_list)
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:
@@ -729,8 +660,6 @@ class SubarrayNode(SKASubarray):
 
     def _configure_sdp(self, scan_configuration):
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
-        log_msg = "cmd_data is" + cmd_data + str(type(cmd_data))
-        self.logger.info(log_msg)
         self._configure_leaf_node(self._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
@@ -772,8 +701,6 @@ class SubarrayNode(SKASubarray):
         :return: None
 
         """
-        exception_message = []
-        exception_count = 0
         try:
             log_msg= 'Pointing state Attribute change event is : ' + str(evt)
             self.logger.info(log_msg)
@@ -808,11 +735,6 @@ class SubarrayNode(SKASubarray):
             log_msg = const.ERR_SETPOINTING_CALLBK + str(key_err)
             self.logger.error(log_msg)
             self._read_activity_message = const.ERR_SETPOINTING_CALLBK + str(key_err)
-        except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_AGGR_POINTING_STATE)
 
     def validate_obs_state(self):
         if self._obs_state == ObsState.EMPTY:
@@ -851,8 +773,6 @@ class SubarrayNode(SKASubarray):
     SdpSubarrayFQDN = device_property(
         dtype='str',
     )
-
-
 
     # ----------
     # Attributes
@@ -900,8 +820,6 @@ class SubarrayNode(SKASubarray):
             :raises: DevFailed if the error while subscribing the tango attribute
             """
             super().do()
-            exception_message = []
-            exception_count = 0
             device = self.target
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
@@ -954,13 +872,13 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                    exception_message, exception_count, const.ERR_SUBS_CSP_SA_LEAF_ATTR)
                 device.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
-                self.logger.error(const.ERR_CSP_SA_LEAF_INIT)
-                device.throw_exception(exception_message, device._read_activity_message)
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.ERR_SUBS_CSP_SA_LEAF_ATTR,
+                                             log_msg,
+                                             "SubarrayNode.InitCommand",
+                                             tango.ErrSeverity.ERR)
 
             try:
                 device.subarray_ln_health_state_map[device._sdp_subarray_ln_proxy.dev_name()] = (
@@ -980,12 +898,13 @@ class SubarrayNode(SKASubarray):
                 device.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count, const.ERR_SUBS_SDP_SA_LEAF_ATTR)
                 device.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
-                device.throw_exception(exception_message, device._read_activity_message)
+                self.logger.exception(log_msg)
+                tango.Except.throw_exception(const.ERR_SUBS_SDP_SA_LEAF_ATTR,
+                                             log_msg,
+                                             "SubarrayNode.InitCommand",
+                                             tango.ErrSeverity.ERR)
 
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
@@ -1078,9 +997,6 @@ class SubarrayNode(SKASubarray):
             """
             device = self.target
             device.is_scan_completed = False
-            device.is_release_resources = False
-            device.is_restart_command = False
-            device.is_abort_command = False
             self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
             log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
             self.logger.info(log_msg)
@@ -1127,11 +1043,6 @@ class SubarrayNode(SKASubarray):
             """
             device = self.target
             device.is_end_command = False
-            exception_message = []
-            exception_count = 0
-            device.is_release_resources = False
-            device.is_restart_command = False
-            device.is_abort_command = False
             try:
                 self.logger.info("End command invoked on SubarrayNode.")
                 device._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)
@@ -1146,14 +1057,12 @@ class SubarrayNode(SKASubarray):
                 device.is_end_command = True
                 return (ResultCode.OK, const.STR_ENDSB_SUCCESS)
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-            # throw exception:
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
+                log_msg =  const.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
+                self.logger.exception(log_msg)
+                tango.Except.throw_exception(const.STR_ENDSB_EXEC,
+                                             log_msg,
+                                             "SubarrayNode.EndCommand",
+                                             tango.ErrSeverity.ERR)
             # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
     class AbortCommand(SKASubarray.AbortCommand):
@@ -1174,14 +1083,7 @@ class SubarrayNode(SKASubarray):
                     SDPSubarrayLeafNode or DishLeafNode
             """
             device = self.target
-            exception_message = []
-            exception_count = 0
-            device.is_release_resources = False
-            device.is_restart_command = False
             try:
-                if device.scan_thread:
-                    if device.scan_thread.is_alive():
-                        device.scan_thread.cancel()  # stop timer when EndScan command is called
                 device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
                 self.logger.info(const.STR_CMD_ABORT_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
@@ -1194,15 +1096,12 @@ class SubarrayNode(SKASubarray):
                 return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                exception_message, exception_count, const.ERR_ABORT_INVOKING_CMD)
-
-            # throw exception:
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)
+                log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD,
+                                             log_msg,
+                                             "SubarrayNode.AbortCommand",
+                                             tango.ErrSeverity.ERR)
             # PROTECTED REGION END #    //  SubarrayNode.Abort
 
     class TrackCommand(ResponseCommand):
@@ -1243,13 +1142,8 @@ class SubarrayNode(SKASubarray):
 
             """
             device = self.target
-            exception_message = []
-            exception_count = 0
             log_msg = "Track:", argin
             self.logger.debug(log_msg)
-            device.is_restart_command = False
-            device.is_release_resources = False
-            device.is_abort_command = False
             try:
                 device._read_activity_message = const.STR_TRACK_IP_ARG + argin
                 cmd_input = [argin]
@@ -1260,24 +1154,12 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
                 return (ResultCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
             except tango.DevFailed as devfailed:
-                exception_message.append(const.ERR_TRACK_CMD + ": " + \
-                               str(devfailed.args[0].desc))
-                exception_count += 1
-            except Exception as except_occured:
-                str_log = const.ERR_TRACK_CMD + "\n" + str(except_occured)
-                self.logger.error(str_log)
-                self._read_activity_message = const.ERR_TRACK_CMD + str(except_occured)
-                self.logger.error(const.ERR_TRACK_CMD)
-                exception_message.append(const.ERR_TRACK_CMD + ": " + \
-                                 str(except_occured.args[0].desc))
-                exception_count += 1
-            # throw exception
-            if exception_count > 0:
-                err_msg = ' '
-                for item in exception_message:
-                    err_msg += item + "\n"
-                tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-                                             const.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
+                log_msg = const.ERR_TRACK_CMD + str(devfailed)
+                self.logger.exception(devfailed)
+                tango.Except.throw_exception(const.STR_CMD_FAILED,
+                                             log_msg,
+                                             "SubarrayNode.TrackCommand()",
+                                             tango.ErrSeverity.ERR)
             # PROTECTED REGION END #    //  SubarrayNode.Track
 
     def is_Track_allowed(self):
@@ -1325,11 +1207,6 @@ class SubarrayNode(SKASubarray):
             :raises: DevFailed if the command execution is not successful
             """
             device = self.target
-            exception_message = []
-            exception_count = 0
-            device.is_restart_command = False
-            device.is_release_resources = False
-            device.is_abort_command = False
             try:
                 device._csp_subarray_ln_proxy.On()
                 device._sdp_subarray_ln_proxy.On()
@@ -1337,10 +1214,9 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(message)
                 return (ResultCode.OK, message)
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_INVOKING_ON_CMD)
+                log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
+                self.logger.exception(log_msg)
+                device._read_activity_message = const.ERR_INVOKING_ON_CMD
 
     class OffCommand(SKASubarray.OffCommand):
         """
@@ -1359,11 +1235,6 @@ class SubarrayNode(SKASubarray):
             :raises: DevFailed if the command execution is not successful
             """
             device = self.target
-            exception_message = []
-            exception_count = 0
-            device.is_restart_command = False
-            device.is_release_resources = False
-            device.is_abort_command = False
             try:
                 device._csp_subarray_ln_proxy.Off()
                 device._sdp_subarray_ln_proxy.Off()
@@ -1372,10 +1243,9 @@ class SubarrayNode(SKASubarray):
                 return (ResultCode.OK, message)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_INVOKING_OFF_CMD)
+                log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)
+                self.logger.exception(log_msg)
+                device._read_activity_message = const.ERR_INVOKING_OFF_CMD
 
     class ScanCommand(SKASubarray.ScanCommand):
         """
@@ -1401,16 +1271,10 @@ class SubarrayNode(SKASubarray):
 
             :rtype: (ReturnCode, str)
 
-            :raises: Exception if command execution throws any type of exception
-                    DevFailed if the command execution is not successful
+            :raises: DevFailed if the command execution is not successful
             """
             device = self.target
             device.is_scan_completed = False
-            device.is_release_resources = False
-            device.is_restart_command = False
-            device.is_abort_command = False
-            exception_count = 0
-            exception_message = []
             try:
                 log_msg = const.STR_SCAN_IP_ARG + str(argin)
                 self.logger.info(log_msg)
@@ -1440,18 +1304,12 @@ class SubarrayNode(SKASubarray):
                 self.logger.info("Scan thread started")
                 return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_SCAN_CMD)
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_SCAN_CMD)
-            # Throw Exception
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_SCAN_EXEC)
+                log_msg = const.ERR_SCAN_CMD + str(dev_failed)
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_SCAN_EXEC,
+                                             log_msg,
+                                             "SubarrayNode.ScanCommand",
+                                             tango.ErrSeverity.ERR)
 
     class EndScanCommand(SKASubarray.EndScanCommand):
         """
@@ -1473,12 +1331,6 @@ class SubarrayNode(SKASubarray):
                     DevFailed if the command execution is not successful
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
-            device.is_release_resources = False
-            device.is_restart_command = False
-            device.is_abort_command = False
-
             try:
                 if device.scan_thread:
                     if device.scan_thread.is_alive():
@@ -1506,20 +1358,12 @@ class SubarrayNode(SKASubarray):
                 return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_END_SCAN_CMD_ON_GROUP)
-
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_END_SCAN_CMD)
-
-            # Throw Exception
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+                log_msg = const.ERR_END_SCAN_CMD_ON_GROUP + str(dev_failed)
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_END_SCAN_EXEC,
+                                             log_msg,
+                                             "SubarrayNode.EndScanCommand",
+                                             tango.ErrSeverity.ERR)
 
     class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         """
@@ -1568,19 +1412,13 @@ class SubarrayNode(SKASubarray):
             :rtype: (ResultCode, str)
 
             :raises: ValueError if input argument json string contains invalid value
-                    Exception if command execution throws any type of exception
                     DevFailed if the command execution is not successful
 
             """
 
-            # exception_count = 0
-            # exception_message = []
             device = self.target
             argout = []
             device.is_end_command = False
-            device.is_release_resources = False
-            device.is_restart_command = False
-            device.is_abort_command = False
             # Validate if Subarray is in IDLE obsState
             # TODO: Need to get idea if this is required?
             # try:
@@ -1604,15 +1442,15 @@ class SubarrayNode(SKASubarray):
                 # validation of SDP and CSP resources yet to be implemented as of now reources are not present.
             except json.JSONDecodeError as json_error:
                 self.logger.exception(const.ERR_INVALID_JSON)
-                message = const.ERR_INVALID_JSON + str(json_error)
-                device._read_activity_message = message
-                tango.Except.throw_exception(const.STR_CMD_FAILED, message,
+                log_msg = const.ERR_INVALID_JSON + str(json_error)
+                device._read_activity_message = log_msg
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                              const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
             except ValueError as value_error:
                 self.logger.exception(const.ERR_INVALID_DATATYPE)
-                message = const.ERR_INVALID_DATATYPE + value_error
-                device._read_activity_message = message
-                tango.Except.throw_exception(const.STR_CMD_FAILED, message,
+                log_msg = const.ERR_INVALID_DATATYPE + value_error
+                device._read_activity_message = log_msg
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                              const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
             with ThreadPoolExecutor(3) as executor:
@@ -1744,15 +1582,13 @@ class SubarrayNode(SKASubarray):
             """
             device = self.target
             device.is_release_resources = False
-            device.is_restart_command = False
-            device.is_abort_command = False
             try:
                 assert device._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
             except AssertionError as assert_err:
-                log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
-                self.logger.error(log_message)
-                device._read_activity_message = log_message
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+                log_msg = const.ERR_RELEASE_RES_CMD + str(assert_err)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                              const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
 
             self.logger.info(const.STR_DISH_RELEASE)
@@ -1789,13 +1625,8 @@ class SubarrayNode(SKASubarray):
 
             :raises: DevFailed if error occurs while invoking command on CSPSubarrayLeafNode, SDpSubarrayLeafNode or
                     DishLeafNode.
-                    Exception if error occurs while executing the command.
             """
             device = self.target
-            exception_message = []
-            exception_count = 0
-            device.is_release_resources = False
-            device.is_abort_command = False
             try:
                 self.logger.info("Restart command invoked on SubarrayNode.")
                 # As a part of Restart clear the attributes on SubarrayNode
@@ -1818,19 +1649,12 @@ class SubarrayNode(SKASubarray):
                 return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                          exception_message,
-                                                                                          exception_count,
-                                                                                          const.ERR_RESTART_INVOKING_CMD)
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_RESTART_INVOKING_CMD)
-
-            # throw exception:
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_RESTART_EXEC)
+                log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
+                self.logger.exception(log_msg)
+                tango.Except.throw_exception(const.STR_RESTART_EXEC,
+                                             log_msg,
+                                             "SubarrayNode.RestartCommand",
+                                             tango.ErrSeverity.ERR)
             # PROTECTED REGION END #    //  SubarrayNode.Restart
 
     def init_command_objects(self):
