@@ -6,12 +6,11 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 # Tango imports
-import tango
 from tango import DevFailed
 
 # Additional import
 from . import const
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 

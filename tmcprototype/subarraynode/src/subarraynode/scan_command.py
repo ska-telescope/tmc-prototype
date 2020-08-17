@@ -7,12 +7,11 @@ from __future__ import absolute_import
 
 import threading
 # Tango imports
-import tango
 from tango import DevFailed
 
 # Additional import
 from . import const
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 

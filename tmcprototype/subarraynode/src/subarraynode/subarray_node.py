@@ -17,11 +17,9 @@ from __future__ import absolute_import
 
 
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
-import random
-import string
 # Tango imports
 import tango
-from tango import DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
+from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
 
 # Additional import
@@ -29,7 +27,7 @@ from . import const, release, assign_resources_command, release_all_resources_co
     scan_command, end_scan_command, end_command, on_command, off_command, track_command,\
     abort_command, restart_command
 from .const import PointingState
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from subarraynode.exceptions import InvalidObsStateError
