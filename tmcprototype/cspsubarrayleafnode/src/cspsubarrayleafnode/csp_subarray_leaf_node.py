@@ -278,11 +278,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         self.logger.debug("Stop event received. Thread exit.")
 
-    def throw_exception(self, except_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in except_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
