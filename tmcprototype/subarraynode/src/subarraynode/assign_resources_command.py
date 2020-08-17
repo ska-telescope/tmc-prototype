@@ -11,7 +11,7 @@ import json
 import tango
 from tango import DebugIt, DevFailed, DeviceProxy
 # Additional import
-from . import const, deviceproxy_creator
+from . import const
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base import SKASubarray
 
@@ -238,9 +238,8 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 self.logger.info(log_msg)
                 str_leafId = argin[leafId]
                 device._dish_leaf_node_group.add(device.DishLeafNodePrefix + str_leafId)
-                #fqdn = (device.DishLeafNodePrefix + str_leafId)
-                #devProxy = deviceproxy_creator.create_deviceproxy(fqdn)
-                devProxy = DeviceProxy(device.DishLeafNodePrefix + str_leafId)
+                #devProxy = DeviceProxy(device.DishLeafNodePrefix + str_leafId)
+                devProxy = device.get_deviceproxy(device.DishLeafNodePrefix + str_leafId)
                 device._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)

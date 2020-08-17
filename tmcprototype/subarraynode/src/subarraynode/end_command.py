@@ -42,7 +42,7 @@ class EndCommand(SKASubarray.EndCommand):
             device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
             self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
             # TODO: Uncomment this after resolving issues
-            self.call_stop_track_command()
+            self.stop_dish_tracking()
             device._read_activity_message = const.STR_ENDSB_SUCCESS
             self.logger.info(const.STR_ENDSB_SUCCESS)
             device.set_status(const.STR_ENDSB_SUCCESS)
@@ -59,7 +59,7 @@ class EndCommand(SKASubarray.EndCommand):
             device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
         # PROTECTED REGION END #    //  SubarrayNode.EndSB
 
-    def call_stop_track_command(self):
+    def stop_dish_tracking(self):
         # TODO: Getting exception while running test cases using device mocking
         device = self.target
         device._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)

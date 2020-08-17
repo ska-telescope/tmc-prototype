@@ -25,16 +25,18 @@ from tango import DevState, AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
 
 # Additional import
-from . import const, release, assign_resources, release_all_resources, configure, scan, end_scan, end, on, \
-    off, track, abort, restart, deviceproxy_creator
+from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
+    scan_command, end_scan_command, end_command, on_command, off_command, track_command,\
+    abort_command, restart_command
 from .const import PointingState
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from subarraynode.exceptions import InvalidObsStateError
 
-__all__ = ["SubarrayNode", "main", "assign_resources", "release_all_resources", "configure", "scan",
-           "end_scan", "end", "on", "off", "track", "abort", "restart"]
+__all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
+           "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
+           "off_command", "track_command", "abort_command", "restart_command"]
 
 
 class SubarrayHealthState:
@@ -82,11 +84,10 @@ class SubarrayNode(SKASubarray):
         self.endscan_obj = end_scan.EndScanCommand(*args)
         self.end_obj = end.EndCommand(*args)
         self.restart_obj = restart.RestartCommand(*args)
-        self.abort_obj = abort.AbortCommand(*args)
+        self.abort_obj = abort_command.AbortCommand(*args)
         self.init_obj = self.InitCommand(*args)
         self.on_obj = on.OnCommand(*args)
         self.off_obj = off.OffCommand(*args)
-
 
     def receive_addresses_cb(self, event):
         """
@@ -275,39 +276,21 @@ class SubarrayNode(SKASubarray):
             err_msg += item + "\n"
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
-    def create_csp_ln_proxy(self):
+    def get_deviceproxy(self, device_fqdn):
         """
-        Creates proxy of CSP Subarray Leaf Node.
-        """
-        retry = 0
-        proxy_created_flag = False
-        while retry < 3:
-            try:
-                self._csp_subarray_ln_proxy = DeviceProxy(self.CspSubarrayLNFQDN)
-                proxy_created_flag = True
-                break
-            except Exception:
-                retry += 1
-                continue
-
-        return proxy_created_flag
-
-    def create_sdp_ln_proxy(self):
-        """
-         Creates proxy of SDP Subarray Leaf Node.
+        Returns device proxy for given FQDN.
         """
         retry = 0
-        proxy_created_flag = False
+        device_proxy = None
         while retry < 3:
             try:
-                self._sdp_subarray_ln_proxy = DeviceProxy(self.SdpSubarrayLNFQDN)
-                proxy_created_flag = True
+                device_proxy = DeviceProxy(device_fqdn)
                 break
-            except tango.DevFailed:
+            except DevFailed as df:
+                self.logger.exception(df)
                 retry += 1
                 continue
-
-        return proxy_created_flag
+        return device_proxy
 
     def _remove_subarray_dish_lns_health_states(self):
         subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
@@ -333,21 +316,6 @@ class SubarrayNode(SKASubarray):
                 log_message = "Failed to unsubscribe event {}.".format(dev_failed)
                 self.logger.error(log_message )
                 self._read_activity_message = log_message
-
-    def __len__(self):
-        """
-        Returns the number of resources currently assigned. Note that
-        this also functions as a boolean method for whether there are
-        any assigned resources: ``if len()``.
-
-        :return: number of resources assigned
-        :rtype: int
-        """
-
-        return len(self._receptor_id_list)
-
-    def call_end_scan_command(self):
-        self.endscan_obj.do()
 
     def pointing_state_cb(self, evt):
         """
@@ -410,6 +378,17 @@ class SubarrayNode(SKASubarray):
             raise InvalidObsStateError("Subarray is not in EMPTY obsState, \
                 please check the subarray obsState")
 
+    def __len__(self):
+        """
+        Returns the number of resources currently assigned. Note that
+        this also functions as a boolean method for whether there are
+        any assigned resources: ``if len()``.
+
+        :return: number of resources assigned
+        :rtype: int
+        """
+
+        return len(self._receptor_id_list)
 
     def remove_receptors_in_group(self):
         """
@@ -450,100 +429,6 @@ class SubarrayNode(SKASubarray):
         self._receptor_id_list.clear()
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 
-    # def add_receptors_in_group(self, argin):
-    #     """
-    #     Creates a tango group of the successfully allocated resources in the subarray.
-    #     Device proxy for each of the resources is created. The healthState and pointintgState attributes
-    #     from all the devices in the group are subscribed so that the changes in the respective device are
-    #     received at Subarray Node.
-    #
-    #
-    #     Note: Currently there are only receptors allocated so the group contains only receptor ids.
-    #
-    #     :param argin:
-    #         DevVarStringArray. List of receptor IDs to be allocated to subarray.
-    #         Example: ['0001', '0002']
-    #
-    #     :return:
-    #         DevVarStringArray. List of Resources added to the Subarray.
-    #         Example: ['0001', '0002']
-    #     """
-    #     exception_count = 0
-    #     exception_message = []
-    #     allocation_success = []
-    #     allocation_failure = []
-    #     # Add each dish into the tango group
-    #
-    #     for leafId in range(0, len(argin)):
-    #         try:
-    #             log_msg = "Argin: " + str(argin)
-    #             self.logger.info(log_msg)
-    #             str_leafId = argin[leafId]
-    #             self._dish_leaf_node_group.add(self.DishLeafNodePrefix + str_leafId)
-    #             devProxy = DeviceProxy(self.DishLeafNodePrefix + str_leafId)
-    #             self._dish_leaf_node_proxy.append(devProxy)
-    #             # Update the list allocation_success with the dishes allocated successfully to subarray
-    #             allocation_success.append(str_leafId)
-    #             # Subscribe Dish Health State
-    #             self._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
-    #                                                       tango.EventType.CHANGE_EVENT,
-    #                                                       self.health_state_cb,
-    #                                                       stateless=True)
-    #             self._dishLnVsHealthEventID[devProxy] = self._event_id
-    #             self._health_event_id.append(self._event_id)
-    #             log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self._dishLnVsHealthEventID)
-    #             self.logger.debug(log_msg)
-    #
-    #             # Subscribe Dish Pointing State
-    #             self.dishPointingStateMap[devProxy] = -1
-    #             self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
-    #                                                       tango.EventType.CHANGE_EVENT,
-    #                                                       self.pointing_state_cb,
-    #                                                       stateless=True)
-    #             self._dishLnVsPointingStateEventID[devProxy] = self._event_id
-    #             self._pointing_state_event_id.append(self._event_id)
-    #             log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self._dishLnVsPointingStateEventID)
-    #             self.logger.debug(log_msg)
-    #             self._receptor_id_list.append(int(str_leafId))
-    #             self._read_activity_message = const.STR_GRP_DEF + str(
-    #                 self._dish_leaf_node_group.get_device_list(True))
-    #             self._read_activity_message = const.STR_LN_PROXIES + str(self._dish_leaf_node_proxy)
-    #             self.logger.debug(const.STR_SUBS_ATTRS_LN)
-    #             self._read_activity_message = const.STR_SUBS_ATTRS_LN
-    #             self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
-    #         except DevFailed as dev_failed:
-    #             self.logger.exception("Receptor %s allocation failed.", str_leafId)
-    #             [exception_message, exception_count] = self._handle_devfailed_exception(dev_failed,
-    #                                                                                     exception_message,
-    #                                                                                     exception_count,
-    #                                                                                     const.ERR_ADDING_LEAFNODE)
-    #             allocation_failure.append(str_leafId)
-    #             # Exception Logic to remove Id from subarray group
-    #             group_dishes = self._dish_leaf_node_group.get_device_list()
-    #             if group_dishes.contains(self.DishLeafNodePrefix + str_leafId):
-    #                 self._dish_leaf_node_group.remove(self.DishLeafNodePrefix + str_leafId)
-    #             # unsubscribe event
-    #             if self._dishLnVsHealthEventID[devProxy]:
-    #                 devProxy.unsubscribe_event(self._dishLnVsHealthEventID[devProxy])
-    #
-    #             if self._dishLnVsPointingStateEventID[devProxy]:
-    #                 devProxy.unsubscribe_event(self._dishLnVsPointingStateEventID[devProxy])
-    #
-    #         except (TypeError) as except_occurred:
-    #             self.logger.exception(except_occurred)
-    #             allocation_failure.append(str_leafId)
-    #             exception_count += 1
-    #
-    #     # Throw Exception
-    #     if exception_count > 0:
-    #         exception_msg = "Failed to allocate receptors [", allocation_failure, "]"
-    #         self.throw_exception(exception_msg, const.STR_ASSIGN_RES_EXEC)
-    #
-    #     log_msg = "List of Resources added to the Subarray::",allocation_success
-    #     self.logger.debug(log_msg)
-    #     return allocation_success
-
-
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 
     # -----------------
@@ -572,8 +457,6 @@ class SubarrayNode(SKASubarray):
     SdpSubarrayFQDN = device_property(
         dtype='str',
     )
-
-
 
     # ----------
     # Attributes
@@ -654,14 +537,12 @@ class SubarrayNode(SKASubarray):
 
             # Create proxy for CSP Subarray Leaf Node
             device._csp_subarray_ln_proxy = None
-            #device._csp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(device.CspSubarrayLNFQDN)
-            device.create_csp_ln_proxy()
+            device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
             # Create proxy for SDP Subarray Leaf Node
             device._sdp_subarray_ln_proxy = None
-            #device._sdp_subarray_ln_proxy = deviceproxy_creator.create_deviceproxy(device.SdpSubarrayLNFQDN)
-            device.create_sdp_ln_proxy()
-            device._csp_sa_proxy = DeviceProxy(device.CspSubarrayFQDN)
-            device._sdp_sa_proxy = DeviceProxy(device.SdpSubarrayFQDN)
+            device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
+            device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
+            device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
             device.command_class_object()
             try:
                 device.subarray_ln_health_state_map[device._csp_subarray_ln_proxy.dev_name()] = (
@@ -816,9 +697,8 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("End", end.EndCommand(*args))
         self.register_command_object("On", on.OnCommand(*args))
         self.register_command_object("Off", off.OffCommand(*args))
-        self.register_command_object("Abort", abort.AbortCommand(*args))
+        self.register_command_object("Abort", abort_command.AbortCommand(*args))
         self.register_command_object("Restart", restart.RestartCommand(*args))
-
 
 # ----------
 # Run server

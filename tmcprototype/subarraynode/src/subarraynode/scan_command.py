@@ -72,7 +72,7 @@ class ScanCommand(SKASubarray.ScanCommand):
             device._read_activity_message = const.STR_SCAN_SUCCESS
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
-            device.scan_thread = threading.Timer(device.scan_duration, device.call_end_scan_command)
+            device.scan_thread = threading.Timer(device.scan_duration, self.call_end_scan_command)
             device.scan_thread.start()
             self.logger.info("Scan thread started")
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
@@ -89,3 +89,7 @@ class ScanCommand(SKASubarray.ScanCommand):
         # Throw Exception
         if exception_count > 0:
             device.throw_exception(exception_message, const.STR_SCAN_EXEC)
+
+    def call_end_scan_command(self):
+        device = self.target
+        device.endscan_obj.do()
