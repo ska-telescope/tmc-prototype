@@ -291,6 +291,7 @@ def test_abort_command_with_callback_method_with_event_error(mock_csp_subarray, 
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_ABORT in device_proxy.activityMessage
 
+
 def test_restart_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -302,107 +303,6 @@ def test_restart_command_with_callback_method_with_event_error(mock_csp_subarray
     event_subscription_without_arg[const.CMD_RESTART](dummy_event)
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_RESTART in device_proxy.activityMessage
-
-
-def test_configure_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription):
-    # arrange:
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-
-    # act
-    with pytest.raises(Exception):
-        device_proxy.Configure(configure_str)
-        dummy_event = command_callback_with_command_exception()
-        event_subscription[const.CMD_CONFIGURE](dummy_event)
-
-    # assert:
-    assert const.ERR_EXCEPT_CONFIGURE_CMD_CB in device_proxy.activityMessage
-
-
-def test_startscan_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription):
-    # arrange:
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.READY
-
-    # act
-    with pytest.raises(Exception):
-        device_proxy.StartScan(scan_input_str)
-        dummy_event = command_callback_with_command_exception()
-        event_subscription[const.CMD_STARTSCAN](dummy_event)
-    # assert:
-    assert const.ERR_EXCEPT_STARTSCAN_CMD_CB in device_proxy.activityMessage
-
-
-def test_endscan_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
-
-    # act
-    with pytest.raises(Exception):
-        device_proxy.EndScan()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription_without_arg[const.CMD_ENDSCAN](dummy_event)
-    # assert:
-    assert const.ERR_EXCEPT_ENDSCAN_CMD_CB in device_proxy.activityMessage
-
-
-def test_releaseallresources_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-
-    # act
-    with pytest.raises(Exception):
-        device_proxy.ReleaseAllResources()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription_without_arg[const.CMD_REMOVE_ALL_RECEPTORS](dummy_event)
-
-    # assert:
-    assert const.ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB in device_proxy.activityMessage
-
-
-def test_gotoidle_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.READY
-
-    # act
-    with pytest.raises(Exception):
-        device_proxy.GoToIdle()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription_without_arg[const.CMD_GOTOIDLE](dummy_event)
-
-    # assert:
-    assert const.ERR_EXCEPT_GO_TO_IDLE_CMD_CB in device_proxy.activityMessage
-
-
-def test_abort_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
-
-    # act
-    with pytest.raises(Exception):
-        device_proxy.Abort()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription_without_arg[const.CMD_ABORT](dummy_event)
-
-    # assert:
-    assert const.ERR_EXCEPT_ABORT_CMD_CB in device_proxy.activityMessage
-
-
-def test_restart_command_with_callback_method_with_command_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
-
-    # act
-    with pytest.raises(Exception):
-        device_proxy.Restart()
-        dummy_event = command_callback_with_command_exception()
-        event_subscription_without_arg[const.CMD_RESTART](dummy_event)
-
-    # assert:
-    assert const.ERR_EXCEPT_RESTART_CMD_CB in device_proxy.activityMessage
 
 
 def test_assign_command_with_callback_method(mock_csp_subarray, event_subscription):
@@ -533,7 +433,7 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
 def test_start_scan_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_for_scan
 
     # act:
     with pytest.raises(tango.DevFailed) as df:
@@ -799,7 +699,12 @@ def command_callback_with_command_exception():
     return Exception("Exception in command callback")
 
 
-def raise_devfailed_exception(cmd_name):
+def raise_devfailed_exception(cmd_name, inp_str):
+    # "This function is called to raise DevFailed exception."
+    tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
+                                 " ", tango.ErrSeverity.ERR)
+
+def raise_devfailed_exception_for_scan(cmd_name, inp_str, cmd_cb):
     # "This function is called to raise DevFailed exception."
     tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
                                  " ", tango.ErrSeverity.ERR)

@@ -54,35 +54,28 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
 
-        :raises: Exception if error occurs in subscribing CspCbfHealth attribute
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            log_msg = 'CspCbfHealthState attribute change event is : ' + str(evt)
-            self.logger.info(log_msg)
-            if not evt.err:
-                self._csp_cbf_health = evt.attr_value.value
-                if self._csp_cbf_health == HealthState.OK:
-                    self.logger.debug(const.STR_CSP_CBF_HEALTH_OK)
-                    self._read_activity_message = const.STR_CSP_CBF_HEALTH_OK
-                elif self._csp_cbf_health == HealthState.DEGRADED:
-                    self.logger.debug(const.STR_CSP_CBF_HEALTH_DEGRADED)
-                    self._read_activity_message = const.STR_CSP_CBF_HEALTH_DEGRADED
-                elif self._csp_cbf_health == HealthState.FAILED:
-                    self.logger.debug(const.STR_CSP_CBF_HEALTH_FAILED)
-                    self._read_activity_message = const.STR_CSP_CBF_HEALTH_FAILED
-                else:
-                    self.logger.debug(const.STR_CSP_CBF_HEALTH_UNKNOWN)
-                    self._read_activity_message = const.STR_CSP_CBF_HEALTH_UNKNOWN
+        log_msg = 'CspCbfHealthState attribute change event is : ' + str(evt)
+        self.logger.info(log_msg)
+        if not evt.err:
+            self._csp_cbf_health = evt.attr_value.value
+            if self._csp_cbf_health == HealthState.OK:
+                self.logger.debug(const.STR_CSP_CBF_HEALTH_OK)
+                self._read_activity_message = const.STR_CSP_CBF_HEALTH_OK
+            elif self._csp_cbf_health == HealthState.DEGRADED:
+                self.logger.debug(const.STR_CSP_CBF_HEALTH_DEGRADED)
+                self._read_activity_message = const.STR_CSP_CBF_HEALTH_DEGRADED
+            elif self._csp_cbf_health == HealthState.FAILED:
+                self.logger.debug(const.STR_CSP_CBF_HEALTH_FAILED)
+                self._read_activity_message = const.STR_CSP_CBF_HEALTH_FAILED
             else:
-                log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
-                self.logger.error(log_msg)
-                self._read_activity_message = log_msg
-                self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
-        except Exception as except_occurred:
-            self._handle_generic_exception(except_occurred, exception_message, exception_count,
-                                           const.ERR_CSP_CBF_HEALTH_CB)
+                self.logger.debug(const.STR_CSP_CBF_HEALTH_UNKNOWN)
+                self._read_activity_message = const.STR_CSP_CBF_HEALTH_UNKNOWN
+        else:
+            log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
+            self.logger.error(log_msg)
+            self._read_activity_message = log_msg
+            self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
 
     def csp_pss_health_state_cb(self, evt):
         """
@@ -92,35 +85,27 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
 
-        :raises: Exception if error occurs in subscribing CspPssHealth attribute
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            log_msg = 'CspPssHealthState Attribute change event is : ' + str(evt)
-            self.logger.info(log_msg)
-            if not evt.err:
-                self._csp_pss_health = evt.attr_value.value
-                if self._csp_pss_health == HealthState.OK:
-                    self.logger.debug(const.STR_CSP_PSS_HEALTH_OK)
-                    self._read_activity_message = const.STR_CSP_PSS_HEALTH_OK
-                elif self._csp_pss_health == HealthState.DEGRADED:
-                    self.logger.debug(const.STR_CSP_PSS_HEALTH_DEGRADED)
-                    self._read_activity_message = const.STR_CSP_PSS_HEALTH_DEGRADED
-                elif self._csp_pss_health == HealthState.FAILED:
-                    self.logger.debug(const.STR_CSP_PSS_HEALTH_FAILED)
-                    self._read_activity_message = const.STR_CSP_PSS_HEALTH_FAILED
-                else:
-                    self.logger.debug(const.STR_CSP_PSS_HEALTH_UNKNOWN)
-                    self._read_activity_message = const.STR_CSP_PSS_HEALTH_UNKNOWN
-
+        log_msg = 'CspPssHealthState Attribute change event is : ' + str(evt)
+        self.logger.info(log_msg)
+        if not evt.err:
+            self._csp_pss_health = evt.attr_value.value
+            if self._csp_pss_health == HealthState.OK:
+                self.logger.debug(const.STR_CSP_PSS_HEALTH_OK)
+                self._read_activity_message = const.STR_CSP_PSS_HEALTH_OK
+            elif self._csp_pss_health == HealthState.DEGRADED:
+                self.logger.debug(const.STR_CSP_PSS_HEALTH_DEGRADED)
+                self._read_activity_message = const.STR_CSP_PSS_HEALTH_DEGRADED
+            elif self._csp_pss_health == HealthState.FAILED:
+                self.logger.debug(const.STR_CSP_PSS_HEALTH_FAILED)
+                self._read_activity_message = const.STR_CSP_PSS_HEALTH_FAILED
             else:
-                log_msg = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
-                self.logger.error(log_msg)
-                self._read_activity_message = log_msg
-        except Exception as except_occurred:
-            self._handle_generic_exception(except_occurred, exception_message, exception_count,
-                                           const.ERR_CSP_PSS_HEALTH_CB)
+                self.logger.debug(const.STR_CSP_PSS_HEALTH_UNKNOWN)
+                self._read_activity_message = const.STR_CSP_PSS_HEALTH_UNKNOWN
+        else:
+            log_msg = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
+            self.logger.error(log_msg)
+            self._read_activity_message = log_msg
 
     def csp_pst_health_state_cb(self, evt):
         """
@@ -130,58 +115,27 @@ class CspMasterLeafNode(SKABaseDevice):
 
         :return: None
 
-        :raises: Exception if error occurs in subscribing CspPstHealth attribute
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            log_msg = 'CspPstHealthState Attribute change event is : ' + str(evt)
-            self.logger.info(log_msg)
-            if not evt.err:
-                self._csp_pst_health = evt.attr_value.value
-                if self._csp_pst_health == HealthState.OK:
-                    self.logger.debug(const.STR_CSP_PST_HEALTH_OK)
-                    self._read_activity_message = const.STR_CSP_PST_HEALTH_OK
-                elif self._csp_pst_health == HealthState.DEGRADED:
-                    self.logger.debug(const.STR_CSP_PST_HEALTH_DEGRADED)
-                    self._read_activity_message = const.STR_CSP_PST_HEALTH_DEGRADED
-                elif self._csp_pst_health == HealthState.FAILED:
-                    self.logger.debug(const.STR_CSP_PST_HEALTH_FAILED)
-                    self._read_activity_message = const.STR_CSP_PST_HEALTH_FAILED
-                else:
-                    self.logger.debug(const.STR_CSP_PST_HEALTH_UNKNOWN)
-                    self._read_activity_message = const.STR_CSP_PST_HEALTH_UNKNOWN
+        log_msg = 'CspPstHealthState Attribute change event is : ' + str(evt)
+        self.logger.info(log_msg)
+        if not evt.err:
+            self._csp_pst_health = evt.attr_value.value
+            if self._csp_pst_health == HealthState.OK:
+                self.logger.debug(const.STR_CSP_PST_HEALTH_OK)
+                self._read_activity_message = const.STR_CSP_PST_HEALTH_OK
+            elif self._csp_pst_health == HealthState.DEGRADED:
+                self.logger.debug(const.STR_CSP_PST_HEALTH_DEGRADED)
+                self._read_activity_message = const.STR_CSP_PST_HEALTH_DEGRADED
+            elif self._csp_pst_health == HealthState.FAILED:
+                self.logger.debug(const.STR_CSP_PST_HEALTH_FAILED)
+                self._read_activity_message = const.STR_CSP_PST_HEALTH_FAILED
             else:
-                log_msg = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
-                self.logger.error(log_msg)
-                self._read_activity_message = log_msg
-        except Exception as except_occurred:
-            self._handle_generic_exception(except_occurred, exception_message, exception_count,
-                                           const.ERR_CSP_PST_HEALTH_CB)
-
-    # Function for handling all Devfailed exception
-    def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
-        log_msg = read_actvity_msg + str(df)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(df)
-        except_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [except_msg_list, exception_count]
-
-    # Function for handling all generic exception
-    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
-        log_msg = read_actvity_msg + str(exception)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(exception)
-        except_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [except_msg_list, exception_count]
-
-    def throw_exception(self, except_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in except_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
+                self.logger.debug(const.STR_CSP_PST_HEALTH_UNKNOWN)
+                self._read_activity_message = const.STR_CSP_PST_HEALTH_UNKNOWN
+        else:
+            log_msg = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
+            self.logger.error(log_msg)
+            self._read_activity_message = log_msg
 
     # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
 
@@ -226,8 +180,6 @@ class CspMasterLeafNode(SKABaseDevice):
                     subscribing the evennts.
             """
             super().do()
-            exception_count = 0
-            exception_message = []
             device = self.target
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
@@ -244,11 +196,10 @@ class CspMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
                 self.logger.debug(log_msg)
-                [exception_message, exception_count] = \
-                    device._handle_devfailed_exception(dev_failed, exception_message, exception_count,
-                                                       const.ERR_IN_CREATE_PROXY)
+                self.logger.exception(dev_failed)
                 device._read_activity_message = log_msg
-                device.throw_exception(exception_message, device._read_activity_message)
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
+                                             tango.ErrSeverity.ERR)
 
             # Subscribing to CSPMaster Attributes
             try:
@@ -258,16 +209,13 @@ class CspMasterLeafNode(SKABaseDevice):
                                                   device.csp_pss_health_state_cb, stateless=True)
                 device._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
                                                   device.csp_pst_health_state_cb, stateless=True)
-
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                        exception_message, exception_count, const.ERR_CSP_MASTER_LEAF_INIT)
-
                 device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
                 device._read_activity_message = log_msg
-                device.throw_exception(exception_message, device._read_activity_message)
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
+                                             tango.ErrSeverity.ERR)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
@@ -333,30 +281,17 @@ class CspMasterLeafNode(SKABaseDevice):
                     - ext
             :return: none
 
-            :raises: Exception if error occurs On command callback.
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
             # Update logs and activity message attribute with received event
-            try:
-                if event.err:
-                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                    self.logger.error(log_msg)
-                    device._read_activity_message = log_msg
-                else:
-                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                    self.logger.info(log_msg)
-                    device._read_activity_message = log_msg
-
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_EXCEPT_ON_CMD_CB)
-            # Throw Exception
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CSP_ON_CMD_CALLBK)
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
 
         def do(self):
             """
@@ -405,30 +340,17 @@ class CspMasterLeafNode(SKABaseDevice):
                     - ext
             :return: none
 
-            :raises: Exception if error occurs Off command callback.
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
             # Update logs and activity message attribute with received event
-            try:
-                if event.err:
-                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                    self.logger.error(log_msg)
-                    device._read_activity_message = log_msg
-                else:
-                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                    self.logger.info(log_msg)
-                    device._read_activity_message = log_msg
-
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_EXCEPT_OFF_CMD_CB)
-            # Throw Exception
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CSP_OFF_CMD_CALLBK)
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
 
         def do(self):
             """
@@ -497,30 +419,17 @@ class CspMasterLeafNode(SKABaseDevice):
                     - ext
             :return: none
 
-            :raises: Exception if error occurs StandBy command callback.
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
             # Update logs and activity message attribute with received event
-            try:
-                if event.err:
-                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                    self.logger.error(log_msg)
-                    device._read_activity_message = log_msg
-                else:
-                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                    self.logger.info(log_msg)
-                    device._read_activity_message = log_msg
-
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_EXCEPT_STANDBY_CMD_CB)
-            # Throw Exception
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_CSP_STANDBY_CMD_CALLBK)
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
 
         def do(self, argin):
             """
