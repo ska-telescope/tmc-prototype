@@ -521,12 +521,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy = DeviceProxy(str(device.DishMasterFQDN))  # Creating proxy to the DishMaster
             except DevFailed as dev_failed:
-                # [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                #                             exception_message, exception_count,const.ERR_IN_CREATE_PROXY_DM)
-                # self.logger.error(const.ERR_DISH_INIT)
-                # device.throw_exception(exception_message, device._read_activity_message)
                 log_msg = const.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "DishLeafNode.InitCommand",
@@ -544,9 +539,7 @@ class DishLeafNode(SKABaseDevice):
                                                    device.dish_desired_pointing_cb, stateless=True)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_DISH_ATTR + str(dev_failed)
-                self.logger.error(log_msg)
                 device.set_status(const.ERR_DISH_INIT)
-                self.logger.error(const.ERR_DISH_INIT)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "DishLeafNode.InitCommand",
@@ -983,7 +976,6 @@ class DishLeafNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg, "DishLeafNode.ScanCommand",
@@ -1066,7 +1058,6 @@ class DishLeafNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_END_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, log_msg, "DishLeafNode.EndScanCommand",
@@ -1144,8 +1135,6 @@ class DishLeafNode(SKABaseDevice):
                     - ext
             :return: none
 
-            :raises: Exception if error occurs in SetStowMode command callback method.
-
             """
             device = self.target
             # Update logs and activity message attribute with received event
@@ -1179,7 +1168,7 @@ class DishLeafNode(SKABaseDevice):
 
             :raises: DevFailed if error occurs while invoking this command on DishMaster.
                      ValueError if argin is not in valid JSON format.
-                     KayError if JSON key is not present in argin
+                     KeyError if JSON key is not present in argin
 
             """
 
@@ -1218,7 +1207,6 @@ class DishLeafNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
@@ -1226,7 +1214,6 @@ class DishLeafNode(SKABaseDevice):
 
             except KeyError as key_error:
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(key_error)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
@@ -1234,7 +1221,6 @@ class DishLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
@@ -1350,7 +1336,6 @@ class DishLeafNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_START_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.StartCaptureCommand",
@@ -1433,7 +1418,6 @@ class DishLeafNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_STOP_CAPTURE_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_STOPCAPTURE_EXEC, log_msg, "DishLeafNode.StopCaptureCommand",
@@ -1645,7 +1629,6 @@ class DishLeafNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_STOPCAPTURE_EXEC, log_msg, "DishLeafNode.SlewCommand",
@@ -1808,7 +1791,6 @@ class DishLeafNode(SKABaseDevice):
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_TRACK_EXEC, log_msg, "DishLeafNode.TrackCommand",
@@ -1816,7 +1798,6 @@ class DishLeafNode(SKABaseDevice):
 
             except KeyError as key_error:
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(key_error)
                 tango.Except.throw_exception(const.STR_TRACK_EXEC, log_msg, "DishLeafNode.TrackCommand",
@@ -1926,7 +1907,6 @@ class DishLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_STOP_TRACK_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_STOPTRACK_EXEC, log_msg, "DishLeafNode.StopTrackCommand",
@@ -2032,7 +2012,6 @@ class DishLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_ABORT_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_ABORT_EXEC, log_msg, "DishLeafNode.AbortCommand",
@@ -2137,7 +2116,6 @@ class DishLeafNode(SKABaseDevice):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_RESTART_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_RESTART_EXEC, log_msg, "DishLeafNode.RestartCommand",

@@ -1058,7 +1058,6 @@ class SubarrayNode(SKASubarray):
                 return (ResultCode.OK, const.STR_ENDSB_SUCCESS)
             except DevFailed as dev_failed:
                 log_msg =  const.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 self.logger.exception(log_msg)
                 tango.Except.throw_exception(const.STR_ENDSB_EXEC,
                                              log_msg,
@@ -1098,7 +1097,6 @@ class SubarrayNode(SKASubarray):
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
-                self.logger.error(log_msg)
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD,
                                              log_msg,
@@ -1157,28 +1155,11 @@ class SubarrayNode(SKASubarray):
                 return (ResultCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
             except tango.DevFailed as devfailed:
                 log_msg = const.ERR_TRACK_CMD + str(devfailed)
-                self.logger.error(log_msg)
                 self.logger.exception(devfailed)
                 tango.Except.throw_exception(const.STR_CMD_FAILED,
                                              log_msg,
                                              "SubarrayNode.TrackCommand()",
                                              tango.ErrSeverity.ERR)
-            # except Exception as except_occured:
-            # str_log = const.ERR_TRACK_CMD + "\n" + str(except_occured)
-            # self.logger.error(str_log)
-            # self._read_activity_message = const.ERR_TRACK_CMD + str(except_occured)
-            # self.logger.error(const.ERR_TRACK_CMD)
-            # exception_message.append(const.ERR_TRACK_CMD + ": " + \
-            #                          str(except_occured.args[0].desc))
-            # exception_count += 1
-            # # throw exception
-            # if exception_count > 0:
-            #     err_msg = ' '
-            #     for item in exception_message:
-            #         err_msg += item + "\n"
-            #     tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-            #                                  const.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
-
             # PROTECTED REGION END #    //  SubarrayNode.Track
 
     def is_Track_allowed(self):

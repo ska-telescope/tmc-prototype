@@ -87,10 +87,7 @@ class CentralNode(SKABaseDevice):
         :return: None
 
         :raises: KeyError if error occurs while setting Subarray healthState
-                Exception if error occurs in aggregating the health state of the telescope
         """
-        exception_count = 0
-        exception_message = []
         try:
             log_msg = 'Health state attribute change event is : ' + str(evt)
             self.logger.info(log_msg)
@@ -251,9 +248,6 @@ class CentralNode(SKABaseDevice):
             super().do()
 
             device = self.target
-
-            exception_count = 0
-            exception_message = []
             try:
                 self.logger.info("Device initialisating...")
                 device._subarray1_health_state = HealthState.OK
@@ -448,12 +442,8 @@ class CentralNode(SKABaseDevice):
 
             :raises: DevFailed if error occurs while invoking command of DishLeafNode
                     ValueError if error occurs if input argument json string contains invalid value
-                    Exception if command execution throws any type of exception
-
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
             try:
                 for leafId in range(0, len(argin)):
                     if type(float(argin[leafId])) == float:
