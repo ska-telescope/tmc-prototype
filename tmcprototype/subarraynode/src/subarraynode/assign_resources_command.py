@@ -63,7 +63,6 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         :rtype: (ResultCode, str)
 
         :raises: ValueError if input argument json string contains invalid value
-                Exception if command execution throws any type of exception
                 DevFailed if the command execution is not successful
 
         """
