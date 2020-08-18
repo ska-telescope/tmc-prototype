@@ -169,8 +169,7 @@ class CentralNode(SKABaseDevice):
 
         :return: None
 
-        :raises: KeyError if error occurs while setting Subarray obsState
-                Exception if error occurs in callback
+        :raises: KeyError in Subarray obsState callback
         """
         try:
             log_msg = 'Observation state attribute change event is : ' + str(evt)
@@ -178,35 +177,25 @@ class CentralNode(SKABaseDevice):
             if not evt.err:
                 obs_state = evt.attr_value.value
                 subarray_device = evt.device
-                log_msg = "obs_state is: " + str(obs_state)
-                self.logger.info(log_msg)
-                log_msg = "subarray_device is: " + str(subarray_device)
-                self.logger.info(log_msg)
                 subarray_device_list = list(str(subarray_device))
                 # Identify the Subarray ID
                 for index in range(0, len(subarray_device_list)):
                     if subarray_device_list[index].isdigit():
                         id = subarray_device_list[index]
 
-                log_msg = "id is: " + id
-                self.logger.info(log_msg)
                 subarray_id = "SA" + str(id)
-                log_msg = "self.subarray_id is: " + str(subarray_id)
-                self.logger.info(log_msg)
-                log_msg = "self._subarray_allocation before is: " + str(self._subarray_allocation)
                 self.logger.info(log_msg)
                 if obs_state == ObsState.EMPTY or obs_state == ObsState.RESTARTING:
                     for dish, subarray in self._subarray_allocation.items():
                         if subarray == subarray_id:
                             self._subarray_allocation[dish] = "NOT_ALLOCATED"
-                log_msg = "self._subarray_allocation after is: " + str(self._subarray_allocation)
+                log_msg = "Subarray_allocation is: " + str(self._subarray_allocation)
                 self.logger.info(log_msg)
             else:
                 # TODO: For future reference
                 self._read_activity_message = const.ERR_SUBSR_SA_OBS_STATE + str(evt)
                 self.logger.critical(const.ERR_SUBSR_SA_OBS_STATE)
         except KeyError as key_error:
-            # TODO: For future reference
             self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
             self.logger.critical(log_msg)

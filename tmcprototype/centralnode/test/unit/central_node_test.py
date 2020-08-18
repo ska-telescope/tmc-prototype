@@ -283,8 +283,6 @@ def test_stow_antennas_invalid_value():
 # Mocking AssignResources command success response from SubarrayNode
 def mock_subarray_call_assign_resources_success(arg1, arg2):
     arg = json.loads(assign_input_str)
-    # log_msg = "Subarray Output: --------" + str(arg["dish"]["receptorIDList"]) + str(type(arg["dish"]["receptorIDList"]))
-    # self.logger.info(log_msg)
     argout = [str(arg["dish"]["receptorIDList"])]
     return [ResultCode.STARTED, argout]
 

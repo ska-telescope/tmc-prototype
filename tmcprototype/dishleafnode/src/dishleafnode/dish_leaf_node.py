@@ -355,11 +355,8 @@ class DishLeafNode(SKABaseDevice):
                 katpoint_arg.insert(1, timestamp_value)
                 # Conversion of RaDec to AzEl
                 self.convert_radec_to_azel(katpoint_arg)
-                self.logger.info("In while loop of track_thread....")
                 if self.RaDec_AzEl_Conversion is True:
-                    self.logger.info("Ra-Dec calculated...")
                     if self.el >= self.ele_min_lim and self.el <= self.ele_max_lim:
-                        self.logger.info("Within the limit of observation of dish...")
                         if self.az < 0:
                             self.az = 360 - abs(self.az)
 
@@ -370,7 +367,7 @@ class DishLeafNode(SKABaseDevice):
                         self._dish_proxy.desiredPointing = spectrum
                         if self.event_track_time.is_set() is False:
                             # Invoke Track command of Dish Master
-                            self.logger.info("Invoking Track command on DishMaster...")
+                            self.logger.info("Invoking Track command on DishMaster.")
                             self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
                         else:
                             log_msg = const.STR_BREAK_LOOP + str(self.event_track_time.is_set())
@@ -379,12 +376,15 @@ class DishLeafNode(SKABaseDevice):
                     else:
                         self.el_limit = True
                         self._read_activity_message = const.ERR_ELE_LIM
-                        self.logger.info("Source is not visible currently.")
+                        self.logger.info(const.ERR_ELE_LIM)
+                        self._read_activity_message = const.STR_SRC_NOT_VISIBLE
+                        self.logger.info(const.STR_SRC_NOT_VISIBLE)
                         
                 else:
-                    self.logger.info("Error occured while converting RaDec to AzEl coordinates.")
+                    self._read_activity_message = const.ERR_AZ_EL_CALC
+                    self.logger.info(const.ERR_AZ_EL_CALC)
                 time.sleep(0.05)
-                # self._dish_proxy.pointingState = 0
+                
         except Exception as except_occurred:
             log_msg = const.ERR_EXE_TRACK + str(except_occurred)
             self.logger.error(log_msg)
