@@ -110,7 +110,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         with ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
             self.logger.debug(const.STR_DISH_ALLOCATION)
-            dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
+            dish_allocation_status = executor.submit(self.add_receptors_from_group, receptor_list)
 
             # 2.2. Add resources in CSP subarray
             self.logger.debug(const.STR_CSP_ALLOCATION)
@@ -207,7 +207,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         message = str(argout)
         return (ResultCode.STARTED, message)
 
-    def add_receptors_in_group(self, argin):
+    def add_receptors_from_group(self, argin):
         """
         Creates a tango group of the successfully allocated resources in the subarray.
         Device proxy for each of the resources is created. The healthState and pointintgState attributes
@@ -225,8 +225,6 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
             DevVarStringArray. List of Resources added to the Subarray.
             Example: ['0001', '0002']
         """
-        exception_count = 0
-        exception_message = []
         allocation_success = []
         allocation_failure = []
         device = self.target
@@ -234,11 +232,8 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
 
         for leafId in range(0, len(argin)):
             try:
-                log_msg = "Argin: " + str(argin)
-                self.logger.info(log_msg)
                 str_leafId = argin[leafId]
                 device._dish_leaf_node_group.add(device.DishLeafNodePrefix + str_leafId)
-                #devProxy = DeviceProxy(device.DishLeafNodePrefix + str_leafId)
                 devProxy = device.get_deviceproxy(device.DishLeafNodePrefix + str_leafId)
                 device._dish_leaf_node_proxy.append(devProxy)
                 # Update the list allocation_success with the dishes allocated successfully to subarray
@@ -272,10 +267,13 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
                 self.logger.exception("Receptor %s allocation failed.", str_leafId)
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                        exception_message,
-                                                                                        exception_count,
-                                                                                        const.ERR_ADDING_LEAFNODE)
+                log_msg = const.ERR_ADDING_LEAFNODE + str(dev_failed)
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.ERR_ADDING_LEAFNODE,
+                                                 log_msg,
+                                                 "SubarrayNode.add_receptors_in_group",
+                                                 tango.ErrSeverity.ERR
+                                                )
                 allocation_failure.append(str_leafId)
                 # Exception Logic to remove Id from subarray group
                 group_dishes = device._dish_leaf_node_group.get_device_list()
@@ -289,14 +287,12 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                     devProxy.unsubscribe_event(device._dishLnVsPointingStateEventID[devProxy])
 
             except (TypeError) as except_occurred:
-                self.logger.exception(except_occurred)
                 allocation_failure.append(str_leafId)
-                exception_count += 1
-
-        # Throw Exception
-        if exception_count > 0:
-            exception_msg = "Failed to allocate receptors [", allocation_failure, "]"
-            device.throw_exception(exception_msg, const.STR_ASSIGN_RES_EXEC)
+                log_msg = const.ERR_ADDING_LEAFNODE + str(except_occurred)
+                self.logger.exception(except_occurred)
+                tango.Except.throw_exception(const.ERR_ADDING_LEAFNODE, log_msg,
+                                             "SubarrayNode.add_receptors_in_group",
+                                             tango.ErrSeverity.ERR)
 
         log_msg = "List of Resources added to the Subarray::",allocation_success
         self.logger.debug(log_msg)

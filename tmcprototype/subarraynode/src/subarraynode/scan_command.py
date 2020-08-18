@@ -76,18 +76,12 @@ class ScanCommand(SKASubarray.ScanCommand):
             self.logger.info("Scan thread started")
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_SCAN_CMD)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.ERR_SCAN_CMD)
-        # Throw Exception
-        if exception_count > 0:
-            device.throw_exception(exception_message, const.STR_SCAN_EXEC)
+            log_msg = const.ERR_SCAN_CMD + str(dev_failed)
+            self.logger.exception(dev_failed)
+            tango.Except.throw_exception(const.STR_SCAN_EXEC,
+                                         log_msg,
+                                         "SubarrayNode.ScanCommand",
+                                         tango.ErrSeverity.ERR)
 
     def call_end_scan_command(self):
         device = self.target

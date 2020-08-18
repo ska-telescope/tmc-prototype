@@ -48,15 +48,12 @@ class EndCommand(SKASubarray.EndCommand):
             device.is_end_command = True
             return (ResultCode.OK, const.STR_ENDSB_SUCCESS)
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                      exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                    exception_message, exception_count, const.ERR_ENDSB_INVOKING_CMD)
-        # throw exception:
-        if exception_count > 0:
-            device.throw_exception(exception_message, const.STR_ENDSB_EXEC)
-        # PROTECTED REGION END #    //  SubarrayNode.EndSB
+            log_msg = const.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
+            self.logger.exception(log_msg)
+            tango.Except.throw_exception(const.STR_ENDSB_EXEC,
+                                         log_msg,
+                                         "SubarrayNode.EndCommand",
+                                         tango.ErrSeverity.ERR)
 
     def stop_dish_tracking(self):
         # TODO: Getting exception while running test cases using device mocking

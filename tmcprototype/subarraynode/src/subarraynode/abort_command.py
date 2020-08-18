@@ -47,15 +47,10 @@ class AbortCommand(SKASubarray.AbortCommand):
             return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_ABORT_INVOKING_CMD)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                    exception_message, exception_count,
-                                                                                    const.ERR_ABORT_INVOKING_CMD)
+            log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
+            self.logger.exception(dev_failed)
+            tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD,
+                                         log_msg,
+                                         "SubarrayNode.AbortCommand",
+                                         tango.ErrSeverity.ERR)
 
-        # throw exception:
-        if exception_count > 0:
-            device.throw_exception(exception_message, const.ERR_ABORT_INVOKING_CMD)

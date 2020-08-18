@@ -22,7 +22,6 @@ from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, ResponseCommand
-from ska.base.control_model import TestMode
 
 # Additional import
 from . import const, release
@@ -37,34 +36,6 @@ class SdpMasterLeafNode(SKABaseDevice):
     The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
     """
-    # PROTECTED REGION ID(SdpMasterLeafNode.class_variable) ENABLED START #
-
-    # Function for handling all Devfailed exception
-    def _handle_devfailed_exception(self, df, except_msg_list, exception_count, read_actvity_msg):
-        log_msg = read_actvity_msg + str(df)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(df)
-        except_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [except_msg_list, exception_count]
-
-    # Function for handling all generic exception
-    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
-        log_msg = read_actvity_msg + str(exception)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(exception)
-        except_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [except_msg_list, exception_count]
-
-    def throw_exception(self, except_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in except_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
-
-    # PROTECTED REGION END #    //  SdpMasterLeafNode.class_variable
-
     # -----------------
     # Device Properties
     # -----------------
@@ -118,8 +89,6 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             super().do()
             device = self.target
-            exception_message = []
-            exception_count = 0
             try:
                 device._version_info = "1.0"
                 device._processing_block_list = "test"
@@ -129,9 +98,10 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device._version_id = release.version
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                    exception_message,exception_count, const.ERR_INIT_PROP_ATTR)
-                device.throw_exception(exception_message, device._read_activity_message)
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_INIT_PROP_ATTR + str(dev_failed)
+                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                                       "SdpMasterLeafNode.InitCommand()", const.ERR_INIT_PROP_ATTR)
 
             try:
                 device._read_activity_message = const.STR_SDPMASTER_FQDN + device.SdpMasterFQDN
@@ -139,9 +109,10 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device._sdp_proxy = DeviceProxy(device.SdpMasterFQDN)
 
             except DevFailed as dev_failed:
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                    exception_message, exception_count,const.ERR_IN_CREATE_PROXY_SDP_MASTER)
-                device.throw_exception(exception_message, device._read_activity_message)
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_IN_CREATE_PROXY_SDP_MASTER + str(dev_failed)
+                device.throw_exception(const.ERR_INVOKING_CMD, log_msg,
+                                "SdpMasterLeafNode.InitCommand()", const.ERR_IN_CREATE_PROXY_SDP_MASTER)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
@@ -230,26 +201,15 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device=self.target
-            exception_count = 0
-            exception_message = []
-            try:
-                if event.err:
-                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                    self.logger.error(log_msg)
-                    device._read_activity_message = log_msg
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
 
-                else:
-                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                    self.logger.info(log_msg)
-                    device._read_activity_message = log_msg
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_EXCEPT_ON_CMD_CB)
-            # Throw Exception
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_SDP_ON_CMD_CALLBK)
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
 
         def do(self):
             """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
@@ -297,26 +257,15 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device=self.target
-            exception_count = 0
-            exception_message = []
-            try:
-                if event.err:
-                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                    self.logger.error(log_msg)
-                    device._read_activity_message = log_msg
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
 
-                else:
-                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                    self.logger.info(log_msg)
-                    device._read_activity_message = log_msg
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_EXCEPT_OFF_CMD_CB)
-            # Throw Exception
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_SDP_OFF_CMD_CALLBK)
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
 
         def do(self):
             """
@@ -334,12 +283,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             device._sdp_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_SUCCESS)
             device._read_activity_message = const.STR_OFF_CMD_SUCCESS
-            exception_message = []
-            exception_count = 0
-            # This code is written only to improve code coverage
-            if device._test_mode == TestMode.TEST:
-                device._handle_devfailed_exception(DevFailed, exception_message, exception_count,
-                                                 const.ERR_OFF_CMD_FAIL)
             return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
 
     class DisableCommand(ResponseCommand):
@@ -388,26 +331,15 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
-            try:
-                if event.err:
-                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                    self.logger.error(log_msg)
-                    device._read_activity_message = log_msg
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
 
-                else:
-                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                    self.logger.info(log_msg)
-                    device._read_activity_message = log_msg
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_EXCEPT_DISABLE_CMD_CB)
-            # Throw Exception
-            if exception_count > 0:
-                device.throw_exception(exception_message, const.STR_SDP_DISABLE_CMD_CALLBK)
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
 
         def do(self):
             """
@@ -499,26 +431,15 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            exception_count = 0
-            exception_message = []
-            try:
-                if event.err:
-                    log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                    self.logger.error(log_msg)
-                    device._read_activity_message = log_msg
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
 
-                else:
-                    log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                    self.logger.info(log_msg)
-                    device._read_activity_message = log_msg
-            except Exception as except_occurred:
-                [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_EXCEPT_STANDBY_CMD_CB)
-                # Throw Exception
-                if exception_count > 0:
-                    device.throw_exception(exception_message, const.STR_SDP_STANDBY_CMD_CALLBK)
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
 
         def do(self):
             """ Informs the SDP to stop any executing Processing. To get into the STANDBY state all running

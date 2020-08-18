@@ -63,17 +63,9 @@ class EndScanCommand(SKASubarray.EndScanCommand):
             return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_END_SCAN_CMD_ON_GROUP)
-
-        except Exception as except_occurred:
-            [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.ERR_END_SCAN_CMD)
-
-        # Throw Exception
-        if exception_count > 0:
-            device.throw_exception(exception_message, const.STR_END_SCAN_EXEC)
+            log_msg = const.ERR_END_SCAN_CMD_ON_GROUP + str(dev_failed)
+            self.logger.exception(dev_failed)
+            tango.Except.throw_exception(const.STR_END_SCAN_EXEC,
+                                         log_msg,
+                                         "SubarrayNode.EndScanCommand",
+                                         tango.ErrSeverity.ERR)

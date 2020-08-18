@@ -111,27 +111,20 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        exception_message = []
-        exception_count = 0
-        try:
-            device_name = event.device.dev_name()
-            if not event.err:
-                event_health_state = event.attr_value.value
-                self.subarray_ln_health_state_map[device_name] = event_health_state
 
-                log_message = SubarrayHealthState.generate_health_state_log_msg(
-                    event_health_state, device_name, event)
-                self._read_activity_message = log_message
-                self._health_state = SubarrayHealthState.calculate_health_state(
-                    self.subarray_ln_health_state_map.values())
-            else:
-                log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-                self._read_activity_message = log_message
-        except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_AGGR_HEALTH_STATE)
+        device_name = event.device.dev_name()
+        if not event.err:
+            event_health_state = event.attr_value.value
+            self.subarray_ln_health_state_map[device_name] = event_health_state
+
+            log_message = SubarrayHealthState.generate_health_state_log_msg(
+                event_health_state, device_name, event)
+            self._read_activity_message = log_message
+            self._health_state = SubarrayHealthState.calculate_health_state(
+                self.subarray_ln_health_state_map.values())
+        else:
+            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
+            self._read_activity_message = log_message
 
     def observation_state_cb(self, evt):
         """
@@ -141,8 +134,6 @@ class SubarrayNode(SKASubarray):
 
         :return: None
         """
-        exception_message = []
-        exception_count = 0
         try:
             log_msg = 'Observation State Attribute change event is: ' + str(evt)
             self.logger.info(log_msg)
@@ -171,11 +162,6 @@ class SubarrayNode(SKASubarray):
             log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
             self.logger.error(log_msg)
             self._read_activity_message = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
-        except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_AGGR_OBS_STATE)
 
     def calculate_observation_state(self):
         """
@@ -252,28 +238,6 @@ class SubarrayNode(SKASubarray):
             #         print("Calling AssignResource command succeeded() method")
             #         self.assign_obj.succeeded()
 
-    def _handle_generic_exception(self, exception, excpt_msg_list, exception_count, read_actvity_msg):
-        log_msg = read_actvity_msg + str(exception)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(exception)
-        excpt_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [excpt_msg_list, exception_count]
-
-    def _handle_devfailed_exception(self, df, excpt_msg_list, exception_count, read_actvity_msg):
-        log_msg = read_actvity_msg + str(df)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(df)
-        excpt_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [excpt_msg_list, exception_count]
-
-    def throw_exception(self, excpt_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in excpt_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
-
     def get_deviceproxy(self, device_fqdn):
         """
         Returns device proxy for given FQDN.
@@ -315,6 +279,18 @@ class SubarrayNode(SKASubarray):
                 self.logger.error(log_message )
                 self._read_activity_message = log_message
 
+    def __len__(self):
+        """
+        Returns the number of resources currently assigned. Note that
+        this also functions as a boolean method for whether there are
+        any assigned resources: ``if len()``.
+
+        :return: number of resources assigned
+        :rtype: int
+        """
+
+        return len(self._receptor_id_list)
+
     def pointing_state_cb(self, evt):
         """
         Retrieves the subscribed DishMaster health state, aggregate them to evaluate
@@ -325,8 +301,6 @@ class SubarrayNode(SKASubarray):
         :return: None
 
         """
-        exception_message = []
-        exception_count = 0
         try:
             log_msg= 'Pointing state Attribute change event is : ' + str(evt)
             self.logger.info(log_msg)
@@ -361,11 +335,6 @@ class SubarrayNode(SKASubarray):
             log_msg = const.ERR_SETPOINTING_CALLBK + str(key_err)
             self.logger.error(log_msg)
             self._read_activity_message = const.ERR_SETPOINTING_CALLBK + str(key_err)
-        except Exception as except_occured:
-            [exception_message, exception_count] = self._handle_generic_exception(except_occured,
-                                                                                  exception_message,
-                                                                                  exception_count,
-                                                                                  const.ERR_AGGR_POINTING_STATE)
 
     def validate_obs_state(self):
         if self._obs_state == ObsState.EMPTY:
@@ -375,18 +344,6 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = "Error in device obsState."
             raise InvalidObsStateError("Subarray is not in EMPTY obsState, \
                 please check the subarray obsState")
-
-    def __len__(self):
-        """
-        Returns the number of resources currently assigned. Note that
-        this also functions as a boolean method for whether there are
-        any assigned resources: ``if len()``.
-
-        :return: number of resources assigned
-        :rtype: int
-        """
-
-        return len(self._receptor_id_list)
 
     def remove_receptors_from_group(self):
         """
@@ -502,8 +459,6 @@ class SubarrayNode(SKASubarray):
             :raises: DevFailed if the error while subscribing the tango attribute
             """
             super().do()
-            exception_message = []
-            exception_count = 0
             device = self.target
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
@@ -556,13 +511,13 @@ class SubarrayNode(SKASubarray):
                 self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                    exception_message, exception_count, const.ERR_SUBS_CSP_SA_LEAF_ATTR)
                 device.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
-                self.logger.error(const.ERR_CSP_SA_LEAF_INIT)
-                device.throw_exception(exception_message, device._read_activity_message)
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.ERR_SUBS_CSP_SA_LEAF_ATTR,
+                                             log_msg,
+                                             "SubarrayNode.InitCommand",
+                                             tango.ErrSeverity.ERR)
 
             try:
                 device.subarray_ln_health_state_map[device._sdp_subarray_ln_proxy.dev_name()] = (
@@ -582,12 +537,13 @@ class SubarrayNode(SKASubarray):
                 device.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
-                self.logger.error(log_msg)
                 device._read_activity_message = log_msg
-                [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                exception_message, exception_count, const.ERR_SUBS_SDP_SA_LEAF_ATTR)
                 device.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
-                device.throw_exception(exception_message, device._read_activity_message)
+                self.logger.exception(log_msg)
+                tango.Except.throw_exception(const.ERR_SUBS_SDP_SA_LEAF_ATTR,
+                                             log_msg,
+                                             "SubarrayNode.InitCommand",
+                                             tango.ErrSeverity.ERR)
 
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)

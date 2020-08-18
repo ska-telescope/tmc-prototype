@@ -58,16 +58,9 @@ class RestartCommand(SKASubarray.RestartCommand):
             return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
 
         except DevFailed as dev_failed:
-            [exception_message, exception_count] = device._handle_devfailed_exception(dev_failed,
-                                                                                      exception_message,
-                                                                                      exception_count,
-                                                                                      const.ERR_RESTART_INVOKING_CMD)
-        except Exception as except_occurred:
-            [exception_message, exception_count] = device._handle_generic_exception(except_occurred,
-                                                                                    exception_message,
-                                                                                    exception_count,
-                                                                                    const.ERR_RESTART_INVOKING_CMD)
-
-        # throw exception:
-        if exception_count > 0:
-            device.throw_exception(exception_message, const.STR_RESTART_EXEC)
+            log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
+            self.logger.exception(log_msg)
+            tango.Except.throw_exception(const.STR_RESTART_EXEC,
+                                         log_msg,
+                                         "SubarrayNode.RestartCommand",
+                                         tango.ErrSeverity.ERR)

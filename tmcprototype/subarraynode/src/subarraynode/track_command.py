@@ -68,21 +68,9 @@ class TrackCommand(ResponseCommand):
             self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
             return (ResultCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
         except tango.DevFailed as devfailed:
-            exception_message.append(const.ERR_TRACK_CMD + ": " + \
-                                     str(devfailed.args[0].desc))
-            exception_count += 1
-        except Exception as except_occured:
-            str_log = const.ERR_TRACK_CMD + "\n" + str(except_occured)
-            self.logger.error(str_log)
-            self._read_activity_message = const.ERR_TRACK_CMD + str(except_occured)
-            self.logger.error(const.ERR_TRACK_CMD)
-            exception_message.append(const.ERR_TRACK_CMD + ": " + \
-                                     str(except_occured.args[0].desc))
-            exception_count += 1
-        # throw exception
-        if exception_count > 0:
-            err_msg = ' '
-            for item in exception_message:
-                err_msg += item + "\n"
-            tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg,
-                                         const.STR_TRACK_EXEC, tango.ErrSeverity.ERR)
+            log_msg = const.ERR_TRACK_CMD + str(devfailed)
+            self.logger.exception(devfailed)
+            tango.Except.throw_exception(const.STR_CMD_FAILED,
+                                         log_msg,
+                                         "SubarrayNode.TrackCommand()",
+                                         tango.ErrSeverity.ERR)
