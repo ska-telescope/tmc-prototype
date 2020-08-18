@@ -6,6 +6,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 # Tango imports
+import tango
 from tango import DevFailed
 
 # Additional import
@@ -32,8 +33,6 @@ class AbortCommand(SKASubarray.AbortCommand):
                 SDPSubarrayLeafNode or DishLeafNode
         """
         device = self.target
-        exception_message = []
-        exception_count = 0
         try:
             device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
             self.logger.info(const.STR_CMD_ABORT_INV_SDP)

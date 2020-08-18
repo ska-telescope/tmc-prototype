@@ -54,8 +54,6 @@ class TrackCommand(ResponseCommand):
 
         """
         device = self.target
-        exception_message = []
-        exception_count = 0
         log_msg = "Track:", argin
         self.logger.debug(log_msg)
         try:

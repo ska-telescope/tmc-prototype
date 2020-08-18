@@ -6,6 +6,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 # Tango imports
+import tango
 from tango import DevFailed
 # Additional import
 from . import const
@@ -30,8 +31,6 @@ class OffCommand(SKASubarray.OffCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device = self.target
-        exception_message = []
-        exception_count = 0
         try:
             device._csp_subarray_ln_proxy.Off()
             device._sdp_subarray_ln_proxy.Off()

@@ -5,6 +5,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 # Tango imports
+import tango
 from tango import DevFailed
 
 # Additional import
@@ -32,8 +33,6 @@ class EndCommand(SKASubarray.EndCommand):
         """
         device = self.target
         device.is_end_command = False
-        exception_message = []
-        exception_count = 0
         try:
             self.logger.info("End command invoked on SubarrayNode.")
             device._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)

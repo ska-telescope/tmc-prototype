@@ -7,6 +7,7 @@ from __future__ import absolute_import
 
 import threading
 # Tango imports
+import tango
 from tango import DevFailed
 
 # Additional import
@@ -45,8 +46,6 @@ class ScanCommand(SKASubarray.ScanCommand):
         """
         device = self.target
         device.is_scan_completed = False
-        exception_count = 0
-        exception_message = []
         try:
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.info(log_msg)

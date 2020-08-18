@@ -6,6 +6,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 # Tango imports
+import tango
 from tango import DevFailed
 
 # Additional import
@@ -34,8 +35,6 @@ class RestartCommand(SKASubarray.RestartCommand):
                 Exception if error occurs while executing the command.
         """
         device = self.target
-        exception_message = []
-        exception_count = 0
         try:
             self.logger.info("Restart command invoked on SubarrayNode.")
             # As a part of Restart clear the attributes on SubarrayNode
