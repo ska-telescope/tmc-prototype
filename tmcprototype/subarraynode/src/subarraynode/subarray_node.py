@@ -267,13 +267,13 @@ class SubarrayNode(SKASubarray):
                 self.logger.info("Calling Restart command succeeded() method")
                 self.restart_obj.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
-        elif self._csp_sa_obs_state == ObsState.ABORTED and self._sdp_sa_obs_state == \
-                ObsState.ABORTED:
-            if self.is_abort_command:
-                self.logger.info("Calling ABORT command succeeded() method")
-                self.abort_obj.succeeded()
-        elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
-                ObsState.READY:
+
+        elif ((self._csp_sa_obs_state == ObsState.ABORTED) and (self._sdp_sa_obs_state == ObsState.ABORTED)):
+            if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
+                if self.is_abort_command:
+                    self.logger.info("Calling ABORT command succeeded() method")
+                    self.abort_obj.succeeded()
+        elif ((self._csp_sa_obs_state == ObsState.READY) and (self._sdp_sa_obs_state == ObsState.READY)):
             log_msg = "Pointing state in track counts = " + str(pointing_state_count_track)
             self.logger.debug(log_msg)
             log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
@@ -1012,9 +1012,9 @@ class SubarrayNode(SKASubarray):
                                              const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
             tmc_configure = scan_configuration["tmc"]
             device.scan_duration = int(tmc_configure["scanDuration"])
+            device._configure_dsh(scan_configuration)
             device._configure_csp(scan_configuration)
             device._configure_sdp(scan_configuration)
-            device._configure_dsh(scan_configuration)
             message = "Configure command invoked"
             self.logger.info(message)
             return (ResultCode.STARTED, message)
@@ -1634,14 +1634,14 @@ class SubarrayNode(SKASubarray):
                 device._sb_id = ""
                 device.scan_duration = 0
                 device._scan_type = ''
-                # Remove the group for receptors.
-                device.remove_receptors_in_group()
                 device._sdp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
                 self.logger.info(const.STR_CMD_RESTART_INV_SDP)
                 device._csp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
                 self.logger.info(const.STR_CMD_RESTART_INV_CSP)
                 device._dish_leaf_node_group.command_inout(const.CMD_RESTART)
                 self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
+                # Remove the group for receptors.
+                device.remove_receptors_in_group()
                 device._read_activity_message = const.STR_RESTART_SUCCESS
                 self.logger.info(const.STR_RESTART_SUCCESS)
                 device.set_status(const.STR_RESTART_SUCCESS)

@@ -367,6 +367,7 @@ class DishLeafNode(SKABaseDevice):
                         self._dish_proxy.desiredPointing = spectrum
                         if self.event_track_time.is_set() is False:
                             # Invoke Track command of Dish Master
+                            self.logger.info("Invoking Track command on DishMaster.")
                             self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
                         else:
                             log_msg = const.STR_BREAK_LOOP + str(self.event_track_time.is_set())
@@ -375,11 +376,15 @@ class DishLeafNode(SKABaseDevice):
                     else:
                         self.el_limit = True
                         self._read_activity_message = const.ERR_ELE_LIM
-                        break
+                        self.logger.info(const.ERR_ELE_LIM)
+                        self._read_activity_message = const.STR_SRC_NOT_VISIBLE
+                        self.logger.info(const.STR_SRC_NOT_VISIBLE)
+                        
                 else:
-                    break
+                    self._read_activity_message = const.ERR_AZ_EL_CALC
+                    self.logger.info(const.ERR_AZ_EL_CALC)
                 time.sleep(0.05)
-                # self._dish_proxy.pointingState = 0
+                
         except Exception as except_occurred:
             log_msg = const.ERR_EXE_TRACK + str(except_occurred)
             self.logger.error(log_msg)
