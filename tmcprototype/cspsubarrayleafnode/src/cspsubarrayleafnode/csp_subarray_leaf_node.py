@@ -335,6 +335,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device.receptorIDList_str = []
             device.fsp_ids_object = []
             device.fsids_list = []
+            x = ''
             ## Start thread to update delay model ##
             # Start thread to update delay model
             # Create event
