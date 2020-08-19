@@ -162,7 +162,9 @@ STR_RESTART_CMD_CALLBK = "DishLeafNode Restart Command Callback"
 
 STR_ABORT_EXEC = "Abort command execution"
 STR_RESTART_EXEC = "Restart command execution"
+STR_SRC_NOT_VISIBLE = "Source is not visible currently."
 
 THREAD_TRACK = "DishLeafNode"
 ERR_INVALID_JSON = "Invalid JSON format."
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found."
+ERR_AZ_EL_CALC = "Error occured while converting RaDec to AzEl coordinates."

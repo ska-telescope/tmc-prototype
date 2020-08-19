@@ -143,7 +143,7 @@ STR_ENDSB_SUCCESS = "EndSB command invoked successfully on SDP Subarray Leaf Nod
 STR_ABORT_SUCCESS = "Abort command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node and Dish Leaf Node."
 STR_ENDSB_EXEC = "EndSB command execution."
 STR_RESTART_EXEC = "Restart command execution."
-STR_RESTART_SUCCESS = "Restart command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node."
+STR_RESTART_SUCCESS = "Restart command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node and Dish Leaf Node."
 
 # Error messages
 ERR_SCAN_CMD = "Exception in Scan command: "
