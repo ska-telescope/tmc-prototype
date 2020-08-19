@@ -100,9 +100,11 @@ test:
 
 lint:
 	python3 -m pip install pylint2junit junitparser; \
-	mkdir -p /build/reports;
+	mkdir -p /build/reports; \
+	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR) | tee /build/all_nodes-code_analysis.stdout; \
+	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR) > /build/linting.xml;
 # Code analysis of all the devices/packages using pylint
-	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR) | tee /build/all_nodes-code_analysis.stdout;
+# 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR) | tee /build/all_nodes-code_analysis.stdout; \
 # 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/cspsubarrayleafnode/src/cspsubarrayleafnode | tee /build/csp-subarray-leaf-node-code_analysis.stdout; \
 # 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/dishleafnode/src/dishleafnode | tee /build/dish-leaf-node-code_analysis.stdout;
 # 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/sdpsubarrayleafnode/src/sdpsubarrayleafnode | tee /build/sdp-subarray-leaf-code_analysis.stdout; \
@@ -111,7 +113,7 @@ lint:
 # 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/subarraynode/src/subarraynode | tee /build/subarray-node-code_analysis.stdout; \
 # 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=parseable $(TMC_ROOT_DIR)/centralnode/src/centralnode | tee /build/central-node-code_analysis.stdout;
 # Generate device-linting.xml files for all the devices/packages
-	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR) > /build/linting.xml;
+
 # 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/dishmaster/src/dishmaster > /build/dish-master-linting.xml; \
 # 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/cspsubarrayleafnode/src/cspsubarrayleafnode > /build/csp-subarray-leaf-node-linting.xml; \
 # 	pylint --rcfile=$(SRC_ROOT_DIR)/.pylintrc --output-format=pylint2junit.JunitReporter $(TMC_ROOT_DIR)/dishleafnode/src/dishleafnode > /build/dish-leaf-node-linting.xml; \
