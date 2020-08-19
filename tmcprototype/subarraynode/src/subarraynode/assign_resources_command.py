@@ -2,9 +2,6 @@
 AssignResourcesCommand class for SubarrayNode.
 """
 
-from __future__ import print_function
-from __future__ import absolute_import
-
 from concurrent.futures import ThreadPoolExecutor
 import json
 # Tango imports
@@ -176,6 +173,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                     tango.ErrSeverity.ERR
                 )
 
+            # TODO: For future use
             # sdp_allocation_result = sdp_allocation_status.result()
             # log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
             # self.logger.debug(log_msg)

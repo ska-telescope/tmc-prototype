@@ -2,9 +2,6 @@
 RestartCommand for SubarrayNode.
 """
 
-from __future__ import print_function
-from __future__ import absolute_import
-
 # Tango imports
 import tango
 from tango import DevFailed

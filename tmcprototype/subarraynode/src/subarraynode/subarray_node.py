@@ -250,6 +250,9 @@ class SubarrayNode(SKASubarray):
                 break
             except DevFailed as df:
                 self.logger.exception(df)
+                if retry == 2:
+                    tango.Except.throw_exception(df[0].desc, "Failed to create DeviceProxy of " + str(device_fqdn),
+                                             "SubarrayNode.get_deviceproxy()", tango.ErrSeverity.ERR)
                 retry += 1
                 continue
         return device_proxy
