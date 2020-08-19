@@ -27,8 +27,7 @@ class EndScanCommand(SKASubarray.EndScanCommand):
 
         :rtype: (ReturnCode, str)
 
-        :raises: Exception if command execution throws any type of exception
-                DevFailed if the command execution is not successful
+        :raises: DevFailed if the command execution is not successful.
         """
         device = self.target
         try:

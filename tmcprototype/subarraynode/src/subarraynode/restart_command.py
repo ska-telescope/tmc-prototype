@@ -29,7 +29,6 @@ class RestartCommand(SKASubarray.RestartCommand):
 
         :raises: DevFailed if error occurs while invoking command on CSPSubarrayLeafNode, SDpSubarrayLeafNode or
                 DishLeafNode.
-                Exception if error occurs while executing the command.
         """
         device = self.target
         try:
