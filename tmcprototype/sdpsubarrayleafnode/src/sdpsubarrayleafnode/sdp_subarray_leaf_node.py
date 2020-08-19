@@ -21,7 +21,6 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode, ResponseCommand
 # Additional imports
-import json
 from . import const, release
 from .exceptions import InvalidObsStateError
 
