@@ -64,9 +64,9 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
         device.scan_duration = int(tmc_configure["scanDuration"])
+        self._configure_dsh(scan_configuration)
         self._configure_csp(scan_configuration)
         self._configure_sdp(scan_configuration)
-        self._configure_dsh(scan_configuration)
         message = "Configure command invoked"
         self.logger.info(message)
         return (ResultCode.STARTED, message)

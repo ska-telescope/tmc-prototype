@@ -189,13 +189,13 @@ class SubarrayNode(SKASubarray):
                 self.logger.info("Calling Restart command succeeded() method")
                 self.restart_obj.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
-        elif self._csp_sa_obs_state == ObsState.ABORTED and self._sdp_sa_obs_state == \
-                ObsState.ABORTED:
-            if self.is_abort_command:
-                self.logger.info("Calling ABORT command succeeded() method")
-                self.abort_obj.succeeded()
-        elif self._csp_sa_obs_state == ObsState.READY and self._sdp_sa_obs_state ==\
-                ObsState.READY:
+
+        elif ((self._csp_sa_obs_state == ObsState.ABORTED) and (self._sdp_sa_obs_state == ObsState.ABORTED)):
+            if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
+                if self.is_abort_command:
+                    self.logger.info("Calling ABORT command succeeded() method")
+                    self.abort_obj.succeeded()
+        elif ((self._csp_sa_obs_state == ObsState.READY) and (self._sdp_sa_obs_state == ObsState.READY)):
             log_msg = "Pointing state in track counts = " + str(pointing_state_count_track)
             self.logger.debug(log_msg)
             log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))

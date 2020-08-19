@@ -21,7 +21,7 @@ from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevF
 from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.commands import ResponseCommand, ResultCode, BaseCommand
-from ska.base.control_model import HealthState
+from ska.base.control_model import HealthState, ObsState
 # Additional import
 from . import const, release
 from centralnode.input_validator import AssignResourceValidator
@@ -159,6 +159,48 @@ class CentralNode(SKABaseDevice):
             self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
             self.logger.critical(log_msg)
+
+    def obs_state_cb(self, evt):
+        """
+        Retrieves the subscribed Subarray observation state. When the Subarray obsState is EMPTY, the resource
+        allocation list gets cleared.
+
+        :param evt: A TANGO_CHANGE event on Subarray obsState.
+
+        :return: None
+
+        :raises: KeyError in Subarray obsState callback
+        """
+        try:
+            log_msg = 'Observation state attribute change event is : ' + str(evt)
+            self.logger.info(log_msg)
+            if not evt.err:
+                obs_state = evt.attr_value.value
+                subarray_device = evt.device
+                subarray_device_list = list(str(subarray_device))
+                # Identify the Subarray ID
+                for index in range(0, len(subarray_device_list)):
+                    if subarray_device_list[index].isdigit():
+                        id = subarray_device_list[index]
+
+                subarray_id = "SA" + str(id)
+                self.logger.info(log_msg)
+                if obs_state == ObsState.EMPTY or obs_state == ObsState.RESTARTING:
+                    for dish, subarray in self._subarray_allocation.items():
+                        if subarray == subarray_id:
+                            self._subarray_allocation[dish] = "NOT_ALLOCATED"
+                log_msg = "Subarray_allocation is: " + str(self._subarray_allocation)
+                self.logger.info(log_msg)
+            else:
+                # TODO: For future reference
+                self._read_activity_message = const.ERR_SUBSR_SA_OBS_STATE + str(evt)
+                self.logger.critical(const.ERR_SUBSR_SA_OBS_STATE)
+        except KeyError as key_error:
+            self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+            self.logger.critical(log_msg)
+        
+
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
     # -----------------
@@ -337,6 +379,10 @@ class CentralNode(SKABaseDevice):
                     subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
                                                   EventType.CHANGE_EVENT,
                                                   device.health_state_cb, stateless=True)
+
+                    subarray_proxy.subscribe_event(const.EVT_SUBSR_OBS_STATE,
+                                                   EventType.CHANGE_EVENT,
+                                                   device.obs_state_cb, stateless=True)
 
                     # populate subarrayID-subarray proxy map
                     tokens = device.TMMidSubarrayNodes[subarray].split('/')
@@ -902,14 +948,15 @@ class CentralNode(SKABaseDevice):
 
                 resources_allocated_return = subarrayProxy.command_inout(
                     const.CMD_ASSIGN_RESOURCES, input_to_sa)
-                self.logger.debug("resources_allocated_return: %s", resources_allocated_return)
 
                 # Note: resources_allocated_return[1] contains the JSON string containing 
                 # allocated resources.
-                resources_allocated = resources_allocated_return[1]
-                log_msg = "resources_assigned:" + str(resources_allocated)
+                # resources_allocated = resources_allocated_return[1]
+                log_msg = "Return value from subarray node: " + str(resources_allocated_return)
+                self.logger.info(log_msg)
+                resources_allocated = ast.literal_eval(resources_allocated_return[1][0])
+                log_msg = "resources_assigned: " + str(resources_allocated)
                 self.logger.debug(log_msg)
-
                 # Update self._subarray_allocation variable to update subarray allocation
                 # for the related dishes.
                 # Also append the allocated dish to out argument.
