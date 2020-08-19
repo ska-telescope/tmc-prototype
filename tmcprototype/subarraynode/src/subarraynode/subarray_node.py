@@ -12,10 +12,6 @@ Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
 
-from __future__ import print_function
-from __future__ import absolute_import
-
-
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
