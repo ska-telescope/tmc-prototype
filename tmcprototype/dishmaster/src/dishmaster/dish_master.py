@@ -209,6 +209,8 @@ class DishMaster(SKAMaster):
         az_increament = az_diff / 10           #Dish will move in 10 steps to desired az.
         el_increament = el_diff / 10           #Dish will move in 10 steps to desired el.
         if (self._abort_in_slew == False):
+            log_msg = "Track slew thread -> " + str(self._abort_in_slew)
+            self.logger.debug(log_msg)
             self.logger.debug("Dish is SLEWING.")
             if (self._desired_pointing[1] - self._achieved_pointing[1]) > 0:
                 self._achieved_pointing[1] = self._achieved_pointing[1] + az_increament
