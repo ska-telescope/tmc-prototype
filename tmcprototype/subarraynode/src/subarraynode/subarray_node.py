@@ -180,8 +180,8 @@ class SubarrayNode(SKASubarray):
                 pointing_state_count_slew = pointing_state_count_slew + 1
             elif value == PointingState.READY:
                 pointing_state_count_ready = pointing_state_count_ready + 1
-        if self._csp_sa_obs_state == ObsState.EMPTY and self._sdp_sa_obs_state ==\
-                ObsState.EMPTY:
+        if ((self._csp_sa_obs_state == ObsState.EMPTY) and (self._sdp_sa_obs_state ==\
+                ObsState.EMPTY)):
             if self.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
                 self.release_obj.succeeded()
@@ -201,15 +201,16 @@ class SubarrayNode(SKASubarray):
             log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
             self.logger.debug(log_msg)
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                if self.is_scan_completed:
-                    self.logger.info("Calling EndScan command succeeded() method")
-                    self.endscan_obj.succeeded()
-                else:
-                    # Configure command success
-                    self.logger.info("Calling Configure command succeeded() method")
-                    self.configure_obj.succeeded()
-        elif self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
-                ObsState.IDLE:
+                if not self.is_abort_command:
+                    if self.is_scan_completed:
+                        self.logger.info("Calling EndScan command succeeded() method")
+                        self.endscan_obj.succeeded()
+                    else:
+                        # Configure command success
+                        self.logger.info("Calling Configure command succeeded() method")
+                        self.configure_obj.succeeded()
+        elif ((self._csp_sa_obs_state == ObsState.IDLE) and (self._sdp_sa_obs_state ==\
+                ObsState.IDLE)):
             if self.is_end_command:
                 if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                     # End command success
