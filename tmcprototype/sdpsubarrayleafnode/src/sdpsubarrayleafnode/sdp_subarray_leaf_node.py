@@ -21,7 +21,6 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode, ResponseCommand
 # Additional imports
-import json
 from . import const, release
 from .exceptions import InvalidObsStateError
 
@@ -549,8 +548,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             try:
                 log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
                 self.logger.debug(log_msg)
-                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin),
-                                                                self.configure_cmd_ended_cb)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
+                                                              self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
                 return(ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
