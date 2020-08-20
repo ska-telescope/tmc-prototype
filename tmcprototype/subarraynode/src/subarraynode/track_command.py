@@ -54,6 +54,9 @@ class TrackCommand(ResponseCommand):
         device = self.target
         log_msg = "Track:", argin
         self.logger.debug(log_msg)
+        device.is_restart_command = False
+        device.is_release_resources = False
+        device.is_abort_command = False
         try:
             device._read_activity_message = const.STR_TRACK_IP_ARG + argin
             cmd_input = [argin]

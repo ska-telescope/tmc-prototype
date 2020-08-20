@@ -70,6 +70,8 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         argout = []
         device.is_end_command = False
         device.is_release_resources = False
+        device.is_restart_command = False
+        device.is_abort_command = False
         # Validate if Subarray is in IDLE obsState
         # TODO: Need to get idea if this is required?
         # try:
@@ -107,7 +109,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         with ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
             self.logger.debug(const.STR_DISH_ALLOCATION)
-            dish_allocation_status = executor.submit(self.add_receptors_from_group, receptor_list)
+            dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
 
             # 2.2. Add resources in CSP subarray
             self.logger.debug(const.STR_CSP_ALLOCATION)
@@ -205,7 +207,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         message = str(argout)
         return (ResultCode.STARTED, message)
 
-    def add_receptors_from_group(self, argin):
+    def add_receptors_in_group(self, argin):
         """
         Creates a tango group of the successfully allocated resources in the subarray.
         Device proxy for each of the resources is created. The healthState and pointintgState attributes

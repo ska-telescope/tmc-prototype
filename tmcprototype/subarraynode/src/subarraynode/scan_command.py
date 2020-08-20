@@ -42,6 +42,9 @@ class ScanCommand(SKASubarray.ScanCommand):
         """
         device = self.target
         device.is_scan_completed = False
+        device.is_release_resources = False
+        device.is_restart_command = False
+        device.is_abort_command = False
         try:
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.info(log_msg)

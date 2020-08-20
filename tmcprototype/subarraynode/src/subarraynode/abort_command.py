@@ -30,7 +30,12 @@ class AbortCommand(SKASubarray.AbortCommand):
                 SDPSubarrayLeafNode or DishLeafNode
         """
         device = self.target
+        device.is_release_resources = False
+        device.is_restart_command = False
         try:
+            if device.scan_thread:
+                if device.scan_thread.is_alive():
+                    device.scan_thread.cancel()  # stop timer when EndScan command is called
             device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
             self.logger.info(const.STR_CMD_ABORT_INV_SDP)
             device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)

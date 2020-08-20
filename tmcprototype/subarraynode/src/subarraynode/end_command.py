@@ -30,6 +30,9 @@ class EndCommand(SKASubarray.EndCommand):
         """
         device = self.target
         device.is_end_command = False
+        device.is_release_resources = False
+        device.is_restart_command = False
+        device.is_abort_command = False
         try:
             self.logger.info("End command invoked on SubarrayNode.")
             device._sdp_subarray_ln_proxy.command_inout(const.CMD_ENDSB)

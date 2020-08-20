@@ -29,6 +29,9 @@ class OnCommand(SKASubarray.OnCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device = self.target
+        device.is_restart_command = False
+        device.is_release_resources = False
+        device.is_abort_command = False
         try:
             device._csp_subarray_ln_proxy.On()
             device._sdp_subarray_ln_proxy.On()

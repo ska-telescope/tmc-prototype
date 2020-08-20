@@ -34,6 +34,8 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         """
         device = self.target
         device.is_release_resources = False
+        device.is_restart_command = False
+        device.is_abort_command = False
         try:
             assert device._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
         except AssertionError as assert_err:

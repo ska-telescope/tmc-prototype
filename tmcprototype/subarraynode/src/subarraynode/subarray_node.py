@@ -169,6 +169,10 @@ class SubarrayNode(SKASubarray):
         pointing_state_count_ready = 0
         log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
         self.logger.info(log_msg)
+        log_msg = "self._csp_sa_obs_state is: " + str(self._csp_sa_obs_state) + str(type(self._csp_sa_obs_state))
+        self.logger.info(log_msg)
+        log_msg = "self._sdp_sa_obs_state is: " + str(self._sdp_sa_obs_state) + str(type(self._sdp_sa_obs_state))
+        self.logger.info(log_msg)
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1

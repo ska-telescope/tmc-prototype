@@ -49,6 +49,9 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         """
         device = self.target
         device.is_scan_completed = False
+        device.is_release_resources = False
+        device.is_restart_command = False
+        device.is_abort_command = False
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)

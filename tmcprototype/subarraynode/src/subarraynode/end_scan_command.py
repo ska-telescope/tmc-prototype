@@ -30,6 +30,9 @@ class EndScanCommand(SKASubarray.EndScanCommand):
         :raises: DevFailed if the command execution is not successful.
         """
         device = self.target
+        device.is_release_resources = False
+        device.is_restart_command = False
+        device.is_abort_command = False
         try:
             if device.scan_thread:
                 if device.scan_thread.is_alive():
