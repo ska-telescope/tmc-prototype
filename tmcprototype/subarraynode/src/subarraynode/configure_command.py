@@ -16,38 +16,15 @@ from ska_telmodel.csp import interface
 csp_interface_version = 0
 sdp_interface_version = 0
 
-
-class ConfigureCommand(SKASubarray.ConfigureCommand):
-    """
-    A class for SubarrayNode's Configure() command.
-    """
-
-    def do(self, argin):
+# Step 3: Create a separate class for maintaining configuration model
+class configuration_model:
+    def __init__(self):
         """
-        Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
-        extracted out of the input configuration string and relayed to the respective underlying devices (SDP
-        Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
-
-        :param argin: DevString.
-
-        JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
-        Configuration and SDP Configuration parameters.
-        JSON string example is:
-        {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
-        "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",
-        "fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},
-        "sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0}}
-        CSP block in json string is as per earlier implementation and not aligned to SP-872
-        Note: While invoking this command from JIVE, provide above JSON string without any space.
-
-        :return: A tuple containing a return code and a string message indicating status.
-         The message is for information purpose only.
-
-        :rtype: (ReturnCode, str)
-
-        :raises: JSONDecodeError if input argument json string contains invalid value
+        Constructor for configuration_model
         """
-        device = self.target
+    
+    def configure(self, argin):
+        # TODO: How to access the data variables e.g device.is_scan_completed = False ? 
         device.is_scan_completed = False
         device.is_release_resources = False
         device.is_restart_command = False
@@ -70,9 +47,6 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         self._configure_dsh(scan_configuration)
         self._configure_csp(scan_configuration)
         self._configure_sdp(scan_configuration)
-        message = "Configure command invoked"
-        self.logger.info(message)
-        return (ResultCode.STARTED, message)
 
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         device = self.target
@@ -132,6 +106,44 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             self.logger.error(df)
             raise
 
+class ConfigureCommand(SKASubarray.ConfigureCommand):
+    """
+    A class for SubarrayNode's Configure() command.
+    """
+
+    def do(self, argin):
+        """
+        Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
+        extracted out of the input configuration string and relayed to the respective underlying devices (SDP
+        Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
+
+        :param argin: DevString.
+
+        JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
+        Configuration and SDP Configuration parameters.
+        JSON string example is:
+        {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
+        "dish":{"receiverBand":"1"},"csp":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1",
+        "fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0}]},
+        "sdp":{"scan_type":"science_A"},"tmc":{"scanDuration":10.0}}
+        CSP block in json string is as per earlier implementation and not aligned to SP-872
+        Note: While invoking this command from JIVE, provide above JSON string without any space.
+
+        :return: A tuple containing a return code and a string message indicating status.
+         The message is for information purpose only.
+
+        :rtype: (ReturnCode, str)
+
+        :raises: JSONDecodeError if input argument json string contains invalid value
+        """
+        # Step 4: Change the target to point to use configuration model
+        configuration_model = self.target
+        configuration_model.configure(argin)
+        message = "Configure command invoked"
+        self.logger.info(message)
+        return (ResultCode.STARTED, message)
+
+    
 
 class ElementDeviceData:
     @staticmethod
