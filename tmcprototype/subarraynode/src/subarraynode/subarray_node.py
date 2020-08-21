@@ -21,7 +21,7 @@ from tango.server import run,attribute, command, device_property
 # Additional import
 from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
     scan_command, end_scan_command, end_command, on_command, off_command, track_command,\
-    abort_command, restart_command, configuration_model
+    abort_command, restart_command
 from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -30,7 +30,7 @@ from subarraynode.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
-           "off_command", "track_command", "abort_command", "restart_command", "configuration_model"]
+           "off_command", "track_command", "abort_command", "restart_command"]
 
 
 class SubarrayHealthState:
@@ -72,7 +72,7 @@ class SubarrayNode(SKASubarray):
         """
         args = (self, self.state_model, self.logger)
         # Step 2: Pass configuration model as a target
-        config_args = (self.config_model, self.state_model, self.logger)
+        config_args = (self, self.state_model, self.logger)
         self.configure_obj = configure_command.ConfigureCommand(*config_args)
         self.assign_obj = assign_resources_command.AssignResourcesCommand(*args)
         self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
@@ -554,8 +554,8 @@ class SubarrayNode(SKASubarray):
 
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
-            # Step 1: Create object of configuration model class
-            device.config_model = configure_command.configuration_model()
+            # Step 1: Create object of configuration model
+            device.configuration_model = configure_command.configuration_model()
             return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
@@ -648,6 +648,7 @@ class SubarrayNode(SKASubarray):
         device.
         """
         super().init_command_objects()
+        self.config_model = configure_command.configuration_model()
         args = (self, self.state_model, self.logger)
         config_args = (self.config_model, self.state_model, self.logger)
         self.register_command_object("Track", track_command.TrackCommand(*args))
