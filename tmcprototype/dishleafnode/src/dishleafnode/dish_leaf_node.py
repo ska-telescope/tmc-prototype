@@ -379,7 +379,6 @@ class DishLeafNode(SKABaseDevice):
                         self.logger.info(const.ERR_ELE_LIM)
                         self._read_activity_message = const.STR_SRC_NOT_VISIBLE
                         self.logger.info(const.STR_SRC_NOT_VISIBLE)
-                        
                 else:
                     self._read_activity_message = const.ERR_AZ_EL_CALC
                     self.logger.info(const.ERR_AZ_EL_CALC)

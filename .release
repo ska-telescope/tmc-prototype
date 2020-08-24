@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.10"
+version = "0.2.11"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -10,11 +10,11 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.2.10
-tag=0.2.10
+release=0.2.11
+tag=0.2.11
 tag_description=Fixed issues in Abort and Restart functionality.
-release_notes=This release Contains: <br/><ul><li>Updated tmc-prototype to resolve issues faced during the testing of Abort and Restart functionality.</li></ul><br/>
+release_notes=This release Contains: <br/><ul><li>Updated tmc-prototype to resolve issues faced during the testing of Abort and Restart functionality.</li><li>Refactored SubarrayNode i.e. separate module is created for each command class.</li></ul><br/>
 gitlab_username=JayantKumbhar
-private_token=ZuRepssBtkmFSWc1sD2K
+private_token=n7iNe9yjbuQPq6yzzD_4
 
 

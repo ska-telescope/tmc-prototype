@@ -4,14 +4,20 @@ set -eo pipefail
 cd /app/tmcprototype;
 python3 -m pip install pytest-forked
 
-#For each node sub-package inside tmc-prototype, coverage report for each device is generated using unit-test job.
-#Coverage report are generated in .coverage, .xml and .html format. Each device's .coverage report is moved in unit_test folder to generate the combine report further.
-for path in $(find ./*/test  -type d -name unit); do
-	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
-	echo +++ Trying tests for $TMC_ELEMENT;
-	pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
-	mv /app/tmcprototype/.coverage /report/unit_test/${TMC_ELEMENT}_coverage;
-done
+# Run test cases for Specific nodes
+export TMC_ELEMENT=subarraynode;
+echo +++ Trying tests for $TMC_ELEMENT;
+pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
+mv /app/tmcprototype/.coverage /report/unit_test/${TMC_ELEMENT}_coverage;
+
+# #For each node sub-package inside tmc-prototype, coverage report for each device is generated using unit-test job.
+# #Coverage report are generated in .coverage, .xml and .html format. Each device's .coverage report is moved in unit_test folder to generate the combine report further.
+# for path in $(find ./*/test  -type d -name unit); do
+# 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
+# 	echo +++ Trying tests for $TMC_ELEMENT;
+# 	pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
+# 	mv /app/tmcprototype/.coverage /report/unit_test/${TMC_ELEMENT}_coverage;
+# done
 cd /report/unit_test
 #Combine the individual report in combine converage report in xml and html format.
 coverage combine dishleafnode_coverage cspmasterleafnode_coverage \
