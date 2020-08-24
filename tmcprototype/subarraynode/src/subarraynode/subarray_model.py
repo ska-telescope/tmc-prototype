@@ -23,6 +23,8 @@ class SubarrayModel:
         self.is_restart_command = False
         self.is_abort_command = False
         self.scan_duration = 0.0
+        self.only_dishconfig_flag = False
+        self._dish_leaf_node_group = None # call create_tango_group api from Tango_Interface class
 
         # TODO: For future use
         self.receptor_id_list = []

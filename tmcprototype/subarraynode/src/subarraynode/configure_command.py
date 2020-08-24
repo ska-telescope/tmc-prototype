@@ -24,22 +24,25 @@ class configuration_model:
         """
         self.this_subarray = subarray
     
-    def configure(self, argin):
-        # TODO: How to access the data variables e.g device.is_scan_completed = False ? 
+    def configure(self, argin, logger):
+        #  Created separate module Subarray Model to store data variables 
+        self.logger = logger
         self.this_subarray.is_scan_completed = False
         self.this_subarray.is_release_resources = False
         self.this_subarray.is_restart_command = False
         self.this_subarray.is_abort_command = False
-        device.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
+        # TODO: How to use logger. Currenly logger is passed from do() method
+        self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
-        device.logger.info(log_msg)
-        device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
+        self.logger.info(log_msg)
+        # TODO: how to access TANGO specific attributes (read-write)
+        # device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
+        # device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
-            device.logger.error(log_message)
+            self.logger.error(log_message)
             device._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
@@ -63,14 +66,14 @@ class configuration_model:
             raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
-        device = self.target
+        # device = self.target
         try:
             method = getattr(ElementDeviceData, method_name)
             cmd_data = method(scan_config, *args)
         except KeyError as kerr:
             log_message = kerr.args[0]
-            device._read_activity_message = log_message
-            device.logger.debug(log_message)
+            # device._read_activity_message = log_message
+            self.logger.logger.debug(log_message)
             raise
         return cmd_data
 
@@ -89,22 +92,25 @@ class configuration_model:
         self._configure_leaf_node(device._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration):
-        device = self.target
+        # device = self.target
         config_keys = scan_configuration.keys()
         if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
-            device.only_dishconfig_flag = True
+            self.this_subarray.only_dishconfig_flag = True
 
         cmd_data = self._create_cmd_data(
-            "build_up_dsh_cmd_data", scan_configuration, device.only_dishconfig_flag)
+            "build_up_dsh_cmd_data", scan_configuration, self.this_subarray.only_dishconfig_flag)
 
         try:
+            # TODO: 
             device._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
-            device.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
+            # send_command(device._dish_leaf_node_group, const.CMD_CONFIGURE, cmd_data)
+            
+            self.logger.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
             device._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
-            device.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
+            self.logger.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
         except DevFailed as df:
-            device._read_activity_message = df[0].desc
-            device.logger.error(df)
+            # device._read_activity_message = df[0].desc
+            self.logger.logger.error(df)
             raise
 
 class ConfigureCommand(SKASubarray.ConfigureCommand):
@@ -139,7 +145,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         """
         # Step 4: Change the target to point to use configuration model
         configuration_model = self.target
-        configuration_model.configure(argin)
+        configuration_model.configure(argin, self.logger)
         message = "Configure command invoked"
         self.logger.info(message)
         return (ResultCode.STARTED, message)
