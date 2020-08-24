@@ -18,32 +18,33 @@ sdp_interface_version = 0
 
 # Step 3: Create a separate class for maintaining configuration model
 class configuration_model:
-    def __init__(self):
+    def __init__(self, subarray):
         """
         Constructor for configuration_model
         """
+        self.this_subarray = subarray
     
     def configure(self, argin):
         # TODO: How to access the data variables e.g device.is_scan_completed = False ? 
-        device.is_scan_completed = False
-        device.is_release_resources = False
-        device.is_restart_command = False
-        device.is_abort_command = False
-        self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
+        self.this_subarray.is_scan_completed = False
+        self.this_subarray.is_release_resources = False
+        self.this_subarray.is_restart_command = False
+        self.this_subarray.is_abort_command = False
+        device.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
-        self.logger.info(log_msg)
+        device.logger.info(log_msg)
         device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
         device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
-            self.logger.error(log_message)
+            device.logger.error(log_message)
             device._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
-        device.scan_duration = int(tmc_configure["scanDuration"])
+        self.this_subarray.scan_duration = int(tmc_configure["scanDuration"])
         self._configure_dsh(scan_configuration)
         self._configure_csp(scan_configuration)
         self._configure_sdp(scan_configuration)
@@ -53,12 +54,12 @@ class configuration_model:
         try:
             device_proxy.command_inout(cmd_name, cmd_data)
             log_msg = "%s configured succesfully." % device_proxy.dev_name()
-            self.logger.debug(log_msg)
+            device.logger.debug(log_msg)
         except DevFailed as df:
             log_message = df[0].desc
             device._read_activity_message = log_message
             log_msg = "Failed to configure %s. %s" % (device_proxy.dev_name(), df)
-            self.logger.error(log_msg)
+            device.logger.error(log_msg)
             raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
@@ -69,7 +70,7 @@ class configuration_model:
         except KeyError as kerr:
             log_message = kerr.args[0]
             device._read_activity_message = log_message
-            self.logger.debug(log_message)
+            device.logger.debug(log_message)
             raise
         return cmd_data
 
@@ -98,12 +99,12 @@ class configuration_model:
 
         try:
             device._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
-            self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
+            device.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
             device._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
-            self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
+            device.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
         except DevFailed as df:
             device._read_activity_message = df[0].desc
-            self.logger.error(df)
+            device.logger.error(df)
             raise
 
 class ConfigureCommand(SKASubarray.ConfigureCommand):

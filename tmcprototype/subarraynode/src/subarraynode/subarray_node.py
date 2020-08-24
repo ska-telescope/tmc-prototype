@@ -27,10 +27,11 @@ from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from subarraynode.exceptions import InvalidObsStateError
+from subarraynode.subarray_model import SubarrayModel
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
-           "off_command", "track_command", "abort_command", "restart_command"]
+           "off_command", "track_command", "abort_command", "restart_command", SubarrayModel]
 
 
 class SubarrayHealthState:
@@ -555,7 +556,8 @@ class SubarrayNode(SKASubarray):
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
             # Step 1: Create object of configuration model
-            device.configuration_model = configure_command.configuration_model()
+            device.this_subarray = SubarrayModel()
+            device.configuration_model = configure_command.configuration_model(device.this_subarray)
             return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
@@ -648,7 +650,8 @@ class SubarrayNode(SKASubarray):
         device.
         """
         super().init_command_objects()
-        self.config_model = configure_command.configuration_model()
+        self.this_subarray = SubarrayModel()
+        self.config_model = configure_command.configuration_model(self.this_subarray)
         args = (self, self.state_model, self.logger)
         config_args = (self.config_model, self.state_model, self.logger)
         self.register_command_object("Track", track_command.TrackCommand(*args))
