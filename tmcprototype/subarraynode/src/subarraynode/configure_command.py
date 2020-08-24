@@ -12,7 +12,7 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
-
+from subarraynode.tango_interface import TangoClient
 csp_interface_version = 0
 sdp_interface_version = 0
 
@@ -43,7 +43,7 @@ class configuration_model:
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
-            device._read_activity_message = log_message
+            # device._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
@@ -52,18 +52,30 @@ class configuration_model:
         self._configure_csp(scan_configuration)
         self._configure_sdp(scan_configuration)
 
-    def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
+    def _configure_leaf_node(self, tango_client, cmd_name, cmd_data):
         device = self.target
         try:
-            device_proxy.command_inout(cmd_name, cmd_data)
-            log_msg = "%s configured succesfully." % device_proxy.dev_name()
+            tango_client.send_command(cmd_name, cmd_data)
+            log_msg = "%s configured succesfully." % tango_client.get_device_fqdn()
             device.logger.debug(log_msg)
         except DevFailed as df:
             log_message = df[0].desc
             device._read_activity_message = log_message
-            log_msg = "Failed to configure %s. %s" % (device_proxy.dev_name(), df)
+            log_msg = "Failed to configure %s. %s" % (tango_client.get_device_fqdn(), df)
             device.logger.error(log_msg)
             raise
+    # def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
+    #     device = self.target
+    #     try:
+    #         device_proxy.command_inout(cmd_name, cmd_data)
+    #         log_msg = "%s configured succesfully." % device_proxy.dev_name()
+    #         device.logger.debug(log_msg)
+    #     except DevFailed as df:
+    #         log_message = df[0].desc
+    #         device._read_activity_message = log_message
+    #         log_msg = "Failed to configure %s. %s" % (device_proxy.dev_name(), df)
+    #         device.logger.error(log_msg)
+    #         raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
         # device = self.target
@@ -80,7 +92,8 @@ class configuration_model:
     def _configure_sdp(self, scan_configuration):
         device = self.target
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
-        self._configure_leaf_node(device._sdp_subarray_ln_proxy, "Configure", cmd_data)
+        sdp_saln_client = TangoClient(sdp_saln_fqdn)
+        self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
         device = self.target
