@@ -19,6 +19,21 @@ from dishleafnode import DishLeafNode, const, release
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
 
+from enum import IntEnum
+
+
+# Enums
+class DishMode(IntEnum):
+    OFF = 0
+    STARTUP = 1
+    SHUTDOWN = 2
+    STANDBY_LP = 3
+    STANDBY_FP = 4
+    STOW = 5
+    CONFIG = 6
+    OPERATE = 7
+    MAINTENANCE = 8
+
 config_input_file = 'command_Config.json'
 path = join(dirname(__file__), 'data', config_input_file)
 with open(path, 'r') as f:
@@ -290,7 +305,7 @@ def test_dish_leaf_node_dish_mode_is_off_when_dish_is_off(mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
 
     # act:
-    dish_mode_value = 0
+    dish_mode_value = DishMode.OFF
     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                   dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -304,7 +319,7 @@ def test_dish_leaf_node_dish_mode_is_startup_when_dish_is_startup(mock_dish_mast
     dish_master_dishmode_attribute = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     # act:
-    dish_mode_value = 1
+    dish_mode_value = DishMode.STARTUP
     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                   dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -318,7 +333,7 @@ def test_dish_leaf_node_dish_mode_is_shutdown_when_dish_is_shutdown(mock_dish_ma
     dish_master_dishmode_attribute = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     # act:
-    dish_mode_value = 2
+    dish_mode_value = DishMode.SHUTDOWN
     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                   dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -332,7 +347,7 @@ def test_dish_leaf_node_dish_mode_is_standby_when_dish_is_standby(mock_dish_mast
     dish_master_dishmode_attribute = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     # act:
-    dish_mode_value = 3
+    dish_mode_value = DishMode.STANDBY_LP
     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                   dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -346,7 +361,7 @@ def test_dish_leaf_node_dish_mode_is_stand_by_fp_when_dish_is_stand_by_fp(mock_d
     dish_master_dishmode_attribute = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     # act:
-    dish_mode_value = 4
+    dish_mode_value = DishMode.STANDBY_FP
     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                   dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -360,7 +375,7 @@ def test_dish_leaf_node_dish_mode_is_maint_when_dish_is_maint(mock_dish_master):
     dish_master_dishmode_attribute = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     # act:
-    dish_mode_value = 5
+    dish_mode_value = DishMode.MAINTENANCE
     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                   dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -374,7 +389,7 @@ def test_dish_leaf_node_dish_mode_is_stow_when_dish_is_stow(mock_dish_master):
     dish_master_dishmode_attribute = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     # act:
-    dish_mode_value = 6
+    dish_mode_value = DishMode.STOW
     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                   dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -388,7 +403,7 @@ def test_dish_leaf_node_dish_mode_is_config_when_dish_is_config(mock_dish_master
     dish_master_dishmode_attribute = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     # act:
-    dish_mode_value = 7
+    dish_mode_value = DishMode.CONFIG
     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                   dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
@@ -402,7 +417,7 @@ def test_dish_leaf_node_dish_mode_is_operate_when_dish_is_operate(mock_dish_mast
     dish_master_dishmode_attribute = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     # act:
-    dish_mode_value = 8
+    dish_mode_value = DishMode.OPERATE
     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
                                                   dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
