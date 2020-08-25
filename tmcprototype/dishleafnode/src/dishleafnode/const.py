@@ -37,8 +37,8 @@ STR_DISH_CONFIG_MODE = "Dish is in CONFIG mode."
 STR_DISH_OFF_MODE = "Dish is in OFF mode."
 STR_DISH_UNKNOWN_MODE = "Dish Mode :-> UNKNOWN\n"
 
-STR_DISH_CAPTURING_TRUE = "Dish data capturing :-> TRUE"
-STR_DISH_CAPTURING_FALSE = "Dish data capturing :-> FALSE"
+STR_DISH_CAPTURING_TRUE = "Dish data capturing :-> True"
+STR_DISH_CAPTURING_FALSE = "Dish data capturing :-> False"
 STR_DISH_CAPTURING_UNKNOWN = "Dish date capturing :-> UNKNOWN\n"
 
 STR_ACHIEVED_POINTING = "Achieved Pointing :-> "
