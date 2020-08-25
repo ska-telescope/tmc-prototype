@@ -485,20 +485,6 @@ def test_dish_leaf_node_when_dish_capturing_callback_is_false(mock_dish_master):
     assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_FALSE
 
 
-def test_dish_leaf_node_when_invalid_attribute_value_for_dish_capturing(mock_dish_master):
-    # arrange:
-    dish_master_capturing_attribute = 'capturing'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_capturing_value = 'Invalid_value'
-    dummy_event = create_dummy_event_for_dish_capturing(dish_master1_fqdn, dish_capturing_value,
-                                                        dish_master_capturing_attribute)
-    event_subscription_map[dish_master_capturing_attribute](dummy_event)
-
-    # assert:
-    assert const.STR_DISH_CAPTURING_UNKNOWN in tango_context.device.activityMessage
-
-
 def test_dish_leaf_node_when_dish_capturing_callback_with_error_event(mock_dish_master):
     # arrange:
     dish_master_capturing_attribute = 'capturing'
