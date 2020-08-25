@@ -13,16 +13,17 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
 from subarraynode.tango_interface import TangoClient
+from subarraynode.subarray_model import SubarrayModel
 csp_interface_version = 0
 sdp_interface_version = 0
 
 # Step 3: Create a separate class for maintaining configuration model
 class configuration_model:
-    def __init__(self, subarray):
+    def __init__(self):
         """
         Constructor for configuration_model
         """
-        self.this_subarray = subarray
+        self.this_subarray = SubarrayModel.get_instance()
     
     def configure(self, argin, logger):
         #  Created separate module Subarray Model to store data variables 
@@ -43,7 +44,7 @@ class configuration_model:
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
-            # device._read_activity_message = log_message
+            self.this_subarray._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]

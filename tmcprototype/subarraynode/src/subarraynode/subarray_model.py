@@ -17,7 +17,15 @@ class SubarrayModel:
     across various functions of a subarray.
     """
 
+    __instance = None
+
     def __init__(self):
+        """Private constructor of the class""" 
+        if SubarrayModel.__instance != None:
+            raise Exception("This is singletone class")
+        else:
+            SubarrayModel.__instance = self
+
         self.is_scan_completed = False
         self.is_release_resources = False
         self.is_restart_command = False
@@ -25,8 +33,15 @@ class SubarrayModel:
         self.scan_duration = 0.0
         self.only_dishconfig_flag = False
         self._dish_leaf_node_group = None # call create_tango_group api from Tango_Interface class
+        self._read_activity_message = ""
 
         # TODO: For future use
         self.receptor_id_list = []
         self.csp_subarray = None
         self.csp_subarray = None
+
+    @staticmethod
+    def get_instance():
+        if SubarrayModel.__instance == None:
+            SubarrayModel()
+        return SubarrayModel.__instance

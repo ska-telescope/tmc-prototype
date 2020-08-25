@@ -120,12 +120,12 @@ class SubarrayNode(SKASubarray):
 
             log_message = SubarrayHealthState.generate_health_state_log_msg(
                 event_health_state, device_name, event)
-            self._read_activity_message = log_message
+            self.activityMessage = log_message
             self._health_state = SubarrayHealthState.calculate_health_state(
                 self.subarray_ln_health_state_map.values())
         else:
             log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-            self._read_activity_message = log_message
+            self.activityMessage = log_message
 
     def observation_state_cb(self, evt):
         """
@@ -558,8 +558,8 @@ class SubarrayNode(SKASubarray):
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
             # Step 1: Create object of configuration model
-            device.this_subarray = SubarrayModel()
-            device.configuration_model = configure_command.configuration_model(device.this_subarray)
+            device.this_subarray = SubarrayModel.get_instance()
+            device.configuration_model = configure_command.configuration_model()
             return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
@@ -598,13 +598,15 @@ class SubarrayNode(SKASubarray):
         //result occured after initialization of device.
         """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_read) ENABLED START #
-        return self._read_activity_message
+        # return self._read_activity_message
+        return self.this_subarray._read_activity_message
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_read
 
     def write_activityMessage(self, value):
         """ Internal construct of TANGO. Sets the activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
-        self._read_activity_message = value
+        # self._read_activity_message = value
+        self.this_subarray._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
     def read_receptorIDList(self):
@@ -652,8 +654,8 @@ class SubarrayNode(SKASubarray):
         device.
         """
         super().init_command_objects()
-        self.this_subarray = SubarrayModel()
-        self.config_model = configure_command.configuration_model(self.this_subarray)
+        self.this_subarray = SubarrayModel.get_instance()
+        self.config_model = configure_command.configuration_model()
         args = (self, self.state_model, self.logger)
         config_args = (self.config_model, self.state_model, self.logger)
         self.register_command_object("Track", track_command.TrackCommand(*args))
