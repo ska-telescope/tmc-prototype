@@ -51,6 +51,22 @@ class DishMode(IntEnum):
     MAINTENANCE = 8
 
 
+def dmstodd(dish_antenna_latitude):
+    """Converts latitude from deg:min:sec to decimal degree format.
+
+    :param dish_antenna_latitude: latitude of Dish location in Deg:Min:Sec.
+    Example: 18:31:48.0
+
+    :return: latitude of Dish location in decimal Degree.
+    Example : "18.529999999999998" is the returned value of dmstodd
+    """
+    dd = re.split('[:]+', dish_antenna_latitude)
+    deg_dec = abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
+    if "-" in dd[0]:
+        return deg_dec * (-1)
+    else:
+        return deg_dec
+
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]
