@@ -75,6 +75,7 @@ class DishLeafNode(SKABaseDevice):
         if not evt.err:
             self._dish_mode = evt.attr_value.value
             log_msg = "Dish is in {} mode.".format(DishMode(evt.attr_value.value).name)
+            log_msg = log_msg.replace("_", "-")
             self.logger.debug(log_msg)
             self._read_activity_message = log_msg
         else:
