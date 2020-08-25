@@ -35,6 +35,22 @@ import datetime
 import time
 import re
 
+from enum import IntEnum
+
+
+# Enums
+class DishMode(IntEnum):
+    OFF = 0
+    STARTUP = 1
+    SHUTDOWN = 2
+    STANDBY_LP = 3
+    STANDBY_FP = 4
+    STOW = 5
+    CONFIG = 6
+    OPERATE = 7
+    MAINTENANCE = 8
+
+
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]
@@ -45,6 +61,7 @@ class DishLeafNode(SKABaseDevice):
     A Leaf control node for DishMaster.
     """
     # PROTECTED REGION ID(DishLeafNode.class_variable) ENABLED START #
+
     def dish_mode_cb(self, evt):
         """
         Retrieves the subscribed dishMode attribute of DishMaster.
@@ -57,42 +74,13 @@ class DishLeafNode(SKABaseDevice):
         self.logger.debug(log_msg)
         if not evt.err:
             self._dish_mode = evt.attr_value.value
-            if self._dish_mode == 0:
-                self.logger.debug(const.STR_DISH_OFF_MODE)
-                self._read_activity_message = const.STR_DISH_OFF_MODE
-            elif self._dish_mode == 1:
-                self.logger.debug(const.STR_DISH_STARTUP_MODE)
-                self._read_activity_message = const.STR_DISH_STARTUP_MODE
-            elif self._dish_mode == 2:
-                self.logger.debug(const.STR_DISH_SHUTDOWN_MODE)
-                self._read_activity_message = const.STR_DISH_SHUTDOWN_MODE
-            elif self._dish_mode == 3:
-                self.logger.debug(const.STR_DISH_STANDBYLP_MODE)
-                self._read_activity_message = const.STR_DISH_STANDBYLP_MODE
-            elif self._dish_mode == 4:
-                self.logger.debug(const.STR_DISH_STANDBYFP_MODE)
-                self._read_activity_message = const.STR_DISH_STANDBYFP_MODE
-            elif self._dish_mode == 5:
-                self.logger.debug(const.STR_DISH_MAINT_MODE)
-                self._read_activity_message = const.STR_DISH_MAINT_MODE
-            elif self._dish_mode == 6:
-                self.logger.debug(const.STR_DISH_STOW_MODE)
-                self._read_activity_message = const.STR_DISH_STOW_MODE
-            elif self._dish_mode == 7:
-                self.logger.debug(const.STR_DISH_CONFIG_MODE)
-                self._read_activity_message = const.STR_DISH_CONFIG_MODE
-            elif self._dish_mode == 8:
-                self.logger.debug(const.STR_DISH_OPERATE_MODE)
-                self._read_activity_message = const.STR_DISH_OPERATE_MODE
-            else:
-                log_msg = const.STR_DISH_UNKNOWN_MODE + str(evt)
-                self.logger.debug(log_msg)
-                self._read_activity_message = log_msg
-        else:
-            log_msg = const.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
+            log_msg = "Dish is in {} mode.".format(DishMode(evt.attr_value.value).name)
             self.logger.debug(log_msg)
             self._read_activity_message = log_msg
-            self.logger.error(const.ERR_ON_SUBS_DISH_MODE_ATTR)
+        else:
+            log_msg = const.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
+            self._read_activity_message = log_msg
+            self.logger.error(log_msg)
 
     def dish_capturing_cb(self, evt):
         """
@@ -105,22 +93,13 @@ class DishLeafNode(SKABaseDevice):
         log_msg = "Capturing attribute Event is: " + str(evt)
         self.logger.debug(log_msg)
         if not evt.err:
-            self._dish_capturing = evt.attr_value.value
-            if self._dish_capturing is True:
-                self.logger.debug(const.STR_DISH_CAPTURING_TRUE)
-                self._read_activity_message = const.STR_DISH_CAPTURING_TRUE
-            elif self._dish_capturing is False:
-                self.logger.debug(const.STR_DISH_CAPTURING_FALSE)
-                self._read_activity_message = const.STR_DISH_CAPTURING_FALSE
-            else:
-                log_msg = const.STR_DISH_CAPTURING_UNKNOWN + str(evt)
-                self.logger.debug(log_msg)
-                self._read_activity_message = log_msg
+            log_msg = "Dish data capturing :-> {}".format(evt.attr_value.value)
+            self.logger.debug(log_msg)
+            self._read_activity_message = log_msg
         else:
             log_msg = const.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
-            self.logger.error(log_msg)
             self._read_activity_message = log_msg
-            self.logger.error(const.ERR_SUBSR_CAPTURING_ATTR)
+            self.logger.error(log_msg)
 
     def dish_achieved_pointing_cb(self, evt):
         """
@@ -139,9 +118,8 @@ class DishLeafNode(SKABaseDevice):
             self._read_activity_message = log_msg
         else:
             log_msg = const.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
-            self.logger.error(log_msg)
             self._read_activity_message = log_msg
-            self.logger.error(const.ERR_ON_SUBS_DISH_ACHVD_ATTR)
+            self.logger.error(log_msg)
 
     def dish_desired_pointing_cb(self, evt):
         """
@@ -154,15 +132,13 @@ class DishLeafNode(SKABaseDevice):
         log_msg = "DesiredPointing attribute Event is: " + str(evt)
         self.logger.info(log_msg)
         if not evt.err:
-            self._desired_pointing = evt.attr_value.value
-            log_msg = const.STR_DESIRED_POINTING + str(self._desired_pointing)
+            log_msg = const.STR_DESIRED_POINTING + str(evt.attr_value.value)
             self.logger.error(log_msg)
             self._read_activity_message = log_msg
         else:
             log_msg = const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
-            self.logger.error(log_msg)
             self._read_activity_message = log_msg
-            self.logger.error(const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR)
+            self.logger.error(log_msg)
 
     def cmd_ended_cb(self, event):
         """
