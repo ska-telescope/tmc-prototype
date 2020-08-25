@@ -426,20 +426,6 @@ def test_dish_leaf_node_dish_mode_is_operate_when_dish_is_operate(mock_dish_mast
     assert tango_context.device.activityMessage == const.STR_DISH_OPERATE_MODE
 
 
-def test_dish_leaf_node_dish_mode_is_unknown(mock_dish_master):
-    # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_mode_value = 9
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-    # assert:
-    assert const.STR_DISH_UNKNOWN_MODE in tango_context.device.activityMessage
-
-
 def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master):
     # arrange:
     dish_master_dishmode_attribute = 'dishMode'
