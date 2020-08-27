@@ -1,20 +1,25 @@
 
 # Standard Python imports
-import contextlib
-import importlib
-import sys
-import json
-import types
-import time
 import pytest
-import mock
-from mock import Mock, MagicMock
+import logging
 from os.path import dirname, join
-import threading
-
 
 from subarraynode.configure_command import configuration_model
 from subarraynode import SubarrayNode, const
+from ska.base import SKASubarrayStateModel
+
+configure_input_file= 'command_Configure.json'
+path= join(dirname(__file__), 'data' , configure_input_file)
+with open(path, 'r') as f:
+    configure_str=f.read()
+
+
+@pytest.fixture
+def subarray_state_model():
+    """
+    Yields a new SKASubarrayStateModel for testing
+    """
+    yield SKASubarrayStateModel(logging.getLogger())
 
 @pytest.fixture
 def config_model():
@@ -31,6 +36,15 @@ class TestConfigurationModel:
         """
         Test that ConfigurationModel invokes Configure command correctly
         """
+        config_model.configure(configure_str, logging.getLogger())
+        assert False
+
+    
+    def test_configure_command(self, config_model, subarray_state_model):
+        """
+        Test for SubarrayNode.ConfigureCommand
+        """
+        # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
         # Create ConfigureCommand Object by passing state model and device
         configure_cmd = SubarrayNode.ConfigureCommand(config_model, subarray_state_model)
         # Use of lmc-base-classe's straight_to_state method to push it straigh to IDLE
