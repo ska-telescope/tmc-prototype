@@ -34,6 +34,7 @@ class SubarrayModel:
         self.only_dishconfig_flag = False
         self._dish_leaf_node_group = None # call create_tango_group api from Tango_Interface class
         self._read_activity_message = ""
+        self.sdp_subarray_ln_fqdn = ""
 
         # TODO: For future use
         self.receptor_id_list = []

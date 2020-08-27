@@ -12,7 +12,7 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
-from subarraynode.tango_interface import TangoClient
+from subarraynode.tango_client import TangoClient
 from subarraynode.subarray_model import SubarrayModel
 csp_interface_version = 0
 sdp_interface_version = 0
@@ -49,21 +49,21 @@ class configuration_model:
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
         self.this_subarray.scan_duration = int(tmc_configure["scanDuration"])
-        self._configure_dsh(scan_configuration)
-        self._configure_csp(scan_configuration)
+        # self._configure_dsh(scan_configuration)
+        # self._configure_csp(scan_configuration)
         self._configure_sdp(scan_configuration)
 
     def _configure_leaf_node(self, tango_client, cmd_name, cmd_data):
-        device = self.target
+        # device = self.target
         try:
             tango_client.send_command(cmd_name, cmd_data)
             log_msg = "%s configured succesfully." % tango_client.get_device_fqdn()
-            device.logger.debug(log_msg)
+            self.logger.debug(log_msg)
         except DevFailed as df:
             log_message = df[0].desc
-            device._read_activity_message = log_message
+            # device._read_activity_message = log_message
             log_msg = "Failed to configure %s. %s" % (tango_client.get_device_fqdn(), df)
-            device.logger.error(log_msg)
+            self.logger.error(log_msg)
             raise
     # def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
     #     device = self.target
@@ -91,9 +91,11 @@ class configuration_model:
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
-        device = self.target
+        # device = self.target
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
-        sdp_saln_client = TangoClient(sdp_saln_fqdn)
+        # TODO : How to read device property device.SdpSubarrayLNFQDN
+        sdp_saln_client = TangoClient(self.this_subarray.sdp_subarray_ln_fqdn)
+        # sdp_saln_device_proxy = sdp_saln_client.get_deviceproxy()
         self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
@@ -103,6 +105,7 @@ class configuration_model:
         }
         cmd_data = self._create_cmd_data(
             "build_up_csp_cmd_data", scan_configuration, attr_name_map, device._receive_addresses_map)
+        
         self._configure_leaf_node(device._csp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration):

@@ -28,7 +28,8 @@ from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from subarraynode.exceptions import InvalidObsStateError
 from subarraynode.subarray_model import SubarrayModel
-from subarraynode.tango_interface import TangoClient
+from subarraynode.tango_client import TangoClient
+from subarraynode.tango_server import TangoServer
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
@@ -470,6 +471,10 @@ class SubarrayNode(SKASubarray):
             """
             super().do()
             device = self.target
+            # TODO: get Tangoserver instance 
+            this_server = TangoServer.get_instance()
+            this_server.device = device
+            
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
             device.isScanRunning = False
@@ -497,7 +502,6 @@ class SubarrayNode(SKASubarray):
             device._sdp_sa_obs_state = None
             device.only_dishconfig_flag = False
             device.scan_thread = None
-
             # Create proxy for CSP Subarray Leaf Node
             device._csp_subarray_ln_proxy = None
             device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
@@ -559,6 +563,7 @@ class SubarrayNode(SKASubarray):
             self.logger.info(device._read_activity_message)
             # Step 1: Create object of configuration model
             device.this_subarray = SubarrayModel.get_instance()
+            device.this_subarray.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
             device.configuration_model = configure_command.configuration_model()
             return (ResultCode.OK, device._read_activity_message)
 
