@@ -50,7 +50,7 @@ class DishMode(IntEnum):
     OPERATE = 7
     MAINTENANCE = 8
 
-s
+
 def dmstodd(dish_antenna_latitude):
     """Converts latitude from deg:min:sec to decimal degree format.
 
