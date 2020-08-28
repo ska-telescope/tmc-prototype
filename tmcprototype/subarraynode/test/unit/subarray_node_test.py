@@ -418,7 +418,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
         dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
         json_argument[const.STR_KEY_DISH] = dish
         arg_list.append(json.dumps(json_argument))
-        csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, arg_list)
+        csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
         assert tango_context.device.obsState == ObsState.RESOURCING
 
 

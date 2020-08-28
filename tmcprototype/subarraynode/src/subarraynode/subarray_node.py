@@ -593,7 +593,6 @@ class SubarrayNode(SKASubarray):
             the input argument in case of successful resource allocation, or returns exception
             object in case of failure.
         """
-        # arg_list = []
         json_argument = {}
         argout = []
         dish = {}
