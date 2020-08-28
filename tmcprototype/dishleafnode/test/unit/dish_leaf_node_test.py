@@ -311,7 +311,7 @@ def test_dish_leaf_node_dish_mode_is_off_when_dish_is_off(mock_dish_master):
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_OFF_MODE
+    assert tango_context.device.activityMessage == f"dishMode is {DishMode.OFF}."
 
 
 def test_dish_leaf_node_dish_mode_is_startup_when_dish_is_startup(mock_dish_master):
@@ -325,7 +325,7 @@ def test_dish_leaf_node_dish_mode_is_startup_when_dish_is_startup(mock_dish_mast
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_STARTUP_MODE
+    assert tango_context.device.activityMessage == f"dishMode is {DishMode.STARTUP}."
 
 
 def test_dish_leaf_node_dish_mode_is_shutdown_when_dish_is_shutdown(mock_dish_master):
@@ -339,7 +339,7 @@ def test_dish_leaf_node_dish_mode_is_shutdown_when_dish_is_shutdown(mock_dish_ma
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_SHUTDOWN_MODE
+    assert tango_context.device.activityMessage == f"dishMode is {DishMode.SHUTDOWN}."
 
 
 def test_dish_leaf_node_dish_mode_is_standby_when_dish_is_standby(mock_dish_master):
@@ -353,7 +353,7 @@ def test_dish_leaf_node_dish_mode_is_standby_when_dish_is_standby(mock_dish_mast
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_STANDBYLP_MODE
+    assert tango_context.device.activityMessage == f"dishMode is {DishMode.STANDBY_LP}."
 
 
 def test_dish_leaf_node_dish_mode_is_stand_by_fp_when_dish_is_stand_by_fp(mock_dish_master):
@@ -367,7 +367,7 @@ def test_dish_leaf_node_dish_mode_is_stand_by_fp_when_dish_is_stand_by_fp(mock_d
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_STANDBYFP_MODE
+    assert tango_context.device.activityMessage == f"dishMode is {DishMode.STANDBY_FP}."
 
 
 def test_dish_leaf_node_dish_mode_is_maint_when_dish_is_maint(mock_dish_master):
@@ -381,7 +381,7 @@ def test_dish_leaf_node_dish_mode_is_maint_when_dish_is_maint(mock_dish_master):
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_MAINT_MODE
+    assert tango_context.device.activityMessage == "dishMode is {DishMode.MAINTENANCE}."
 
 
 def test_dish_leaf_node_dish_mode_is_stow_when_dish_is_stow(mock_dish_master):
@@ -395,7 +395,7 @@ def test_dish_leaf_node_dish_mode_is_stow_when_dish_is_stow(mock_dish_master):
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_STOW_MODE
+    assert tango_context.device.activityMessage == f"dishMode is {DishMode.STOW}."
 
 
 def test_dish_leaf_node_dish_mode_is_config_when_dish_is_config(mock_dish_master):
@@ -409,7 +409,7 @@ def test_dish_leaf_node_dish_mode_is_config_when_dish_is_config(mock_dish_master
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_CONFIG_MODE
+    assert tango_context.device.activityMessage == f"dishMode is {DishMode.CONFIG}."
 
 
 def test_dish_leaf_node_dish_mode_is_operate_when_dish_is_operate(mock_dish_master):
@@ -423,7 +423,7 @@ def test_dish_leaf_node_dish_mode_is_operate_when_dish_is_operate(mock_dish_mast
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_OPERATE_MODE
+    assert tango_context.device.activityMessage == f"dishMode is {DishMode.OPERATE}."
 
 
 def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master):
@@ -468,7 +468,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_is_true(mock_dish_master):
     event_subscription_map[dish_master_capturing_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_TRUE
+    assert tango_context.device.activityMessage == f"capturing is {dish_capturing_value}."
 
 
 def test_dish_leaf_node_when_dish_capturing_callback_is_false(mock_dish_master):
@@ -482,7 +482,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_is_false(mock_dish_master):
     event_subscription_map[dish_master_capturing_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DISH_CAPTURING_FALSE
+    assert tango_context.device.activityMessage == f"capturing is {dish_capturing_value}."
 
 
 def test_dish_leaf_node_when_dish_capturing_callback_with_error_event(mock_dish_master):
@@ -518,8 +518,7 @@ def test_dish_leaf_node_when_achieved_pointing_callback_is_true(mock_dish_master
     event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_ACHIEVED_POINTING + \
-           str(dummy_event.attr_value.value)
+    assert tango_context.device.activityMessage == f"achievedPointing is {value}."
 
 
 def test_dish_leaf_node_when_achieved_pointing_callback_with_error_event(mock_dish_master):

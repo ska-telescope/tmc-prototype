@@ -78,84 +78,30 @@ class DishLeafNode(SKABaseDevice):
     """
     # PROTECTED REGION ID(DishLeafNode.class_variable) ENABLED START #
 
-    def dish_mode_cb(self, evt):
+    def attribute_event_handler(self, event_data):
         """
-        Retrieves the subscribed dishMode attribute of DishMaster.
+        Retrieves the subscribed attribute of DishMaster.
 
-        :param evt: A TANGO_CHANGE event on dishMode attribute.
+        :param evt: A TANGO_CHANGE event on attribute.
 
         :return: None
         """
-        log_msg = "DishMode Event is: " + str(evt)
+        if event_data.err:
+            log_msg = "Event system DevError(s) occured!!! %s", str(event_data.errors)
+            self._read_activity_message = log_msg
+            self.logger.error(log_msg)
+            return
+
+        fqdn_attr_name = event_data.attr_name
+        # tango://monctl.devk4.camlab.kat.ac.za:4000/mid_dish_0000/elt/
+        # master/<attribute_name>#dbase=no
+        # We process the FQDN of the attribute to extract just the
+        # attribute name. Also handle the issue with the attribute name being
+        # converted to lowercase in subsequent callbacks.
+        attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
+        log_msg = f"{attr_name} is {event_data.attr_value.value}."
+        self._read_activity_message = log_msg
         self.logger.debug(log_msg)
-        if not evt.err:
-            self._dish_mode = evt.attr_value.value
-            log_msg = "Dish is in {} mode.".format(DishMode(evt.attr_value.value).name)
-            log_msg = log_msg.replace("_", "-")
-            self.logger.debug(log_msg)
-            self._read_activity_message = log_msg
-        else:
-            log_msg = const.ERR_ON_SUBS_DISH_MODE_ATTR + str(evt.errors)
-            self._read_activity_message = log_msg
-            self.logger.error(log_msg)
-
-    def dish_capturing_cb(self, evt):
-        """
-        Retrieves the subscribed capturing attribute of DishMaster.
-
-        :param evt: A TANGO_CHANGE event on capturing attribute.
-
-        :return: None
-        """
-        log_msg = "Capturing attribute Event is: " + str(evt)
-        self.logger.debug(log_msg)
-        if not evt.err:
-            log_msg = "Dish data capturing :-> {}".format(evt.attr_value.value)
-            self.logger.debug(log_msg)
-            self._read_activity_message = log_msg
-        else:
-            log_msg = const.ERR_SUBSR_CAPTURING_ATTR + str(evt.errors)
-            self._read_activity_message = log_msg
-            self.logger.error(log_msg)
-
-    def dish_achieved_pointing_cb(self, evt):
-        """
-        Retrieves the subscribed achievedPointing attribute of DishMaster.
-
-        :param evt: A TANGO_CHANGE event on achievedPointing attribute.
-
-        :return: None
-        """
-        log_msg = "AchievedPointing attribute Event is: " + str(evt)
-        self.logger.info(log_msg)
-        if not evt.err:
-            self._achieved_pointing = evt.attr_value.value
-            log_msg = const.STR_ACHIEVED_POINTING + str(self._achieved_pointing)
-            self.logger.debug(log_msg)
-            self._read_activity_message = log_msg
-        else:
-            log_msg = const.ERR_ON_SUBS_DISH_ACHVD_ATTR + str(evt.errors)
-            self._read_activity_message = log_msg
-            self.logger.error(log_msg)
-
-    def dish_desired_pointing_cb(self, evt):
-        """
-        Retrieves the subscribed desiredPointing attribute of DishMaster.
-
-        :param evt: A TANGO_CHANGE event on desiredPointing attribute.
-
-        :return: None
-        """
-        log_msg = "DesiredPointing attribute Event is: " + str(evt)
-        self.logger.info(log_msg)
-        if not evt.err:
-            log_msg = const.STR_DESIRED_POINTING + str(evt.attr_value.value)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
-        else:
-            log_msg = const.ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR + str(evt.errors)
-            self._read_activity_message = log_msg
-            self.logger.error(log_msg)
 
     def cmd_ended_cb(self, event):
         """
@@ -515,13 +461,13 @@ class DishLeafNode(SKABaseDevice):
             # Subscribing to DishMaster Attributes
             try:
                 device._dish_proxy.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT,
-                                                   device.dish_mode_cb, stateless=True)
+                                                   device.attribute_event_handler, stateless=True)
                 device._dish_proxy.subscribe_event(const.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT,
-                                                   device.dish_capturing_cb, stateless=True)
+                                                   device.attribute_event_handler, stateless=True)
                 device._dish_proxy.subscribe_event(const.EVT_ACHVD_POINT, EventType.CHANGE_EVENT,
-                                                   device.dish_achieved_pointing_cb, stateless=True)
+                                                   device.attribute_event_handler, stateless=True)
                 device._dish_proxy.subscribe_event(const.EVT_DESIRED_POINT, EventType.CHANGE_EVENT,
-                                                   device.dish_desired_pointing_cb, stateless=True)
+                                                   device.attribute_event_handler, stateless=True)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_DISH_ATTR + str(dev_failed)
                 device.set_status(const.ERR_DISH_INIT)
