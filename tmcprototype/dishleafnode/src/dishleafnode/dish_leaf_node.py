@@ -50,7 +50,7 @@ class DishMode(IntEnum):
     OPERATE = 7
     MAINTENANCE = 8
 
-
+s
 def dmstodd(dish_antenna_latitude):
     """Converts latitude from deg:min:sec to decimal degree format.
 
@@ -235,57 +235,62 @@ class DishLeafNode(SKABaseDevice):
 
         """
         try:
-            # Create Antenna Object
             dish_antenna = katpoint.Antenna(name=self.dish_name,
                                             latitude=self.observer_location_lat,
                                             longitude=self.observer_location_long,
                                             altitude=self.observer_altitude)
-            # Antenna latitude
-            dish_antenna_latitude = dish_antenna.ref_observer.lat
-
-            # Compute Target Coordinates
-            target_radec = data[0]
-            desired_target = katpoint.Target(str(target_radec))
-            timestamp = katpoint.Timestamp(timestamp=data[1])
-            target_apparnt_radec = katpoint.Target.apparent_radec(desired_target,
-                                                                  timestamp=timestamp,
-                                                                  antenna=dish_antenna)
-
-            # TODO: Conversion of apparent ra and dec using katpoint library for future refererence.
-            # target_apparnt_ra = katpoint._ephem_extra.angle_from_hours(target_apparnt_radec[0])
-            # target_apparnt_dec = katpoint._ephem_extra.angle_from_degrees(target_apparnt_radec[1])
-
-            # calculate sidereal time in radians
-            side_time = dish_antenna.local_sidereal_time(timestamp=timestamp)
-            side_time_radian = katpoint.deg2rad(math.degrees(side_time))
-
-            # converting ra to ha
-            hour_angle = side_time_radian - target_apparnt_radec[0]
-            # TODO: Conversion of hour angle from radian to HH:MM:SS for future refererence.
-            # print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(hour_angle))
-
-            # Geodetic latitude of the observer
-            # TODO: For refererence
-            # latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
-            latitude_degree_decimal = UnitConverter().dms_to_dd(str(dish_antenna_latitude))
-            latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
-
-            # Calculate enu coordinates
-            enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
-
-            # Calculate Az El coordinates
-            self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
-            self.az = katpoint.rad2deg(self.az_el_coordinates[0])
-            self.el = katpoint.rad2deg(self.az_el_coordinates[1])
-            self.RaDec_AzEl_Conversion = True
         except ValueError as value_err:
             self.RaDec_AzEl_Conversion = False
-            log_msg = const.ERR_RADEC_TO_AZEL_VAL_ERR + str(value_err)
-            self._read_activity_message = log_msg
-            self.logger.error(log_msg)
-        except Exception as except_occurred:
+            raise value_err
+
+        dish_antenna_latitude = dish_antenna.ref_observer.lat
+
+        # Compute Target Coordinates
+        target_radec = data[0]
+
+        try:
+            desired_target = katpoint.Target(str(target_radec))
+        except ValueError as value_err:
             self.RaDec_AzEl_Conversion = False
-            self._handle_generic_exception(except_occurred, [], 0, const.ERR_RADEC_TO_AZEL)
+            raise value_err
+
+        timestamp = katpoint.Timestamp(timestamp=data[1])
+
+        try:
+            target_apparnt_radec = katpoint.Target.apparent_radec(
+                desired_target, timestamp=timestamp, antenna=dish_antenna)
+        except ValueError as value_err:
+            self.RaDec_AzEl_Conversion = False
+            raise value_err
+
+        # TODO: Conversion of apparent ra and dec using katpoint library for future refererence.
+        # target_apparnt_ra = katpoint._ephem_extra.angle_from_hours(target_apparnt_radec[0])
+        # target_apparnt_dec = katpoint._ephem_extra.angle_from_degrees(target_apparnt_radec[1])
+
+        sidereal_time = dish_antenna.local_sidereal_time(timestamp=timestamp)
+        sidereal_time_radian = katpoint.deg2rad(math.degrees(sidereal_time))
+
+        # converting ra to ha
+        hour_angle = sidereal_time_radian - target_apparnt_radec[0]
+        # TODO: Conversion of hour angle from radian to HH:MM:SS for future refererence.
+        # print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(hour_angle))
+
+        # Geodetic latitude of the observer
+        # TODO: For refererence
+        # latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
+        latitude_degree_decimal = UnitConverter().dms_to_dd(str(dish_antenna_latitude))
+        latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
+
+        # Calculate enu coordinates
+        enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
+
+        # Calculate Az El coordinates
+        self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
+        self.az = katpoint.rad2deg(self.az_el_coordinates[0])
+        self.el = katpoint.rad2deg(self.az_el_coordinates[1])
+        self.RaDec_AzEl_Conversion = True
+
+        return self.az_el_coordinates
 
     def tracking_time_thread(self):
         """This thread allows the dish to track the source for a specified Duration.
