@@ -74,6 +74,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
+    exceptionMessage = attribute(
+        dtype='str',
+        access=AttrWriteType.READ_WRITE,
+    )
+
     cspsubarrayHealthState = attribute(name="cspsubarrayHealthState", label="cspsubarrayHealthState",
                                        forwarded=True
                                        )
@@ -307,6 +312,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device._read_activity_message = " "
+            device._exception_message = " "
             device._delay_model = " "
             device._versioninfo = " "
             device.receptorIDList_str = []
@@ -379,6 +385,18 @@ class CspSubarrayLeafNode(SKABaseDevice):
         '''Internal construct of TANGO. Sets the activity message.'''
         self._read_activity_message = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_write
+
+    def read_exceptionMessage(self):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.exceptionMessage_read) ENABLED START #
+        '''Internal construct of TANGO. Returns exception message.'''
+        return self._exception_message
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.exceptionMessage_read
+
+    def write_exceptionMessage(self, value):
+        # PROTECTED REGION ID(CspSubarrayLeafNode.exceptionMessage_write) ENABLED START #
+        '''Internal construct of TANGO. Sets the exception message.'''
+        self._exception_message = value
+        # PROTECTED REGION END #    //  CspSubarrayLeafNode.exceptionMessage_write
 
     # --------
     # Commands
@@ -966,6 +984,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                         event.errors)
                     log = const.ERR_INVOKING_CMD + event.cmd_name
                     self.logger.error(log)
+                    device._exception_message = "Error in" + str(event.cmd_name) + ": " + str(event.errors)
                 else:
                     log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
                     device._read_activity_message = log
@@ -973,6 +992,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             except tango.DevFailed as df:
                 self.logger.exception(df)
+                device._exception_message = "Exception in AssignResources callback: " + str(df)
                 tango.Except.re_throw_exception(df, "CSP subarray gave an error response",
                                                 "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
                                                 "AddReceptors", tango.ErrSeverity.ERR)
@@ -1025,7 +1045,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device.update_config_params()
                 # Invoke AddReceptors command on CspSubarray
                 self.logger.info("Invoking AddReceptors on CSP subarray")
-
+                
                 device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, receptorIDList,
                                                            self.add_receptors_ended)
 

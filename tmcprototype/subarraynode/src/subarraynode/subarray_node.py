@@ -122,6 +122,25 @@ class SubarrayNode(SKASubarray):
             log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
             self._read_activity_message = log_message
 
+    def exc_msg_cb(self, event):
+        """
+        Retrieves the subscribed exceptionMessage attribute of CSP Subarray Leaf Node.
+
+        :param event: A TANGO_CHANGE event on exceptionMessage of CSP Subarray Leaf Node.
+
+        :return: None
+        """
+
+        device_name = event.device.dev_name()
+        if not event.err:
+            self._exception_message = event.attr_value.value
+            log_message = "Exception message is in exc_msg_cb callback: " + str(self._exception_message)
+            self.logger.info(log_msg)
+        else:
+            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
+            self._read_activity_message = log_message
+            self.logger.info(log_msg)
+
     def observation_state_cb(self, evt):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
@@ -438,6 +457,11 @@ class SubarrayNode(SKASubarray):
         doc="Activity Message",
     )
 
+    exceptionMessage = attribute(
+        dtype='str',
+        access=AttrWriteType.READ_WRITE,
+    )
+
     receptorIDList = attribute(
         dtype=('uint16',),
         max_dim_x=100,
@@ -492,6 +516,7 @@ class SubarrayNode(SKASubarray):
             device._sdp_sa_obs_state = None
             device.only_dishconfig_flag = False
             device.scan_thread = None
+            device._exception_message = " "
 
             # Create proxy for CSP Subarray Leaf Node
             device._csp_subarray_ln_proxy = None
@@ -512,6 +537,9 @@ class SubarrayNode(SKASubarray):
                 # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
                 device._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                               device.observation_state_cb, stateless=True)
+                # Subscribe cspSubarrayLeafNode exceptionMessage attribute
+                device._csp_subarray_ln_proxy.subscribe_event("exceptionMessage", EventType.CHANGE_EVENT,
+                                                              device.exc_msg_cb, stateless=True)
                 device.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
                 self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
             except DevFailed as dev_failed:
@@ -606,6 +634,18 @@ class SubarrayNode(SKASubarray):
         return self._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
 
+    def read_exceptionMessage(self):
+        """ Internal construct of TANGO. Returns exceptionMessage.
+        """
+        # PROTECTED REGION ID(SubarrayNode.exceptionMessage_read) ENABLED START #
+        return self._exception_message
+        # PROTECTED REGION END #    //  SubarrayNode.exceptionMessage_read
+
+    def write_exceptionMessage(self, value):
+        """ Internal construct of TANGO. Sets the exceptionMessage. """
+        # PROTECTED REGION ID(SubarrayNode.exceptionMessage_write) ENABLED START #
+        self._exception_message = value
+        # PROTECTED REGION END #    //  SubarrayNode.exceptionMessage_write
     # --------
     # Commands
     # --------

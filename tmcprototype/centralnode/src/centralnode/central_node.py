@@ -200,6 +200,35 @@ class CentralNode(SKABaseDevice):
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
             self.logger.critical(log_msg)
         
+    def exc_msg_cb(self, evt):
+        """
+        Retrieves the subscribed Subarray exceptionMessage attribute.
+
+        :param evt: A TANGO_CHANGE event on Subarray exceptionMessage.
+
+        :return: None
+
+        :raises: KeyError in Subarray exceptionMessage callback
+        """
+        try:
+            log_msg = 'exceptionMessage attribute change event is : ' + str(evt)
+            self.logger.info(log_msg)
+            if not evt.err:
+                event_msg = evt.attr_value.value
+                log_msg = "event_msg is: " + str(event_msg)
+                self.logger.info(log_msg)
+                subarray_device = evt.device
+                log_msg = "subarray_device is: " + str(subarray_device)
+                self.logger.info(log_msg)
+            else:
+                # TODO: For future reference
+                self._read_activity_message = "Error in exceptionMessage callback: " + str(evt)
+                self.logger.critical(const.ERR_SUBSR_SA_OBS_STATE)
+        except KeyError as key_error:
+            self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
+            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+            self.logger.critical(log_msg)
+        
 
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
@@ -383,6 +412,10 @@ class CentralNode(SKABaseDevice):
                     subarray_proxy.subscribe_event(const.EVT_SUBSR_OBS_STATE,
                                                    EventType.CHANGE_EVENT,
                                                    device.obs_state_cb, stateless=True)
+
+                    subarray_proxy.subscribe_event("exceptionMessage",
+                                                   EventType.CHANGE_EVENT,
+                                                   device.exc_msg_cb, stateless=True)
 
                     # populate subarrayID-subarray proxy map
                     tokens = device.TMMidSubarrayNodes[subarray].split('/')
