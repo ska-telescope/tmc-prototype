@@ -1,8 +1,10 @@
 
 # Standard Python imports
+from os.path import dirname, join
 import pytest
 import logging
-from os.path import dirname, join
+import mock
+from mock import Mock, MagicMock
 
 from subarraynode.configure_command import configuration_model
 from subarraynode import SubarrayNode, const
@@ -36,14 +38,20 @@ class TestConfigurationModel:
         """
         Test that ConfigurationModel invokes Configure command correctly
         """
+        config_model._configure_csp = Mock()
+        config_model._configure_csp.side_effect = self.mock_csp_configure()
+
+        config_model._configure_sdp = Mock()
+        config_model._configure_sdp.side_effect = self.mock_csp_configure()
+
+        config_model._configure_dsh = Mock()
+        config_model._configure_dsh.side_effect = self.mock_csp_configure()
+        
         config_model.configure(configure_str, logging.getLogger())
-        config_model._configure_csp.side_effect = mock_csp_configure
-        config_model._configure_sdp.side_effect = mock_csp_configure
-        config_model._configure_dsh.side_effect = mock_csp_configure
-        assert False
+        assert config_model.this_subarray._read_activity_message == const.STR_CONFIGURE_CMD_INVOKED_SA
 
     def mock_csp_configure(self):
-        pass
+        print("Dummy mock method for testing")
 
 
 # def test_configure_command(config_model, subarray_state_model):

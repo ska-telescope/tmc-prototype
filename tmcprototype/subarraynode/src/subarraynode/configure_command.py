@@ -88,7 +88,7 @@ class configuration_model:
         except KeyError as kerr:
             log_message = kerr.args[0]
             # device._read_activity_message = log_message
-            self.logger.logger.debug(log_message)
+            self.logger.debug(log_message)
             raise
         return cmd_data
 
