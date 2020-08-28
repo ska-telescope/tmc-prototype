@@ -32,9 +32,11 @@ class SubarrayModel:
         self.is_abort_command = False
         self.scan_duration = 0.0
         self.only_dishconfig_flag = False
-        self._dish_leaf_node_group = None # call create_tango_group api from Tango_Interface class
+        # TODO : Tango server class variables
         self._read_activity_message = ""
         self.sdp_subarray_ln_fqdn = ""
+        self.csp_subarray_ln_fqdn = ""
+        self._receive_addresses_map = ""
 
         # TODO: For future use
         self.receptor_id_list = []

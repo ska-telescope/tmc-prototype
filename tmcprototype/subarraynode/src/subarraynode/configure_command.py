@@ -12,6 +12,7 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
+from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.subarray_model import SubarrayModel
 csp_interface_version = 0
@@ -38,7 +39,7 @@ class configuration_model:
         self.logger.info(log_msg)
         # TODO: how to access TANGO specific attributes (read-write)
         # device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        # device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
+        self.this_subarray._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
@@ -49,9 +50,9 @@ class configuration_model:
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
         self.this_subarray.scan_duration = int(tmc_configure["scanDuration"])
-        # self._configure_dsh(scan_configuration)
-        # self._configure_csp(scan_configuration)
+        self._configure_csp(scan_configuration)
         self._configure_sdp(scan_configuration)
+        self._configure_dsh(scan_configuration)
 
     def _configure_leaf_node(self, tango_client, cmd_name, cmd_data):
         # device = self.target
@@ -59,9 +60,10 @@ class configuration_model:
             tango_client.send_command(cmd_name, cmd_data)
             log_msg = "%s configured succesfully." % tango_client.get_device_fqdn()
             self.logger.debug(log_msg)
+            self.this_subarray._read_activity_message = log_msg
         except DevFailed as df:
             log_message = df[0].desc
-            # device._read_activity_message = log_message
+            self.this_subarray._read_activity_message = log_message
             log_msg = "Failed to configure %s. %s" % (tango_client.get_device_fqdn(), df)
             self.logger.error(log_msg)
             raise
@@ -99,14 +101,15 @@ class configuration_model:
         self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
-        device = self.target
+        # device = self.target
         attr_name_map = {
-            const.STR_DELAY_MODEL_SUB_POINT: device.CspSubarrayLNFQDN + "/delayModel",
+            const.STR_DELAY_MODEL_SUB_POINT: self.this_subarray.csp_subarray_ln_fqdn + "/delayModel",
         }
         cmd_data = self._create_cmd_data(
-            "build_up_csp_cmd_data", scan_configuration, attr_name_map, device._receive_addresses_map)
-        
-        self._configure_leaf_node(device._csp_subarray_ln_proxy, "Configure", cmd_data)
+            "build_up_csp_cmd_data", scan_configuration, attr_name_map, self.this_subarray._receive_addresses_map)
+        # TODO : How to read device property device.CspSubarrayLNFQDN
+        csp_saln_client = TangoClient(self.this_subarray.csp_subarray_ln_fqdn)
+        self._configure_leaf_node(csp_saln_client, "Configure", cmd_data)
 
     def _configure_dsh(self, scan_configuration):
         # device = self.target
@@ -118,16 +121,22 @@ class configuration_model:
             "build_up_dsh_cmd_data", scan_configuration, self.this_subarray.only_dishconfig_flag)
 
         try:
-            # TODO: 
-            device._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
+            # TODO: Create Tango Group and add 2 dishes into the group for PoC purpose
+            dish_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE)
+            # self.this_subarray._dish_leaf_node_group = dish_group_client.get_tango_group(const.GRP_DISH_LEAF_NODE)
+            dish_devices = ["ska_mid/tm_leaf_node/d0001", "ska_mid/tm_leaf_node/d0002"]
+            dish_group_client.add_device(dish_devices)
+            dish_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
+            # self.this_subarray._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
             # send_command(device._dish_leaf_node_group, const.CMD_CONFIGURE, cmd_data)
             
-            self.logger.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
-            device._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
-            self.logger.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
+            self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
+            # self.this_subarray._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
+            dish_group_client.send_command(const.CMD_TRACK, cmd_data)
+            self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
         except DevFailed as df:
             # device._read_activity_message = df[0].desc
-            self.logger.logger.error(df)
+            self.logger.error(df)
             raise
 
 class ConfigureCommand(SKASubarray.ConfigureCommand):

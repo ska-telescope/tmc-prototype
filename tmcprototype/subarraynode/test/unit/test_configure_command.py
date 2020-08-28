@@ -37,23 +37,29 @@ class TestConfigurationModel:
         Test that ConfigurationModel invokes Configure command correctly
         """
         config_model.configure(configure_str, logging.getLogger())
+        config_model._configure_csp.side_effect = mock_csp_configure
+        config_model._configure_sdp.side_effect = mock_csp_configure
+        config_model._configure_dsh.side_effect = mock_csp_configure
         assert False
 
-    
-    def test_configure_command(self, config_model, subarray_state_model):
-        """
-        Test for SubarrayNode.ConfigureCommand
-        """
-        # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-        # Create ConfigureCommand Object by passing state model and device
-        configure_cmd = SubarrayNode.ConfigureCommand(config_model, subarray_state_model)
-        # Use of lmc-base-classe's straight_to_state method to push it straigh to IDLE
-        subarray_state_model._straight_to_state("IDLE")
+    def mock_csp_configure(self):
+        pass
 
-        # attribute = "receiveAddresses"
-        # dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
-        #                                    receive_addresses_map)
-        # event_subscription_map[attribute](dummy_event)
-    
-        # Invoke Configure command as a callable
-        assert configure_cmd(configure_str) == (ResultCode.STARTED, "Configure command invoked")
+
+# def test_configure_command(config_model, subarray_state_model):
+#     """
+#     Test for SubarrayNode.ConfigureCommand
+#     """
+#     # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     # Create ConfigureCommand Object by passing state model and device
+#     configure_cmd = SubarrayNode.ConfigureCommand(config_model, subarray_state_model)
+#     # Use of lmc-base-classe's straight_to_state method to push it straigh to IDLE
+#     subarray_state_model._straight_to_state("IDLE")
+
+#     # attribute = "receiveAddresses"
+#     # dummy_event = create_dummy_event_state(sdp_subarray1_proxy_mock, sdp_subarray1_fqdn, attribute,
+#     #                                    receive_addresses_map)
+#     # event_subscription_map[attribute](dummy_event)
+
+#     # Invoke Configure command as a callable
+#     assert configure_cmd(configure_str) == (ResultCode.STARTED, "Configure command invoked")

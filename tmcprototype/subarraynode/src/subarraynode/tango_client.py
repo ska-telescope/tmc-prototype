@@ -40,12 +40,6 @@ class TangoClient:
                 continue
         
 
-    def get_tango_group(self, group_name):
-        """
-        Create Tango Group Command
-        """
-        return tango.Group(group_name)
-
     def get_deviceproxy(self):
         """
         Returns device proxy for given FQDN.
@@ -67,11 +61,11 @@ class TangoClient:
                     continue
         return self.deviceproxy
 
-    def get_device_fqdn():
+    def get_device_fqdn(self):
         return self.device_fqdn
 
     def send_command(self, command_name, input_data):
         """
         
         """
-        self.device_proxy.command_inout(command_name, input_data)
+        self.deviceproxy.command_inout(command_name, input_data)

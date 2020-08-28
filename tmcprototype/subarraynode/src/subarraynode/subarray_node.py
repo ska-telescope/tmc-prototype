@@ -98,7 +98,7 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         if not event.err:
-            self._receive_addresses_map = event.attr_value.value
+            self.this_subarray._receive_addresses_map = event.attr_value.value
         else:
             log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
             self.logger.debug(log_msg)
@@ -371,6 +371,7 @@ class SubarrayNode(SKASubarray):
             return
         try:
             self._dish_leaf_node_group.remove_all()
+            # self._dish_leaf_node_group.remove_all()
             log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
             self.logger.debug(log_message)
             self._read_activity_message = log_message
@@ -490,8 +491,8 @@ class SubarrayNode(SKASubarray):
             device.scan_duration = 0
             device._receptor_id_list = []
             device.dishPointingStateMap = {}
-            device._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
             device._dish_leaf_node_proxy = []
+            device._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
             device._health_event_id = []
             device._pointing_state_event_id = []
             device._dishLnVsHealthEventID = {}
@@ -564,6 +565,8 @@ class SubarrayNode(SKASubarray):
             # Step 1: Create object of configuration model
             device.this_subarray = SubarrayModel.get_instance()
             device.this_subarray.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
+            device.this_subarray.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
+            
             device.configuration_model = configure_command.configuration_model()
             return (ResultCode.OK, device._read_activity_message)
 
