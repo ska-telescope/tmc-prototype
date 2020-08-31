@@ -18,127 +18,6 @@ from subarraynode.subarray_model import SubarrayModel
 csp_interface_version = 0
 sdp_interface_version = 0
 
-# Step 3: Create a separate class for maintaining configuration model
-class configuration_model:
-    def __init__(self):
-        """
-        Constructor for configuration_model
-        """
-        self.this_subarray = SubarrayModel.get_instance()
-    
-    def configure(self, argin, logger):
-        #  Created separate module Subarray Model to store data variables 
-        self.logger = logger
-        self.this_subarray.is_scan_completed = False
-        self.this_subarray.is_release_resources = False
-        self.this_subarray.is_restart_command = False
-        self.this_subarray.is_abort_command = False
-        # TODO: How to use logger. Currenly logger is passed from do() method
-        self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
-        self.logger.info(log_msg)
-        # TODO: how to access TANGO specific attributes (read-write)
-        # device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        self.this_subarray._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
-        try:
-            scan_configuration = json.loads(argin)
-        except json.JSONDecodeError as jerror:
-            log_message = const.ERR_INVALID_JSON + str(jerror)
-            self.logger.error(log_message)
-            self.this_subarray._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-        tmc_configure = scan_configuration["tmc"]
-        self.this_subarray.scan_duration = int(tmc_configure["scanDuration"])
-        self._configure_csp(scan_configuration)
-        self._configure_sdp(scan_configuration)
-        self._configure_dsh(scan_configuration)
-
-    def _configure_leaf_node(self, tango_client, cmd_name, cmd_data):
-        # device = self.target
-        try:
-            tango_client.send_command(cmd_name, cmd_data)
-            log_msg = "%s configured succesfully." % tango_client.get_device_fqdn()
-            self.logger.debug(log_msg)
-            self.this_subarray._read_activity_message = log_msg
-        except DevFailed as df:
-            log_message = df[0].desc
-            self.this_subarray._read_activity_message = log_message
-            log_msg = "Failed to configure %s. %s" % (tango_client.get_device_fqdn(), df)
-            self.logger.error(log_msg)
-            raise
-    # def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
-    #     device = self.target
-    #     try:
-    #         device_proxy.command_inout(cmd_name, cmd_data)
-    #         log_msg = "%s configured succesfully." % device_proxy.dev_name()
-    #         device.logger.debug(log_msg)
-    #     except DevFailed as df:
-    #         log_message = df[0].desc
-    #         device._read_activity_message = log_message
-    #         log_msg = "Failed to configure %s. %s" % (device_proxy.dev_name(), df)
-    #         device.logger.error(log_msg)
-    #         raise
-
-    def _create_cmd_data(self, method_name, scan_config, *args):
-        # device = self.target
-        try:
-            method = getattr(ElementDeviceData, method_name)
-            cmd_data = method(scan_config, *args)
-        except KeyError as kerr:
-            log_message = kerr.args[0]
-            # device._read_activity_message = log_message
-            self.logger.debug(log_message)
-            raise
-        return cmd_data
-
-    def _configure_sdp(self, scan_configuration):
-        # device = self.target
-        cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
-        # TODO : How to read device property device.SdpSubarrayLNFQDN
-        sdp_saln_client = TangoClient(self.this_subarray.sdp_subarray_ln_fqdn)
-        # sdp_saln_device_proxy = sdp_saln_client.get_deviceproxy()
-        self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data)
-
-    def _configure_csp(self, scan_configuration):
-        # device = self.target
-        attr_name_map = {
-            const.STR_DELAY_MODEL_SUB_POINT: self.this_subarray.csp_subarray_ln_fqdn + "/delayModel",
-        }
-        cmd_data = self._create_cmd_data(
-            "build_up_csp_cmd_data", scan_configuration, attr_name_map, self.this_subarray._receive_addresses_map)
-        # TODO : How to read device property device.CspSubarrayLNFQDN
-        csp_saln_client = TangoClient(self.this_subarray.csp_subarray_ln_fqdn)
-        self._configure_leaf_node(csp_saln_client, "Configure", cmd_data)
-
-    def _configure_dsh(self, scan_configuration):
-        # device = self.target
-        config_keys = scan_configuration.keys()
-        if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
-            self.this_subarray.only_dishconfig_flag = True
-
-        cmd_data = self._create_cmd_data(
-            "build_up_dsh_cmd_data", scan_configuration, self.this_subarray.only_dishconfig_flag)
-
-        try:
-            # TODO: Create Tango Group and add 2 dishes into the group for PoC purpose
-            dish_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE)
-            # self.this_subarray._dish_leaf_node_group = dish_group_client.get_tango_group(const.GRP_DISH_LEAF_NODE)
-            dish_devices = ["ska_mid/tm_leaf_node/d0001", "ska_mid/tm_leaf_node/d0002"]
-            dish_group_client.add_device(dish_devices)
-            dish_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
-            # self.this_subarray._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
-            # send_command(device._dish_leaf_node_group, const.CMD_CONFIGURE, cmd_data)
-            
-            self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
-            # self.this_subarray._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
-            dish_group_client.send_command(const.CMD_TRACK, cmd_data)
-            self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
-        except DevFailed as df:
-            # device._read_activity_message = df[0].desc
-            self.logger.error(df)
-            raise
-
 class ConfigureCommand(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
@@ -169,12 +48,97 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
 
         :raises: JSONDecodeError if input argument json string contains invalid value
         """
-        # Step 4: Change the target to point to use configuration model
-        configuration_model = self.target
-        configuration_model.configure(argin, self.logger)
-        message = "Configure command invoked"
-        self.logger.info(message)
-        return (ResultCode.STARTED, message)
+        self.logger.info(type(self.target))
+        self.this_subarray = self.target
+        self.this_subarray.is_scan_completed = False
+        self.this_subarray.is_release_resources = False
+        self.this_subarray.is_restart_command = False
+        self.this_subarray.is_abort_command = False
+        # TODO: How to use logger. Currenly logger is passed from do() method
+        self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
+        log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
+        self.logger.info(log_msg)
+        # TODO: how to access TANGO specific attributes (read-write)
+        self.this_subarray._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
+        try:
+            scan_configuration = json.loads(argin)
+        except json.JSONDecodeError as jerror:
+            log_message = const.ERR_INVALID_JSON + str(jerror)
+            self.logger.error(log_message)
+            self.this_subarray._read_activity_message = log_message
+            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+        tmc_configure = scan_configuration["tmc"]
+        self.this_subarray.scan_duration = int(tmc_configure["scanDuration"])
+        self._configure_csp(scan_configuration)
+        self._configure_sdp(scan_configuration)
+        self._configure_dsh(scan_configuration)
+
+        return (ResultCode.STARTED, "some test message")
+
+    def _configure_leaf_node(self, tango_client, cmd_name, cmd_data):
+        try:
+            tango_client.send_command(cmd_name, cmd_data)
+            log_msg = "%s configured succesfully." % tango_client.get_device_fqdn()
+            self.logger.debug(log_msg)
+            self.this_subarray._read_activity_message = log_msg
+        except DevFailed as df:
+            log_message = df[0].desc
+            self.this_subarray._read_activity_message = log_message
+            log_msg = "Failed to configure %s. %s" % (tango_client.get_device_fqdn(), df)
+            self.logger.error(log_msg)
+            raise
+
+    def _create_cmd_data(self, method_name, scan_config, *args):
+        try:
+            method = getattr(ElementDeviceData, method_name)
+            cmd_data = method(scan_config, *args)
+        except KeyError as kerr:
+            log_message = kerr.args[0]
+            self.logger.debug(log_message)
+            raise
+        return cmd_data
+
+    def _configure_sdp(self, scan_configuration):
+        this_subarray = self.target
+        cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
+        # TODO : How to read device property device.SdpSubarrayLNFQDN
+        sdp_saln_client = TangoClient(this_subarray.sdp_subarray_ln_fqdn)
+        self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data)
+
+    def _configure_csp(self, scan_configuration):
+        this_subarray = self.target
+        attr_name_map = {
+            const.STR_DELAY_MODEL_SUB_POINT: this_subarray.csp_subarray_ln_fqdn + "/delayModel",
+        }
+        cmd_data = self._create_cmd_data(
+            "build_up_csp_cmd_data", scan_configuration, attr_name_map, this_subarray._receive_addresses_map)
+        # TODO : How to read device property device.CspSubarrayLNFQDN
+        csp_saln_client = TangoClient(this_subarray.csp_subarray_ln_fqdn)
+        self._configure_leaf_node(csp_saln_client, "Configure", cmd_data)
+
+    def _configure_dsh(self, scan_configuration):
+        this_subarray = self.target
+        config_keys = scan_configuration.keys()
+        if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
+            self.this_subarray.only_dishconfig_flag = True
+
+        cmd_data = self._create_cmd_data(
+            "build_up_dsh_cmd_data", scan_configuration, this_subarray.only_dishconfig_flag)
+
+        try:
+            # TODO: Create Tango Group and add 2 dishes into the group for PoC purpose
+            dish_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE)
+            dish_devices = ["ska_mid/tm_leaf_node/d0001", "ska_mid/tm_leaf_node/d0002"]
+            dish_group_client.add_device(dish_devices)
+            dish_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
+
+            self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
+            dish_group_client.send_command(const.CMD_TRACK, cmd_data)
+            self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
+        except DevFailed as df:
+            self.logger.error(df)
+            raise
 
     
 

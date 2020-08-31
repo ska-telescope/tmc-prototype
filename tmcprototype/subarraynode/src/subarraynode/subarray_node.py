@@ -567,7 +567,7 @@ class SubarrayNode(SKASubarray):
             device.this_subarray.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
             device.this_subarray.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
             
-            device.configuration_model = configure_command.configuration_model()
+            # device.configuration_model = configure_command.configuration_model()
             return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
@@ -663,9 +663,9 @@ class SubarrayNode(SKASubarray):
         """
         super().init_command_objects()
         self.this_subarray = SubarrayModel.get_instance()
-        self.config_model = configure_command.configuration_model()
+        # self.config_model = configure_command.configuration_model()
         args = (self, self.state_model, self.logger)
-        config_args = (self.config_model, self.state_model, self.logger)
+        config_args = (self.this_subarray, self.state_model, self.logger)
         self.register_command_object("Track", track_command.TrackCommand(*args))
         # In order to pass self = subarray node as target device, the assign and release resource commands
         # are registered and inherited from SKASubarray

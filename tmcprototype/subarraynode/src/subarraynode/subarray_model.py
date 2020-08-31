@@ -40,8 +40,6 @@ class SubarrayModel:
 
         # TODO: For future use
         self.receptor_id_list = []
-        self.csp_subarray = None
-        self.csp_subarray = None
 
     @staticmethod
     def get_instance():
