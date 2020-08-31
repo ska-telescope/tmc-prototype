@@ -88,16 +88,54 @@ def event_subscription_with_arg(mock_dish_master):
     yield event_subscription_map
 
 
-def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready(mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    scan_input = 0.0
-    # act:
-    tango_context.device.Scan(str(scan_input))
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN,
-                                                            str(scan_input),
-                                                            any_method(with_name='cmd_ended_cb'))
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Scan", "0.0", "Scan"),
+        ("EndScan", "0.0", "StopCapture"),
+        ("Slew", "0.0", "Slew"),
+        ("StartCapture", "0.0", "StartCapture"),
+        ("StopCapture", "0.0", "StopCapture"),
+    ])
+def command_with_arg(request):
+    cmd_name, input_arg, requested_cmd = request.param
+    return cmd_name, input_arg, requested_cmd
+
+
+def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_dish_master, command_with_arg):
+    tango_context, dish1_proxy_mock, _, _ = mock_dish_master
+    cmd_name, input_arg, requested_cmd = command_with_arg
+
+    tango_context.device.command_inout(cmd_name, input_arg)
+
+    dish1_proxy_mock.command_inout_asynch.assert_called_with(requested_cmd, input_arg,
+                                                             any_method(with_name='cmd_ended_cb'))
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("SetStandbyLPMode", "SetStandbyLPMode"),
+        ("SetOperateMode", "SetOperateMode"),
+        ("StopTrack", "StopTrack"),
+        ("SetStandbyFPMode", "SetStandbyFPMode"),
+        ("SetStowMode", "SetStowMode"),
+        ("Abort", "Abort"),
+        ("Restart", "Restart"),
+    ])
+def command_without_arg(request):
+    cmd_name, requested_cmd = request.param
+    return cmd_name, requested_cmd
+
+
+def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_dish_master, command_without_arg):
+    tango_context, dish1_proxy_mock, _, _ = mock_dish_master
+    cmd_name, requested_cmd = command_without_arg
+
+    tango_context.device.command_inout(cmd_name)
+
+    dish1_proxy_mock.command_inout_asynch.assert_called_with(requested_cmd,
+                                                             any_method(with_name='cmd_ended_cb'))
 
 
 # TODO: actual AZ and EL values need to be generated.
@@ -132,41 +170,6 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
                                                              any_method(with_name='cmd_ended_cb'))
 
 
-def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning(mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    scan_input = 0.0
-    # act:
-    tango_context.device.EndScan(str(scan_input))
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE,
-                                                            str(scan_input),
-                                                            any_method(with_name='cmd_ended_cb'))
-
-
-def test_standby_lp_mode_should_command_dish_to_standby(mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    tango_context.device.SetStandByLPMode()
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYLP_MODE,
-                                                                 any_method(with_name='cmd_ended_cb'))
-
-
-def test_set_operate_mode_should_command_dish_to_start(mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn,event_subscription_map = mock_dish_master
-    # act:
-    tango_context.device.SetOperateMode()
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE,
-                                                                 any_method(with_name='cmd_ended_cb'))
-
-
 @pytest.mark.xfail
 def test_track_should_command_dish_to_start_tracking(mock_dish_master):
     # arrange:
@@ -182,81 +185,6 @@ def test_track_should_command_dish_to_start_tracking(mock_dish_master):
                                                                  any_method(with_name='cmd_ended_cb'))
 
 
-def test_stop_track_should_command_dish_to_stop_tracking(mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    tango_context.device.StopTrack()
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_TRACK,
-                                                             any_method(with_name='cmd_ended_cb'))
-
-
-def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinates(mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    slew_arg = 0.0
-    # act:
-    tango_context.device.Slew(str(slew_arg))
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW,
-                                                            str(slew_arg),
-                                                            any_method(with_name='cmd_ended_cb'))
-
-
-def test_start_capture_should_command_dish_to_start_capture_on_the_set_configured_band(mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    capture_arg = 0.0
-    # act:
-    tango_context.device.StartCapture(str(capture_arg))
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE,
-                                                            str(capture_arg),
-                                                                any_method(with_name='cmd_ended_cb'))
-
-
-def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_band(mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    capture_arg = 0.0
-    # act:
-    tango_context.device.StopCapture(str(capture_arg))
-
-    # assert:
-    # if type(float(capture_arg)) == float:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE,
-                                                            str(capture_arg),
-                                                            any_method(with_name='cmd_ended_cb'))
-
-
-def test_set_standby_fp_mode_should_command_dish_to_transition_to_standby_fp_mode(mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    tango_context.device.SetStandbyFPMode()
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYFP_MODE,
-                                                             any_method(with_name='cmd_ended_cb'))
-
-
-def test_set_stow_mode_should_command_dish_to_transit_to_stow_mode(mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master    # act:
-    tango_context.device.SetStowMode()
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STOW_MODE,
-                                                             any_method(with_name='cmd_ended_cb'))
-
-
-def test_abort_should_command_dish_to_abort(mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master    # act:
-    tango_context.device.Abort()
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                             any_method(with_name='cmd_ended_cb'))
-
-
 def test_abort_should_raise_dev_failed(mock_dish_master):
     # arrange:
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -267,16 +195,6 @@ def test_abort_should_raise_dev_failed(mock_dish_master):
 
     # assert
     assert const.ERR_EXE_ABORT_CMD in tango_context.device.activityMessage
-
-
-def test_restart_should_command_dish_to_restart(mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    tango_context.device.Restart()
-
-    # assert:
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
-                                                             any_method(with_name='cmd_ended_cb'))
 
 
 def test_restart_should_raise_dev_failed(mock_dish_master):
