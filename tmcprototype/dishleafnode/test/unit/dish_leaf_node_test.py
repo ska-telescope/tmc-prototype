@@ -546,6 +546,14 @@ def test_activity_message_attribute_value_contains_command_name(event_subscripti
     assert f"Command :-> {command_name}" in tango_context.device.activityMessage
 
 
+def test_activity_message_attribute_value_contains_command_name_with_event_error(event_subscription, mock_dish_master, command_name):
+    tango_context, _, _, _ = mock_dish_master
+    tango_context.device.command_inout(command_name)
+    dummy_event = command_callback_with_event_error(command_name)
+    event_subscription[command_name](dummy_event)
+    assert f"Error in invoking command: {command_name}" in tango_context.device.activityMessage
+
+
 def test_scan_command_with_callback_method(event_subscription_with_arg, mock_dish_master):
     # arrange:
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -639,41 +647,6 @@ def test_track_command_with_callback_method(event_subscription, mock_dish_master
     assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
 
 
-def test_setstowmode_command_with_callback_method_with_event_error(event_subscription, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act
-    tango_context.device.SetStowMode()
-    dummy_event = command_callback_with_event_error(const.CMD_SET_STOW_MODE)
-    event_subscription[const.CMD_SET_STOW_MODE](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_SET_STOW_MODE in tango_context.device.activityMessage
-
-
-def test_setstandbylpmode_command_with_callback_method_with_event_error(event_subscription, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act
-    tango_context.device.SetStandByLPMode()
-    dummy_event = command_callback_with_event_error(const.CMD_SET_STANDBYLP_MODE)
-    event_subscription[const.CMD_SET_STANDBYLP_MODE](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_SET_STANDBYLP_MODE in tango_context.device.activityMessage
-
-def test_setoperatemode_command_with_callback_method_with_event_error(event_subscription, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act
-    tango_context.device.SetOperateMode()
-    dummy_event = command_callback_with_event_error(const.CMD_SET_OPERATE_MODE)
-    event_subscription[const.CMD_SET_OPERATE_MODE](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_SET_OPERATE_MODE in tango_context.device.activityMessage
-
-
 def test_scan_command_with_callback_method_with_event_error(event_subscription_with_arg, mock_dish_master):
     # arrange:
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -715,18 +688,6 @@ def test_stopcapture_command_with_callback_method_with_event_error(event_subscri
     assert const.ERR_INVOKING_CMD + const.CMD_STOP_CAPTURE in tango_context.device.activityMessage
 
 
-def test_setstandbyfpmode_command_with_callback_method_with_event_error(event_subscription, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act
-    tango_context.device.SetStandByFPMode()
-    dummy_event = command_callback_with_event_error(const.CMD_SET_STANDBYFP_MODE)
-    event_subscription[const.CMD_SET_STANDBYFP_MODE](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_SET_STANDBYFP_MODE in tango_context.device.activityMessage
-
-
 def test_slew_command_with_callback_method_with_event_error(event_subscription_with_arg, mock_dish_master):
     # arrange:
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -738,42 +699,6 @@ def test_slew_command_with_callback_method_with_event_error(event_subscription_w
 
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_DISH_SLEW in tango_context.device.activityMessage
-
-
-def test_stoptrack_command_with_callback_method_with_event_error(event_subscription, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act
-    tango_context.device.StopTrack()
-    dummy_event = command_callback_with_event_error(const.CMD_STOP_TRACK)
-    event_subscription[const.CMD_STOP_TRACK](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_STOP_TRACK in tango_context.device.activityMessage
-
-
-def test_abort_command_with_callback_method_with_event_error(event_subscription, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act
-    tango_context.device.Abort()
-    dummy_event = command_callback_with_event_error(const.CMD_ABORT)
-    event_subscription[const.CMD_ABORT](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_ABORT in tango_context.device.activityMessage
-
-
-def test_restart_command_with_callback_method_with_event_error(event_subscription, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act
-    tango_context.device.Restart()
-    dummy_event = command_callback_with_event_error(const.CMD_RESTART)
-    event_subscription[const.CMD_RESTART](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_RESTART in tango_context.device.activityMessage
 
 
 def test_version_id():
