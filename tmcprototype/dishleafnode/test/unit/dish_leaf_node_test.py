@@ -451,8 +451,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_is_true(mock_dish_master)
     event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == const.STR_DESIRED_POINTING + \
-           str(dummy_event.attr_value.value)
+    assert tango_context.device.activityMessage == f"desiredPointing is {dummy_event.attr_value.value}."
 
 
 def test_dish_leaf_node_when_desired_pointing_callback_with_error_event(mock_dish_master):
